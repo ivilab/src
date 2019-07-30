@@ -1,5 +1,5 @@
 
-/* $Id: l_def.h 24311 2019-07-30 20:13:25Z kobus $ */
+/* $Id: l_def.h 24312 2019-07-30 20:19:20Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -18,6 +18,7 @@
 |
 * =========================================================================== */
 
+/* Add a line to play with commit from svn. */
 /* Add a line to play with commit from svn. */
 /* Add a line to play with commit from svn. */
 
