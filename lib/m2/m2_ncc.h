@@ -1,5 +1,5 @@
 
-/* $Id: m2_ncc.h 9761 2011-06-18 05:52:33Z ksimek $ */
+/* $Id: m2_ncc.h 24316 2019-07-30 22:40:04Z ivilab $ */
 
 /* =========================================================================== *|
 |  Copyright (c) 1994-2008 by Kobus Barnard & Quanfu Fan(author).
@@ -16,6 +16,8 @@
 |  problems that you encounter.
 |
 * =========================================================================== */
+
+/* Test repo_sync */
 
 #ifndef M2_NCC_INCLUDED
 #define M2_NCC_INCLUDED
