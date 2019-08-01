@@ -1,5 +1,5 @@
 
-/* $Id: l_def.h 24313 2019-07-30 20:36:30Z ivilab $ */
+/* $Id: l_def.h 24322 2019-07-30 23:42:11Z ivilab $ */
 
 /* =========================================================================== *
 |
@@ -17,8 +17,6 @@
 |  problems that you encounter.
 |
 * =========================================================================== */
-
-/* Add a line to play with commit from svn. */
 
 #ifndef L_DEF_INCLUDED
 #define L_DEF_INCLUDED

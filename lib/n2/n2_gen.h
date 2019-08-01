@@ -1,5 +1,5 @@
 
-/* $Id: n2_gen.h 24315 2019-07-30 21:29:23Z ivilab $ */
+/* $Id: n2_gen.h 24322 2019-07-30 23:42:11Z ivilab $ */
 
 /* =========================================================================== *
 |
@@ -18,7 +18,6 @@
 |
 * =========================================================================== */
 
-/* Testing repo_sync */
 /* This file should only include other files which are protected for C++ use. */
 
 #ifdef WAS_MAKEDEPEND /* Now obsolete. */
