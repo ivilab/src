@@ -1,5 +1,5 @@
 
-/* $Id: p_gen.h 24320 2019-07-30 23:27:43Z ivilab $ */
+/* $Id: p_gen.h 24327 2019-08-01 16:46:45Z ivilab $ */
 
 /* =========================================================================== *
 |
@@ -17,8 +17,6 @@
 |  problems that you encounter.
 |
 * =========================================================================== */
-
-/* Test repo_sync. */
 
 /* This file should only include other files which are protected for C++ use. */
 
