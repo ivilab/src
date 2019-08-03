@@ -1,5 +1,5 @@
 
-/* $Id: c2_def.h 24329 2019-08-02 16:30:01Z ivilab $ */
+/* $Id: c2_def.h 24330 2019-08-03 02:00:00Z ivilab $ */
 
 /* =========================================================================== *
 |
@@ -17,9 +17,6 @@
 |  problems that you encounter.
 |
 * =========================================================================== */
-
-/* Try one more time to update everywhere from fake_delphi. */
-/* Try one more time to update everywhere from fake_delphi. */
 
 #ifndef C2_DEF_INCLUDED
 #define C2_DEF_INCLUDED
