@@ -38,6 +38,9 @@
 .PHONY : regress
 .PHONY : regress_clean
 .PHONY : test_svn
+.PHONY : shared
+.PHONY : dynamic
+.PHONY : static
 
 # Some targets, such as confess are implemented in build-2. 
 #
@@ -48,6 +51,9 @@ all dir_made init_clean confess depend_very_clean depend_clean obj_clean clean c
 	$(ECHO_MAKE_CMD)./build $@
 
 test test_clean test_very_clean check_clean regress regress_clean test_svn :
+	$(ECHO_MAKE_CMD)./build $@
+
+static dynamic shared :
 	$(ECHO_MAKE_CMD)./build $@
 
 # We cannot have the real dependency for Makefile because we do not know where
