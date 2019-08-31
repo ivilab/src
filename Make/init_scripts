@@ -1,0 +1,142 @@
+
+# It is easiest if this file does not emit any output. 
+#
+# This file contains overlap between what general scripts need and what
+# compiling needs. It is sourced from init_compile, and possibly from other
+# scripts or even .cshrc/.tcshrc.
+#
+# Rather than select exactly the overlap, we include all members of a logical
+# group, e.g., all variables about Make paths or general system commands. 
+
+
+# We are slowly purging the use of the "_DIR" forms. Eventually we should be
+# able to do with the "_PATH" forms exclusively.
+#
+setenv MAKE_DIR ${KJB_SRC_PATH}/Make/
+setenv MAKE_SCRIPT_DIR ${MAKE_DIR}/scripts/
+setenv MAKE_BIN_DIR ${MAKE_DIR}/bin/${MACHINE}/
+setenv MAKE_UTIL_DIR ${MAKE_DIR}/util/
+setenv MAKE_EDIT_DIR ${MAKE_DIR}/vim/
+setenv KJB_LIB_DIR ${KJB_SRC_PATH}/lib/
+
+setenv MAKE_PATH ${KJB_SRC_PATH}/Make/
+setenv MAKE_SCRIPT_PATH ${MAKE_PATH}/scripts/
+setenv MAKE_BIN_PATH ${MAKE_PATH}/bin/${MACHINE}/
+setenv MAKE_UTIL_PATH ${MAKE_PATH}/util/
+setenv MAKE_EDIT_PATH ${MAKE_PATH}/vim/
+setenv KJB_LIB_PATH ${KJB_SRC_PATH}/lib/
+
+# Invariably we have KJB_HAVE_MACHINE, but if we do not, the we need to source
+# init_machine as to be standalone. This could be a different copy than the one
+# that build sources before sourcing this file (init_scripts).
+# 
+if (! $?KJB_HAVE_MACHINE) then
+    source ${KJB_SRC_PATH}/Make/init_machine
+    if ($status) exit $status
+endif 
+
+if (! $?KJB_WARN_LEVEL) then
+    setenv KJB_WARN_LEVEL 2
+endif
+
+set P_STDERR = "${MAKE_SCRIPT_PATH}p_stderr"
+
+if (($?prompt) && (! $?KJB_QUIET)) then
+    setenv ECHO "echo "
+else 
+    setenv ECHO ": echo "
+endif 
+
+# For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
+if ($?KJB_VERBOSE) then
+    setenv VERBOSE_ECHO "echo "
+else 
+    setenv VERBOSE_ECHO ": echo "
+endif 
+
+# For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
+if ($?KJB_VERBOSE_2) then
+    setenv VERBOSE_ECHO_2 "echo "
+else 
+    setenv VERBOSE_ECHO_2 ": echo "
+endif 
+
+if(! $?TMPDIR) then
+    setenv TMPDIR "/tmp"
+endif
+
+# --------------------------------------------------------------------------------------------
+
+setenv KJB_ECHO             "echo"
+setenv KJB_CAT              "cat"
+
+# Copy where links point to, not their contents. 
+if ("${OS}" == "mac_osx") then
+    setenv KJB_CP               "cp -f -R"
+else if (("${OS}" == "linux_x86_64") || ("${OS}" == "linux_386")) then
+    setenv KJB_CP               "cp -r -f -d"
+else
+    setenv KJB_CP               "cp -r -f"
+endif 
+
+setenv KJB_CREATE           "cp /dev/null"
+setenv KJB_GREP             "grep"
+setenv KJB_EGREP            "egrep"
+setenv KJB_FILE             "file"
+# A version of ls that outputs one file per line. Most if not all ls's do so
+# when the output is not a terminal. However, we can use the '-1' option for
+# clarity and robustness.
+setenv KJB_LS               "ls -1"
+setenv KJB_LN               "ln -s -f"
+setenv KJB_MV               "mv"
+setenv KJB_RM               "rm -r -f"
+setenv KJB_TOUCH            "touch"
+setenv KJB_TOUCH_1990       "touch -t 199001010000"
+setenv KJB_PERMIT_EXECUTION "chmod -R a+rx"
+setenv KJB_PERMIT_READ      "chmod -R a+rX"
+setenv KJB_MKDIR            "mkdir -p"
+setenv KJB_SED              "sed"
+
+# setenv KJB_COMPRESS bzip2
+# setenv KJB_COMPRESS_SUFFIX bz2
+#
+# Back to gzip --- It does not compress quite as well, but is more convenient
+#
+setenv KJB_COMPRESS             "gzip"
+setenv KJB_COMPRESS_SUFFIX      "gz"
+
+# ---------------------------------------------------------------------
+
+# Perhaps this should be made more efficient now that we do not cache KJB_STAT
+# and KJB_STAT_FLAVOR. 
+
+set test_paths = `echo ${PATH} | sed 's/:/ /g'`
+   
+setenv KJB_STAT "stat"
+setenv KJB_STAT_FLAVOR "NONE"
+
+set have_stat = 0 
+
+foreach test_path ( $test_paths )
+    if (-x ${test_path}/stat) then
+        set have_stat = 1
+        break
+    endif
+end
+
+if (${have_stat}) then
+    set gnu_stat = `${KJB_STAT} --version |& grep 'GNU coreutils'`
+    if ((! ${status} ) && ("${gnu_stat}" != "")) then
+        setenv KJB_STAT_FLAVOR "gnu"
+    else 
+        set bsd_stat = `${KJB_STAT} -s . |& grep 'st_mtime'`
+        if ((! ${status} ) && ("${bsd_stat}" != "")) then
+            setenv KJB_STAT_FLAVOR "bsd"
+        endif
+    endif
+endif
+
+# ---------------------------------------------------------------------
+
+setenv KJB_HAVE_INIT_SCRIPT 1 
+

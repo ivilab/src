@@ -3,7 +3,7 @@
 # Build scripts  
 # =============
 #
-# This file (${KJB_SRC_PATH}Make/scripts/build-2) is sourced by the script "build"
+# This file (${KJB_SRC_PATH}/Make/scripts/build-2) is sourced by the script "build"
 # after it has determined the value of KJB_SRC_PATH. In order to be able to move src
 # directories without problem, each source directory has a copy of the script
 # "build", but once KJB_SRC_PATH is known, then we know where to find the build
@@ -34,15 +34,15 @@
 if ($?KJB_HAVE_MACHINE) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
     if ($?KJB_VERBOSE_2) then
-        echo "Script build-2 is not sourcing ${KJB_SRC_PATH}Make/init_machine because KJB_HAVE_MACHINE is set."
+        echo "Script build-2 is not sourcing ${KJB_SRC_PATH}/Make/init_machine because KJB_HAVE_MACHINE is set."
     endif 
 else 
     # Do not use VERBOSE_ECHO as we may not have it yet. 
     if ($?KJB_VERBOSE) then
-        echo "Script build-2 is sourcing ${KJB_SRC_PATH}Make/init_machine."
+        echo "Script build-2 is sourcing ${KJB_SRC_PATH}/Make/init_machine."
     endif 
 
-    source ${KJB_SRC_PATH}Make/init_machine
+    source ${KJB_SRC_PATH}/Make/init_machine
     if ($status) exit $status
 endif 
 
@@ -66,15 +66,15 @@ endif
 # if ($?KJB_HAVE_MACHINE) then
 #     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
 #     if ($?KJB_VERBOSE_2) then
-#         echo "Script build is not sourcing ${KJB_SRC_PATH}Make/init_machine because KJB_HAVE_MACHINE is set."
+#         echo "Script build is not sourcing ${KJB_SRC_PATH}/Make/init_machine because KJB_HAVE_MACHINE is set."
 #     endif 
 # else 
 #     # Do not use VERBOSE_ECHO as we may not have it yet. 
 #     if ($?KJB_VERBOSE) then
-#         echo "Script build is sourcing ${KJB_SRC_PATH}Make/init_machine"
+#         echo "Script build is sourcing ${KJB_SRC_PATH}/Make/init_machine"
 #     endif 
 # 
-#     source ${KJB_SRC_PATH}Make/init_machine
+#     source ${KJB_SRC_PATH}/Make/init_machine
 #     if ($status) exit $status
 # endif 
 
@@ -121,7 +121,7 @@ end
 
 # Do not use VERBOSE_ECHO as we may not have it yet. 
 if ($?KJB_VERBOSE) then
-    echo "Script build-2 is sourcing ${KJB_SRC_PATH}Make/init_compile"
+    echo "Script build-2 is sourcing ${KJB_SRC_PATH}/Make/init_compile"
 endif 
 
 set multiple_boost = 0
@@ -150,7 +150,7 @@ if (${multiple_boost}) then
 
         setenv BOOST_VERSION "${boost_candidate}"
 
-        source ${KJB_SRC_PATH}Make/init_compile
+        source ${KJB_SRC_PATH}/Make/init_compile
         if (! ${status}) then
             set found_workable_boost = 1
             break
@@ -164,7 +164,7 @@ if (${multiple_boost}) then
         
     endif 
 else
-    source ${KJB_SRC_PATH}Make/init_compile
+    source ${KJB_SRC_PATH}/Make/init_compile
     if (${status}) exit ${status}
 endif 
 
@@ -477,7 +477,7 @@ while ($count <=  ${num_args})
         setenv KJB_CC "${save_kjb_cc}" 
         setenv PRODUCTION "${save_production}"
         setenv FORCE_INIT_COMPILE
-        source ${KJB_SRC_PATH}Make/init_compile
+        source ${KJB_SRC_PATH}/Make/init_compile
     endif 
 
     if ("${arg}" == "all") then
@@ -492,7 +492,7 @@ while ($count <=  ${num_args})
         echo " "
 
         source ${MAKE_SCRIPT_PATH}clean_cache
-        source ${KJB_SRC_PATH}Make/init_compile
+        source ${KJB_SRC_PATH}/Make/init_compile
 
         continue
     else if ( ("${arg}" == "clean_cache") || ("${arg}" == "cache_clean") ) then
@@ -1006,7 +1006,7 @@ foreach arg (${build_adjusted_args})
                     # compiler and production mode. The setting of KJB_CC to empty asks
                     # init_comple to choose the compiler. 
                     #
-                    (setenv KJB_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${KJB_SRC_PATH}Make/init_compile; ${KJB_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                    (setenv KJB_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${KJB_SRC_PATH}/Make/init_compile; ${KJB_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
                     
                     if (${status}) then 
                         ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
@@ -1023,7 +1023,7 @@ foreach arg (${build_adjusted_args})
                 # compiler and production mode. The setting of KJB_CC to empty asks
                 # init_comple to choose the compiler. 
                 #
-                (setenv KJB_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${KJB_SRC_PATH}Make/init_compile; ${KJB_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                (setenv KJB_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${KJB_SRC_PATH}/Make/init_compile; ${KJB_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
                 
                 if (${status}) then 
                     ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
@@ -1058,7 +1058,7 @@ foreach arg (${build_adjusted_args})
             echo "To disable this default behaviour, use 'setenv DONT_FORCE_PROD_BIN 1'."
             echo " "
             setenv PRODUCTION 1
-            source ${KJB_SRC_PATH}Make/init_compile
+            source ${KJB_SRC_PATH}/Make/init_compile
             echo " "
         endif 
     else 
@@ -1116,7 +1116,7 @@ foreach arg (${build_adjusted_args})
                 else 
                     ${KJB_CP} ${make_tmp_dir}/Makefile-test-depend .
                     if (${status}) then
-                        ${P_STDERR} "Unable to copy ${make_tmp_dir}Makefile-test-depend to `pwd`."
+                        ${P_STDERR} "Unable to copy ${make_tmp_dir}/Makefile-test-depend to `pwd`."
                         exit 1
                     endif 
                 endif 
@@ -1153,7 +1153,7 @@ foreach arg (${build_adjusted_args})
                 endif 
             endif 
 
-            set makefile_to_use = "${MAKE_PATH}Makefile-test"
+            set makefile_to_use = "${MAKE_PATH}/Makefile-test"
 
             # We may need to build Makefile-test-depend twice.
             foreach target ( Makefile-test-depend  Makefile-test-depend)

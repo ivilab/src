@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 24238 2019-07-26 16:50:11Z kobus $
+# $Id: init_compile 24377 2019-08-31 16:23:18Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -52,6 +52,28 @@ else if (! -d "${KJB_SRC_PATH}") then
    exit 1
 endif 
 
+# Kobus. I have moved some stuff in this file to
+# ${KJB_SRC_PATH}/Make/init_scripts, as it is shared with a lot of scripts that
+# do not do anything about compiling, and sourcing this file to get that stuff
+# is causing grief. We do not check that init_scripts is available, as it is
+# essential and there is no reasonable recovery. 
+
+if ($?KJB_HAVE_INIT_SCRIPTS) then
+    # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
+    if ($?KJB_VERBOSE_2) then
+        echo "Script init_compile is not sourcing ${KJB_SRC_PATH}/Make/init_scripts because KJB_HAVE_INIT_SCRIPTS is set."
+    endif 
+else 
+    # Do not use VERBOSE_ECHO as we may not have it yet. 
+    if ($?KJB_VERBOSE) then
+        echo "Script init_compile is sourcing ${KJB_SRC_PATH}/Make/init_scripts."
+    endif 
+
+    source ${KJB_SRC_PATH}/Make/init_scripts
+    if ($status) exit $status
+endif 
+
+
 pushd ${KJB_SRC_PATH} > /dev/null
    if ($?EXPORTED_SOURCE) then
        #
@@ -71,70 +93,6 @@ pushd ${KJB_SRC_PATH} > /dev/null
    endif
 popd > /dev/null 
 
-# We are slowly purging the use of the "_DIR" forms. Eventually we should be
-# able to do with the "_PATH" forms exclusively.
-#
-setenv MAKE_DIR ${KJB_SRC_PATH}Make/
-setenv MAKE_SCRIPT_DIR ${MAKE_DIR}scripts/
-setenv MAKE_BIN_DIR ${MAKE_DIR}bin/${MACHINE}/
-setenv MAKE_UTIL_DIR ${MAKE_DIR}util/
-setenv MAKE_EDIT_DIR ${MAKE_DIR}vim/
-setenv KJB_LIB_DIR ${KJB_SRC_PATH}lib/
-
-setenv MAKE_PATH ${KJB_SRC_PATH}Make/
-setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
-setenv MAKE_BIN_PATH ${MAKE_PATH}bin/${MACHINE}/
-setenv MAKE_UTIL_PATH ${MAKE_PATH}util/
-setenv MAKE_EDIT_PATH ${MAKE_PATH}vim/
-setenv KJB_LIB_PATH ${KJB_SRC_PATH}lib/
-
-# Invariably we have KJB_HAVE_MACHINE, but if we do not, the we need to source
-# init_machine as to be standalone. This could be a different copy than the one
-# that build sources before sourcing this file (init_compile).
-# 
-if ($?KJB_HAVE_MACHINE) then
-    # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
-    if ($?KJB_VERBOSE_2) then
-        echo "Script init_compile is not sourcing ${MAKE_PATH}init_machine because KJB_HAVE_MACHINE is set."
-    endif 
-else 
-    # Do not use VERBOSE_ECHO as we may not have it yet. 
-    if ($?KJB_VERBOSE) then
-        echo "Script init_compile is sourcing ${MAKE_PATH}init_machine."
-    endif 
-
-    source ${KJB_SRC_PATH}Make/init_machine
-    if ($status) exit $status
-endif 
-
-if (! $?KJB_WARN_LEVEL) then
-    setenv KJB_WARN_LEVEL 2
-endif
-
-# Temporary while bootstrapping. Once bootstrapped, we should favor simply using
-# p_stderr.
-
-set P_STDERR = "${MAKE_SCRIPT_PATH}p_stderr"
-
-if (($?prompt) && (! $?KJB_QUIET)) then
-    setenv ECHO "echo "
-else 
-    setenv ECHO ": echo "
-endif 
-
-# For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
-if ($?KJB_VERBOSE) then
-    setenv VERBOSE_ECHO "echo "
-else 
-    setenv VERBOSE_ECHO ": echo "
-endif 
-
-# For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
-if ($?KJB_VERBOSE_2) then
-    setenv VERBOSE_ECHO_2 "echo "
-else 
-    setenv VERBOSE_ECHO_2 ": echo "
-endif 
 
 # ---------------------------------------------------------------------
 # Set up PATH. We need to do this before we read the cache because different
@@ -202,28 +160,15 @@ if (($do_cache && ! $?USER) ) then
     set do_cache = 0
 endif
 
-# could delete this test as stat and tempfile are standard
-if (($do_cache && ( ! -x /usr/bin/find )) ) then
-    ${ECHO} 'Find command not found. Suppressing environment variable caching.'
-    set do_cache = 0
-endif
-
-if($?TMPDIR) then
-    set tmp = "$TMPDIR"
-else
-    set tmp = "/tmp"
-    setenv TMPDIR "${tmp}"
-endif
-
 if ($do_cache ) then
-    if (! -w $tmp ) then
+    if (! -w $TMPDIR ) then
         ${ECHO} 'Writable temp directory not found. Suppressing environment variable caching.'
         set do_cache = 0
     endif
 endif
 
 if ($do_cache ) then
-    set tmp = "$tmp/$USER"
+    set tmp = "$TMPDIR/$USER"
     
     if (! -e $tmp) then
         mkdir $tmp
@@ -579,14 +524,6 @@ else
     ${KJB_RM} ${tmp}/kjb_env.sh 
 endif
 
-# This env variable allows not having MAKE_SCRIPT_PATH in our path, but it
-# should probably not be used in scripts that do not source init_compile. For
-# general purpose shared scripts, it is probabably better that we assume that
-# MAKE_SCRIPT_PATH is in the path (as it would likely be if one is using a
-# shared script), and simply use the lower case version.
-#
-kjb_setenv P_STDERR  "${MAKE_SCRIPT_PATH}p_stderr"
-
 kjb_setenv VAR_CACHE_FNAME "${cache_fname}"
 
 # Done setting up environment variable cache. Everything that follows is only
@@ -616,7 +553,7 @@ else
     kjb_setenv USER_DIR ${HOME}/
 endif
 
-kjb_setenv USER_BIN_DIR ${USER_DIR}bin/${MACHINE}/ 
+kjb_setenv USER_BIN_DIR ${USER_DIR}/bin/${MACHINE}/ 
 kjb_setenv USER_LOAD_DIR ${USER_DIR}load/${MACHINE}/ 
 
 # Work on a "misc" dir. we only wnat one of these. We go through some choices,
@@ -681,7 +618,7 @@ if (-d "${MISC_DIR}") then
     set misc_search_dir = "${MISC_DIR}"
 endif
 
-kjb_setenv MISC_BIN_DIR ${MISC_DIR}bin/${MACHINE}/ 
+kjb_setenv MISC_BIN_DIR ${MISC_DIR}/bin/${MACHINE}/ 
 kjb_setenv MISC_LOAD_DIR ${MISC_DIR}load/${MACHINE}/ 
 kjb_setenv MISC_INCLUDE_DIR ${MISC_DIR}include/
 kjb_setenv MISC_DOC_DIR ${MISC_DIR}doc/ 
@@ -1139,80 +1076,8 @@ kjb_setenv ECHO_UNLESS_QUIET  "${MAKE_SCRIPT_PATH}echo_unless_quiet"
 
 # ---------------------------------------------------------------------
 
-#
-# Continue to define symbols for needed programs. Even if their current
-# definition is not very interesting, it makes it easier if later we need to
-# condition their definitions on the environment in the future as we have
-# already done for some above, and will do for more of them below. 
-#
-
-kjb_setenv KJB_ECHO             "echo"
-kjb_setenv KJB_CAT              "cat"
-
-# Copy where links point to, not their contents. 
-if ("${OS}" == "mac_osx") then
-    kjb_setenv KJB_CP               "cp -f -R"
-else if (("${OS}" == "linux_x86_64") || ("${OS}" == "linux_386")) then
-    kjb_setenv KJB_CP               "cp -r -f -d"
-else
-    kjb_setenv KJB_CP               "cp -r -f"
-endif 
-
-kjb_setenv KJB_CREATE           "cp /dev/null"
-kjb_setenv KJB_GREP             "grep"
-kjb_setenv KJB_EGREP            "egrep"
-kjb_setenv KJB_FILE             "file"
-# A version of ls that outputs one file per line. Most if not all ls's do so
-# when the output is not a terminal. However, we can use the '-1' option for
-# clarity and robustness.
-kjb_setenv KJB_LS               "ls -1"
-kjb_setenv KJB_LN               "ln -s -f"
-kjb_setenv KJB_MV               "mv"
-kjb_setenv KJB_RM               "rm -r -f"
-kjb_setenv KJB_TOUCH            "touch"
-kjb_setenv KJB_TOUCH_1990       "touch -t 199001010000"
-kjb_setenv KJB_PERMIT_EXECUTION "chmod -R a+rx"
-kjb_setenv KJB_PERMIT_READ      "chmod -R a+rX"
-kjb_setenv KJB_MKDIR            "mkdir -p"
-kjb_setenv KJB_SED              "sed"
-
-# setenv KJB_COMPRESS bzip2
-# setenv KJB_COMPRESS_SUFFIX bz2
-#
-# Back to gzip --- It does not compress quite as well, but is more convenient
-#
-setenv KJB_COMPRESS             "gzip"
-setenv KJB_COMPRESS_SUFFIX      "gz"
-
-# ---------------------------------------------------------------------
-
-set test_paths = `echo ${PATH} | sed 's/:/ /g'`
-   
-kjb_setenv KJB_STAT "stat"
-kjb_setenv KJB_STAT_FLAVOR "NONE"
-
-set have_stat = 0 
-
-foreach test_path ( $test_paths )
-    if (-x ${test_path}/stat) then
-        set have_stat = 1
-        break
-    endif
-end
-
-if (${have_stat}) then
-    set gnu_stat = `${KJB_STAT} --version |& grep 'GNU coreutils'`
-    if ((! ${status} ) && ("${gnu_stat}" != "")) then
-        kjb_setenv KJB_STAT_FLAVOR "gnu"
-    else 
-        set bsd_stat = `${KJB_STAT} -s . |& grep 'st_mtime'`
-        if ((! ${status} ) && ("${bsd_stat}" != "")) then
-            kjb_setenv KJB_STAT_FLAVOR "bsd"
-        endif
-    endif
-endif
-
-# ---------------------------------------------------------------------
+# Continue to define symbols for needed programs. We got most of them from
+# init_scripts. The following ones are quite specific to compiling. 
 
 kjb_setenv KJB_DIFF_TEST "diff -q" 
 
@@ -1222,7 +1087,6 @@ if (${status}) then
     kjb_setenv KJB_DIFF_TEST "diff"
 endif
 
-# ---------------------------------------------------------------------
 
 ### KJB_YACC ###
 
@@ -10570,14 +10434,14 @@ kjb_setenv ALL_KJB_HAVE  "${all_kjb_have}"
 kjb_setenv KJB_HAVE      "${kjb_have}" 
 
 
-kjb_setenv PROG_BASE_INCLUDES "${INCLUDE_FLAG}. ${INCLUDE_FLAG}lib ${INCLUDE_FLAG}${KJB_SRC_PATH}lib"
+kjb_setenv PROG_BASE_INCLUDES "${INCLUDE_FLAG}. ${INCLUDE_FLAG}/lib ${INCLUDE_FLAG}${KJB_SRC_PATH}/lib"
 #
 # The two paths in LIB_BASE_INCLUDES are potentially the same, but not if
 # you are in <prog>/lib/xxx. Is this the best solution?
-kjb_setenv LIB_BASE_INCLUDES "${INCLUDE_FLAG}../../lib ${INCLUDE_FLAG}${KJB_SRC_PATH}lib"
+kjb_setenv LIB_BASE_INCLUDES "${INCLUDE_FLAG}../../lib ${INCLUDE_FLAG}${KJB_SRC_PATH}/lib"
 
-kjb_setenv ALL_BASE_INCLUDES " ${INCLUDE_FLAG}lib ${INCLUDE_FLAG}../../lib ${INCLUDE_FLAG}${KJB_SRC_PATH}lib ${BEFORE_INCLUDES}"
-kjb_setenv ALL_LOCAL_INCLUDES "${INCLUDE_FLAG}. ${INCLUDE_FLAG}lib ${INCLUDE_FLAG}../../lib ${INCLUDE_FLAG}${KJB_SRC_PATH}lib ${BEFORE_INCLUDES}"
+kjb_setenv ALL_BASE_INCLUDES " ${INCLUDE_FLAG}/lib ${INCLUDE_FLAG}../../lib ${INCLUDE_FLAG}${KJB_SRC_PATH}/lib ${BEFORE_INCLUDES}"
+kjb_setenv ALL_LOCAL_INCLUDES "${INCLUDE_FLAG}. ${INCLUDE_FLAG}/lib ${INCLUDE_FLAG}../../lib ${INCLUDE_FLAG}${KJB_SRC_PATH}/lib ${BEFORE_INCLUDES}"
 
 # STRIP_COMMENTS_FLAGS: 
 #     Obsolete. Test without. 

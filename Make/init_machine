@@ -1,4 +1,6 @@
 
+# It is easiest if this file does not emit any output. 
+
 if ($?EMULATE_WIN32 == 0) then
     setenv EMULATE_WIN32 0
 endif 
