@@ -1,37 +1,23 @@
 
 # It is easiest if this file does not emit any output. 
 #
+# This file cannot assume that KJB_SRC_PATH is set, as root does not use
+# KJB_SRC_PATH. But it does assume that we have MAKE_PATH.
+#
 # This file contains overlap between what general scripts need and what
 # compiling needs. It is sourced from init_compile, and possibly from other
-# scripts or even .cshrc/.tcshrc.
+# scripts, and often from .cshrc/.tcshrc.
 #
 # Rather than select exactly the overlap, we include all members of a logical
 # group, e.g., all variables about Make paths or general system commands. 
 
-
-# We are slowly purging the use of the "_DIR" forms. Eventually we should be
-# able to do with the "_PATH" forms exclusively.
-#
-setenv MAKE_DIR ${KJB_SRC_PATH}/Make/
-setenv MAKE_SCRIPT_DIR ${MAKE_DIR}/scripts/
-setenv MAKE_BIN_DIR ${MAKE_DIR}/bin/${MACHINE}/
-setenv MAKE_UTIL_DIR ${MAKE_DIR}/util/
-setenv MAKE_EDIT_DIR ${MAKE_DIR}/vim/
-setenv KJB_LIB_DIR ${KJB_SRC_PATH}/lib/
-
-setenv MAKE_PATH ${KJB_SRC_PATH}/Make/
-setenv MAKE_SCRIPT_PATH ${MAKE_PATH}/scripts/
-setenv MAKE_BIN_PATH ${MAKE_PATH}/bin/${MACHINE}/
-setenv MAKE_UTIL_PATH ${MAKE_PATH}/util/
-setenv MAKE_EDIT_PATH ${MAKE_PATH}/vim/
-setenv KJB_LIB_PATH ${KJB_SRC_PATH}/lib/
 
 # Invariably we have KJB_HAVE_MACHINE, but if we do not, the we need to source
 # init_machine as to be standalone. This could be a different copy than the one
 # that build sources before sourcing this file (init_scripts).
 # 
 if (! $?KJB_HAVE_MACHINE) then
-    source ${KJB_SRC_PATH}/Make/init_machine
+    source ${MAKE_PATH}init_machine
     if ($status) exit $status
 endif 
 
@@ -39,7 +25,7 @@ if (! $?KJB_WARN_LEVEL) then
     setenv KJB_WARN_LEVEL 2
 endif
 
-set P_STDERR = "${MAKE_SCRIPT_PATH}p_stderr"
+set P_STDERR = "${MAKE_PATH}scripts/p_stderr"
 
 if (($?prompt) && (! $?KJB_QUIET)) then
     setenv ECHO "echo "

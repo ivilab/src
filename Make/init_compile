@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 24377 2019-08-31 16:23:18Z kobus $
+# $Id: init_compile 24378 2019-08-31 22:35:13Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -51,6 +51,23 @@ else if (! -d "${KJB_SRC_PATH}") then
    bash -c 'echo "Script init_compile assumes KJB_SRC_PATH constains a valid directory." 1>&2'
    exit 1
 endif 
+
+# We are slowly purging the use of the "_DIR" forms. Eventually we should be
+# able to do with the "_PATH" forms exclusively.
+#
+setenv KJB_LIB_DIR ${KJB_SRC_PATH}/lib/
+setenv MAKE_DIR ${KJB_SRC_PATH}/Make/
+setenv MAKE_SCRIPT_DIR ${MAKE_DIR}/scripts/
+setenv MAKE_BIN_DIR ${MAKE_DIR}/bin/${MACHINE}/
+setenv MAKE_UTIL_DIR ${MAKE_DIR}/util/
+setenv MAKE_EDIT_DIR ${MAKE_DIR}/vim/
+
+setenv KJB_LIB_PATH ${KJB_SRC_PATH}/lib/
+setenv MAKE_PATH ${KJB_SRC_PATH}/Make/
+setenv MAKE_SCRIPT_PATH ${MAKE_PATH}/scripts/
+setenv MAKE_BIN_PATH ${MAKE_PATH}/bin/${MACHINE}/
+setenv MAKE_UTIL_PATH ${MAKE_PATH}/util/
+setenv MAKE_EDIT_PATH ${MAKE_PATH}/vim/
 
 # Kobus. I have moved some stuff in this file to
 # ${KJB_SRC_PATH}/Make/init_scripts, as it is shared with a lot of scripts that
