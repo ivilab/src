@@ -1,4 +1,4 @@
-/* $Id: m_vector_d.impl.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vector_d.impl.h 24406 2019-09-25 20:53:51Z simonswenson $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -38,7 +38,11 @@
 #include <m_cpp/m_matrix.h>
 
 #ifdef KJB_HAVE_BST_SERIAL
+#if BOOST_VERSION >= 106400
+#include <boost/serialization/boost_array.hpp>
+#else
 #include <boost/serialization/array.hpp>
+#endif
 #endif
 
 namespace kjb
