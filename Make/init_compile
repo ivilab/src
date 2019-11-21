@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 24378 2019-08-31 22:35:13Z kobus $
+# $Id: init_compile 24577 2019-11-21 18:06:32Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -1221,29 +1221,6 @@ endif
 
 kjb_setenv MAKEDEPEND_OUTPUT  '>& /dev/null'
 
-
-if ((${OS} == "linux_386") || (${OS} == "linux_x86_64")) then
-    kjb_setenv ARCHIVE_OPTS "rsc"
-else
-    kjb_setenv ARCHIVE_OPTS "rc"
-endif
-
-kjb_setenv KJB_AR "ar ${ARCHIVE_OPTS}"
-
-#
-# Usually "ar" can do the ranlib bit already.
-#
-if (${OS} == "sun4") then 
-    kjb_setenv KJB_RANLIB /bin/ranlib
-else if (${OS} == "next") then 
-    kjb_setenv KJB_RANLIB "/bin/ranlib -s" 
-else if (${OS} == "mac_osx") then
-    kjb_setenv KJB_RANLIB "/usr/bin/ranlib -s -no_warning_for_no_symbols"
-else 
-    kjb_setenv KJB_RANLIB "$KJB_MAKE_NO_OP"
-endif
-
-
 # ---------------------------------------------------------------------
 #
 # Locking tools. Under construction! It is not clear if we can get away with
@@ -1451,25 +1428,6 @@ kjb_setenv F77_LEGACY_FLAGS "${f77_legacy_flags}"
 
 # ---------------------------------------------------------------------
 
-# Note that the Makefiles sometimes we switch the linker to KJB_CXX. Right now,
-# this occurs in Makefile-libs-needed.
-#
-if ("${KJB_LD}" == "") then
-    kjb_setenv KJB_LD "${KJB_CC}"
-endif
-
-# ---------------------------------------------------------------------
-
-if ($?KJB_VERBOSE) then
-    echo ""
-    echo "Choosing C       compiler: ${KJB_CC}"
-    echo "Choosing C++     compiler: ${KJB_CXX}"
-    echo "Choosing Fortran compiler: ${KJB_F77}"
-    echo ""
-endif
-
-# ---------------------------------------------------------------------
-
 # We define boolean variables for convenience in further expressions, that also
 # deal with the case that we have set KJB_CC or KJB_CXX to something like
 # g++-4.2. 
@@ -1519,7 +1477,64 @@ if (${kjb_cxx_is_gxx}) then
     endif
 endif
 
+# ---------------------------------------------------------------------
 
+set which_kjb_cc = `which ${KJB_CC}`
+if (! ${status}) then
+    kjb_setenv KJB_CC_DIR `echo ${which_kjb_cc} | sed 's#\(.*\)/.*#\1/#'`
+else
+    kjb_setenv KJB_CC_DIR './'
+endif 
+
+# ---------------------------------------------------------------------
+
+# Note that the Makefiles sometimes we switch the linker to KJB_CXX. Right now,
+# this occurs in Makefile-libs-needed.
+#
+if ("${KJB_LD}" == "") then
+    kjb_setenv KJB_LD "${KJB_CC}"
+endif
+
+# ---------------------------------------------------------------------
+
+if ((${OS} == "linux_386") || (${OS} == "linux_x86_64")) then
+    kjb_setenv ARCHIVE_OPTS "rsc"
+else
+    kjb_setenv ARCHIVE_OPTS "rc"
+endif
+
+if (-x "${KJB_CC_DIR}ar") then 
+    set kjb_ar = "${KJB_CC_DIR}ar"
+else 
+    set kjb_ar = "ar"
+endif 
+
+kjb_setenv KJB_AR "${kjb_ar} ${ARCHIVE_OPTS}"
+
+# Usually "ar" can do the ranlib bit already, but for flexibility. 
+
+if (-x "${KJB_CC_DIR}ranlib") then 
+    set kjb_ranlib = "${KJB_CC_DIR}ranlib"
+else 
+    set kjb_ranlib = "ranlib"
+endif 
+
+if (${OS} == "mac_osx") then
+    kjb_setenv KJB_RANLIB "${kjb_ranlib} -s -no_warning_for_no_symbols"
+else 
+    kjb_setenv KJB_RANLIB "$KJB_MAKE_NO_OP"
+endif
+
+if ($?KJB_VERBOSE) then
+    echo ""
+    echo "Choosing C       compiler: ${KJB_CC}"
+    echo "Choosing C++     compiler: ${KJB_CXX}"
+    echo "Choosing Fortran compiler: ${KJB_F77}"
+    echo "Choosing linker          : ${KJB_LD}"
+    echo "Choosing ar              : ${KJB_AR}"
+    echo "Choosing ranlib          : ${KJB_RANLIB}"
+    echo ""
+endif
 
 # ---------------------------------------------------------------------
 
