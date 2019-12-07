@@ -611,8 +611,9 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             echo "Script 'test_program_2' executing untested code for interactive around line 680."
         endif 
 
-        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' |  grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$'  | grep -v '^STDIN$'  `
+        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
 
+        echo run_dir_files: $run_dir_files
         foreach test_output_file (${run_dir_files}) 
             # Is RC the only output file we want to check that does not need
             # this processing? 
@@ -629,12 +630,12 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             if ("$f" == "output_checked") continue
             set f_is_old = `${MAKE_SCRIPT_PATH}test_older_than "$f" test_time_stamp`
             if (${f_is_old}) then 
-                ${VERBOSE_ECHO} "Script test_program_2 is cleaning up $f in `pwd`" 
+                "Script test_program_2 is cleaning up $f in `pwd`" 
                 ${MAKE_SCRIPT_PATH}kjb_svn_rm "$f"
             endif 
         end
     else if ("${test_type}" == "regress") then
-        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' `
+        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
 
         foreach output_file (${run_dir_files}) 
             set test_output_file = "${test_run_dir}/${output_file}"
@@ -721,7 +722,7 @@ else if (-e "output_checked") then
             endif 
         endif 
 
-        set files = `${KJB_LS}  | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file'  | grep -v 'test_time_stamp' `
+        set files = `${KJB_LS}  | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
 
         set not_in_svn = ""
         foreach file (${files}) 
