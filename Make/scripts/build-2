@@ -55,28 +55,6 @@ endif
 # which are documented in this file. If you prefer, these can be set in the
 # BUILD_ENV* files. One way to get started with this plan is to copy BUILD_ENV
 # from ${KJB_SRC_PATH}/Make/ into this directory. 
-#
-# If any relevant BUILD_ENV* file exits, they will source now, before calling
-# ${KJB_SRC_PATH}/Make/build-2 which does the heavy lifting in setting up calls to
-# "make".
-#
-# Some choices here depend on knowing the machine, so we make sure this is known
-# at this point. 
-#
-# if ($?KJB_HAVE_MACHINE) then
-#     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
-#     if ($?KJB_VERBOSE_2) then
-#         echo "Script build is not sourcing ${KJB_SRC_PATH}/Make/init_machine because KJB_HAVE_MACHINE is set."
-#     endif 
-# else 
-#     # Do not use VERBOSE_ECHO as we may not have it yet. 
-#     if ($?KJB_VERBOSE) then
-#         echo "Script build is sourcing ${KJB_SRC_PATH}/Make/init_machine"
-#     endif 
-# 
-#     source ${KJB_SRC_PATH}/Make/init_machine
-#     if ($status) exit $status
-# endif 
 
 set shared_build_env_dirs = "BUILD_ENV BUILD_ENV.${OS} BUILD_ENV.${MACHINE}"
 
