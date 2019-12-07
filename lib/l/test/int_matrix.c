@@ -1,5 +1,5 @@
 
-/* $Id: int_matrix.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: int_matrix.c 24615 2019-12-07 23:14:30Z kobus $ */
 
 
 #define BASE_NUM_TRIES  10000
@@ -21,7 +21,10 @@ int main(int argc, char **argv)
 
     /* Test corner cases: 0 x 0 matrix, n x 0 matrix, or 0 x n */
     EPETE(get_target_int_matrix(&mp, 0, 0));
+#ifdef VERBOSE
+    /* This will fail regression testing. */
     dbx(mp->elements);
+#endif 
     ow_set_int_matrix(mp, -1); 
 
     if (argc > 1)
@@ -90,6 +93,7 @@ int main(int argc, char **argv)
         }
 
 #ifdef VERBOSE
+        /* This will fail regression testing. */
         dbi(prev_num_rows);
         dbi(prev_num_cols);
         dbi(num_rows);
