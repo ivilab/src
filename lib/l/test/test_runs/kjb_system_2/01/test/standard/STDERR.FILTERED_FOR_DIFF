@@ -1,5 +1,5 @@
 
 Error reported during non-interactive run.
-Execution of "ls NOT_A_FILE" reported failure status (1).
-ls: NOT_A_FILE: No such file or directory
+Execution of "ls NOT_A_FILE" reported failure status (2).
+ls: cannot access NOT_A_FILE: No such file or directory
 
