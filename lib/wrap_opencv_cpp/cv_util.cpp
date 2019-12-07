@@ -16,12 +16,15 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_util.cpp 21172 2017-01-30 09:21:24Z kobus $ */
+/* $Id: cv_util.cpp 24606 2019-12-07 22:02:46Z kobus $ */
 
 /* Kobus: Added Jan 13, 2017. */
 #include <iostream>
 
+#ifdef KJB_HAVE_OPENCV
 #include <opencv2/imgcodecs/imgcodecs_c.h>
+#endif 
+
 #include <wrap_opencv_cpp/cv_util.h>
 
 

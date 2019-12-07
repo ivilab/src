@@ -23,14 +23,14 @@
 /* -------------------------------------------------------------------------- 
  * Pass in the number of clusters, then the file name to which to write the
  * data. Otherwise, the program will use the default values of 3 clusters and
- * data_2.txt file name.
+ * data.txt file name.
  * -------------------------------------------------------------------------- */
 
 #define DEGREES_PER_RADIAN (180.0 / M_PI)
 #define NUM_POINTS  (2000)
 
-#define GAUSS_WEIGHT  (2.0) 
-#define UNIFORM_WEIGHT (0.0) 
+#define GAUSS_WEIGHT  (1.0) 
+#define UNIFORM_WEIGHT (1.0) 
 /*
 #define GAUSS_WEIGHT  (2.0) 
 #define UNIFORM_WEIGHT (5.0) 
@@ -41,19 +41,19 @@
 */
 
 
-#define NUM_CLUSTERS  (3)
+#define DEFEFULT_NUM_CLUSTERS  (3)
 
 /*
 #define SET_BY_HAND
 */
 /*
-#define DO_INDEPENDENT
 #define DO_BALLS
+#define DO_INDEPENDENT
 */
 
 int main(int argc, char* argv[])
 {
-    Matrix*     U_mp       = NULL;
+
     Matrix*     data_mp    = NULL;
     Vector*     g_vp       = NULL;
     Vector*     u_vp       = NULL;
@@ -62,7 +62,6 @@ int main(int argc, char* argv[])
     Matrix*     cov_mp     = NULL;
     Vector*     mean_vp    = NULL;
     int         i;
-    int         plot_id;
     FILE*       data_fp    = NULL;
     Vector*     angle_vp   = NULL;
     Vector*     mean_x_vp  = NULL;
@@ -75,8 +74,9 @@ int main(int argc, char* argv[])
     Matrix*     P_mp       = NULL;
     Int_vector* counts_vp = NULL; 
     Matrix_vector* data_mvp = NULL; 
-    int num_clusters = NUM_CLUSTERS;
-    char         data_file_name[MAX_FILE_NAME_SIZE ]; 
+    int num_clusters = DEFEFULT_NUM_CLUSTERS;
+    char         data_file_name[MAX_FILE_NAME_SIZE ] = "data.txt"; 
+    int plot_id = NOT_SET;
 
     kjb_init();   /* Best to do this if using KJB library. */
 
@@ -92,16 +92,18 @@ int main(int argc, char* argv[])
     */
     kjb_disable_paging(); 
 
-    if (argc < 2)
+    if (argc <= 2)
     {
         /* Default data file name */
-        BUFF_CPY(data_file_name, "data_2.txt");
+        // BUFF_CPY(data_file_name, "data.txt");
     }
-    else if (argc == 2)
+
+    if (argc >= 2)
     {
         EPETE(ss1pi(argv[ 1 ], &num_clusters)); 
     }
-    else if (argc == 3)
+
+    if (argc >= 3)
     {
         EPETE(ss1pi(argv[ 1 ], &num_clusters)); 
         BUFF_CPY(data_file_name, argv[ 2 ] ); 
@@ -171,8 +173,6 @@ int main(int argc, char* argv[])
         EPETE(get_target_matrix(&(data_mvp->elements[ cluster ]), NUM_POINTS, 2)); 
     }
 
-    EPETE(plot_id = plot_open());
-
     dbp("Making data up"); 
 
     EPETE(get_target_matrix(&data_mp, NUM_POINTS, 2));
@@ -217,11 +217,19 @@ int main(int argc, char* argv[])
 
     EPETE(write_matrix(data_mp, data_file_name)); 
 
-    for (cluster = 0; cluster < num_clusters; cluster++)
-    {
-        data_mvp->elements[ cluster ]->num_rows = counts_vp->elements[ cluster ];
+    plot_id = plot_open();
 
-        EPETE(plot_matrix_row_points(plot_id, data_mvp->elements[ cluster ], NULL)); 
+    if (plot_id == ERROR) 
+    {
+        kjb_print_error();
+    }
+    else
+    {
+        for (cluster = 0; cluster < num_clusters; cluster++)
+        {
+            data_mvp->elements[ cluster ]->num_rows = counts_vp->elements[ cluster ];
+            EPE(plot_matrix_row_points(plot_id, data_mvp->elements[ cluster ], NULL)); 
+        }
     }
 
     free_vector(x_vp); 
@@ -245,7 +253,10 @@ int main(int argc, char* argv[])
 
     kjb_fclose(data_fp); 
 
-    prompt_to_continue(); 
+    if (plot_id >= 0) 
+    {
+        prompt_to_continue(); 
+    }
 
     kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
 

@@ -6,8 +6,17 @@
  * Please see class kjb::OpenSSL_EVP and class kjb::MD5.
  */
 /*
- * $Id: wrap_openssl_evp.h 17473 2014-09-08 01:22:34Z predoehl $
+ * $Id: wrap_openssl_evp.h 24606 2019-12-07 22:02:46Z kobus $
  */
+
+
+// The OpenSSL include files from mac ports seem to have known issues, and it is
+// not clear when this will get resolved. 
+#ifdef KJB_HAVE_OPENSSL
+#ifdef MAC_OSX
+#undef KJB_HAVE_OPENSSL
+#endif 
+#endif 
 
 #ifndef OPENSSL_CPP_EVP_H_WRAP_PREDOEHL_UOFARIZONA_VISION
 #define OPENSSL_CPP_EVP_H_WRAP_PREDOEHL_UOFARIZONA_VISION

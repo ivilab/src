@@ -20,6 +20,8 @@
    |      Yekaterina Kharitonova
    |      Jinyan Guan  
  * =========================================================================== */
+
+
 #include "m/m_incl.h"      /*  Only safe if first #include in a ".c" file  */
 
 #include "n/n_invert.h"  
@@ -36,11 +38,14 @@ extern "C" {
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
+/* Kobus. */
+#define REPORT_PER_POINT
+
 /*
  * Gauss routine slows things down a bit--used for debugging.
  * 
-*/
 #define DONT_USE_GAUSS_ROUTINE
+*/
 
 #ifndef SKIP_FOR_EXPORT /* The following code is removed for export. */
 #define ENABLE_SHIFT_MODELS
@@ -2011,6 +2016,7 @@ int select_GMM_helper_2
  *
  * -----------------------------------------------------------------------------
 */
+
 int get_full_GMM
 (
     int             num_clusters,
@@ -3084,13 +3090,19 @@ if (held_out_indicator_vp != NULL)
                     ASSERT_IS_NUMBER_DBL(d); 
                     ASSERT_IS_FINITE_DBL(d); 
 
-                    I_vp->elements[ cluster ] = log_a - (0.5*d) - log_sqrt_det_vp->elements[ cluster ]; 
+                    /* It is slightly inefficent to subtract the last term,
+                     * which is a constant, but best for debugging. We would
+                     * subtract it instead from the per point log-likelihood if
+                     * we wanted to be super efficient. 
+                    */
+                    I_vp->elements[ cluster ] = log_a - (0.5*d) - log_sqrt_det_vp->elements[ cluster ] - (((double)num_features) / 2.0) * log(2.0 * M_PI); 
 #else
                     result = get_log_gaussian_density(x_vp, u_vp, var_vp, 
                                                       &(I_vp->elements[ cluster ]));
                     if (result == ERROR) { NOTE_ERROR(); break; }
                     I_vp->elements[ cluster ] += log_a; 
 #endif 
+    // log_prob = -0.5 * dist_sqrd - (log_var_prod / 2.0)  - (((double)dim) / 2.0) * log(2.0 * M_PI);
 
 #ifndef DONT_USE_GAUSS_ROUTINE
 #ifdef REGRESS_DO_FIXED_IND_CON_EM_GUTS_LL
@@ -4230,9 +4242,6 @@ int get_independent_GMM_2
  *
  * -----------------------------------------------------------------------------
 */
-
-/* Kobus. */
-#define REPORT_PER_POINT
 
 int get_independent_GMM_3
 (

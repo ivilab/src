@@ -25,14 +25,16 @@
 #include <i_cpp/i_image.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace kjb;
 using namespace std;
+
 int main(int argc, char** argv)
 {
     if(argc != 3)
     {
-        cout << " Usage: ./background movie-dir output-dir\n";
+        std::cout << " Usage: ./background movie-dir output-dir\n";
         return EXIT_SUCCESS;
     }
     string movie_dir = argv[1];

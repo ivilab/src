@@ -125,6 +125,7 @@ int main(int argc, char* argv[])
     int         i;
     int         num_clusters = DEFAULT_NUM_CLUSTERS;
     int         do_plotting = TRUE;
+    kjb_uint16  seed_buff[3];
 
     kjb_init();   /* Best to do this if using KJB library. */
 
@@ -196,7 +197,6 @@ int main(int argc, char* argv[])
             }
 
             test_list[num_test++] = preset_tests[test_num-1];
-
         }
         else
         {
@@ -248,12 +248,18 @@ int main(int argc, char* argv[])
 
     EPETE(read_matrix(&data_mp, data_file_name)); 
 
+    EPETE(get_rand_seed(seed_buff));
+    pso("Seed: %d %d %d\n", seed_buff[ 0 ], seed_buff[ 1 ], seed_buff[ 2 ]);
     /* kjb_seed_rand_with_tod(); */
+    EPETE(get_rand_seed(seed_buff));
+    pso("Seed: %d %d %d\n", seed_buff[ 0 ], seed_buff[ 1 ], seed_buff[ 2 ]);
+
     kjb_set_verbose_level(5);
     /* set_random_options("seed","?"); */
     /* EPETE(set_em_cluster_options("cluster-tie-cluster-var", "t")); */
     EPETE(set_em_cluster_options("cluster-var-offset", "0.0")); 
     EPETE(set_em_cluster_options("cluster-max-num-iterations", "200")); 
+    EPETE(set_em_cluster_options("cluster-use-initialized-cluster-means-variances-and-priors", "false")); 
 
     if(num_test > 1) 
     {
@@ -476,7 +482,6 @@ int run_test(Options options, int num_clusters, const Matrix* data_mp, const cha
 
         free_matrix(out_mp); 
     }
-
 
     free_matrix(U_mp); 
     free_vector(y_vp); 

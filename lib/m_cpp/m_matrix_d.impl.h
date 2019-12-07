@@ -1,4 +1,4 @@
-/* $Id: m_matrix_d.impl.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_matrix_d.impl.h 24606 2019-12-07 22:02:46Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -22,6 +22,7 @@
 #ifndef KJB_M_MATRIX_D_IMPL_H
 #define KJB_M_MATRIX_D_IMPL_H
 
+#include <iostream>
 #include <numeric>
 #include <functional>
 #include <cmath>

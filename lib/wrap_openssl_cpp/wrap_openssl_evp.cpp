@@ -4,13 +4,14 @@
  * @brief Implemenation of finalize method for wrapper on OpenSSL EVP object
  */
 /*
- * $Id: wrap_openssl_evp.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: wrap_openssl_evp.cpp 24606 2019-12-07 22:02:46Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "l/l_sys_lib.h"
 #include "l/l_sys_io.h"
 #include "l_cpp/l_util.h"
+#include <iostream>
 #include "wrap_openssl_cpp/wrap_openssl_evp.h"
 
 #ifdef KJB_HAVE_OPENSSL
