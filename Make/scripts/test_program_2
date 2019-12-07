@@ -259,6 +259,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
             set svn_add_files = ""
 
             foreach svn_input_file (${test_input_files}) 
+                if (-e "${svn_input_file}.FILTERED_FOR_DIFF") continue
                 svn info ${svn_input_file} >& /dev/null
 
                 if (${status}) then
@@ -608,7 +609,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         # New, June 2019.
         #
         if ("${test_type}" == "interactive") then
-            echo "Script 'test_program_2' executing untested code for interactive around line 680."
+            echo "Script 'test_program_2' executing untested code for interactive around line 612."
         endif 
 
         set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
@@ -638,15 +639,21 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
     else if ("${test_type}" == "regress") then
         set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
 
+        echo "Regress run_dir_files: $run_dir_files"
+
         foreach output_file (${run_dir_files}) 
             set test_output_file = "${test_run_dir}/${output_file}"
+            if (-e ${test_output_file}.FILTERED_FOR_DIFF) then
+                grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${output_file}.FILTERED_FOR_DIFF
+                set output_file = "${output_file}.FILTERED_FOR_DIFF"
+                set test_output_file = "${test_output_file}.FILTERED_FOR_DIFF"
+            endif 
+            
+            # The only case where test_output_file does not end in
+            # .FILTERED_FOR_DIFF is if output_file was RC. In either case,
+            # test_output_file should be there. 
+            #
             if (-e ${test_output_file}) then
-                if ("${output_file}" != "RC") then
-                    grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${output_file}.FILTERED_FOR_DIFF
-                    set output_file = "${output_file}.FILTERED_FOR_DIFF"
-                    set test_output_file = "${test_output_file}.FILTERED_FOR_DIFF"
-                endif 
-
                 # echo ${KJB_DIFF_TEST} ${output_file} ${test_output_file} 
                 ${KJB_DIFF_TEST} ${output_file} ${test_output_file} > /dev/null
 
