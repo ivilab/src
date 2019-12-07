@@ -641,18 +641,16 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
 
         echo "Regress run_dir_files: $run_dir_files"
 
+        # We assume we have stripped out all files that do not need to be
+        # compared, and currently the only one that we do not filter is RC. 
         foreach output_file (${run_dir_files}) 
-            set test_output_file = "${test_run_dir}/${output_file}"
-            if (-e ${test_output_file}.FILTERED_FOR_DIFF) then
+            if ("${output_file}" != "RC") then 
                 grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${output_file}.FILTERED_FOR_DIFF
                 set output_file = "${output_file}.FILTERED_FOR_DIFF"
-                set test_output_file = "${test_output_file}.FILTERED_FOR_DIFF"
             endif 
+
+            set test_output_file = "${test_run_dir}/${output_file}"
             
-            # The only case where test_output_file does not end in
-            # .FILTERED_FOR_DIFF is if output_file was RC. In either case,
-            # test_output_file should be there. 
-            #
             if (-e ${test_output_file}) then
                 # echo ${KJB_DIFF_TEST} ${output_file} ${test_output_file} 
                 ${KJB_DIFF_TEST} ${output_file} ${test_output_file} > /dev/null
