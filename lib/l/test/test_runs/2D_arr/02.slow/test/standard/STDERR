@@ -1,5 +1,6 @@
-<<TEST>> Parent process in create_system_command_process() is 91127 (IL4RT).
-<<TEST>> Child process in create_system_command_process() is 91128 (IL4RT).
-<<TEST>> Begin cleaning up system command process (91128) (IL4RT).
+<<TEST>> Parent process in create_system_command_process() is 92672 (IL4RT).
+<<TEST>> Child process in create_system_command_process() is 92673 (IL4RT).
+<<TEST>> Process 92672 is in safe_default_sig_fn due to signal 2.
+<<TEST>> Begin cleaning up system command process (92673) (IL4RT).
 <<TEST>> Wait result is 0 (IL4RT).
 <<TEST>> Done waiting for system command  process to finish (IL4RT).
