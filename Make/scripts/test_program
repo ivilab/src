@@ -51,7 +51,8 @@ else
     set extra_args = ""
 endif 
 
-set code_dir = `echo ${obj_dir} | sed 's#^[^/][^/]*/\([^/][^/]*/\)[^/][^/]*/$#\1#'`
+# set code_dir = `echo ${obj_dir} | sed 's#^[^/][^/]*/\([^/][^/]*/\)[^/][^/]*/$#\1#'`
+set code_dir = "${TEST_CODE_TYPE}"
 
 if ("${1}" == "-t") then
     set test_type = "test"

@@ -544,7 +544,7 @@ while ($count <=  ${num_args})
                 popd > /dev/null
 
                 foreach test_instance (${test_instances})
-                    set arg = "${arg} test_runs/${prog}/${test_instance}/test/${CODE}/output_checked"
+                    set arg = "${arg} test_runs/${prog}/${test_instance}/test/${TEST_CODE_TYPE}/output_checked"
                 end
             endif
 
@@ -589,7 +589,7 @@ while ($count <=  ${num_args})
                 popd > /dev/null
 
                 foreach test_instance (${test_instances})
-                    set arg = "${arg} test_runs/${prog}/${test_instance}/test/${CODE}/svn_phony"
+                    set arg = "${arg} test_runs/${prog}/${test_instance}/test/${TEST_CODE_TYPE}/svn_phony"
                 end
             endif
 

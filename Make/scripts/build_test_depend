@@ -130,12 +130,12 @@ echo "TEST_TARGETS = \"
 set count = 1
 
 while (${count} < ${num_tests})
-    echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)/output_checked \'
+    echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)/output_checked \'
     @ count += 1
 end
 
 # One more, without the backslash.
-echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)/output_checked'
+echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)/output_checked'
 echo 
 
 echo 
@@ -144,12 +144,12 @@ echo "TEST_SVN_TARGETS = \"
 set count = 1
 
 while (${count} < ${num_tests})
-    echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)/svn_phony \'
+    echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)/svn_phony \'
     @ count += 1
 end
 
 # One more, without the backslash.
-echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)/svn_phony'
+echo "    test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)/svn_phony'
 echo 
 
 echo "REGRESS_TARGETS = \"
@@ -175,18 +175,18 @@ while (${count} <= ${num_tests})
         set files = ""
     endif
     
-    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/output_checked : "'$(MAKE_SCRIPT_PATH)'"test_program "'$(MAKE_SCRIPT_PATH)'"test_program_2"
+    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/output_checked : "'$(MAKE_SCRIPT_PATH)'"test_program "'$(MAKE_SCRIPT_PATH)'"test_program_2"
     echo ""
 
-    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/output_checked : ${files} test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/run_succeeded"
+    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/output_checked : ${files} test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/run_succeeded"
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -c $progs[$count] $tests[$count] "
     echo ""
 
-    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/run_succeeded : "'$(MAKE_SCRIPT_PATH)'"test_program "'$(MAKE_SCRIPT_PATH)'"test_program_2"
+    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/run_succeeded : "'$(MAKE_SCRIPT_PATH)'"test_program "'$(MAKE_SCRIPT_PATH)'"test_program_2"
 
     echo ""
 
-    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/run_succeeded : ${files}"
+    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/run_succeeded : ${files}"
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -t $progs[$count] $tests[$count] "
     echo ""
 
@@ -198,12 +198,12 @@ while (${count} <= ${num_tests})
     # We put the dependency on code first because the depency on test
     # implicitly relies on the code being there. If we do 'make test' then
     # build-2 does the make, but not if we do 'make regress'
-    echo "test_runs/$progs[$count]/$tests[$count]/regress/"'$(LD_OBJ_DIR)regression_test_passed'" : ${files} "'$(LD_OBJ_DIR)'"$progs[$count] test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/output_checked "
+    echo "test_runs/$progs[$count]/$tests[$count]/regress/"'$(LD_OBJ_DIR)regression_test_passed'" : ${files} "'$(LD_OBJ_DIR)'"$progs[$count] test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/output_checked "
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -r $progs[$count] $tests[$count]  "
     echo ""
 
-    echo ".PHONY : test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/svn_phony"
-    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(CODE)'"/svn_phony :"
+    echo ".PHONY : test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/svn_phony"
+    echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/svn_phony :"
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -s $progs[$count] $tests[$count] "
     echo ""
 

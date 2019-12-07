@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 24577 2019-11-21 18:06:32Z kobus $
+# $Id: init_compile 24608 2019-12-07 22:04:17Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -1670,16 +1670,23 @@ else
     kjb_setenv CODE dev
 endif
 
+kjb_setenv TEST_CODE_TYPE standard
 
 if ($?NO_LIBS != 0) then
     if (${NO_LIBS}) then
         kjb_setenv CODE "${CODE}_no_libs"
+        kjb_setenv TEST_CODE_TYPE "no_libs"
     endif
 endif
 
 if ($?NO_BOOST != 0) then
     if (${NO_BOOST}) then
         kjb_setenv CODE "${CODE}_no_boost"
+        if ("${TEST_CODE_TYPE}" == "standard") then
+            kjb_setenv TEST_CODE_TYPE "no_boost"
+        else
+            kjb_setenv TEST_CODE_TYPE "${TEST_CODE_TYPE}_no_boost"
+        endif 
     endif
 endif
 

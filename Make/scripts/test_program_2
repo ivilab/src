@@ -40,6 +40,8 @@ set input_dir = "$3"
 set obj_dir = "$4"
 set code_dir = "$5"
 set run_dir = "$6"
+
+# Only used for interactive mode which is a special case. 
 set extra_args = "$7"
 
 if ($?SKIP_BROKEN_TESTS) then
@@ -158,8 +160,6 @@ if ("${test_type}" == "interactive") then
         exit 1
     endif 
 endif 
-
-set code_dir = `echo ${obj_dir} | sed 's#^[^/][^/]*/\([^/][^/]*/\)[^/][^/]*/$#\1#'`
 
 set src_code = ""
 foreach suffix (c cpp cxx C)
@@ -611,7 +611,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             echo "Script 'test_program_2' executing untested code for interactive around line 680."
         endif 
 
-        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' |  grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$' `
+        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' |  grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$'  | grep -v '^STDIN$'  `
 
         foreach test_output_file (${run_dir_files}) 
             # Is RC the only output file we want to check that does not need
