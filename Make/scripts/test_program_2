@@ -471,7 +471,7 @@ if ("${test_type}" == "check") then
 
     if (${test_rc}) then
         if (-e "output_checked") then
-            ${P_STDERR} "Script test_program_2 check has error return code even though 'output_checked' exist."
+            ${P_STDERR} "Script test_program_2 check has error return code even though 'output_checked' exists."
             set test_rc = ${bug_rc}
             goto end_of_script
         else
@@ -732,7 +732,12 @@ else if (-e "output_checked") then
             endif 
         endif 
 
-        set files = `${KJB_LS}  | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
+        # set files = `${KJB_LS}  | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
+        #
+        # Rmoving run_succeeded from the list because it this file is not there,
+        # then the test construction will not appear not to be complete to test
+        # processes on other machine. 
+        set files = `${KJB_LS}  | grep -v '\.res$' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN'  | grep -v 'STDOUT'  | grep -v 'STDERR' `
 
         set not_in_svn = ""
         foreach file (${files}) 
