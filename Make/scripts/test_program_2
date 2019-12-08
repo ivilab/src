@@ -614,7 +614,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
 
         set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
 
-        echo run_dir_files: $run_dir_files
+        ${VERBOSE_ECHO} "Test run_dir_files: ${run_dir_files}"
         foreach test_output_file (${run_dir_files}) 
             # Is RC the only output file we want to check that does not need
             # this processing? 
@@ -643,7 +643,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
     else if ("${test_type}" == "regress") then
         set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
 
-        echo "Regress run_dir_files: $run_dir_files"
+        ${VERBOSE_ECHO} "Regress run_dir_files: $run_dir_files"
 
         # We assume we have stripped out all files that do not need to be
         # compared, and currently the only one that we do not filter is RC. 
