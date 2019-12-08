@@ -179,6 +179,7 @@ while (${count} <= ${num_tests})
     echo ""
 
     echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/output_checked : ${files} test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/run_succeeded"
+    echo '	$(ECHO_IF_VERBOSE) Building $@ because of $?'
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -c $progs[$count] $tests[$count] "
     echo ""
 
@@ -187,6 +188,7 @@ while (${count} <= ${num_tests})
     echo ""
 
     echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/run_succeeded : ${files}"
+    echo '	$(ECHO_IF_VERBOSE) Building $@ because of $?'
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -t $progs[$count] $tests[$count] "
     echo ""
 
@@ -199,11 +201,13 @@ while (${count} <= ${num_tests})
     # implicitly relies on the code being there. If we do 'make test' then
     # build-2 does the make, but not if we do 'make regress'
     echo "test_runs/$progs[$count]/$tests[$count]/regress/"'$(LD_OBJ_DIR)regression_test_passed'" : ${files} "'$(LD_OBJ_DIR)'"$progs[$count] test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/output_checked "
+    echo '	$(ECHO_IF_VERBOSE) Building $@ because of $?'
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -r $progs[$count] $tests[$count]  "
     echo ""
 
     echo ".PHONY : test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/svn_phony"
     echo "test_runs/$progs[$count]/$tests[$count]/test/"'$(TEST_CODE_TYPE)'"/svn_phony :"
+    echo '	$(ECHO_IF_VERBOSE) Building $@ because of $?'
     echo '	$(MAKE_SCRIPT_PATH)test_program'" -s $progs[$count] $tests[$count] "
     echo ""
 

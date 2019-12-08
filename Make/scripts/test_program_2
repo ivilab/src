@@ -354,14 +354,21 @@ if ("${input_files}" != "") then
 endif 
 
 if ("${test_type}" == "test") then
-    echo "# Values of environment variables that might affect output." > ${run_dir}/ENV
-    echo "# It might be tempting to dump all environment variables settings here, but this could break things." >> ${run_dir}/ENV
-    echo "# Hence, if we need more of these, they need to be added manually." >> ${run_dir}/ENV
-    echo "# " >> ${run_dir}/ENV
-    echo "# Do NOT do this by editing this file." >> ${run_dir}/ENV
-    echo "# Rather, edit the list at the top of the scipt 'test_program_2' in "'${MAKE_SCRIPT_PATH}' >> ${run_dir}/ENV
-    echo "# " >> ${run_dir}/ENV
-    echo "### set echo"  >> ${run_dir}/ENV
+    #
+    # Generally we should not be here if we already have these files, but there
+    # are enough corner cases that we mitigate against excessive SVN updates.
+    # One example corner case is changing this file, which sets off rebuilding
+    # the tests. So we write to temporary locations ($$ suffix), and overwrite
+    # only if they are differnt.
+
+    echo "# Values of environment variables that might affect output." > ${run_dir}/ENV.$$
+    echo "# It might be tempting to dump all environment variables settings here, but this could break things." >> ${run_dir}/ENV.$$
+    echo "# Hence, if we need more of these, they need to be added manually." >> ${run_dir}/ENV.$$
+    echo "# " >> ${run_dir}/ENV.$$
+    echo "# Do NOT do this by editing this file." >> ${run_dir}/ENV.$$
+    echo "# Rather, edit the list at the top of the scipt 'test_program_2' in "'${MAKE_SCRIPT_PATH}' >> ${run_dir}/ENV.$$
+    echo "# " >> ${run_dir}/ENV.$$
+    echo "### set echo"  >> ${run_dir}/ENV.$$
 
     foreach env_var (${env_vars_to_save}) 
         eval "set is_set = "'$?'"${env_var}"
@@ -369,12 +376,15 @@ if ("${test_type}" == "test") then
         if (${is_set}) then
            eval "set env_var_val = "'$'"${env_var}"
            # echo env_var_val : ${env_var_val}
-           echo "setenv ${env_var} ${env_var_val}" >> ${run_dir}/ENV
+           echo "setenv ${env_var} ${env_var_val}" >> ${run_dir}/ENV.$$
         else
-           echo "unsetenv ${env_var}" >> ${run_dir}/ENV
+           echo "unsetenv ${env_var}" >> ${run_dir}/ENV.$$
         endif 
     end
-    echo "unset echo"  >> ${run_dir}/ENV
+    echo "### unset echo"  >> ${run_dir}/ENV.$$
+
+    ${MAKE_SCRIPT_PATH}copy_if_different ${run_dir}/ENV.$$ ${run_dir}/ENV
+    ${KJB_RM} ${run_dir}/ENV.$$ 
 else if ("${test_type}" == "regress") then
     ${KJB_CP} ${test_run_dir}/ENV ${run_dir}/ENV
 endif 
@@ -523,7 +533,8 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         ${KJB_CP} ${input_dir_abs_path}/STDIN STDIN
         echo " "
     else
-        # echo PAREN ${prog_path} ${args} LESS ${stdin_file} GREATER STDOUT PAREN GREATER_AMP STDERR 
+        ${VERBOSE_ECHO} 
+        ${VERBOSE_ECHO} "PAREN ${prog_path} ${args} LESS ${stdin_file} GREATER STDOUT PAREN GREATER_AMP STDERR"
         (${timeout_cmd} ${valgrind_cmd} ${prog_path} ${args} < ${stdin_file} > STDOUT ) >& STDERR
         set RC = $status
     endif 
@@ -570,7 +581,15 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         endif 
     endif 
 
-    echo "${RC}" > RC
+    # Generally we should not be here if we already have these files, but there
+    # are enough corner cases that we mitigate against excessive SVN updates.
+    # One example corner case is changing this file, which sets off rebuilding
+    # the tests. So we write to temporary locations ($$ suffix), and overwrite
+    # only if they are differnt.
+    #
+    echo "${RC}" > RC.$$
+    ${MAKE_SCRIPT_PATH}copy_if_different RC.$$ RC
+    ${KJB_RM} RC.$$ 
 
     if ( ! ${test_rc}) then 
         if ("${valgrind_cmd}" != "") then
@@ -619,7 +638,18 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             # Is RC the only output file we want to check that does not need
             # this processing? 
             if ("${test_output_file}" != "RC") then
-                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF
+                ${VERBOSE_ECHO} "Filtering ${test_output_file}"
+
+                # Generally we should not be here if we already have these
+                # files, but there are enough corner cases that we mitigate
+                # against excessive SVN updates.  One example corner case is
+                # changing this file, which sets off rebuilding the tests. So we
+                # write to temporary locations ($$ suffix), and overwrite only
+                # if they are differnt.
+                #
+                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF.$$
+                ${MAKE_SCRIPT_PATH}copy_if_different ${test_output_file}.FILTERED_FOR_DIFF.$$ ${test_output_file}.FILTERED_FOR_DIFF
+                ${KJB_RM} ${test_output_file}.FILTERED_FOR_DIFF.$$
             endif 
         end 
 
@@ -649,6 +679,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         # compared, and currently the only one that we do not filter is RC. 
         foreach output_file (${run_dir_files}) 
             if ("${output_file}" != "RC") then 
+                ${VERBOSE_ECHO} "Filtering ${output_file}"
                 grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${output_file}.FILTERED_FOR_DIFF
                 set output_file = "${output_file}.FILTERED_FOR_DIFF"
             endif 
@@ -862,7 +893,7 @@ else if (("${test_type}" != "check") && ("${test_type}" != "svn")) then
     if (("${RC}" != "0") && ("${test_result}" == "succeeded")) then
         echo " "
         echo "Note that the return code was nonzero ($RC)"
-        echo "This only makes if we are testing handling bad input, etc."
+        echo "This only makes sense if we are testing handling bad input, etc."
         echo ""
     endif 
 endif 
