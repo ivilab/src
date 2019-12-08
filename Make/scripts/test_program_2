@@ -626,17 +626,20 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         ${KJB_TOUCH} run_succeeded 
 
         # Cleanup 
-        foreach f (*)
-            if ("$f" == "test_time_stamp") continue
-            if ("$f" == "output_checked") continue
-            if ("$f" == ".gitkeep") continue
-            set f_is_old = `${MAKE_SCRIPT_PATH}test_older_than "$f" output_checked`
-            if (${f_is_old}) then 
-                "Script test_program_2 is cleaning up $f in `pwd`" 
-                echo ${MAKE_SCRIPT_PATH}kjb_svn_rm "$f"
-                ${MAKE_SCRIPT_PATH}kjb_svn_rm "$f"
-            endif 
-        end
+        # This relies on svn propogating time stamps, which it does not do. We
+        # could get fancier, but perhaps nothing is really gained. Our protocal
+        # right now is simply: If output_checked exists, the files are valid. 
+#         foreach f (*)
+#             if ("$f" == "test_time_stamp") continue
+#             if ("$f" == "output_checked") continue
+#             if ("$f" == ".gitkeep") continue
+#             set f_is_old = `${MAKE_SCRIPT_PATH}test_older_than "$f" output_checked`
+#             if (${f_is_old}) then 
+#                 "Script test_program_2 is cleaning up $f in `pwd`" 
+#                 echo ${MAKE_SCRIPT_PATH}kjb_svn_rm "$f"
+#                 ${MAKE_SCRIPT_PATH}kjb_svn_rm "$f"
+#             endif 
+#         end
     else if ("${test_type}" == "regress") then
         set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
 
