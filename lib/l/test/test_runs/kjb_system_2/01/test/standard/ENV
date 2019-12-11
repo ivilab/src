@@ -6,6 +6,6 @@
 # Rather, edit the list at the top of the scipt 'test_program_2' in ${MAKE_SCRIPT_PATH}
 # 
 ### set echo
-unsetenv KJB_VERBOSE
+setenv KJB_VERBOSE 
 unsetenv KJB_OPTIONAL_ABORT
 ### unset echo
