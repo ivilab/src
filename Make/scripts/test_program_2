@@ -383,7 +383,22 @@ if ("${test_type}" == "test") then
     end
     echo "### unset echo"  >> ${run_dir}/ENV.$$
 
-    ${MAKE_SCRIPT_PATH}copy_if_different ${run_dir}/ENV.$$ ${run_dir}/ENV
+    if (-e "${run_dir}/ENV") then 
+        diff  "${run_dir}/ENV.$$" "${run_dir}/ENV"
+        if (${status}) then 
+            if (-e "${run_dir}/output_checked") then 
+                echo "New ${run_dir}/ENV will be different, but output_checked exists."
+                echo "Removing output_checked to invalidate test. Intervention might be required."
+                ${KJB_RM} "${run_dir}/output_checked"
+            endif 
+            
+            ${KJB_RM} "${run_dir}/ENV"
+            ${KJB_MV} "${run_dir}/ENV.$$" "${run_dir}/ENV"
+        endif 
+    else 
+        ${KJB_MV} "${run_dir}/ENV.$$" "${run_dir}/ENV"
+    endif 
+    
     ${KJB_RM} ${run_dir}/ENV.$$ 
 else if ("${test_type}" == "regress") then
     ${KJB_CP} ${test_run_dir}/ENV ${run_dir}/ENV
@@ -581,15 +596,23 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         endif 
     endif 
 
-    # Generally we should not be here if we already have these files, but there
-    # are enough corner cases that we mitigate against excessive SVN updates.
-    # One example corner case is changing this file, which sets off rebuilding
-    # the tests. So we write to temporary locations ($$ suffix), and overwrite
-    # only if they are differnt.
-    #
     echo "${RC}" > RC.$$
-    ${MAKE_SCRIPT_PATH}copy_if_different RC.$$ RC
-    ${KJB_RM} RC.$$ 
+
+    if (-e "RC") then 
+        diff  "RC.$$" "RC"
+        if (${status}) then 
+            if (-e "output_checked") then 
+                echo "New RC will be different, but output_checked exists."
+                echo "Removing output_checked to invalidate test. Intervention might be required."
+                ${KJB_RM} "output_checked"
+            endif 
+            
+            ${KJB_RM} "RC"
+            ${KJB_MV} "RC.$$" "RC"
+        endif 
+    else 
+        ${KJB_MV} "RC.$$" "RC"
+    endif 
 
     if ( ! ${test_rc}) then 
         if ("${valgrind_cmd}" != "") then
@@ -648,12 +671,28 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                 # if they are differnt.
                 #
                 grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF.$$
-                ${MAKE_SCRIPT_PATH}copy_if_different ${test_output_file}.FILTERED_FOR_DIFF.$$ ${test_output_file}.FILTERED_FOR_DIFF
-                ${KJB_RM} ${test_output_file}.FILTERED_FOR_DIFF.$$
+
+                if (-e "${test_output_file}.FILTERED_FOR_DIFF") then 
+                    diff  "${test_output_file}.FILTERED_FOR_DIFF.$$" "${test_output_file}.FILTERED_FOR_DIFF"
+                    if (${status}) then 
+                        if (-e "${run_dir}/output_checked") then 
+                            echo "New ${test_output_file}.FILTERED_FOR_DIFF will be different, but output_checked exists."
+                            echo "Removing output_checked to invalidate test. Intervention might be required."
+                            ${KJB_RM} "${run_dir}/output_checked"
+                        endif 
+                        
+                        ${KJB_RM} "${test_output_file}.FILTERED_FOR_DIFF"
+                        ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.$$" "${test_output_file}.FILTERED_FOR_DIFF"
+                    endif 
+                else 
+                    ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.$$" "${test_output_file}.FILTERED_FOR_DIFF"
+                endif 
             endif 
         end 
 
-        ${KJB_TOUCH} run_succeeded 
+        if (! -e "run_succeeded"}) then 
+            ${KJB_TOUCH} run_succeeded 
+        endif 
 
         # Cleanup 
         # This relies on svn propogating time stamps, which it does not do. We
@@ -763,12 +802,10 @@ else if (-e "output_checked") then
             endif 
         endif 
 
-        # set files = `${KJB_LS}  | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
-        #
-        # Rmoving run_succeeded from the list because it this file is not there,
-        # then the test construction will not appear not to be complete to test
-        # processes on other machine. 
-        set files = `${KJB_LS}  | grep -v '\.res$' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN'  | grep -v 'STDOUT'  | grep -v 'STDERR' `
+        # We do not send run_succeeded to force rerunning of the test on a new
+        # platform. But, as long as the output is correct, then we respect
+        # output_checked. 
+        set files = `${KJB_LS}  | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
 
         set not_in_svn = ""
         foreach file (${files}) 
