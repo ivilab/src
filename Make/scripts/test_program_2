@@ -659,7 +659,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                 # write to temporary locations (TMP suffix), and overwrite only
                 # if they are differnt.
                 #
-                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF.TMP
+                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v '^<<TEST>>' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF.TMP
 
                 if (-e "${test_output_file}.FILTERED_FOR_DIFF") then 
                     diff  "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
@@ -710,7 +710,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         foreach output_file (${run_dir_files}) 
             if ("${output_file}" != "RC") then 
                 ${VERBOSE_ECHO} "Filtering ${output_file}"
-                grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${output_file}.FILTERED_FOR_DIFF
+                grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' |  grep -v '^<<TEST>>' | grep -v 'ignore line for regression testing' > ${output_file}.FILTERED_FOR_DIFF
                 set output_file = "${output_file}.FILTERED_FOR_DIFF"
             endif 
 
