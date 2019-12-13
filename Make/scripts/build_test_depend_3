@@ -1,0 +1,81 @@
+#!/bin/tcsh -f
+
+# set echo 
+
+set main_file_names = `${MAKE_SCRIPT_PATH}stream_file_names -m`
+if (${status}) then
+    ${P_STDERR} " "
+    ${P_STDERR} "Script stream_file_names with option -m failed in script build_test_depend in directory `pwd`."
+    exit 1
+endif 
+
+if ("${main_file_names}" == "") then
+    # We are not in a directory that could be used for testing. 
+    ${P_STDERR} " "
+    ${P_STDERR} "There are no main programs in this directory."
+    ${P_STDERR} "Exiting with failure instead of cluttering it up with Makefiles for testing."
+    exit 1
+endif 
+
+if (-e "test_input") then
+    if (! -d "test_input") then
+        ${P_STDERR} " "
+        ${P_STDERR} "Script build_test_depend reports that test_input exists but is not a directory."
+        ${P_STDERR} "This should be fixed."
+        exit 1
+    endif 
+else if ($?CREATE_TEST_DIRS) then
+    ${KJB_MKDIR} test_input
+    if ($status) then
+        ${P_STDERR} " "
+        ${P_STDERR} "Script build_test_depend cannot make directory test_input."
+        exit 1
+    endif 
+endif 
+
+# We might have created it, depending on CREATE_TEST_DIRS, so we ask again here
+# for clarity.
+#
+if (! -e "test_input") then
+    # We are not in a directory that is being used for testing. So we do not
+    # want rules related to 'test_input'.
+    exit 0
+endif 
+
+${KJB_MKDIR} Include_lines
+if (${status}) exit 1
+cat /dev/null > Include_lines/test_programs
+
+foreach f (${main_file_names}) 
+    set prog = `echo $f | sed 's/\(.*\)\.[^\.]*/\1/'`
+
+    if (-e "test_input/${prog}") then
+        if (! -d "test_input/${prog}") then
+            ${P_STDERR} " "
+            echo "Script build_test_depend reports that test_input/${prog} exists but is not a directory."
+            echo "This should be fixed."
+            exit 1
+        endif 
+    else if ($?CREATE_TEST_DIRS) then
+        ${KJB_MKDIR} test_input/${prog}
+        if ($status) then
+            ${P_STDERR} " "
+            echo "Script build_test_depend cannot make directory test_input/${prog}."
+            exit 1
+        endif 
+    endif 
+
+    if (-d "test_input/${prog}") then
+        pushd "test_input/${prog}" > /dev/null 
+            if (${status}) then
+                ${P_STDERR} " "
+                ${P_STDERR} "Script build_test_depend_3 unable to change to directory test_input/${prog} from directory `pwd`."
+                exit 1
+            endif 
+
+            echo "Makefile-test-depend-2 : test_input/${prog}" 
+            echo "${prog}" >> Include_lines/test_programs
+        popd > /dev/null
+    endif 
+end
+

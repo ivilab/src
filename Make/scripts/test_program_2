@@ -2,6 +2,13 @@
 
 # set echo 
 
+# All variables that can affect the output of the test code should be listed
+# here. However, because there could be conflict with the setting we want for
+# this script, or could be lingering (e.g., we may have KJB_VERBOSE set for
+# debugging this script, or simply for habbit, we use shadow versions with the
+# prefix TEST. Thus, if you wish to run the actual tests with KJB_VERBOSE=1, you
+# need to set TEST_KJB_VERBOSE=1. 
+#
 set env_vars_to_save = "KJB_VERBOSE KJB_OPTIONAL_ABORT"
 
 if ($?KJB_QUIET) then
@@ -319,35 +326,6 @@ if ("${test_type}" == "regress") then
     popd > /dev/null
 endif 
 
-# This seems superflous. Add it once the test is OK? 
-#
-# if ("${test_type}" != "regress") then
-#     if ("${src_is_under_svn}") then 
-#         svn info "${run_dir}" >& /dev/null
-# 
-#         if (${status}) then
-#              set svn_command = "svn add --parents --depth=empty ${run_dir}"
-# 
-#              if (${add_test_to_svn}) then 
-#                 ${MAKE_SCRIPT_PATH}kjb_lock ${svn_command}
-#                 set svn_cmd_status = ${status} 
-# 
-#                 if (${svn_cmd_status}) then
-#                     set test_result = "FAILED (svn mkdir issue)." 
-#                     set test_rc = 0
-#                     goto finish_up
-#                 endif 
-#              else if (! ${test_quietly} ) then 
-#                 echo " "
-#                 echo "Because ${src_code} is under SVN consider adding the test directory:"
-#                 echo "    cd `pwd`"
-#                 echo "    ${svn_command}"
-#                 echo "(or use 'make test_svn')."
-#                 echo " "
-#              endif 
-#         endif 
-#     endif 
-# endif 
 
 if ("${input_files}" != "") then
     ${KJB_CP} ${input_files} "${run_dir}"
@@ -371,10 +349,17 @@ if ("${test_type}" == "test") then
     echo "### set echo"  >> ${run_dir}/ENV.TMP
 
     foreach env_var (${env_vars_to_save}) 
-        eval "set is_set = "'$?'"${env_var}"
+        # We use shadow version of the variables to prevent conflicts, with
+        # the common use of KJB_VERBOSE for various purposes being one obvious
+        # example of why this is needed. If the user actually wants to run tests
+        # with an env var set to a specific value, they need to set the version
+        # with the prefix "TEST_" instead.
+        #
+        set shadow_env_var = "TEST_${env_var}" 
+        eval "set is_set = "'$?'"${shadow_env_var}"
         # echo is_set: $is_set
         if (${is_set}) then
-           eval "set env_var_val = "'$'"${env_var}"
+           eval "set env_var_val = "'$'"${shadow_env_var}"
            # echo env_var_val : ${env_var_val}
            echo "setenv ${env_var} ${env_var_val}" >> ${run_dir}/ENV.TMP
         else
@@ -697,7 +682,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         # Cleanup 
         # This relies on svn propogating time stamps, which it does not do. We
         # could get fancier, but perhaps nothing is really gained. Our protocal
-        # right now is simply: If output_checked exists, the files are valid. 
+        # right now is simple: If output_checked exists, the files are valid. 
 #         foreach f (*)
 #             if ("$f" == "test_time_stamp") continue
 #             if ("$f" == "output_checked") continue

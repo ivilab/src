@@ -1,0 +1,41 @@
+#!/bin/tcsh -f
+
+# set echo 
+
+echo " "
+
+cat /dev/null > Include_lines/test_instances
+
+set test_program = "$<"
+while ("${test_program}" != "") 
+        pushd "test_input/${test_program}" > /dev/null 
+            if (${status}) then
+                ${P_STDERR} " "
+                ${P_STDERR} "Script build_test_depend_2 unable to change to directory test_input/${test_program} from directory `pwd`."
+                exit 1
+            endif 
+
+            set test_instances = `find . -maxdepth 1 -mindepth 1 -type d \! \( -name '.*' \) |& sed 's#./##'`
+
+            if ("${test_instances}" == "") then
+                if  ($?CREATE_TEST_DIRS) then
+                    ${KJB_MKDIR} NULL
+                    if ${status} exit 1
+
+                    set test_instances = NULL
+                    
+                    echo "Makefile-test-depend: test_input/${test_program}/${test_instance}"
+                    echo "${test_program} ${test_instances}" >> Include_lines/test_instances
+                endif  
+            else
+                foreach test_instance (${test_instances})
+                    echo "Makefile-test-depend: test_input/${test_program}/${test_instance}"
+                    echo "${test_program} ${test_instances}" >> Include_lines/test_instances
+                end
+            endif 
+        popd > /dev/null
+    endif 
+
+    set test_program = "$<"
+end
+

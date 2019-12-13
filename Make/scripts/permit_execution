@@ -1,0 +1,34 @@
+#!/bin/csh -f 
+
+##############################################################################
+#
+# Identification:
+#     A script to 
+#
+# Description:
+#     This script 
+#
+# Option arguments: 
+#
+# |    (The bar stops next line from joining) 
+#         Indented
+#
+# Examples (more to come):
+#     blah blah blah
+#
+# Bugs/deficiencies
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+foreach file ($*)
+    chmod a+x "${file}"
+    svn info "${file}" >& /dev/null
+
+    if (! ${status}) then
+        svn propset svn:executable on "${file}"
+    endif 
+end
+
