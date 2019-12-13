@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_def.h 21937 2017-11-20 00:22:57Z kobus $ */
+/* $Id: l_sys_def.h 24703 2019-12-13 22:56:35Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -255,6 +255,13 @@ typedef double Always_double;
 /* ----------------------------- LINUX_X86_64 ------------------------------ */
 
 #ifdef LINUX_X86_64
+
+     /* This is mostly for valgrind, but we do not simply test if valgring is
+      * available, as valgrind is certifying a particular version of the code. 
+     */
+#    ifndef MUST_CLEANUP
+#        define MUST_CLEANUP
+#    endif
 
 #    ifndef LINUX_X86
 #        define LINUX_X86
@@ -1543,6 +1550,11 @@ typedef unsigned char kjb_uint8;
 #    endif
 #endif
 
+#ifdef TRACK_MEMORY_ALLOCATION
+#    ifndef MUST_CLEANUP
+#        define MUST_CLEANUP
+#    endif
+# endif 
 
 #ifdef EMULATE_MS_16_BIT_OS
 #    define MAX_MALLOC_SIZE  (0xffff)

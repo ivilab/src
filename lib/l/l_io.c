@@ -1,5 +1,5 @@
 
-/* $Id: l_io.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_io.c 24703 2019-12-13 22:56:35Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -82,12 +82,10 @@ static Pre_process_result preprocess_command
 
 static int initialize_input_line_buffer(void);
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     static void free_input_line_buff(void);
     static void free_alternate_input_file_queue(void);
     static void free_no_overwrite_stack(void);
-
-
 #endif
 
 static TRAP_FN_RETURN_TYPE alternate_file_read_atn_fn(TRAP_FN_ARGS);
@@ -1239,7 +1237,7 @@ static int set_alternate_input(const char* file_name)
     int*       loop_count_ptr;
 
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     if (first_time)
     {
         add_cleanup_function(free_alternate_input_file_queue);
@@ -2121,7 +2119,7 @@ static int initialize_input_line_buffer(void)
         *fs_loop_line_buff = '\0';
         fs_input_line_buff_pos = fs_input_line_buff;
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
         add_cleanup_function(free_input_line_buff);
 #endif
     }
@@ -2136,7 +2134,7 @@ static int initialize_input_line_buffer(void)
  * -----------------------------------------------------------------------------
 */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 
 static void free_input_line_buff(void)
 {
@@ -2154,7 +2152,7 @@ static void free_input_line_buff(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 static void free_alternate_input_file_queue(void)
 {
     Queue_element* cur_elem;
@@ -2866,7 +2864,7 @@ int push_no_overwrite(int no_overwrite)
 #endif 
 
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     if (fs_first_no_overwrite_stack_use) 
     {
         fs_first_no_overwrite_stack_use = FALSE; 
@@ -2953,7 +2951,7 @@ void pop_no_overwrite(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 /*
  * =============================================================================
  * STATIC                      free_no_overwrite_stack

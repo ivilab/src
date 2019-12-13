@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_term.c 22170 2018-06-23 23:01:50Z kobus $ */
+/* $Id: l_sys_term.c 24703 2019-12-13 22:56:35Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -181,7 +181,7 @@ static Bool           fs_default_page_flag    = TRUE;
 static Bool           fs_page_flag            = TRUE;
 static Queue_element* fs_page_flag_stack_head = NULL;
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     static int        fs_first_page_stack_use = TRUE;
 #endif
 
@@ -247,7 +247,7 @@ static Queue_element* fs_save_terminal_settings_head = NULL;
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     static void free_page_flag_stack(void);
 #endif
 
@@ -434,7 +434,7 @@ int kjb_enable_paging(void)
     NRE(save_page_flag_ptr);
     *save_page_flag_ptr = fs_page_flag;
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     if (fs_first_page_stack_use)
     {
         fs_first_page_stack_use = FALSE;
@@ -489,7 +489,7 @@ int kjb_disable_paging(void)
     NRE(save_page_flag_ptr);
     *save_page_flag_ptr = fs_page_flag;
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     if (fs_first_page_stack_use)
     {
         fs_first_page_stack_use = FALSE;
@@ -561,7 +561,7 @@ int kjb_restore_paging(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 /*
  * =============================================================================
  * STATIC                      free_page_flag_stack

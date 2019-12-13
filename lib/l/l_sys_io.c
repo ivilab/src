@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_io.c 22182 2018-07-14 23:56:00Z kobus $ */
+/* $Id: l_sys_io.c 24703 2019-12-13 22:56:35Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -268,7 +268,7 @@ static int cache_file_name
 
 
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 static void free_cached_file_names(void);
 #endif
 
@@ -3948,7 +3948,7 @@ static int initialize_cache(void)
 
         cache_is_ready = TRUE;
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
         add_cleanup_function(free_cached_file_names);
 #endif
         return NO_ERROR;
@@ -6792,7 +6792,7 @@ int print_open_files(FILE* fp)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 
 /*
  * =============================================================================

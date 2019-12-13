@@ -1,5 +1,5 @@
 
-/* $Id: l_sort.c 21923 2017-11-13 22:32:03Z kobus $ */
+/* $Id: l_sort.c 24703 2019-12-13 22:56:35Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -231,9 +231,9 @@ int kjb_sort(void* array, int num_elements, size_t element_size,
     int                 res;
 
 #ifdef TEST 
-    dbp("\n");
-    dbp("****************************************************");
-    dbp("Using home brew, possibly buggy quick_sort"); 
+    dbp("[ IL4RT ]");
+    dbp("[ IL4RT ] ****************************************************");
+    dbp("[ IL4RT ] Using own, possibly buggy, implemenation of quick_sort"); 
 #endif 
 
     if (num_elements < 2)
@@ -283,7 +283,7 @@ int kjb_sort(void* array, int num_elements, size_t element_size,
     }
     else 
     {
-        dbp("Sort is OK.");
+        dbp("IL4RT Our own fallback quick_sort is OK.");
     }
 #endif
 

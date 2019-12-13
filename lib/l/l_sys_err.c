@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_err.c 21650 2017-08-04 00:51:16Z kobus $ */
+/* $Id: l_sys_err.c 24703 2019-12-13 22:56:35Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -66,7 +66,7 @@ static Queue_element* fs_error_action_stack_head = NULL;
     static void log_error_and_input(const char* mess);
 #endif
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     static void free_error_action_stack(void);
 #endif
 
@@ -115,7 +115,7 @@ void push_error_action(Error_action error_action)
 
     *save_error_action_ptr = get_error_action();
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     if (fs_first_error_action_stack_use)
     {
         fs_first_error_action_stack_use = FALSE;
@@ -187,7 +187,7 @@ void pop_error_action(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 /*
  * =============================================================================
  * STATIC                      free_error_action_stack
