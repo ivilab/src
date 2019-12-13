@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_err.c 24703 2019-12-13 22:56:35Z kobus $ */
+/* $Id: l_sys_err.c 24704 2019-12-13 22:58:29Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -97,7 +97,7 @@ void push_error_action(Error_action error_action)
 {
     Error_action* save_error_action_ptr;
     int result;
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     static int        fs_first_error_action_stack_use = TRUE;
 #endif
 
