@@ -358,17 +358,17 @@ if ("${test_type}" == "test") then
     # Generally we should not be here if we already have these files, but there
     # are enough corner cases that we mitigate against excessive SVN updates.
     # One example corner case is changing this file, which sets off rebuilding
-    # the tests. So we write to temporary locations ($$ suffix), and overwrite
+    # the tests. So we write to temporary locations (TMP suffix), and overwrite
     # only if they are differnt.
 
-    echo "# Values of environment variables that might affect output." > ${run_dir}/ENV.$$
-    echo "# It might be tempting to dump all environment variables settings here, but this could break things." >> ${run_dir}/ENV.$$
-    echo "# Hence, if we need more of these, they need to be added manually." >> ${run_dir}/ENV.$$
-    echo "# " >> ${run_dir}/ENV.$$
-    echo "# Do NOT do this by editing this file." >> ${run_dir}/ENV.$$
-    echo "# Rather, edit the list at the top of the scipt 'test_program_2' in "'${MAKE_SCRIPT_PATH}' >> ${run_dir}/ENV.$$
-    echo "# " >> ${run_dir}/ENV.$$
-    echo "### set echo"  >> ${run_dir}/ENV.$$
+    echo "# Values of environment variables that might affect output." > ${run_dir}/ENV.TMP
+    echo "# It might be tempting to dump all environment variables settings here, but this could break things." >> ${run_dir}/ENV.TMP
+    echo "# Hence, if we need more of these, they need to be added manually." >> ${run_dir}/ENV.TMP
+    echo "# " >> ${run_dir}/ENV.TMP
+    echo "# Do NOT do this by editing this file." >> ${run_dir}/ENV.TMP
+    echo "# Rather, edit the list at the top of the scipt 'test_program_2' in "'${MAKE_SCRIPT_PATH}' >> ${run_dir}/ENV.TMP
+    echo "# " >> ${run_dir}/ENV.TMP
+    echo "### set echo"  >> ${run_dir}/ENV.TMP
 
     foreach env_var (${env_vars_to_save}) 
         eval "set is_set = "'$?'"${env_var}"
@@ -376,15 +376,15 @@ if ("${test_type}" == "test") then
         if (${is_set}) then
            eval "set env_var_val = "'$'"${env_var}"
            # echo env_var_val : ${env_var_val}
-           echo "setenv ${env_var} ${env_var_val}" >> ${run_dir}/ENV.$$
+           echo "setenv ${env_var} ${env_var_val}" >> ${run_dir}/ENV.TMP
         else
-           echo "unsetenv ${env_var}" >> ${run_dir}/ENV.$$
+           echo "unsetenv ${env_var}" >> ${run_dir}/ENV.TMP
         endif 
     end
-    echo "### unset echo"  >> ${run_dir}/ENV.$$
+    echo "### unset echo"  >> ${run_dir}/ENV.TMP
 
     if (-e "${run_dir}/ENV") then 
-        diff  "${run_dir}/ENV.$$" "${run_dir}/ENV"
+        diff  "${run_dir}/ENV.TMP" "${run_dir}/ENV"
         if (${status}) then 
             if (-e "${run_dir}/output_checked") then 
                 echo "New ${run_dir}/ENV will be different, but output_checked exists."
@@ -393,13 +393,13 @@ if ("${test_type}" == "test") then
             endif 
             
             ${KJB_RM} "${run_dir}/ENV"
-            ${KJB_MV} "${run_dir}/ENV.$$" "${run_dir}/ENV"
+            ${KJB_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
         endif 
     else 
-        ${KJB_MV} "${run_dir}/ENV.$$" "${run_dir}/ENV"
+        ${KJB_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
     endif 
     
-    ${KJB_RM} ${run_dir}/ENV.$$ 
+    ${KJB_RM} ${run_dir}/ENV.TMP 
 else if ("${test_type}" == "regress") then
     ${KJB_CP} ${test_run_dir}/ENV ${run_dir}/ENV
 endif 
@@ -596,10 +596,10 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         endif 
     endif 
 
-    echo "${RC}" > RC.$$
+    echo "${RC}" > RC.TMP
 
     if (-e "RC") then 
-        diff  "RC.$$" "RC"
+        diff  "RC.TMP" "RC"
         if (${status}) then 
             if (-e "output_checked") then 
                 echo "New RC will be different, but output_checked exists."
@@ -608,10 +608,10 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             endif 
             
             ${KJB_RM} "RC"
-            ${KJB_MV} "RC.$$" "RC"
+            ${KJB_MV} "RC.TMP" "RC"
         endif 
     else 
-        ${KJB_MV} "RC.$$" "RC"
+        ${KJB_MV} "RC.TMP" "RC"
     endif 
 
     if ( ! ${test_rc}) then 
@@ -654,7 +654,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             echo "Script 'test_program_2' executing untested code for interactive around line 612."
         endif 
 
-        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
+        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$' | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
 
         ${VERBOSE_ECHO} "Test run_dir_files: ${run_dir_files}"
         foreach test_output_file (${run_dir_files}) 
@@ -667,13 +667,13 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                 # files, but there are enough corner cases that we mitigate
                 # against excessive SVN updates.  One example corner case is
                 # changing this file, which sets off rebuilding the tests. So we
-                # write to temporary locations ($$ suffix), and overwrite only
+                # write to temporary locations (TMP suffix), and overwrite only
                 # if they are differnt.
                 #
-                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF.$$
+                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF.TMP
 
                 if (-e "${test_output_file}.FILTERED_FOR_DIFF") then 
-                    diff  "${test_output_file}.FILTERED_FOR_DIFF.$$" "${test_output_file}.FILTERED_FOR_DIFF"
+                    diff  "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
                     if (${status}) then 
                         if (-e "${run_dir}/output_checked") then 
                             echo "New ${test_output_file}.FILTERED_FOR_DIFF will be different, but output_checked exists."
@@ -682,10 +682,10 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                         endif 
                         
                         ${KJB_RM} "${test_output_file}.FILTERED_FOR_DIFF"
-                        ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.$$" "${test_output_file}.FILTERED_FOR_DIFF"
+                        ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
                     endif 
                 else 
-                    ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.$$" "${test_output_file}.FILTERED_FOR_DIFF"
+                    ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
                 endif 
             endif 
         end 
@@ -710,7 +710,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
 #             endif 
 #         end
     else if ("${test_type}" == "regress") then
-        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$'  | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
+        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
 
         ${VERBOSE_ECHO} "Regress run_dir_files: $run_dir_files"
 
@@ -805,7 +805,7 @@ else if (-e "output_checked") then
         # We do not send run_succeeded to force rerunning of the test on a new
         # platform. But, as long as the output is correct, then we respect
         # output_checked. 
-        set files = `${KJB_LS}  | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
+        set files = `${KJB_LS} | grep -v '.TMP$' | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
 
         set not_in_svn = ""
         foreach file (${files}) 
