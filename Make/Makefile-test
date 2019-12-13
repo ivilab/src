@@ -8,26 +8,62 @@ include $(MAKE_PATH)Makefile-program
 
 # ------------------------------------------
 #
-# Prerequisites for Makefile-test-depend. 
+# Makefile-test-depend-3
 
-Makefile-test-depend : \
-    $(MAKE_SCRIPT_PATH)build_test_depend \
-	$(MAKE_DIR)Makefile-program 
+Makefile-test-depend-3 : ./test_input
+	@$(ECHO_UNLESS_QUIET)  " "
+	@$(ECHO_UNLESS_QUIET)  "================================================================================"
+	@$(ECHO_UNLESS_QUIET)  "                         Building Makefile-test-depend-3" 
+	@$(ECHO_UNLESS_QUIET)  " "
+	$(MAKE_SCRIPT_PATH)build_test_depend_3 > Makefile-test-depend-3
+	@$(ECHO_UNLESS_QUIET)  " "
+	@$(ECHO_UNLESS_QUIET)  "                         Makefile-test-depend-3 is built" 
+	@$(ECHO_UNLESS_QUIET)  "================================================================================"
+	@$(ECHO_UNLESS_QUIET)  " "
+
+include Makefile-test-depend-3
 
 # -------------------------------------------
 #
-# Now the rule to build Makefile-test-depend. 
+# Makefile-test-depend-2. 
 
-# The process of building Makefile-test-depend creates the key rules for itself.
-# So, 'make Makefile-test-depend' needs to be done twice. This is handled in the 
-# script build_2.
+# The rule to build test_programs is the exact same as that for
+# Makefile-test-depend-3. This covers the case that test_programs has gone
+# missing, but Makefile-test-depend-3 is fine. 
+#
+Include_lines/test_programs: Makefile-test-depend-3  
+	$(MAKE_SCRIPT_PATH)build_test_depend_3 > Makefile-test-depend-3
 
-Makefile-test-depend : Include_lines/file_list
+Makefile-test-depend-2 : $(MAKE_SCRIPT_PATH)build_test_depend_2 Include_lines/test_programs
 	@$(ECHO_UNLESS_QUIET)  " "
 	@$(ECHO_UNLESS_QUIET)  "================================================================================"
-	@$(ECHO_UNLESS_QUIET)  "Building Makefile-test-depend" 
+	@$(ECHO_UNLESS_QUIET)  "                         Building Makefile-test-depend-2" 
 	@$(ECHO_UNLESS_QUIET)  " "
-	$(MAKE_SCRIPT_PATH)build_test_depend > Makefile-test-depend
+	$(MAKE_SCRIPT_PATH)build_test_depend_2 < Include_lines/test_programs > Makefile-test-depend-2
+	@$(ECHO_UNLESS_QUIET)  " "
+	@$(ECHO_UNLESS_QUIET)  "                         Makefile-test-depend-2 is built" 
+	@$(ECHO_UNLESS_QUIET)  "================================================================================"
+	@$(ECHO_UNLESS_QUIET)  " "
+
+include Makefile-test-depend-2
+
+# ------------------------------------------
+#
+# Makefile-test-depend. 
+
+# The rule to build test_instances is the exact same as that for
+# Makefile-test-depend-2. This covers the case that test_instances has gone
+# missing, but Makefile-test-depend-2 is fine. 
+#
+Include_lines/test_instances: Makefile-test-depend-2  
+	$(MAKE_SCRIPT_PATH)build_test_depend_2 < Include_lines/test_programs > Makefile-test-depend-2
+
+Makefile-test-depend : $(MAKE_SCRIPT_PATH)build_test_depend Include_lines/test_instances
+	@$(ECHO_UNLESS_QUIET)  " "
+	@$(ECHO_UNLESS_QUIET)  "================================================================================"
+	@$(ECHO_UNLESS_QUIET)  "                         Building Makefile-test-depend" 
+	@$(ECHO_UNLESS_QUIET)  " "
+	$(MAKE_SCRIPT_PATH)build_test_depend < Include_lines/test_instances > Makefile-test-depend
 	@$(ECHO_UNLESS_QUIET)  " "
 	@$(ECHO_UNLESS_QUIET)  "                         Makefile-test-depend is built" 
 	@$(ECHO_UNLESS_QUIET)  "================================================================================"
