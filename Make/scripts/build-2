@@ -1080,25 +1080,28 @@ foreach arg (${build_adjusted_args})
         endif 
 
         if (${test_arg}) then
-            if (! -e "Makefile-test-depend") then
-                set make_tmp_dir = "${TMPDIR}/${USER}/Makefile-test-depend/make"
-                ${KJB_MKDIR} "${make_tmp_dir}"
-                if (${status}) then
-                    ${P_STDERR} "Unable to make directory ${make_tmp_dir}"
-                    exit 1
-                endif 
-                ${MAKE_SCRIPT_PATH}build_test_depend > ${make_tmp_dir}/Makefile-test-depend
-                if (${status}) then
-                    ${P_STDERR} "Unable to build Makefile-test-depend."
-                    exit 1
-                else 
-                    ${KJB_CP} ${make_tmp_dir}/Makefile-test-depend .
-                    if (${status}) then
-                        ${P_STDERR} "Unable to copy ${make_tmp_dir}/Makefile-test-depend to `pwd`."
-                        exit 1
-                    endif 
-                endif 
-            endif 
+#           # All this stuff from before should not be necessary. Kill it
+#           eventually. Claim made 12/13/2019.
+#
+#             if (! -e "Makefile-test-depend") then
+#                 set make_tmp_dir = "${TMPDIR}/${USER}/Makefile-test-depend/make"
+#                 ${KJB_MKDIR} "${make_tmp_dir}"
+#                 if (${status}) then
+#                     ${P_STDERR} "Unable to make directory ${make_tmp_dir}"
+#                     exit 1
+#                 endif 
+#                 ${MAKE_SCRIPT_PATH}build_test_depend > ${make_tmp_dir}/Makefile-test-depend
+#                 if (${status}) then
+#                     ${P_STDERR} "Unable to build Makefile-test-depend."
+#                     exit 1
+#                 else 
+#                     ${KJB_CP} ${make_tmp_dir}/Makefile-test-depend .
+#                     if (${status}) then
+#                         ${P_STDERR} "Unable to copy ${make_tmp_dir}/Makefile-test-depend to `pwd`."
+#                         exit 1
+#                     endif 
+#                 endif 
+#             endif 
 
             if ("${prog}" != "") then
                 if ($?KJB_VERBOSE) then
@@ -1133,40 +1136,44 @@ foreach arg (${build_adjusted_args})
 
             set makefile_to_use = "${MAKE_PATH}/Makefile-test"
 
-            # We may need to build Makefile-test-depend twice.
-            foreach target ( Makefile-test-depend  Makefile-test-depend)
-                if ($?KJB_VERBOSE) then
-                    echo " "
-                    echo "Script build-2 is checking whether target ${target} is up to date."
-                endif 
+#           # All this stuff from before should not be necessary. Kill it
+#           eventually. Claim made 12/13/2019.
+#
+#             # We may need to build Makefile-test-depend twice.
+#             foreach target ( Makefile-test-depend  Makefile-test-depend)
+#                 if ($?KJB_VERBOSE) then
+#                     echo " "
+#                     echo "Script build-2 is checking whether target ${target} is up to date."
+#                 endif 
+# 
+#                 # Not all makes necessarily have '-q', but then, they might have '-n'
+#                 # whose output we can grep. Currently, we only use gmake. The
+#                 # consequence of this failing is simply to run make for real.
+# 
+#                 ${KJB_MAKE} -q ${target} -f ${makefile_to_use} |& ${suppress_jobserver_msg}
+#                 if (! ${status}) then
+#                     if ( ! $?KJB_QUIET ) then
+#                         echo "Script build-2 reports target [ ${target} ] is up to date."
+#                     endif 
+#                 else 
+#                     set make_command = "${KJB_MAKE} ${target} -f ${makefile_to_use}"
+# 
+#                     if ($?KJB_VERBOSE) then
+#                         echo " "
+#                         echo "Script build-2 is building target: ${target} in directory ${cwd}."
+#                         echo "Make command is: ${make_command}"
+#                         echo " "
+#                     endif 
+# 
+#                     ${make_command} |& ${suppress_jobserver_msg}
+# 
+#                     if ($status) then
+#                         ${P_STDERR} "Failed to make target(s) ${target} in ${cwd}"
+#                         exit 1
+#                     endif 
+#                 endif 
+#             end
 
-                # Not all makes necessarily have '-q', but then, they might have '-n'
-                # whose output we can grep. Currently, we only use gmake. The
-                # consequence of this failing is simply to run make for real.
-
-                ${KJB_MAKE} -q ${target} -f ${makefile_to_use} |& ${suppress_jobserver_msg}
-                if (! ${status}) then
-                    if ( ! $?KJB_QUIET ) then
-                        echo "Script build-2 reports target [ ${target} ] is up to date."
-                    endif 
-                else 
-                    set make_command = "${KJB_MAKE} ${target} -f ${makefile_to_use}"
-
-                    if ($?KJB_VERBOSE) then
-                        echo " "
-                        echo "Script build-2 is building target: ${target} in directory ${cwd}."
-                        echo "Make command is: ${make_command}"
-                        echo " "
-                    endif 
-
-                    ${make_command} |& ${suppress_jobserver_msg}
-
-                    if ($status) then
-                        ${P_STDERR} "Failed to make target(s) ${target} in ${cwd}"
-                        exit 1
-                    endif 
-                endif 
-            end
         endif 
     endif 
 

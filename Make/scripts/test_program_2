@@ -379,6 +379,8 @@ if ("${test_type}" == "test") then
             
             ${KJB_RM} "${run_dir}/ENV"
             ${KJB_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
+        else 
+            ${KJB_RM} "${run_dir}/ENV.TMP"
         endif 
     else 
         ${KJB_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
@@ -594,6 +596,8 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             
             ${KJB_RM} "RC"
             ${KJB_MV} "RC.TMP" "RC"
+        else 
+            ${KJB_RM} "RC.TMP"
         endif 
     else 
         ${KJB_MV} "RC.TMP" "RC"
@@ -668,6 +672,8 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                         
                         ${KJB_RM} "${test_output_file}.FILTERED_FOR_DIFF"
                         ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
+                    else 
+                        ${KJB_RM} "${test_output_file}.FILTERED_FOR_DIFF.TMP"
                     endif 
                 else 
                     ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
