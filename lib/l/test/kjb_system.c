@@ -8,7 +8,7 @@ int main(void)
 {
     char input_str[ 100 ];
    
-    /* kjb_set_debug_level(4); */
+    kjb_set_debug_level(0); 
     kjb_init();
 
     while (TRUE)
