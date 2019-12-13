@@ -2,8 +2,6 @@
 
 # set echo 
 
-${P_STDERR} "Hello from test_program_2" 
-
 # All variables that can affect the output of the test code should be listed
 # here. However, because there could be conflict with the setting we want for
 # this script, or could be lingering (e.g., we may have KJB_VERBOSE set for
