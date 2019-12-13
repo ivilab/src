@@ -5,6 +5,9 @@
 echo " "
 
 cat /dev/null > Include_lines/test_instances
+if (${status}) exit 1 
+
+set top_dir = `pwd`
 
 set test_program = "$<"
 while ("${test_program}" != "") 
@@ -22,15 +25,21 @@ while ("${test_program}" != "")
                     ${KJB_MKDIR} NULL
                     if ${status} exit 1
 
-                    set test_instances = NULL
+                    set test_instance = NULL
                     
                     echo "Makefile-test-depend: test_input/${test_program}/${test_instance}"
-                    echo "${test_program} ${test_instances}" >> Include_lines/test_instances
+                    if (${status}) exit 1 
+
+                    echo "${test_program} ${test_instance}" >> ${top_dir}/Include_lines/test_instances
+                    if (${status}) exit 1 
                 endif  
             else
                 foreach test_instance (${test_instances})
                     echo "Makefile-test-depend: test_input/${test_program}/${test_instance}"
-                    echo "${test_program} ${test_instances}" >> Include_lines/test_instances
+                    if (${status}) exit 1 
+
+                    echo "${test_program} ${test_instance}" >> ${top_dir}/Include_lines/test_instances
+                    if (${status}) exit 1 
                 end
             endif 
         popd > /dev/null

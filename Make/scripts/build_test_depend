@@ -8,22 +8,23 @@ echo "#            Targets and rules for testing  "
 echo " "
 
 set num_tests = 0
-set programs = ()
+set progs = ()
 set tests = ()
 
 set test_instance_line = "$<"
 while ("${test_instance_line}" != "") 
     eval 'set test_instance_parsed = (${test_instance_line})'
-    set program = ${test_instance_parsed}[1]
-    set test_instance = ${test_instance_parsed}{2]
+    set program = $test_instance_parsed[1]
+    set test_instance = $test_instance_parsed[2]
 
-
-    set progs = (${programs} ${program})
+    set progs = (${progs} ${program})
     set tests = (${tests} ${test_instance})
     @ num_tests += 1
 
     set test_instance_line = "$<"
 end
+
+if (${num_tests} == 0) exit 0
 
 echo ""
 echo ""

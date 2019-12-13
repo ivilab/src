@@ -44,7 +44,11 @@ endif
 
 ${KJB_MKDIR} Include_lines
 if (${status}) exit 1
+
 cat /dev/null > Include_lines/test_programs
+if (${status}) exit 1 
+
+set top_dir = `pwd`
 
 foreach f (${main_file_names}) 
     set prog = `echo $f | sed 's/\(.*\)\.[^\.]*/\1/'`
@@ -74,7 +78,10 @@ foreach f (${main_file_names})
             endif 
 
             echo "Makefile-test-depend-2 : test_input/${prog}" 
-            echo "${prog}" >> Include_lines/test_programs
+            if (${status}) exit 1 
+
+            echo "${prog}" >> ${top_dir}/Include_lines/test_programs
+            if (${status}) exit 1 
         popd > /dev/null
     endif 
 end
