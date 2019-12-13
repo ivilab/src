@@ -2,7 +2,7 @@
  * Unit test for byte-reversal functions declared in l_bits.h
  * AMP
  *
- * $Id: test_bits.c 21491 2017-07-20 13:19:02Z kobus $
+ * $Id: bits.c 24693 2019-12-13 19:47:41Z kobus $
  */
 
 #include <l/l_sys_debug.h>
