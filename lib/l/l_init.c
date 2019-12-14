@@ -1,5 +1,5 @@
 
-/* $Id: l_init.c 22504 2019-06-03 22:02:14Z kobus $ */
+/* $Id: l_init.c 24715 2019-12-14 01:02:37Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -192,6 +192,7 @@ int kjb_init(void)
     fs_trap_fpu_exceptions = FALSE;
 #endif
 
+
     /* Kobus, Oct 25, 09.
      *
      * The routine set_default_abort_trap() has been modified so that for TEST,
@@ -200,6 +201,7 @@ int kjb_init(void)
      * but the way do this now seems to make GDB forget the stack on some
      * systems, and it is not clear if this is even needed anymore.  
     */
+
     if (set_default_abort_trap() == ERROR) result = ERROR;
 
     if (set_sig_trap(SIGTERM, safe_default_sig_fn, RESTART_AFTER_SIGNAL) == ERROR)
@@ -232,6 +234,7 @@ int kjb_init(void)
     {
         insert_error("Program startup resulted in the following errors.");
     }
+
 
 #ifdef MACHINE_CONSTANT_NOT_AVAILABLE
     warn_pso("At least one machine constant is not available.\n");
