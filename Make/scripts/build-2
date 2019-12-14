@@ -412,7 +412,7 @@ endif
 # order (potentially twice) for make.
 #
 set test_target_prefixes = "test regress test_svn"
-set test_target_suffixes = "test_clean test_very_clean check_clean regress_clean"
+set test_target_suffixes = "test_clean test_invalid test_very_clean regress_clean"
 
 # Helps get around substitution rules.
 set dollar = '$'
@@ -602,7 +602,7 @@ while ($count <=  ${num_args})
     else if ( ("${arg}" == "regress")  || ("${arg}" == "regress_clean") )  then
         # Probably need_depend_bootstrap would suffice. 
         set need_depend = 1
-    else if (("${arg}" == "test_clean") || ("${arg}" == "test_very_clean") || ("${arg}" == "check_clean")  || ("${arg}" == "regress_clean"))  then
+    else if (("${arg}" == "test_clean") || ("${arg}" == "test_very_clean") || ("${arg}" == "test_invalid")  || ("${arg}" == "regress_clean"))  then
         set need_depend_bootstrap = 1
         
         # These targets, when qualified, are implemented in Makefile-test using
@@ -1050,7 +1050,7 @@ foreach arg (${build_adjusted_args})
             set prog = "all"
         else if ( ("${arg}" == "check")  || ("${arg}" == "test_svn") )  then
             set test_arg = 1
-        else if (("${arg}" == "test_clean") || ("${arg}" == "test_very_clean") || ("${arg}" == "regress_clean")  || ("${arg}" == "check_clean") )  then
+        else if (("${arg}" == "test_clean") || ("${arg}" == "test_very_clean") || ("${arg}" == "regress_clean")  || ("${arg}" == "test_invalid") )  then
             set test_arg = 1
         else 
             set test_arg = `echo ${arg} | grep -c '/output_checked$'`
