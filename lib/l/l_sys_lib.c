@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_lib.c 22504 2019-06-03 22:02:14Z kobus $ */
+/* $Id: l_sys_lib.c 24712 2019-12-14 00:58:28Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -2081,7 +2081,7 @@ static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
             // circumstances like reset_initial_terminal_settings(); .
             */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
             free_line_reentry_queue();
 #if 0 /* was ifdef OBSOLETE */
             destroy_atn_queue();
@@ -2904,7 +2904,7 @@ pid_t kjb_fork(void)
          * stacks, and perhaps ideally, anything that allocates memory. But, for
          * now, we just do the ones that cause issues. 
         */
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
         destroy_sig_queue(); 
 #endif 
         kjb_disable_paging();

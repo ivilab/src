@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_term.h 21593 2017-07-30 16:48:05Z kobus $ */
+/* $Id: l_sys_term.h 24713 2019-12-14 01:00:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -108,7 +108,7 @@ void        term_set_no_blocking           (void);
 void        print_term_input_queue         (FILE* fp);
 void        read_line_reentry_history      (const char* program_name);
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     void free_line_reentry_queue(void);
 #endif
 

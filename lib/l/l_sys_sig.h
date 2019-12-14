@@ -327,7 +327,7 @@ int kjb_signal
 #endif    /* End of case SYSV_SIGNALS */
 
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
     void destroy_sig_queue(void);
 #endif
 

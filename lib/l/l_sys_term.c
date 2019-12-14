@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_term.c 24703 2019-12-13 22:56:35Z kobus $ */
+/* $Id: l_sys_term.c 24713 2019-12-14 01:00:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -4808,7 +4808,7 @@ static void write_line_reentry_history(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef TRACK_MEMORY_ALLOCATION
+#ifdef MUST_CLEANUP
 
 /*
 // Only use at program exit to find memory leaks.
