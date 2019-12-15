@@ -198,7 +198,7 @@ set prog_path = "NOT_SET"
 # executable to be up to date. Making it here does not work well for parallel
 # makes because then shared targets such as "depend" and library modules are
 # being made by multiple calls to make which only has a chance of working
-# because we use lockfiles.  However, that is inefficient. Instead, we have
+# because we use lockfiles. However, that is inefficient. Instead, we have
 # build-2 do a make all, so the executable should be up to date by the time we
 # get here.
 
@@ -419,6 +419,11 @@ else
 endif 
 
 # Valgrind on mac is not ready for prime time.
+# Valgrind by default runs the memcheck tool. 
+# Memcheck has limitations with respect to catching stack smashing errors. The
+# tool 'exp-sgcheck' can catch some of them, perhaps with some false positives
+# (we have not tries this yet). 
+#
 if (("${OS}" != "mac_osx") && (! $?SKIP_VALGRIND)) then 
     which valgrind >& /dev/null
 
@@ -793,9 +798,9 @@ else if (-e "output_checked") then
             endif 
         endif 
 
-        # We do not send run_succeeded to force rerunning of the test on a new
-        # platform. But, as long as the output is correct, then we respect
-        # output_checked. 
+        # We do not put run_succeeded in the repo to force rerunning of the test
+        # on a new platform. But, as long as the output is correct, then we
+        # respect output_checked. 
         set files = `${KJB_LS} | grep -v '.TMP$' | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
 
         set not_in_svn = ""
@@ -829,76 +834,6 @@ else if (-e "output_checked") then
         endif 
     endif
 endif 
-
-# # If output_checked exists, we should be in a directory that we only get to via
-# # one of the test types listed, but we make sure by checking the test_type as
-# # well as the existence of output checked. 
-# #
-# if ((-e "output_checked") && (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}" == "svn"))) then
-#     # Test_types that do not involve running code. 
-#     #
-#     if (-e "output_checked") then
-#         if (${src_is_under_svn}) then
-#             svn info . >& /dev/null
-# 
-#             if (${status}) then
-#                 set svn_command = "svn add --parents --depth=empty `pwd`"
-# 
-#                 # Should be the case if test_type is "svn". It could also be
-#                 # the case for "check", but not necessarily. 
-#                 #
-#                 if (${add_test_to_svn}) then
-#                     ${MAKE_SCRIPT_PATH}kjb_lock ${svn_command}
-#                     set svn_cmd_status = ${status} 
-# 
-#                     if (${svn_cmd_status}) then
-#                         set test_result = "FAILED (svn mkdir issue)." 
-#                         set test_rc = 0
-#                         goto finish_up
-#                     endif 
-#                 else 
-#                     echo " "
-#                     echo "Because ${src_code} is under SVN consider entering: "
-#                     echo "    ${svn_command}"
-#                     echo "(or use 'make test_svn')."
-#                     echo " "
-#                 endif 
-#             endif 
-#             
-#             set test_run_files = `${KJB_LS} | grep -v '\.res$' | grep -v 'valgrind_log_file'  | grep -v 'FAILED'  `
-#             set svn_add_files = ""
-# 
-#             foreach svn_run_file (${test_run_files}) 
-#                 svn info ${svn_run_file} >& /dev/null
-# 
-#                 if (${status}) then
-#                     set svn_add_files = "${svn_add_files} ${svn_run_file}"
-#                 endif 
-#             end 
-# 
-#             if ("${svn_add_files}" != "") then
-#                 set svn_command = "svn add ${svn_add_files}"
-# 
-#                 if (${add_test_to_svn}) then
-#                     ${MAKE_SCRIPT_PATH}kjb_lock ${svn_command}
-#                     set svn_cmd_status = ${status} 
-# 
-#                     if (${svn_cmd_status}) then
-#                         set test_result = "FAILED (svn add issue)." 
-#                         set test_rc = 0
-#                         goto finish_up
-#                     endif 
-#                 else if (! ${test_quietly} ) then 
-#                     echo " "
-#                     echo "Because ${src_code} is under SVN consider entering: "
-#                     echo "    cd `pwd`"
-#                     echo "    ${svn_command}"
-#                     echo "(or use 'make test_svn')."
-#                     echo " "
-#                 endif 
-#             endif 
-#         endif 
-#     endif 
 
 finish_up: 
 
