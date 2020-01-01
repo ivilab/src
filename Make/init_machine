@@ -110,7 +110,15 @@ if ("${uname}" == "Linux") then
     endif 
    
 else if ("${uname}" == "Darwin") then
-   setenv OS         "mac_osx" 
+   set echo 
+   setenv OS  "mac_osx" 
+
+   # Since we are OS X, we skip the leading "10.". We also skip the minor
+   # version.
+   # 
+   if (-x /usr/bin/sw_vers) then
+       setenv OS2 `/usr/bin/sw_vers -productVersion | sed 's/[0-9][0-9]*\.\([0-9][0-9]*\)\..*/\1/'`
+   endif 
 
    if (-x "/usr/bin/arch") then
        setenv CPU `/usr/bin/arch`
@@ -129,6 +137,7 @@ else if ("${uname}" == "Darwin") then
            endif 
        endif 
    endif 
+   unset echo 
 else if ("${uname}" == "SunOS") then
    if ($os_major_release > 4) then
        setenv OS "sun5"

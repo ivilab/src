@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 24608 2019-12-07 22:04:17Z kobus $
+# $Id: init_compile 24730 2020-01-01 02:05:10Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -424,7 +424,7 @@ if ($do_cache ) then
             # dependencies added later. Perhaps two kinds of dependencies should
             # be considered.
             #
-            set init_dependencies = "${KJB_SRC_PATH}/Make/init_machine ${KJB_SRC_PATH}/Make/init_compile ${KJB_SRC_PATH}/Make/init_ua_hpc"
+            set init_dependencies = "${KJB_SRC_PATH}/Make/init_scripts ${KJB_SRC_PATH}/Make/init_machine ${KJB_SRC_PATH}/Make/init_compile ${KJB_SRC_PATH}/Make/init_ua_hpc"
 
             # TODO: Improve the precision of this test. 
             if ("${OS}" != "mac_osx") then
@@ -2066,6 +2066,26 @@ kjb_setenv MAKE_DOC_DIR ${MAKE_DOC}/
 
 ##############################################################################
 
+
+set usr_include = "/usr/include"
+
+if (${OS} == "mac_osx") then
+    set sdk_path =  "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+    if ((! -d "/usr/include") && (-d "${sdk_path}")) then 
+        if (! -r "${sdk_path}/usr/include/stdio.h") then 
+            ${P_STDERR} " "
+            ${P_STDERR} "Your mac probably has standard includes in ${sdk_path}/usr/include."
+            ${P_STDERR} "However, ${sdk_path}/usr/include/stdio.h is not readable."
+            ${P_STDERR} "This is likely because Apple likes to hide things from us. I suggest:"
+            ${P_STDERR} "    sudo chmod -R a+rX ${sdk_path}/usr"
+            ${P_STDERR} " "
+        else 
+            set usr_include = "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include"
+        endif 
+   endif 
+endif 
+
+kjb_setenv USR_INCLUDE "${usr_include}"
 kjb_setenv INCLUDE_FLAG "-I"
 
 #
@@ -2136,10 +2156,12 @@ if (${status}) then
     kjb_setenv GPP_VERSION 0
     kjb_setenv GPP_MAJOR_RELEASE 0
     kjb_setenv GPP_MINOR_RELEASE 0
+    set gpp_compiler_includes = "${USR_INCLUDE}"
 else
     kjb_setenv GPP_VERSION `echo ${gxx_version_str} | sed "s/\([0-9]*\)\..*/\1/"`
     kjb_setenv GPP_MAJOR_RELEASE `echo ${gxx_version_str} | sed "s/[0-9]*\.\([0-9]*\)\..*/\1/"`
     kjb_setenv GPP_MINOR_RELEASE `echo ${gxx_version_str} | sed "s/[0-9]*\.[0-9]*\.\([0-9]*\)/\1/"`
+    set gpp_compiler_includes = `echo | g++ -E -Wp,-v - |& grep '^ */' |& grep -v 'Frameworks' ` 
 endif
 
 if ($?KJB_VERBOSE) then
@@ -2174,7 +2196,6 @@ set gpp_thread_flags =  "-pthread"
 
 set gpp_shared_flags =  "-fPIC" 
 
-set gpp_compiler_includes = `echo | g++ -E -Wp,-v - |& grep '^ */'` 
 # 
 # ------------------------------------------------------------------------------
 #
@@ -2197,10 +2218,12 @@ if (${status}) then
     kjb_setenv GCC_VERSION 0
     kjb_setenv GCC_MAJOR_RELEASE 0
     kjb_setenv GCC_MINOR_RELEASE 0
+    set gcc_compiler_includes = "${USR_INCLUDE}"
 else
     kjb_setenv GCC_VERSION `echo ${gcc_version_str} | sed "s/\([0-9]*\)\..*/\1/"`
     kjb_setenv GCC_MAJOR_RELEASE `echo ${gcc_version_str} | sed "s/[0-9]*\.\([0-9]*\)\..*/\1/"`
     kjb_setenv GCC_MINOR_RELEASE `echo ${gcc_version_str} | sed "s/[0-9]*\.[0-9]*\.\([0-9]*\)/\1/"`
+    set gcc_compiler_includes = `echo | gcc -E -Wp,-v - |& grep '^ */' |& grep -v 'Frameworks' ` 
 endif
 
 if ($?KJB_VERBOSE) then
@@ -2254,7 +2277,6 @@ endif
 set gcc_thread_flags =  "-pthread"
 set gcc_shared_flags =  "-fPIC" 
 
-set gcc_compiler_includes = `echo | gcc -E -Wp,-v - |& grep '^ */'` 
 
 # 
 # ------------------------------------------------------------------------------
@@ -2288,7 +2310,7 @@ set icpc_f77_md_flags =  ""
 set icpc_f77_misc_flags =  "" 
 
 # FIXME 
-set icpc_compiler_includes = "/usr/include"
+set icpc_compiler_includes = "${USR_INCLUDE}"
 # 
 # ------------------------------------------------------------------------------
 #
@@ -2321,7 +2343,7 @@ set icc_f77_md_flags =  ""
 set icc_f77_misc_flags =  "" 
 
 # FIXME 
-set icc_compiler_includes = "/usr/include"
+set icc_compiler_includes = "${USR_INCLUDE}"
 # 
 # ------------------------------------------------------------------------------
 #
@@ -2467,10 +2489,16 @@ else
     kjb_setenv CC_THREAD_FLAGS ""
     kjb_setenv CC_SHARED_FLAGS "" 
     kjb_setenv CC_PCH_SUFFIX "" 
-    kjb_setenv CC_COMPILER_INCLUDES "/usr/include" 
+    kjb_setenv CC_COMPILER_INCLUDES "${USR_INCLUDE}" 
 endif
 
 ################################################################################
+
+if (${status}) then
+    set clang_compiler_includes = "${USR_INCLUDE}" 
+else 
+    set clang_compiler_includes = `echo | clang -E -Wp,-v - |& grep '^ */' |& grep -v 'Frameworks' ` 
+endif 
 
 if (("${KJB_CXX}" == "clang++") || ("${KJB_CXX}" == "clang")) then 
     kjb_setenv COMPILER_DEFINE -DCLANG_COMPILER 
@@ -2494,7 +2522,7 @@ if (("${KJB_CXX}" == "clang++") || ("${KJB_CXX}" == "clang")) then
     kjb_setenv CXX_MISC_FLAGS "${gpp_misc_flags}"
     kjb_setenv CXX_THREAD_FLAGS "${gpp_thread_flags}"
     kjb_setenv CXX_SHARED_FLAGS "${gpp_shared_flags}" 
-    kjb_setenv CXX_COMPILER_INCLUDES "${gpp_compiler_includes}" 
+    kjb_setenv CXX_COMPILER_INCLUDES "${clang_compiler_includes}" 
 else if (${kjb_cxx_is_gxx}) then
     kjb_setenv COMPILER_DEFINE -DGNU_COMPILER 
     kjb_setenv CXX_FORCE_SINGLE  "${gpp_force_single}"
@@ -2549,7 +2577,7 @@ else
     kjb_setenv CXX_MISC_FLAGS ""
     kjb_setenv CXX_THREAD_FLAGS ""
     kjb_setenv CXX_SHARED_FLAGS ""
-    kjb_setenv CXX_COMPILER_INCLUDES "/usr/include" 
+    kjb_setenv CXX_COMPILER_INCLUDES "${USR_INCLUDE}" 
 endif
 
 ################################################################################
@@ -2617,7 +2645,7 @@ else
     kjb_setenv F77_MISC_FLAGS ""
     kjb_setenv F77_THREAD_FLAGS ""
     kjb_setenv F77_SHARED_FLAGS ""
-    kjb_setenv F77_COMPILER_INCLUDES "/usr/include"
+    kjb_setenv F77_COMPILER_INCLUDES "${USR_INCLUDE}"
 endif
 
 kjb_setenv MD_DEFINES "-D${UC_OS} -D${UC_MACHINE} ${MALLINFO_DEFINE} ${COMPILER_DEFINE}"
@@ -3582,7 +3610,7 @@ endif
 
 set std_inc_dirs = ""
 
-set try_inc_dirs = "/usr/include"
+set try_inc_dirs = "${USR_INCLUDE}"
 
 if ((${kjb_cc_is_gcc}) || (${kjb_cc_is_gxx})) then
     set gcc_inc = `${KJB_CC} -v |& grep "Reading specs from" | sed 's/Reading specs from *//' | sed 's/\/specs.*//'`

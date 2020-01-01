@@ -25,7 +25,11 @@ if (! $?KJB_WARN_LEVEL) then
     setenv KJB_WARN_LEVEL 2
 endif
 
-setenv P_STDERR "${MAKE_PATH}scripts/p_stderr"
+# if (-e /dev/stderr) then
+#     setenv P_STDERR "echo > /dev/stderr"
+# else 
+    setenv P_STDERR "${MAKE_PATH}scripts/p_stderr"
+# endif 
 
 if (($?prompt) && (! $?KJB_QUIET)) then
     setenv ECHO "echo "
