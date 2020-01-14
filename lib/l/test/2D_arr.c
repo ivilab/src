@@ -1,6 +1,5 @@
 
-/* $Id: 2D_arr.c 21491 2017-07-20 13:19:02Z kobus $ */
-
+/* $Id: 2D_arr.c 24744 2020-01-14 00:28:08Z kobus $ */
 
  
 #include "l/l_incl.h" 
@@ -22,7 +21,6 @@
 #else
 #    define TEST_REAL  -78.3
 #endif 
-
 
 
 /* #define VERBOSE 1 */
