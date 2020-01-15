@@ -30,7 +30,6 @@
 
 # set echo 
 
-
 set build_dir = ""
 set force = 0
 set prefer_lib = 0
@@ -66,51 +65,76 @@ endif
 
 ##############################################################################
 
-#
-# Find out where we are in the source tree. In particular, we want to find a
-# dir that has Make as a sub-dir and Make/init_compile as a file in that (just
-# for uniqueness).  
-#
+# This next part is shared by all files in Make whose names begin with "build",
+# AND kjb_add_makefiles. Updates should be propogated. 
 
-set found = 0
-set KJB_SRC_PATH = ""
-
-pushd `pwd` > /dev/null
-
-while ("`pwd`" != "/")
-    if (-e Make/init_compile) then
-        set KJB_SRC_PATH = `pwd` 
-        set found = 1
-        break
+if ($?FORCE_KJB_SRC_DIR) then 
+    if (-e "${FORCE_KJB_SRC_DIR}/Make/init_compile") then 
+        setenv KJB_SRC_PATH "${FORCE_KJB_SRC_DIR}"
+    else 
+        bash -c 'echo "Env var FORCE_KJB_SRC_DIR is set to ${FORCE_KJB_SRC_DIR}, but ${FORCE_KJB_SRC_DIR}/Make/init_compile does not exist." >&2'
+        exit 1 
+    endif 
+else  
+    # Use env var for KJB_DIRS for better error reporting via bash sub-shell.
+    if ($?FORCE_KJB_DIR) then
+        setenv KJB_DIRS "${FORCE_KJB_DIR}"
+    else
+        setenv KJB_DIRS ". kjb KJB ivi IVI src"
     endif 
 
-    cd ..
-end
+    # Find out where we are in the source tree. In particular, we want to find a
+    # dir that has $kjb_dir as a subdir, which has Make as a sub-dir and
+    # Make/init_compile as a file in that. 
 
-popd >& /dev/null
+    set found = 0
+    set kjb_top = ""
 
-if (${found}) then
-    setenv KJB_SRC_PATH "${KJB_SRC_PATH}/"
-else
-   #
-   # Handling of KJB_SRC_PATH outside the tree must be consistent with the script
-   # "build"
-   #
-   if ($?KJB_SRC_PATH != 0) then 
-       setenv KJB_SRC_PATH "${HOME}/src/"
-   endif 
+    pushd `pwd` > /dev/null
 
-   if (! -e ${KJB_SRC_PATH}Make/init_compile) then
-       ${P_STDERR} " "
-       ${P_STDERR} "This directory does not seem to be below a src dirctory with KJB installed."
-       ${P_STDERR} "Nor does ${KJB_SRC_PATH}/Make/init_compile exist. "
-       ${P_STDERR} " "
-       ${P_STDERR} "Try setting KJB_SRC_PATH to a directory with Make as a sub-dir."
-       ${P_STDERR} " "
+    while ("`pwd`" != "/")
+        foreach kjb_dir (${KJB_DIRS}) 
+            if ("${kjb_dir}" == ".") then
+                set kjb_dir = ""
+            else
+                set kjb_dir = "${kjb_dir}/"
+            endif 
 
-       exit 1 
-   endif 
+            if (-e "${kjb_dir}Make/init_compile") then
+                set found = 1
+                break
+            endif 
+        end
+
+        if (${found}) break
+
+        set kjb_top = "../${kjb_top}"
+
+        cd ..
+    end
+
+    popd > /dev/null
+
+    if (${found}) then
+        if ("${kjb_dir}" == "") then
+            set kjb_dir = "./"
+        endif 
+
+        setenv KJB_SRC_PATH "${kjb_top}${kjb_dir}"
+    else 
+        # We cannot use P_STDERR here because we might not have defined it yet.
+        bash -c 'echo " " >&2'
+        bash -c 'echo "This directory is not below a directory with KJB installed." >&2'
+        bash -c 'echo "Valid directories for KJB in this context: ${KJB_DIRS}." >&2'
+        bash -c 'echo "To experiment with a temporary fix, try setting FORCE_KJB_SRC_DIR." >&2'
+        bash -c 'echo "For a more permanent fix, contact Kobus." >&2'
+    endif 
 endif 
+
+pushd ${KJB_SRC_PATH} > /dev/null
+    setenv KJB_SRC_PATH "${cwd}/"
+popd > /dev/null
+
 
 ##############################################################################
 
@@ -144,11 +168,11 @@ if (${need_init}) then
     source ${KJB_SRC_PATH}Make/init_compile
 endif 
 
-echo "Now:"
-echo "   SRC_PATH: ${SRC_PATH}"
-echo "   MAKE_PATH: ${MAKE_PATH}"
-echo "   MAKE_SCRIPT_PATH: ${MAKE_SCRIPT_PATH}"
-echo " "
+${VERBOSE_ECHO} "kjb_add_makefiles key paths:"
+${VERBOSE_ECHO} "   KJB_SRC_PATH: ${KJB_SRC_PATH}"
+${VERBOSE_ECHO} "   MAKE_PATH: ${MAKE_PATH}"
+${VERBOSE_ECHO} "   MAKE_SCRIPT_PATH: ${MAKE_SCRIPT_PATH}"
+${VERBOSE_ECHO} " "
 
 ##############################################################################
 
