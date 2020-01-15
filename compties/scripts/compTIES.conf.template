@@ -1,0 +1,89 @@
+#############################################
+train-num-iterations=20000
+test-num-iterations=2
+maximum-running-minutes=1440
+num-iterations=10
+
+training-percent=0.8
+#############################################
+# MH parameter for CLO independent parameters
+#############################################
+
+#############################################
+# prior parameters for the starting states 
+#############################################
+init-state-mean=0.0
+init-state-sigma=1.0
+
+#############################################
+# hyper prior parameters for the coefficients
+#############################################
+# hyper prior parameters for the coefficients
+# when modeling the CLO parameters jointly,
+# used in the cluster model
+#############################################
+#stiffness-coef-mean=1.0
+#stiffness-coef-sigma=5.0
+#damping-coef-mean=0.0
+#damping-coef-sigma=2.0
+#mass-coef-mean=3.0
+#mass-coef-sigma=5.0
+
+mod-coef-prior-mean=0.0
+mod-coef-prior-sigma=100.0
+
+#############################################
+# Initial values of CLO parameters
+#############################################
+init-period=30
+init-damping=0.0
+#use-modal-params=
+
+#############################################
+# Number of oscillators
+#############################################
+num-oscillators=2
+
+#############################################
+# Information of CLO ODE information
+#############################################
+noise-sigma=0.1
+#obs-noise-shape=10.0
+#obs-noise-scale=5.0
+obs-noise-shape=0.0001
+obs-noise-scale=0.0001
+sample-noise-sigma=
+#obs-noise-sampling-method=gibbs
+
+#############################################
+# Prior information of variance
+#############################################
+clo-sigma=1.0
+#clo-sigma-shape=10.0
+#clo-sigma-scale=1.0
+clo-sigma-shape=0.0001
+clo-sigma-scale=0.0001
+poly-sigma=1.0
+#poly-sigma-shape=10.0
+#poly-sigma-scale=1.0
+poly-sigma-shape=0.0001
+poly-sigma-scale=0.0001
+outcome-sigma=1.0
+#outcome-sigma-shape=10.0
+#outcome-sigma-scale=1.0
+outcome-sigma-shape=0.0001
+outcome-sigma-scale=0.0001
+variance-prior-type=inverse-gamma
+
+#############################################
+## MH parameter for CLO independent parameters
+##############################################
+state-prop-sigma=1.0
+clo-param-prop-sigma=0.2
+poly-term-prop-sigma=0.5
+#num-groups=2
+group-prior-lambda=1.0
+#outcome=outcome
+#sample-cluster=
+random-seed=487383
+num-person-threads=6

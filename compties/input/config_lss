@@ -1,0 +1,77 @@
+#############################################
+# Numberof iterations 
+#############################################
+#num-iterations=200000
+num-iterations=1000
+
+############################################
+# Using 80% time points in fitting
+############################################
+training-percent=0.8
+
+############################################
+# Parameters of GP for drifting 
+############################################
+#allow-drift=
+#gp-scale=100
+#gp-variance=0.01
+#allow-drift=
+
+
+#############################################
+# MH parameter for CLO independent parameters
+#############################################
+state-prop-sigma=0.02
+clo-param-prop-sigma=0.02
+
+#############################################
+# Initial values of CLO parametrs  
+#############################################
+init-frequency=-0.02 
+init-damping=0.001
+init-coupling=0.001
+
+#############################################
+# Information of CLO ODE information
+#############################################
+noise-sigma=0.5
+sampling-period=0.01
+
+#############################################
+# Observables  
+#############################################
+observable=dial
+
+#############################################
+# File that contains the trained prior  
+#############################################
+#lss-set-prior-fp=/out-dir/params.txt
+
+#############################################
+# Random seed  
+#############################################
+random-seed=100324
+
+#############################################
+# Moderator information 
+# (user might want to change the following to 
+# try different models)
+# x-x-moderator: moderator for CLO param x-x
+# x-x-moderator-opt: operation for the moderator 
+#                    of CLO param x-x
+# Example of using individual BMI as moderator:
+# f-w-moderator=bmi
+# f-w-moderator=bmi
+# f-m-moderator=bmi
+# d-w-moderator=bmi
+# d-m-moderator=bmi
+# c-w-moderator=bmi
+# c-m-moderator=bmi
+# f-w-moderator-opt=independent
+# f-w-moderator-opt=independent
+# f-m-moderator-opt=independent
+# d-w-moderator-opt=independent
+# d-m-moderator-opt=independent
+# c-w-moderator-opt=independent
+# c-m-moderator-opt=independent
+ 

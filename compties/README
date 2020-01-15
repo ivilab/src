@@ -1,0 +1,124 @@
+/* =========================================================================== *
+|
+|  Copyright (c) 1994-2008 by Kobus Barnard (author).
+|
+|  Personal and educational use of this code is granted, provided that this
+|  header is kept intact, and that the authorship is not misrepresented, that
+|  its use is acknowledged in publications, and relevant papers are cited.
+|
+|  For other use contact the author (kobus AT cs DOT arizona DOT edu).
+|
+|  Please note that the code in this file has not necessarily been adequately
+|  tested. Naturally, there is no guarantee of performance, support, or fitness
+|  for any particular task. Nonetheless, I am interested in hearing about
+|  problems that you encounter.
+|
+| Authors:
+|     Jinyan Guan
+|
+* =========================================================================== */
+$Id$
+
+This is a readme file for the TIES software. This file will only explain how
+each executable is used. This directory has the source code and scripts for
+running experiments on clusters (see ./scripts folder).
+
+The script run_compTIES_exp.sh in the scripts/ folder automatically runs the
+data preprocessing and analysis pipeline for TIES for the webapp that runs on
+vision.cs.arizona.edu - that would be the script that a newcomer should
+inspect, make a copy of, and modify, rather than first trying to make sense of
+the binary executables detailed in this README.
+
+For additional information, please visit http://compties.org/software.html
+
+
+Note on installation (5/30/2019 - Adarsh Pyarelal)
+--------------------------------------------------
+
+To use Boost 1.54 with MacPorts, checkout a copy of Boost 1.54 from SVN, and
+copy it over to the MacPorts directory (/opt/local by default):
+
+  svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/shared/boost/trunk/1_54/mac
+  sudo cp -r mac/include/boost_1_54 /opt/local/include
+  sudo cp -r mac/lib/boost_1_54 /opt/local/lib
+
+
+Executables and command-line options
+------------------------------------
+
+This file will explain some of the main executables: 
+
+1. parse_real_data.cpp:  Parse in a csv file 
+
+command "./parse_read_data --help" generates the following outputs: 
+
+-----------------------------------------------------------------------------------------
+usage:./parse_real_data
+General options:
+  -h [ --help ]               produce help message
+  -I [ --input-file ] arg     input-file (the file with .csv extension, eg. co18small.csv in the input directory )
+  --moderator arg             moderators
+  --observable arg            observables
+  --distinguisher arg         distinguisher
+  --categorical-moderator arg Variable that groups data together
+  --num-oscillators arg (=2)  number of oscillators(people) in a coupled group
+  --average-size arg (=1)     number of data points to be averaged over
+  --standardize-data          if present standardize the data to have mean 0 
+                              and variance
+  --mean-centered-data        if present center data to have mean 0
+ Hidden options:
+  -O [ --out-dp ] arg   Output directory
+-----------------------------------------------------------------------------------------
+
+A sample .csv file is ./input/co18small.csv with observable "dial". 
+
+For example, you can use the following command to parse the data in the
+co18small.csv file:
+./parse_real_data -I input/co18small.csv --observable dial --distinguisher sexm -O output/co18small
+
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+2. compTIES.cpp:   Run the compTIES software 
+
+command "./compTIES --help" displays the list of options (which is quite long,
+so we do not reproduce it here.). 
+-----------------------------------------------------------------------------------------
+Usage: ./compTIES Hidden options:
+  -O [ --output-dir ] arg (=./) Output directory
+
+
+For questions or complaints please contact jguan1@email.arizona.edu.
+-----------------------------------------------------------------------------------------
+
+Most of the options can be specified by a configuration file. For example, one can call 
+  ./compTIES -C ./input/config -D ./input/co18small --fold-info-dp ./exp/folds -O ./exp/ --fit-all-data
+
+in which 
+ ! ./input/config: is a configration file that contains all the options, 
+ ! ./exp/folds: contains information of the training and testing IDs of cross-fold validation,  
+ ! ./input/co18small: is the data directory, 
+ ! ./output: is the output directory. 
+
+This command will run the default model (shared-CLO) 
+
+"./compTIES -C ./input/config -D ./input/co18small --fold-info-dp ./exp/folds -O ./exp/ --fold=1"
+This command will run the default model (shared-CLO) for the first fold
+
+average model: compTIES --run-average-model -C CONFIG_FN -O OUT_DIR -D DATA_DIR 
+line model: compTIES --run-line-model -C CONFIG_FN -O OUT_DIR -D DATA_DIR 
+
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+3. lss_mh.cpp   Fit a linear state model for each data individually using MH 
+
+call "./lss_mh --help" to see the program options
+
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+4. test_threads.cpp   This is a test program to test the threaded version of
+the MH sampler and the posterior 
+
+  ./test_threads -C input//config_test_threads -D output/co18small -L input/lists_orig.txt -T 1

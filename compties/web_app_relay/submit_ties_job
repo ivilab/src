@@ -1,0 +1,291 @@
+#!/bin/bash -u 
+
+# This script submits one job, and waits for it to finish. We can have multiple
+# instances waiting for submissions to finish. When the job finishes, the file
+# REAL_RUN_SUBMITTED becomes either REAL_RUN_SUCCESS or REAL_RUN_FAILURE. 
+#
+# Assumptions (TODO need to be checked). 
+#    We are in directory top_dir set by get_ties_jobs 
+#    We have ssh keys set up for whatever machine we choose to call
+#    The .ssh/config file knows the full name of machines 
+#    The .ssh/config file knows which user will run the job on that machine
+#    There is a link from the home dir to the equivalent of /local/data/compties 
+#    The machine we choose to run on has a mirror of ${job_to_run}
+#    The machine we choose to run on has "compties" in its path
+#    The machine we choose to run on has "run_compTIES_exp.sh its path
+
+# If we changes any of the following variables, we must also change it in
+# transfer_ties_jobs. 
+
+top_dir="${HOME}/compties"
+web_server="vision.cs.arizona.edu" 
+web_server_top_dir="/home/compties"
+
+job_to_run="$1"
+
+exec 19> ${top_dir}/${job_to_run}/submit_ties_job.log
+export BASH_XTRACEFD="19"
+set -x
+
+start_time=`date`
+
+echo ===============================================================
+echo "Script submit_ties_job started at ${start_time}"
+echo 
+echo top_dir: $top_dir
+echo job_to_run: $job_to_run
+echo my_pid: $$
+pwd
+echo 
+
+error_msg=""
+
+if [[ -z "${error_msg}" ]]; then
+    if [[ ! -d "${top_dir}/${job_to_run}" ]]; then 
+        error_msg="${top_dir}/${job_to_run} does not exist on the submission server, but it should by now." 
+    fi 
+fi 
+
+if [[ -z "${error_msg}" ]]; then
+   if ! cd ${top_dir}/${job_to_run}; then
+        error_msg="Cannot change directory to ${top_dir}/${job_to_run} on the submission server." 
+   fi
+fi
+
+echo Unless there was an error, we are now in ${top_dir}/${job_to_run}
+pwd
+
+if [[ -z "${error_msg}" ]]; then
+    # Do not add "--delete" to the rsync, as it is not needed because 
+    # we just created the ${job_to_run} directory, but the output
+    # of this script is going there!
+    #
+    if ! rsync -u -r ${web_server}:${web_server_top_dir}/${job_to_run}/ ${top_dir}/${job_to_run}; then 
+        error_msg="Submitted ties job failed to transfer from the web server to the submission server." 
+    fi
+fi
+    
+if [[ -z "${error_msg}" ]]; then
+    if ! /bin/mv DRY_RUN_SUCCESS JOB_TRANSFERRED; then 
+        error_msg="Unable to move ${top_dir}/${job_to_run}/DRY_RUN_SUCCESS to ${top_dir}/${job_to_run}/JOB_TRANSFERRED"
+    fi
+fi
+
+if [[ -z "${error_msg}" ]]; then
+     if !  ssh -x ${web_server} /bin/mv ${web_server_top_dir}/${job_to_run}/DRY_RUN_SUCCESS ${web_server_top_dir}/${job_to_run}/JOB_TRANSFERRED; then
+         error_msg="Unable to move ${web_server_top_dir}/${job_to_run}/DRY_RUN_SUCCESS to ${web_server_top_dir}/${job_to_run}/JOB_TRANSFERRED on ${web_server}."
+     fi 
+fi
+
+if [[ -z "${error_msg}" ]]; then
+    if [[ -e "CPU_SERVER" ]]; then
+        cpu_server=`cat "CPU_SERVER"`
+        echo "Setting cpu_server to: $cpu_server"
+    else 
+        # cpu_server="elgato"
+        cpu_server="bayes01"
+    fi 
+
+    echo "Forcing local CPU for debug"
+    cpu_server="local"
+fi 
+
+if [[ -z "${error_msg}" ]]; then
+    if [[ "${cpu_server}" == "local" ]]; then
+        echo
+        echo "Local run of CompTIES started at `date`"
+        echo 
+
+        export COMPTIES_HOME=${HOME}/compties 
+        source command 1>remote_ties_run.res 2>remote_ties_run.err
+        # echo fake run 1>remote_ties_run.res 2>remote_ties_run.err
+        run_RC=$?
+
+        if [[ $run_RC -ne 0 ]]; then
+            error_msg="Local run of ${job_to_run} failed."
+            echo "${error_msg}" 
+        elif [[ -s remote_ties_run.err ]]; then
+            echo "Test for empty remote_ties_run.err after local run FAILED"
+            cat remote_ties_run.err 
+            error_msg="Local ties run had error messages."
+        elif ! /bin/mv JOB_TRANSFERRED COMP_TIES_SUCCESS; then
+            error_msg="Cannot move ${top_dir}/${job_to_run}/JOB_TRANSFERRED to ${top_dir}/${job_to_run}/COMP_TIES_SUCCESS on submission server."
+            echo "${error_msg}" 
+        fi 
+
+        echo
+        echo "Local run of CompTIES finished at `date`"
+        echo 
+    else
+        if ! ssh -x ${cpu_server} mkdir -p compties/${job_to_run}; then 
+           error_msg="Unable to make compties/${job_to_run} on ${cpu_server}."
+        fi 
+
+        if [[ -z "${error_msg}" ]]; then
+            # Skip JOB_TRANSFERRED because we do not want it back. 
+            if ! rsync -r -u --delete --exclude=JOB_TRANSFERRED ${top_dir}/${job_to_run}/ ${cpu_server}:compties/${job_to_run}; then 
+                error_msg="Submitted ties job failed to transfer from submission server to the compute server." 
+            fi 
+        fi 
+
+        if [[ -z "${error_msg}" ]]; then
+            echo
+            echo "Remote run of CompTIES on ${cpu_server} started at `date`"
+            echo 
+
+            ssh -x ${cpu_server} "export COMPTIES_HOME=\${HOME}/compties; cd \${COMPTIES_HOME}/${job_to_run}; source command" 1>remote_ties_run.res 2>remote_ties_run.err
+            run_RC=$?
+
+            if [[ $run_RC -ne 0 ]]; then
+                error_msg="Unable to run ${COMPTIES_HOME}/${job_to_run} on ${cpu_server}."
+                echo ${error_msg}
+            elif [[ -s remote_ties_run.err ]]; then
+                echo "Test for empty remote_ties_run.err after remote run FAILED"
+                cat remote_ties_run.err 
+                error_msg="Remote ties run had error messages."
+            fi 
+
+            echo
+            echo "Remote run of CompTIES on ${cpu_server} finished at `date`"
+            echo 
+        fi
+
+        if [[ -z "${error_msg}" ]]; then
+            if ! rsync -r -u ${cpu_server}:compties/${job_to_run}/ .; then
+                error_msg="Transferring results of ${job_to_run} from ${cpu_server} failed."
+            elif ! /bin/mv JOB_TRANSFERRED COMP_TIES_SUCCESS; then
+                srror_msg="Cannot move JOB_TRANSFERRED to COMP_TIES_SUCCESS in `pwd` on submission server."
+            fi 
+        fi 
+    fi
+fi
+
+
+# Now we transfer back, even if we failed. If we have succeeded so far, but fail
+# here, then we need to report the failure. We do not send the intermediate
+# status file COMP_TIES_SUCCESS or result files yet, because we still need to do
+# plots, and also, if we sent COMP_TIES_SUCCESS and then other parts of the
+# transfer failed, then it might appear to have worked when it did not. 
+#
+if ! rsync -r -u --delete --exclude=COMP_TIES_SUCCESS '--exclude=remote_ties_run.*' ${top_dir}/${job_to_run}/ ${web_server}:${web_server_top_dir}/${job_to_run}; then 
+    # If there already is an error_msg, then keep it. 
+    if [[ -z "${error_msg}" ]]; then
+        error_msg="Submitted ties job failed to transfer from submission server back to web server." 
+    fi
+fi 
+
+# Make plots on the web server. It does not take that much CPU time, but
+# generates lots of output, so do it where the files need to end up. 
+#
+if [[ -z "${error_msg}" ]]; then
+    # ssh -x ${web_server} "cd ${web_server_top_dir}/scripts; sudo -u webapp ./generate_plots.sh ${web_server_top_dir}/${job_to_run} ./; chmod -R a+rX ${web_server_top_dir}/${job_to_run}/plots" 1>>remote_ties_run.res 2>>remote_ties_run.err
+    ssh -x ${web_server} "cd ${web_server_top_dir}/scripts; ./generate_plots.sh ${web_server_top_dir}/${job_to_run} ./" 1>>remote_ties_run.res 2>>remote_ties_run.err
+    plot_RC=$?
+
+    if [[ $plot_RC -ne 0 ]]; then
+        error_msg="Making plots on ${web_server} failed."
+    elif [[ -s remote_ties_run.err ]]; then
+        echo "Test for empty remote_ties_run.err after making plots FAILED"
+        cat remote_ties_run.err 
+        error_msg="Making plots had error messages."
+    elif ! /bin/mv COMP_TIES_SUCCESS PLOTTING_SUCCESS; then
+        error_msg="Cannot move COMP_TIES_SUCCESS to PLOTTING_SUCCESS in `pwd` on submission server."
+    fi 
+fi 
+
+# Now we (again) transfer back, even if we failed. This time we should not use
+# --delete because we will remove the plots! In this transfer we are mostly
+# transfering remote_ties_run.*.
+#
+if ! rsync -r -u ./ ${web_server}:${web_server_top_dir}/${job_to_run}; then 
+    # If there already is an error_msg, then keep it. 
+    if [[ -z "${error_msg}" ]]; then
+        error_msg="Submitted ties job failed to transfer run result files back to web server." 
+    fi
+fi 
+
+if [[ -z "${error_msg}" ]]; then
+    if ! /bin/mv PLOTTING_SUCCESS REAL_RUN_SUCCESS; then 
+        error_msg="Cannot move PLOTTING_SUCCESS to REAL_RUN_SUCCESS in `pwd` on submission server."
+    fi 
+fi 
+
+# We need www-data to own the files, but we cannot log into www-data without
+# making changes to the system that might be a security risk and/or goes too
+# much agains the usual way of doing things. This means we need to fix
+# ownwership, and to be sure, ww will also fix the permissions. We expend extra
+# time to do this in two calls because the exit status of two consecutive
+# commands depends on shells and their settings, and so could create a
+# maintenance overhead and/or puzzle.
+
+ssh -x ${web_server} "chown -R www-data:vision ${web_server_top_dir}/${job_to_run}" 1>>remote_ties_run.res 2>>remote_ties_run.err
+owner_RC=$?
+
+if [[ -z "${error_msg}" ]]; then
+    if [[ $owner_RC -ne 0 ]]; then
+        error_msg="Fixing owneship of ${web_server_top_dir}/${job_to_run} on ${web_server} failed."
+    fi 
+fi
+
+# Probably not necessary, but just to be sure. 
+#
+ssh -x ${web_server} "chmod -R a+rX ${web_server_top_dir}/${job_to_run}" 1>>remote_ties_run.res 2>>remote_ties_run.err
+permission_RC=$?
+
+if [[ -z "${error_msg}" ]]; then
+    if [[ $permission_RC -ne 0 ]]; then
+        error_msg="Fixing permissions of ${web_server_top_dir}/${job_to_run} on ${web_server} failed."
+    fi 
+fi
+
+if [[ -z "${error_msg}" ]]; then
+    ssh -x ${web_server} "/bin/mv ${web_server_top_dir}/${job_to_run}/PLOTTING_SUCCESS ${web_server_top_dir}/${job_to_run}/REAL_RUN_SUCCESS"
+    move_RC=$?
+
+    if [[ $move_RC -ne 0 ]]; then
+        error_msg="Cannot move PLOTTING_SUCCESS to REAL_RUN_SUCCESS in ${web_server_top_dir}/${job_to_run} on web server."
+    fi 
+fi 
+
+experiment=`echo ${job_to_run} | sed 's#.*\(Exp_.*\)$#\1#'`
+cat /dev/null > email_body.$$ 
+
+if [[ -z "${error_msg}" ]]; then
+    email_subject="Compties run for experiment ${experiment} -- SUCCESS"
+    echo " " >> email_body.$$ 
+    echo "${email_subject}" >> email_body.$$
+    compties_status=0
+else
+    email_subject="Compties run for experiment ${experiment} -- FAILED"
+    echo " " >> email_body.$$ 
+    echo "${email_subject}" >> email_body.$$
+    echo " " >> email_body.$$ 
+    echo "Reported error: " >> email_body.$$ 
+    echo "   ${error_msg}" >> email_body.$$ 
+    compties_status=1
+fi 
+
+echo " " >> email_body.$$ 
+echo "All available output is under ${experiment} in your CompTIES web app folder"  >> email_body.$$ 
+echo "linked here for convenience: " >> email_body.$$ 
+echo  "    http://www.compties.org/web_app/experiments.php?exp=${experiment}" >> email_body.$$ 
+echo " " >> email_body.$$ 
+
+finish_time=`date`
+echo "Time span in submit script was ${start_time} to ${finish_time}" >> email_body.$$ 
+echo " " >> email_body.$$ 
+
+user=`echo ${job_to_run} | sed 's#user_data/\([^/\]*\)/.*#\1#'`
+export REPLYTO=comp-ties-support@list.arizona.edu 
+mutt -s "${email_subject}" -c kobus@cs.arizona.edu ${user} < email_body.$$ 
+
+# /bin/rm -f email_body.$$ 
+
+echo 
+echo "Exiting script submit_ties_job with status: ${compties_status}"
+echo "Time span in submit script was ${start_time} to ${finish_time}"
+echo 
+echo ===============================================================
+
+exit ${compties_status}
+

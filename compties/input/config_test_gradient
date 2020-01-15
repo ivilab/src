@@ -1,0 +1,59 @@
+#############################################
+# Numberof iterations 
+#############################################
+
+############################################
+# Using 100% time points in training
+############################################
+training-percent=0.8
+
+############################################
+# Parameters of GP for drifting 
+############################################
+#allow-drift=
+#gp-scale=100
+#gp-variance=0.01
+
+#############################################
+# MH parameter for CLO independent parameters
+#############################################
+
+#############################################
+# Initial values of CLO parametrs  
+#############################################
+init-frequency=-0.02 
+init-damping=0.001
+init-coupling=0.001
+num-oscillators=2
+
+#############################################
+# Information of CLO ODE information
+#############################################
+noise-sigma=0.5
+sampling-period=0.01
+obs-noise-shape=0.0001
+obs-noise-scale=0.0001
+
+#############################################
+# Prior information of variance 
+#############################################
+clo-sigma=0.1
+clo-sigma-shape=100.0
+clo-sigma-scale=0.01
+
+#############################################
+# Observables  
+#############################################
+observable=dial
+
+#############################################
+# Thread information 
+#############################################
+
+#############################################
+# Moderator information
+#############################################
+#shared-param-sampling-method=hmc
+#shared-num-leapfrog-steps=15
+#shared-hmc-size=1e-4
+#estimate-grad-step=

@@ -1,0 +1,90 @@
+
+Machines and logins
+-------------------
+
+The login "webapp" does most of the work. Currently we use it on v11. The login
+"runcompties" is available as a stand in for HPC, and currently we use it on
+b01.  Every participating machine/login combination, including, v11/webapp,
+b01/runcompties, and elgato/XXX needs to have a "compties" directory under home
+that has sub directories "scripts", "bin", and "user_data".  The logins "webapp"
+and "runcompties" should not share the data files (i.e., compties/user_data
+needs to point to physically different places).  Scripts usually points to
+src/projects/ties/web_app, which is under svn control.  The directory "bin" is
+for the compties executables. 
+
+Transferring
+-----------
+To get any pending jobs we run the job transfer_ties_jobs on a computer within
+the CS firewall (e.g., v11). We will do this every so often using cron, and once
+that is working smoothing we could arrange for a trigger as described below. We
+run transfer_ties_jobs as a user that has ssh keys for root on vision (currently
+webapp on v11). (As root on vision, the process can become www-data). The script
+transfer_ties_jobs pulls the files for each pending job, and then submits them
+one-by-one to a compute server (via the script submit_ties_jobs). Multiple
+submissions can be made. The script transfer_ties_jobs also checks for completed
+jobs and pushes their files back to the web server. 
+
+Note that it would be possible to simply broker the transfer between the web
+server and the compute server, but instead we maintain a copy on the
+transferring machine. This makes the the code is a bit simpler, and also enables
+us to carry on if one of the machines are down. 
+
+
+Triggering (Yet to come)
+-------------------------
+Rough design
+    Again on a machine that is within the CS firewall (e.g., v11), and again
+    from a user that has .ssh keys to login as root into vision, we run the
+    script get_ties_jobs remotely on vision and pipes the results into a script
+    that calls transfer_ties_jobs asynchronously. (This means that
+    transfer_ties_jobs needs to have a lock file). 
+
+    The script get_ties_jobs run on vision changes to user www-data, and changes
+    to a directory under /home/ivilab/public_html. It then calls the program
+    relay_ties_directories.
+
+    The program relay_ties_directories first writes its PID to a designated
+    file.  It then waits for a signal in a loop. The handler for signal 30 reads
+    a dir name from a designated file. If the file exists, the dir name is read
+    and written stdout. 
+
+Submitting to a compute server. 
+-------------------------------
+The script submit_ties_jobs transfers the job to ...
+
+
+====================================================================================
+
+
+
+
+spawns a background job for each dir name read on . The
+spawned job syncs from vision to elgato  runs the job remotely on elgao with
+the output being sent to specified files. When the remote job is done, the
+script syncs from el gato to vision, and finally emails the user. 
+
+
+. The
+spawned job syncs from vision to elgato  runs the job remotely on elgao with
+the output being sent to specified files. When the remote job is done, the
+script syncs from el gato to vision, and finally emails the user. 
+
+process on vision (C program
+relay_dir_name) and reads its stdout.  piped into script submit_ties_jobs. That script reads dir names
+on stdin (i.e., relay_dir_name stdout) and spawns a background job for each dir name. The
+spawned job syncs from vision to elgato  runs the job remotely on elgao with
+the output being sent to specified files. When the remote job is done, the
+script syncs from el gato to vision, and finally emails the user. 
+
+The program relay_dir_name waits for signal 30 in a loop. The handler for
+signal 30 reads a dir name from a designated file (argument relay_dir_name)
+which is echoed on stdout. 
+
+Receiving
+----------
+
+It might be possible that a script on elgato can learn that the job is done
+from bsub or we can arrange it. Once done, perhaps elgato can synch to vision,
+followed by emailing the user. 
+
+

@@ -1,0 +1,15 @@
+noise-sigma=0.1
+sampling-period=0.01
+
+init-freq-w=-0.02 
+init-freq-m=-0.02
+init-damp-w=0.001
+init-damp-m=0.001
+init-coupling-w=0.001
+init-coupling-m=0.001
+
+gp-scale=100
+gp-variance=0.001
+
+random-seed=533
+obs-indices=0

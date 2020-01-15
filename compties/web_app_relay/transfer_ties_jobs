@@ -1,0 +1,70 @@
+#!/bin/bash -u
+
+# We may need a lockfile in anticipation of doing this both asynchronously and synchronously
+#
+# lockfile="get_ties_jobs.lock"
+
+# If we changes any of the following variables, we must also change it in
+# submit_ties_job. 
+top_dir="${HOME}/compties"
+web_server="vision.cs.arizona.edu" 
+web_server_top_dir="/home/compties"
+
+cd ${top_dir} > /dev/null
+cd_RC=$?
+
+if [[ $cd_RC != 0 ]]; then
+   echo "Unable to change to directory ${top_dir}" 1>&2
+   # Send mail. 
+   exit 1
+fi 
+
+# echo -n "Current directory: ";pwd
+
+echo " " | mutt -s "Script transfer_ties_jobs started on the submission server" kobus@cs.arizona.edu 
+
+while [[ 1 ]]; do 
+    # Comment out during development and until we need it.
+    # lockfile ${lockfile}
+
+    # Submit any new jobs. These are any jobs on the web server that have
+    # DRY_RUN_SUCCESS. 
+    #
+    jobs_to_run=`ssh -Y ${web_server} "cd ${web_server_top_dir}; find user_data -type f -name 'DRY_RUN_SUCCESS' | sed 's#/DRY_RUN_SUCCESS##'"`
+    # echo jobs_to_run: $jobs_to_run
+
+    for job_to_run in ${jobs_to_run} 
+    do
+        # For initial testing. 
+        # is_kobus=`echo ${job_to_run} | grep -c kobus`
+        # if [[ $is_kobus -ne 1 ]]; then 
+        #     continue
+        # fi 
+
+        # Only submit a job once! 
+        #
+        if [[ -e "${job_to_run}" ]]; then 
+            echo "Skipping ${job_to_run}  because it has already been submitted." 
+            continue
+        fi 
+
+        if ! mkdir -p ${job_to_run}; then 
+            echo "Unable to make directory ${top_dir}/${job_to_run} on the submission server." 1>&2
+            echo "Unable to make directory ${top_dir}/${job_to_run} on the submission server." | mutt -s "Serious issue in script transfer_ties_jobs" kobus@cs.arizona.edu 
+            exit 1 
+        fi 
+        
+        # This must be run in the background so we can run multiple waits at once. 
+        #
+        nohup ${top_dir}/scripts/submit_ties_job ${job_to_run} 1> ${top_dir}/${job_to_run}/submit_ties_job.res 2> ${top_dir}/${job_to_run}/submit_ties_job.err & 
+        submit_ties_job_RC=$? 
+        echo submit_ties_job_RC for ${job_to_run}: $submit_ties_job_RC
+    done 
+
+    # Comment out during development and until we need it. 
+    # /bin/rm -f ${lockfile}
+    
+    sleep 30 
+done
+
+

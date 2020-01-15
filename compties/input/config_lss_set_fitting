@@ -1,0 +1,129 @@
+#############################################
+# Numberof iterations 
+#############################################
+#num-iterations=200000
+num-iterations=1
+train-num-iterations=1
+test-num-iterations=1
+
+############################################
+# Using 100% time points in training
+############################################
+training-percent=0.8
+
+############################################
+# Parameters of GP for drifting 
+############################################
+#allow-drift=
+#gp-scale=100
+#gp-variance=0.00001
+#ctr-pt-length=25
+#num-burn-iters=100
+#num-sample-iters=100
+
+#############################################
+# MH parameter for CLO independent parameters
+#############################################
+state-prop-sigma=0.2
+clo-param-prop-sigma=0.2
+
+#############################################
+# Initial values of CLO parametrs  
+#############################################
+init-frequency=-0.02 
+init-damping=0.001
+init-coupling=0.001
+num-oscillators=2
+
+#############################################
+# Information of CLO ODE information
+#############################################
+noise-sigma=0.5
+obs-noise-shape=0.0001
+obs-noise-scale=0.0001
+
+#############################################
+# Prior information of initial state
+#############################################
+init-state-mean=0.0
+init-state-sigma=0.1
+
+#############################################
+# Prior information of CLO variance 
+#############################################
+init-lss-sigma=0.1
+osc-sigma-shape=1.0
+osc-sigma-scale=0.1
+
+#############################################
+# Prior information of CLO means
+#############################################
+frequency-coef-mean=-0.1
+frequency-coef-sigma=1.0
+damping-coef-mean=0.0
+damping-coef-sigma=1.0
+coupling-coef-mean=0.0
+coupling-coef-sigma=1.0
+
+#############################################
+# Observables  
+#############################################
+observable=dial
+
+#############################################
+# Thread information 
+#############################################
+num-person-threads=2
+# If fold-threading= is present, ./cross_validate
+# will run all the folds in parallel
+fold-threading=
+
+#############################################
+# Sampling information 
+#############################################
+## options for CLO priors
+#shared-param-sampling-method=hmc
+#shared-num-leapfrog-steps=15
+#shared-hmc-size=1e-4
+#estimate-grad-step=
+shared-param-sampling-method=gibbs 
+
+## options for sampling over observation variances
+#obs-noise-sampling-method=gibbs
+#obs-noise-sampling-method=hmc
+#obs-noise-hmc-size=1e-6
+#obs-noise-grad-size=0.05
+#estimate-grad-step=
+
+#############################################
+# Random seed  
+#############################################
+random-seed=30387
+
+#############################################
+# Moderator information 
+#############################################
+## uncomment if moderator is selcted
+## eg. moderator=bmiave
+# moderator=
+
+#############################################
+# Additional Flags
+#############################################
+## Uncomment if want to turn off logging info
+#turn-off-sampling-logging=
+## Uncomment if fitting CLO params by MLE
+#fit-ind-clo=
+## Uncomment if sampling over observation noise
+#sample-noise-sigma=
+
+#############################################
+# If the following option set,
+# adding a polynomial coefficient (time) to 
+# the output states
+#############################################
+#polynomial-degree=1
+## e.g. 
+## if x_o is the solution of ODE
+## if polynomial-degree=0, x = x_o + c1
+## if polynomial-degree=1, x = x_o + c1 + c1*t, 
