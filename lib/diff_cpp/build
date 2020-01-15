@@ -104,7 +104,7 @@ pushd ${KJB_SRC_PATH} > /dev/null
     setenv KJB_SRC_PATH "${cwd}/"
 popd > /dev/null
 
-echo KJB_SRC_PATH: $KJB_SRC_PATH
+# echo KJB_SRC_PATH: $KJB_SRC_PATH
 
 source ${KJB_SRC_PATH}Make/scripts/build-2 
 

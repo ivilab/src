@@ -248,9 +248,11 @@ int main(int argc, char* argv[])
 
     EPETE(read_matrix(&data_mp, data_file_name)); 
 
+    /*
     EPETE(get_rand_seed(seed_buff));
     pso("Seed: %d %d %d\n", seed_buff[ 0 ], seed_buff[ 1 ], seed_buff[ 2 ]);
-    /* kjb_seed_rand_with_tod(); */
+    */
+    kjb_seed_rand_with_tod(); 
     EPETE(get_rand_seed(seed_buff));
     pso("Seed: %d %d %d\n", seed_buff[ 0 ], seed_buff[ 1 ], seed_buff[ 2 ]);
 
@@ -372,7 +374,8 @@ int run_test(Options options, int num_clusters, const Matrix* data_mp, const cha
 
             for (i = 0; i < num_points; i++)
             {
-                if (i % 10 == 0)
+                if (kjb_rand() < 0.1)
+                /* if (i % 10 == 0) */
                 {
                     held_out_vp->elements[ i ] = TRUE;
                     num_held_out++; 
@@ -412,7 +415,8 @@ int run_test(Options options, int num_clusters, const Matrix* data_mp, const cha
             EPETE(get_zero_int_vector(&held_out_vp, num_points)); 
             for (i = 0; i < num_points; i++)
             {
-                if (i % 100 == 0)
+                /* if (i % 100 == 0) */
+                if (kjb_rand() < 0.1) 
                 {
                     held_out_vp->elements[ i ] = TRUE;
                 }
