@@ -31,24 +31,33 @@ endif
     setenv P_STDERR "${MAKE_PATH}scripts/p_stderr"
 # endif 
 
-if (($?prompt) && (! $?KJB_QUIET)) then
-    setenv ECHO "echo "
-else 
-    setenv ECHO ": echo "
-endif 
-
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
+# Kobus needs to sync this code with duplicated code in his .cshrc
 if ($?KJB_VERBOSE) then
     setenv VERBOSE_ECHO "echo "
+else if ($?tcsh) then
+    setenv VERBOSE_ECHO ": "
 else 
-    setenv VERBOSE_ECHO ": echo "
+    setenv VERBOSE_ECHO "eval echo > /dev/null "
 endif 
 
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
+# Kobus needs to sync this code with duplicated code in his .cshrc
 if ($?KJB_VERBOSE_2) then
     setenv VERBOSE_ECHO_2 "echo "
+else if ($?tcsh) then
+    setenv VERBOSE_ECHO_2 ": "
 else 
-    setenv VERBOSE_ECHO_2 ": echo "
+    setenv VERBOSE_ECHO_2 "eval echo > /dev/null"
+endif 
+
+# Kobus needs to sync this code with duplicated code in his .cshrc
+if (($?prompt) && (! $?KJB_QUIET)) then
+    setenv ECHO "echo "
+else if ($?tcsh) then
+    setenv ECHO ":  "
+else 
+    setenv ECHO "eval echo > /dev/null"
 endif 
 
 if(! $?TMPDIR) then
