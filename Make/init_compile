@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 24730 2020-01-01 02:05:10Z kobus $
+# $Id: init_compile 25478 2020-06-11 20:58:32Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -296,23 +296,23 @@ if ($?PREFER_PCH) then
     endif
 endif
 
-if (! $?BOOST_VERSION) then
-    setenv BOOST_VERSION ""
+if (! $?IVI_BOOST_VERSION) then
+    setenv IVI_BOOST_VERSION ""
 endif
 
 # Becomming obsolete due to BUILD_ENV. 
-# if ("${BOOST_VERSION}" == "") then
-#     if (-e BOOST_VERSION) then 
-#         setenv BOOST_VERSION `grep -v '^ *#' < BOOST_VERSION | grep -v '^ *$' | sed 's/ //g'`
+# if ("${IVI_BOOST_VERSION}" == "") then
+#     if (-e IVI_BOOST_VERSION) then 
+#         setenv IVI_BOOST_VERSION `grep -v '^ *#' < IVI_BOOST_VERSION | grep -v '^ *$' | sed 's/ //g'`
 #     endif 
 # endif 
 
-if ("${BOOST_VERSION}" != "") then
+if ("${IVI_BOOST_VERSION}" != "") then
     if ($do_cache) then
-        set suffix = "${suffix}.BOOST.${BOOST_VERSION}"
+        set suffix = "${suffix}.BOOST.${IVI_BOOST_VERSION}"
     endif
 
-    ${VERBOSE_ECHO} BOOST_VERSION being forced to: ${BOOST_VERSION}
+    ${VERBOSE_ECHO} IVI_BOOST_VERSION being forced to: ${IVI_BOOST_VERSION}
 endif 
 
 if ($do_cache) then
@@ -458,6 +458,10 @@ if ($do_cache ) then
 
             if ($?ALL_LIBS) then
                 set  init_dependencies = "${init_dependencies} ${ALL_LIBS}"
+            endif
+
+            if ($?ALL_INCLUDES) then
+                set  init_dependencies = "${init_dependencies} ${ALL_INCLUDES}"
             endif
 
             foreach init_dependency (${init_dependencies}) 
@@ -1059,20 +1063,19 @@ else
     kjb_setenv SHELL_FOR_MAKE_FLAG " -f"
 endif
 
-if (-x /bin/csh) then
-    kjb_setenv SHELL_FOR_MAKE   "/bin/csh${SHELL_FOR_MAKE_FLAG}"
-else if (-x /usr/bin/csh) then
-    kjb_setenv SHELL_FOR_MAKE  "/usr/bin/csh${SHELL_FOR_MAKE_FLAG}"
-else if (-x /bin/tcsh) then
-    kjb_setenv SHELL_FOR_MAKE  "/bin/tcsh${SHELL_FOR_MAKE_FLAG}"
-else if (-x /usr/bin/tcsh) then
-    kjb_setenv SHELL_FOR_MAKE  "/usr/bin/tcsh${SHELL_FOR_MAKE_FLAG}"
-else if (-x /usr/local/bin/csh) then
-    kjb_setenv SHELL_FOR_MAKE  "/usr/local/bin/csh${SHELL_FOR_MAKE_FLAG}"
-else
-    # Back to the default. Things will likely break. 
-    kjb_setenv SHELL_FOR_MAKE "/bin/sh${SHELL_FOR_MAKE_FLAG}"
-endif
+set shells = "tcsh csh bash zsh sh"
+
+foreach shell (${shells}) 
+    set shell_for_make = `which ${shell}`
+    if (! ${status}) then 
+         if ("${shell}" != "tcsh") then
+             echo "Warning: The tcsh shell is not available. Things likely will break."
+         endif 
+
+         kjb_setenv SHELL_FOR_MAKE "${shell_for_make}${SHELL_FOR_MAKE_FLAG}"
+         break
+    endif 
+end 
 
 kjb_setenv KJB_MAKE_NO_OP       "${MAKE_SCRIPT_PATH}fancy_nop "
 kjb_setenv KJB_MAKE_NOP         "${KJB_MAKE_NO_OP}" 
@@ -1802,8 +1805,8 @@ endif
 
 set cxx_libs_versions = ""
 
-if ("${BOOST_VERSION}" != "") then
-    set cxx_libs_versions = "${cxx_libs_versions}_boost_${BOOST_VERSION}"
+if ("${IVI_BOOST_VERSION}" != "") then
+    set cxx_libs_versions = "${cxx_libs_versions}_boost_${IVI_BOOST_VERSION}"
 endif
 
 if ($?FORCE_OBJ_DIR != 0) then
@@ -1967,13 +1970,12 @@ kjb_setenv KJB_CPP_DEFAULT_MSG_FILTER "${MAKE_SCRIPT_PATH}boost_warn_filter.pl"
 
 # Set up the allpass filter, which lets all the Boost messages show up.
 set kjb_awk = `which awk`
-if (-x ${kjb_awk}) then
+if (! ${status}) then
     kjb_setenv KJB_CPP_ALLPASS_MSG_FILTER \
             "${kjb_awk} "'"{print}/Compile status is: [^0]/{exit 1}"'
 else
     # This system lacks basic cmds, so sabotage the output filter.
-    ${ECHO} "Warning: system lacks awk(1), which we currently require."
-    ${ECHO} "Warning: maybe you could write a script to take its place?"
+    ${ECHO} "Warning: system lacks awk(1), which we currently use for filtering boost warnings."
     kjb_setenv KJB_CPP_ALLPASS_MSG_FILTER "false"
 endif
 
@@ -3287,13 +3289,13 @@ set boost_load_dirs = ""
 # trees are pretty idiosyncratic, so this likely will need updating by someone
 # who is actively using homebrew. 
 #
-if ("${BOOST_VERSION}" != "") then
+if ("${IVI_BOOST_VERSION}" != "") then
     # Version string without the last component. IE, 1.59 instead of 1.59.0. 
-    set boost_version_short = `echo ${BOOST_VERSION} | sed 's/\([^.][^.]*\.[^.][^.]*\)\..*/\1/'`
+    set boost_version_short = `echo ${IVI_BOOST_VERSION} | sed 's/\([^.][^.]*\.[^.][^.]*\)\..*/\1/'`
 
     set try_load_dirs = ""
     foreach lib_str (${lib_str_list})
-        set try_load_dirs = "${try_load_dirs} /usr/local/opt/boost@${BOOST_VERSION}/${lib_str} /usr/local/Cellar/boost@${boost_version_short}/${BOOST_VERSION}/${lib_str} /usr/local/Cellar/boost/${BOOST_VERSION}/${lib_str}"
+        set try_load_dirs = "${try_load_dirs} /usr/local/opt/boost@${IVI_BOOST_VERSION}/${lib_str} /usr/local/Cellar/boost@${boost_version_short}/${IVI_BOOST_VERSION}/${lib_str} /usr/local/Cellar/boost/${IVI_BOOST_VERSION}/${lib_str}"
     end 
 
     set boost_ld_dirs_blank = ""
@@ -3524,9 +3526,11 @@ set default_opt_inc_dirs = ""
 
 set try_inc_dirs = "/opt/local/include /usr/local/include /opt/local/include /usr/local/opt/include"
 
+set blank = ""
 foreach try_inc_dir ($try_inc_dirs)
     if (-e ${try_inc_dir}) then
-            set default_opt_inc_dirs = "${default_opt_inc_dirs} ${try_inc_dir}" 
+            set default_opt_inc_dirs = "${default_opt_inc_dirs}${blank}${try_inc_dir}" 
+            set blank = " "
         endif
     endif
 end 
@@ -3586,11 +3590,11 @@ end
 
 set boost_inc_dirs = ""
 # For Homebrew, at least. 
-if ("${BOOST_VERSION}" != "") then
+if ("${IVI_BOOST_VERSION}" != "") then
     # Version string without the last component. IE, 1.59 instead of 1.59.0. 
-    set boost_version_short = `echo ${BOOST_VERSION} | sed 's/\([^.][^.]*\.[^.][^.]*\)\..*/\1/'`
+    set boost_version_short = `echo ${IVI_BOOST_VERSION} | sed 's/\([^.][^.]*\.[^.][^.]*\)\..*/\1/'`
 
-    set try_inc_dirs = "/usr/local/opt/boost@${BOOST_VERSION}/include /usr/local/Cellar/boost@${boost_version_short}/${BOOST_VERSION}/include /usr/local/Cellar/boost/${BOOST_VERSION}/include"
+    set try_inc_dirs = "/usr/local/opt/boost@${IVI_BOOST_VERSION}/include /usr/local/Cellar/boost@${boost_version_short}/${IVI_BOOST_VERSION}/include /usr/local/Cellar/boost/${IVI_BOOST_VERSION}/include"
 
     foreach try_inc_dir ($try_inc_dirs)
         if (-e ${try_inc_dir}) then
@@ -3787,9 +3791,9 @@ if ($?KJB_VERBOSE) then
     else if ("${KJB_HAVE_X11}" != "") then
         echo ""
         echo "Script init_compile found X11"
-        echo "    LIB_X11: ${LIB_X11}"
-        echo "    include: ${x_inc_dir}"
-        echo "    load   : ${x_load_dir}"
+        echo "    X11 |  LIB_X11: ${LIB_X11}"
+        echo "    X11 |  include: ${x_inc_dir}"
+        echo "    X11 |  load   : ${x_load_dir}"
     else
         echo "Script init_compile did NOT find X11"
     endif
@@ -3919,7 +3923,7 @@ endif
 
 # =============================================================================
 
-set inc_dirs = "${before_inc_dirs} ${default_opt_inc_dirs} ${std_inc_dirs} ${extra_opt_inc_dirs} ${after_inc_dirs}" 
+set inc_dirs = "${before_inc_dirs} ${default_opt_inc_dirs} ${extra_opt_inc_dirs} ${std_inc_dirs} ${after_inc_dirs}" 
 
 # Mimic what we do with LD_LIBRARY_PATH
 
@@ -4009,6 +4013,7 @@ if ($?KJB_VERBOSE) then
     
     echo " "
     echo "Notes:"
+    echo "    Directories that exist but have no .h or .hpp files will not apear above. "
     echo "    If any of the possible before_inc_dirs exist, they will be included first."
     echo "    The default ones for optional libs will be included to reduce compile line mess."
     echo "    The extra ones for optional libs are used to set module specific includes to be used when needed."
@@ -4143,9 +4148,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_PTHREAD due to NO_LIBS"
     else if ("${KJB_HAVE_PTHREAD}" != "") then
         echo "Script init_compile found PTHREAD"
-        echo "    LIB_PTHREAD: ${LIB_PTHREAD}"
-        echo "    include: ${pthread_inc_dir}"
-        echo "    load   : ${pthread_load_dir}"
+        echo "    PTHREAD  |  LIB_PTHREAD: ${LIB_PTHREAD}"
+        echo "    PTHREAD  |  include: ${pthread_inc_dir}"
+        echo "    PTHREAD  |  load   : ${pthread_load_dir}"
     else
         echo "Script init_compile did NOT find PTHREAD"
     endif
@@ -4235,8 +4240,8 @@ if ($?KJB_VERBOSE) then
     if ("${LIB_F77}" != "") then
         echo ""
         echo "Script init_compile found lib F77"
-        echo "    LIB_F77: ${LIB_F77}"
-        echo "    load   : ${LIB_F77_LOAD_DIR}"
+        echo "    F77  |  LIB_F77: ${LIB_F77}"
+        echo "    F77  |  load   : ${LIB_F77_LOAD_DIR}"
     else
         echo "Script init_compile did NOT find lib F77"
     endif
@@ -4312,9 +4317,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_XINERAMA due to NO_LIBS"
     else if ("${KJB_HAVE_XINERAMA}" != "") then
         echo "Script init_compile found XINERAMA"
-        echo "    LIB_XINERAMA: ${LIB_XINERAMA}"
-        echo "    include: ${xinerama_inc_dir}"
-        echo "    load   : ${xinerama_load_dir}"
+        echo "    XINERAMA  |  LIB_XINERAMA: ${LIB_XINERAMA}"
+        echo "    XINERAMA  |  include: ${xinerama_inc_dir}"
+        echo "    XINERAMA  |  load   : ${xinerama_load_dir}"
     else
         echo "Script init_compile did NOT find XINERAMA"
     endif
@@ -4401,9 +4406,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_XFT due to NO_LIBS"
     else if ("${KJB_HAVE_XFT}" != "") then
         echo "Script init_compile found XFT"
-        echo "    LIB_XFT: ${LIB_XFT}"
-        echo "    include: ${xft_inc_dir}"
-        echo "    load   : ${xft_load_dir}"
+        echo "    XFT  |  LIB_XFT: ${LIB_XFT}"
+        echo "    XFT  |  include: ${xft_inc_dir}"
+        echo "    XFT  |  load   : ${xft_load_dir}"
     else
         echo "Script init_compile did NOT find XFT"
     endif
@@ -4482,9 +4487,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_FONTCONFIG due to NO_LIBS"
     else if ("${KJB_HAVE_FONTCONFIG}" != "") then
         echo "Script init_compile found FONTCONFIG"
-        echo "    LIB_FONTCONFIG: ${LIB_FONTCONFIG}"
-        echo "    include: ${fontconfig_inc_dir}"
-        echo "    load   : ${fontconfig_load_dir}"
+        echo "    FONTCONFIG  |  LIB_FONTCONFIG: ${LIB_FONTCONFIG}"
+        echo "    FONTCONFIG  |  include: ${fontconfig_inc_dir}"
+        echo "    FONTCONFIG  |  load   : ${fontconfig_load_dir}"
     else
         echo "Script init_compile did NOT find FONTCONFIG"
     endif
@@ -4575,9 +4580,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_OSMESA due to KJB_SUPPRESS_OPENGL"
     else if ("${KJB_HAVE_OSMESA}" != "") then
         echo "Script init_compile found OSMESA"
-        echo "    LIB_OSMESA: ${LIB_OSMESA}"
-        echo "    include: ${osmesa_inc_dir}"
-        echo "    load   : ${osmesa_load_dir}"
+        echo "    OSMESA  |  LIB_OSMESA: ${LIB_OSMESA}"
+        echo "    OSMESA  |  include: ${osmesa_inc_dir}"
+        echo "    OSMESA  |  load   : ${osmesa_load_dir}"
     else if (${FORCE_OSMESA}) then 
         echo "Script init_compile did NOT find OSMESA despite FORCE_OSMESA being set to true."
     else if (${found_osmesa}) then 
@@ -4673,9 +4678,9 @@ if ($?KJB_VERBOSE) then
        echo "Script init_compile skipped LIB_CUDA beause we are using OSMESA."
     else if ("${KJB_HAVE_CUDA}" != "") then
         echo "Script init_compile found CUDA"
-        echo "    LIB_CUDA: ${LIB_CUDA}"
-        echo "    include: ${cuda_inc_dir}"
-        echo "    load   : ${cuda_load_dir}"
+        echo "    CUDA  |  LIB_CUDA: ${LIB_CUDA}"
+        echo "    CUDA  |  include: ${cuda_inc_dir}"
+        echo "    CUDA  |  load   : ${cuda_load_dir}"
     else
         echo "Script init_compile did NOT find CUDA"
     endif
@@ -4767,9 +4772,9 @@ if ($?KJB_VERBOSE) then
        echo "Script init_compile skipped LIB_CUDART beause we are using OSMESA."
     else if ("${KJB_HAVE_CUDART}" != "") then
         echo "Script init_compile found CUDART"
-        echo "    LIB_CUDART: ${LIB_CUDART}"
-        echo "    include: ${cudart_inc_dir}"
-        echo "    load   : ${cudart_load_dir}"
+        echo "    CUDART  |  LIB_CUDART: ${LIB_CUDART}"
+        echo "    CUDART  |  include: ${cudart_inc_dir}"
+        echo "    CUDART  |  load   : ${cudart_load_dir}"
     else
         echo "Script init_compile did NOT find CUDART"
     endif
@@ -4849,9 +4854,9 @@ if ($?KJB_VERBOSE) then
        echo "Script init_compile skipped LIB_CUDPP beause we are using OSMESA."
     else if ("${KJB_HAVE_CUDPP}" != "") then
         echo "Script init_compile found CUDPP"
-        echo "    LIB_CUDPP: ${LIB_CUDPP}"
-        echo "    include: ${cudpp_inc_dir}"
-        echo "    load   : ${cudpp_load_dir}"
+        echo "    CUDPP  |  LIB_CUDPP: ${LIB_CUDPP}"
+        echo "    CUDPP  |  include: ${cudpp_inc_dir}"
+        echo "    CUDPP  |  load   : ${cudpp_load_dir}"
     else
         echo "Script init_compile did NOT find CUDPP"
     endif
@@ -4932,9 +4937,9 @@ if ($?KJB_VERBOSE) then
        echo "Script init_compile skipped LIB_CUDCVT beause we are using OSMESA."
     else if ("${KJB_HAVE_CUDCVT}" != "") then
         echo "Script init_compile found CUDCVT"
-        echo "    LIB_CUDCVT: ${LIB_CUDCVT}"
-        echo "    include: ${cudcvt_inc_dir}"
-        echo "    load   : ${cudcvt_load_dir}"
+        echo "    CUDCVT  |  LIB_CUDCVT: ${LIB_CUDCVT}"
+        echo "    CUDCVT  |  include: ${cudcvt_inc_dir}"
+        echo "    CUDCVT  |  load   : ${cudcvt_load_dir}"
     else
         echo "Script init_compile did NOT find CUDCVT"
     endif
@@ -5057,9 +5062,9 @@ if ($?KJB_VERBOSE) then
        echo "Script init_compile skipped LIB_OPENGL due to missing dependency LIB_X11."
    else if ("${KJB_HAVE_OPENGL}" != "") then
        echo "Script init_compile found OPENGL"
-       echo "    LIB_OPENGL: ${LIB_OPENGL}"
-       echo "    include: ${opengl_inc_dir}"
-       echo "    load   : ${opengl_load_dir}"
+       echo "    OPENGL  |  LIB_OPENGL: ${LIB_OPENGL}"
+       echo "    OPENGL  |  include: ${opengl_inc_dir}"
+       echo "    OPENGL  |  load   : ${opengl_load_dir}"
    else
        echo "Script init_compile did NOT find OPENGL"
    endif
@@ -5165,9 +5170,9 @@ if ($?KJB_VERBOSE) then
        echo "Script init_compile skipped LIB_GLUT because opengl not present."
    else if ("${KJB_HAVE_GLUT}" != "") then
        echo "Script init_compile found GLUT"
-       echo "    LIB_GLUT: ${LIB_GLUT}"
-       echo "    include: ${glut_inc_dir}"
-       echo "    load   : ${glut_load_dir}"
+       echo "    GLUT  |  LIB_GLUT: ${LIB_GLUT}"
+       echo "    GLUT  |  include: ${glut_inc_dir}"
+       echo "    GLUT  |  load   : ${glut_load_dir}"
    else
        echo "Script init_compile did NOT find GLUT"
    endif
@@ -5246,9 +5251,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_GLEW because opengl not present."
     else if ("${KJB_HAVE_GLEW}" != "") then
         echo "Script init_compile found GLEW"
-        echo "    LIB_GLEW: ${LIB_GLEW}"
-        echo "    include: ${glew_inc_dir}"
-        echo "    load   : ${glew_load_dir}"
+        echo "    GLEW  |  LIB_GLEW: ${LIB_GLEW}"
+        echo "    GLEW  |  include: ${glew_inc_dir}"
+        echo "    GLEW  |  load   : ${glew_load_dir}"
     else
         echo "Script init_compile did NOT find GLEW"
     endif
@@ -5346,9 +5351,9 @@ if ($?KJB_VERBOSE) then
 
     if ("${KJB_HAVE_CURSES}" != "") then
         echo "Script init_compile found CURSES"
-        echo "    LIB_CURSES: ${LIB_CURSES}"
-        echo "    include: ${curses_inc_dir}"
-        echo "    load   : ${curses_load_dir}"
+        echo "    CURSES  |  LIB_CURSES: ${LIB_CURSES}"
+        echo "    CURSES  |  include: ${curses_inc_dir}"
+        echo "    CURSES  |  load   : ${curses_load_dir}"
 
         if (${NO_LIBS}) then
             echo ""
@@ -5420,9 +5425,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_OPENSSL due to NO_LIBS"
     else if ("${KJB_HAVE_OPENSSL}" != "") then
         echo "Script init_compile found OPENSSL"
-        echo "    LIB_OPENSSL: ${LIB_OPENSSL}"
-        echo "    include: ${openssl_inc_dir}"
-        echo "    load   : ${openssl_load_dir}"
+        echo "    OPENSSL  |  LIB_OPENSSL: ${LIB_OPENSSL}"
+        echo "    OPENSSL  |  include: ${openssl_inc_dir}"
+        echo "    OPENSSL  |  load   : ${openssl_load_dir}"
     else
         echo "Script init_compile did NOT find OPENSSL"
     endif
@@ -5442,7 +5447,10 @@ set kjb_have_lapack = ""
 set all_kjb_have = "${all_kjb_have} -DKJB_HAVE_LAPACK"
 set lib_lapack = ""
 kjb_setenv OPTIONS_LAPACK ""
+
+# Might get updated below. 
 kjb_setenv CC_FLAGS_LAPACK ""
+
 set optional_libs = "${optional_libs} LAPACK:lapack\.h"
 set optional_libs = "${optional_libs} LAPACK:mkl_lapack\.h"
 set optional_libs = "${optional_libs} LAPACK:acml\.h"
@@ -5550,8 +5558,26 @@ if (! ${NO_LIBS}) then
                 set have_lapack = "-DKJB_HAVE_LAPACK"
                 break
             endif
-        end
 
+            # Sometimes, e.g., macports, the library is in the subdirectory
+            # "laplace". So, to be consistent with includes we should check
+            # there. However, on the mac we have at least three possibilities:
+            # default, macports, and our version compiled from source code. 
+            # It should be easier to do the bake off. FIXME
+
+            set load_dir = "${load_dir}/lapack"
+            if (-e "${load_dir}") then 
+                set have_lib = `/bin/ls -1 ${load_dir} | grep ^liblapack\\. | ${filter_non_devel}`
+                set have_lib_2 = `/bin/ls -1 ${load_dir} | grep ^libblas\\. | ${filter_non_devel}`
+
+                if (("${have_lib}" != "") && ("${have_lib_2}" != "")) then
+                    set lapack_load_dir = "${load_dir}"
+                    set lib_lapack = "-llapack -lblas"
+                    set have_lapack = "-DKJB_HAVE_LAPACK"
+                    break
+                endif
+            endif
+        end
     endif
 
     # FIXED? Previous code follows (commented out). 
@@ -5567,6 +5593,14 @@ if (! ${NO_LIBS}) then
             end
         endif
     endif
+
+    # if (-e "${lapack_inc_dir}/lapacke_config.h") then
+        # kjb_setenv CC_FLAGS_LAPACK "${CC_FLAGS_LAPACK} -DHAVE_LAPACK_CONFIG_H"
+    # endif 
+
+    if (("${OS}" == "mac_osx") && ("${lapack_inc_dir}" == "/opt/local/include")) then
+        kjb_setenv CC_FLAGS_LAPACK "${CC_FLAGS_LAPACK} -DMACPORTS_LAPACK"
+    endif 
 
 #     # Broken because we do not care about lapack.h in the alternative case.
 #     # FIXME
@@ -5597,6 +5631,8 @@ if (! ${NO_LIBS}) then
 
             if ("${have_lib}" != "") then
                 set lapack_f77_lib = "-l${f77_string}"
+                # We do not need lapack_f77_dir as we are looking at the
+                # lapack_load_dir which we already know about. 
                 set lapack_f77_dir = "" 
                 break
             endif
@@ -5642,9 +5678,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_LAPACK due to NO_LIBS"
     else if ("${KJB_HAVE_LAPACK}" != "") then
         echo "Script init_compile found LAPACK"
-        echo "    LIB_LAPACK: ${LIB_LAPACK}"
-        echo "    include: ${lapack_inc_dir}"
-        echo "    load   : ${lapack_load_dir}"
+        echo "    LAPACK  |  LIB_LAPACK: ${LIB_LAPACK}"
+        echo "    LAPACK  |  include: ${lapack_inc_dir}"
+        echo "    LAPACK  |  load   : ${lapack_load_dir}"
     else if (("${lapack_inc_dir}" != "") && ("${lapack_f77_lib}" == "")) then
         echo "Script init_compile found LAPACK but NOT needed F77 library"
         echo "LAPACK is thus not used." 
@@ -5752,10 +5788,10 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_F2C due to NO_LIBS"
     else if ("${KJB_HAVE_F2C}" != "") then
         echo "Script init_compile found F2C"
-        echo "    KJB_HAVE_F2C: ${KJB_HAVE_F2C}"
-        echo "    LIB_F2C: ${LIB_F2C}"
-        echo "    include: ${f2c_inc_dir}"
-        echo "    load   : ${f2c_load_dir}"
+        echo "    F2C  |  KJB_HAVE_F2C: ${KJB_HAVE_F2C}"
+        echo "    F2C  |  LIB_F2C: ${LIB_F2C}"
+        echo "    F2C  |  include: ${f2c_inc_dir}"
+        echo "    F2C  |  load   : ${f2c_load_dir}"
     else
         echo "Script init_compile did NOT find F2C with headers"
     endif
@@ -5856,9 +5892,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_SLATEC due to NO_LIBS"
     else if ("${KJB_HAVE_SLATEC}" != "") then
         echo "Script init_compile found SLATEC"
-        echo "    LIB_SLATEC: ${LIB_SLATEC}"
-        echo "    include: ${slatec_inc_dir}"
-        echo "    load   : ${slatec_load_dir}"
+        echo "    SLATEC  |  LIB_SLATEC: ${LIB_SLATEC}"
+        echo "    SLATEC  |  include: ${slatec_inc_dir}"
+        echo "    SLATEC  |  load   : ${slatec_load_dir}"
     else if (("${slatec_inc_dir}" != "") && ("${slatec_f77_lib}" == "")) then
         echo "Script init_compile found SLATEC but NOT needed F77 library"
         echo "SLATEC is thus not used." 
@@ -5959,9 +5995,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_TIFF due to NO_LIBS"
     else if ("${KJB_HAVE_TIFF}" != "") then
         echo "Script init_compile found TIFF"
-        echo "    LIB_TIFF: ${LIB_TIFF}"
-        echo "    include: ${tiff_inc_dir}"
-        echo "    load   : ${tiff_load_dir}"
+        echo "    TIFF  |  LIB_TIFF: ${LIB_TIFF}"
+        echo "    TIFF  |  include: ${tiff_inc_dir}"
+        echo "    TIFF  |  load   : ${tiff_load_dir}"
     else
         echo "Script init_compile did NOT find TIFF"
     endif
@@ -6048,9 +6084,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_JPEG due to NO_LIBS"
     else if ("${KJB_HAVE_JPEG}" != "") then
         echo "Script init_compile found JPEG"
-        echo "    LIB_JPEG: ${LIB_JPEG}"
-        echo "    include: ${jpeg_inc_dir}"
-        echo "    load   : ${jpeg_load_dir}"
+        echo "    JPEG  |  LIB_JPEG: ${LIB_JPEG}"
+        echo "    JPEG  |  include: ${jpeg_inc_dir}"
+        echo "    JPEG  |  load   : ${jpeg_load_dir}"
     else
         echo "Script init_compile did NOT find JPEG"
     endif
@@ -6121,9 +6157,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_PNG due to NO_LIBS"
     else if ("${KJB_HAVE_PNG}" != "") then
         echo "Script init_compile found PNG"
-        echo "    LIB_PNG: ${LIB_PNG}"
-        echo "    include: ${png_inc_dir}"
-        echo "    load   : ${png_load_dir}"
+        echo "    PNG  |  LIB_PNG: ${LIB_PNG}"
+        echo "    PNG  |  include: ${png_inc_dir}"
+        echo "    PNG  |  load   : ${png_load_dir}"
     else
         echo "Script init_compile did NOT find PNG"
     endif
@@ -6229,9 +6265,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_FLTK due to missing (possible) dependency LIB_XFT"
     else if ("${KJB_HAVE_FLTK}" != "") then
         echo "Script init_compile found FLTK"
-        echo "    LIB_FLTK: ${LIB_FLTK}"
-        echo "    include: ${fltk_inc_dir}"
-        echo "    load   : ${fltk_load_dir}"
+        echo "    FLTK  |  LIB_FLTK: ${LIB_FLTK}"
+        echo "    FLTK  |  include: ${fltk_inc_dir}"
+        echo "    FLTK  |  load   : ${fltk_load_dir}"
     else
         echo "Script init_compile did NOT find FLTK"
     endif
@@ -6309,9 +6345,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_WN due to NO_LIBS"
     else if ("${KJB_HAVE_WN}" != "") then
         echo "Script init_compile found WN"
-        echo "    LIB_WN: ${LIB_WN}"
-        echo "    include: ${wn_inc_dir}"
-        echo "    load   : ${wn_load_dir}"
+        echo "    WN  |  LIB_WN: ${LIB_WN}"
+        echo "    WN  |  include: ${wn_inc_dir}"
+        echo "    WN  |  load   : ${wn_load_dir}"
     else
         echo "Script init_compile did NOT find WN"
     endif
@@ -6383,9 +6419,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_FFTW due to NO_LIBS"
     else if ("${KJB_HAVE_FFTW}" != "") then
         echo "Script init_compile found FFTW"
-        echo "    LIB_FFTW: ${LIB_FFTW}"
-        echo "    include: ${fftw_inc_dir}"
-        echo "    load   : ${fftw_load_dir}"
+        echo "    FFTW  |  LIB_FFTW: ${LIB_FFTW}"
+        echo "    FFTW  |  include: ${fftw_inc_dir}"
+        echo "    FFTW  |  load   : ${fftw_load_dir}"
     else
         echo "Script init_compile did NOT find FFTW"
     endif
@@ -6491,9 +6527,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_GANDALF due to missing dependency LIB_JPEG."
     else if ("${KJB_HAVE_GANDALF}" != "") then
         echo "Script init_compile found GANDALF"
-        echo "    LIB_GANDALF: ${LIB_GANDALF}"
-        echo "    include: ${gandalf_inc_dir}"
-        echo "    load   : ${gandalf_load_dir}"
+        echo "    GANDALF  |  LIB_GANDALF: ${LIB_GANDALF}"
+        echo "    GANDALF  |  include: ${gandalf_inc_dir}"
+        echo "    GANDALF  |  load   : ${gandalf_load_dir}"
     else if (("${gandalf_inc_dir}" != "") && ("${gandalf_f77_lib}" == "") && (${gandalf_requires_fortran})) then
         echo "Script init_compile found GANDALF but NOT needed F77 library"
         echo "GANDALF is thus not used." 
@@ -6652,9 +6688,9 @@ if ($?KJB_VERBOSE) then
 #         echo "Script init_compile skipped LIB_GSL due to missing dependency LIB_BLAS."
     else if ("${KJB_HAVE_GSL}" != "") then
         echo "Script init_compile found GSL"
-        echo "    LIB_GSL: ${LIB_GSL}"
-        echo "    include: ${gsl_inc_dir}"
-        echo "    load   : ${gsl_load_dir}"
+        echo "    GSL  |  LIB_GSL: ${LIB_GSL}"
+        echo "    GSL  |  include: ${gsl_inc_dir}"
+        echo "    GSL  |  load   : ${gsl_load_dir}"
     # else if (("${gsl_inc_dir}" != "") && ("${gsl_f77_lib}" == "")) then
     #     echo "Script init_compile found GSL but NOT needed F77 library"
     #     echo "GSL is thus not used." 
@@ -6725,9 +6761,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_LIBSVM due to NO_LIBS"
     else if ("${KJB_HAVE_LIBSVM}" != "") then
         echo "Script init_compile found LIBSVM"
-        echo "    LIB_LIBSVM: ${LIB_LIBSVM}"
-        echo "    include: ${libsvm_inc_dir}"
-        echo "    load   : ${libsvm_load_dir}"
+        echo "    LIBSVM  |  LIB_LIBSVM: ${LIB_LIBSVM}"
+        echo "    LIBSVM  |  include: ${libsvm_inc_dir}"
+        echo "    LIBSVM  |  load   : ${libsvm_load_dir}"
     else
         echo "Script init_compile did NOT find LIBSVM"
     endif
@@ -6797,9 +6833,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_DGL due to missing dependency LIB_OPENGL."
     else if ("${KJB_HAVE_DGL}" != "") then
         echo "Script init_compile found DGL"
-        echo "    LIB_DGL: ${LIB_DGL}"
-        echo "    include: ${dgl_inc_dir}"
-        echo "    load   : ${dgl_load_dir}"
+        echo "    DGL  |  LIB_DGL: ${LIB_DGL}"
+        echo "    DGL  |  include: ${dgl_inc_dir}"
+        echo "    DGL  |  load   : ${dgl_load_dir}"
     else
         echo "Script init_compile did NOT find DGL"
     endif
@@ -6873,9 +6909,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_VRJ due to missing dependency LIB_OPENGL."
     else if ("${KJB_HAVE_VRJ}" != "") then
         echo "Script init_compile found VRJ"
-        echo "    LIB_VRJ: ${LIB_VRJ}"
-        echo "    include: ${vrj_inc_dir}"
-        echo "    load   : ${vrj_load_dir}"
+        echo "    VRJ  |  LIB_VRJ: ${LIB_VRJ}"
+        echo "    VRJ  |  include: ${vrj_inc_dir}"
+        echo "    VRJ  |  load   : ${vrj_load_dir}"
     else
         echo "Script init_compile did NOT find VRJ"
     endif
@@ -6954,9 +6990,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_LEVMAR due to NO_LIBS"
     else if ("${KJB_HAVE_LEVMAR}" != "") then
         echo "Script init_compile found LEVMAR"
-        echo "    LIB_LEVMAR: ${LIB_LEVMAR}"
-        echo "    include: ${levmar_inc_dir}"
-        echo "    load   : ${levmar_load_dir}"
+        echo "    LEVMAR  |  LIB_LEVMAR: ${LIB_LEVMAR}"
+        echo "    LEVMAR  |  include: ${levmar_inc_dir}"
+        echo "    LEVMAR  |  load   : ${levmar_load_dir}"
     else if (("${levmar_inc_dir}" != "") && ("${LIB_LAPACK}" == "")) then
         echo "Script init_compile found LEVMAR but NOT needed LAPACK library"
         echo "LEVMAR is thus not used." 
@@ -7036,9 +7072,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_ANN due to NO_LIBS"
     else if ("${KJB_HAVE_ANN}" != "") then
         echo "Script init_compile found ANN"
-        echo "    LIB_ANN: ${LIB_ANN}"
-        echo "    include: ${ann_inc_dir}"
-        echo "    load   : ${ann_load_dir}"
+        echo "    ANN  |  LIB_ANN: ${LIB_ANN}"
+        echo "    ANN  |  include: ${ann_inc_dir}"
+        echo "    ANN  |  load   : ${ann_load_dir}"
     else
         echo "Script init_compile did NOT find ANN"
     endif
@@ -7102,9 +7138,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_XERCESC due to NO_LIBS"
     else if ("${KJB_HAVE_XERCESC}" != "") then
         echo "Script init_compile found XERCESC"
-        echo "    LIB_XERCESC: ${LIB_XERCESC}"
-        echo "    include: ${xercesc_inc_dir}"
-        echo "    load   : ${xercesc_load_dir}"
+        echo "    XERCESC  |  LIB_XERCESC: ${LIB_XERCESC}"
+        echo "    XERCESC  |  include: ${xercesc_inc_dir}"
+        echo "    XERCESC  |  load   : ${xercesc_load_dir}"
     else
         echo "Script init_compile did NOT find XERCESC"
     endif
@@ -7166,9 +7202,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_TBB due to NO_LIBS"
     else if ("${KJB_HAVE_TBB}" != "") then
         echo "Script init_compile found TBB"
-        echo "    LIB_TBB: ${LIB_TBB}"
-        echo "    include: ${tbb_inc_dir}"
-        echo "    load   : ${tbb_load_dir}"
+        echo "    TBB  |  LIB_TBB: ${LIB_TBB}"
+        echo "    TBB  |  include: ${tbb_inc_dir}"
+        echo "    TBB  |  load   : ${tbb_load_dir}"
     else
         echo "Script init_compile did NOT find TBB"
     endif
@@ -7182,13 +7218,13 @@ endif
 set boost_before_inc_dirs = "" 
 set boost_before_load_dirs = "" 
 
-if ("${BOOST_VERSION}" != "") then
-    set boost_inc_sub_dirs = "boost_${BOOST_VERSION}"
-    set boost_link_sub_dirs = "boost_${BOOST_VERSION}"
+if ("${IVI_BOOST_VERSION}" != "") then
+    set boost_inc_sub_dirs = "boost_${IVI_BOOST_VERSION}"
+    set boost_link_sub_dirs = "boost_${IVI_BOOST_VERSION}"
 # else 
 # 
-#     if ("${BOOST_VERSION}" != "") then
-#         set boost_inc_sub_dirs = "boost_${BOOST_VERSION} boost/${BOOST_VERSION} boost/@${BOOST_VERSION}"
+#     if ("${IVI_BOOST_VERSION}" != "") then
+#         set boost_inc_sub_dirs = "boost_${IVI_BOOST_VERSION} boost/${IVI_BOOST_VERSION} boost/@${IVI_BOOST_VERSION}"
 #     else 
 #         set boost_inc_sub_dirs = "boost"
 #     endif 
@@ -7234,7 +7270,7 @@ if (! ${NO_BOOST}) then
 
     if ("${boost_inc_dir}" == "") then
         foreach inc_dir (${inc_dirs}) 
-            if ("${BOOST_VERSION}" != "") then
+            if ("${IVI_BOOST_VERSION}" != "") then
                 foreach inc_sub_dir (${boost_inc_sub_dirs}) 
                     if (-e ${inc_dir}/${inc_sub_dir}/boost/version.hpp) then
                         set boost_inc_dir = "${inc_dir}/${inc_sub_dir}" 
@@ -7255,7 +7291,7 @@ if (! ${NO_BOOST}) then
     endif
 
     if ("${boost_inc_dir}" != "") then
-        if ("${BOOST_VERSION}" != "") then
+        if ("${IVI_BOOST_VERSION}" != "") then
             set boost_before_inc_dirs = "${boost_inc_dir}" 
         endif 
 
@@ -7284,8 +7320,8 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_BOOST due to NO_BOOST"
     else if ("${KJB_HAVE_BOOST}" != "") then
         echo "Script init_compile found BOOST headers"
-        echo "    include: ${boost_inc_dir}"
-        echo "    version: ${actual_boost_version}"
+        echo "    BOOST  |  include: ${boost_inc_dir}"
+        echo "    BOOST  |  version: ${actual_boost_version}"
     else
         echo "Script init_compile did NOT find BOOST headers"
     endif
@@ -7293,11 +7329,11 @@ endif
 
 # -----------------------------------------------------------------------------
 
-if ("${BOOST_VERSION}" != "") then
+if ("${IVI_BOOST_VERSION}" != "") then
     if ("${boost_before_inc_dirs}" == "") then
         if (! $?KJB_QUIET ) then
             echo " "
-            echo "Unable to find boost includes with BOOST_VERSION=${BOOST_VERSION}."
+            echo "Unable to find boost includes with IVI_BOOST_VERSION=${IVI_BOOST_VERSION}."
             echo " "
         endif 
         exit 1
@@ -7347,7 +7383,7 @@ if (! ${NO_BOOST}) then
         foreach load_dir (${load_dirs}) 
             if (! -d ${load_dir}) continue
 
-            if ("${BOOST_VERSION}" != "") then
+            if ("${IVI_BOOST_VERSION}" != "") then
                 foreach boost_link_sub_dir (${boost_link_sub_dirs}) 
                     if (! -d ${load_dir}/${boost_link_sub_dir}) continue
 
@@ -7386,7 +7422,7 @@ if (! ${NO_BOOST}) then
     endif
 
     if ("${bst_serial_inc_dir}" != "") then
-        if ("${BOOST_VERSION}" != "") then
+        if ("${IVI_BOOST_VERSION}" != "") then
             #
             # If we specified a boost version, then where we found it needs to
             # have priority. It is unlikely, but possible that we found boost in
@@ -7451,12 +7487,12 @@ if ($?KJB_VERBOSE) then
     if (${NO_BOOST}) then
         echo "Script init_compile skipped LIB_BST_SERIAL due to NO_BOOST"
     else if ("${KJB_HAVE_BST_SERIAL}" != "") then
-        echo "Script init_compile found BST_SERIAL"
-        echo "    LIB_BST_SERIAL: ${LIB_BST_SERIAL}"
-        echo "    include: ${bst_serial_inc_dir}"
-        echo "    load   : ${bst_serial_load_dir}"
+        echo "Script init_compile found BOOST  BST_SERIAL"
+        echo "    BOOST  BST_SERIAL  |  LIB_BST_SERIAL: ${LIB_BST_SERIAL}"
+        echo "    BOOST  BST_SERIAL  |  include: ${bst_serial_inc_dir}"
+        echo "    BOOST  BST_SERIAL  |  load   : ${bst_serial_load_dir}"
     else
-        echo "Script init_compile did NOT find BST_SERIAL"
+        echo "Script init_compile did NOT find BOOST  BST_SERIAL"
     endif
 endif
 
@@ -7503,7 +7539,7 @@ if (! ${NO_BOOST}) then
         foreach load_dir (${load_dirs}) 
             if (! -d ${load_dir}) continue
 
-            if ("${BOOST_VERSION}" != "") then
+            if ("${IVI_BOOST_VERSION}" != "") then
                 foreach boost_link_sub_dir (${boost_link_sub_dirs}) 
                     if (! -d ${load_dir}/${boost_link_sub_dir}) continue
 
@@ -7542,7 +7578,7 @@ if (! ${NO_BOOST}) then
     endif
 
     if ("${bst_poptions_inc_dir}" != "") then
-        if ("${BOOST_VERSION}" != "") then
+        if ("${IVI_BOOST_VERSION}" != "") then
             #
             # If we specified a boost version, then where we found it needs to
             # have priority. It is unlikely, but possible that we found boost in
@@ -7607,12 +7643,12 @@ if ($?KJB_VERBOSE) then
     if (${NO_BOOST}) then
         echo "Script init_compile skipped LIB_BST_POPTIONS due to NO_BOOST"
     else if ("${KJB_HAVE_BST_POPTIONS}" != "") then
-        echo "Script init_compile found BST_POPTIONS"
-        echo "    LIB_BST_POPTIONS: ${LIB_BST_POPTIONS}"
-        echo "    include: ${bst_poptions_inc_dir}"
-        echo "    load   : ${bst_poptions_load_dir}"
+        echo "Script init_compile found BOOST  BST_POPTIONS"
+        echo "    BOOST  BST_POPTIONS  |  LIB_BST_POPTIONS: ${LIB_BST_POPTIONS}"
+        echo "    BOOST  BST_POPTIONS  |  include: ${bst_poptions_inc_dir}"
+        echo "    BOOST  BST_POPTIONS  |  load   : ${bst_poptions_load_dir}"
     else
-        echo "Script init_compile did NOT find BST_POPTIONS"
+        echo "Script init_compile did NOT find BOOST  BST_POPTIONS"
     endif
 endif
 
@@ -7659,7 +7695,7 @@ if (! ${NO_BOOST}) then
         foreach load_dir (${load_dirs}) 
             if (! -d ${load_dir}) continue
 
-            if ("${BOOST_VERSION}" != "") then
+            if ("${IVI_BOOST_VERSION}" != "") then
                 foreach boost_link_sub_dir (${boost_link_sub_dirs}) 
                     if (! -d ${load_dir}/${boost_link_sub_dir}) continue
 
@@ -7698,7 +7734,7 @@ if (! ${NO_BOOST}) then
     endif
 
     if ("${bst_thread_inc_dir}" != "") then
-        if ("${BOOST_VERSION}" != "") then
+        if ("${IVI_BOOST_VERSION}" != "") then
             #
             # If we specified a boost version, then where we found stuff needs
             # to have priority. It is unlikely, but possible that we found
@@ -7770,12 +7806,12 @@ if ($?KJB_VERBOSE) then
     if (${NO_BOOST}) then
         echo "Script init_compile skipped LIB_BST_THREAD due to NO_BOOST"
     else if ("${KJB_HAVE_BST_THREAD}" != "") then
-        echo "Script init_compile found BST_THREAD"
-        echo "    LIB_BST_THREAD: ${LIB_BST_THREAD}"
-        echo "    include: ${bst_thread_inc_dir}"
-        echo "    load   : ${bst_thread_load_dir}"
+        echo "Script init_compile found BOOST  BST_THREAD"
+        echo "    BOOST  BST_THREAD  |  LIB_BST_THREAD: ${LIB_BST_THREAD}"
+        echo "    BOOST  BST_THREAD  |  include: ${bst_thread_inc_dir}"
+        echo "    BOOST  BST_THREAD  |  load   : ${bst_thread_load_dir}"
     else
-        echo "Script init_compile did NOT find BST_THREAD"
+        echo "Script init_compile did NOT find BOOST  BST_THREAD"
     endif
 endif
 
@@ -7821,7 +7857,7 @@ if (! ${NO_BOOST}) then
         foreach load_dir (${load_dirs}) 
             if (! -d ${load_dir}) continue
 
-            if ("${BOOST_VERSION}" != "") then
+            if ("${IVI_BOOST_VERSION}" != "") then
                 foreach boost_link_sub_dir (${boost_link_sub_dirs}) 
                     if (! -d ${load_dir}/${boost_link_sub_dir}) continue
 
@@ -7860,7 +7896,7 @@ if (! ${NO_BOOST}) then
     endif
 
     if ("${bst_system_inc_dir}" != "") then
-        if ("${BOOST_VERSION}" != "") then
+        if ("${IVI_BOOST_VERSION}" != "") then
             #
             # If we specified a boost version, then where we found it needs to
             # have priority. It is unlikely, but possible that we found boost in
@@ -7924,12 +7960,12 @@ if ($?KJB_VERBOSE) then
     if (${NO_BOOST}) then
         echo "Script init_compile skipped LIB_BST_SYSTEM due to NO_BOOST"
     else if ("${KJB_HAVE_BST_SYSTEM}" != "") then
-        echo "Script init_compile found BST_SYSTEM"
-        echo "    LIB_BST_SYSTEM: ${LIB_BST_SYSTEM}"
-        echo "    include: ${bst_system_inc_dir}"
-        echo "    load   : ${bst_system_load_dir}"
+        echo "Script init_compile found BOOST  BST_SYSTEM"
+        echo "    BOOST  BST_SYSTEM  |  LIB_BST_SYSTEM: ${LIB_BST_SYSTEM}"
+        echo "    BOOST  BST_SYSTEM  |  include: ${bst_system_inc_dir}"
+        echo "    BOOST  BST_SYSTEM  |  load   : ${bst_system_load_dir}"
     else
-        echo "Script init_compile did NOT find BST_SYSTEM"
+        echo "Script init_compile did NOT find BOOST  BST_SYSTEM"
     endif
 endif
 
@@ -7976,7 +8012,7 @@ if (! ${NO_BOOST}) then
         foreach load_dir (${load_dirs}) 
             if (! -d ${load_dir}) continue
 
-            if ("${BOOST_VERSION}" != "") then
+            if ("${IVI_BOOST_VERSION}" != "") then
                 foreach boost_link_sub_dir (${boost_link_sub_dirs}) 
                     if (! -d ${load_dir}/${boost_link_sub_dir}) continue
                     set have_lib = `/bin/ls -1 ${load_dir}/${boost_link_sub_dir} | grep ^libboost_filesystem\\. | ${filter_non_devel}`
@@ -8014,7 +8050,7 @@ if (! ${NO_BOOST}) then
     endif
 
     if ("${bst_filesystem_inc_dir}" != "") then
-        if ("${BOOST_VERSION}" != "") then
+        if ("${IVI_BOOST_VERSION}" != "") then
             #
             # If we specified a boost version, then where we found it needs to
             # have priority. It is unlikely, but possible that we found boost in
@@ -8078,12 +8114,12 @@ if ($?KJB_VERBOSE) then
     if (${NO_BOOST}) then
         echo "Script init_compile skipped LIB_BST_FILESYSTEM due to NO_BOOST"
     else if ("${KJB_HAVE_BST_FILESYSTEM}" != "") then
-        echo "Script init_compile found BST_FILESYSTEM"
-        echo "    LIB_BST_FILESYSTEM: ${LIB_BST_FILESYSTEM}"
-        echo "    include: ${bst_filesystem_inc_dir}"
-        echo "    load   : ${bst_filesystem_load_dir}"
+        echo "Script init_compile found BOOST  BST_FILESYSTEM"
+        echo "    BOOST  BST_FILESYSTEM  |  LIB_BST_FILESYSTEM: ${LIB_BST_FILESYSTEM}"
+        echo "    BOOST  BST_FILESYSTEM  |  include: ${bst_filesystem_inc_dir}"
+        echo "    BOOST  BST_FILESYSTEM  |  load   : ${bst_filesystem_load_dir}"
     else
-        echo "Script init_compile did NOT find BST_FILESYSTEM"
+        echo "Script init_compile did NOT find BOOST  BST_FILESYSTEM"
     endif
 endif
 
@@ -8220,9 +8256,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_OPENCV due to NO_LIBS"
     else if ("${KJB_HAVE_OPENCV}" != "") then
         echo "Script init_compile found OPENCV (version 2 or above)"
-        echo "    LIB_OPENCV: ${LIB_OPENCV}"
-        echo "    include: ${opencv_inc_dir}"
-        echo "    load   : ${opencv_load_dir}"
+        echo "    OPENCV  |  LIB_OPENCV: ${LIB_OPENCV}"
+        echo "    OPENCV  |  include: ${opencv_inc_dir}"
+        echo "    OPENCV  |  load   : ${opencv_load_dir}"
     else
         echo "Script init_compile did NOT find OPENCV (only looked for version 2 or above)"
     endif
@@ -8298,9 +8334,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_DLIB due to missing dependencies. Specifically: ${missing_dependencies}"
     else if ("${KJB_HAVE_DLIB}" != "") then
         echo "Script init_compile found DLIB"
-        echo "    LIB_DLIB: ${LIB_DLIB}"
-        echo "    include: ${dlib_inc_dir}"
-        echo "    load   : ${dlib_load_dir}"
+        echo "    DLIB  |  LIB_DLIB: ${LIB_DLIB}"
+        echo "    DLIB  |  include: ${dlib_inc_dir}"
+        echo "    DLIB  |  load   : ${dlib_load_dir}"
     else
         echo "Script init_compile did NOT find DLIB"
     endif
@@ -8399,9 +8435,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_OPENFACE due to missing dependencies. Specifically: ${missing_dependencies}"
     else if ("${KJB_HAVE_OPENFACE}" != "") then
         echo "Script init_compile found OPENFACE"
-        echo "    LIB_OPENFACE: ${LIB_OPENFACE}"
-        echo "    include: ${openface_inc_dir}"
-        echo "    load   : ${openface_load_dir}"
+        echo "    OPENFACE  |  LIB_OPENFACE: ${LIB_OPENFACE}"
+        echo "    OPENFACE  |  include: ${openface_inc_dir}"
+        echo "    OPENFACE  |  load   : ${openface_load_dir}"
     else
         echo "Script init_compile did NOT find OPENFACE"
     endif
@@ -8414,9 +8450,16 @@ set kjb_have_ode = ""
 set all_kjb_have = "${all_kjb_have} -DKJB_HAVE_ODE"
 set lib_ode = ""
 kjb_setenv OPTIONS_ODE ""
+kjb_setenv CC_FLAGS_ODE ""
 
-# kjb_setenv CC_FLAGS_ODE `which ode-config > & /dev/null && ode-config --cflags || echo "-DdDOUBLE"`
-kjb_setenv CC_FLAGS_ODE `which ode-config > & /dev/null && ode-config --cflags || echo ""`
+which ode-config >& /dev/null
+
+if (! ${status}) then
+    # UNTESTED
+    kjb_setenv CC_FLAGS_ODE `ode-config --cflags`
+else
+    kjb_setenv CC_FLAGS_ODE ""
+endif 
 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -8489,9 +8532,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_ODE due to NO_LIBS"
     else if ("${KJB_HAVE_ODE}" != "") then
         echo "Script init_compile found ODE"
-        echo "    LIB_ODE: ${LIB_ODE}"
-        echo "    include: ${ode_inc_dir}"
-        echo "    load   : ${ode_load_dir}"
+        echo "    ODE  |  LIB_ODE: ${LIB_ODE}"
+        echo "    ODE  |  include: ${ode_inc_dir}"
+        echo "    ODE  |  load   : ${ode_load_dir}"
     else
         echo "Script init_compile did NOT find ODE"
     endif
@@ -8563,9 +8606,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_VLFEAT due to NO_LIBS"
     else if ("${KJB_HAVE_VLFEAT}" != "") then
         echo "Script init_compile found VLFEAT"
-        echo "    LIB_VLFEAT: ${LIB_VLFEAT}"
-        echo "    include: ${vlfeat_inc_dir}"
-        echo "    load   : ${vlfeat_load_dir}"
+        echo "    VLFEAT  |  LIB_VLFEAT: ${LIB_VLFEAT}"
+        echo "    VLFEAT  |  include: ${vlfeat_inc_dir}"
+        echo "    VLFEAT  |  load   : ${vlfeat_load_dir}"
     else
         echo "Script init_compile did NOT find VLFEAT"
     endif
@@ -8736,9 +8779,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_VTK due to NO_LIBS"
     else if ("${KJB_HAVE_VTK}" != "") then
         echo "Script init_compile found VTK"
-        echo "    LIB_VTK: ${LIB_VTK}"
-        echo "    include: ${vtk_inc_dir}"
-        echo "    load   : ${vtk_load_dir}"
+        echo "    VTK  |  LIB_VTK: ${LIB_VTK}"
+        echo "    VTK  |  include: ${vtk_inc_dir}"
+        echo "    VTK  |  load   : ${vtk_load_dir}"
     else
         echo "Script init_compile did NOT find VTK"
     endif
@@ -8826,9 +8869,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_XERCES due to NO_LIBS"
     else if ("${KJB_HAVE_XERCES}" != "") then
         echo "Script init_compile found XERCES"
-        echo "    LIB_XERCES: ${LIB_XERCES}"
-        echo "    include: ${xerces_inc_dir}"
-        echo "    load   : ${xerces_load_dir}"
+        echo "    XERCES  |  LIB_XERCES: ${LIB_XERCES}"
+        echo "    XERCES  |  include: ${xerces_inc_dir}"
+        echo "    XERCES  |  load   : ${xerces_load_dir}"
     else
         echo "Script init_compile did NOT find XERCES"
     endif
@@ -8962,9 +9005,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_FFMPEG due to NO_LIBS"
     else if ("${KJB_HAVE_FFMPEG}" != "") then
         echo "Script init_compile found FFMPEG"
-        echo "    LIB_FFMPEG: ${LIB_FFMPEG}"
-        echo "    include: ${ffmpeg_inc_dir}"
-        echo "    load   : ${ffmpeg_load_dir}"
+        echo "    FFMPEG  |  LIB_FFMPEG: ${LIB_FFMPEG}"
+        echo "    FFMPEG  |  include: ${ffmpeg_inc_dir}"
+        echo "    FFMPEG  |  load   : ${ffmpeg_load_dir}"
     else
         echo "Script init_compile did NOT find FFMPEG"
     endif
@@ -9062,9 +9105,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_CASADI due to NO_LIBS"
     else if ("${KJB_HAVE_CASADI}" != "") then
         echo "Script init_compile found CASADI"
-        echo "    LIB_CASADI: ${LIB_CASADI}"
-        echo "    include: ${casadi_inc_dir}"
-        echo "    load   : ${casadi_load_dir}"
+        echo "    CASADI  |  LIB_CASADI: ${LIB_CASADI}"
+        echo "    CASADI  |  include: ${casadi_inc_dir}"
+        echo "    CASADI  |  load   : ${casadi_load_dir}"
     else
         echo "Script init_compile did NOT find CASADI"
     endif
@@ -9156,9 +9199,9 @@ if ($?KJB_VERBOSE) then
        echo "Script init_compile skipped LIB_OPENCL due to KJB_SUPPRESS_OPENCL"
    else if ("${KJB_HAVE_OPENCL}" != "") then
        echo "Script init_compile found OPENCL"
-       echo "    LIB_OPENCL: ${LIB_OPENCL}"
-       echo "    include: ${opencl_inc_dir}"
-       echo "    load   : ${opencl_load_dir}"
+       echo "    OPENCL  |  LIB_OPENCL: ${LIB_OPENCL}"
+       echo "    OPENCL  |  include: ${opencl_inc_dir}"
+       echo "    OPENCL  |  load   : ${opencl_load_dir}"
    else
        echo "Script init_compile did NOT find OPENCL"
    endif
@@ -9317,9 +9360,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_SUNDIALS_CVODE due to NO_LIBS"
     else if ("${KJB_HAVE_SUNDIALS_CVODE}" != "") then
         echo "Script init_compile found SUNDIALS_CVODE"
-        echo "    LIB_SUNDIALS_CVODE: ${LIB_SUNDIALS_CVODE}"
-        echo "    include: ${sundials_cvode_inc_dir}"
-        echo "    load   : ${sundials_cvode_load_dir}"
+        echo "    SUNDIALS_CVODE  |  LIB_SUNDIALS_CVODE: ${LIB_SUNDIALS_CVODE}"
+        echo "    SUNDIALS_CVODE  |  include: ${sundials_cvode_inc_dir}"
+        echo "    SUNDIALS_CVODE  |  load   : ${sundials_cvode_load_dir}"
     else
         echo "Script init_compile did NOT find SUNDIALS_CVODE"
     endif
@@ -9415,9 +9458,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_SUNDIALS_PVEC due to NO_LIBS"
     else if ("${KJB_HAVE_SUNDIALS_PVEC}" != "") then
         echo "Script init_compile found SUNDIALS_PVEC"
-        echo "    LIB_SUNDIALS_PVEC: ${LIB_SUNDIALS_PVEC}"
-        echo "    include: ${sundials_pvec_inc_dir}"
-        echo "    load   : ${sundials_pvec_load_dir}"
+        echo "    SUNDIALS_PVEC  |  LIB_SUNDIALS_PVEC: ${LIB_SUNDIALS_PVEC}"
+        echo "    SUNDIALS_PVEC  |  include: ${sundials_pvec_inc_dir}"
+        echo "    SUNDIALS_PVEC  |  load   : ${sundials_pvec_load_dir}"
     else
         echo "Script init_compile did NOT find SUNDIALS_PVEC"
     endif
@@ -9513,9 +9556,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_SUNDIALS_SVEC due to NO_LIBS"
     else if ("${KJB_HAVE_SUNDIALS_SVEC}" != "") then
         echo "Script init_compile found SUNDIALS_SVEC"
-        echo "    LIB_SUNDIALS_SVEC: ${LIB_SUNDIALS_SVEC}"
-        echo "    include: ${sundials_svec_inc_dir}"
-        echo "    load   : ${sundials_svec_load_dir}"
+        echo "    SUNDIALS_SVEC  |  LIB_SUNDIALS_SVEC: ${LIB_SUNDIALS_SVEC}"
+        echo "    SUNDIALS_SVEC  |  include: ${sundials_svec_inc_dir}"
+        echo "    SUNDIALS_SVEC  |  load   : ${sundials_svec_load_dir}"
     else
         echo "Script init_compile did NOT find SUNDIALS_SVEC"
     endif
@@ -9602,9 +9645,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_PYTHON due to NO_LIBS"
     else if ("${KJB_HAVE_PYTHON}" != "") then
         echo "Script init_compile found PYTHON"
-        echo "    LIB_PYTHON: ${LIB_PYTHON}"
-        echo "    include: ${python_inc_dir}"
-        echo "    load   : ${python_load_dir}"
+        echo "    PYTHON  |  LIB_PYTHON: ${LIB_PYTHON}"
+        echo "    PYTHON  |  include: ${python_inc_dir}"
+        echo "    PYTHON  |  load   : ${python_load_dir}"
     else
         echo "Script init_compile did NOT find PYTHON"
     endif
@@ -9709,9 +9752,9 @@ endif
 ###         echo "Script init_compile skipped LIB_UA_CARTWHEEL due to missing dependency LIB_ODE."
 ###     else if ("${KJB_HAVE_UA_CARTWHEEL}" != "") then
 ###         echo "Script init_compile found UA_CARTWHEEL"
-###         echo "    LIB_UA_CARTWHEEL: ${LIB_UA_CARTWHEEL}"
-###         echo "    include: ${ua_cartwheel_inc_dir}"
-###         echo "    load   : ${ua_cartwheel_load_dir}"
+###         echo "    UA_CARTWHEEL  |  LIB_UA_CARTWHEEL: ${LIB_UA_CARTWHEEL}"
+###         echo "    UA_CARTWHEEL  |  include: ${ua_cartwheel_inc_dir}"
+###         echo "    UA_CARTWHEEL  |  load   : ${ua_cartwheel_load_dir}"
 ###     else
 ###         echo "Script init_compile did NOT find UA_CARTWHEEL"
 ###     endif
@@ -9848,9 +9891,9 @@ if ($?KJB_VERBOSE) then
         echo "Script init_compile skipped LIB_XXX due to missing dependencies. Specifically: ${missing_dependencies}"
     else if ("${KJB_HAVE_XXX}" != "") then
         echo "Script init_compile found XXX"
-        echo "    LIB_XXX: ${LIB_XXX}"
-        echo "    include: ${xxx_inc_dir}"
-        echo "    load   : ${xxx_load_dir}"
+        echo "    XXX  |  LIB_XXX: ${LIB_XXX}"
+        echo "    XXX  |  include: ${xxx_inc_dir}"
+        echo "    XXX  |  load   : ${xxx_load_dir}"
     else
         echo "Script init_compile did NOT find XXX"
     endif
@@ -9945,9 +9988,9 @@ endif
 #         echo "Script init_compile skipped LIB_KJB due to NO_LIBS"
 #     else if ("${KJB_HAVE_KJB}" != "") then
 #         echo "Script init_compile found KJB"
-#         echo "    LIB_KJB: ${LIB_KJB}"
-#         echo "    include: ${kjb_inc_dir}"
-#         echo "    load   : ${kjb_load_dir}"
+#         echo "    KJB  |  LIB_KJB: ${LIB_KJB}"
+#         echo "    KJB  |  include: ${kjb_inc_dir}"
+#         echo "    KJB  |  load   : ${kjb_load_dir}"
 #     else
 #         echo "Script init_compile did NOT find KJB"
 #     endif
@@ -9973,7 +10016,18 @@ if ($?KJB_VERBOSE) then
     echo " "
 endif
 
-set load_dirs = "${before_load_dirs} ${user_load_dirs} ${ivilab_load_dirs} ${system_load_dirs} ${gfortran_load_dir} ${after_load_dirs}" 
+if ($?KJB_VERBOSE_2) then
+    echo "    before_load_dirs: ${before_load_dirs}"
+    echo "    user_load_dirs: ${user_load_dirs}"
+    echo "    ivilab_load_dirs: ${ivilab_load_dirs}"
+    echo "    system_load_dirs: ${system_load_dirs}"
+    # echo "gfortran_load_dir: ${gfortran_load_dir}"
+    echo "    after_load_dirs: ${after_load_dirs}"
+    echo " "
+endif 
+
+# set load_dirs = "${before_load_dirs} ${user_load_dirs} ${ivilab_load_dirs} ${system_load_dirs} ${gfortran_load_dir} ${after_load_dirs}" 
+set load_dirs = "${before_load_dirs} ${user_load_dirs} ${ivilab_load_dirs} ${system_load_dirs} ${after_load_dirs}" 
 
 set pruned_opt_inc_dirs = ""
 set pruned_aft_inc_dirs = ""
@@ -10146,7 +10200,6 @@ while ($count <= ${num_needed})
     set parsed_load_dirs = `echo ${needed_load_dir} | sed 's/:/ /g'`
 
     foreach parsed_load_dir (${parsed_load_dirs}) 
-        # echo parsed_load_dir: $parsed_load_dir
 
         set found = 0
 
@@ -10485,7 +10538,7 @@ if (! ${status}) then
                    ${ECHO} " "
                    ${ECHO} "Run init_compile as root to fix this properly."
                    ${ECHO} "Root may need: setenv SRC /root/sbin   (which is where 'Make' lives)."
-                   ${ECHO} "Root may need to setenv BOOST_VERSION if this program uses a specfic boost version."
+                   ${ECHO} "Root may need to setenv IVI_BOOST_VERSION if this program uses a specfic boost version."
                 endif 
             end 
         endif 
@@ -10561,4 +10614,5 @@ endif
 
 unalias kjb_setenv
 
-
+# Temp change to test repo_sync.
+#
