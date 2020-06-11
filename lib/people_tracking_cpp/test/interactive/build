@@ -7,7 +7,7 @@
 #
 # This file is generally called by "make". It can also be called directly. The
 # main purpose is to normalize the make environment, and to implement some
-# functionality that is difficult to do in a robust portable way for all flavors
+# functionality that is difficult to do a robust portable way for all flavors
 # of make. 
 #
 # This file should be a copy of: 
