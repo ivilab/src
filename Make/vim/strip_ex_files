@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
 
 if ("$#argv" != 2) then
    echo "Script strip_ex_files needs exactly two parameters."

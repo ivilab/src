@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
 
 # We assume that if the version of "test" does not like the
 # input, the status will be greater than one. 

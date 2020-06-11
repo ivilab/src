@@ -1,4 +1,4 @@
-#/bin/csh -f 
+#/bin/tcsh -f 
 
 # A file to be either executed or sourced to remove all object files in the
 # current directory and below. It might fail on some systems due variations on

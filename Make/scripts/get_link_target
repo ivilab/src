@@ -1,4 +1,4 @@
-#!/bin/csh -f 
+#!/bin/tcsh -f 
 
 # Currently we assume that init_compile has been sourced. 
 

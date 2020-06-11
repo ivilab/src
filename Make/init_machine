@@ -116,7 +116,7 @@ else if ("${uname}" == "Darwin") then
    # version.
    # 
    if (-x /usr/bin/sw_vers) then
-       setenv OS2 `/usr/bin/sw_vers -productVersion | sed 's/[0-9][0-9]*\.\([0-9][0-9]*\)\..*/\1/'`
+       setenv OS2 _`/usr/bin/sw_vers -productVersion | sed 's/[0-9][0-9]*\.\([0-9][0-9]*\)\..*/\1/'`
    endif 
 
    if (-x "/usr/bin/arch") then

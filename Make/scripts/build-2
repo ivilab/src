@@ -56,10 +56,10 @@ endif
 # BUILD_ENV* files. One way to get started with this plan is to copy BUILD_ENV
 # from ${KJB_SRC_PATH}/Make/ into this directory. 
 
-set shared_build_env_dirs = "BUILD_ENV BUILD_ENV.${OS} BUILD_ENV.${MACHINE}"
+set shared_build_env_dirs = "BUILD_ENV BUILD_ENV.${OS} BUILD_ENV.${MACHINE} BUILD_ENV BUILD_ENV.${OS}"
 
 if ("${OS2}" != "") then 
-    set shared_build_env_dirs = "${shared_build_env_dirs} BUILD_ENV.${OS2} BUILD_ENV.${OS2}${CPU}"
+    set shared_build_env_dirs = "${shared_build_env_dirs} BUILD_ENV.${OS}${OS2} BUILD_ENV.${OS}${OS2}_${CPU}"
 endif 
 
 set build_env_dirs = ""

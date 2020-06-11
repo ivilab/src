@@ -1,4 +1,4 @@
-#!/bin/csh -f 
+#!/bin/tcsh -f 
 
 set found = 0
 set KJB_SRC_PATH = ""

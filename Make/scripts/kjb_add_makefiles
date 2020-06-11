@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
 
 ##############################################################################
 #
@@ -84,8 +84,8 @@ else
     endif 
 
     # Find out where we are in the source tree. In particular, we want to find a
-    # dir that has $kjb_dir as a subdir, which has Make as a sub-dir and
-    # Make/init_compile as a file in that. 
+    # directory that has one of the directories in KJB_DIRS as a subdir, which
+    # itself has Make as a sub-dir and Make/init_compile as a file in that. 
 
     set found = 0
     set kjb_top = ""
@@ -127,7 +127,8 @@ else
         bash -c 'echo "This directory is not below a directory with KJB installed." >&2'
         bash -c 'echo "Valid directories for KJB in this context: ${KJB_DIRS}." >&2'
         bash -c 'echo "To experiment with a temporary fix, try setting FORCE_KJB_SRC_DIR." >&2'
-        bash -c 'echo "For a more permanent fix, contact Kobus." >&2'
+        bash -c 'echo "For a more permanent fix, edit $0 or contact Kobus." >&2'
+        exit 1
     endif 
 endif 
 
@@ -135,6 +136,21 @@ pushd ${KJB_SRC_PATH} > /dev/null
     setenv KJB_SRC_PATH "${cwd}/"
 popd > /dev/null
 
+# Check that this file ($0) is up to date compared to the reference one.
+set need_to_replace_myself = `${KJB_SRC_PATH}Make/scripts/test_older_than "$0" "${KJB_SRC_PATH}Make/build"`
+if (${status}) exit 1 
+     
+if (${need_to_replace_myself}) then
+    # We could make this even more automated using the defunct script
+    # self_update, but this is too fancy. It cannot do the rebuild in parallel,
+    # and we would want to implement checking for infinite recursion.  Using
+    # self_update is commented out here:
+    #     exec ${KJB_SRC_PATH}Make/scripts/self_update "$0" "${KJB_SRC_PATH}Make/build" Make
+
+    echo "Script $0 is attempting to rebuild itself."
+    echo "You will need to reenter your build command (e.g., make or $0)."
+    exec /bin/cp "${KJB_SRC_PATH}Make/build" "$0"
+endif 
 
 ##############################################################################
 

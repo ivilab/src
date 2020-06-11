@@ -2,7 +2,7 @@
 #
 # We want to figure out which modules this program depends on, and construct a
 # file which defines those modules and includes their makefiles. This is pretty
-# hard to do with a portable make file so we use the csh script
+# hard to do with a portable make file so we use the tcsh script
 # dirs_for_make instead. 
 #
 # This file is only included from the Makefile-2 in the directory

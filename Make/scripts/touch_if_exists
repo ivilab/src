@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
 
 # This script solves a program in make that you want to update an existing file,
 # but the non-existance should not be dealt with using a simple "touch". It is

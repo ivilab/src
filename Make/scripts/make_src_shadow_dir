@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
 
 # Script to make directories with the option of making them in a mirrored src
 # tree directory structure, and setting a symbolic link to the real src

@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
 
 #
 # This script is generally obsolete because "which" is preferred, but on some

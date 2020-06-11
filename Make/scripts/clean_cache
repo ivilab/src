@@ -1,6 +1,6 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
 
-# $Id: clean_cache 21967 2017-12-19 21:48:14Z kobus $
+# $Id: clean_cache 25036 2020-02-29 06:34:55Z kobus $
 
 # changed by AMP on 28 march 2011 --
 #

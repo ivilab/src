@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 22656 2019-06-30 18:42:07Z kobus $
+# $Id: Makefile-program 25041 2020-03-01 02:57:22Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -116,6 +116,8 @@ Makefile : $(MAKE_PATH)Makefile
 	$(KJB_CP) $(MAKE_PATH)Makefile $@ 
 	@$(ECHO_UNLESS_QUIET) " "
 
+# This won't happen very often because build updates itself, but it is not
+# impossible. 
 build : $(MAKE_PATH)build
 	@$(ECHO_UNLESS_QUIET) " "
 	@$(ECHO_UNLESS_QUIET) "Updating 'build' from $(MAKE_PATH)."

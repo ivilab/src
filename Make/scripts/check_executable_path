@@ -1,4 +1,4 @@
-#!/bin/csh -f 
+#!/bin/tcsh -f 
 
 set prog_path = "$1"
 

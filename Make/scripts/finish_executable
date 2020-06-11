@@ -1,4 +1,4 @@
-#!/bin/csh -f 
+#!/bin/tcsh -f 
 
 if ($# != 2) then
     ${P_STDERR} "Script finish_executable needs two arguments."

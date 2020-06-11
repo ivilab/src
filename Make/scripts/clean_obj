@@ -1,4 +1,4 @@
-#/bin/csh -f 
+#/bin/tcsh -f 
 
 source ${MAKE_SCRIPT_PATH}clean_local_obj
 
