@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25482 2020-06-11 22:36:06Z kobus $
+# $Id: init_compile 25483 2020-06-11 22:44:56Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -10619,4 +10619,6 @@ unalias kjb_setenv
 # Test three
 # Test four
 # Test five
+# Test six
+#
 #
