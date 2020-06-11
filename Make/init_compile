@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25486 2020-06-11 23:00:45Z kobus $
+# $Id: init_compile 25487 2020-06-11 23:04:36Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -10614,14 +10614,3 @@ endif
 
 unalias kjb_setenv
 
-# Temp change to test repo_sync.
-# Test two
-# Test three
-# Test four
-# Test five
-# Test six
-# Test seven
-# Test eight
-# Test nine
-#
-#
