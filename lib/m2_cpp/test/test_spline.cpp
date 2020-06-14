@@ -9,13 +9,13 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: test_spline.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: test_spline.cpp 25497 2020-06-14 13:20:50Z kobus $ */
 
 #define DEBUG
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "l/l_init.h"
-#include "m_cpp/m_spline.h"
+#include "m2_cpp/m2_spline.h"
 #include "l/l_sys_term.h"
 #include "l/l_sys_rand.h"
 #include "m_cpp/m_vector.h"
@@ -262,11 +262,11 @@ double nurbs_curve_2_out[101][3] =
  0.5, 0, 0
 };
 
-using kjb::Vector;
-using kjb::Nurbs_curve;
-using kjb::Spline_curve;
-using kjb::Bezier_curve;
-using kjb::Polybezier_curve;
+using ivi::Vector;
+using ivi::Nurbs_curve;
+using ivi::Spline_curve;
+using ivi::Bezier_curve;
+using ivi::Polybezier_curve;
 
 void init( std::vector<Vector>&, std::vector<Vector>& );
 
@@ -310,16 +310,16 @@ int main()
     std::vector<Vector> ctl_points_2;
     Nurbs_curve ref_1, ref_2;
 
-    kjb_c::kjb_init();
-    kjb_c::kjb_disable_paging();
+    ivi_c::ivi_init();
+    ivi_c::ivi_disable_paging();
     init( ctl_points, ctl_points_2 );
 
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
 
     try {
         test_nurbs( ctl_points, ctl_points_2, ref_1, ref_2 );
     }
-    catch( kjb::Exception& e ) {
+    catch( ivi::Exception& e ) {
         std::cout << "caught Exception!\n";
         e.print_details();
         return EXIT_FAILURE;
@@ -592,7 +592,7 @@ bool spline_equal(const Spline_curve& c1, const Spline_curve& c2)
 {
     for(int i = 0; i < 1000; i++)
     {
-        double u = kjb_c::kjb_rand();
+        double u = ivi_c::ivi_rand();
         if( !float_equal(c1.evaluate(u)[0], c2.evaluate(u)[0]) ||
             !float_equal(c1.evaluate(u)[1], c2.evaluate(u)[1]) ||
             !float_equal(c1.evaluate(u)[2], c2.evaluate(u)[2]))
