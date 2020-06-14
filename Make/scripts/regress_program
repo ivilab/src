@@ -23,8 +23,8 @@ set start_time = `date +%H:%M:%S`
 
 echo "Begin testing ${program} with time factor ${time_factor} and input  $input"
 
-${KJB_MKDIR} output/${program}/${obj_dir}
-${KJB_MKDIR} output-regress/${program}/${obj_dir}
+${IVI_MKDIR} output/${program}/${obj_dir}
+${IVI_MKDIR} output-regress/${program}/${obj_dir}
 
 set save_status = 0 
 
@@ -60,7 +60,7 @@ if ($save_status) then
    echo "(Non-zero exit status)"
    set test_result = "FAILED (status)"
 else if (-e output-regress/${program}/${obj_dir}${input}-${time_factor}) then
-   ${KJB_DIFF_TEST} output/${program}/${obj_dir}${input}-${time_factor}-TEMP output-regress/${program}/${obj_dir}${input}-${time_factor} > /dev/null
+   ${IVI_DIFF_TEST} output/${program}/${obj_dir}${input}-${time_factor}-TEMP output-regress/${program}/${obj_dir}${input}-${time_factor} > /dev/null
 
    if ($status) then 
        echo " "
@@ -77,11 +77,11 @@ else if (-e output-regress/${program}/${obj_dir}${input}-${time_factor}) then
        echo "    rm ${cwd}/output-regress/${program}/${obj_dir}${input}-${time_factor}"
        set test_result = "FAILED (diff)"
    else 
-       ${KJB_MV} output/${program}/${obj_dir}${input}-${time_factor}-TEMP  output/${program}/${obj_dir}${input}-${time_factor}
+       ${IVI_MV} output/${program}/${obj_dir}${input}-${time_factor}-TEMP  output/${program}/${obj_dir}${input}-${time_factor}
    endif
 else 
-   ${KJB_MV} output/${program}/${obj_dir}${input}-${time_factor}-TEMP  output/${program}/${obj_dir}${input}-${time_factor}
-   ${KJB_CP} output/${program}/${obj_dir}${input}-${time_factor} output-regress/${program}/${obj_dir}${input}-${time_factor} 
+   ${IVI_MV} output/${program}/${obj_dir}${input}-${time_factor}-TEMP  output/${program}/${obj_dir}${input}-${time_factor}
+   ${IVI_CP} output/${program}/${obj_dir}${input}-${time_factor} output-regress/${program}/${obj_dir}${input}-${time_factor} 
 endif 
 
 set end_time = `date +%H:%M:%S`

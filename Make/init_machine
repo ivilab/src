@@ -168,12 +168,12 @@ setenv MACHINE  "${OS}_${CPU}"
 set do_gpu = 0
 
 if (${do_gpu}) then
-    setenv KJB_HAVE_GPU 0
+    setenv IVI_HAVE_GPU 0
 
     if ($?FORCE_GPU) then
-        setenv KJB_HAVE_GPU 1
+        setenv IVI_HAVE_GPU 1
     else if ($?FORCE_NO_GPU) then
-        setenv KJB_HAVE_GPU 0
+        setenv IVI_HAVE_GPU 0
     else
         # A variety of hacks to figure out if we have various kinds of GPUs will
         # eventually be below. 
@@ -184,14 +184,14 @@ if (${do_gpu}) then
         endif 
 
         if (${have_tesla}) then 
-            # setenv KJB_HAVE_GPU 1 
+            # setenv IVI_HAVE_GPU 1 
         endif 
     endif 
 
-    if (${KJB_HAVE_GPU}) then
-        setenv KJB_GPU_DIR "/gpu"
+    if (${IVI_HAVE_GPU}) then
+        setenv IVI_GPU_DIR "/gpu"
     else 
-        setenv KJB_GPU_DIR ""
+        setenv IVI_GPU_DIR ""
     endif 
 endif 
 
@@ -200,5 +200,5 @@ endif
 setenv UC_OS `echo ${OS} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
 setenv UC_MACHINE `echo ${MACHINE} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
 
-setenv KJB_HAVE_MACHINE 1 
+setenv IVI_HAVE_MACHINE 1 
 

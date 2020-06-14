@@ -11,7 +11,7 @@
 
 # MAKEDEPEND_ARGS = -Y -DMAKE_DEPEND -DMAKE_DEPEND_DIR \
 #                   $(CC_FLAGS) \
-#                   $(KJB_LIB_DIR_INCLUDE) \
+#                   $(IVI_LIB_DIR_INCLUDE) \
 #                   $(CUR_DIR_INCLUDE)
 # 
 # 
@@ -19,13 +19,13 @@
 # 	$(MAKE_SCRIPT_DIR)dirs_for_make \
 #             '$(MAKEDEPEND_ARGS)' \
 #             '$(ALL_LIB_DIRS)' \
-#             '$(KJB_SRC_PATH)'
-# 	$(KJB_TOUCH) $@
+#             '$(IVI_SRC_PATH)'
+# 	$(IVI_TOUCH) $@
 # 
 
 MAKEDEPEND_ARGS = -DMAKE_DEPEND -DMAKE_DEPEND_DIR \
                   $(MD_DEFINES) \
-                  $(KJB_HAVE) \
+                  $(IVI_HAVE) \
                   $(CUR_DIR_INCLUDE) \
                   $(LIB_DIR_INCLUDE) \
                   $(SRC_DIR_INCLUDE) \
@@ -34,7 +34,7 @@ MAKEDEPEND_ARGS = -DMAKE_DEPEND -DMAKE_DEPEND_DIR \
 
 # MAKEDEPEND_ARGS = -Y -DMAKE_DEPEND -DMAKE_DEPEND_DIR \
 #                   $(MD_DEFINES) \
-#                   $(KJB_HAVE) \
+#                   $(IVI_HAVE) \
 #                   $(CUR_DIR_INCLUDE) \
 #                   $(ALL_INCLUDES)
 
@@ -42,13 +42,13 @@ MAKEDEPEND_ARGS = -DMAKE_DEPEND -DMAKE_DEPEND_DIR \
 Makefile-dirs : .Makefile-dirs.made
 	$(MAKE_SCRIPT_DIR)dirs_for_make \
             '$(MAKEDEPEND_ARGS)' \
-            '$(KJB_LIB_PATH)' \
-            '$(KJB_SRC_PATH)'
-	$(KJB_TOUCH) $@
+            '$(IVI_LIB_PATH)' \
+            '$(IVI_SRC_PATH)'
+	$(IVI_TOUCH) $@
 
 
 #
 # Gmake complains if there is no rule for a dependency?
 #
 .Makefile-dirs.made :
-	$(KJB_TOUCH) .Makefile-dirs.made
+	$(IVI_TOUCH) .Makefile-dirs.made

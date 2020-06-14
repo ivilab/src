@@ -27,37 +27,43 @@ endif
     set delete_list = `/bin/ls -1 | grep Makefile. | grep -v 'Makefile-2$' | grep -v 'Makefile-include$'`
 
     if ("${delete_list}" != "") then
-        ${KJB_RM} ${delete_list}
+        ${IVI_RM} ${delete_list}
     endif 
 # else 
-#     ${KJB_RM} Makefile-dirs
+#     ${IVI_RM} Makefile-dirs
 # 
 #     set file_count = `/bin/ls -1 | grep -c Makefile-depend`
 # 
 #     if (${file_count} > 0) then
-#         ${KJB_RM} Makefile-depend*
+#         ${IVI_RM} Makefile-depend*
 #     endif 
 # 
-#     ${KJB_RM} Makefile-test-depend
-#     ${KJB_RM} Makefile-libs-needed
+#     ${IVI_RM} Makefile-test-depend
+#     ${IVI_RM} Makefile-libs-needed
 # 
 #     set file_count = `/bin/ls -1 | grep -c Makefile-library`
 # 
 #     if (${file_count} > 0) then
-#         ${KJB_RM} Makefile-library*
+#         ${IVI_RM} Makefile-library*
 #     endif 
 # endif 
 
 set file_count = `/bin/ls -1 | grep -c _incl.h`
 
 if (${file_count} > 0) then
-    ${KJB_RM} *_incl.h* 
+    ${IVI_RM} *_incl.h* 
 endif 
 
 set file_count = `/bin/ls -1 | grep -c kjb_all_`
 
 if (${file_count} > 0) then
-    ${KJB_RM} kjb_all_* 
+    ${IVI_RM} kjb_all_* 
+endif 
+
+set file_count = `/bin/ls -1 | grep -c ivi_all_`
+
+if (${file_count} > 0) then
+    ${IVI_RM} ivi_all_* 
 endif 
 
 

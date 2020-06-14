@@ -6,7 +6,7 @@
 #     A script to create symbolic links with a few extra features
 #
 # Description:
-#     This script creates symbolic links, but setting up the call to ${KJB_LN}
+#     This script creates symbolic links, but setting up the call to ${IVI_LN}
 #     (which is usually something like "ln -s -f"). It currently serves other
 #     scripts, mostly for the build system, and so we assume that init_compile
 #     has been sourced.  
@@ -37,7 +37,7 @@ if (-e "${link_name}") then
     if (! -l "${link_name}") then
         ${P_STDERR} "Proposed link ${link_name} exists and is not a link."
         ${P_STDERR} "Forcing moving of ${link_name} to ${link_name}.$$ reduce confusion due to apparently being up to date."
-        ${KJB_MV} "${link_name}" "${link_name}.$$"
+        ${IVI_MV} "${link_name}" "${link_name}.$$"
     else 
         set link_to = `${MAKE_SCRIPT_PATH}get_link_target "${link_name}"`
         
@@ -47,14 +47,14 @@ if (-e "${link_name}") then
             exit 0
         else 
             ${VERBOSE_ECHO} "Removing link '${link_name}' in  `pwd`"
-            ${KJB_RM} "${link_name}"
+            ${IVI_RM} "${link_name}"
         endif 
     endif 
-else if ($?KJB_VERBOSE) then
+else if ($?IVI_VERBOSE) then
     echo "'${link_name}' does not exist in `pwd`"
 endif 
 
-${VERBOSE_ECHO} "Executing ${KJB_LN} ${link_target} ${link_name} in `pwd`"
-${KJB_LN} ${link_target} ${link_name}
+${VERBOSE_ECHO} "Executing ${IVI_LN} ${link_target} ${link_name} in `pwd`"
+${IVI_LN} ${link_target} ${link_name}
 
 

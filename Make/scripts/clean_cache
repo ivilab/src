@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 
-# $Id: clean_cache 25036 2020-02-29 06:34:55Z kobus $
+# $Id: clean_cache 25496 2020-06-14 13:11:00Z kobus $
 
 # changed by AMP on 28 march 2011 --
 #
@@ -15,9 +15,9 @@
 # the cache could be so bad that it refuses to allow itself to be cleaned!
 #
 # Actually we must do a little more to be sure we've solved the problem:
-# environment variable KJB_RM also is cached, yet it is the verb we use to
+# environment variable IVI_RM also is cached, yet it is the verb we use to
 # remove the cache.  So a small "paranoia" clause is added at the end to make
-# sure KJB_RM indeed removes the file; if not, we try one more time.
+# sure IVI_RM indeed removes the file; if not, we try one more time.
 #
 # Once this modification is more mature, my long expository comment here and
 # the deadwood below may be safely removed.
@@ -32,10 +32,10 @@
 # sorry windows users
 set default_rm="rm -r -f"
 
-if( ! $?KJB_RM) then
+if( ! $?IVI_RM) then
     set rm="${default_rm}"
 else
-    set rm="$KJB_RM"
+    set rm="$IVI_RM"
 endif
 
 #if( ! $?VAR_CACHE_FNAME ) then
@@ -58,7 +58,7 @@ endif
     set cache_dir="${cache_dir}/${USER}"
 
     if (-d "${cache_dir}") then 
-        set cache_prefixes='kjb_env kjb_var'
+        set cache_prefixes='kjb_env kjb_var ivi_env ivi_var'
         set cache_lock_file = "${cache_dir}/cache_lock"
         set found_files_to_delete = 0 
 

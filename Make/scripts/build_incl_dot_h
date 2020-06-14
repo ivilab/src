@@ -42,15 +42,15 @@ else
 endif 
 
 
-if ($?KJB_VERBOSE_INDENT) then
-    setenv KJB_VERBOSE_INDENT "    ${KJB_VERBOSE_INDENT}"
+if ($?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
 else 
-    setenv KJB_VERBOSE_INDENT ""
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo " "
-    echo "${KJB_VERBOSE_INDENT}Entering script build_incl_dot_h for directory ${build_dir}. "
+    echo "${IVI_VERBOSE_INDENT}Entering script build_incl_dot_h for directory ${build_dir}. "
 endif
 
 
@@ -63,14 +63,14 @@ set incl_file = "${dir}_incl.h"
 # If ${incl_file} exists, then we just touch it. 
 #
 if (-e "${incl_file}") then
-    if ($?KJB_VERBOSE) then
-        echo "${KJB_VERBOSE_INDENT}Script build_incl_dot_h is only touching ${incl_file} because it exists"
+    if ($?IVI_VERBOSE) then
+        echo "${IVI_VERBOSE_INDENT}Script build_incl_dot_h is only touching ${incl_file} because it exists"
     endif
 
-    ${KJB_TOUCH} "${incl_file}"
+    ${IVI_TOUCH} "${incl_file}"
 else 
-    if ($?KJB_VERBOSE) then
-        echo "${KJB_VERBOSE_INDENT}Script build_incl_dot_h is rebulding ${incl_file} and Include_lines/Makefile-incl-dot-h"
+    if ($?IVI_VERBOSE) then
+        echo "${IVI_VERBOSE_INDENT}Script build_incl_dot_h is rebulding ${incl_file} and Include_lines/Makefile-incl-dot-h"
     endif
 
     echo "" > ${incl_file}
@@ -97,21 +97,21 @@ else
     set incl_skip_names_2 = `grep -l 'header file.*private' *.h`
 
     foreach skip_name (${incl_skip_names_1} ${incl_skip_names_2})
-        if ($?KJB_VERBOSE) then
-            echo "${KJB_VERBOSE_INDENT}Skipping adding ${skip_name} to ${incl_file} due to private header string."
+        if ($?IVI_VERBOSE) then
+            echo "${IVI_VERBOSE_INDENT}Skipping adding ${skip_name} to ${incl_file} due to private header string."
         endif
 
         grep -v "${skip_name}"  .tmp.$$.incl.h  > .tmp.$$_2.incl.h
-        ${KJB_MV}  .tmp.$$_2.incl.h  .tmp.$$.incl.h
+        ${IVI_MV}  .tmp.$$_2.incl.h  .tmp.$$.incl.h
     end
 
     sed "s#^#${dir}/#" .tmp.$$.incl.h | sed 's/\(.*\)/#include "\1"/' >> ${incl_file}
 
-    ${KJB_MKDIR} Include_lines 
+    ${IVI_MKDIR} Include_lines 
     set symbolized_dir = '$('${uc_dir}'_DIR)'
     sed "s/\(.*\)/${symbolized_dir}${incl_file} : ${symbolized_dir}\1/" < .tmp.$$.incl.h > Include_lines/Makefile-depend-incl-dot-h
 
-    ${KJB_RM}  .tmp.$$.incl.h
+    ${IVI_RM}  .tmp.$$.incl.h
 
     echo "" >> ${incl_file}
     echo "#endif  " >> ${incl_file}
@@ -122,8 +122,8 @@ else
 endif 
 
 
-if ($?KJB_VERBOSE) then
-    echo "${KJB_VERBOSE_INDENT}Leaving script build_incl_dot_h  for directory ${build_dir}. "
+if ($?IVI_VERBOSE) then
+    echo "${IVI_VERBOSE_INDENT}Leaving script build_incl_dot_h  for directory ${build_dir}. "
     echo " "
 endif
 

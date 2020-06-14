@@ -1,8 +1,8 @@
 
 # It is easiest if this file does not emit any output. 
 #
-# This file cannot assume that KJB_SRC_PATH is set, as root does not use
-# KJB_SRC_PATH. But it does assume that we have MAKE_PATH.
+# This file cannot assume that IVI_SRC_PATH is set, as root does not use
+# IVI_SRC_PATH. But it does assume that we have MAKE_PATH.
 #
 # This file contains overlap between what general scripts need and what
 # compiling needs. It is sourced from init_compile, and possibly from other
@@ -12,17 +12,17 @@
 # group, e.g., all variables about Make paths or general system commands. 
 
 
-# Invariably we have KJB_HAVE_MACHINE, but if we do not, the we need to source
+# Invariably we have IVI_HAVE_MACHINE, but if we do not, the we need to source
 # init_machine as to be standalone. This could be a different copy than the one
 # that build sources before sourcing this file (init_scripts).
 # 
-if (! $?KJB_HAVE_MACHINE) then
+if (! $?IVI_HAVE_MACHINE) then
     source ${MAKE_PATH}init_machine
     if ($status) exit $status
 endif 
 
-if (! $?KJB_WARN_LEVEL) then
-    setenv KJB_WARN_LEVEL 2
+if (! $?IVI_WARN_LEVEL) then
+    setenv IVI_WARN_LEVEL 2
 endif
 
 # if (-e /dev/stderr) then
@@ -33,7 +33,7 @@ endif
 
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
 # Kobus needs to sync this code with duplicated code in his .cshrc
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     setenv VERBOSE_ECHO "echo "
 else if ($?tcsh) then
     setenv VERBOSE_ECHO ": "
@@ -43,7 +43,7 @@ endif
 
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
 # Kobus needs to sync this code with duplicated code in his .cshrc
-if ($?KJB_VERBOSE_2) then
+if ($?IVI_VERBOSE_2) then
     setenv VERBOSE_ECHO_2 "echo "
 else if ($?tcsh) then
     setenv VERBOSE_ECHO_2 ": "
@@ -52,7 +52,7 @@ else
 endif 
 
 # Kobus needs to sync this code with duplicated code in his .cshrc
-if (($?prompt) && (! $?KJB_QUIET)) then
+if (($?prompt) && (! $?IVI_QUIET)) then
     setenv ECHO "echo "
 else if ($?tcsh) then
     setenv ECHO ":  "
@@ -66,53 +66,53 @@ endif
 
 # --------------------------------------------------------------------------------------------
 
-setenv KJB_ECHO             "echo"
-setenv KJB_CAT              "cat"
+setenv IVI_ECHO             "echo"
+setenv IVI_CAT              "cat"
 
 # Copy where links point to, not their contents. 
 if ("${OS}" == "mac_osx") then
-    setenv KJB_CP               "cp -f -R"
+    setenv IVI_CP               "cp -f -R"
 else if (("${OS}" == "linux_x86_64") || ("${OS}" == "linux_386")) then
-    setenv KJB_CP               "cp -r -f -d"
+    setenv IVI_CP               "cp -r -f -d"
 else
-    setenv KJB_CP               "cp -r -f"
+    setenv IVI_CP               "cp -r -f"
 endif 
 
-setenv KJB_CREATE           "cp /dev/null"
-setenv KJB_GREP             "grep"
-setenv KJB_EGREP            "egrep"
-setenv KJB_FILE             "file"
+setenv IVI_CREATE           "cp /dev/null"
+setenv IVI_GREP             "grep"
+setenv IVI_EGREP            "egrep"
+setenv IVI_FILE             "file"
 # A version of ls that outputs one file per line. Most if not all ls's do so
 # when the output is not a terminal. However, we can use the '-1' option for
 # clarity and robustness.
-setenv KJB_LS               "ls -1"
-setenv KJB_LN               "ln -s -f"
-setenv KJB_MV               "mv"
-setenv KJB_RM               "rm -r -f"
-setenv KJB_TOUCH            "touch"
-setenv KJB_TOUCH_1990       "touch -t 199001010000"
-setenv KJB_PERMIT_EXECUTION "chmod -R a+rx"
-setenv KJB_PERMIT_READ      "chmod -R a+rX"
-setenv KJB_MKDIR            "mkdir -p"
-setenv KJB_SED              "sed"
+setenv IVI_LS               "ls -1"
+setenv IVI_LN               "ln -s -f"
+setenv IVI_MV               "mv"
+setenv IVI_RM               "rm -r -f"
+setenv IVI_TOUCH            "touch"
+setenv IVI_TOUCH_1990       "touch -t 199001010000"
+setenv IVI_PERMIT_EXECUTION "chmod -R a+rx"
+setenv IVI_PERMIT_READ      "chmod -R a+rX"
+setenv IVI_MKDIR            "mkdir -p"
+setenv IVI_SED              "sed"
 
-# setenv KJB_COMPRESS bzip2
-# setenv KJB_COMPRESS_SUFFIX bz2
+# setenv IVI_COMPRESS bzip2
+# setenv IVI_COMPRESS_SUFFIX bz2
 #
 # Back to gzip --- It does not compress quite as well, but is more convenient
 #
-setenv KJB_COMPRESS             "gzip"
-setenv KJB_COMPRESS_SUFFIX      "gz"
+setenv IVI_COMPRESS             "gzip"
+setenv IVI_COMPRESS_SUFFIX      "gz"
 
 # ---------------------------------------------------------------------
 
-# Perhaps this should be made more efficient now that we do not cache KJB_STAT
-# and KJB_STAT_FLAVOR. 
+# Perhaps this should be made more efficient now that we do not cache IVI_STAT
+# and IVI_STAT_FLAVOR. 
 
 set test_paths = `echo ${PATH} | sed 's/:/ /g'`
    
-setenv KJB_STAT "stat"
-setenv KJB_STAT_FLAVOR "NONE"
+setenv IVI_STAT "stat"
+setenv IVI_STAT_FLAVOR "NONE"
 
 set have_stat = 0 
 
@@ -124,18 +124,18 @@ foreach test_path ( $test_paths )
 end
 
 if (${have_stat}) then
-    set gnu_stat = `${KJB_STAT} --version |& grep 'GNU coreutils'`
+    set gnu_stat = `${IVI_STAT} --version |& grep 'GNU coreutils'`
     if ((! ${status} ) && ("${gnu_stat}" != "")) then
-        setenv KJB_STAT_FLAVOR "gnu"
+        setenv IVI_STAT_FLAVOR "gnu"
     else 
-        set bsd_stat = `${KJB_STAT} -s . |& grep 'st_mtime'`
+        set bsd_stat = `${IVI_STAT} -s . |& grep 'st_mtime'`
         if ((! ${status} ) && ("${bsd_stat}" != "")) then
-            setenv KJB_STAT_FLAVOR "bsd"
+            setenv IVI_STAT_FLAVOR "bsd"
         endif
     endif
 endif
 
 # ---------------------------------------------------------------------
 
-setenv KJB_HAVE_INIT_SCRIPT 1 
+setenv IVI_HAVE_INIT_SCRIPT 1 
 

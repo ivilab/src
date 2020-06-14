@@ -51,23 +51,23 @@ set exit_status = 0
 setenv LC_ALL "en_US.UTF-8"
 setenv LC_CTYPE "en_US.UTF-8"
    
-if ($?KJB_VERBOSE_INDENT) then
-    setenv KJB_VERBOSE_INDENT "    ${KJB_VERBOSE_INDENT}"
+if ($?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
 else 
-    setenv KJB_VERBOSE_INDENT ""
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
 if ("${dir_arg}" != "") then
     cd ${dir_arg} > /dev/null
 endif 
 
-if (($?KJB_LOCK_TIME_STAMP) && (-e Include_lines/sub_libs_needed) && (-e Makefile-dirs)) then
-    set can_skip_1 = `${MAKE_SCRIPT_PATH}test_older_than ${KJB_LOCK_TIME_STAMP} Include_lines/sub_libs_needed`
-    set can_skip_2 = `${MAKE_SCRIPT_PATH}test_older_than ${KJB_LOCK_TIME_STAMP} Makefile-dir`
+if (($?IVI_LOCK_TIME_STAMP) && (-e Include_lines/sub_libs_needed) && (-e Makefile-dirs)) then
+    set can_skip_1 = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Include_lines/sub_libs_needed`
+    set can_skip_2 = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-dir`
 
     if ((${can_skip_1}) && (${can_skip_2})) then
-        if ($?KJB_VERBOSE) then
-            echo "${KJB_VERBOSE_INDENT}Skipping build_include_lines_2 in `pwd` as Makefile-dirs and sub_libs_needed are new."
+        if ($?IVI_VERBOSE) then
+            echo "${IVI_VERBOSE_INDENT}Skipping build_include_lines_2 in `pwd` as Makefile-dirs and sub_libs_needed are new."
             set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
             echo $BEEP
         endif 
@@ -76,9 +76,9 @@ if (($?KJB_LOCK_TIME_STAMP) && (-e Include_lines/sub_libs_needed) && (-e Makefil
     endif 
 endif 
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo " "
-    echo "${KJB_VERBOSE_INDENT}Entering script build_include_lines_2 in directory $cwd with args: $*"
+    echo "${IVI_VERBOSE_INDENT}Entering script build_include_lines_2 in directory $cwd with args: $*"
 endif
 
 set update_include_lines = 0
@@ -90,13 +90,13 @@ pushd Include_lines > /dev/null
         goto cleanup
     endif 
 
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Updating Include_lines/include_lines.new in directory $cwd. " 
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/include_lines.new in directory $cwd. " 
 
     # Three ways that should give the same result, although the first one
     # gives an error message if there is no source code. 
     #
     # cat new/*.[cCh] new/*.[chit]pp new/*.[chit]xx | sort -u > include_lines.new
-    # find new \( -name '*.[cCh]' -o -name '*.[chit]pp' -o -name '*.[chit]xx' \) -exec ${KJB_CAT} {} \; | sort -u > include_lines.new
+    # find new \( -name '*.[cCh]' -o -name '*.[chit]pp' -o -name '*.[chit]xx' \) -exec ${IVI_CAT} {} \; | sort -u > include_lines.new
     ${MAKE_SCRIPT_PATH}stream_file_names -s -h -l |  sort -u >  include_lines.new
     if (${status}) then 
         set exit_status = 1 
@@ -104,11 +104,11 @@ pushd Include_lines > /dev/null
     endif 
 
     if (-e include_lines) then
-        ${KJB_DIFF_TEST} include_lines.new include_lines > /dev/null
+        ${IVI_DIFF_TEST} include_lines.new include_lines > /dev/null
         if (${status}) then 
             set update_include_lines = 1
-        else if ($?KJB_VERBOSE) then
-            echo "${KJB_VERBOSE_INDENT}Not updating Include_lines/include_lines in directory $cwd because no relevant changes." 
+        else if ($?IVI_VERBOSE) then
+            echo "${IVI_VERBOSE_INDENT}Not updating Include_lines/include_lines in directory $cwd because no relevant changes." 
         endif
     else 
         set update_include_lines = 1
@@ -123,16 +123,16 @@ endif
 set update_sub_list_new = 0
 
 if ((${update_include_lines}) || (! -e Include_lines/include_lines)) then
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Updating Include_lines/include_lines in directory $cwd. " 
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/include_lines in directory $cwd. " 
 
-    ${KJB_CP} Include_lines/include_lines.new Include_lines/include_lines
+    ${IVI_CP} Include_lines/include_lines.new Include_lines/include_lines
 
     if ($?SHADOW_BUILD_MAKEFILE_LIBS) then
-        ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Script build_include_lines_2 calling build_makefile_libs_needed in $cwd" 
+        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Script build_include_lines_2 calling build_makefile_libs_needed in $cwd" 
         ${MAKE_SCRIPT_PATH}build_makefile_libs_needed 
-    else if ($?KJB_VERBOSE) then
-        echo "${KJB_VERBOSE_INDENT}Script build_include_lines_2 is skipping calling build_makefile_libs_needed in $cwd" 
-        echo "${KJB_VERBOSE_INDENT}     as gmake will build it nicely in parallel." 
+    else if ($?IVI_VERBOSE) then
+        echo "${IVI_VERBOSE_INDENT}Script build_include_lines_2 is skipping calling build_makefile_libs_needed in $cwd" 
+        echo "${IVI_VERBOSE_INDENT}     as gmake will build it nicely in parallel." 
     endif 
     
     if (${status}) then 
@@ -151,16 +151,16 @@ if ((${update_sub_list_new}) || (! -e Include_lines/sub_lib_list.new)) then
     #
     sed -n '/["<][A-Za-z0-9][A-Za-z0-9_-]*\/[A-Za-z0-9][A-Za-z0-9_-]*\.[hH][px]*[">]$/p' Include_lines/include_lines | sed 's/["<]\(.*\)[">]/\1/' | sort -u > Include_lines/sub_lib_list.tmp.$$
 
-    set include_lines = `${KJB_CAT} Include_lines/sub_lib_list.tmp.$$`
-    ${KJB_RM} Include_lines/sub_lib_list.tmp.$$
-    ${KJB_CAT} /dev/null > Include_lines/sub_lib_list.tmp2.$$
+    set include_lines = `${IVI_CAT} Include_lines/sub_lib_list.tmp.$$`
+    ${IVI_RM} Include_lines/sub_lib_list.tmp.$$
+    ${IVI_CAT} /dev/null > Include_lines/sub_lib_list.tmp2.$$
 
     foreach include_line (${include_lines}) 
         set sub_dir = `echo ${include_line} | sed 's#\(.*\)/.*#\1#'`
 
         set found = 0
 
-        if (-e ${KJB_LIB_DIR}${include_line}) then
+        if (-e ${IVI_LIB_DIR}${include_line}) then
             set found = 1
         else if ("${include_line}" == "${sub_dir}/${sub_dir}_incl.h") then
             set found = 1
@@ -182,11 +182,11 @@ if ((${update_sub_list_new}) || (! -e Include_lines/sub_lib_list.new)) then
         endif 
     end
 
-    ${KJB_CAT}  Include_lines/sub_lib_list.tmp2.$$ | sort -u > Include_lines/sub_lib_list.new
-    ${KJB_RM} Include_lines/sub_lib_list.tmp2.$$
+    ${IVI_CAT}  Include_lines/sub_lib_list.tmp2.$$ | sort -u > Include_lines/sub_lib_list.new
+    ${IVI_RM} Include_lines/sub_lib_list.tmp2.$$
 
     if (-e Include_lines/sub_lib_list) then
-        ${KJB_DIFF_TEST} Include_lines/sub_lib_list.new Include_lines/sub_lib_list > /dev/null
+        ${IVI_DIFF_TEST} Include_lines/sub_lib_list.new Include_lines/sub_lib_list > /dev/null
         if (${status}) then 
             set update_sub_list = 1
         endif 
@@ -198,8 +198,8 @@ endif
 set update_sub_libs_needed = 0
 
 if ((${update_sub_list}) || (! -e Include_lines/sub_lib_list)) then
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Updating Include_lines/sub_lib_list in directory $cwd. " 
-    ${KJB_CP} Include_lines/sub_lib_list.new Include_lines/sub_lib_list
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/sub_lib_list in directory $cwd. " 
+    ${IVI_CP} Include_lines/sub_lib_list.new Include_lines/sub_lib_list
     set update_sub_libs_needed = 1
 endif 
 
@@ -210,18 +210,18 @@ else
 endif 
 
 if ((${update_sub_libs_needed}) || (! -e Include_lines/sub_libs_needed) || (${force_build_sub_libs})) then
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Updating Include_lines/sub_libs_needed in directory $cwd. " 
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/sub_libs_needed in directory $cwd. " 
     ${MAKE_SCRIPT_PATH}build_sub_libs_needed 
     set update_makefile_dirs = 1
 
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs."
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs."
     
     if (${status}) then 
         set exit_status = 1 
         goto cleanup
     endif 
 
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Finished updating Include_lines/sub_libs_needed in directory $cwd. " 
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Finished updating Include_lines/sub_libs_needed in directory $cwd. " 
 endif 
 
 if (! ${update_makefile_dirs}) then 
@@ -229,12 +229,12 @@ if (! ${update_makefile_dirs}) then
     set update_makefile_dirs = `${MAKE_SCRIPT_PATH}test_older_than Makefile-dirs ${MAKE_SCRIPT_PATH}build_makefile_dirs`
 
     if (${update_makefile_dirs}) then
-        ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Makefile-dirs in $cwd is older than build_makefile_dirs."
+        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Makefile-dirs in $cwd is older than build_makefile_dirs."
     endif 
 endif 
 
 if (${update_makefile_dirs}) then
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Script build_include_lines_2 is running build_makefile_dirs in $cwd."
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Script build_include_lines_2 is running build_makefile_dirs in $cwd."
 
     setenv CALLING_INDIRECT
     ${MAKE_SCRIPT_PATH}build_makefile_dirs
@@ -248,7 +248,7 @@ endif
 
 cleanup:
 
-${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Leaving script build_include_lines_2 in directory $cwd with status ${exit_status}."
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Leaving script build_include_lines_2 in directory $cwd with status ${exit_status}."
 
 exit ${exit_status} 
 

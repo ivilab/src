@@ -28,15 +28,15 @@ all dir_made clean code depend doc doc_dir_made lint proto regress_clean :
 
 
 Makefile : 
-	@$(KJB_ECHO) "Dummy rule for Makefile." 
+	@$(IVI_ECHO) "Dummy rule for Makefile." 
 
 
 INIT : 
-	@$(KJB_ECHO) "Starting in Makefile." 
+	@$(IVI_ECHO) "Starting in Makefile." 
 
 
 .DONE :
-	@$(KJB_ECHO) "Done in Makefile." 
+	@$(IVI_ECHO) "Done in Makefile." 
 
 
 #

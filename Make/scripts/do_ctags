@@ -2,13 +2,13 @@
 
 # set echo 
 
-if ($?KJB_LIB_PATH == 0) then
-    if ($?KJB_SRC_PATH == 0) then
-        ${P_STDERR} "Script do_ctags assumes that either KJB_LIB_PATH or KJB_SRC_PATH is set."
+if ($?IVI_LIB_PATH == 0) then
+    if ($?IVI_SRC_PATH == 0) then
+        ${P_STDERR} "Script do_ctags assumes that either IVI_LIB_PATH or IVI_SRC_PATH is set."
         exit 1
     else 
-        pushd ${KJB_SRC_PATH} > /dev/null
-            setenv KJB_LIB_PATH ${cwd}/lib/
+        pushd ${IVI_SRC_PATH} > /dev/null
+            setenv IVI_LIB_PATH ${cwd}/lib/
         popd > /dev/null 
     endif 
 endif 
@@ -26,26 +26,26 @@ endif
 
 
 
-(${KJB_LS} -1 *.[ch] |& grep -v "No match" > tag_files) >& /dev/null
+(${IVI_LS} -1 *.[ch] |& grep -v "No match" > tag_files) >& /dev/null
 
 
 if (-e Include_lines/sub_libs_needed) then
     set sub_libs_needed = `/bin/cat Include_lines/sub_libs_needed`
 
     foreach sub_lib_needed ($sub_libs_needed)
-        if (-d ${KJB_LIB_PATH}/${sub_lib_needed}) then
-             ${KJB_LS} -1 ${KJB_LIB_PATH}/${sub_lib_needed}/*.[ch]  |& grep -v "No match"  >> tag_files
+        if (-d ${IVI_LIB_PATH}/${sub_lib_needed}) then
+             ${IVI_LS} -1 ${IVI_LIB_PATH}/${sub_lib_needed}/*.[ch]  |& grep -v "No match"  >> tag_files
         else if (-d lib/${sub_lib_needed}) then
-             ${KJB_LS} -1 lib/${sub_lib_needed}/*.[ch]  |& grep -v "No match"  >> tag_files
+             ${IVI_LS} -1 lib/${sub_lib_needed}/*.[ch]  |& grep -v "No match"  >> tag_files
         else if (-d ../../lib/${sub_lib_needed}) then
-             ${KJB_LS} -1 ../../lib/${sub_lib_needed}/*.[ch]  |& grep -v "No match"  >> tag_files
+             ${IVI_LS} -1 ../../lib/${sub_lib_needed}/*.[ch]  |& grep -v "No match"  >> tag_files
         endif
     end
 endif 
 
 set exit_status = 0
 
-${KJB_CAT} /dev/null > tags
+${IVI_CAT} /dev/null > tags
 if (${status}) then 
     set exit_status = 1
 else 
@@ -65,7 +65,7 @@ else
     endif 
 endif 
 
-${KJB_RM} tag_files >& /dev/null
+${IVI_RM} tag_files >& /dev/null
 
 exit ${exit_status}
 

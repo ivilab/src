@@ -1,4 +1,4 @@
-# $Id: init_ua_hpc 22172 2018-06-23 23:03:18Z kobus $
+# $Id: init_ua_hpc 25496 2020-06-14 13:11:00Z kobus $
 
 # UA_HPC makes use of LD_LIBRARY_PATH and other environment variables. The
 # modulecmd script largely (only?) sets environment variables. Users of
@@ -144,7 +144,7 @@ if ($?ua_hpc_init) then
                 setenv EXTRA_PATH "${PATH}"
                 setenv EXTRA_MANPATH "${MANPATH}"
 
-                if ($?KJB_VERBOSE) then
+                if ($?IVI_VERBOSE) then
                     echo " "
                     echo "After adding modules ${desired_modules}, EXTRA_PATH is:"
                     echo "    ${EXTRA_PATH}" 

@@ -23,19 +23,19 @@
 #     there is C++ code in this directory, a symbol inherited via
 #     Makefile-libs-needed is set to ensure the linker is appropriate for C++.
 #
-#     Part two: For any KJB_HAVE_XXX found in this directory, a symbol for the
+#     Part two: For any IVI_HAVE_XXX found in this directory, a symbol for the
 #     compile like to provide the definitions of those symbols  is set.  
 #
-#     Part three: Because KJB_HAVE_XXX may not always be used as it should, and
-#     also because the use of KJB_HAVE_XXX does not necessarily mean that the
+#     Part three: Because IVI_HAVE_XXX may not always be used as it should, and
+#     also because the use of IVI_HAVE_XXX does not necessarily mean that the
 #     library component is actually used, we use #includes to identify external
 #     library use. Having done that, we arrange for the propagation of the link
 #     lings to program builds. We also arrange for any non-standard includes
 #     needed for compiles within this directory.
 #
-#     Part four: If either KJB_HAVE_XXX, or an #include associated with an
+#     Part four: If either IVI_HAVE_XXX, or an #include associated with an
 #     external library is found in a header file, then we must propagate the
-#     need for the KJB_HAVE_XXX symbol, and associated non-standard include dirs
+#     need for the IVI_HAVE_XXX symbol, and associated non-standard include dirs
 #     to other code. Note that the information used is similar to the union of
 #     that used in the previous two steps, but restricted to header files only. 
 #
@@ -54,23 +54,23 @@ endif
 set build_dir_path = "${cwd}"
 
 set ppid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Process $$ locked by ${ppid} entering script build_makefile_libs_needed_2 with directory ${build_dir_path}."
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} entering script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 
-if (($?KJB_LOCK_TIME_STAMP) && (-e Makefile-libs-needed)) then
-    set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${KJB_LOCK_TIME_STAMP} Makefile-libs-needed`
+if (($?IVI_LOCK_TIME_STAMP) && (-e Makefile-libs-needed)) then
+    set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-libs-needed`
 
     if (${can_skip}) then
-        ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Skipping build_makefile_libs_needed_2 in `pwd` as Makefile-libs-needed is new."
+        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Skipping build_makefile_libs_needed_2 in `pwd` as Makefile-libs-needed is new."
         # set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
         # echo $BEEP
         
         exit 0
     endif 
 else 
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Process $$ locked by ${ppid} reports Makefile-libs-needed does not exist in script build_makefile_libs_needed_2 with directory ${build_dir_path}."
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} reports Makefile-libs-needed does not exist in script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 endif 
 
-${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Process $$ locked by ${ppid} continuing with script build_makefile_libs_needed_2 with directory ${build_dir_path}."
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} continuing with script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 
 ##########################################################
 
@@ -81,7 +81,7 @@ ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Process $$ locked by ${ppid} continuing wi
 # in the build system. So we reduce the chance of conflicts, and enable printing
 # a message when this occurs, by building the results in a temporary file. 
 #
-${KJB_RM} Makefile-libs-needed
+${IVI_RM} Makefile-libs-needed
 set output_file_name = Makefile-libs-needed.$$
 
 set cur_time = `date`
@@ -99,18 +99,18 @@ endif
 
 set test_main = `${MAKE_SCRIPT_PATH}stream_file_names -s -m`
 if (${status}) then
-    ${KJB_RM} "${lock_file}"
+    ${IVI_RM} "${lock_file}"
     ${P_STDERR} "Script stream_file_names failed with options -s -m  in script build_makefile_libs_needed_2."
     exit 1
 endif 
 
 if ("${test_main}" != "") then
     
-    # What if we accidently have a main in a KJB library sub-directory? 
+    # What if we accidently have a main in a IVI library sub-directory? 
     #
     if (-e Makefile-include) then
         echo "Makefile-include found in a directory with a main module."
-        echo "Assuming that we are in a KJB library sub-directory."
+        echo "Assuming that we are in a IVI library sub-directory."
         echo "Adjusting building of ${build_dir_path}/Makefile-libs-needed appropriately."
 
         set test_main = "" 
@@ -123,7 +123,7 @@ endif
 # command for linking to deal with it. 
 #
 
-${VERBOSE_ECHO_2} "${KJB_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part one."
+${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part one."
 
 set have_cpp = `${MAKE_SCRIPT_PATH}stream_file_names -t -x` 
 
@@ -133,7 +133,7 @@ if ("${have_cpp}" != "") then
      echo  "# This means we might need to need to link against C++ libs." >> ${output_file_name}
      echo  "# Currently it seems that the safest way is to let C++ call the linker." >> ${output_file_name}
      echo  "# " >> ${output_file_name}
-     echo "KJB_LD = "'$'"(KJB_CXX)" >> ${output_file_name}
+     echo "IVI_LD = "'$'"(IVI_CXX)" >> ${output_file_name}
      echo  " " >> ${output_file_name}
 endif 
 
@@ -147,7 +147,7 @@ set need_options = ""
 set need_include = ""
 set need_cc_flags = ""
 
-set kjb_haves = `sed -n '/KJB_HAVE/p' Include_lines/include_lines`
+set ivi_haves = `sed -n '/IVI_HAVE/p' Include_lines/include_lines`
 
 # echo haves: ${haves} 
 
@@ -163,7 +163,7 @@ set noglob
 # init_compile. 
 #
 
-${VERBOSE_ECHO_2} "${KJB_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part two."
+${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part two."
 
 # This is not needed so far as we just propogate CUDA support and use that. 
 #
@@ -205,23 +205,23 @@ endif
 
 # #############################################################################
 # 
-# Part three: Define a make symbol to ensure that all KJB_HAVE_XXX used
+# Part three: Define a make symbol to ensure that all IVI_HAVE_XXX used
 # in the directory are provided on the compile line whenever code in this
 # directory is compiled.
 
-${VERBOSE_ECHO_2} "${KJB_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part three."
+${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part three."
 
-foreach kjb_have (${kjb_haves})
-    set lib = `echo ${kjb_have} | sed 's/KJB_HAVE_/LIB_/'`
+foreach ivi_have (${ivi_haves})
+    set lib = `echo ${ivi_have} | sed 's/IVI_HAVE_/LIB_/'`
     set have_str = `echo ${lib} | sed 's/LIB_/HAVE_/'`
     
-    set have_env_str = '$'"(KJB_${have_str})"
+    set have_env_str = '$'"(IVI_${have_str})"
     set need_haves = "${need_haves} ${have_env_str}"
 end
 
 if ("${need_haves}" != "") then
     echo  " " >> ${output_file_name}
-    echo  "# This symbol provides all needed defines for KJB_HAVE_XXX for compiles" >> ${output_file_name}
+    echo  "# This symbol provides all needed defines for IVI_HAVE_XXX for compiles" >> ${output_file_name}
     echo  "# in this directory." >> ${output_file_name}
     echo  "#" >> ${output_file_name}
 
@@ -233,8 +233,8 @@ endif
 # #############################################################################
 # 
 # Part four: While external library use should be accompanied by a
-# KJB_HAVE_XXX, we do not count on this. We may find out that we need that
-# library via #includes. Further, a KJB_HAVE_XXX, may not imply actually needing
+# IVI_HAVE_XXX, we do not count on this. We may find out that we need that
+# library via #includes. Further, a IVI_HAVE_XXX, may not imply actually needing
 # the library or associated header file. Hence we consider #includes to decide
 # if we need to link against the library. This is propagated to programs being
 # built through the symbols NEED_LIB_XXX. Further, for compiling in this
@@ -244,7 +244,7 @@ endif
 # XXX_EXTRA_LIB_CC_FLAGS, XXX_EXTRA_LIB_CC_FLAGS, and XXX_EXTRA_LIB_CC_FLAGS.
 #
 
-${VERBOSE_ECHO_2} "${KJB_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part four."
+${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part four."
 
 set used_libs = ""
 set first_item = 1
@@ -323,14 +323,14 @@ endif
 
 # #############################################################################
 # 
-# Part five: In either the KJB_HAVE_XXX or a #include for an external library is
+# Part five: In either the IVI_HAVE_XXX or a #include for an external library is
 # in a header file, then we need to makes sure that any code that includes
-# header files in this directory will know about any KJB_HAVE_XXX or
+# header files in this directory will know about any IVI_HAVE_XXX or
 # non-standard include directories needed to compile. This is done using the
 # symbol(s) WITH_LIBS_HAVE_XXX that propagates compile information, much like
 # NEED_LIB_XXX propagates linking information. 
     
-${VERBOSE_ECHO_2} "${KJB_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part five."
+${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part five."
 
 set have_header_files = `${MAKE_SCRIPT_PATH}stream_file_names -h Include_lines -t`
 set first_with_libs_have = 1 
@@ -371,7 +371,7 @@ if ("${have_header_files}" != "") then
             # echo "Not found in ones already used."
 
             set have_str = HAVE_${lib}
-            set grep_str = "KJB_${have_str}"
+            set grep_str = "IVI_${have_str}"
             # echo grep_str: $grep_str
             
             unset noglob
@@ -392,7 +392,7 @@ if ("${have_header_files}" != "") then
                 set options = OPTIONS_${lib}
                 set cc_flags = CC_FLAGS_${lib}
 
-                set have_env_str = '$'"(KJB_${have_str})"
+                set have_env_str = '$'"(IVI_${have_str})"
                 set include_env_str =  '$'"(${include})"
                 set options_env_str =  '$'"(${options})"
                 set cc_flags_env_str = '$'"(${cc_flags})"
@@ -402,7 +402,7 @@ if ("${have_header_files}" != "") then
 
                     echo " "  >> ${output_file_name}
                     echo " "  >> ${output_file_name}
-                    echo "# Symbols defined when either the include for an optional lib or the KJB_HAVE_XXX was found in a header file." >> ${output_file_name}
+                    echo "# Symbols defined when either the include for an optional lib or the IVI_HAVE_XXX was found in a header file." >> ${output_file_name}
                     echo "# Here a component relying on this component may need extra information passed via WITH_LIBS_XXX."  >> ${output_file_name}
                     echo "# "  >> ${output_file_name}
                 endif 
@@ -416,7 +416,7 @@ endif
 echo " "  >> ${output_file_name}
 echo " "  >> ${output_file_name}
 
-${VERBOSE_ECHO_2} "${KJB_VERBOSE_INDENT}Script build_makefile_libs_needed_2 wrapping up."
+${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 wrapping up."
 
 set is_lib = `echo ${cwd} | grep -c '^.*/lib/[^/][^/]*$'`
 
@@ -434,28 +434,28 @@ endif
 #
 set cache_depend = '$(VAR_CACHE_FNAME)'
 echo ${symbolic_lib}Include_lines/cache.state : ${cache_depend} >> ${output_file_name}
-echo '	$(KJB_TOUCH) $@' >> ${output_file_name}
+echo '	$(IVI_TOUCH) $@' >> ${output_file_name}
 echo " "  >> ${output_file_name}
 
 if (-e Makefile-libs-needed) then
     echo " "
     echo "Moving Makefile-libs-needed, which must of been created by a different process, to Makefile-libs-needed-SAVE.$$."
-    ${KJB_MV} Makefile-libs-needed Makefile-libs-needed-SAVE.$$ 
+    ${IVI_MV} Makefile-libs-needed Makefile-libs-needed-SAVE.$$ 
     echo "Directory is ${cwd}."
     echo " "
 endif 
 
-${KJB_MV} ${output_file_name} Makefile-libs-needed
+${IVI_MV} ${output_file_name} Makefile-libs-needed
 
 unset noglob 
 
-${KJB_RM} .missing_includes
-${KJB_RM} Makefile-libs-needed-depend
-${KJB_RM} Makefile-libs-needed-depend.bak
+${IVI_RM} .missing_includes
+${IVI_RM} Makefile-libs-needed-depend
+${IVI_RM} Makefile-libs-needed-depend.bak
 
 cleanup:
 
-${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Process $$ locked by ${ppid} leaving script build_makefile_libs_needed_2."
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} leaving script build_makefile_libs_needed_2."
 
 
 

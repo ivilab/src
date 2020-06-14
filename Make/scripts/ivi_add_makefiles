@@ -3,14 +3,14 @@
 ##############################################################################
 #
 # Identification:
-#     A script to add kjb style Makefiles the current directory
+#     A script to add ivi style Makefiles the current directory
 #
 # Arguments:
 #      No arguments are required. The argument '-p' forces adding program
 #      makefiles. The argument '-l' forces adding library makefiles.
 #
 # Description:
-#     This script adds kjb library style Makefiles to the current directory. In
+#     This script adds ivi library style Makefiles to the current directory. In
 #     the absence of a "-p" or "-l" flag, if there are no code files at all, or
 #     if a main routine can be found, then it is assumed that program oriented
 #     makefiles are wanted; otherwise, it is assumed that library oriented
@@ -66,41 +66,41 @@ endif
 ##############################################################################
 
 # This next part is shared by all files in Make whose names begin with "build",
-# AND kjb_add_makefiles. Updates should be propogated. 
+# AND ivi_add_makefiles. Updates should be propogated. 
 
-if ($?FORCE_KJB_SRC_DIR) then 
-    if (-e "${FORCE_KJB_SRC_DIR}/Make/init_compile") then 
-        setenv KJB_SRC_PATH "${FORCE_KJB_SRC_DIR}"
+if ($?FORCE_IVI_SRC_DIR) then 
+    if (-e "${FORCE_IVI_SRC_DIR}/Make/init_compile") then 
+        setenv IVI_SRC_PATH "${FORCE_IVI_SRC_DIR}"
     else 
-        bash -c 'echo "Env var FORCE_KJB_SRC_DIR is set to ${FORCE_KJB_SRC_DIR}, but ${FORCE_KJB_SRC_DIR}/Make/init_compile does not exist." >&2'
+        bash -c 'echo "Env var FORCE_IVI_SRC_DIR is set to ${FORCE_IVI_SRC_DIR}, but ${FORCE_IVI_SRC_DIR}/Make/init_compile does not exist." >&2'
         exit 1 
     endif 
 else  
-    # Use env var for KJB_DIRS for better error reporting via bash sub-shell.
-    if ($?FORCE_KJB_DIR) then
-        setenv KJB_DIRS "${FORCE_KJB_DIR}"
+    # Use env var for IVI_DIRS for better error reporting via bash sub-shell.
+    if ($?FORCE_IVI_DIR) then
+        setenv IVI_DIRS "${FORCE_IVI_DIR}"
     else
-        setenv KJB_DIRS ". kjb KJB ivi IVI src"
+        setenv IVI_DIRS ". kjb KJB ivi IVI src"
     endif 
 
     # Find out where we are in the source tree. In particular, we want to find a
-    # directory that has one of the directories in KJB_DIRS as a subdir, which
+    # directory that has one of the directories in IVI_DIRS as a subdir, which
     # itself has Make as a sub-dir and Make/init_compile as a file in that. 
 
     set found = 0
-    set kjb_top = ""
+    set ivi_top = ""
 
     pushd `pwd` > /dev/null
 
     while ("`pwd`" != "/")
-        foreach kjb_dir (${KJB_DIRS}) 
-            if ("${kjb_dir}" == ".") then
-                set kjb_dir = ""
+        foreach ivi_dir (${IVI_DIRS}) 
+            if ("${ivi_dir}" == ".") then
+                set ivi_dir = ""
             else
-                set kjb_dir = "${kjb_dir}/"
+                set ivi_dir = "${ivi_dir}/"
             endif 
 
-            if (-e "${kjb_dir}Make/init_compile") then
+            if (-e "${ivi_dir}Make/init_compile") then
                 set found = 1
                 break
             endif 
@@ -108,7 +108,7 @@ else
 
         if (${found}) break
 
-        set kjb_top = "../${kjb_top}"
+        set ivi_top = "../${ivi_top}"
 
         cd ..
     end
@@ -116,28 +116,28 @@ else
     popd > /dev/null
 
     if (${found}) then
-        if ("${kjb_dir}" == "") then
-            set kjb_dir = "./"
+        if ("${ivi_dir}" == "") then
+            set ivi_dir = "./"
         endif 
 
-        setenv KJB_SRC_PATH "${kjb_top}${kjb_dir}"
+        setenv IVI_SRC_PATH "${ivi_top}${ivi_dir}"
     else 
         # We cannot use P_STDERR here because we might not have defined it yet.
         bash -c 'echo " " >&2'
-        bash -c 'echo "This directory is not below a directory with KJB installed." >&2'
-        bash -c 'echo "Valid directories for KJB in this context: ${KJB_DIRS}." >&2'
-        bash -c 'echo "To experiment with a temporary fix, try setting FORCE_KJB_SRC_DIR." >&2'
+        bash -c 'echo "This directory is not below a directory with IVI installed." >&2'
+        bash -c 'echo "Valid directories for IVI in this context: ${IVI_DIRS}." >&2'
+        bash -c 'echo "To experiment with a temporary fix, try setting FORCE_IVI_SRC_DIR." >&2'
         bash -c 'echo "For a more permanent fix, edit $0 or contact Kobus." >&2'
         exit 1
     endif 
 endif 
 
-pushd ${KJB_SRC_PATH} > /dev/null
-    setenv KJB_SRC_PATH "${cwd}/"
+pushd ${IVI_SRC_PATH} > /dev/null
+    setenv IVI_SRC_PATH "${cwd}/"
 popd > /dev/null
 
 # Check that this file ($0) is up to date compared to the reference one.
-set need_to_replace_myself = `${KJB_SRC_PATH}Make/scripts/test_older_than "$0" "${KJB_SRC_PATH}Make/build"`
+set need_to_replace_myself = `${IVI_SRC_PATH}Make/scripts/test_older_than "$0" "${IVI_SRC_PATH}Make/build"`
 if (${status}) exit 1 
      
 if (${need_to_replace_myself}) then
@@ -145,11 +145,11 @@ if (${need_to_replace_myself}) then
     # self_update, but this is too fancy. It cannot do the rebuild in parallel,
     # and we would want to implement checking for infinite recursion.  Using
     # self_update is commented out here:
-    #     exec ${KJB_SRC_PATH}Make/scripts/self_update "$0" "${KJB_SRC_PATH}Make/build" Make
+    #     exec ${IVI_SRC_PATH}Make/scripts/self_update "$0" "${IVI_SRC_PATH}Make/build" Make
 
     echo "Script $0 is attempting to rebuild itself."
     echo "You will need to reenter your build command (e.g., make or $0)."
-    exec /bin/cp "${KJB_SRC_PATH}Make/build" "$0"
+    exec /bin/cp "${IVI_SRC_PATH}Make/build" "$0"
 endif 
 
 ##############################################################################
@@ -157,9 +157,9 @@ endif
 set need_init = 1
 
 if (! $?FORCE_INIT_COMPILE) then 
-    if (($?KJB_HAVE_MACHINE) && ($?INIT_SRC_DIR)) then
-        if ("${KJB_SRC_PATH}" == "${INIT_SRC_DIR}") then 
-            if ($?KJB_VERBOSE) then
+    if (($?IVI_HAVE_MACHINE) && ($?INIT_SRC_DIR)) then
+        if ("${IVI_SRC_PATH}" == "${INIT_SRC_DIR}") then 
+            if ($?IVI_VERBOSE) then
                 echo "" 
                 echo "Skipping source of init_machine and init_compile."
             endif 
@@ -170,22 +170,22 @@ if (! $?FORCE_INIT_COMPILE) then
 endif 
      
 if (${need_init}) then
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo "" 
-        echo "Sourcing ${KJB_SRC_PATH}Make/init_machine"
+        echo "Sourcing ${IVI_SRC_PATH}Make/init_machine"
     endif 
 
-    source ${KJB_SRC_PATH}Make/init_machine
+    source ${IVI_SRC_PATH}Make/init_machine
 
-    if ($?KJB_VERBOSE) then
-        echo "Sourcing ${KJB_SRC_PATH}Make/init_compile"
+    if ($?IVI_VERBOSE) then
+        echo "Sourcing ${IVI_SRC_PATH}Make/init_compile"
     endif 
 
-    source ${KJB_SRC_PATH}Make/init_compile
+    source ${IVI_SRC_PATH}Make/init_compile
 endif 
 
-${VERBOSE_ECHO} "kjb_add_makefiles key paths:"
-${VERBOSE_ECHO} "   KJB_SRC_PATH: ${KJB_SRC_PATH}"
+${VERBOSE_ECHO} "ivi_add_makefiles key paths:"
+${VERBOSE_ECHO} "   IVI_SRC_PATH: ${IVI_SRC_PATH}"
 ${VERBOSE_ECHO} "   MAKE_PATH: ${MAKE_PATH}"
 ${VERBOSE_ECHO} "   MAKE_SCRIPT_PATH: ${MAKE_SCRIPT_PATH}"
 ${VERBOSE_ECHO} " "
@@ -195,7 +195,7 @@ ${VERBOSE_ECHO} " "
 set script_files = `${MAKE_SCRIPT_PATH}stream_script_names | sed '/^build$/d'`
 if (${status}) then
     ${P_STDERR} " "
-    ${P_STDERR} "Script stream_script_names failed in script kjb_add_makefiles."
+    ${P_STDERR} "Script stream_script_names failed in script ivi_add_makefiles."
     ${P_STDERR} " "
     exit 1
 endif 
@@ -205,7 +205,7 @@ set lib_sub_dir = `pwd | sed -n '/\/lib\/[^\/]*$/p'`
 set test_main = `${MAKE_SCRIPT_PATH}stream_file_names -m`
 if (${status}) then
     ${P_STDERR} " "
-    ${P_STDERR} "Script stream_file_names with option -m failed in script kjb_add_makefiles."
+    ${P_STDERR} "Script stream_file_names with option -m failed in script ivi_add_makefiles."
     ${P_STDERR} " "
     exit 1
 endif 
@@ -267,7 +267,7 @@ if (${prefer_prog}) then
             pushd ${lib_sub_dir} > /dev/null
             if (${status}) exit
 
-            ${MAKE_SCRIPT_PATH}kjb_add_makefiles
+            ${MAKE_SCRIPT_PATH}ivi_add_makefiles
             if (${status}) then 
                 ${P_STDERR} "Adding makefiles to sub-lib lib/${lib_sub_dir} failed."
                 exit 1 
@@ -291,18 +291,18 @@ set build_dir_name = `pwd | sed 's#.*/##'`
 if (${prefer_lib}) then
     echo "Library ID: ${build_dir_name}"
 
-    if (-d ${KJB_LIB_PATH}${build_dir_name}) then
-        pushd ${KJB_LIB_PATH}${build_dir_name} > /dev/null
-           set test_kjb_lib_sub_dir = `pwd`
+    if (-d ${IVI_LIB_PATH}${build_dir_name}) then
+        pushd ${IVI_LIB_PATH}${build_dir_name} > /dev/null
+           set test_ivi_lib_sub_dir = `pwd`
         popd > /dev/null
 
         set cur_dir = `pwd`
-        if ("${test_kjb_lib_sub_dir}" == "${cur_dir}") then 
-           echo "This appears to be a sub-directory of KJB lib."
+        if ("${test_ivi_lib_sub_dir}" == "${cur_dir}") then 
+           echo "This appears to be a sub-directory of IVI lib."
         else 
-           ${P_STDERR} "This does not appear to be a sub-directory of KJB lib."
-           ${P_STDERR} "However, the directory ${KJB_LIB_PATH}${build_dir_name} exists."
-           ${P_STDERR} "It is important to avoid name conflict with KJB sub-libs."
+           ${P_STDERR} "This does not appear to be a sub-directory of IVI lib."
+           ${P_STDERR} "However, the directory ${IVI_LIB_PATH}${build_dir_name} exists."
+           ${P_STDERR} "It is important to avoid name conflict with IVI sub-libs."
            ${P_STDERR} " "
            ${P_STDERR} "Exiting for now."
            ${P_STDERR} " "
@@ -363,15 +363,15 @@ foreach old_makefile (${old_makefiles})
             set first_time = 0
 
             if (-e OLD_MAKEFILES) then
-                ${KJB_MV} OLD_MAKEFILES OLD_MAKEFILES_OLDER
-                ${KJB_MKDIR} OLD_MAKEFILES
-                ${KJB_MV} OLD_MAKEFILES_OLDER OLD_MAKEFILES/OLDER
+                ${IVI_MV} OLD_MAKEFILES OLD_MAKEFILES_OLDER
+                ${IVI_MKDIR} OLD_MAKEFILES
+                ${IVI_MV} OLD_MAKEFILES_OLDER OLD_MAKEFILES/OLDER
             else 
-                ${KJB_MKDIR} OLD_MAKEFILES
+                ${IVI_MKDIR} OLD_MAKEFILES
             endif 
         endif 
 
-        ${KJB_MV} ${old_makefile} OLD_MAKEFILES
+        ${IVI_MV} ${old_makefile} OLD_MAKEFILES
 
         if (${svn_file}) then
             echo "Making sure that any existing old copy of ${old_makefile} is removed from the SVN repository."

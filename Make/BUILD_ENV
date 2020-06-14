@@ -73,16 +73,16 @@
 # The paths in variables ending in '_PATH' must have a trailing slashes (this is
 # a convention we use, although not gaurenteed). 
 # 
-# setenv KJB_CC gcc
+# setenv IVI_CC gcc
 # setenv CC_PATH ""
 #
-# setenv KJB_CXX g++
+# setenv IVI_CXX g++
 # setenv CXX_PATH ""
 #
-# setenv KJB_F77 gcc
+# setenv IVI_F77 gcc
 # setenv F77_PATH ""
 #
-# setenv KJB_LD gcc 
+# setenv IVI_LD gcc 
 # setenv LD_PATH ""
 #
 

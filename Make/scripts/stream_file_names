@@ -40,12 +40,12 @@
 # |    -a           All files
 # |    -c2man       Files that we want to give to c2man
 # |    -doxygen     Files that we want to give to doxygen
-# |    -all_kjb     Dirs that we want for KJB or KJB_cpp
+# |    -all_ivi     Dirs that we want for IVI or IVI_cpp
 # |    -c_lib_dir   C library directories 
 # |    -cxx_lib_dir Cpp library directories 
 # |    -skip_incl   Skip files with names of the form *_incl.h
-# |    -skip_all    Skip files with names of the form kjb_all_*.h
-# |    -skip_export Skip files with names of the form kjb_export_*.h
+# |    -skip_all    Skip files with names of the form ivi_all_*.h
+# |    -skip_export Skip files with names of the form ivi_export_*.h
 #
 # Author:
 #     Kobus Barnard
@@ -73,7 +73,7 @@ set test_only = 0
 set all = 0
 set c_lib_dir = 0
 set cxx_lib_dir = 0
-set all_kjb = 0
+set all_ivi = 0
 set no_path = 0
 set list_file_contents = 0
 set skip_incl = 0
@@ -111,9 +111,9 @@ foreach arg ($*)
     else if ("${arg}" == "-cxx_lib_dir") then
         set all = 1
         set cxx_lib_dir = 1
-    else if ("${arg}" == "-all_kjb") then
+    else if ("${arg}" == "-all_ivi") then
         set all = 1
-        set all_kjb = 1
+        set all_ivi = 1
     else if ("${arg}" == "-no_path") then
         set no_path = 1
     else if ("${arg}" == "-skip_incl") then
@@ -173,11 +173,11 @@ endif
 # For c2man/doxygen. Currently we are only interested in generic library code
 # (i.e., not program specfic) libraries. 
 #
-set is_generic_lib = `echo ${cwd} | sed "s#^${KJB_SRC_PATH}lib/##" | grep -c '^[^/][^/]*$'`
+set is_generic_lib = `echo ${cwd} | sed "s#^${IVI_SRC_PATH}lib/##" | grep -c '^[^/][^/]*$'`
 
 set cpp_lib_str = `echo ${cwd} | grep /lib/ | grep '_cpp$'`
-set cpp_file_count = `${KJB_LS} -1 | ${KJB_EGREP} -c '.*\.C$|.*\.cxx$|.*\.cpp$'`
-# set c_and_h_file_count = `${KJB_LS} -1 | ${KJB_EGREP} -c '.*\.[ch]$'`
+set cpp_file_count = `${IVI_LS} -1 | ${IVI_EGREP} -c '.*\.C$|.*\.cxx$|.*\.cpp$'`
+# set c_and_h_file_count = `${IVI_LS} -1 | ${IVI_EGREP} -c '.*\.[ch]$'`
 
 set noglob
 
@@ -188,13 +188,13 @@ else
 endif 
 
 if (${skip_export}) then
-    set prune_export = "grep -v kjb_export_ "
+    set prune_export = "grep -v ivi_export_ "
 else
     set prune_export = "cat"
 endif 
 
 if (${skip_all}) then
-    set prune_all = "grep -v kjb_all_ "
+    set prune_all = "grep -v ivi_all_ "
 else
     set prune_all = "cat"
 endif 
@@ -202,14 +202,14 @@ endif
 set test_files = ""
 
 if (${all}) then
-    set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export}`
+    set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export}`
 else if (${c2man}) then 
     if ((-e FORCE_C2MAN) ||((${is_generic_lib}) && (! -e FORCE_DOXYGEN) && (! -e SKIP_C2MAN) && ("${cpp_lib_str}" == "") && (${cpp_file_count} == 0))) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[ch]$' | grep -v "_gen.h" | grep -v "_gen_f.h" | grep -v "_incl.h"  | grep -v "_incl_f.h" `
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[ch]$' | grep -v "_gen.h" | grep -v "_gen_f.h" | grep -v "_incl.h"  | grep -v "_incl_f.h" `
     endif 
 else if (${doxygen}) then 
     if ((-e FORCE_DOXYGEN) || (-e Doxyfile) || ((${is_generic_lib}) && (! -e SKIP_DOXYGEN) && (! -e FORCE_C2MAN) && (("${cpp_lib_str}" != "") || (${cpp_file_count} > 0)))) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[chC]$|.*\.[chit]xx$|.*\.[chit]pp$' | grep -v "_gen.h" | grep -v "_gen_f.h" | grep -v "_incl.h"  | grep -v "_incl_f.h" `
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[chC]$|.*\.[chit]xx$|.*\.[chit]pp$' | grep -v "_gen.h" | grep -v "_gen_f.h" | grep -v "_incl.h"  | grep -v "_incl_f.h" `
     endif 
 #
 # Filtering main forces source files only, even if header files is eroneously
@@ -217,48 +217,48 @@ else if (${doxygen}) then
 #
 else if (${include_source} && ${include_header}) then
     if (${dot_new}) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[chC]\.new$|.*\.[chit]xx\.new$|.*\.[chit]pp\.new$|.*\.cc.new$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[chC]\.new$|.*\.[chit]xx\.new$|.*\.[chit]pp\.new$|.*\.cc.new$'`
     else
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[chC]$|.*\.[chit]xx$|.*\.[chit]pp$|.*\.cc$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[chC]$|.*\.[chit]xx$|.*\.[chit]pp$|.*\.cc$'`
     endif 
 else if (${include_source}) then
     if (${dot_new}) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[cC]\.new$|.*\.cxx\.new$|.*\.cpp\.new$|.*\.cc.new$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[cC]\.new$|.*\.cxx\.new$|.*\.cpp\.new$|.*\.cc.new$'`
     else
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[cC]$|.*\.cxx$|.*\.cpp$|.*\.cc$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[cC]$|.*\.cxx$|.*\.cpp$|.*\.cc$'`
     endif 
 else if (${include_c} && ${include_header}) then
     if (${dot_new}) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[ch]\.new$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[ch]\.new$'`
     else
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[ch]$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[ch]$'`
     endif 
 else if (${include_c}) then
     if (${dot_new}) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.c\.new$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.c\.new$'`
     else
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.c$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.c$'`
     endif 
 else if (${include_cxx} && ${include_header}) then
     if (${dot_new}) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[hC]\.new$|.*\.[chit]xx\.new$|.*\.[chit]pp\.new$|.*\.cc.new$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[hC]\.new$|.*\.[chit]xx\.new$|.*\.[chit]pp\.new$|.*\.cc.new$'`
     else
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.[hC]$|.*\.[chit]xx$|.*\.[chit]pp$|.*\.cc$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[hC]$|.*\.[chit]xx$|.*\.[chit]pp$|.*\.cc$'`
     endif 
 else if (${include_cxx}) then
     if (${dot_new}) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.C\.new$|.*\.cxx\.new$|.*\.cpp\.new$|.*\.cc.new$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.C\.new$|.*\.cxx\.new$|.*\.cpp\.new$|.*\.cc.new$'`
     else
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.C$|.*\.cxx$|.*\.cpp$|.*\.cc$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.C$|.*\.cxx$|.*\.cpp$|.*\.cc$'`
     endif 
 else if (${include_header}) then
     if (${dot_new}) then
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.h\.new$|.*\.[hit]xx\.new$|.*\.[hit]pp\.new$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.h\.new$|.*\.[hit]xx\.new$|.*\.[hit]pp\.new$'`
     else
-        set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.h$|.*\.[hit]xx$|.*\.[hit]pp$'`
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.h$|.*\.[hit]xx$|.*\.[hit]pp$'`
     endif 
 else if (${dot_new}) then
-    set test_files = `${KJB_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${KJB_EGREP} '.*\.new$'`
+    set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.new$'`
 endif 
 
 foreach test_file (${test_files}) 
@@ -285,7 +285,7 @@ foreach test_file (${test_files})
             # found. 
             
             set temp_dir = "${TMPDIR}/${USER}/stream_file_names_temp_dir/"
-            ${KJB_MKDIR} ${temp_dir}
+            ${IVI_MKDIR} ${temp_dir}
             if ($status) then
                 ${P_STDERR} "Script stream_file_names unable to make directory ${temp_dir}."
                 exit 1 
@@ -312,7 +312,7 @@ foreach test_file (${test_files})
             # (e.g., it does not deal with tabs, so we use ${ALL_LOCAL_INCLUDES}
             # to avoid potentially confusing error messages. 
             #
-            set test_main_flags = "${MD_DEFINES} ${KJB_HAVE} ${ALL_LOCAL_INCLUDES}"
+            set test_main_flags = "${MD_DEFINES} ${IVI_HAVE} ${ALL_LOCAL_INCLUDES}"
 
             # We want to ignore #include and #error, but it is tricky because of
             # constructions like:
@@ -324,7 +324,7 @@ foreach test_file (${test_files})
 
             sed 's/^[ 	]*#[ 	]*include[ 	]*[<"][^"<>]*[>"][ 	]*//' < ${test_file} > ${temp_dir}.test_file_${$}_s1.${file_suffix}
             sed 's/^[ 	]*#[ 	]*error[ 	]*"[^"/]*"[ 	]*//' < ${temp_dir}.test_file_${$}_s1.${file_suffix} > ${temp_dir}.test_file_${$}_s2.${file_suffix}
-            (${KJB_CPP} ${test_main_flags} ${temp_dir}.test_file_${$}_s2.${file_suffix} > ${temp_dir}.test_file_${$}.${file_suffix} ) >&  ${temp_dir}.test_file_${$}_s2.${file_suffix}.err
+            (${IVI_CPP} ${test_main_flags} ${temp_dir}.test_file_${$}_s2.${file_suffix} > ${temp_dir}.test_file_${$}.${file_suffix} ) >&  ${temp_dir}.test_file_${$}_s2.${file_suffix}.err
 
             if ($status) then
                 ${P_STDERR} "Preprocessing while testing ${test_file} for main has non zero exit status."
@@ -336,68 +336,68 @@ foreach test_file (${test_files})
                 endif 
 
                 ${P_STDERR} "Comand executed was:"
-                ${P_STDERR} "    ${KJB_CPP} ${test_main_flags} ${temp_dir}.test_file_${$}_s2.${file_suffix}"
+                ${P_STDERR} "    ${IVI_CPP} ${test_main_flags} ${temp_dir}.test_file_${$}_s2.${file_suffix}"
                 ${P_STDERR} " "
                 ${P_STDERR} "While executing (in `pwd`): "
                 ${P_STDERR} "    stream_file_names $*"
                 ${P_STDERR} " "
                 ${P_STDERR} "Saving ${temp_dir}.test_file_${$}_s2.${file_suffix} into .debug_test_file_${$}_s2.${file_suffix}"
                 ${P_STDERR} " "
-                ${KJB_CPP} ${temp_dir}.test_file_${$}_s2.${file_suffix} .debug_test_file_${$}_s2.${file_suffix}
+                ${IVI_CPP} ${temp_dir}.test_file_${$}_s2.${file_suffix} .debug_test_file_${$}_s2.${file_suffix}
                 ${P_STDERR} "Reproduce with:"
-                ${P_STDERR} "     ${KJB_CPP} ${test_main_flags} .debug_test_file_${$}_s2.${file_suffix} > /dev/null"
+                ${P_STDERR} "     ${IVI_CPP} ${test_main_flags} .debug_test_file_${$}_s2.${file_suffix} > /dev/null"
                 ${P_STDERR} " "
-                ${P_STDERR} "Command failed: ${KJB_CPP} ${test_main_flags} ${temp_dir}.test_file_${$}_s2.${file_suffix} > ${temp_dir}.test_file_${$}.${file_suffix}"
+                ${P_STDERR} "Command failed: ${IVI_CPP} ${test_main_flags} ${temp_dir}.test_file_${$}_s2.${file_suffix} > ${temp_dir}.test_file_${$}.${file_suffix}"
                 ${P_STDERR} " "
 
                 if ("${USER}" != "kobus") then
                     ${P_STDERR} "Proceeding optimistically to determine main modules without preprocessing."
                     ${P_STDERR} " "
-                    ${KJB_CP} ${test_file} ${temp_dir}.test_file_${$}.${file_suffix}
+                    ${IVI_CP} ${test_file} ${temp_dir}.test_file_${$}.${file_suffix}
                 else
                     exit 1 
                 endif 
             endif 
 
-            ${KJB_RM} ${temp_dir}.test_file_${$}_s1.${file_suffix} 
-            ${KJB_RM} ${temp_dir}.test_file_${$}_s1.${file_suffix}.err
-            ${KJB_RM} ${temp_dir}.test_file_${$}_s2.${file_suffix} 
-            ${KJB_RM} ${temp_dir}.test_file_${$}_s2.${file_suffix}.err
+            ${IVI_RM} ${temp_dir}.test_file_${$}_s1.${file_suffix} 
+            ${IVI_RM} ${temp_dir}.test_file_${$}_s1.${file_suffix}.err
+            ${IVI_RM} ${temp_dir}.test_file_${$}_s2.${file_suffix} 
+            ${IVI_RM} ${temp_dir}.test_file_${$}_s2.${file_suffix}.err
 
             # We grep for main to cut down on the size of ${temp_dir}.test_main_${$}.${file_suffix}. The
             # "sed" command changes tabs to blanks. 
             #
-            ${KJB_CAT} ${temp_dir}.test_file_${$}.${file_suffix} | ${KJB_GREP} 'main' | ${KJB_SED} 's/	/ /g'  > ${temp_dir}.test_main_${$}.${file_suffix}
-            ${KJB_RM}  ${temp_dir}.test_file_${$}.${file_suffix} 
+            ${IVI_CAT} ${temp_dir}.test_file_${$}.${file_suffix} | ${IVI_GREP} 'main' | ${IVI_SED} 's/	/ /g'  > ${temp_dir}.test_main_${$}.${file_suffix}
+            ${IVI_RM}  ${temp_dir}.test_file_${$}.${file_suffix} 
             
             # Test some possibilities. This can succeed for some lines that are not
             # syntatically correct main routine beginings; update as time permits.
             #
-            set test_main = `${KJB_CAT} ${temp_dir}.test_main_${$}.${file_suffix} | ${KJB_GREP} '^ *main *(.*[,)]'`
+            set test_main = `${IVI_CAT} ${temp_dir}.test_main_${$}.${file_suffix} | ${IVI_GREP} '^ *main *(.*[,)]'`
 
             if ("${test_main}" == "") then
-                set test_main = `${KJB_CAT} ${temp_dir}.test_main_${$}.${file_suffix} | ${KJB_GREP} '^ *int *main *(.*[,)]'`
+                set test_main = `${IVI_CAT} ${temp_dir}.test_main_${$}.${file_suffix} | ${IVI_GREP} '^ *int *main *(.*[,)]'`
             endif 
 
             if ("${test_main}" == "") then
-                set test_main = `${KJB_CAT} ${temp_dir}.test_main_${$}.${file_suffix} | ${KJB_GREP} '^ *void *main *(.*[,)]'`
+                set test_main = `${IVI_CAT} ${temp_dir}.test_main_${$}.${file_suffix} | ${IVI_GREP} '^ *void *main *(.*[,)]'`
             endif 
 
             if ("${test_main}" != "") then
                 set matched_file_name = "${dir}${test_file}"
             endif 
 
-            ${KJB_RM} ${temp_dir}.test_main_${$}.${file_suffix} 
+            ${IVI_RM} ${temp_dir}.test_main_${$}.${file_suffix} 
         endif 
     else if ((${c_lib_dir}) || (${cxx_lib_dir})) then
         # If we are here, test_file is a test directory. 
         if (-e ${dir}${test_file}/Makefile-include) then
-            # If all_kjb is set, then SKIP_ALL_KJB is checked.  
-            if ((! ${all_kjb}) || ((! -e ${dir}${test_file}/SKIP_ALL_KJB) && (! -e ${dir}${test_file}/SKIP_ALL_KJB.${OS}))) then
+            # If all_ivi is set, then SKIP_ALL_IVI is checked.  
+            if ((! ${all_ivi}) || ((! -e ${dir}${test_file}/SKIP_ALL_IVI) && (! -e ${dir}${test_file}/SKIP_ALL_IVI.${OS}))) then
                 # set cpp_lib_str = `echo ${test_file} | grep '_cpp$'`
                 
-                set have_cpp = `/bin/ls ${dir}${test_file} | ${KJB_EGREP} -c '.*\.cpp$|.*\.cxx$|.*\.C$'`
-                set have_c = `/bin/ls ${dir}${test_file} | ${KJB_EGREP} -c  '.*\.c$'`
+                set have_cpp = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c '.*\.cpp$|.*\.cxx$|.*\.C$'`
+                set have_c = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c  '.*\.c$'`
                 
 #                 if (("${cpp_lib_str}" != "") && (${cxx_lib_dir})) then 
 #                     set matched_file_name = "${dir}${test_file}"
@@ -438,7 +438,7 @@ foreach test_file (${test_files})
         endif 
 
         if (${list_file_contents}) then
-            ${KJB_CAT} ${matched_file_name}
+            ${IVI_CAT} ${matched_file_name}
         else 
             if (${no_path}) then
                 # First two seds should not really be needed. The first deals with

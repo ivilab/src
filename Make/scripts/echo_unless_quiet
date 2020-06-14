@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 
-if (! $?KJB_QUIET) then
+if (! $?IVI_QUIET) then
     echo $*
 endif 
 

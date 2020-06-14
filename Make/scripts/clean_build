@@ -22,14 +22,14 @@ else
     set parent_dir = ""
 endif 
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     set noglob
     echo Script clean_build will loop over: foreach arg: ${argv[2-$#argv]} 
     unset noglob 
 endif 
 
 foreach item (${argv[2-$#argv]}) 
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         set noglob
         echo Script clean_build processing item: $item
         unset noglob
@@ -46,7 +46,7 @@ foreach item (${argv[2-$#argv]})
         set file_count = `/bin/ls -1 "${item}" | grep -c '.' `
         # echo cleaning ${file_count} files.
 
-        if ($?KJB_VERBOSE) then
+        if ($?IVI_VERBOSE) then
             echo Script clean_build cleaning ${file_count} files in directory item: $item
         endif 
 
@@ -60,9 +60,9 @@ foreach item (${argv[2-$#argv]})
             endif 
         else 
             set noglob 
-            echo Script clean_build executing ${KJB_RM} ${item}*
+            echo Script clean_build executing ${IVI_RM} ${item}*
             unset noglob
-            ${KJB_RM}  ${item}*  
+            ${IVI_RM}  ${item}*  
         endif 
     else if (! "${item_is_link}") then
         set strip_name = `echo ${item} | sed 's#.*/##'`
@@ -74,20 +74,20 @@ foreach item (${argv[2-$#argv]})
 
             if (${strip_name_is_link}) then 
                 echo Script clean_build removing link ${strip_name}
-                ${KJB_RM}  ${strip_name}
+                ${IVI_RM}  ${strip_name}
             else 
                 echo "Script clean_build not removing ${strip_name} as planned as it exists and is not a link."
             endif 
         endif 
 
         if (-e "${item}") then
-            echo "Script clean_build executing ${KJB_RM}  ${item}"
-            ${KJB_RM} ${item} 
+            echo "Script clean_build executing ${IVI_RM}  ${item}"
+            ${IVI_RM} ${item} 
         else
             echo ${item} is already clean. 
         endif 
     else 
-        if ($?KJB_VERBOSE) then
+        if ($?IVI_VERBOSE) then
             echo "Script clean_build not doing anything for: $item (bug?)"
         endif 
     endif 

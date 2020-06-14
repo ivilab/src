@@ -29,7 +29,7 @@ if ("${1}" == "-i") then
         set try_input_dir = `printf '%02d' ${count}`
         set try_input_dir_rel_path = "test_input/${program}/${try_input_dir}"
         if (! -e "${try_input_dir_rel_path}") then
-            ${KJB_MKDIR} "${try_input_dir_rel_path}"
+            ${IVI_MKDIR} "${try_input_dir_rel_path}"
             if ($status) break
             set input_dir = "${try_input_dir}"
             break
@@ -96,17 +96,17 @@ set run_dir = test_runs/${program}/${input_dir}/${test_type_dir}/${output_leaf_d
 # touched below. 
 #
 # if ("${test_type}" == "check") then
-#     ${KJB_RM} "${run_dir}/FAILED"
+#     ${IVI_RM} "${run_dir}/FAILED"
 # else if ("${test_type}" == "test") then
-#     ${VERBOSE_ECHO} "Script test_program is exectuting: kjb_svn_rm ${run_dir}"
-#     ${MAKE_SCRIPT_PATH}kjb_svn_rm "${run_dir}"
+#     ${VERBOSE_ECHO} "Script test_program is exectuting: ivi_svn_rm ${run_dir}"
+#     ${MAKE_SCRIPT_PATH}ivi_svn_rm "${run_dir}"
 # else if ("${test_type}" == "svn") then
 #     ${VERBOSE_ECHO} "Script test_program is leaving ${run_dir} alone due to test_type svn."
 # else 
-#     ${KJB_RM} "${run_dir}"
+#     ${IVI_RM} "${run_dir}"
 # endif 
 
-${KJB_MKDIR} "${run_dir}"
+${IVI_MKDIR} "${run_dir}"
  
 if ($status) then
     ${P_STDERR} "Script test_program unable to create directory ${run_dir} in `pwd`"
@@ -116,11 +116,11 @@ endif
 if ("${test_type}" == "test") then
     # We want to be able to remove all files that we did not modify, as they
     # might be stale. 
-    ${KJB_TOUCH} ${run_dir}/test_time_stamp
+    ${IVI_TOUCH} ${run_dir}/test_time_stamp
 endif 
 
-if ($?KJB_VERBOSE) then
-    if ($KJB_VERBOSE >= 2) then
+if ($?IVI_VERBOSE) then
+    if ($IVI_VERBOSE >= 2) then
         echo "Script test_program calling test_program_2 with args: "
         echo "    test_type:  ${test_type}"
         echo "    program:    ${program}"
@@ -139,13 +139,13 @@ else
     ${MAKE_SCRIPT_PATH}/test_program_2 "${test_type}" "${program}" "${input_dir}" "${obj_dir}" "${code_dir}" "${run_dir}" "${extra_args}" >& ${run_dir}/${test_type}.res 
     set test_status = ${status}
     
-    ${KJB_CAT} ${run_dir}/${test_type}.res 
+    ${IVI_CAT} ${run_dir}/${test_type}.res 
 endif
 
 if (${test_status}) then
-    ${KJB_TOUCH} "${run_dir}/FAILED"
+    ${IVI_TOUCH} "${run_dir}/FAILED"
 else 
-    ${KJB_RM} "${run_dir}/FAILED"
+    ${IVI_RM} "${run_dir}/FAILED"
 endif 
 
 exit ${test_status}

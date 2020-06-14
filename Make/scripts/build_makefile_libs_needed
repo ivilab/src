@@ -23,19 +23,19 @@
 #     there is C++ code in this directory, a symbol inherited via
 #     Makefile-libs-needed is set to ensure the linker is appropriate for C++.
 #
-#     Part two: For any KJB_HAVE_XXX found in this directory, a symbol for the
+#     Part two: For any IVI_HAVE_XXX found in this directory, a symbol for the
 #     compile like to provide the definitions of those symbols  is set.  
 #
-#     Part three: Because KJB_HAVE_XXX may not always be used as it should, and
-#     also because the use of KJB_HAVE_XXX does not necessarily mean that the
+#     Part three: Because IVI_HAVE_XXX may not always be used as it should, and
+#     also because the use of IVI_HAVE_XXX does not necessarily mean that the
 #     library component is actually used, we use #includes to identify external
 #     library use. Having done that, we arrange for the propagation of the link
 #     lings to program builds. We also arrange for any non-standard includes
 #     needed for compiles within this directory.
 #
-#     Part four: If either KJB_HAVE_XXX, or an #include associated with an
+#     Part four: If either IVI_HAVE_XXX, or an #include associated with an
 #     external library is found in a header file, then we must propagate the
-#     need for the KJB_HAVE_XXX symbol, and associated non-standard include dirs
+#     need for the IVI_HAVE_XXX symbol, and associated non-standard include dirs
 #     to other code. Note that the information used is similar to the union of
 #     that used in the previous two steps, but restricted to header files only. 
 #
@@ -58,10 +58,10 @@ endif
 
 ##########################################################
 
-if ($?KJB_VERBOSE_INDENT) then
-    setenv KJB_VERBOSE_INDENT "    ${KJB_VERBOSE_INDENT}"
+if ($?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
 else 
-    setenv KJB_VERBOSE_INDENT ""
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
 ##########################################################
@@ -79,7 +79,7 @@ if ("${build_dir}" != "") then
     cd ${build_dir} 
 endif 
 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
 exit ${status}
 
 

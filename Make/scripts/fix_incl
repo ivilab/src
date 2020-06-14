@@ -22,7 +22,7 @@ endif
 
 if (! -e ${parent_dir}${dir}_incl.h) then
     set uc_dir = `echo ${dir} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
-    ${KJB_CP} ${MAKE_PATH}template_incl.h ${parent_dir}${dir}_incl.h
+    ${IVI_CP} ${MAKE_PATH}template_incl.h ${parent_dir}${dir}_incl.h
 	${VIM_FOR_MAKE} -e -c ":%s/XXX/${uc_dir}/g" -c :wq ${parent_dir}${dir}_incl.h < /dev/null >& /dev/null
 endif 
 

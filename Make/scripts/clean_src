@@ -11,10 +11,10 @@ while (! $done)
     /bin/mv temp $1
 end
 
-cat $1 | sed "/UNTESTED_CODE( *) *;/d" | sed "/KJB(UNTESTED_CODE( *) *) *;/d" > temp
+cat $1 | sed "/UNTESTED_CODE( *) *;/d" | sed "/IVI_UNTESTED_CODE( *) *;/d" > temp
 /bin/mv temp $1
 
-cat $1 | sed "/SUSPECT_CODE( *) *;/d" | sed "/KJB(SUSPECT_CODE( *) *) *;/d"  > temp
+cat $1 | sed "/SUSPECT_CODE( *) *;/d" | sed "/IVI_SUSPECT_CODE( *) *;/d"  > temp
 /bin/mv temp $1
 
 set done = 0

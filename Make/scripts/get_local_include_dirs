@@ -7,13 +7,13 @@
 
 @ num_args = ${#argv}
 
-if ((-d ${KJB_LIB_PATH}) && (-r ${KJB_LIB_PATH}) && (-x ${KJB_LIB_PATH})) then
-    pushd ${KJB_LIB_PATH} > /dev/null
+if ((-d ${IVI_LIB_PATH}) && (-r ${IVI_LIB_PATH}) && (-x ${IVI_LIB_PATH})) then
+    pushd ${IVI_LIB_PATH} > /dev/null
     # Insure no trailing slash.
-    set real_kjb_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
+    set real_ivi_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
     popd > /dev/null
 else
-    set real_kjb_lib_dir = ""
+    set real_ivi_lib_dir = ""
 endif 
 
 ##########################################################
@@ -38,34 +38,34 @@ popd > /dev/null
 
 ##########################################################
 #
-# Test for building libKJB.a itself? 
+# Test for building libIVI.a itself? 
 #
-if ("${real_kjb_lib_dir}" == "") then
-    set real_kjb_lib_path = ""
+if ("${real_ivi_lib_dir}" == "") then
+    set real_ivi_lib_path = ""
 else
-    pushd ${real_kjb_lib_dir} > /dev/null
-        set real_kjb_lib_path = "${cwd}"
+    pushd ${real_ivi_lib_dir} > /dev/null
+        set real_ivi_lib_path = "${cwd}"
     popd > /dev/null
 endif 
 
-if ("${build_dir_path}" == "${real_kjb_lib_path}") then
-    set in_kjb_lib_dir = 1
+if ("${build_dir_path}" == "${real_ivi_lib_path}") then
+    set in_ivi_lib_dir = 1
 else
-    set in_kjb_lib_dir = 0
+    set in_ivi_lib_dir = 0
 endif 
 
 ##########################################################
 #
-# Test for building a sub-lib of KJB.
+# Test for building a sub-lib of IVI.
 #
 
 pushd ${build_dir_path} > /dev/null
     pushd .. > /dev/null
 
-    if ("${cwd}" == "${real_kjb_lib_path}") then
-        set in_kjb_lib_sub_dir = 1
+    if ("${cwd}" == "${real_ivi_lib_path}") then
+        set in_ivi_lib_sub_dir = 1
     else
-        set in_kjb_lib_sub_dir = 0
+        set in_ivi_lib_sub_dir = 0
     endif 
 
     popd >& /dev/null
@@ -77,14 +77,14 @@ popd >& /dev/null
 set base_include_dirs = ""
 
 if (-e ${build_dir}/Makefile-include) then
-    if ((! ${in_kjb_lib_dir}) && (! ${in_kjb_lib_sub_dir})) then
+    if ((! ${in_ivi_lib_dir}) && (! ${in_ivi_lib_sub_dir})) then
         if (-e ../../lib) then
         if (-d ../../lib) then
             set base_include_dirs = "${base_include_dirs} ${INCLUDE_FLAG}../../lib/"
         endif 
         endif 
     endif 
-else if (! ${in_kjb_lib_dir}) then
+else if (! ${in_ivi_lib_dir}) then
     set base_include_dirs = "${INCLUDE_FLAG}./"
 
     if (-e lib) then
@@ -125,7 +125,7 @@ else if (! ${in_kjb_lib_dir}) then
             set real_lib_dir_path = "${cwd}" 
             popd > /dev/null
 
-            if ("${real_lib_dir_path}" != "${real_kjb_lib_path}") then
+            if ("${real_lib_dir_path}" != "${real_ivi_lib_path}") then
                 # If we use the path instead of ${lib_dir_path}lib then the
                 # program can move without rebuilding makefiles (the library
                 # position has to remain the same).

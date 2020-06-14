@@ -44,9 +44,9 @@ if ("${num_args}" > 2) then
 endif 
 
 # This is meant to be at the top recursive level.
-setenv KJB_VERBOSE_INDENT ""
+setenv IVI_VERBOSE_INDENT ""
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo "Entering script build_include_lines in directory $cwd with args '$*'."
 endif
 
@@ -85,11 +85,11 @@ if ("${dir_arg}" != "") then
     cd ${dir_arg} > /dev/null
 endif 
 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}build_include_lines_2 ${force_build_sub_libs_arg}
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_include_lines_2 ${force_build_sub_libs_arg}
 set exit_status = ${status}
 
-if ($?KJB_VERBOSE) then
-    echo "${KJB_VERBOSE_INDENT}Leaving script build_include_lines in directory $cwd with status ${exit_status}."
+if ($?IVI_VERBOSE) then
+    echo "${IVI_VERBOSE_INDENT}Leaving script build_include_lines in directory $cwd with status ${exit_status}."
 endif
 
 exit ${exit_status} 

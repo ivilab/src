@@ -1,4 +1,4 @@
-# $Id: init_tacc_hpc 25037 2020-02-29 06:40:13Z kobus $
+# $Id: init_tacc_hpc 25496 2020-06-14 13:11:00Z kobus $
 #
 # This is tcsh scripting language and is meant to be sourced by
 # init_compile, when it is running for the first time on Stampede,
@@ -32,7 +32,7 @@ set desired_module_names = "boost cmake fftw3 gsl python"
 set desired_mev_names = "BOOST FFTW3 GSL MKL PYTHON"
 # Boost 1.55 for intel/14 was not compatible with C++11.
 # I'm leaving this in for intel/15 in an abundance of caution (or cowardice).
-kjb_setenv KJB_SUPPRESS_CXX11 1
+ivi_setenv IVI_SUPPRESS_CXX11 1
 
 # Load Intel compiler module -- latest minor version of major-version 15.
 module -t spider intel >& /dev/null # rebuild cache
@@ -74,7 +74,7 @@ unset found env_var_name
 set use_ld_library_path = 1
 set use_include_path = 1
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo " "
     echo "List of desired TACC modules: ${desired_module_names}"
     echo "List of loaded TACC modules: ${LOADEDMODULES}"

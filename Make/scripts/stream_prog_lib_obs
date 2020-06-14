@@ -49,7 +49,7 @@ echo  " "
 echo  " " 
 
 # #############################################################################
-# set code_base_names = `$KJB_LS | grep '.\.h$' | sed 's#\.h##'`
+# set code_base_names = `$IVI_LS | grep '.\.h$' | sed 's#\.h##'`
 # 
 # echo 'PROG_LIB_OBS = \' >> ${output_file_name}
 # foreach code_base_name (${code_base_names})

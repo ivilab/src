@@ -13,6 +13,6 @@ if ("${num_args}" != "1") then
 endif 
 
 if (-e "$1") then
-    ${KJB_TOUCH} "$1"
+    ${IVI_TOUCH} "$1"
 endif 
 

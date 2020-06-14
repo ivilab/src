@@ -22,7 +22,7 @@ while ("${test_program}" != "")
 
             if ("${test_instances}" == "") then
                 if  ($?CREATE_TEST_DIRS) then
-                    ${KJB_MKDIR} NULL
+                    ${IVI_MKDIR} NULL
                     if ${status} exit 1
 
                     set test_instance = NULL

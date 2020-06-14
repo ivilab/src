@@ -54,11 +54,11 @@ COMPILE_STATUS_IS = echo "Compile status is: $$status"
 #     out the value of MAKE_PATH. 
 
 $(LIB_COMPONENT_SRC_DIR)Makefile : $(MAKE_PATH)Makefile
-	@$(KJB_ECHO) " "
-	@$(KJB_ECHO) "Updating Makefile from $(MAKE_PATH) in $(LIB_COMPONENT_REAL_SRC_DIR)."
-	@$(KJB_ECHO) "This will affect future compiles, but not this one."
-	$(KJB_CP) $(MAKE_PATH)Makefile $@ 
-	@$(KJB_ECHO) " "
+	@$(IVI_ECHO) " "
+	@$(IVI_ECHO) "Updating Makefile from $(MAKE_PATH) in $(LIB_COMPONENT_REAL_SRC_DIR)."
+	@$(IVI_ECHO) "This will affect future compiles, but not this one."
+	$(IVI_CP) $(MAKE_PATH)Makefile $@ 
+	@$(IVI_ECHO) " "
 
 # The LHS and RHS could be the same target if we are in
 # $(LIB_COMPONENT_SRC_DIR). But it seems to work out anyway.
@@ -66,11 +66,11 @@ $(LIB_COMPONENT_SRC_DIR)Makefile : $(MAKE_PATH)Makefile
 Makefile : $(LIB_COMPONENT_SRC_DIR)Makefile
 
 $(LIB_COMPONENT_SRC_DIR)build : $(MAKE_PATH)build
-	@$(KJB_ECHO) " "
-	@$(KJB_ECHO) "Updating $@ from $(MAKE_PATH) in `pwd`."
-	@$(KJB_ECHO) "This will affect future compiles, but not this one."
-	$(KJB_CP) $(MAKE_PATH)build $@ 
-	@$(KJB_ECHO) " "
+	@$(IVI_ECHO) " "
+	@$(IVI_ECHO) "Updating $@ from $(MAKE_PATH) in `pwd`."
+	@$(IVI_ECHO) "This will affect future compiles, but not this one."
+	$(IVI_CP) $(MAKE_PATH)build $@ 
+	@$(IVI_ECHO) " "
 
 # The LHS and RHS could be the same target if we are in
 # $(LIB_COMPONENT_SRC_DIR). But it seems to work out anyway.
@@ -105,20 +105,20 @@ build : $(LIB_COMPONENT_SRC_DIR)build
 # this file is further maintained only as a side effect, we do not have it
 # depend on anything other than tools.  However, since we want it to depend on
 # tools, and the script is not guaranteed to update the time stamp, we have an
-# explicit $(KJB_TOUCH). 
+# explicit $(IVI_TOUCH). 
 
 # ==============================================================================
 
 # Hidden dependencies of tools on tools. 
 
 $(MAKE_SCRIPT_PATH)build_file_list : \
-    $(MAKE_SCRIPT_PATH)kjb_lock
+    $(MAKE_SCRIPT_PATH)ivi_lock
 
 $(MAKE_SCRIPT_PATH)build_include_lines : \
-    $(MAKE_SCRIPT_PATH)kjb_lock
+    $(MAKE_SCRIPT_PATH)ivi_lock
 
 $(MAKE_SCRIPT_PATH)build_include_lines_2 : \
-    $(MAKE_SCRIPT_PATH)kjb_lock
+    $(MAKE_SCRIPT_PATH)ivi_lock
 
 # Dependency on tools that build the target. 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list : \
@@ -127,7 +127,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list : \
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	$(KJB_TOUCH) $@
+	$(IVI_TOUCH) $@
 
 # ---------------------------------------------
 # Include_lines/file_list.new
@@ -193,7 +193,7 @@ file_list.new : \
 # this file is further maintained only as a side effect, we do not have it
 # depend on anything other than tools. However, since we want it to depend on
 # tools, and the script is not guaranteed to update the time stamp, we have an
-# explicit $(KJB_TOUCH). 
+# explicit $(IVI_TOUCH). 
 #
 # Dependency on tools that build the target. 
 #
@@ -213,7 +213,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines :
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 	@$(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
-	@$(KJB_TOUCH) $@
+	@$(IVI_TOUCH) $@
 
 # ---------------------------------------------
 # Include_lines/include_lines.new 
@@ -223,7 +223,7 @@ $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/new/% : $(LIB_COMPONENT_REAL_SRC_DIR)
 	@$(MAKE_SCRIPT_PATH)update_include_line_file '$(LIB_COMPONENT_REAL_SRC_DIR)' $*
 
 $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/file_list 
-	$(KJB_MKDIR) $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines
+	$(IVI_MKDIR) $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines
 	$(MAKE_SCRIPT_PATH)stream_file_names -s -h -skip_incl -no_path $(LIB_COMPONENT_SRC_DIR) | sed 's/\(.*\)/$$(LIB_COMPONENT_SRC_DIR)Include_lines\/include_lines.new : $$(LIB_COMPONENT_SRC_DIR)Include_lines\/new\/\1/' > $@
 
 include $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines
@@ -297,7 +297,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed :
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 	$(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-	$(KJB_TOUCH) $@
+	$(IVI_TOUCH) $@
 
 # Convenient dummy target that provides a synonym for
 # Include_lines/sub_libs_needed.
@@ -314,15 +314,15 @@ sub_libs_needed : $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed
 # be made trivially.  
 #
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state : 
-	$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
-	$(KJB_TOUCH_1990) $@
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
+	$(IVI_TOUCH_1990) $@
 
 ################################################################################
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list : 
-	$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
-	$(KJB_RM) $@.new
-	$(KJB_TOUCH) $@
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
+	$(IVI_RM) $@.new
+	$(IVI_TOUCH) $@
 
 $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list 
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
@@ -335,7 +335,7 @@ $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)buil
 # before calling build_incl_dot_h.
 #
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h : $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list 
-	$(KJB_RM) $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h
+	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h
 	$(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
 
 include $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h
@@ -374,7 +374,7 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
     $(MAKE_PATH)Makefile-library \
     $(MAKE_SCRIPT_PATH)stream_file_names \
-    $(MAKE_SCRIPT_PATH)kjb_makedepend \
+    $(MAKE_SCRIPT_PATH)ivi_makedepend \
     $(LIB_COMPONENT_SRC_DIR)Makefile-library \
     $(LIB_COMPONENT_SRC_DIR)Makefile-library.$(MAKE_FLAVOR) 
 
@@ -383,112 +383,112 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
 #
 # This needs to become a script to get locking behaviour correct. 
 
-# Quite a bit of cleanup is possible here by extending kjb_makedepend to handle
+# Quite a bit of cleanup is possible here by extending ivi_makedepend to handle
 # the header files, etc., or a similar strategy. This will be rewritten
 # completely at some point. To debug what follows, first note that setting
-# KJB_DEBUG will tell kjb_makedepend to write some intermediate files with
+# IVI_DEBUG will tell ivi_makedepend to write some intermediate files with
 # "SAVE" in the name. Second, the lines below containing "SAVE" can be
 # uncommented to create addtional intermediate files. 
 #
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
-	@$(KJB_ECHO)  " "
-	@$(KJB_ECHO)  "================================================================================"
+	@$(IVI_ECHO)  " "
+	@$(IVI_ECHO)  "================================================================================"
 # Commented out to prevent 'word too long' errors on some systems
 # -- Kyle  Jan 15, 2011
-# 	@$(KJB_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend because of $?" 
-	@$(KJB_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend" 
-	@$(KJB_ECHO)  " "
+# 	@$(IVI_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend because of $?" 
+	@$(IVI_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend" 
+	@$(IVI_ECHO)  " "
 	$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -s > $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets
-	@$(KJB_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-obj-targets.swp
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-SAVE
+	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-obj-targets.swp
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-SAVE
 	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets \
 	        $(VIM_IO_REDIRECTION)
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-SAVE-2
-	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-SAVE-2
+	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend
 #
-	@$(KJB_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-obj-targets.swp
+	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-obj-targets.swp
 	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets \
 	        $(VIM_IO_REDIRECTION)
 	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_OBS/' > $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE
 #
 	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_LOCAL_OBS/' | sed 's/^\( *\)\$$(\([^)]*\)_DIR)\$$(\(.*OBJ_DIR\))/\1$$(\3)$$(\2_LIB_PREFIX)\//'  >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-2
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-2
 #
 #   Not currently used, but might be useful if we choose to build archives by
 #   changing to LD_OBJ_DIR to shorten the archive command. 
 #
 # 	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_L2_OBS/' | sed 's/^\( *\)\$$(\([^)]*\)_DIR)\$$(.*OBJ_DIR)/\1$$(\2_LIB_PREFIX)\//'  >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-# 	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-# 	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+# 	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+# 	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 #
 	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_SHARED_OBS/' | sed 's/(OBJ_DIR)/&$$(SHARED_DIR)/'  | sed 's/(CXX_OBJ_DIR)/&$$(SHARED_DIR)/' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-3
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-3
 #
 	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets '/OBS = /d' | sed 's/^ *//' | sed 's/[ \\]*$$//' | sed 's/\(.*\)(\([CX_]*\)OBJ_DIR)\(.*\)$$/\1(\2OBJ_DIR)$$(SHARED_DIR)\3 : &/' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	$(KJB_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-4
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-4
 #
 	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend \
 	        $(VIM_IO_REDIRECTION)
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend-SAVE-2
-	$(KJB_CAT) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	$(KJB_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-5
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend-SAVE-2
+	$(IVI_CAT) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-5
 #
-	$(MAKE_SCRIPT_PATH)kjb_makedepend '$(LIB_COMPONENT_REAL_SRC_DIR)' -c  -Y -w20000 \ $(MD_DEFINES) -DMAKE_DEPEND $(LIB_BASE_INCLUDES) >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	$(MAKE_SCRIPT_PATH)kjb_makedepend '$(LIB_COMPONENT_REAL_SRC_DIR)' -x  -Y -w20000 \ $(MD_DEFINES) -DMAKE_DEPEND $(LIB_BASE_INCLUDES) >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-6
+	$(MAKE_SCRIPT_PATH)ivi_makedepend '$(LIB_COMPONENT_REAL_SRC_DIR)' -c  -Y -w20000 \ $(MD_DEFINES) -DMAKE_DEPEND $(LIB_BASE_INCLUDES) >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	$(MAKE_SCRIPT_PATH)ivi_makedepend '$(LIB_COMPONENT_REAL_SRC_DIR)' -x  -Y -w20000 \ $(MD_DEFINES) -DMAKE_DEPEND $(LIB_BASE_INCLUDES) >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-6
 #
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 	@$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -c2man > $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs-SAVE
-	@$(KJB_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-depend-c2man-obs.swp
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs-SAVE
+	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-depend-c2man-obs.swp
 	@$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs \
 	        $(VIM_IO_REDIRECTION)
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs-SAVE-2
-	@$(KJB_ECHO) 'LIB_COMPONENT_DOC_FILES = \' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs-SAVE-2
+	@$(IVI_ECHO) 'LIB_COMPONENT_DOC_FILES = \' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 	@sed 's/^ *\(.*)\)\([^ ]*\).*$$/    \1$$(MAKE_DOC_DIR)\2.made \\/' $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs >>  $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@@$(KJB_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-7
+	@@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-7
 #
 	$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -doxygen -t | sed 's/1/LIB_COMPONENT_DOXYGEN_TARGET = doxygen_$$(LIB_COMPONENT_PREFIX)/' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-8
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-8
 #
-	@$(KJB_ECHO) 'LIB_COMPONENT_DOXYGEN_FILES = \' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) 'LIB_COMPONENT_DOXYGEN_FILES = \' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 	$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -doxygen > $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs-SAVE
-	@$(KJB_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-depend-doxygen-obs.swp
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs-SAVE
+	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-depend-doxygen-obs.swp
 	@$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs \
 	        $(VIM_IO_REDIRECTION)
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs-SAVE-2
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs-SAVE-2
 	@sed 's/^ *\(.*)\)\([^ ]*\).*$$/    \1\2 \\/' $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs >>  $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs
-	@$(KJB_ECHO) ' ' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(KJB_ECHO) ' ' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(KJB_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-9
+	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs
+	@$(IVI_ECHO) ' ' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+	@$(IVI_ECHO) ' ' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-9
 #
 	$(MAKE_SCRIPT_PATH)copy_if_different  $(LIB_COMPONENT_SRC_DIR)Makefile-library $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state
 #
-	@$(KJB_ECHO)  " "
-	@$(KJB_ECHO)  "        $(LIB_COMPONENT_SRC_DIR)Makefile-depend is built" 
-	@$(KJB_ECHO)  "================================================================================"
-	@$(KJB_ECHO)  " "
+	@$(IVI_ECHO)  " "
+	@$(IVI_ECHO)  "        $(LIB_COMPONENT_SRC_DIR)Makefile-depend is built" 
+	@$(IVI_ECHO)  "================================================================================"
+	@$(IVI_ECHO)  " "
    
 include $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 
@@ -502,8 +502,8 @@ include $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 # is updated only when Makefile-libs-needed is changed, we reduce compiling. 
 #
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed.state : 
-	$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
-	$(KJB_TOUCH_1990) $@
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
+	$(IVI_TOUCH_1990) $@
 
 # Dependencies on the tools needed to build it. 
 #
@@ -548,12 +548,12 @@ dir_made_$(LIB_COMPONENT_PREFIX) : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)cxx_dir
 # We use "c_dir_made" in the following because $(OBJ_DIR) may be a symbolic link.
 $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)c_dir_made :
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_OBJ_DIR)" "$(OBJ_DIR)" . "$(LIB_COMPONENT_SRC_DIR)"
-	$(KJB_TOUCH) $@
+	$(IVI_TOUCH) $@
 
 # We use "cxx_dir_made" in the following because $(CXX_OBJ_DIR) may be a symbolic link.
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)cxx_dir_made :
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_OBJ_DIR)" "$(CXX_OBJ_DIR)" . "$(LIB_COMPONENT_SRC_DIR)"
-	$(KJB_TOUCH) $@
+	$(IVI_TOUCH) $@
 
 # ################################################################################
 # #                      Library archive from the objects 
@@ -573,25 +573,25 @@ $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)cxx_dir_made :
 # # copy the dependencies. 
 # # 
 # $(LIB_COMPONENT_ARCHIVE) : $(LIB_COMPONENT_SRC_DIR)Makefile-library $(LIB_COMPONENT_SRC_DIR)Makefile-library.$(MAKE_FLAVOR) $(LIB_COMPONENT_SRC_DIR)Makefile-libs-needed $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)$(LD_OBJ_DIR)ld_dir_made $(LIB_COMPONENT_OBS) 
-# 	$(KJB_RM) $@
-# 	$(KJB_AR) $@ $(LIB_COMPONENT_OBS)
-# 	$(KJB_RANLIB) $@ \
+# 	$(IVI_RM) $@
+# 	$(IVI_AR) $@ $(LIB_COMPONENT_OBS)
+# 	$(IVI_RANLIB) $@ \
 # 	    $(NULL_TO_MAKE_BLANK_LINE)
 # 
 
 ################################################################################
 #                            GNU precompiled headers
 
-$(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)$(KJB_DIR_STR)%.h.gch : $(LIB_COMPONENT_SRC_DIR)%.h 
-	$(KJB_MKDIR) $(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)
-	( $(KJB_CXX) $< -c -o $@ \
+$(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)$(IVI_DIR_STR)%.h.gch : $(LIB_COMPONENT_SRC_DIR)%.h 
+	$(IVI_MKDIR) $(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)
+	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################
@@ -613,9 +613,9 @@ $(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)$(KJB_DIR_STR)%.h.gc
 #    Makefile-depend. 
 
 $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.c 
-	@$(KJB_ECHO)
-	@$(KJB_CC)  --version |& head -1 
-	$(KJB_CC) $< -c -o $@ \
+	@$(IVI_ECHO)
+	@$(IVI_CC)  --version |& head -1 
+	$(IVI_CC) $< -c -o $@ \
         $(LIB_COMPONENT_CC_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_CC_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(LIB_COMPONENT_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
@@ -625,55 +625,55 @@ $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.c
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cpp 
-	@$(KJB_ECHO)
-	@$(KJB_CXX)  --version |& head -1 
-	( $(KJB_CXX) $< -c -o $@ \
+	@$(IVI_ECHO)
+	@$(IVI_CXX)  --version |& head -1 
+	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cxx
-	@$(KJB_ECHO)
-	@$(KJB_CXX)  --version |& head -1 
-	( $(KJB_CXX) $< -c -o $@ \
+	@$(IVI_ECHO)
+	@$(IVI_CXX)  --version |& head -1 
+	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.C
-	@$(KJB_ECHO)
-	@$(KJB_CXX)  --version |& head -1 
-	( $(KJB_CXX) $< -c -o $@ \
+	@$(IVI_ECHO)
+	@$(IVI_CXX)  --version |& head -1 
+	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cc
-	@$(KJB_ECHO)
-	@$(KJB_CXX)  --version |& head -1 
-	( $(KJB_CXX) $< -c -o $@ \
+	@$(IVI_ECHO)
+	@$(IVI_CXX)  --version |& head -1 
+	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################
@@ -688,12 +688,12 @@ $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cc
 #
 
 $(OBJ_DIR)$(LIB_COMPONENT_PREFIX)/%.o : $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)%.o
-	@$(KJB_MKDIR) $(OBJ_DIR)$(LIB_COMPONENT_PREFIX)
-	$(KJB_CP) $< $@ 
+	@$(IVI_MKDIR) $(OBJ_DIR)$(LIB_COMPONENT_PREFIX)
+	$(IVI_CP) $< $@ 
 
 $(CXX_OBJ_DIR)$(LIB_COMPONENT_PREFIX)/%.o : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o
-	@$(KJB_MKDIR) $(CXX_OBJ_DIR)$(LIB_COMPONENT_PREFIX)
-	$(KJB_CP) $< $@ 
+	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(LIB_COMPONENT_PREFIX)
+	$(IVI_CP) $< $@ 
 
 ################################################################################
 #                       Make sharable object files 
@@ -706,8 +706,8 @@ $(CXX_OBJ_DIR)$(LIB_COMPONENT_PREFIX)/%.o : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DI
 $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)%.o
 
 $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.c 
-	@$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)$(SHARED_DIR)
-	$(KJB_CC) $< -c -o $@ \
+	@$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)$(SHARED_DIR)
+	$(IVI_CC) $< -c -o $@ \
         $(CC_SHARED_FLAGS) $(LIB_COMPONENT_CC_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_CC_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(LIB_COMPONENT_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
@@ -719,30 +719,30 @@ $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.c
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o 
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cpp 
-	@$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
-	$(KJB_CXX) $< -c -o $@ \
+	@$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
+	$(IVI_CXX) $< -c -o $@ \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE)\
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # Kobus. Seems redundant. Comment out and see what breaks. 
 # $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o 
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cxx
-	@$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
-	$(KJB_CXX) $< -c -o $@ \
+	@$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
+	$(IVI_CXX) $< -c -o $@ \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
@@ -750,30 +750,30 @@ $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR
 # $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.C
-	@$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
-	$(KJB_CXX) $< -c -o $@ \
+	@$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
+	$(IVI_CXX) $< -c -o $@ \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # Kobus. Seems redundant. Comment out and see what breaks. 
 # $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cc
-	@$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
-	$(KJB_CXX) $< -c -o $@ \
+	@$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)$(SHARED_DIR)
+	$(IVI_CXX) $< -c -o $@ \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
-        |& $(KJB_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################
@@ -795,7 +795,7 @@ all_$(LIB_COMPONENT_PREFIX) : \
 # makes will rebuild Makefile-library simply because it included. 
 #
 
-# Note yet used. Currently we only build shared via src/KJB and src/KJB_cpp. 
+# Note yet used. Currently we only build shared via src/IVI and src/IVI_cpp. 
 shared_$(LIB_COMPONENT_PREFIX) : \
     depend_$(LIB_COMPONENT_PREFIX) \
     $(LIB_COMPONENT_SRC_DIR)Makefile-libs-needed \
@@ -850,10 +850,10 @@ doc_$(LIB_COMPONENT_PREFIX) : depend_$(LIB_COMPONENT_PREFIX) $(LIB_COMPONENT_SRC
 #
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doc_dir_made :
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_MAKE_DOC_DIR)" "$(MAKE_DOC)" "." "$(LIB_COMPONENT_SRC_DIR)"
-	$(KJB_TOUCH) $@
+	$(IVI_TOUCH) $@
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)up_to_date: $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doc_dir_made $(LIB_COMPONENT_DOC_FILES)
-	$(KJB_TOUCH) $@
+	$(IVI_TOUCH) $@
  
 
 # Comment on the following comment---I am not sure this guarantees anything. We
@@ -870,7 +870,7 @@ COMPILE_INFO = \
   -C"$(MD_DEFINES) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS)" \
   -C" -I/home/kobus/include" \
   -C"$(MAN_PAGE_LOAD_DIRS)" \
-  -C"-lKJB $(LIBS)" 
+  -C"-lIVI $(LIBS)" 
 
 
 # The utils in MAKE_BIN_DIR are magically up to date because build-2 buids them
@@ -886,7 +886,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
         -D$(UC_MACHINE) -D$(UC_OS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(KJB_MKDIR) $(MAN_DIR)
+	$(IVI_MKDIR) $(MAN_DIR)
 	$(MAKE_BIN_DIR)c2man \
          $(C2MAN_FLAGS) \
          $(COMPILE_INFO) \
@@ -894,13 +894,13 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
          -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
          -o$(MAN_DIR) \
          $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(KJB_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in
+	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in
 	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$*.c | $(MAKE_BIN_DIR)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index  > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_cmd_in_html
 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_cmd_in_html \
          -D$(UC_MACHINE) -D$(UC_OS) \
          $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
     $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(KJB_MKDIR) $(HTML_MAN_DIR)
+	$(IVI_MKDIR) $(HTML_MAN_DIR)
 	$(MAKE_BIN_DIR)c2man -Th \
          -Th $(C2MAN_FLAGS) \
          $(COMPILE_INFO) \
@@ -908,8 +908,8 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
          -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
          -o$(HTML_MAN_DIR) \
          $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(KJB_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in_html
-	$(KJB_TOUCH) $@
+	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in_html
+	$(IVI_TOUCH) $@
 
 # The utils in MAKE_BIN_DIR are magically up to date because build-2 buids them
 # whenever documation is being built. Making them dependencies might be
@@ -919,7 +919,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.h.made : $(MAKE_BIN_DIR)c2man $(MAKE_BI
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h  
 	$(MAKE_SCRIPT_PATH)assert_non_null_arg $(MAKE_DOC_DIR) 
-	$(KJB_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
 	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$*.h | $(MAKE_BIN_DIR)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in
 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in \
         -D$(UC_MACHINE) -D$(UC_OS) \
@@ -933,7 +933,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h
         -o$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h \
         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
 	$(MAKE_SCRIPT_PATH)fix_header_man_pages $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
-	$(KJB_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in
+	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in
 	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$*.h | $(MAKE_BIN_DIR)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in_html
 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in_html \
         -D$(UC_MACHINE) -D$(UC_OS) \
@@ -947,31 +947,31 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h
         -o$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h \
         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
 	$(MAKE_SCRIPT_PATH)fix_header_html_pages $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
-	$(KJB_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in_html
-	$(KJB_TOUCH) $@
+	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in_html
+	$(IVI_TOUCH) $@
 
 ################################################################################
 #                             doxygen 
 
 # Doxygen really wants to make everything together. So we do the make in
-# KJB_cpp. The library makefile establishes which files suggest that doxygen is
+# IVI_cpp. The library makefile establishes which files suggest that doxygen is
 # out of date. 
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doxygen_up_to_date : $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doc_dir_made $(LIB_COMPONENT_DOXYGEN_FILES)
-	$(KJB_TOUCH) $@
+	$(IVI_TOUCH) $@
  
-# Note the master target is in KJB_cpp. Here we inform it about dependencies in
+# Note the master target is in IVI_cpp. Here we inform it about dependencies in
 # this directory.
 # 
-$(KJB_SRC_PATH)KJB_cpp/$(MAKE_DOC_DIR)doxygen_up_to_date : $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doxygen_up_to_date
+$(IVI_SRC_PATH)IVI_cpp/$(MAKE_DOC_DIR)doxygen_up_to_date : $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doxygen_up_to_date
 
 # If the user does a make doc in a c++ library directory, then that get
 # translated into "make doxygen" by the build scripts, which leads us to this
 # target.
 #
 doxygen_$(LIB_COMPONENT_PREFIX) : 
-	@echo "Building doxygen in $(KJB_SRC_PATH)KJB_cpp."
-	cd $(KJB_SRC_PATH)KJB_cpp; make doxygen
+	@echo "Building doxygen in $(IVI_SRC_PATH)IVI_cpp."
+	cd $(IVI_SRC_PATH)IVI_cpp; make doxygen
 
 misc_doc_$(LIB_COMPONENT_PREFIX) : doc_$(LIB_COMPONENT_PREFIX) doxygen_$(LIB_COMPONENT_PREFIX) 
 	rsync -rl -u $(DOC_DIR)doxygen/ $(MISC_DOC_DIR)doxygen 
@@ -981,7 +981,7 @@ misc_doc_$(LIB_COMPONENT_PREFIX) : doc_$(LIB_COMPONENT_PREFIX) doxygen_$(LIB_COM
 #                               Clean
 #
 clean_$(LIB_COMPONENT_PREFIX) : $(CLEAN_TARGETS) 
-	$(MAKE_SCRIPT_PATH)clean_build '$(LIB_COMPONENT_SRC_DIR)' $(OBJ_DIR) $(CXX_OBJ_DIR) $(LD_OBJ_DIR) '$(LIB_COMPONENT_PARENT_DIR)_PCH$(KJB_DIR_STR)$(CXX_OBJ_DIR)$(KJB_DIR_STR)$(LIB_COMPONENT_UP_PREFIX)' $(MAKE_DOC_DIR) 
+	$(MAKE_SCRIPT_PATH)clean_build '$(LIB_COMPONENT_SRC_DIR)' $(OBJ_DIR) $(CXX_OBJ_DIR) $(LD_OBJ_DIR) '$(LIB_COMPONENT_PARENT_DIR)_PCH$(IVI_DIR_STR)$(CXX_OBJ_DIR)$(IVI_DIR_STR)$(LIB_COMPONENT_UP_PREFIX)' $(MAKE_DOC_DIR) 
 	
 ################################################################################
 #                   Protoize
@@ -989,7 +989,7 @@ clean_$(LIB_COMPONENT_PREFIX) : $(CLEAN_TARGETS)
 # We have not used this in quite some time. It is probably broken. 
 #
 proto_$(LIB_COMPONENT_PREFIX) : 
-	protoize -c "-DPROTOIZE $(CC_FLAGS) $(HACK_CC_FLAGS) $(KJB_HAVE) $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES)" *.c
+	protoize -c "-DPROTOIZE $(CC_FLAGS) $(HACK_CC_FLAGS) $(IVI_HAVE) $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES)" *.c
 	$(MAKE_SCRIPT_PATH)fix_protoize *.c
 
 ################################################################################

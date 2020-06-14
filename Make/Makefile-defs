@@ -3,7 +3,7 @@
 # modules. 
 
 #
-# We must know KJB_LIB_PATH, KJB_SRC_PATH
+# We must know IVI_LIB_PATH, IVI_SRC_PATH
 #
 
 ###############################################################################
@@ -102,17 +102,17 @@ DONT_OPTIMIZE_F77_FLAGS = $(F77_BASE_FLAGS) $(F77_DONT_OPTIMIZE)
 ALWAYS_OPTIMIZE_F77_FLAGS = $(F77_BASE_FLAGS) $(F77_ALWAYS_OPTIMIZE)
 
 
-CUR_DIR_INCLUDE = $(INCLUDE_FLAG)$(KJB_CUR_DIR_STR)
-KJB_LIB_DIR_INCLUDE = $(INCLUDE_FLAG)$(KJB_LIB_PATH)
+CUR_DIR_INCLUDE = $(INCLUDE_FLAG)$(IVI_CUR_DIR_STR)
+IVI_LIB_DIR_INCLUDE = $(INCLUDE_FLAG)$(IVI_LIB_PATH)
 
 # 
 # This is where we would put include directories that need to preempt system
 # directories. However, this is not currently needed. 
-#     SRC_DIR_INCLUDE = $(INCLUDE_FLAG)$(KJB_SRC_PATH)include
+#     SRC_DIR_INCLUDE = $(INCLUDE_FLAG)$(IVI_SRC_PATH)include
 # SRC_DIR_INCLUDE = 
-# SRC_DIR_INCLUDE_AFTER = $(INCLUDE_AFTER_FLAG)$(KJB_SRC_PATH)include_after
+# SRC_DIR_INCLUDE_AFTER = $(INCLUDE_AFTER_FLAG)$(IVI_SRC_PATH)include_after
 
-KJB_LIB_DIR_INCLUDE = $(INCLUDE_FLAG)$(KJB_LIB_PATH)
+IVI_LIB_DIR_INCLUDE = $(INCLUDE_FLAG)$(IVI_LIB_PATH)
 
 C2MAN_FLAGS = -L -A -k $(MD_DEFINES) $(C2MAN_MD_DEFINES) 
 
@@ -120,7 +120,7 @@ C2MAN_FLAGS = -L -A -k $(MD_DEFINES) $(C2MAN_MD_DEFINES)
 # PUBLIC_INCLUDE = ~$(USER)/include
 
 # COMPILE_INFO = \A
-#   -C"cc <files> -D<MACHINE> -D<OS> -I<include_dir> -L<lib_dir> -lKJB" \
+#   -C"cc <files> -D<MACHINE> -D<OS> -I<include_dir> -L<lib_dir> -lIVI" \
 #   -C"<MACHINE> is one of SUN5, LINUX_386_ATHLON, HPUX, ... " \
 #   -C"<OS> is one of SUN5, LINUX_386, HPUX, ... " \
 #   -C"<include_dir> is something like $(PUBLIC_INCLUDE)" \
@@ -131,7 +131,7 @@ C2MAN_FLAGS = -L -A -k $(MD_DEFINES) $(C2MAN_MD_DEFINES)
 
 
 #
-# MAKEDEPEND_ARGS = -DMAKE_DEPEND -DMAKE_DEPEND_DIR $(MD_DEFINES) $(KJB_HAVE) 
+# MAKEDEPEND_ARGS = -DMAKE_DEPEND -DMAKE_DEPEND_DIR $(MD_DEFINES) $(IVI_HAVE) 
 
 #
 # Prevent the implicit rule for over-writing .c files in the case that make has

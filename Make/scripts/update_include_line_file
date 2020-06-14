@@ -61,15 +61,15 @@ set file_name = `echo ${file} | sed 's#.*/##'`
 
 ###############################################################################
 
-if ($?KJB_VERBOSE_INDENT) then
-    setenv KJB_VERBOSE_INDENT "    ${KJB_VERBOSE_INDENT}"
+if ($?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
 else 
-    setenv KJB_VERBOSE_INDENT ""
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
 ###############################################################################
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo "Entering script update_file_include_list in directory ${cwd} with argument ${file}. "
 endif
 
@@ -95,39 +95,39 @@ if (${status}) then
 endif 
 
 # This previous version assumes an overly restricted version of how we do
-# #define's.  However there is no problem risking a spurious KJB_HAVE. So we
+# #define's.  However there is no problem risking a spurious IVI_HAVE. So we
 # loosen the search criterion.
 #
-# sed -n '/^#[ 	]*ifdef[ 	][ 	]*KJB_HAVE_[A-Z0-9_][A-Z0-9_]*/p' ${file} | sed 's/.*\(KJB_HAVE_[A-Z0-9_][A-Z0-9_]*\)/\1/' >> ${new_inc_file}.tmp.$$
+# sed -n '/^#[ 	]*ifdef[ 	][ 	]*IVI_HAVE_[A-Z0-9_][A-Z0-9_]*/p' ${file} | sed 's/.*\(IVI_HAVE_[A-Z0-9_][A-Z0-9_]*\)/\1/' >> ${new_inc_file}.tmp.$$
 #
 # Looser search criterion.
 #
-sed -n '/^[ 	]*#[ 	]*[ie].*KJB_HAVE_[A-Z0-9_][A-Z0-9_]*/p' ${file} | sed 's/||/\n/' | sed 's/&&/\n/' | sed -n '/KJB_HAVE_/p' | sed 's/.*\(KJB_HAVE_[A-Z0-9][A-Z0-9_]*\).*/\1/' >> ${new_inc_file}.tmp.$$
+sed -n '/^[ 	]*#[ 	]*[ie].*IVI_HAVE_[A-Z0-9_][A-Z0-9_]*/p' ${file} | sed 's/||/\n/' | sed 's/&&/\n/' | sed -n '/IVI_HAVE_/p' | sed 's/.*\(IVI_HAVE_[A-Z0-9][A-Z0-9_]*\).*/\1/' >> ${new_inc_file}.tmp.$$
 if (${status}) then
-    ${P_STDERR} "Adding KJB_HAVE lines into  ${new_inc_file}.tmp.$$ failed."
+    ${P_STDERR} "Adding IVI_HAVE lines into  ${new_inc_file}.tmp.$$ failed."
     exit 1 
 endif 
 
-if ($?KJB_VERBOSE) then
-    echo "${KJB_VERBOSE_INDENT}Script update_file_include_list updating ${new_inc_file} directory ${cwd}."
+if ($?IVI_VERBOSE) then
+    echo "${IVI_VERBOSE_INDENT}Script update_file_include_list updating ${new_inc_file} directory ${cwd}."
 endif
 
 sort -u ${new_inc_file}.tmp.$$ > ${new_inc_file}
 if (${status}) exit 1 
 
-${KJB_RM} ${new_inc_file}.new.tmp.$$
+${IVI_RM} ${new_inc_file}.new.tmp.$$
 if (${status}) exit 1 
 
-${KJB_DIFF_TEST} ${inc_file} ${new_inc_file} > /dev/null
+${IVI_DIFF_TEST} ${inc_file} ${new_inc_file} > /dev/null
 if (${status}) then 
-    if ($?KJB_VERBOSE) then
-        echo "${KJB_VERBOSE_INDENT}Script update_file_include_list updating ${inc_file} (diff) directory ${cwd}"
-        echo "${KJB_VERBOSE_INDENT}Also removing Include_lines/include_lines to force a makedepend." 
+    if ($?IVI_VERBOSE) then
+        echo "${IVI_VERBOSE_INDENT}Script update_file_include_list updating ${inc_file} (diff) directory ${cwd}"
+        echo "${IVI_VERBOSE_INDENT}Also removing Include_lines/include_lines to force a makedepend." 
     endif
 
     set try = 1
     while (1) 
-        ${KJB_CP} ${new_inc_file} ${inc_file}
+        ${IVI_CP} ${new_inc_file} ${inc_file}
 
         if (${status}) then
             echo "Copy of ${new_inc_file} to ${inc_file} returned error."
@@ -143,7 +143,7 @@ if (${status}) then
         endif 
     end
 
-    ${KJB_RM} Include_lines/include_lines
+    ${IVI_RM} Include_lines/include_lines
 endif 
 
 # This seems to be no longer needed? Test!! 
@@ -156,10 +156,10 @@ endif
 # include_lines.new is out of date. Hence we remove it. If
 # Include_lines/include_lines was also removed, it will trigger a makedepend.
 # 
-##############  ${KJB_RM} Include_lines/include_lines.new
+##############  ${IVI_RM} Include_lines/include_lines.new
 
-if ($?KJB_VERBOSE) then
-    echo "${KJB_VERBOSE_INDENT}Leaving script update_file_include_list directory ${cwd}."
+if ($?IVI_VERBOSE) then
+    echo "${IVI_VERBOSE_INDENT}Leaving script update_file_include_list directory ${cwd}."
     echo " "
 endif
 

@@ -1,13 +1,13 @@
 
 # Template for Makefile-2 for a library directory. Usually operated on by the
-# script kjb_add_makefiles. 
+# script ivi_add_makefiles. 
 #
-# The directory that we are in should have a different name than any KJB library
+# The directory that we are in should have a different name than any IVI library
 # sub-dirs. 
 #
 # Replace 'xxx' with the directory name, and XXX with the upper case
 # counterpart.  The string that replaces 'xxx' should not already be a sub-dir
-# of KJB library. 
+# of IVI library. 
 #
 # Then, DELETE this comment block, because it is no longer a template! 
 #

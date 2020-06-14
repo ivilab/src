@@ -44,7 +44,7 @@ endif
 
 ###############################################################################
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo "--------------------------------------------------------------------"
     echo "In make_src_shadow_dir."
     echo "    shadow_dir: ${shadow_dir}" 
@@ -62,7 +62,7 @@ setenv mkdir_cmd "mkdir -p"
 
 if ("${link_name}" == ".") then 
     if (-e "${working_dir}${sub_sub_dir}shadow_dir_made") then
-        if ($?KJB_VERBOSE) then
+        if ($?IVI_VERBOSE) then
             echo "    Quick exit from make_src_shadow_dir based on: ${working_dir}${sub_sub_dir}shadow_dir_made"
             echo "--------------------------------------------------------------------"
         endif 
@@ -71,7 +71,7 @@ if ("${link_name}" == ".") then
     endif 
 else 
     if (-e "${working_dir}${link_name}/shadow_dir_made") then
-        if ($?KJB_VERBOSE) then
+        if ($?IVI_VERBOSE) then
             echo "    Quick exit from make_src_shadow_dir based on: ${working_dir}${link_name}/shadow_dir_made"
             echo "--------------------------------------------------------------------"
         endif 
@@ -109,19 +109,19 @@ if ("$shadow_dir" == "") then
         endif
     endif
 
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo "--------------------------------------------------------------------"
     endif 
 
     exit 
 endif 
 
-set KJB_SRC_PATH = "${KJB_SRC_PATH}"
-pushd $KJB_SRC_PATH > /dev/null
-set KJB_SRC_PATH = `pwd`
+set IVI_SRC_PATH = "${IVI_SRC_PATH}"
+pushd $IVI_SRC_PATH > /dev/null
+set IVI_SRC_PATH = `pwd`
 popd >& /dev/null
 
-set sed_pat = `echo $KJB_SRC_PATH | sed "s/\//\\\//g"`
+set sed_pat = `echo $IVI_SRC_PATH | sed "s/\//\\\//g"`
 
 # echo "sed_pat is ->$sed_pat<-"
 
@@ -131,14 +131,14 @@ set sed_pat = `echo $KJB_SRC_PATH | sed "s/\//\\\//g"`
 # 
 set cur_dir = `pwd`
 
-set is_in_src_tree = `echo $cur_dir | grep "$KJB_SRC_PATH"`
+set is_in_src_tree = `echo $cur_dir | grep "$IVI_SRC_PATH"`
 
 # if ("${is_in_src_tree}" == "") then
 #     echo     "Script make_src_shadow_dir needs to be used in src tree."
 #     exit 1
 # endif 
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo "    is_in_src_tree : ${is_in_src_tree}"
 endif 
 
@@ -152,7 +152,7 @@ if ("${is_in_src_tree}" == "") then
                ${mkdir_cmd} ${sub_sub_dir}
             endif
 
-            if ($?KJB_VERBOSE) then
+            if ($?IVI_VERBOSE) then
                 echo "    Possble dead code candidate being executed."
                 echo "        touch ${sub_sub_dir}/shadow_dir_made"
             endif 
@@ -166,7 +166,7 @@ if ("${is_in_src_tree}" == "") then
         exit 1
     endif
 
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo "--------------------------------------------------------------------"
     endif 
 
@@ -248,7 +248,7 @@ endif
 # echo "real_link_name is $real_link_name"
 # echo "link_target_path is $link_target_path"
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo ""
     echo "    /bin/ln -s -f ${link_target_path} ${real_link_name}"
 endif 
@@ -257,7 +257,7 @@ endif
 
 touch ${dir_to_make}/shadow_dir_made
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo "--------------------------------------------------------------------"
 endif 
 

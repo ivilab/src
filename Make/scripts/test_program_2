@@ -4,14 +4,14 @@
 
 # All variables that can affect the output of the test code should be listed
 # here. However, because there could be conflict with the setting we want for
-# this script, or could be lingering (e.g., we may have KJB_VERBOSE set for
+# this script, or could be lingering (e.g., we may have IVI_VERBOSE set for
 # debugging this script, or simply for habbit, we use shadow versions with the
-# prefix TEST. Thus, if you wish to run the actual tests with KJB_VERBOSE=1, you
-# need to set TEST_KJB_VERBOSE=1. 
+# prefix TEST. Thus, if you wish to run the actual tests with IVI_VERBOSE=1, you
+# need to set TEST_IVI_VERBOSE=1. 
 #
-set env_vars_to_save = "KJB_VERBOSE KJB_OPTIONAL_ABORT"
+set env_vars_to_save = "IVI_VERBOSE IVI_OPTIONAL_ABORT"
 
-if ($?KJB_QUIET) then
+if ($?IVI_QUIET) then
     set test_quietly = 1
 else
     set test_quietly = 0
@@ -94,7 +94,7 @@ else
     set add_test_to_svn = 0
 endif 
 
-set def_file = "${KJB_SRC_PATH}lib/l/l_def.h"
+set def_file = "${IVI_SRC_PATH}lib/l/l_def.h"
 
 
 if (! -e "${def_file}") then
@@ -160,7 +160,7 @@ endif
 
 
 if ("${test_type}" == "interactive") then
-    ${KJB_MAKE} ${program}
+    ${IVI_MAKE} ${program}
 
     if ($status) then
         ${P_STDERR} "Unable to build ${program}"
@@ -243,7 +243,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
             set svn_command = "svn add --parents --depth=empty ${input_dir_rel_path}"
 
             if ($add_test_to_svn) then 
-                ${MAKE_SCRIPT_PATH}kjb_lock ${svn_command}
+                ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
                 set svn_cmd_status = ${status} 
 
                 if (${svn_cmd_status}) then
@@ -262,7 +262,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
         endif 
 
         pushd ${input_dir_rel_path} > /dev/null
-            set test_input_files = `${KJB_LS}`
+            set test_input_files = `${IVI_LS}`
             set svn_add_files = ""
 
             foreach svn_input_file (${test_input_files}) 
@@ -278,7 +278,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
                 set svn_command = "svn add ${svn_add_files}"
 
                 if (${add_test_to_svn}) then
-                    ${MAKE_SCRIPT_PATH}kjb_lock ${svn_command}
+                    ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
                     set svn_cmd_status = ${status} 
 
                     if (${svn_cmd_status}) then
@@ -304,9 +304,9 @@ if ("${test_type}" == "interactive") then
         echo "${extra_args}" > ${input_dir_rel_path}/ARGS
     endif 
 
-    setenv KJB_SKIP_DEPEND
-    ${KJB_MAKE} make_bin_aux
-    # ${KJB_MAKE} ${program}
+    setenv IVI_SKIP_DEPEND
+    ${IVI_MAKE} make_bin_aux
+    # ${IVI_MAKE} ${program}
 endif 
 
 set input_files = `find ${input_dir_rel_path} -mindepth 1 -maxdepth 1`
@@ -322,13 +322,13 @@ if ("${test_type}" == "regress") then
     endif 
 
     set test_run_dir = `pwd`
-    set test_run_dir_files = `${KJB_LS} | grep -v '\.res$' | grep -v 'output_checked' | grep -v 'run_succeeded'  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' | grep -v 'FAILED'  `
+    set test_run_dir_files = `${IVI_LS} | grep -v '\.res$' | grep -v 'output_checked' | grep -v 'run_succeeded'  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' | grep -v 'FAILED'  `
     popd > /dev/null
 endif 
 
 
 if ("${input_files}" != "") then
-    ${KJB_CP} ${input_files} "${run_dir}"
+    ${IVI_CP} ${input_files} "${run_dir}"
 endif 
 
 if ("${test_type}" == "test") then
@@ -350,7 +350,7 @@ if ("${test_type}" == "test") then
 
     foreach env_var (${env_vars_to_save}) 
         # We use shadow version of the variables to prevent conflicts, with
-        # the common use of KJB_VERBOSE for various purposes being one obvious
+        # the common use of IVI_VERBOSE for various purposes being one obvious
         # example of why this is needed. If the user actually wants to run tests
         # with an env var set to a specific value, they need to set the version
         # with the prefix "TEST_" instead.
@@ -374,21 +374,21 @@ if ("${test_type}" == "test") then
             if (-e "${run_dir}/output_checked") then 
                 echo "New ${run_dir}/ENV will be different, but output_checked exists."
                 echo "Removing output_checked to invalidate test. Intervention might be required."
-                ${KJB_RM} "${run_dir}/output_checked"
+                ${IVI_RM} "${run_dir}/output_checked"
             endif 
             
-            ${KJB_RM} "${run_dir}/ENV"
-            ${KJB_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
+            ${IVI_RM} "${run_dir}/ENV"
+            ${IVI_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
         else 
-            ${KJB_RM} "${run_dir}/ENV.TMP"
+            ${IVI_RM} "${run_dir}/ENV.TMP"
         endif 
     else 
-        ${KJB_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
+        ${IVI_MV} "${run_dir}/ENV.TMP" "${run_dir}/ENV"
     endif 
     
-    ${KJB_RM} ${run_dir}/ENV.TMP 
+    ${IVI_RM} ${run_dir}/ENV.TMP 
 else if ("${test_type}" == "regress") then
-    ${KJB_CP} ${test_run_dir}/ENV ${run_dir}/ENV
+    ${IVI_CP} ${test_run_dir}/ENV ${run_dir}/ENV
 endif 
 
 cd ${run_dir}
@@ -448,7 +448,7 @@ set start_time = `date +%H:%M:%S`
 
 if ("${test_type}" == "check") then
     if (-e "run_succeeded") then
-        set touch_command = "${KJB_TOUCH} `pwd`/output_checked"
+        set touch_command = "${IVI_TOUCH} `pwd`/output_checked"
 
         if (-e "output_checked") then
             # If we are here, make thinks output_checked is out of date.  We
@@ -457,7 +457,7 @@ if ("${test_type}" == "check") then
             # double touch for the cases where it did not exist (no big deal,
             # just slightly less aesthetic).
             #
-            if ($?KJB_VERBOSE) then 
+            if ($?IVI_VERBOSE) then 
                 echo "Touching existing `pwd`/output_checked"
             endif 
             ${touch_command}
@@ -519,7 +519,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         echo " "
         echo "If ${program} expects tty input that is not via stdin, this won't work."
         echo "Also, output to stdout from ${program} should be flushed after EOL if stdout is not a file."
-        echo "(This is already the case if you use KJB library routines such as 'pso')"
+        echo "(This is already the case if you use IVI library routines such as 'pso')"
         echo " "
 
         if (-x "${MAKE_BIN_PATH}term_tee") then
@@ -536,8 +536,8 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
              
         (${term_tee} ${input_dir_abs_path}/STDIN "${tee_arg_2}" | (${valgrind_cmd} ${prog_path} ${args}; echo $status > RC.tmp) | tee STDOUT ) |& tee STDERR
         set RC = `cat RC.tmp`
-        ${KJB_RM} RC.tmp
-        ${KJB_CP} ${input_dir_abs_path}/STDIN STDIN
+        ${IVI_RM} RC.tmp
+        ${IVI_CP} ${input_dir_abs_path}/STDIN STDIN
         echo " "
     else
         ${VERBOSE_ECHO} 
@@ -596,16 +596,16 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             if (-e "output_checked") then 
                 echo "New RC will be different, but output_checked exists."
                 echo "Removing output_checked to invalidate test. Intervention might be required."
-                ${KJB_RM} "output_checked"
+                ${IVI_RM} "output_checked"
             endif 
             
-            ${KJB_RM} "RC"
-            ${KJB_MV} "RC.TMP" "RC"
+            ${IVI_RM} "RC"
+            ${IVI_MV} "RC.TMP" "RC"
         else 
-            ${KJB_RM} "RC.TMP"
+            ${IVI_RM} "RC.TMP"
         endif 
     else 
-        ${KJB_MV} "RC.TMP" "RC"
+        ${IVI_MV} "RC.TMP" "RC"
     endif 
 
     if ( ! ${test_rc}) then 
@@ -648,7 +648,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             echo "Script 'test_program_2' executing untested code for interactive around line 612."
         endif 
 
-        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$' | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
+        set run_dir_files = `${IVI_LS} | grep -v '^FAILED$' | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
 
         ${VERBOSE_ECHO} "Test run_dir_files: ${run_dir_files}"
         foreach test_output_file (${run_dir_files}) 
@@ -672,22 +672,22 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                         if (-e "${run_dir}/output_checked") then 
                             echo "New ${test_output_file}.FILTERED_FOR_DIFF will be different, but output_checked exists."
                             echo "Removing output_checked to invalidate test. Intervention might be required."
-                            ${KJB_RM} "${run_dir}/output_checked"
+                            ${IVI_RM} "${run_dir}/output_checked"
                         endif 
                         
-                        ${KJB_RM} "${test_output_file}.FILTERED_FOR_DIFF"
-                        ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
+                        ${IVI_RM} "${test_output_file}.FILTERED_FOR_DIFF"
+                        ${IVI_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
                     else 
-                        ${KJB_RM} "${test_output_file}.FILTERED_FOR_DIFF.TMP"
+                        ${IVI_RM} "${test_output_file}.FILTERED_FOR_DIFF.TMP"
                     endif 
                 else 
-                    ${KJB_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
+                    ${IVI_MV} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
                 endif 
             endif 
         end 
 
         if (! -e "run_succeeded"}) then 
-            ${KJB_TOUCH} run_succeeded 
+            ${IVI_TOUCH} run_succeeded 
         endif 
 
         # Cleanup 
@@ -701,12 +701,12 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
 #             set f_is_old = `${MAKE_SCRIPT_PATH}test_older_than "$f" output_checked`
 #             if (${f_is_old}) then 
 #                 "Script test_program_2 is cleaning up $f in `pwd`" 
-#                 echo ${MAKE_SCRIPT_PATH}kjb_svn_rm "$f"
-#                 ${MAKE_SCRIPT_PATH}kjb_svn_rm "$f"
+#                 echo ${MAKE_SCRIPT_PATH}ivi_svn_rm "$f"
+#                 ${MAKE_SCRIPT_PATH}ivi_svn_rm "$f"
 #             endif 
 #         end
     else if ("${test_type}" == "regress") then
-        set run_dir_files = `${KJB_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
+        set run_dir_files = `${IVI_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
 
         ${VERBOSE_ECHO} "Regress run_dir_files: $run_dir_files"
 
@@ -722,8 +722,8 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             set test_output_file = "${test_run_dir}/${output_file}"
             
             if (-e ${test_output_file}) then
-                # echo ${KJB_DIFF_TEST} ${output_file} ${test_output_file} 
-                ${KJB_DIFF_TEST} ${output_file} ${test_output_file} > /dev/null
+                # echo ${IVI_DIFF_TEST} ${output_file} ${test_output_file} 
+                ${IVI_DIFF_TEST} ${output_file} ${test_output_file} > /dev/null
 
                 if ($status) then 
                     echo " "
@@ -757,7 +757,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         end
 
         if ( ! ${test_rc}) then 
-            ${KJB_TOUCH} regression_test_passed 
+            ${IVI_TOUCH} regression_test_passed 
         endif 
     else
         echo "Script 'test_program_2' reaching unexpected code line around line 749."
@@ -769,7 +769,7 @@ if (${test_rc}) then
 else if ("${test_type}" == "regress") then
     # Do nothing
 else if (-e "output_checked") then
-    ${KJB_RM} FAILED
+    ${IVI_RM} FAILED
     
     if (${src_is_under_svn}) then
         svn info . >& /dev/null
@@ -781,7 +781,7 @@ else if (-e "output_checked") then
             # the case for "check", but not necessarily. 
             #
             if (${add_test_to_svn}) then
-                ${MAKE_SCRIPT_PATH}kjb_lock ${svn_command}
+                ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
                 set svn_cmd_status = ${status} 
 
                 if (${svn_cmd_status}) then
@@ -801,7 +801,7 @@ else if (-e "output_checked") then
         # We do not put run_succeeded in the repo to force rerunning of the test
         # on a new platform. But, as long as the output is correct, then we
         # respect output_checked. 
-        set files = `${KJB_LS} | grep -v '.TMP$' | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
+        set files = `${IVI_LS} | grep -v '.TMP$' | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'  | grep -v 'STDIN' `
 
         set not_in_svn = ""
         foreach file (${files}) 
@@ -815,7 +815,7 @@ else if (-e "output_checked") then
             set svn_command = "svn add ${not_in_svn}"
 
             if ($add_test_to_svn) then 
-                ${MAKE_SCRIPT_PATH}kjb_lock ${svn_command}
+                ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
                 set svn_cmd_status = ${status} 
 
                 if (${svn_cmd_status}) then
@@ -840,7 +840,7 @@ finish_up:
 set end_time = `date +%H:%M:%S`
 
 # if ("${valgrind_log_file}" != "") then 
-#   ${KJB_RM} valgrind_log_file
+#   ${IVI_RM} valgrind_log_file
 # endif 
 
 echo "${test_description} for ${program} with input ${input_dir} ${test_result}"

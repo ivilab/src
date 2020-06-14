@@ -15,10 +15,10 @@
 # |      MACHINE, UC_MACHINE, UC_OS
 #
 #     Currently we only export the above variables set by init_machine for
-#     Kobus's courses so that students can try the kjb library without using the
+#     Kobus's courses so that students can try the ivi library without using the
 #     source.
 #
-#     However, if we need things like KJB_CC and OBJ_DIR, we could extend this
+#     However, if we need things like IVI_CC and OBJ_DIR, we could extend this
 #     script, or write a similar script, that consults init_compile as well. 
 #
 # Author:
@@ -60,7 +60,7 @@ endif
 if ("${src_dir}" == "") then
    # We cannot use P_STDERR here because we might not have defined it yet.
    bash -c "echo 1>&2"
-   bash -c "echo This directory does not seem to be below a src dirctory with KJB installed. 1>&2"
+   bash -c "echo This directory does not seem to be below a src dirctory with IVI installed. 1>&2"
 
    foreach non_local_place (${non_local_places}) 
        bash -c "echo Nor does ${non_local_place}/Make/init_machine exist. 1>&2"

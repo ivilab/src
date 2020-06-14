@@ -8,15 +8,15 @@
 # For example, to force no optimization for C compiles, replace CC_FLAGS with
 # DONT_OPTIMIZE_CC_FLAGS. 
 #     
-# In developing KJB library code for the U.A. vision lab, this kind of hacking
+# In developing IVI library code for the U.A. vision lab, this kind of hacking
 # MUST BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 XXX_LIB_CC_FLAGS = $(CC_FLAGS)
-XXX_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+XXX_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 XXX_LIB_CXX_FLAGS = $(CXX_FLAGS)
-XXX_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+XXX_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 XXX_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -27,8 +27,8 @@ XXX_LIB_UC_PREFIX = XXX
 XXX_LIB_SRC_DIR = $(XXX_DIR)
 XXX_LIB_REAL_SRC_DIR = $(REAL_XXX_DIR)
 
-XXX_LIB_ARCHIVE = $(XXX_DIR)$(OBJ_DIR)libKJBxxx.a
-XXX_LIB_LD = -L$(XXX_DIR)$(OBJ_DIR) -lKJBxxx 
+XXX_LIB_ARCHIVE = $(XXX_DIR)$(OBJ_DIR)libIVIxxx.a
+XXX_LIB_LD = -L$(XXX_DIR)$(OBJ_DIR) -lIVIxxx 
 
 ################################################################################
 
@@ -50,9 +50,9 @@ include $(XXX_DIR)Makefile-library
 
 ### # What if Include_lines/header_file_list does not exist?
 ### $(XXX_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(XXX_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(XXX_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(XXX_DIR)$(XXX_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(XXX_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

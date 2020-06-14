@@ -28,7 +28,7 @@ else
    if (! -e ${src_dir}Make/init_machine) then
        # We cannot use P_STDERR here because we might not have defined it yet.
        bash -c "echo 1>&2"
-       bash -c "echo This directory does not seem to be below a src dirctory with KJB installed. 1>&2"
+       bash -c "echo This directory does not seem to be below a src dirctory with IVI installed. 1>&2"
        bash -c "echo Nor does ${src_dir}Make/init_machine exist.  1>&2"
        bash -c "echo 1>&2"
 

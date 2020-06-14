@@ -12,8 +12,8 @@ if (! -e $1) then
     exit 1
 endif 
 
-if (! $?KJB_VERBOSE_INDENT) then
-    setenv KJB_VERBOSE_INDENT ""
+if (! $?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
 if (-e $2) then
@@ -22,24 +22,24 @@ if (-e $2) then
         # Ensure time stamp is later than any file built by the process that
         # called this script. 
         
-        if ($?KJB_VERBOSE) then
-            echo "${KJB_VERBOSE_INDENT}Script copy_if_different found a difference with args $1 and $2."
-            echo "${KJB_VERBOSE_INDENT}Script copy_if_different is sleeping for 1 seconds."
+        if ($?IVI_VERBOSE) then
+            echo "${IVI_VERBOSE_INDENT}Script copy_if_different found a difference with args $1 and $2."
+            echo "${IVI_VERBOSE_INDENT}Script copy_if_different is sleeping for 1 seconds."
         endif
 
         sleep 1
 
-        if ($?KJB_VERBOSE) then
-            echo "${KJB_VERBOSE_INDENT}Script copy_if_different is executing  /bin/cp -f $1 $2."
+        if ($?IVI_VERBOSE) then
+            echo "${IVI_VERBOSE_INDENT}Script copy_if_different is executing  /bin/cp -f $1 $2."
         endif
 
         /bin/cp -f $1 $2
-    else if ($?KJB_VERBOSE_2) then
-        echo "${KJB_VERBOSE_INDENT}Skipping copying $1 to $2 because there is no difference."
+    else if ($?IVI_VERBOSE_2) then
+        echo "${IVI_VERBOSE_INDENT}Skipping copying $1 to $2 because there is no difference."
     endif 
 else
-    if ($?KJB_VERBOSE) then
-        echo "${KJB_VERBOSE_INDENT}Script copy_if_different is copying $1 to $2 because $2 does not exist."
+    if ($?IVI_VERBOSE) then
+        echo "${IVI_VERBOSE_INDENT}Script copy_if_different is copying $1 to $2 because $2 does not exist."
     endif
 
     /bin/cp -f $1 $2

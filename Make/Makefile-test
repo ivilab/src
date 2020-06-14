@@ -88,29 +88,29 @@ test_clean : regress_clean
 	@$(ECHO_UNLESS_QUIET) "Cleaning some test book keeping files, but leaving 'output_checked' as is."
 	@$(ECHO_UNLESS_QUIET) "Use target 'test_invalid' to remove `output_checked' files."
 	@$(ECHO_UNLESS_QUIET) "Use target 'test_very_clean' to kill everying (not advised if you can avoid it due to SVN)."
-	find test_runs -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
+	find test_runs -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
 
 .PHONY : %.test_clean
 %.test_clean : test_runs/%
-	find $< -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
+	find $< -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
 
 .PHONY : test_invalid
 test_invalid : regress_clean
-	find test_runs -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
-	find test_runs -name 'output_checked' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
+	find test_runs -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
+	find test_runs -name 'output_checked' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
 
 .PHONY : %.test_invalid
 %.test_invalid : test_runs/%
-	find $< -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
-	find $< -name 'output_checked' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
+	find $< -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
+	find $< -name 'output_checked' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
 
 .PHONY : test_very_clean
 test_very_clean : 
-	find test_runs -d -name 'test' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
+	find test_runs -d -name 'test' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
 
 .PHONY : %.test_very_clean
 %.test_very_clean :  test_runs/%
-	find $< -d -name 'test' -exec ${MAKE_SCRIPT_PATH}kjb_svn_rm  {} \;
+	find $< -d -name 'test' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
 
 .PHONY : regress_clean
 regress_clean : 

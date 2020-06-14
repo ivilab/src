@@ -29,7 +29,7 @@
 #     list are compiled under several conditions. Alternatively, any arguments
 #     that are not otherwise recognized, but are directory names, are taken as
 #     directories to work on. These directories must be specified as relative to
-#     a src directory, specifified by KJB_SRC_PATH, or found by the script using some
+#     a src directory, specifified by IVI_SRC_PATH, or found by the script using some
 #     heuristica. Other options can specify that only library code is processed.
 #     Regardless, the first thing the script does is to output the programs it
 #     plans to work on. 
@@ -42,17 +42,17 @@
 #
 # |    archive
 #         This requests that distributions being processed are put
-#         into ${KJB_SRC_PATH}/DIST/archive, where ${KJB_SRC_PATH} is usually ${HOME}/src. 
+#         into ${IVI_SRC_PATH}/DIST/archive, where ${IVI_SRC_PATH} is usually ${HOME}/src. 
 #
 # |    backup
 #         This requests that distributions being processed are put
-#         into ${KJB_SRC_PATH}/DIST/backup, where ${KJB_SRC_PATH} is usually ${HOME}/src.
+#         into ${IVI_SRC_PATH}/DIST/backup, where ${IVI_SRC_PATH} is usually ${HOME}/src.
 #         Since "archive" and "backup" behave the same, this would only make
 #         sense if the backup directory is linked to a different disk. 
 #
 # |     export 
 #          This request that archives suitable for code distribution be built.
-#          They are put into ${KJB_SRC_PATH}/DIST/export, where ${KJB_SRC_PATH} is usually
+#          They are put into ${IVI_SRC_PATH}/DIST/export, where ${IVI_SRC_PATH} is usually
 #          ${HOME}/src. 
 #
 # |     export_only
@@ -99,7 +99,7 @@
 #          errors were encountered along the way.  
 #
 # |     lib (also "library") 
-#          This builds an exportable version of the library code, i.e., libKJB.a. 
+#          This builds an exportable version of the library code, i.e., libIVI.a. 
 #
 # |     ctags
 #          This requests doing ctags. This is not always done by default, but
@@ -213,7 +213,7 @@
 #
 # |      [ PROGRAM_DIR ]
 #            Any option that is not one of the above is tested as to whether it
-#            is a subdirectory of ${KJB_SRC_PATH}, which is usually ${HOME}/src. If
+#            is a subdirectory of ${IVI_SRC_PATH}, which is usually ${HOME}/src. If
 #            this test succeeds, then PROGRAM_DIR is added to the list of
 #            specified directories to be converted into a distribution. If there
 #            is no PROGRAM_DIR argument, then we assume we are creating a
@@ -235,7 +235,7 @@
 #
 ##############################################################################
 
-if (${?KJB_SET_ECHO}) then
+if (${?IVI_SET_ECHO}) then
     set echo
 endif 
 
@@ -255,8 +255,8 @@ cat /dev/null > ${error_file}
 # unsetenv PREFER_PCH
 # unsetenv BOOST_VERSION
 
-setenv KJB_PREFER_CXX 0
-unsetenv KJB_CC
+setenv IVI_PREFER_CXX 0
+unsetenv IVI_CC
 setenv PRODUCTION 1
 
 setenv NO_LIBS 0
@@ -273,10 +273,10 @@ if (${status}) then
     goto end_of_script
 endif 
 
-if (${?KJB_SRC_PATH}) then 
-    cd ${KJB_SRC_PATH}
+if (${?IVI_SRC_PATH}) then 
+    cd ${IVI_SRC_PATH}
     if (${status}) then
-        echo "Command failed in `pwd`: cd ${KJB_SRC_PATH}" | tee -a ${error_file}
+        echo "Command failed in `pwd`: cd ${IVI_SRC_PATH}" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -288,7 +288,7 @@ else if (-d src) then
         goto end_of_script
     endif 
 
-    setenv KJB_SRC_PATH ${cwd}/
+    setenv IVI_SRC_PATH ${cwd}/
 else if (-d src.ua_cs_home) then
     cd src.ua_cs_home
     if (${status}) then
@@ -297,7 +297,7 @@ else if (-d src.ua_cs_home) then
         goto end_of_script
     endif 
 
-    setenv KJB_SRC_PATH ${cwd}/
+    setenv IVI_SRC_PATH ${cwd}/
 else 
     if (${status}) then
         echo "No src dir in ${cwd}" | tee -a ${error_file}
@@ -536,7 +536,7 @@ endif
 
 
 if (! ${skip_make}) then
-    ${KJB_MKDIR} -p ${TMPDIR}/${USER}
+    ${IVI_MKDIR} -p ${TMPDIR}/${USER}
     set compile_res = ${TMPDIR}/${USER}/compile.res 
     cat /dev/null >! ${compile_res} 
     set compile_warn_res = ${TMPDIR}/${USER}/compile_warn.res 
@@ -545,7 +545,7 @@ else
 endif 
 
 if (! "${skip_cxx}") then
-    ${KJB_MKDIR} -p ${TMPDIR}/${USER}
+    ${IVI_MKDIR} -p ${TMPDIR}/${USER}
     set compile_cxx_res = ${TMPDIR}/${USER}/compile_cxx.res 
     cat /dev/null >! ${compile_cxx_res} 
     set compile_cxx_warn_res = ${TMPDIR}/${USER}/compile_cxx_warn.res 
@@ -561,7 +561,7 @@ set noglob
 # against is not critical to them, and hence they should compile even if the
 # libraries are not available.
 #
-set no_lib_build_dirs = "SLIC/frame2frame gamut sensor spect image HER/behave KJB KJB_cpp it it/util fix_seg pipeline segment tools util math var_illum"
+set no_lib_build_dirs = "SLIC/frame2frame gamut sensor spect image HER/behave IVI IVI_cpp it it/util fix_seg pipeline segment tools util math var_illum"
 
 if (${skip_prog_dirs}) then 
     set export_prog_dirs = ""
@@ -575,7 +575,7 @@ else
     # TODO. Perhaps the lists for export_prog_dirs and proj_dirs should be in
     # files.
     #
-    set export_prog_dirs = "KJB KJB_cpp projects/ties projects/gamut projects/sensor projects/spect tools/kjb_image projects/words_and_pictures/pipeline projects/HER/behave examples/CEM"
+    set export_prog_dirs = "IVI IVI_cpp projects/ties projects/gamut projects/sensor projects/spect tools/kjb_image projects/words_and_pictures/pipeline projects/HER/behave examples/CEM"
 
     # Currently, these only build on basic linux boxes. 
     #
@@ -583,7 +583,7 @@ else
         set export_prog_dirs = "${export_prog_dirs} tools/ncuts_modified"
     endif 
 
-    set prog_dirs = "${export_prog_dirs} examples/templates/* examples/kjb projects/words_and_pictures/it projects/words_and_pictures/it/util examples/segment tools/kjb_tools tools/kjb_util tools/kjb_math projects/color/var_illum projects/SLIC/slide_match projects/SLIC/slide_match_v02" 
+    set prog_dirs = "${export_prog_dirs} examples/templates/* examples/ivi projects/words_and_pictures/it projects/words_and_pictures/it/util examples/segment tools/kjb_tools tools/kjb_util tools/kjb_math projects/color/var_illum projects/SLIC/slide_match projects/SLIC/slide_match_v02" 
 
     if ("${OS}" == "linux_386") then
         #
@@ -598,20 +598,20 @@ else
     endif 
 
 
-    # This does not depend on any KJB code, and currently breaks on the mac
+    # This does not depend on any IVI code, and currently breaks on the mac
     # because the mac cannot deal with an archive that has no members. This
     # should be fixed because we should better handle code that does not use
-    # any KJB library code. Currently, we simply link against an empty libKJB.a,
+    # any IVI library code. Currently, we simply link against an empty libIVI.a,
     # but again, using "ar" to get this on the max breaks. 
     #
     if ("${OS}" != "mac_osx") then
-        if ("${KJB_HAVE_LIBSVM}" != "") then
+        if ("${IVI_HAVE_LIBSVM}" != "") then
             set prog_dirs = "${prog_dirs} examples/libsvm"
         endif 
     endif 
 
     # Sort of similar to the above, but currently we include "m" for fun.
-    if ("${KJB_HAVE_OPENCV}" != "") then
+    if ("${IVI_HAVE_OPENCV}" != "") then
         set prog_dirs = "${prog_dirs} examples/opencv"
     endif 
 endif 
@@ -780,8 +780,8 @@ echo "MSD: Now in directory"`pwd`
 echo " " 
 
 if (! ${skip_depend}) then
-    ${KJB_MAKE} depend_very_clean 
-    ${KJB_MAKE} depend 
+    ${IVI_MAKE} depend_very_clean 
+    ${IVI_MAKE} depend 
 
     if (${status}) then
         echo "Make depend failed in ${cwd}" | tee -a ${error_file}
@@ -802,9 +802,9 @@ if (! ${skip_doc}) then
     echo "MSD: Now in directory"`pwd`
     echo " " 
 
-    ${KJB_MAKE} make_bin 
+    ${IVI_MAKE} make_bin 
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_MAKE} make_bin" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MAKE} make_bin" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -823,9 +823,9 @@ endif
 
 echo ""
 
-${KJB_MAKE} make_bin 
+${IVI_MAKE} make_bin 
 if (${status}) then
-    echo "Command failed in `pwd`: ${KJB_MAKE} make_bin" | tee -a ${error_file}
+    echo "Command failed in `pwd`: ${IVI_MAKE} make_bin" | tee -a ${error_file}
     set exit_status = 1
     goto end_of_script
 endif 
@@ -902,7 +902,7 @@ if ($collect_files) then
     echo Make/init_ua_hpc >> ${src_dist_file_dir}/src_dist_files
 
     # Not yet exported (should we export them)?
-    #     kjb_add_makefiles
+    #     ivi_add_makefiles
     #     make_src_dist (this file)
     
     echo Make/scripts/assert_non_null_arg >> ${src_dist_file_dir}/src_dist_files
@@ -939,9 +939,9 @@ if ($collect_files) then
     echo Make/scripts/get_link_target >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/get_local_include_dirs >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/is_link >> ${src_dist_file_dir}/src_dist_files
-    echo Make/scripts/kjb_lock >> ${src_dist_file_dir}/src_dist_files
-    echo Make/scripts/kjb_makedepend >> ${src_dist_file_dir}/src_dist_files
-    echo Make/scripts/kjb_svn_rm >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_lock >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_makedepend >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_svn_rm >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/make_src_shadow_dir >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/p_stderr >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/stream_file_names >> ${src_dist_file_dir}/src_dist_files
@@ -993,7 +993,7 @@ if (${status}) then
 endif 
 
 echo ---------------------------------------------------------------
-echo MSD: Compiling KJB sub-libraries.
+echo MSD: Compiling IVI sub-libraries.
 echo ---------------------------------------------------------------
 
 foreach sub_lib_dir (*)
@@ -1099,8 +1099,8 @@ foreach sub_lib_dir (*)
 
     if ((! $skip_depend) && (! $skip_depend_lib) && (-e Makefile-2)) then
         setenv PRODUCTION 1
-        ${KJB_MAKE} depend_clean 
-        ${KJB_MAKE} depend 
+        ${IVI_MAKE} depend_clean 
+        ${IVI_MAKE} depend 
 
         if (${status}) then
             echo "Make depend failed in ${cwd}" | tee -a ${error_file}
@@ -1115,15 +1115,15 @@ foreach sub_lib_dir (*)
         setenv PRODUCTION 0
 
         if (${do_clean}) then
-            ${KJB_MAKE} clean 
+            ${IVI_MAKE} clean 
         endif 
 
-        ${KJB_MAKE} |& tee -a  ${compile_res} 
+        ${IVI_MAKE} |& tee -a  ${compile_res} 
 
         if (${status}) then
             echo " " | tee -a ${error_file}
             echo "Make failed in ${cwd}." | tee -a ${error_file}
-            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
             echo " " | tee -a ${error_file}
             set exit_status = 1
             if (! ${keep_going}) goto end_of_script
@@ -1132,15 +1132,15 @@ foreach sub_lib_dir (*)
         setenv PRODUCTION 1
 
         if (${do_clean}) then
-            ${KJB_MAKE} clean 
+            ${IVI_MAKE} clean 
         endif 
 
-        ${KJB_MAKE}  
+        ${IVI_MAKE}  
 
         if (${status}) then
             echo " " | tee -a ${error_file}
             echo "Make failed in ${cwd}." | tee -a ${error_file}
-            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
             echo " " | tee -a ${error_file}
             set exit_status = 1
             if (! ${keep_going}) goto end_of_script
@@ -1161,15 +1161,15 @@ foreach sub_lib_dir (*)
             setenv PRODUCTION 1
 
             if (${do_clean}) then
-                ${KJB_MAKE} clean 
+                ${IVI_MAKE} clean 
             endif 
 
-            ${KJB_MAKE} 
+            ${IVI_MAKE} 
 
             if (${status}) then
                 echo " " | tee -a ${error_file}
                 echo "Make failed in ${cwd}." | tee -a ${error_file}
-                echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                 echo " " | tee -a ${error_file}
                 set exit_status = 1
                 if (! ${keep_going}) goto end_of_script
@@ -1181,26 +1181,26 @@ foreach sub_lib_dir (*)
         endif
 
         if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
-            setenv KJB_PREFER_CXX 1
+            setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
-                ${KJB_MAKE} clean 
+                ${IVI_MAKE} clean 
             endif 
 
-            ${KJB_MAKE} |& tee -a ${compile_cxx_res} 
+            ${IVI_MAKE} |& tee -a ${compile_cxx_res} 
 
             if (${status}) then
                 echo " " | tee -a ${error_file}
                 echo "Make failed in ${cwd}." | tee -a ${error_file}
-                echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                 echo " " | tee -a ${error_file}
                 set exit_status = 1
                 if (! ${keep_going}) goto end_of_script
             endif
 
             # Reset.
-            setenv KJB_PREFER_CXX 0
-            unsetenv KJB_CC
+            setenv IVI_PREFER_CXX 0
+            unsetenv IVI_CC
         endif
 
         # This seems to do nothing?
@@ -1210,7 +1210,7 @@ foreach sub_lib_dir (*)
     endif
 
     if (($do_doc) && ("${is_cpp_dir}" == "") && (! -e "SKIP_C2MAN"))  then
-        ${KJB_MAKE} doc 
+        ${IVI_MAKE} doc 
 
         if (${status}) then
             echo "Make doc failed in ${cwd}." | tee -a ${error_file}
@@ -1222,7 +1222,7 @@ foreach sub_lib_dir (*)
     endif
 
     if ($do_ctags) then
-        ${KJB_MAKE} tags 
+        ${IVI_MAKE} tags 
 
         if (${status}) then
             echo "Make tags failed in ${cwd}." | tee -a ${error_file}
@@ -1298,9 +1298,9 @@ foreach sub_lib_dir (*)
                     # loop.
                     #
                     setenv PRODUCTION 1
-                    ${KJB_MAKE} depend_clean 
-                    ${KJB_MAKE} build 
-                    ${KJB_MAKE} depend 
+                    ${IVI_MAKE} depend_clean 
+                    ${IVI_MAKE} build 
+                    ${IVI_MAKE} depend 
 
                     if (${status}) then
                         echo "Make depend failed in ${cwd}." | tee -a ${error_file}
@@ -1313,15 +1313,15 @@ foreach sub_lib_dir (*)
                     setenv PRODUCTION 0
 
                     if (${do_clean}) then
-                        ${KJB_MAKE} clean 
+                        ${IVI_MAKE} clean 
                     endif 
 
-                    ${KJB_MAKE} 
+                    ${IVI_MAKE} 
 
                     if (${status}) then
                         echo " " | tee -a ${error_file}
                         echo "Make failed in ${cwd}." | tee -a ${error_file}
-                        echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                         echo " " | tee -a ${error_file}
                         set exit_status = 1
                         if (! ${keep_going}) goto end_of_script
@@ -1330,15 +1330,15 @@ foreach sub_lib_dir (*)
                     setenv PRODUCTION 1
 
                     if (${do_clean}) then
-                        ${KJB_MAKE} clean 
+                        ${IVI_MAKE} clean 
                     endif 
 
-                    ${KJB_MAKE} 
+                    ${IVI_MAKE} 
 
                     if (${status}) then
                         echo " " | tee -a ${error_file}
                         echo "Make failed in ${cwd}." | tee -a ${error_file}
-                        echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                         echo " " | tee -a ${error_file}
                         set exit_status = 1
                         if (! ${keep_going}) goto end_of_script
@@ -1359,15 +1359,15 @@ foreach sub_lib_dir (*)
                         setenv PRODUCTION 1
 
                         if (${do_clean}) then
-                            ${KJB_MAKE} clean 
+                            ${IVI_MAKE} clean 
                         endif 
 
-                        ${KJB_MAKE} 
+                        ${IVI_MAKE} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
                             echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                             echo " " | tee -a ${error_file}
                             set exit_status = 1
                             if (! ${keep_going}) goto end_of_script
@@ -1378,25 +1378,25 @@ foreach sub_lib_dir (*)
                     endif 
 
                     if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX")) then
-                        setenv KJB_PREFER_CXX 1
+                        setenv IVI_PREFER_CXX 1
 
                         if (${do_clean}) then
-                            ${KJB_MAKE} clean 
+                            ${IVI_MAKE} clean 
                         endif 
 
-                        ${KJB_MAKE} 
+                        ${IVI_MAKE} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
                             echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                             echo " " | tee -a ${error_file}
                             set exit_status = 1
                             if (! ${keep_going}) goto end_of_script
                         endif
 
-                        setenv KJB_PREFER_CXX 0
-                        unsetenv KJB_CC
+                        setenv IVI_PREFER_CXX 0
+                        unsetenv IVI_CC
                     endif
                 endif
 
@@ -1408,7 +1408,7 @@ foreach sub_lib_dir (*)
 
 
                 if ($do_ctags) then
-                    ${KJB_MAKE} tags 
+                    ${IVI_MAKE} tags 
 
                     if (${status}) then
                         echo "Make tags failed in ${cwd}." | tee -a ${error_file}
@@ -1467,9 +1467,9 @@ foreach sub_lib_dir (*)
                     #
                     setenv PRODUCTION 1
                     
-                    ${KJB_MAKE} depend_clean 
-                    ${KJB_MAKE} build 
-                    ${KJB_MAKE} depend 
+                    ${IVI_MAKE} depend_clean 
+                    ${IVI_MAKE} build 
+                    ${IVI_MAKE} depend 
 
                     if (${status}) then
                         echo "Make depend failed in ${cwd}." | tee -a ${error_file}
@@ -1482,15 +1482,15 @@ foreach sub_lib_dir (*)
                     setenv PRODUCTION 0
 
                     if (${do_clean}) then
-                        ${KJB_MAKE} clean 
+                        ${IVI_MAKE} clean 
                     endif 
 
-                    ${KJB_MAKE} 
+                    ${IVI_MAKE} 
 
                     if (${status}) then
                         echo " " | tee -a ${error_file}
                         echo "Make failed in ${cwd}." | tee -a ${error_file}
-                        echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                         echo " " | tee -a ${error_file}
                         set exit_status = 1
                         if (! ${keep_going}) goto end_of_script
@@ -1499,15 +1499,15 @@ foreach sub_lib_dir (*)
                     setenv PRODUCTION 1
 
                     if (${do_clean}) then
-                        ${KJB_MAKE} clean 
+                        ${IVI_MAKE} clean 
                     endif 
 
-                    ${KJB_MAKE} 
+                    ${IVI_MAKE} 
 
                     if (${status}) then
                         echo " " | tee -a ${error_file}
                         echo "Make failed in ${cwd}." | tee -a ${error_file}
-                        echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                         echo " " | tee -a ${error_file}
                         set exit_status = 1
                         if (! ${keep_going}) goto end_of_script
@@ -1528,15 +1528,15 @@ foreach sub_lib_dir (*)
                         setenv PRODUCTION 1
 
                         if (${do_clean}) then
-                            ${KJB_MAKE} clean 
+                            ${IVI_MAKE} clean 
                         endif 
 
-                        ${KJB_MAKE} 
+                        ${IVI_MAKE} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
                             echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                             echo " " | tee -a ${error_file}
                             set exit_status = 1
                             if (! ${keep_going}) goto end_of_script
@@ -1547,30 +1547,30 @@ foreach sub_lib_dir (*)
                     endif 
 
                     if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX")) then
-                        setenv KJB_PREFER_CXX 1
+                        setenv IVI_PREFER_CXX 1
 
                         if (${do_clean}) then
-                            ${KJB_MAKE} clean 
+                            ${IVI_MAKE} clean 
                         endif 
 
-                        ${KJB_MAKE} 
+                        ${IVI_MAKE} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
                             echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                             echo " " | tee -a ${error_file}
                             set exit_status = 1
                             if (! ${keep_going}) goto end_of_script
                         endif
 
-                        setenv KJB_PREFER_CXX 0
-                        unsetenv KJB_CC
+                        setenv IVI_PREFER_CXX 0
+                        unsetenv IVI_CC
                     endif
                 endif
 
                 if ($do_ctags) then
-                    ${KJB_MAKE} tags 
+                    ${IVI_MAKE} tags 
 
                     if (${status}) then
                         echo "Make tags failed in ${cwd}." > /dev/stderr | tee -a ${error_file}
@@ -1631,7 +1631,7 @@ foreach sub_lib_dir (*)
             set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
 
             if (("${have_code}" == "1") && (-e Makefile-2)) then
-                ${KJB_MAKE} regress_clean  
+                ${IVI_MAKE} regress_clean  
                 if (${status}) then
                     echo "Making regress clean failed in ${cwd}." | tee -a ${error_file}
                     set exit_status = 1
@@ -1671,19 +1671,19 @@ foreach sub_lib_dir (*)
                 echo Regression testing in $cwd. Load dir is ${LD_OBJ_DIR}.
                 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-                ${KJB_MAKE} regress >& regress.res
+                ${IVI_MAKE} regress >& regress.res
                 if (${status}) then
                     echo " "  > regress.log
                     echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"  >> regress.log
                     echo " "  >> regress.log
                     echo "Regression testing failed in ${cwd}. "  >> regress.log
                     echo "To reproduce this try:"  >> regress.log
-                    echo "    cd ${cwd}; ${KJB_MAKE} regress"  >> regress.log
+                    echo "    cd ${cwd}; ${IVI_MAKE} regress"  >> regress.log
                     echo " "  >> regress.log
                     cat regress.res >> regress.log
 
                     set regress_failed = 1
-                    cat regress.log >> ${KJB_SRC_PATH}${regress_failure_log}
+                    cat regress.log >> ${IVI_SRC_PATH}${regress_failure_log}
 
                     cat regress.log
                     /bin/rm regress.log 
@@ -1772,9 +1772,9 @@ foreach msd_dir ($prog_dirs)
         #
         setenv PRODUCTION 1
         
-        ${KJB_MAKE} depend_clean 
-        ${KJB_MAKE} build 
-        ${KJB_MAKE} depend 
+        ${IVI_MAKE} depend_clean 
+        ${IVI_MAKE} build 
+        ${IVI_MAKE} depend 
 
         if (${status}) then
             echo "Make depend failed in ${cwd}." | tee -a ${error_file}
@@ -1787,15 +1787,15 @@ foreach msd_dir ($prog_dirs)
         setenv PRODUCTION 0
 
         if (${do_clean}) then
-            ${KJB_MAKE} clean 
+            ${IVI_MAKE} clean 
         endif 
 
-        ${KJB_MAKE} 
+        ${IVI_MAKE} 
 
         if (${status}) then
             echo " " | tee -a ${error_file}
             echo "Make failed in ${cwd}." | tee -a ${error_file}
-            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
             echo " " | tee -a ${error_file}
             set exit_status = 1
             if (! ${keep_going}) goto end_of_script
@@ -1804,15 +1804,15 @@ foreach msd_dir ($prog_dirs)
         setenv PRODUCTION 1
 
         if (${do_clean}) then
-            ${KJB_MAKE} clean 
+            ${IVI_MAKE} clean 
         endif 
 
-        ${KJB_MAKE} 
+        ${IVI_MAKE} 
 
         if (${status}) then
             echo " " | tee -a ${error_file}
             echo "Make failed in ${cwd}." | tee -a ${error_file}
-            echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
             echo " " | tee -a ${error_file}
             set exit_status = 1
             if (! ${keep_going}) goto end_of_script
@@ -1848,15 +1848,15 @@ foreach msd_dir ($prog_dirs)
                 setenv PRODUCTION 1
 
                 if (${do_clean}) then
-                    ${KJB_MAKE} clean 
+                    ${IVI_MAKE} clean 
                 endif 
 
-                ${KJB_MAKE} 
+                ${IVI_MAKE} 
 
                 if (${status}) then
                     echo " " | tee -a ${error_file}
                     echo "Make failed in ${cwd}." | tee -a ${error_file}
-                    echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                    echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                     echo " " | tee -a ${error_file}
                     set exit_status = 1
                     if (! ${keep_going}) goto end_of_script
@@ -1868,30 +1868,30 @@ foreach msd_dir ($prog_dirs)
         endif 
 
         if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
-            setenv KJB_PREFER_CXX 1
+            setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
-                ${KJB_MAKE} clean 
+                ${IVI_MAKE} clean 
             endif 
 
-            ${KJB_MAKE} 
+            ${IVI_MAKE} 
 
             if (${status}) then
                 echo " " | tee -a ${error_file}
                 echo "Make failed in ${cwd}." | tee -a ${error_file}
-                echo "    [ PRODUCTION=${PRODUCTION}; KJB_PREFER_CXX=${KJB_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
                 echo " " | tee -a ${error_file}
                 set exit_status = 1
                 if (! ${keep_going}) goto end_of_script
             endif
 
-            setenv KJB_PREFER_CXX 0
-            unsetenv KJB_CC
+            setenv IVI_PREFER_CXX 0
+            unsetenv IVI_CC
         endif
     endif
 
     if ($do_ctags) then
-        ${KJB_MAKE} tags 
+        ${IVI_MAKE} tags 
 
         if (${status}) then
             echo "Make tags in $msd_dir failed." | tee -a ${error_file}
@@ -1918,7 +1918,7 @@ foreach msd_dir ($prog_dirs)
 
     if (-e "${msd_dir}.help") then
         if ($do_doc) then
-             ${KJB_MKDIR}  ${WORK_DIR}/doc/man/cat1
+             ${IVI_MKDIR}  ${WORK_DIR}/doc/man/cat1
              help_to_man ${msd_dir}.help > ${WORK_DIR}/doc/man/cat1/${msd_dir}.1
 
              if (${status}) then
@@ -1933,7 +1933,7 @@ foreach msd_dir ($prog_dirs)
         endif
     else if (-e "${msd_dir}.w") then
         if ($do_doc) then
-            ${KJB_MKDIR}  ${WORK_DIR}/doc/man/cat1
+            ${IVI_MKDIR}  ${WORK_DIR}/doc/man/cat1
             writeup_to_man ${msd_dir}.w > ${WORK_DIR}/doc/man/cat1/${msd_dir}.1
 
             if (${status}) then
@@ -1958,7 +1958,7 @@ foreach msd_dir ($prog_dirs)
 
                 if (-e "${base_name}.w") then
                     if ($do_doc) then
-                        ${KJB_MKDIR}  ${WORK_DIR}/doc/man/cat1
+                        ${IVI_MKDIR}  ${WORK_DIR}/doc/man/cat1
                         writeup_to_man ${base_name}.w > ${WORK_DIR}/doc/man/cat1/${base_name}.1
 
                         if (${status}) then
@@ -2055,18 +2055,18 @@ endif
 if ($do_doc) then
     echo 
     echo -------------------------------------------------------
-    echo "MSD: (doc) KJB"
+    echo "MSD: (doc) IVI"
     echo -------------------------------------------------------
     echo 
 
-    pushd KJB > /dev/null
+    pushd IVI > /dev/null
     if (${status}) then
-        echo "Command failed in `pwd`: pushd KJB > /dev/null" | tee -a ${error_file}
+        echo "Command failed in `pwd`: pushd IVI > /dev/null" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
-    ${KJB_MAKE} doc 
+    ${IVI_MAKE} doc 
 
     if (${status}) then
         echo "Make doc failed in ${cwd}." | tee -a ${error_file}
@@ -2086,27 +2086,27 @@ endif
 
 if ($do_lib) then
     echo -------------------------------------------------------
-    echo MSD: Building the exported version of the kjb library
+    echo MSD: Building the exported version of the ivi library
     echo -------------------------------------------------------
 
-    pushd KJB > /dev/null
+    pushd IVI > /dev/null
     if (${status}) then
-        echo "Command failed in `pwd`: pushd KJB > /dev/null" | tee -a ${error_file}
+        echo "Command failed in `pwd`: pushd IVI > /dev/null" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
     setenv PRODUCTION 1
 
-    ${KJB_MAKE} 
+    ${IVI_MAKE} 
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_MAKE}" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
     if ($do_doc) then
-        ${KJB_MAKE} doc 
+        ${IVI_MAKE} doc 
 
         if (${status}) then
             echo "Make doc failed in ${cwd}." | tee -a ${error_file}
@@ -2115,7 +2115,7 @@ if ($do_lib) then
         endif
     endif
 
-    ${KJB_MKDIR} ${HOME}/include
+    ${IVI_MKDIR} ${HOME}/include
     set include_path = "${HOME}/include"
     set include_paths = "${include_path}"
 
@@ -2161,25 +2161,25 @@ if ($do_lib) then
     set sub_libs_needed = `cat Include_lines/sub_libs_needed`
 
     foreach include_path (${include_paths})
-        set backup_dir = ${include_path}/kjb/backups/$time_stamp
-        ${KJB_MKDIR} ${backup_dir}
+        set backup_dir = ${include_path}/ivi/backups/$time_stamp
+        ${IVI_MKDIR} ${backup_dir}
 
-        rsync -au --backup --backup-dir=$backup_dir kjb.h ${include_path}/kjb
+        rsync -au --backup --backup-dir=$backup_dir ivi.h ${include_path}/ivi
 
         foreach dir (${sub_libs_needed})
-            if (! -d "${KJB_LIB_PATH}${dir}") then 
-                echo "Needed sub-lib ${dir} does not exist in ${KJB_LIB_PATH}." | tee -a ${error_file}
+            if (! -d "${IVI_LIB_PATH}${dir}") then 
+                echo "Needed sub-lib ${dir} does not exist in ${IVI_LIB_PATH}." | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script 
             endif 
 
             echo -----------------------------------------------------------------
-            echo MSD: Updating includes for ${KJB_LIB_PATH}$dir in ${include_path}
+            echo MSD: Updating includes for ${IVI_LIB_PATH}$dir in ${include_path}
             echo -----------------------------------------------------------------
 
-            ${KJB_MKDIR}  ${include_path}/kjb/${dir}
-            set backup_dir = ${include_path}/kjb/backups/${time_stamp}/${dir}
-            rsync -au --backup --backup-dir=${backup_dir} ${KJB_LIB_PATH}${dir}/*.h ${include_path}/kjb/${dir}
+            ${IVI_MKDIR}  ${include_path}/ivi/${dir}
+            set backup_dir = ${include_path}/ivi/backups/${time_stamp}/${dir}
+            rsync -au --backup --backup-dir=${backup_dir} ${IVI_LIB_PATH}${dir}/*.h ${include_path}/ivi/${dir}
         end
 
         pushd ${include_path} > /dev/null
@@ -2189,10 +2189,10 @@ if ($do_lib) then
             goto end_of_script
         endif 
 
-        # ln -s -f ${include_path}/kjb/* .
-        ln -s -f kjb/* .
+        # ln -s -f ${include_path}/ivi/* .
+        ln -s -f ivi/* .
         if (${status}) then
-            echo "Command failed in `pwd`: ln -s -f kjb/* ." | tee -a ${error_file}
+            echo "Command failed in `pwd`: ln -s -f ivi/* ." | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
@@ -2205,7 +2205,7 @@ if ($do_lib) then
         endif 
     end
     
-    ${KJB_MKDIR} ${HOME}/load/${MACHINE}
+    ${IVI_MKDIR} ${HOME}/load/${MACHINE}
     set load_path = "${HOME}/load/${MACHINE}"
     set load_paths = "${load_path}"
 
@@ -2251,10 +2251,10 @@ if ($do_lib) then
 
     foreach load_path ($load_paths)
         echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        echo MSD: Updating libKJB.a in ${load_path}
+        echo MSD: Updating libIVI.a in ${load_path}
         echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-        ${MAKE_SCRIPT_PATH}update_bin ${LD_OBJ_DIR}libKJB.a  ${load_path}/libKJB.a
+        ${MAKE_SCRIPT_PATH}update_bin ${LD_OBJ_DIR}libIVI.a  ${load_path}/libIVI.a
     end
 
     popd > /dev/null
@@ -2372,7 +2372,7 @@ if ($do_archive) then
     echo MSD: Archiving
     echo -------------------------------------------------------
 
-    ${KJB_MKDIR} ${TMPDIR}/${USER}/src
+    ${IVI_MKDIR} ${TMPDIR}/${USER}/src
     /bin/rm -fr ${TMPDIR}/${USER}/src/*  >& /dev/null
 
 #     echo 
@@ -2400,10 +2400,10 @@ if ($do_archive) then
         goto end_of_script
     endif 
 
-    foreach archive_dir (${KJB_SRC_PATH}/DIST/archive)
-        ${KJB_MKDIR} ${archive_dir}
+    foreach archive_dir (${IVI_SRC_PATH}/DIST/archive)
+        ${IVI_MKDIR} ${archive_dir}
         if (${status}) then
-            echo "Command failed in `pwd`: ${KJB_MKDIR} ${archive_dir}" | tee -a ${error_file}
+            echo "Command failed in `pwd`: ${IVI_MKDIR} ${archive_dir}" | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
@@ -2422,9 +2422,9 @@ if ($do_archive) then
             goto end_of_script
         endif 
 
-        ${KJB_MKDIR} src.${time_stamp}
+        ${IVI_MKDIR} src.${time_stamp}
         if (${status}) then
-            echo "Command failed in `pwd`: ${KJB_MKDIR} src.${time_stamp}" | tee -a ${error_file}
+            echo "Command failed in `pwd`: ${IVI_MKDIR} src.${time_stamp}" | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
@@ -2495,7 +2495,7 @@ if ($do_archive) then
         foreach dir ($collected_prog_dirs)
             echo "MSD: processing collected program dir: $dir" 
 
-            ${KJB_MKDIR} $dir
+            ${IVI_MKDIR} $dir
 
             if (-e latest/${dir}/version.h) then
                 set major = `grep "#define MAJOR_VERSION" latest/${dir}/version.h | sed 's/.*#define MAJOR_VERSION *//'`
@@ -2538,7 +2538,7 @@ endif
 
 # If we delete we_got_here, we can delete the next two lines also. 
 # we_got_here: 
-# set src_dist_file_dir = $KJB_SRC_PATH
+# set src_dist_file_dir = $IVI_SRC_PATH
 # set src_dist_files = ${src_dist_file_dir}src_dist_files
 
 if ($do_export) then
@@ -2552,11 +2552,11 @@ if ($do_export) then
         unsetenv KJB_ENVIRONMENT
     endif 
 
-    set export_parent_dir = "${KJB_SRC_PATH}/DIST/export"
+    set export_parent_dir = "${IVI_SRC_PATH}/DIST/export"
     set export_dir = "${export_parent_dir}/${time_stamp}"
-    ${KJB_MKDIR} ${export_dir}
+    ${IVI_MKDIR} ${export_dir}
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_MKDIR} ${export_dir}" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MKDIR} ${export_dir}" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -2599,9 +2599,9 @@ if ($do_export) then
         endif 
     endif 
 
-    ${KJB_MKDIR} ${export_temp_dir}
+    ${IVI_MKDIR} ${export_temp_dir}
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_MKDIR} ${export_temp_dir}" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MKDIR} ${export_temp_dir}" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -2615,9 +2615,9 @@ if ($do_export) then
         endif 
     endif 
 
-    ${KJB_MKDIR} ${TMPDIR}/${USER}/src
+    ${IVI_MKDIR} ${TMPDIR}/${USER}/src
     if (${status}) then
-        echo "Command failed in `pwd`:  ${KJB_MKDIR} ${TMPDIR}/${USER}/src" | tee -a ${error_file}
+        echo "Command failed in `pwd`:  ${IVI_MKDIR} ${TMPDIR}/${USER}/src" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -2658,7 +2658,7 @@ if ($do_export) then
 
     echo "MSD: Now in `pwd`"
     echo "MSD: Editing the build script for export."
-    ${VIM_FOR_MAKE} -e -c :%s/kjb_setenv NOT_EXPORTED_SOURCE/kjb_setenv EXPORTED_SOURCE/ -c :wq Make/init_compile < /dev/null >& /dev/null
+    ${VIM_FOR_MAKE} -e -c :%s/ivi_setenv NOT_EXPORTED_SOURCE/ivi_setenv EXPORTED_SOURCE/ -c :wq Make/init_compile < /dev/null >& /dev/null
     echo " "
     
     Make/scripts/clean_cache all 
@@ -2696,16 +2696,16 @@ if ($do_export) then
             echo "MSD: Building Include_lines/sub_libs_needed for ${prog_dir} in ${cwd}" 
             echo "" 
 
-            ${KJB_MAKE} depend_clean  
+            ${IVI_MAKE} depend_clean  
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE} depend_clean" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
 
-            ${KJB_MAKE} Include_lines/sub_libs_needed 
+            ${IVI_MAKE} Include_lines/sub_libs_needed 
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE} Include_lines/sub_libs_needed" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE} Include_lines/sub_libs_needed" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -2745,9 +2745,9 @@ if ($do_export) then
             echo "MSD: Doing a make depend."
             echo
 
-            ${KJB_MAKE} depend  
+            ${IVI_MAKE} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -2829,30 +2829,30 @@ if ($do_export) then
     echo " "
 
     if ( ! ${skip_clean_src} ) then
-        foreach KJB_SRC_PATH (*) 
+        foreach IVI_SRC_PATH (*) 
 
-            if ((! -d "${KJB_SRC_PATH}") || ("${KJB_SRC_PATH}" == "include_after")) then
+            if ((! -d "${IVI_SRC_PATH}") || ("${IVI_SRC_PATH}" == "include_after")) then
                 continue
             endif 
 
             set noglob
 
             # This find command could probably be simpler. 
-            find ${KJB_SRC_PATH} \( \( -wholename 'Make' -o -wholename '*/Include_lines' \) -prune -false \) -o \( -name *.[chC] -o -name *.cpp -o -name *.cxx \) -exec ${MAKE_SCRIPT_PATH}clean_src {} \;
+            find ${IVI_SRC_PATH} \( \( -wholename 'Make' -o -wholename '*/Include_lines' \) -prune -false \) -o \( -name *.[chC] -o -name *.cpp -o -name *.cxx \) -exec ${MAKE_SCRIPT_PATH}clean_src {} \;
             unset noglob
         end 
     endif 
 
-    ${KJB_MKDIR} lib
+    ${IVI_MKDIR} lib
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_MKDIR} lib" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MKDIR} lib" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
-    ${KJB_TOUCH} lib/fake_out_glob
+    ${IVI_TOUCH} lib/fake_out_glob
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_TOUCH} lib/fake_out_glob" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_TOUCH} lib/fake_out_glob" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -2877,30 +2877,30 @@ if ($do_export) then
             # makefiles.
             #
             if (! ${skip_export_depend}) then 
-                ${KJB_MAKE} depend_clean 
+                ${IVI_MAKE} depend_clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE} depend_clean" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
             endif 
 
             if (! ${skip_export_make}) then 
-                ${KJB_MAKE} 
+                ${IVI_MAKE} 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE}" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
 
                 # Ignore status on cleaning. 
-                ${KJB_MAKE} clean 
+                ${IVI_MAKE} clean 
                 /bin/rm -rf ${MACHINE}
                 /bin/rm -rf make_doc 
 
-                ${KJB_MAKE} depend 
+                ${IVI_MAKE} depend 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -2920,29 +2920,29 @@ if ($do_export) then
                 endif 
 
                 if (! ${skip_export_depend}) then 
-                    ${KJB_MAKE} depend_clean 
+                    ${IVI_MAKE} depend_clean 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${KJB_MAKE} depend_clean" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
                 endif 
 
                 if (! ${skip_export_make}) then 
-                    ${KJB_MAKE} 
+                    ${IVI_MAKE} 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${KJB_MAKE}" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
 
                     # Ignore status on cleaning. 
-                    ${KJB_MAKE} clean 
+                    ${IVI_MAKE} clean 
                     /bin/rm -rf ${MACHINE}
 
-                    ${KJB_MAKE} depend 
+                    ${IVI_MAKE} depend 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
@@ -2979,9 +2979,9 @@ if ($do_export) then
         goto end_of_script
     endif 
 
-    ${KJB_MKDIR} include_after
+    ${IVI_MKDIR} include_after
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_MKDIR} include_after" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MKDIR} include_after" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -3005,26 +3005,26 @@ if ($do_export) then
         # Because of the cleaning for export, we need to rebuild the makefiles.
         #
         if (! ${skip_export_depend}) then 
-            ${KJB_MAKE} depend_clean  
+            ${IVI_MAKE} depend_clean  
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE} depend_clean" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
         endif 
 
         if (! ${skip_export_make}) then 
-            ${KJB_MAKE}   
+            ${IVI_MAKE}   
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE}" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
         endif 
 
-        ${KJB_MAKE} clean 
+        ${IVI_MAKE} clean 
         if (${status}) then
-            echo "Command failed in `pwd`: ${KJB_MAKE} clean" | tee -a ${error_file}
+            echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
@@ -3059,9 +3059,9 @@ if ($do_export) then
         # One more make of "depend" to update lagards.
         #
         if (! ${skip_export_depend}) then 
-            ${KJB_MAKE} depend  
+            ${IVI_MAKE} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3074,9 +3074,9 @@ if ($do_export) then
             echo "MSD: Doing a make depend."
             echo
 
-            ${KJB_MAKE} depend  
+            ${IVI_MAKE} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3185,9 +3185,9 @@ if ($do_export) then
             echo "MSD: Doing a make depend."
             echo
 
-            ${KJB_MAKE} depend  
+            ${IVI_MAKE} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3201,9 +3201,9 @@ if ($do_export) then
         
         set sub_libs_needed = `cat Include_lines/sub_libs_needed`
 
-        foreach kjb_sub_lib (${sub_libs_needed})
-            if (-d "../lib/${kjb_sub_lib}") then
-                echo "src/lib/${kjb_sub_lib}" >> ${TMPDIR}/${USER}/src/${export_prog_name}_files
+        foreach ivi_sub_lib (${sub_libs_needed})
+            if (-d "../lib/${ivi_sub_lib}") then
+                echo "src/lib/${ivi_sub_lib}" >> ${TMPDIR}/${USER}/src/${export_prog_name}_files
             endif 
         end 
 
@@ -3233,21 +3233,21 @@ if ($do_export) then
                  echo "Keeping src/include_after/${inc_dir_name} due to ${export_prog_name}"
                  break
             else
-                foreach kjb_sub_lib (${sub_libs_needed})
-                    set grep_res = `grep -w -l ${inc_dir_name} lib/${kjb_sub_lib}/*.[chC] lib/${kjb_sub_lib}/*.[chC]} lib/${kjb_sub_lib}/*.[chC]} |& grep -v 'No match'`
-                    # echo Grep for ${inc_dir_name} in ${cwd}/lib/${kjb_sub_lib} gives: $grep_res
+                foreach ivi_sub_lib (${sub_libs_needed})
+                    set grep_res = `grep -w -l ${inc_dir_name} lib/${ivi_sub_lib}/*.[chC] lib/${ivi_sub_lib}/*.[chC]} lib/${ivi_sub_lib}/*.[chC]} |& grep -v 'No match'`
+                    # echo Grep for ${inc_dir_name} in ${cwd}/lib/${ivi_sub_lib} gives: $grep_res
 
                     if ("${grep_res}" != "") then
                         echo "src/include_after/${inc_dir_name}" >> ${TMPDIR}/${USER}/src/${export_prog_name}_files
-                        echo "MSD: Keeping src/include_after/${inc_dir_name} due to lib/${kjb_sub_lib}"
+                        echo "MSD: Keeping src/include_after/${inc_dir_name} due to lib/${ivi_sub_lib}"
                         break
-                    else if (-d lib/${kjb_sub_lib}/test) then
-                        set grep_res = `grep -w -l ${inc_dir_name} lib/${kjb_sub_lib}/test/*.[chC] lib/${kjb_sub_lib}/test/*.cpp lib/${kjb_sub_lib}/test/*.cxx  |& grep -v 'No match'`
-                        # echo Grep for ${inc_dir_name} in ${cwd}/lib/${kjb_sub_lib}/test gives: ${grep_res}
+                    else if (-d lib/${ivi_sub_lib}/test) then
+                        set grep_res = `grep -w -l ${inc_dir_name} lib/${ivi_sub_lib}/test/*.[chC] lib/${ivi_sub_lib}/test/*.cpp lib/${ivi_sub_lib}/test/*.cxx  |& grep -v 'No match'`
+                        # echo Grep for ${inc_dir_name} in ${cwd}/lib/${ivi_sub_lib}/test gives: ${grep_res}
 
                         if ("${grep_res}" != "") then
                              echo "src/include_after/${inc_dir_name}" >> ${TMPDIR}/${USER}/src/${export_prog_name}_files
-                             echo "MSD: Keeping src/include_after/${inc_dir_name} due to lib/${kjb_sub_lib}/test"
+                             echo "MSD: Keeping src/include_after/${inc_dir_name} due to lib/${ivi_sub_lib}/test"
                              break
                         endif 
                     endif 
@@ -3302,7 +3302,7 @@ if ($do_export) then
             /bin/ls 
             echo " "
 
-            ${KJB_MKDIR} ${export_prog_name}
+            ${IVI_MKDIR} ${export_prog_name}
 
             echo ------------------------------------------------------
             echo "MSD: Moving  ${export_prog_name}.tar to ${export_prog_name}."
@@ -3329,7 +3329,7 @@ if ($do_export) then
                     echo "MSD: Moving program lib files to generic lib dir in `pwd`."
                     /bin/mv src/${export_prog_name}/lib/* src/lib 
                     if ${status} exit ${status}
-                    ${KJB_RM} src/${export_prog_name}/lib 
+                    ${IVI_RM} src/${export_prog_name}/lib 
                 endif 
                 
                 /bin/cp -r -f src/${export_prog_name}/* . 
@@ -3339,38 +3339,38 @@ if ($do_export) then
                     goto end_of_script
                 endif 
 
-                ${KJB_RM} src/${export_prog_name} 
+                ${IVI_RM} src/${export_prog_name} 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_RM} src/${export_prog_name}" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_RM} src/${export_prog_name}" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
 
-                ${KJB_MV} src/* . 
+                ${IVI_MV} src/* . 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MV} src/* . " | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MV} src/* . " | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
 
-                ${KJB_RM} src
+                ${IVI_RM} src
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_RM} src" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_RM} src" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
 
                 # We have moved stuff about. So ...
-                ${KJB_MAKE} depend_clean 
+                ${IVI_MAKE} depend_clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE} depend_clean" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
 
-                ${KJB_MAKE} clean 
+                ${IVI_MAKE} clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE} clean " | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE} clean " | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3379,16 +3379,16 @@ if ($do_export) then
                     echo "MSD: Building documentation due to option export_doc in `pwd`."
                     echo " "
 
-                    ${KJB_MAKE} doc 
+                    ${IVI_MAKE} doc 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${KJB_MAKE} doc" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE} doc" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
 
-                    ${KJB_MAKE} clean 
+                    ${IVI_MAKE} clean 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${KJB_MAKE} clean" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
@@ -3407,9 +3407,9 @@ if ($do_export) then
                             goto end_of_script
                         endif 
 
-                            ${KJB_MAKE} clean 
+                            ${IVI_MAKE} clean 
                             if (${status}) then
-                                echo "Command failed in `pwd`: ${KJB_MAKE} clean" | tee -a ${error_file}
+                                echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
                                 set exit_status = 1
                                 goto end_of_script
                             endif 
@@ -3421,9 +3421,9 @@ if ($do_export) then
                             goto end_of_script
                         endif 
 
-                        ${KJB_MAKE} clean 
+                        ${IVI_MAKE} clean 
                         if (${status}) then
-                            echo "Command failed in `pwd`: ${KJB_MAKE} clean" | tee -a ${error_file}
+                            echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
                             set exit_status = 1
                             goto end_of_script
                         endif 
@@ -3439,9 +3439,9 @@ if ($do_export) then
                 echo "MSD: Doing a make clean in `pwd`."
                 echo " "
 
-                ${KJB_MAKE} clean 
+                ${IVI_MAKE} clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE} clean" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3460,9 +3460,9 @@ if ($do_export) then
                     goto end_of_script 
                 endif 
 
-                ${KJB_MAKE} depend 
+                ${IVI_MAKE} depend 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3470,9 +3470,9 @@ if ($do_export) then
                 # Do it again, even though it is probably not needed since the
                 # rewrite of build_2. 
                 #
-                ${KJB_MAKE} depend
+                ${IVI_MAKE} depend
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${KJB_MAKE} depend" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3519,16 +3519,16 @@ if ($do_export) then
                 goto end_of_script
             endif 
 
-            ${KJB_COMPRESS} -f ${export_dir}/${export_prog_name}${version_str}.tar
+            ${IVI_COMPRESS} -f ${export_dir}/${export_prog_name}${version_str}.tar
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_COMPRESS} -f ${export_dir}/${export_prog_name}${version_str}.tar" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_COMPRESS} -f ${export_dir}/${export_prog_name}${version_str}.tar" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
 
-            ${KJB_RM} ${export_prog_name}${version_str}
+            ${IVI_RM} ${export_prog_name}${version_str}
             if (${status}) then
-                echo "Command failed in `pwd`: ${KJB_RM} ${export_prog_name}${version_str}" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_RM} ${export_prog_name}${version_str}" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3541,7 +3541,7 @@ if ($do_export) then
 
     if (("${specified_prog_dirs}" == "") || (${export_src_tree})) then
         set everything = "IVILAB-src-${time_stamp}"
-        ${KJB_MKDIR} ${everything} 
+        ${IVI_MKDIR} ${everything} 
 
         foreach sub_dir (../src/*)
             if (-d ${sub_dir}) then
@@ -3556,9 +3556,9 @@ if ($do_export) then
             goto end_of_script
         endif 
 
-        ${KJB_COMPRESS} -f ${export_dir}/${everything}.tar
+        ${IVI_COMPRESS} -f ${export_dir}/${everything}.tar
         if (${status}) then
-            echo "Command failed in `pwd`: ${KJB_COMPRESS} -f ${export_dir}/${everything}.tar" | tee -a ${error_file}
+            echo "Command failed in `pwd`: ${IVI_COMPRESS} -f ${export_dir}/${everything}.tar" | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
@@ -3624,31 +3624,31 @@ if ($do_backup) then
             goto end_of_script
         endif 
     else 
-        ${KJB_MKDIR} ${HOME}/backup
+        ${IVI_MKDIR} ${HOME}/backup
         if (${status}) then
-            echo "Command failed in `pwd`: ${KJB_MKDIR} ${HOME}/backup" | tee -a ${error_file}
+            echo "Command failed in `pwd`: ${IVI_MKDIR} ${HOME}/backup" | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
     endif 
 
-    ${KJB_MKDIR} ${HOME}/backup/src-dist
+    ${IVI_MKDIR} ${HOME}/backup/src-dist
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_MKDIR} ${HOME}/backup/src-dist" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MKDIR} ${HOME}/backup/src-dist" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
-    ${KJB_COMPRESS} -f ${TMPDIR}/${USER}/src.${time_stamp}.tar
+    ${IVI_COMPRESS} -f ${TMPDIR}/${USER}/src.${time_stamp}.tar
     if (${status}) then
-        echo "Command failed in `pwd`: ${KJB_COMPRESS} -f ${TMPDIR}/${USER}/src.${time_stamp}.tar" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_COMPRESS} -f ${TMPDIR}/${USER}/src.${time_stamp}.tar" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
-    /bin/mv -f ${TMPDIR}/${USER}/src.${time_stamp}.tar.${KJB_COMPRESS_SUFFIX} ${HOME}/backup/src-dist
+    /bin/mv -f ${TMPDIR}/${USER}/src.${time_stamp}.tar.${IVI_COMPRESS_SUFFIX} ${HOME}/backup/src-dist
     if (${status}) then
-        echo "Command failed in `pwd`: /bin/mv -f ${TMPDIR}/${USER}/src.${time_stamp}.tar.${KJB_COMPRESS_SUFFIX} ${HOME}/backup/src-dist" | tee -a ${error_file}
+        echo "Command failed in `pwd`: /bin/mv -f ${TMPDIR}/${USER}/src.${time_stamp}.tar.${IVI_COMPRESS_SUFFIX} ${HOME}/backup/src-dist" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -3691,7 +3691,7 @@ else
         echo ""
     endif 
 
-    ${KJB_RM} ${error_file}
+    ${IVI_RM} ${error_file}
 endif 
 
 echo "=============================================================================="

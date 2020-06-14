@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo $*
 endif 
 

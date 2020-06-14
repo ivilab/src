@@ -3,10 +3,10 @@
 # Build scripts  
 # =============
 #
-# This file (${KJB_SRC_PATH}/Make/scripts/build-2) is sourced by the script "build"
-# after it has determined the value of KJB_SRC_PATH. In order to be able to move src
+# This file (${IVI_SRC_PATH}/Make/scripts/build-2) is sourced by the script "build"
+# after it has determined the value of IVI_SRC_PATH. In order to be able to move src
 # directories without problem, each source directory has a copy of the script
-# "build", but once KJB_SRC_PATH is known, then we know where to find the build
+# "build", but once IVI_SRC_PATH is known, then we know where to find the build
 # tools. 
 #
 # The main purpose of the build scripts is to normalize the make environment,
@@ -21,7 +21,7 @@
 # environment  we compile faster by not sourcing those files everytime. In this
 # case, we can use set_gcc to update things if we expect that the external
 # enviroment has changed. To force sourcing init_machine and init_compile
-# everytime, one can set the environment variable KJB_FORCE_INIT. 
+# everytime, one can set the environment variable IVI_FORCE_INIT. 
 #
 # Kobus's environment also provides an alternative way to compile through "mk"
 # which assumes that Makefiles are up to date and calls make directly and also
@@ -31,18 +31,18 @@
 # On the subject of faster compiline, if we call make with the target "code"
 # then the makefiles are not checked for being up to date.
 #
-if ($?KJB_HAVE_MACHINE) then
+if ($?IVI_HAVE_MACHINE) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
-    if ($?KJB_VERBOSE_2) then
-        echo "Script build-2 is not sourcing ${KJB_SRC_PATH}/Make/init_machine because KJB_HAVE_MACHINE is set."
+    if ($?IVI_VERBOSE_2) then
+        echo "Script build-2 is not sourcing ${IVI_SRC_PATH}/Make/init_machine because IVI_HAVE_MACHINE is set."
     endif 
 else 
     # Do not use VERBOSE_ECHO as we may not have it yet. 
-    if ($?KJB_VERBOSE) then
-        echo "Script build-2 is sourcing ${KJB_SRC_PATH}/Make/init_machine."
+    if ($?IVI_VERBOSE) then
+        echo "Script build-2 is sourcing ${IVI_SRC_PATH}/Make/init_machine."
     endif 
 
-    source ${KJB_SRC_PATH}/Make/init_machine
+    source ${IVI_SRC_PATH}/Make/init_machine
     if ($status) exit $status
 endif 
 
@@ -54,7 +54,7 @@ endif
 # Build options can be manipulated by changing environment variables, some of
 # which are documented in this file. If you prefer, these can be set in the
 # BUILD_ENV* files. One way to get started with this plan is to copy BUILD_ENV
-# from ${KJB_SRC_PATH}/Make/ into this directory. 
+# from ${IVI_SRC_PATH}/Make/ into this directory. 
 
 set shared_build_env_dirs = "BUILD_ENV BUILD_ENV.${OS} BUILD_ENV.${MACHINE} BUILD_ENV BUILD_ENV.${OS}"
 
@@ -73,24 +73,24 @@ foreach shared_build_env_dir (${shared_build_env_dirs})
 end
 
 # Do not use VERBOSE_ECHO as we may not have it yet. 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo "Checking for build option files in (${build_env_dirs})."
 endif
 
 foreach build_env_dir (${build_env_dirs})
     if (-e "${build_env_dir}") then
         # Do not use VERBOSE_ECHO as we may not have it yet. 
-        if ($?KJB_VERBOSE) then
+        if ($?IVI_VERBOSE) then
             echo "Sourcing ${build_env_dir} in directory ${cwd}, which can overide shell settings."
         endif 
         source ${build_env_dir}
 
         # Do not use VERBOSE_ECHO as we may not have it yet. 
-        if ($?KJB_VERBOSE) then
+        if ($?IVI_VERBOSE) then
             echo "Back from ${build_env_dir} in directory ${cwd}."
         endif 
         if (${status}) exit ${status}
-    else if ($?KJB_VERBOSE_2) then
+    else if ($?IVI_VERBOSE_2) then
         echo "No optional build file ${build_env_dir} in directory ${cwd}."
     endif 
 end
@@ -98,8 +98,8 @@ end
 ##################################################################################
 
 # Do not use VERBOSE_ECHO as we may not have it yet. 
-if ($?KJB_VERBOSE) then
-    echo "Script build-2 is sourcing ${KJB_SRC_PATH}/Make/init_compile"
+if ($?IVI_VERBOSE) then
+    echo "Script build-2 is sourcing ${IVI_SRC_PATH}/Make/init_compile"
 endif 
 
 set multiple_boost = 0
@@ -122,13 +122,13 @@ if (${multiple_boost}) then
     set found_workable_boost = 0 
 
     foreach boost_candidate (${boost_candidates}) 
-        if (! $?KJB_QUIET ) then
-            echo "Script build-2 is trying boost_candidate ${boost_candidate} by setting BUILD_VERSION to that and sourcing build-2."
+        if (! $?IVI_QUIET ) then
+            echo "Script build-2 is trying boost_candidate ${boost_candidate} by setting BOOST_VERSION to that and sourcing build-2."
         endif 
 
         setenv BOOST_VERSION "${boost_candidate}"
 
-        source ${KJB_SRC_PATH}/Make/init_compile
+        source ${IVI_SRC_PATH}/Make/init_compile
         if (! ${status}) then
             set found_workable_boost = 1
             break
@@ -138,11 +138,11 @@ if (${multiple_boost}) then
     if (! ${found_workable_boost}) then
         echo "Not able to find any of the boost candidates in (${boost_candidates})."
         exit 1
-    else if ($?KJB_VERBOSE) then
+    else if ($?IVI_VERBOSE) then
         
     endif 
 else
-    source ${KJB_SRC_PATH}/Make/init_compile
+    source ${IVI_SRC_PATH}/Make/init_compile
     if (${status}) exit ${status}
 endif 
 
@@ -150,9 +150,9 @@ setenv CWD "${cwd}"
 
 ################################################################################
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
    set suppress_jobserver_msg = " cat "
-else if ( $?KJB_QUIET ) then
+else if ( $?IVI_QUIET ) then
    # Get ride of some annoying messages. However, this is a hack.  We cannot use
    # grep because it can exit with 1. We also have yet to control how spaces in
    # the search string can get parsed properly. So we do without for now. 
@@ -170,33 +170,33 @@ endif
 
 set make_extra_opts = ""
 
-if ($?KJB_MAKE_DEBUG) then 
-    set make_extra_opts = "${make_extra_opts} ${KJB_MAKE_OPTS_DEBUG}"
+if ($?IVI_MAKE_DEBUG) then 
+    set make_extra_opts = "${make_extra_opts} ${IVI_MAKE_OPTS_DEBUG}"
 endif 
 
 if ($?FORCE_STOP) then
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo "Forcing stopping after an error due to env var FORCE_STOP being set"
     endif 
 
-    set make_extra_opts = "${make_extra_opts} ${KJB_MAKE_OPTS_STOP}"
+    set make_extra_opts = "${make_extra_opts} ${IVI_MAKE_OPTS_STOP}"
 endif 
 
-if ($?KJB_QUIET) then
-    set make_extra_opts = "${make_extra_opts} ${KJB_MAKE_OPTS_SILENT}"
+if ($?IVI_QUIET) then
+    set make_extra_opts = "${make_extra_opts} ${IVI_MAKE_OPTS_SILENT}"
 endif 
 
-setenv KJB_MAKE_SERIAL "${KJB_MAKE_SERIAL} ${make_extra_opts}"
-setenv KJB_MAKE_PAR    "${KJB_MAKE_PAR} ${make_extra_opts}"
+setenv IVI_MAKE_SERIAL "${IVI_MAKE_SERIAL} ${make_extra_opts}"
+setenv IVI_MAKE_PAR    "${IVI_MAKE_PAR} ${make_extra_opts}"
 
 if ($?FORCE_SERIAL) then
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo "Forcing serial make due to env var FORCE_SERIAL being set"
     endif 
 
-    setenv KJB_MAKE "${KJB_MAKE_SERIAL}"
+    setenv IVI_MAKE "${IVI_MAKE_SERIAL}"
 else 
-    setenv KJB_MAKE "${KJB_MAKE_PAR}"
+    setenv IVI_MAKE "${IVI_MAKE_PAR}"
 endif  
 
 ################################################################################
@@ -215,48 +215,48 @@ endif
 # everytime, which is a bit excessive. However, it is better than forcing
 # cleaning the cache. Changes here should be paralleled in init_compile. 
 
-if (${KJB_WARN_LEVEL} == 0) then
-    setenv CC_KJB_WARNINGS "${CC_KJB_WARN_0}"
-    setenv CXX_KJB_WARNINGS "${CXX_KJB_WARN_0}"
-    setenv F77_KJB_WARNINGS "${F77_KJB_WARN_0}"
-    setenv KJB_CPP_MESSAGE_FILTER "${KJB_CPP_DEFAULT_MSG_FILTER}"
-else if (${KJB_WARN_LEVEL} == 1) then
-    setenv CC_KJB_WARNINGS "${CC_KJB_WARN_1}"
-    setenv CXX_KJB_WARNINGS "${CXX_KJB_WARN_1}"
-    setenv F77_KJB_WARNINGS "${F77_KJB_WARN_1}"
-    setenv KJB_CPP_MESSAGE_FILTER "${KJB_CPP_DEFAULT_MSG_FILTER}"
-else if (${KJB_WARN_LEVEL} == 2) then
-    setenv CC_KJB_WARNINGS "${CC_KJB_WARN_2}"
-    setenv CXX_KJB_WARNINGS "${CXX_KJB_WARN_2}"
-    setenv F77_KJB_WARNINGS "${F77_KJB_WARN_2}"
-    setenv KJB_CPP_MESSAGE_FILTER "${KJB_CPP_DEFAULT_MSG_FILTER}"
-else if (${KJB_WARN_LEVEL} == 3) then
-    setenv CC_KJB_WARNINGS "${CC_KJB_WARN_3}"
-    setenv CXX_KJB_WARNINGS "${CXX_KJB_WARN_3}"
-    setenv F77_KJB_WARNINGS "${F77_KJB_WARN_3}"
-    setenv KJB_CPP_MESSAGE_FILTER "${KJB_CPP_DEFAULT_MSG_FILTER}"
-else if (${KJB_WARN_LEVEL} == 4) then
-    setenv CC_KJB_WARNINGS "${CC_KJB_WARN_4}"
-    setenv CXX_KJB_WARNINGS "${CXX_KJB_WARN_4}"
-    setenv F77_KJB_WARNINGS "${F77_KJB_WARN_4}"
-    setenv KJB_CPP_MESSAGE_FILTER "${KJB_CPP_ALLPASS_MSG_FILTER}"
-else if (${KJB_WARN_LEVEL} >= 5) then
-    setenv CC_KJB_WARNINGS "${CC_KJB_WARN_5}"
-    setenv CXX_KJB_WARNINGS "${CXX_KJB_WARN_5}"
-    setenv F77_KJB_WARNINGS "${F77_KJB_WARN_5}"
-    setenv KJB_CPP_MESSAGE_FILTER "${KJB_CPP_ALLPASS_MSG_FILTER}"
+if (${IVI_WARN_LEVEL} == 0) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_0}"
+    setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_0}"
+    setenv F77_IVI_WARNINGS "${F77_IVI_WARN_0}"
+    setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+else if (${IVI_WARN_LEVEL} == 1) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_1}"
+    setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_1}"
+    setenv F77_IVI_WARNINGS "${F77_IVI_WARN_1}"
+    setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+else if (${IVI_WARN_LEVEL} == 2) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_2}"
+    setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_2}"
+    setenv F77_IVI_WARNINGS "${F77_IVI_WARN_2}"
+    setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+else if (${IVI_WARN_LEVEL} == 3) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_3}"
+    setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_3}"
+    setenv F77_IVI_WARNINGS "${F77_IVI_WARN_3}"
+    setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+else if (${IVI_WARN_LEVEL} == 4) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_4}"
+    setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_4}"
+    setenv F77_IVI_WARNINGS "${F77_IVI_WARN_4}"
+    setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
+else if (${IVI_WARN_LEVEL} >= 5) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_5}"
+    setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_5}"
+    setenv F77_IVI_WARNINGS "${F77_IVI_WARN_5}"
+    setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
 endif 
 
 if ($USE_SHARED_WARNINGS) then 
-    kjb_setenv CC_SHARED_WARNINGS "${CC_KJB_WARNINGS}"
+    ivi_setenv CC_SHARED_WARNINGS "${CC_IVI_WARNINGS}"
 endif 
 
 ################################################################################
 
 set is_parallel = 0
-set have_job_arg = `echo ${KJB_MAKE} | grep -c '\-j [1-9]'`
+set have_job_arg = `echo ${IVI_MAKE} | grep -c '\-j [1-9]'`
 if (${have_job_arg}) then
-    set job_arg_val = `echo ${KJB_MAKE} | sed 's/^.*-j \([1-9][0-9]*\)[^0-9]*$/\1/'`
+    set job_arg_val = `echo ${IVI_MAKE} | sed 's/^.*-j \([1-9][0-9]*\)[^0-9]*$/\1/'`
     if (${job_arg_val} > 1) then
         set is_parallel = 1
     endif 
@@ -264,7 +264,7 @@ endif
 
 ################################################################################
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo "" 
     echo =================  variable values in build-2 =========================
     echo "" 
@@ -281,13 +281,13 @@ if ($?KJB_VERBOSE) then
     echo " "
     echo "SHELL_FOR_MAKE:         ${SHELL_FOR_MAKE}"
     echo "CWD:                    ${CWD}"
-    echo "KJB_SRC_PATH:           ${KJB_SRC_PATH}"
-    echo "KJB_LIB_PATH:           ${KJB_LIB_PATH}"
+    echo "IVI_SRC_PATH:           ${IVI_SRC_PATH}"
+    echo "IVI_LIB_PATH:           ${IVI_LIB_PATH}"
     echo "MAKE_PATH:              ${MAKE_PATH}"
     echo "MAKE_SCRIPT_PATH:       ${MAKE_SCRIPT_PATH}"
     echo "MAKE_FLAVOR:            ${MAKE_FLAVOR}"
-    echo "KJB_DIFF_TEST:          ${KJB_DIFF_TEST}"
-    echo "KJB_STAT_FLAVOR:        ${KJB_STAT_FLAVOR}"
+    echo "IVI_DIFF_TEST:          ${IVI_DIFF_TEST}"
+    echo "IVI_STAT_FLAVOR:        ${IVI_STAT_FLAVOR}"
     echo "VIM_FOR_MAKE:           ${VIM_FOR_MAKE}"
     echo "VIM_SUFFIX:             ${VIM_SUFFIX}"
     echo "PRODUCTION:             ${PRODUCTION}"
@@ -299,10 +299,10 @@ if ($?KJB_VERBOSE) then
     echo "DOC_DIR:                ${DOC_DIR}"
     echo "MAN_DIR:                ${MAN_DIR}"
     echo "HTML_MAN_DIR:           ${HTML_MAN_DIR}"
-    echo "KJB_WARN_LEVEL:         ${KJB_WARN_LEVEL}"
-    echo "CC_KJB_WARNINGS:        ${CC_KJB_WARNINGS}"
-    echo "CXX_KJB_WARNINGS:       ${CXX_KJB_WARNINGS}"
-    echo "KJB_CPP_MESSAGE_FILTER: ${KJB_CPP_MESSAGE_FILTER}"
+    echo "IVI_WARN_LEVEL:         ${IVI_WARN_LEVEL}"
+    echo "CC_IVI_WARNINGS:        ${CC_IVI_WARNINGS}"
+    echo "CXX_IVI_WARNINGS:       ${CXX_IVI_WARNINGS}"
+    echo "IVI_CPP_MESSAGE_FILTER: ${IVI_CPP_MESSAGE_FILTER}"
     echo "ECHO_IF_VERBOSE;        ${ECHO_IF_VERBOSE}" 
     echo "" 
     echo "ALL_BASE_INCLUDES:      ${ALL_BASE_INCLUDES}"
@@ -310,8 +310,8 @@ if ($?KJB_VERBOSE) then
     echo "DEFAULT_OPT_INCLUDES:   ${DEFAULT_OPT_INCLUDES}"
     echo "LOAD_DIRS:              ${LOAD_DIRS}"
     echo "" 
-    echo "Default make command:   ${KJB_MAKE}" 
-    echo "Serial make command:    ${KJB_MAKE_SERIAL}" 
+    echo "Default make command:   ${IVI_MAKE}" 
+    echo "Serial make command:    ${IVI_MAKE_SERIAL}" 
     echo "Default make is parallel: ${is_parallel}" 
     echo "" 
     echo =======================================================================
@@ -349,7 +349,7 @@ else
     set args = "$*"
 endif 
 
-if (! $?KJB_QUIET ) then
+if (! $?IVI_QUIET ) then
     set start_time = `date`
 
     echo " "
@@ -359,11 +359,11 @@ endif
 
 ################################################################################
 
-if ($?KJB_VERBOSE) then
-    setenv KJB_VERBOSE_INDENT ""
+if ($?IVI_VERBOSE) then
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
-if (! $?KJB_QUIET ) then
+if (! $?IVI_QUIET ) then
     set build_verbose = 1
 else 
     set build_verbose = 0
@@ -389,7 +389,7 @@ setenv LC_ALL C
 # set echo 
 
 set save_production = "${PRODUCTION}"
-set save_kjb_cc = "${KJB_CC}"
+set save_ivi_cc = "${IVI_CC}"
 
 # Check for obsolete files that could confuse things. 
 if (-e "Makefile-depend") then
@@ -399,10 +399,10 @@ if (-e "Makefile-depend") then
     endif 
 
     if (${old_rule}) then 
-        if ($?KJB_VERBOSE) then
+        if ($?IVI_VERBOSE) then
             echo "Script build-2 is removing an obsolete Makefile-depend."
         endif 
-        ${KJB_RM} Makefile-depend
+        ${IVI_RM} Makefile-depend
     endif 
 endif  
 
@@ -451,11 +451,11 @@ while ($count <=  ${num_args})
     # If multiple make targets are being processed, then we need to make sure
     # that ones that forced settings do not affect the others. 
     #
-    if (("${PRODUCTION}" != "${save_production}") || ("${KJB_CC}" != "${save_kjb_cc}")) then
-        setenv KJB_CC "${save_kjb_cc}" 
+    if (("${PRODUCTION}" != "${save_production}") || ("${IVI_CC}" != "${save_ivi_cc}")) then
+        setenv IVI_CC "${save_ivi_cc}" 
         setenv PRODUCTION "${save_production}"
         setenv FORCE_INIT_COMPILE
-        source ${KJB_SRC_PATH}/Make/init_compile
+        source ${IVI_SRC_PATH}/Make/init_compile
     endif 
 
     if ("${arg}" == "all") then
@@ -463,14 +463,14 @@ while ($count <=  ${num_args})
         # Do nothing special. Common case that would fall through, but we skip
         # all the processing. 
     else if ("${arg}" == "confess") then
-        setenv KJB_VERBOSE 1
+        setenv IVI_VERBOSE 1
         
         echo " "
         echo "Cleaning the cache because of target confess."
         echo " "
 
         source ${MAKE_SCRIPT_PATH}clean_cache
-        source ${KJB_SRC_PATH}/Make/init_compile
+        source ${IVI_SRC_PATH}/Make/init_compile
 
         continue
     else if ( ("${arg}" == "clean_cache") || ("${arg}" == "cache_clean") ) then
@@ -496,7 +496,7 @@ while ($count <=  ${num_args})
         continue
     else if ("${arg}" == "depend_very_clean") then
         echo " "
-        echo "Build script is cleaning up Makefiles in current dir, lib, and all KJB libs."
+        echo "Build script is cleaning up Makefiles in current dir, lib, and all IVI libs."
         echo " "
 
         source ${MAKE_SCRIPT_PATH}clean_global
@@ -514,7 +514,7 @@ while ($count <=  ${num_args})
         set need_depend = 1
  
         if ("${arg}" == "dynamic") then
-            if (! $?KJB_QUIET ) then
+            if (! $?IVI_QUIET ) then
                 echo ""; echo "Build script is switching target dyanamic to 'shared'"; echo ""
                 set arg = "shared"
             endif
@@ -615,19 +615,19 @@ while ($count <=  ${num_args})
     else if ("${arg}" == "file_list") then
         set arg = "file_list.new"
         set need_depend = 1
-        if (! $?KJB_QUIET ) then
+        if (! $?IVI_QUIET ) then
             echo "Script build-2 is switching target file_list to file_list.new"
         endif 
     else if ("${arg}" == "file_list") then
         set arg = "file_list.new"
         set need_depend = 1
-        if (! $?KJB_QUIET ) then
+        if (! $?IVI_QUIET ) then
             echo "Script build-2 is switching target file_list to file_list.new"
         endif 
     else if ("${arg}" == "include_lines") then
         set arg = "include_lines.new"
         set need_depend = 1
-        if (! $?KJB_QUIET ) then
+        if (! $?IVI_QUIET ) then
             echo "Script build-2 is switching target include_lines to include_lines.new"
         endif 
     else if (("${arg}" == "file_list".new") || ("${arg}" == "include_lines".new")  || ("${arg}" == "depend") || ("${arg}" == "depend_again")) then
@@ -751,13 +751,13 @@ if (${need_depend_bootstrap}) then
         ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
 
         # Makefile-dirs is made as a side effect of the following.
-        ${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}build_file_list
+        ${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_file_list
         if (${status}) then
             ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
             exit 1
         endif
 
-        ${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}build_include_lines
+        ${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_include_lines
         if (${status}) then
             ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
             exit 1
@@ -780,26 +780,26 @@ if (${need_depend_bootstrap}) then
         setenv SHADOW_BUILD_MAKEFILE_LIBS 1
 
         if (! -e Makefile-depend) then
-            ${KJB_TOUCH_1990} Makefile-depend
+            ${IVI_TOUCH_1990} Makefile-depend
         endif
 
         if (! -e Makefile-libs-needed) then
-            ${KJB_TOUCH_1990} Makefile-libs-needed
+            ${IVI_TOUCH_1990} Makefile-libs-needed
         endif
 
         if (-e Makefile-include) then
             if (! -e Makefile-library) then
-                ${KJB_TOUCH_1990} Makefile-library
+                ${IVI_TOUCH_1990} Makefile-library
             endif 
 
             if (! -e Include_lines/Makefile-include-lines) then
-                ${KJB_MKDIR} Include_lines
-                ${KJB_TOUCH_1990} Include_lines/Makefile-include-lines
+                ${IVI_MKDIR} Include_lines
+                ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines
             endif 
 
             if (! -e Include_lines/Makefile-depend-incl-dot-h) then
-                ${KJB_MKDIR} Include_lines
-                ${KJB_TOUCH_1990} Makefile-depend-incl-dot-h
+                ${IVI_MKDIR} Include_lines
+                ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
             endif
         endif 
     endif 
@@ -809,7 +809,7 @@ endif
 # targets listed in temp_depend_targets below. But if the target specified is
 # actually one of these, then we build all the ones up to that target. 
 #
-if (( ! $?KJB_SKIP_DEPEND) && (${need_depend}) ) then
+if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
     set build_adjusted_args = ""
     foreach arg (${adjusted_args}) 
         # set temp_depend_targets = "Include_lines/file_list.new Include_lines/include_lines.new Include_lines/sub_libs_needed depend"
@@ -844,7 +844,7 @@ if (( ! $?KJB_SKIP_DEPEND) && (${need_depend}) ) then
 
         # echo depend_targets: $depend_targets
 
-        set kjb_depend_make = "${KJB_MAKE} ${KJB_MAKE_OPTS_STOP}"
+        set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
 
         set try = 0
 
@@ -858,13 +858,13 @@ if (( ! $?KJB_SKIP_DEPEND) && (${need_depend}) ) then
                 @ iteration += 1
 
                 foreach depend_target (${depend_targets})
-                    if ($?KJB_VERBOSE) then
+                    if ($?IVI_VERBOSE) then
                         echo " "
                         echo "Script build-2 is building depend target: ${depend_target} in directory ${cwd}."
-                        echo "Make command is: ${kjb_depend_make} -f Makefile-2 ${depend_target} "
+                        echo "Make command is: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
                     endif 
 
-                    ${kjb_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}
+                    ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}
 
                     if ($status) then 
                         echo "Failed to make target ${depend_target} in ${cwd}"
@@ -910,7 +910,7 @@ if (( ! $?KJB_SKIP_DEPEND) && (${need_depend}) ) then
                     
                     if (${try} == 1) then
                         echo "This time forcing serial make."
-                        set kjb_depend_make = "${KJB_MAKE_SERIAL} ${KJB_MAKE_OPTS_STOP}" 
+                        set ivi_depend_make = "${IVI_MAKE_SERIAL} ${IVI_MAKE_OPTS_STOP}" 
                     endif 
 
                     echo "Disable with SKIP_DEPEND_RETRY"
@@ -920,12 +920,12 @@ if (( ! $?KJB_SKIP_DEPEND) && (${need_depend}) ) then
 
                     ${MAKE_SCRIPT_PATH}build_file_list
                     ${MAKE_SCRIPT_PATH}build_include_lines
-                    ${KJB_TOUCH_1990} Makefile-depend
-                    ${KJB_TOUCH_1990} Makefile-libs-needed
+                    ${IVI_TOUCH_1990} Makefile-depend
+                    ${IVI_TOUCH_1990} Makefile-libs-needed
 
                     if (! -e Makefile-library) then
-                        ${KJB_TOUCH_1990} Makefile-library
-                        ${KJB_TOUCH_1990} Makefile-depend-incl-dot-h
+                        ${IVI_TOUCH_1990} Makefile-library
+                        ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
                     endif 
                 else 
                     ${P_STDERR} " "
@@ -944,7 +944,7 @@ else
     set build_adjusted_args = "${adjusted_args}" 
 endif 
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     if ("${build_adjusted_args}" != "") then 
         echo "Script build-2 args continuing with build_adjusted_targets: ${build_adjusted_args}"
     else 
@@ -957,15 +957,15 @@ foreach arg (${build_adjusted_args})
 
     if (("${arg}" == "all") || ("${arg}" == "code")) then
         # We should revisit building "dir_made", but certainly we only need it
-        # if we are building KJB code, so we need to able to skip doing it. 
+        # if we are building IVI code, so we need to able to skip doing it. 
         #
-        if ((${is_parallel}) && (! $?KJB_SKIP_DIR_MADE)) then
-            if ($?KJB_VERBOSE) then
+        if ((${is_parallel}) && (! $?IVI_SKIP_DIR_MADE)) then
+            if ($?IVI_VERBOSE) then
                 echo " "
                 echo "Script build-2 is building dir_made in ${cwd} due to parallel make." 
-                echo ${KJB_MAKE_SERIAL} -f Makefile-2 dir_made 
+                echo ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made 
             endif 
-            ${KJB_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg}
+            ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg}
             if (${status}) then 
                 ${P_STDERR} "Failed to make target 'dir_made' in ${cwd}"
                 exit 1
@@ -975,16 +975,16 @@ foreach arg (${build_adjusted_args})
         pushd ${MAKE_PATH} > /dev/null
             pushd util > /dev/null
                 pushd c2man-2.40-kobus > /dev/null
-                    if ($?KJB_VERBOSE) then
+                    if ($?IVI_VERBOSE) then
                         echo " "
                         echo "Script build-2 is building utilities in ${cwd}." 
                     endif 
                      
                     # We only want to make the documentation tools using the default C
-                    # compiler and production mode. The setting of KJB_CC to empty asks
+                    # compiler and production mode. The setting of IVI_CC to empty asks
                     # init_comple to choose the compiler. 
                     #
-                    (setenv KJB_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${KJB_SRC_PATH}/Make/init_compile; ${KJB_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                    (setenv IVI_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${IVI_SRC_PATH}/Make/init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
                     
                     if (${status}) then 
                         ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
@@ -992,16 +992,16 @@ foreach arg (${build_adjusted_args})
                     endif 
                 popd > /dev/null
 
-                if ($?KJB_VERBOSE) then
+                if ($?IVI_VERBOSE) then
                     echo " "
                     echo "Script build-2 is building utilities in ${cwd}." 
                 endif 
 
                 # We only want to make the documentation tools using the default C
-                # compiler and production mode. The setting of KJB_CC to empty asks
+                # compiler and production mode. The setting of IVI_CC to empty asks
                 # init_comple to choose the compiler. 
                 #
-                (setenv KJB_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${KJB_SRC_PATH}/Make/init_compile; ${KJB_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                (setenv IVI_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${IVI_SRC_PATH}/Make/init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
                 
                 if (${status}) then 
                     ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
@@ -1013,10 +1013,10 @@ foreach arg (${build_adjusted_args})
         if ("${arg}" == "make_bin_aux") continue
 
         if (${is_parallel}) then
-            if ($?KJB_VERBOSE) then
+            if ($?IVI_VERBOSE) then
                 echo "Script build-2 is building doc_dir_made in ${cwd} due to parallel make." 
             endif 
-            ${KJB_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}
+            ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}
             if (${status}) then 
                 ${P_STDERR} "Failed to make target doc_dir_made in ${cwd}"
                 exit 1
@@ -1036,7 +1036,7 @@ foreach arg (${build_adjusted_args})
             echo "To disable this default behaviour, use 'setenv DONT_FORCE_PROD_BIN 1'."
             echo " "
             setenv PRODUCTION 1
-            source ${KJB_SRC_PATH}/Make/init_compile
+            source ${IVI_SRC_PATH}/Make/init_compile
             echo " "
         endif 
     else 
@@ -1085,7 +1085,7 @@ foreach arg (${build_adjusted_args})
 #
 #             if (! -e "Makefile-test-depend") then
 #                 set make_tmp_dir = "${TMPDIR}/${USER}/Makefile-test-depend/make"
-#                 ${KJB_MKDIR} "${make_tmp_dir}"
+#                 ${IVI_MKDIR} "${make_tmp_dir}"
 #                 if (${status}) then
 #                     ${P_STDERR} "Unable to make directory ${make_tmp_dir}"
 #                     exit 1
@@ -1095,7 +1095,7 @@ foreach arg (${build_adjusted_args})
 #                     ${P_STDERR} "Unable to build Makefile-test-depend."
 #                     exit 1
 #                 else 
-#                     ${KJB_CP} ${make_tmp_dir}/Makefile-test-depend .
+#                     ${IVI_CP} ${make_tmp_dir}/Makefile-test-depend .
 #                     if (${status}) then
 #                         ${P_STDERR} "Unable to copy ${make_tmp_dir}/Makefile-test-depend to `pwd`."
 #                         exit 1
@@ -1104,10 +1104,10 @@ foreach arg (${build_adjusted_args})
 #             endif 
 
             if ("${prog}" != "") then
-                if ($?KJB_VERBOSE) then
+                if ($?IVI_VERBOSE) then
                     echo " "
                     echo "Script build-2 is checking whether target ${prog} is up to date, using: "
-                    echo "    ${KJB_MAKE} -q ${prog} -f Makefile-2  "
+                    echo "    ${IVI_MAKE} -q ${prog} -f Makefile-2  "
                 endif 
 
                 # Not all makes necessarily have '-q', but then, they might have '-n'
@@ -1117,13 +1117,13 @@ foreach arg (${build_adjusted_args})
                 # here, and the version of make cannot be made to confess, then
                 # skipping this part is fine.
 
-                ${KJB_MAKE} -q ${prog} -f Makefile-2 |& ${suppress_jobserver_msg}
+                ${IVI_MAKE} -q ${prog} -f Makefile-2 |& ${suppress_jobserver_msg}
                 if (! ${status}) then
-                    if ( ! $?KJB_QUIET ) then
+                    if ( ! $?IVI_QUIET ) then
                         echo "Script build-2 reports target [ ${prog} ] is up to date."
                     endif 
                 else 
-                    ${KJB_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}
+                    ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}
 
                     if (${status}) then
                         ${P_STDERR} " "
@@ -1141,7 +1141,7 @@ foreach arg (${build_adjusted_args})
 #
 #             # We may need to build Makefile-test-depend twice.
 #             foreach target ( Makefile-test-depend  Makefile-test-depend)
-#                 if ($?KJB_VERBOSE) then
+#                 if ($?IVI_VERBOSE) then
 #                     echo " "
 #                     echo "Script build-2 is checking whether target ${target} is up to date."
 #                 endif 
@@ -1150,15 +1150,15 @@ foreach arg (${build_adjusted_args})
 #                 # whose output we can grep. Currently, we only use gmake. The
 #                 # consequence of this failing is simply to run make for real.
 # 
-#                 ${KJB_MAKE} -q ${target} -f ${makefile_to_use} |& ${suppress_jobserver_msg}
+#                 ${IVI_MAKE} -q ${target} -f ${makefile_to_use} |& ${suppress_jobserver_msg}
 #                 if (! ${status}) then
-#                     if ( ! $?KJB_QUIET ) then
+#                     if ( ! $?IVI_QUIET ) then
 #                         echo "Script build-2 reports target [ ${target} ] is up to date."
 #                     endif 
 #                 else 
-#                     set make_command = "${KJB_MAKE} ${target} -f ${makefile_to_use}"
+#                     set make_command = "${IVI_MAKE} ${target} -f ${makefile_to_use}"
 # 
-#                     if ($?KJB_VERBOSE) then
+#                     if ($?IVI_VERBOSE) then
 #                         echo " "
 #                         echo "Script build-2 is building target: ${target} in directory ${cwd}."
 #                         echo "Make command is: ${make_command}"
@@ -1177,15 +1177,15 @@ foreach arg (${build_adjusted_args})
         endif 
     endif 
 
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo " "
         echo "Script build-2 is building target: ${arg} in directory ${cwd}."
-        echo "Make command is: ${KJB_MAKE} -f ${makefile_to_use} ${arg}"
+        echo "Make command is: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
         echo " "
     endif 
 
-    # ${KJB_MAKE} ${KJB_MAKE_OPTS_KEEP} -f Makefile-2 ${arg} 
-    ${KJB_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}
+    # ${IVI_MAKE} ${IVI_MAKE_OPTS_KEEP} -f Makefile-2 ${arg} 
+    ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}
 
     if (${status}) then 
         ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
@@ -1193,7 +1193,7 @@ foreach arg (${build_adjusted_args})
     endif 
 end
 
-if ( ! $?KJB_QUIET ) then
+if ( ! $?IVI_QUIET ) then
     set end_time = `date`
 
     echo " "

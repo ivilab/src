@@ -23,7 +23,7 @@
 # set echo
 
 if ($# != 1) then
-    ${P_STDERR} "Script kjb_lock needs exactly one argument."
+    ${P_STDERR} "Script ivi_lock needs exactly one argument."
     exit 1
 endif 
 
@@ -39,7 +39,7 @@ if (-e "${path_to_remove}") then
     endif 
 
     if (-e "${path_to_remove}") then
-        "Path ${path_to_remove} still exists even though script kjb_svn_rm tried to remove it."
+        "Path ${path_to_remove} still exists even though script ivi_svn_rm tried to remove it."
         exit 1 
     endif
 endif 

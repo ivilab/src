@@ -29,14 +29,14 @@ if ("${num_args}" > 1) then
     exit 1
 endif 
 
-if ($?KJB_VERBOSE_INDENT) then
-    setenv KJB_VERBOSE_INDENT "    ${KJB_VERBOSE_INDENT}"
+if ($?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
 else 
-    setenv KJB_VERBOSE_INDENT ""
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
-if ($?KJB_VERBOSE) then
-    echo "${KJB_VERBOSE_INDENT}Entering script build_include_lines in directory ${cwd} with args '$*'."
+if ($?IVI_VERBOSE) then
+    echo "${IVI_VERBOSE_INDENT}Entering script build_include_lines in directory ${cwd} with args '$*'."
 endif
 
 set build_dir = ""
@@ -54,11 +54,11 @@ if ("${build_dir}" != "") then
     cd ${build_dir}
 endif 
 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}build_makefile_dirs_2 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_makefile_dirs_2 
 set exit_status = ${status}
 
-if ($?KJB_VERBOSE) then
-    echo "${KJB_VERBOSE_INDENT}Leaving script build_include_lines in directory ${cwd} with status ${exit_status}."
+if ($?IVI_VERBOSE) then
+    echo "${IVI_VERBOSE_INDENT}Leaving script build_include_lines in directory ${cwd} with status ${exit_status}."
 endif
 
 exit ${exit_status} 
@@ -66,21 +66,21 @@ exit ${exit_status}
 
 # ##########################################################
 # 
-# set src_dir_sed_str = "s#${KJB_SRC_PATH}#"'$(KJB_SRC_PATH)'"#"
-# set parent_dir_sed_str = "s#\.\./#"'$(KJB_PARENT_DIR_STR)'"#g"
-# set cur_dir_sed_str = "s#\./#"'$(KJB_CUR_DIR_STR)'"#g"
-# set dir_str_sed_str = "s#/#"'$(KJB_DIR_STR)'"#g"
+# set src_dir_sed_str = "s#${IVI_SRC_PATH}#"'$(IVI_SRC_PATH)'"#"
+# set parent_dir_sed_str = "s#\.\./#"'$(IVI_PARENT_DIR_STR)'"#g"
+# set cur_dir_sed_str = "s#\./#"'$(IVI_CUR_DIR_STR)'"#g"
+# set dir_str_sed_str = "s#/#"'$(IVI_DIR_STR)'"#g"
 # 
-# set real_kjb_lib_dir = `echo ${KJB_LIB_PATH} | sed 's/\/*$//'`
+# set real_ivi_lib_dir = `echo ${IVI_LIB_PATH} | sed 's/\/*$//'`
 # 
 # ##########################################################
 # 
 # 
 # set build_dir_path = "${cwd}"
 # 
-# if ($?KJB_VERBOSE) then
+# if ($?IVI_VERBOSE) then
 #     echo " "
-#     echo "${KJB_VERBOSE_INDENT}Entering script build_makefile_dirs with directory ${build_dir_path}."
+#     echo "${IVI_VERBOSE_INDENT}Entering script build_makefile_dirs with directory ${build_dir_path}."
 # endif
 # 
 # ##########################################################
@@ -93,12 +93,12 @@ exit ${exit_status}
 #         set test_pid = `cat "${lock_file}"`
 #         ps $test_pid >& /dev/null
 #         if ${status} then 
-#             if ($?KJB_DEBUG) then
+#             if ($?IVI_DEBUG) then
 #                 echo " "
 #                 echo "##################################################################### "
 #                 echo " "
-#                 echo "${KJB_VERBOSE_INDENT}Script build_makefile_dirs process $$ ignoring lock file in ${build_dir_path}"
-#                 echo "${KJB_VERBOSE_INDENT}because the process that created it no longer exists. "
+#                 echo "${IVI_VERBOSE_INDENT}Script build_makefile_dirs process $$ ignoring lock file in ${build_dir_path}"
+#                 echo "${IVI_VERBOSE_INDENT}because the process that created it no longer exists. "
 #                 echo " "
 #                 echo "##################################################################### "
 #                 echo " "
@@ -106,23 +106,23 @@ exit ${exit_status}
 # 
 #             break
 #         else if (${count} == 0) then
-#             if ($?KJB_DEBUG) then
+#             if ($?IVI_DEBUG) then
 #                 echo " "
 #                 echo "##################################################################### "
 #                 echo " "
-#                 echo "${KJB_VERBOSE_INDENT}Script build_makefile_dirs process $$ found a lock file in ${build_dir_path}."
-#                 echo "${KJB_VERBOSE_INDENT}Current files:"
+#                 echo "${IVI_VERBOSE_INDENT}Script build_makefile_dirs process $$ found a lock file in ${build_dir_path}."
+#                 echo "${IVI_VERBOSE_INDENT}Current files:"
 #                 /bin/ls 
 #                 echo " "
 #                 echo "##################################################################### "
 #                 echo " "
 #             endif 
 #         else 
-#             if ($?KJB_DEBUG) then
+#             if ($?IVI_DEBUG) then
 #                 echo " "
 #                 echo "##################################################################### "
 #                 echo " "
-#                 echo "${KJB_VERBOSE_INDENT}Script build_makefile_dirs process $$ still waiting ${count}/${wait_in_seconds}"
+#                 echo "${IVI_VERBOSE_INDENT}Script build_makefile_dirs process $$ still waiting ${count}/${wait_in_seconds}"
 #                 echo " "
 #                 echo "##################################################################### "
 #                 echo " "
@@ -132,11 +132,11 @@ exit ${exit_status}
 #         sleep 1
 #     else 
 #         if (${count} > 0) then
-#             if ($?KJB_DEBUG) then
+#             if ($?IVI_DEBUG) then
 #                 echo " "
 #                 echo "##################################################################### "
 #                 echo " "
-#                 echo "${KJB_VERBOSE_INDENT}Script build_makefile_dirs process $$ got the lock on cycle ${count}"
+#                 echo "${IVI_VERBOSE_INDENT}Script build_makefile_dirs process $$ got the lock on cycle ${count}"
 #                 echo "##################################################################### "
 #                 echo " "
 #             endif 
@@ -149,10 +149,10 @@ exit ${exit_status}
 # end
 # 
 # if (${count} == "${wait_in_seconds}") then
-#     if ($?KJB_DEBUG) then
+#     if ($?IVI_DEBUG) then
 #         echo " "
 #         echo "##################################################################### "
-#         echo "${KJB_VERBOSE_INDENT}Script build_makefile_dirs process $$ timed out on the lock"
+#         echo "${IVI_VERBOSE_INDENT}Script build_makefile_dirs process $$ timed out on the lock"
 #         echo "##################################################################### "
 #         echo " "
 #     endif 
@@ -166,7 +166,7 @@ exit ${exit_status}
 # 
 # if (${status}) then
 #     ${P_STDERR} "Script get_local_include_dirs failed in script build_makefile_dirs."
-#     ${KJB_RM} "${lock_file}"
+#     ${IVI_RM} "${lock_file}"
 #     exit 1 
 # endif
 # 
@@ -177,7 +177,7 @@ exit ${exit_status}
 # # in the build system. So we reduce the chance of conflicts, and enable printing
 # # a message when this occurs, by building the results in a temporary file. 
 # #
-# ${KJB_RM} Makefile-dirs
+# ${IVI_RM} Makefile-dirs
 # set output_file_name = Makefile-dirs.$$
 # 
 # echo  " " > ${output_file_name}
@@ -187,8 +187,8 @@ exit ${exit_status}
 # 
 # # FIXME
 # #
-# # If we are doing KJB load and go, or perhaps building makefiles for a program
-# # that does need the KJB library, then we produce this line anyway which is
+# # If we are doing IVI load and go, or perhaps building makefiles for a program
+# # that does need the IVI library, then we produce this line anyway which is
 # # confusing. 
 # #
 # 
@@ -197,7 +197,7 @@ exit ${exit_status}
 #     set local_pch_include_dirs = "${local_pch_include_dirs} ${include_dir}"'$(DIR_STR)$(PCH_DIR)'
 # end
 # 
-# echo "BASE_INCLUDES = ${local_pch_include_dirs} -I"'$(KJB_LIB_PATH)$(PCH_DIR)'" ${local_include_dirs} -I"'$(KJB_LIB_PATH)' >> ${output_file_name}
+# echo "BASE_INCLUDES = ${local_pch_include_dirs} -I"'$(IVI_LIB_PATH)$(PCH_DIR)'" ${local_include_dirs} -I"'$(IVI_LIB_PATH)' >> ${output_file_name}
 # 
 # echo  " " >> ${output_file_name}
 # echo  " " >> ${output_file_name}
@@ -216,60 +216,60 @@ exit ${exit_status}
 #     set uc_lib_sub_dir = `echo "${lib_sub_dir}" | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
 #     set uc_lib_sub_dir = `echo "${uc_lib_sub_dir}" | sed "s/-/__/g"` 
 # 
-#     set in_kjb_lib_sub_dir = 0
+#     set in_ivi_lib_sub_dir = 0
 # 
-#     if (-d ${real_kjb_lib_dir}) then
-#         pushd ${real_kjb_lib_dir} > /dev/null
+#     if (-d ${real_ivi_lib_dir}) then
+#         pushd ${real_ivi_lib_dir} > /dev/null
 #             if (${status}) then 
 #                 exit 1 
-#                 ${KJB_RM} "${lock_file}"
+#                 ${IVI_RM} "${lock_file}"
 #             endif 
-#             set real_kjb_lib_path = "${cwd}"
+#             set real_ivi_lib_path = "${cwd}"
 #         popd > /dev/null
 # 
-#         if ("${real_kjb_lib_path}/${lib_sub_dir}" == "${build_dir_path}") then
-#            set in_kjb_lib_sub_dir = 1
+#         if ("${real_ivi_lib_path}/${lib_sub_dir}" == "${build_dir_path}") then
+#            set in_ivi_lib_sub_dir = 1
 #         endif 
 #     endif 
 # 
 #     #
-#     # The first case is for KJB library sub-dirs. Then we handle local
+#     # The first case is for IVI library sub-dirs. Then we handle local
 #     # library sub-dirs. 
 #     #
-#     if (${in_kjb_lib_sub_dir}) then
-#         echo "${uc_lib_sub_dir}_DIR = "'$(KJB_LIB_DIR)'${lib_sub_dir}'$(KJB_DIR_STR)' >> ${output_file_name}
+#     if (${in_ivi_lib_sub_dir}) then
+#         echo "${uc_lib_sub_dir}_DIR = "'$(IVI_LIB_DIR)'${lib_sub_dir}'$(IVI_DIR_STR)' >> ${output_file_name}
 #     else 
-#         echo "${uc_lib_sub_dir}_DIR = ${cwd_for_make}"'$(KJB_DIR_STR)' >> ${output_file_name}
+#         echo "${uc_lib_sub_dir}_DIR = ${cwd_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
 #     endif 
 #     
 #     #
-#     # The first case is for KJB library sub-dirs. Then we handle local
+#     # The first case is for IVI library sub-dirs. Then we handle local
 #     # library sub-dirs. 
 #     #
-#     if (${in_kjb_lib_sub_dir}) then
-#         echo  "REAL_${uc_lib_sub_dir}_DIR = "'$(KJB_LIB_PATH)'${lib_sub_dir}'$(KJB_DIR_STR)' >> ${output_file_name}
+#     if (${in_ivi_lib_sub_dir}) then
+#         echo  "REAL_${uc_lib_sub_dir}_DIR = "'$(IVI_LIB_PATH)'${lib_sub_dir}'$(IVI_DIR_STR)' >> ${output_file_name}
 #     else 
-#         echo  "REAL_${uc_lib_sub_dir}_DIR = ${cwd_for_make}"'$(KJB_DIR_STR)' >> ${output_file_name}
+#         echo  "REAL_${uc_lib_sub_dir}_DIR = ${cwd_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
 #     endif 
 # 
 #     #
-#     # The first case is for KJB library sub-dirs. Then we handle local
+#     # The first case is for IVI library sub-dirs. Then we handle local
 #     # library sub-dirs. 
 #     #
-#     if (${in_kjb_lib_sub_dir}) then
-#         echo "${uc_lib_sub_dir}_LIB_PARENT_DIR = "'$(KJB_LIB_DIR)' >> ${output_file_name}
+#     if (${in_ivi_lib_sub_dir}) then
+#         echo "${uc_lib_sub_dir}_LIB_PARENT_DIR = "'$(IVI_LIB_DIR)' >> ${output_file_name}
 #     else 
 #         echo "${uc_lib_sub_dir}_LIB_PARENT_DIR = ${lib_dir}" >> ${output_file_name}
 #     endif 
 #   
 #     #
-#     # The first case is for KJB library sub-dirs. Then we handle local
+#     # The first case is for IVI library sub-dirs. Then we handle local
 #     # library sub-dirs. 
 #     #
-#     if (${in_kjb_lib_sub_dir}) then
-#         echo  "PCH_${uc_lib_sub_dir}_DIR = "'$(KJB_LIB_PATH)$(PCH_DIR)'${lib_sub_dir}'$(KJB_DIR_STR)' >> ${output_file_name}
+#     if (${in_ivi_lib_sub_dir}) then
+#         echo  "PCH_${uc_lib_sub_dir}_DIR = "'$(IVI_LIB_PATH)$(PCH_DIR)'${lib_sub_dir}'$(IVI_DIR_STR)' >> ${output_file_name}
 #     else
-#         echo  "PCH_${uc_lib_sub_dir}_DIR = ${lib_dir}"'$(KJB_DIR_STR)$(PCH_DIR)'${lib_sub_dir}'$(KJB_DIR_STR)' >> ${output_file_name}
+#         echo  "PCH_${uc_lib_sub_dir}_DIR = ${lib_dir}"'$(IVI_DIR_STR)$(PCH_DIR)'${lib_sub_dir}'$(IVI_DIR_STR)' >> ${output_file_name}
 #     endif 
 # 
 #     echo  " " >> ${output_file_name}
@@ -277,16 +277,16 @@ exit ${exit_status}
 # 
 # # #############################################################################
 # #
-# # Test for building either a program or libKJB.a itself? 
+# # Test for building either a program or libIVI.a itself? 
 # #
-# set in_kjb_dir = 0
+# set in_ivi_dir = 0
 # 
-# if ((-e "kjb.h") || (-e "KJB.h") || (-e "kjb_all_c.h") || (-e "kjb_cpp.h") || (-e "KJB_cpp.h") || (-e "kjb_all_cpp.h") ) then
+# if ((-e "ivi.h") || (-e "IVI.h") || (-e "ivi_all_c.h") || (-e "ivi_cpp.h") || (-e "IVI_cpp.h") || (-e "ivi_all_cpp.h") ) then
 #     set test_main = "PHONY"
 # else 
 #     set test_main = `${MAKE_SCRIPT_PATH}stream_file_names -m`
 #     if (${status}) then
-#         ${KJB_RM} "${lock_file}"
+#         ${IVI_RM} "${lock_file}"
 #         ${P_STDERR} "Script stream_file_names failed with option -m in script build_makefile_dirs."
 #         exit 1
 #     endif 
@@ -301,12 +301,12 @@ exit ${exit_status}
 # ##########################################################
 # 
 # if (! -e Include_lines/sub_libs_needed) then
-#     if ($?KJB_VERBOSE) then
+#     if ($?IVI_VERBOSE) then
 #         echo " "
-#         echo "${KJB_VERBOSE_INDENT}Leaving script build_makefile_dirs early due to no sub_libs_needed."
+#         echo "${IVI_VERBOSE_INDENT}Leaving script build_makefile_dirs early due to no sub_libs_needed."
 #     endif
 # 
-#     ${KJB_RM} "${lock_file}"
+#     ${IVI_RM} "${lock_file}"
 #     exit 0
 # endif 
 # 
@@ -319,13 +319,13 @@ exit ${exit_status}
 # echo  " " >> ${output_file_name}
 # echo  " " >> ${output_file_name}
 # 
-# # Deal with the fact that if there are no KJB sub libs, then we don't want to
-# # try to make the archive. In this case, KJB_LIB_ARCHIVE will default to the
+# # Deal with the fact that if there are no IVI sub libs, then we don't want to
+# # try to make the archive. In this case, IVI_LIB_ARCHIVE will default to the
 # # empty string. Otherwise (the usual case) we need to set it. 
 # #
 # if (("${test_main}" != "") && ("${test_main}" != "PHONY") && (${lib_count} > 0)) then
-#     echo 'KJB_LIB_ARCHIVE = $(LD_OBJ_DIR)libKJB.a' >> ${output_file_name}
-#     echo 'KJB_LIB_LINK_STR = -lKJB' >> ${output_file_name}
+#     echo 'IVI_LIB_ARCHIVE = $(LD_OBJ_DIR)libIVI.a' >> ${output_file_name}
+#     echo 'IVI_LIB_LINK_STR = -lIVI' >> ${output_file_name}
 #     echo  " " >> ${output_file_name}
 #     echo  " " >> ${output_file_name}
 # endif 
@@ -349,18 +349,18 @@ exit ${exit_status}
 # 
 #     set symbolic_dir = "${uc_dir}_DIR"
 # 
-#     if (-e "${real_kjb_lib_dir}/${dir}") then
-#         echo "${symbolic_dir} = "'$(KJB_LIB_PATH)'"${dir}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#         echo "REAL_${symbolic_dir} = "'$(KJB_LIB_PATH)'"${dir}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#         echo "PCH_${symbolic_dir} = "'$(KJB_LIB_PATH)$(PCH_DIR)'"${dir}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#         echo "${uc_dir}_LIB_PARENT_DIR = "'$(KJB_LIB_PATH)' >> ${output_file_name}
-#         set real_dir = "${real_kjb_lib_dir}/${dir}"
+#     if (-e "${real_ivi_lib_dir}/${dir}") then
+#         echo "${symbolic_dir} = "'$(IVI_LIB_PATH)'"${dir}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#         echo "REAL_${symbolic_dir} = "'$(IVI_LIB_PATH)'"${dir}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#         echo "PCH_${symbolic_dir} = "'$(IVI_LIB_PATH)$(PCH_DIR)'"${dir}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#         echo "${uc_dir}_LIB_PARENT_DIR = "'$(IVI_LIB_PATH)' >> ${output_file_name}
+#         set real_dir = "${real_ivi_lib_dir}/${dir}"
 #     else if (-d "lib/${dir}")  then
 #         set real_dir = "lib/${dir}"
 # 
 #         pushd lib > /dev/null
 #         if (${status}) then 
-#             ${KJB_RM} "${lock_file}"
+#             ${IVI_RM} "${lock_file}"
 #             exit 1 
 #         endif 
 # 
@@ -368,7 +368,7 @@ exit ${exit_status}
 # 
 #         pushd ${dir} > /dev/null
 #         if (${status}) then 
-#             ${KJB_RM} "${lock_file}"
+#             ${IVI_RM} "${lock_file}"
 #             exit 1 
 #         endif 
 # 
@@ -377,10 +377,10 @@ exit ${exit_status}
 #         popd > /dev/null 
 #         popd > /dev/null 
 # 
-#         echo "${symbolic_dir} = ${sub_dir_for_make}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#         echo "REAL_${symbolic_dir} = ${sub_dir_for_make}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#         echo "PCH_${symbolic_dir} = ${lib_dir_for_make}"'$(KJB_DIR_STR)''$(PCH_DIR)'"${dir}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#         echo "${uc_dir}_LIB_PARENT_DIR = ${lib_dir_for_make}"'$(KJB_DIR_STR)' >> ${output_file_name}
+#         echo "${symbolic_dir} = ${sub_dir_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#         echo "REAL_${symbolic_dir} = ${sub_dir_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#         echo "PCH_${symbolic_dir} = ${lib_dir_for_make}"'$(IVI_DIR_STR)''$(PCH_DIR)'"${dir}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#         echo "${uc_dir}_LIB_PARENT_DIR = ${lib_dir_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
 #     else 
 #         # This is pretty suspect, and I am not sure when it is used. Best to do
 #         # it differently. The patch for the case that the directory that we are
@@ -400,7 +400,7 @@ exit ${exit_status}
 #             if (-d ${real_dir}) then
 #                 pushd ${parent_dir}lib > /dev/null
 #                 if (${status}) then 
-#                     ${KJB_RM} "${lock_file}"
+#                     ${IVI_RM} "${lock_file}"
 #                     exit 1 
 #                 endif 
 # 
@@ -408,7 +408,7 @@ exit ${exit_status}
 # 
 #                 pushd ${dir} > /dev/null
 #                 if (${status}) then 
-#                     ${KJB_RM} "${lock_file}"
+#                     ${IVI_RM} "${lock_file}"
 #                     exit 1 
 #                 endif 
 # 
@@ -427,14 +427,14 @@ exit ${exit_status}
 #         end
 # 
 #         if (${found}) then
-#             echo "${symbolic_dir} = ${sub_dir_for_make}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#             echo "REAL_${symbolic_dir} = ${sub_dir_for_make}"'$(KJB_DIR_STR)' >> ${output_file_name}
-#             echo "PCH_${symbolic_dir} = ${lib_dir_for_make}"'$(KJB_DIR_STR)''$(PCH_DIR)'"${dir}"'$(KJB_DIR_STR)' >> ${output_file_name}
+#             echo "${symbolic_dir} = ${sub_dir_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#             echo "REAL_${symbolic_dir} = ${sub_dir_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
+#             echo "PCH_${symbolic_dir} = ${lib_dir_for_make}"'$(IVI_DIR_STR)''$(PCH_DIR)'"${dir}"'$(IVI_DIR_STR)' >> ${output_file_name}
 #             echo "${uc_dir}_LIB_PARENT_DIR = ${lib_dir_for_make}" >> ${output_file_name}
 #         else 
-#             ${KJB_RM} "${lock_file}"
+#             ${IVI_RM} "${lock_file}"
 #             ${P_STDERR} "Library string ${dir} processed by build_makefile_dirs is not in"
-#             ${P_STDERR} "either ${real_kjb_lib_dir} or ${build_dir_path}/lib or ${build_dir_path}/../../lib"
+#             ${P_STDERR} "either ${real_ivi_lib_dir} or ${build_dir_path}/lib or ${build_dir_path}/../../lib"
 #             exit 1
 #         endif 
 #     endif 
@@ -466,12 +466,12 @@ exit ${exit_status}
 # echo " " >> ${output_file_name}
 # 
 # 
-# # if (("${test_main}" != "") || (${in_kjb_dir})) then
+# # if (("${test_main}" != "") || (${in_ivi_dir})) then
 # #     @ count = 1
 # # 
 # #     while ($count <= $lib_count) 
 # #         if ($count == 1) then
-# #             echo 'KJB_SUB_LIB_ARCHIVES = \' >> ${output_file_name}
+# #             echo 'IVI_SUB_LIB_ARCHIVES = \' >> ${output_file_name}
 # #         endif 
 # # 
 # #         set archive = $archives[$count]
@@ -494,7 +494,7 @@ exit ${exit_status}
 # # have additional work to do to get the sub modules anyway. 
 # #
 # if (! -e Makefile-include) then
-# # if (("${test_main}" != "") || (${in_kjb_dir})) then
+# # if (("${test_main}" != "") || (${in_ivi_dir})) then
 # if (${lib_count} > 0) then
 #     #
 #     # We either use a local libs of OBS, or a big list of OBS, or patterns that
@@ -791,27 +791,27 @@ exit ${exit_status}
 #     echo "Moving Makefile-dirs, which must of been created by a different process, to Makefile-dirs-SAVE.$$."
 #     echo "Directory is ${cwd}."
 #     echo " "
-#     ${KJB_MV} Makefile-dirs Makefile-dirs-SAVE.$$ 
+#     ${IVI_MV} Makefile-dirs Makefile-dirs-SAVE.$$ 
 #     echo " "
 # endif 
 # 
-# ${KJB_MV} ${output_file_name} Makefile-dirs
+# ${IVI_MV} ${output_file_name} Makefile-dirs
 # 
-# echo "${KJB_VERBOSE_INDENT}Makefile-dirs installed in ${cwd} by process $$."
+# echo "${IVI_VERBOSE_INDENT}Makefile-dirs installed in ${cwd} by process $$."
 # 
 # bail:
 # 
-# if ($?KJB_DEBUG) then
+# if ($?IVI_DEBUG) then
 #     if (-e "${lock_file}") then 
-#         echo "${KJB_VERBOSE_INDENT}Script build_makefile_dirs process $$ removing the lock file."
+#         echo "${IVI_VERBOSE_INDENT}Script build_makefile_dirs process $$ removing the lock file."
 #         echo " "
 #     endif 
 # endif 
 # 
-# ${KJB_RM} "${lock_file}"
+# ${IVI_RM} "${lock_file}"
 # 
-# if ($?KJB_VERBOSE) then
-#     echo "${KJB_VERBOSE_INDENT}Leaving script build_makefile_dirs in ${build_dir_path}."
+# if ($?IVI_VERBOSE) then
+#     echo "${IVI_VERBOSE_INDENT}Leaving script build_makefile_dirs in ${build_dir_path}."
 #     echo " "
 # endif
 # 

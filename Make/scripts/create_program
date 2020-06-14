@@ -2,7 +2,7 @@
 
 #
 # Identification
-#     A script to create a new program with kjb makefiles
+#     A script to create a new program with ivi makefiles
 #
 # Arguments:
 #      A name of a subdirectory to be added to the current working directory,
@@ -99,7 +99,7 @@ endif
 
 ##############################################################################
 
-set KJB_SRC_PATH = ""
+set IVI_SRC_PATH = ""
 
 # We want to use pure "cd", and so if cd has been aliase'd we want to save that
 # fact and unalias cd. 
@@ -125,7 +125,7 @@ while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}"))
     # echo pwd: `pwd`
     if ((-d Make) && (-d lib)) then 
         if ((-e Make/init_compile) && (-e Make/init_machine)) then
-            set KJB_SRC_PATH = `pwd`
+            set IVI_SRC_PATH = `pwd`
             break
         endif 
     endif
@@ -146,20 +146,20 @@ endif
 
 # echo init_compile: ${init_compile}
 
-if ("${KJB_SRC_PATH}" == "") then
+if ("${IVI_SRC_PATH}" == "") then
     ${P_STDERR} "Cannot find dirs lib and Make \(and files Make/init_machine and Make/init_compile\) in higher dirs."
     ${P_STDERR} "Either you are not in a source directory or you need to check these out using svn."
     exit 1
 endif 
 
-setenv KJB_SRC_PATH "${KJB_SRC_PATH}/"
+setenv IVI_SRC_PATH "${IVI_SRC_PATH}/"
 
 set need_init = 1
 
 if (! $?FORCE_INIT_COMPILE) then 
-    if (($?KJB_HAVE_MACHINE) && ($?INIT_SRC_DIR)) then
-        if ("${KJB_SRC_PATH}" == "${INIT_SRC_DIR}") then 
-            if ($?KJB_VERBOSE) then
+    if (($?IVI_HAVE_MACHINE) && ($?INIT_SRC_DIR)) then
+        if ("${IVI_SRC_PATH}" == "${INIT_SRC_DIR}") then 
+            if ($?IVI_VERBOSE) then
                 echo "" 
                 echo "Skipping source of init_machine and init_compile."
             endif 
@@ -170,18 +170,18 @@ if (! $?FORCE_INIT_COMPILE) then
 endif 
      
 if (${need_init}) then
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo "" 
-        echo "Sourcing ${KJB_SRC_PATH}Make/init_machine"
+        echo "Sourcing ${IVI_SRC_PATH}Make/init_machine"
     endif 
 
-    source ${KJB_SRC_PATH}Make/init_machine
+    source ${IVI_SRC_PATH}Make/init_machine
 
-    if ($?KJB_VERBOSE) then
-        echo "Sourcing ${KJB_SRC_PATH}Make/init_compile"
+    if ($?IVI_VERBOSE) then
+        echo "Sourcing ${IVI_SRC_PATH}Make/init_compile"
     endif 
 
-    source ${KJB_SRC_PATH}Make/init_compile
+    source ${IVI_SRC_PATH}Make/init_compile
 endif 
 
 echo "Now:"
@@ -250,11 +250,11 @@ set uc_target_name = `echo $target_name | sed "y/abcdefghijklmnopqrstuvwxyz/ABCD
 
 foreach file (${template_name}*)
     set new_file = `echo $file | sed "s/${template_name}/${target_name}/"`
-    ${KJB_MV} $file $new_file
+    ${IVI_MV} $file $new_file
     ${VIM_FOR_MAKE} -e -s -c ':%s/'${template_name}'/'${target_name}'/g' -c :wq $new_file < /dev/null >& /dev/null
     ${VIM_FOR_MAKE} -e -s -c ':%s/'${uc_template_name}'/'${uc_target_name}'/g' -c :wq $new_file  < /dev/null >& /dev/null
 end
 
-${MAKE_SCRIPT_PATH}kjb_add_makefiles
+${MAKE_SCRIPT_PATH}ivi_add_makefiles
 
 

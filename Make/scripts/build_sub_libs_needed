@@ -15,7 +15,7 @@
 # sub-directories to be orderd so that dependency is expected. In particular, we
 # order the sub-dirs so that all items have all their dependencies preceeding
 # them. For various tasks the script build_makefile_dirs will use the list in
-# either forward or reverse order. Note that this assumes that the KJB library
+# either forward or reverse order. Note that this assumes that the IVI library
 # has a tree structured dependency graph. If this is not the case, then circular
 # dependencies will be identified by this script. True circular dependencies
 # need to be corrected. 
@@ -32,10 +32,10 @@
 # set echo
 
 
-if ($?KJB_VERBOSE_INDENT) then
-    setenv KJB_VERBOSE_INDENT "    ${KJB_VERBOSE_INDENT}"
+if ($?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
 else 
-    setenv KJB_VERBOSE_INDENT ""
+    setenv IVI_VERBOSE_INDENT ""
 endif 
 
 
@@ -85,15 +85,15 @@ endif
 #########################################################
 
 echo " "
-echo "${KJB_VERBOSE_INDENT}Beginning recursive build of ${cwd}/Include_lines/sub_libs_needed"
+echo "${IVI_VERBOSE_INDENT}Beginning recursive build of ${cwd}/Include_lines/sub_libs_needed"
 
-if ($?KJB_VERBOSE) then
-    echo "${KJB_VERBOSE_INDENT}Entering script build_sub_libs_needed with directory ${cwd}"
-    echo "${KJB_VERBOSE_INDENT}    build_dir: ${build_dir}"
-    echo "${KJB_VERBOSE_INDENT}    build_path: ${build_path}"
-    echo "${KJB_VERBOSE_INDENT}    parent_sub_lib: ${parent_sub_lib}"
-    echo "${KJB_VERBOSE_INDENT}    current_sub_lib: ${current_sub_lib}"
-    echo "${KJB_VERBOSE_INDENT}    TMP_SUB_DIRS_VISITED: ${TMP_SUB_DIRS_VISITED}"
+if ($?IVI_VERBOSE) then
+    echo "${IVI_VERBOSE_INDENT}Entering script build_sub_libs_needed with directory ${cwd}"
+    echo "${IVI_VERBOSE_INDENT}    build_dir: ${build_dir}"
+    echo "${IVI_VERBOSE_INDENT}    build_path: ${build_path}"
+    echo "${IVI_VERBOSE_INDENT}    parent_sub_lib: ${parent_sub_lib}"
+    echo "${IVI_VERBOSE_INDENT}    current_sub_lib: ${current_sub_lib}"
+    echo "${IVI_VERBOSE_INDENT}    TMP_SUB_DIRS_VISITED: ${TMP_SUB_DIRS_VISITED}"
     echo " "
 endif
 
@@ -120,7 +120,7 @@ if ("${current_sub_lib}" != "") then
         ${P_STDERR} "${current_sub_lib}"
         ${P_STDERR} " "
 #         echo "Removing ${cwd}/Include_lines/sub_lib_list"
-#         ${KJB_RM} "${cwd}/Include_lines/sub_lib_list"
+#         ${IVI_RM} "${cwd}/Include_lines/sub_lib_list"
 #         echo " "
 
         exit 1
@@ -131,18 +131,18 @@ setenv TMP_SUB_DIRS_VISITED "${TMP_SUB_DIRS_VISITED} ${current_sub_lib}"
 
 #########################################################
 
-if ((-d ${KJB_LIB_PATH}) && (-r ${KJB_LIB_PATH}) && (-x ${KJB_LIB_PATH})) then
-    pushd ${KJB_LIB_PATH} > /dev/null
+if ((-d ${IVI_LIB_PATH}) && (-r ${IVI_LIB_PATH}) && (-x ${IVI_LIB_PATH})) then
+    pushd ${IVI_LIB_PATH} > /dev/null
     # Insure no trailing slash.
-    set real_kjb_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
+    set real_ivi_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
     # Add a trailing slash. 
-    set real_kjb_lib_dir = "${real_kjb_lib_dir}/"
+    set real_ivi_lib_dir = "${real_ivi_lib_dir}/"
     popd > /dev/null
 else
-    set real_kjb_lib_dir = ""
+    set real_ivi_lib_dir = ""
 endif 
 
-# echo build_sub_libs_needed: real_kjb_lib_dir: ${real_kjb_lib_dir} 
+# echo build_sub_libs_needed: real_ivi_lib_dir: ${real_ivi_lib_dir} 
 
 #########################################################
 
@@ -161,10 +161,10 @@ else
     exit 1
 endif 
 
-${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Recurse dirs in ${cwd} are: ${recurse_dirs}" 
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Recurse dirs in ${cwd} are: ${recurse_dirs}" 
 
 foreach recurse_dir (${recurse_dirs})
-    set test_places = "${real_kjb_lib_dir} lib/ ../lib/ ../../lib/ ../../../lib/ ../../../../lib/ ../../../../../lib/"
+    set test_places = "${real_ivi_lib_dir} lib/ ../lib/ ../../lib/ ../../../lib/ ../../../../lib/ ../../../../../lib/"
 
     set recurse_dir_str = ""
 
@@ -182,8 +182,8 @@ foreach recurse_dir (${recurse_dirs})
     end 
 
     if ("${recurse_dir_str}" == "") then
-        if ($?KJB_VERBOSE) then
-            echo "${KJB_VERBOSE_INDENT}Script build_sub_libs_needed skipping ${recurse_dir} because it does not exist."
+        if ($?IVI_VERBOSE) then
+            echo "${IVI_VERBOSE_INDENT}Script build_sub_libs_needed skipping ${recurse_dir} because it does not exist."
         endif
 
         continue
@@ -222,9 +222,9 @@ foreach recurse_dir (${recurse_dirs})
         endif 
 
         if (${need_make}) then
-            if ($?KJB_VERBOSE) then
+            if ($?IVI_VERBOSE) then
                 echo " "
-                echo "${KJB_VERBOSE_INDENT}------- Script build_sub_libs_needed recursing into ${recurse_dir_str} ----------"
+                echo "${IVI_VERBOSE_INDENT}------- Script build_sub_libs_needed recursing into ${recurse_dir_str} ----------"
                 echo " "
             endif 
 
@@ -244,20 +244,20 @@ foreach recurse_dir (${recurse_dirs})
                 exit 1 
             endif 
             
-            if ($?KJB_VERBOSE) then
+            if ($?IVI_VERBOSE) then
                  echo " "
-                 echo "${KJB_VERBOSE_INDENT}------- Script build_sub_libs_needed finished with ${recurse_dir_str} ----------"
+                 echo "${IVI_VERBOSE_INDENT}------- Script build_sub_libs_needed finished with ${recurse_dir_str} ----------"
                  echo " "
             endif 
-        else if ($?KJB_VERBOSE) then
+        else if ($?IVI_VERBOSE) then
             echo " "
-            echo "${KJB_VERBOSE_INDENT}------- Directory ${recurse_dir_str} already visited (no recursion needed) ----------"
+            echo "${IVI_VERBOSE_INDENT}------- Directory ${recurse_dir_str} already visited (no recursion needed) ----------"
             echo " "
         endif 
     popd  > /dev/null
 
     if (-e ${recurse_dir_str}/Include_lines/sub_libs_needed) then
-        set inherited_sub_libs = `${KJB_CAT} ${recurse_dir_str}/Include_lines/sub_libs_needed`
+        set inherited_sub_libs = `${IVI_CAT} ${recurse_dir_str}/Include_lines/sub_libs_needed`
     else 
         # Seems like an error.
         echo "Warning: Script build_sub_libs_needed expected ${recurse_dir_str}/Include_lines/sub_libs_needed to exist by now."
@@ -311,14 +311,14 @@ foreach recurse_dir (${recurse_dirs})
         set sub_libs_needed = "${sub_libs_needed} ${test_item}"
     end 
 
-    ${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}After recurse dir ${recurse_dir} inferred sub_libs_needed by ${cwd} are: ${sub_libs_needed}" 
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}After recurse dir ${recurse_dir} inferred sub_libs_needed by ${cwd} are: ${sub_libs_needed}" 
 end 
 
-${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Writing ${cwd}/Include_lines/sub_libs_needed"
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Writing ${cwd}/Include_lines/sub_libs_needed"
 echo "${sub_libs_needed}" > Include_lines/sub_libs_needed 
 
 # /bin/rm -f Makefile-dirs-depend
 # /bin/rm -f Makefile-dirs-depend.bak
 
-${VERBOSE_ECHO} "${KJB_VERBOSE_INDENT}Leaving script build_sub_libs_needed."
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Leaving script build_sub_libs_needed."
 

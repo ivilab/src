@@ -10,32 +10,32 @@
 #     is being executing. 
 
 # This script cannot use P_STDERR as it might not be defined yet. However, since
-# we are in src/Make/scripts, we will assume that KJB_SRC_PATH is valid.
+# we are in src/Make/scripts, we will assume that IVI_SRC_PATH is valid.
 
 if ($# < 2) then
-    ${KJB_SRC_PATH}Make/scripts/p_stderr "Script self_update needs at least two arguments."
+    ${IVI_SRC_PATH}Make/scripts/p_stderr "Script self_update needs at least two arguments."
     exit 1
 endif 
 
 # We will control what happens if either file does not exist.
 if (! -r "$1") then
-    ${KJB_SRC_PATH}Make/scripts/p_stderr "Script self_update cannot find file: $1" 
+    ${IVI_SRC_PATH}Make/scripts/p_stderr "Script self_update cannot find file: $1" 
     exit 1
 else if (! -r "$2") then
-    ${KJB_SRC_PATH}Make/scripts/p_stderr "Script self_update cannot find file: $2"
+    ${IVI_SRC_PATH}Make/scripts/p_stderr "Script self_update cannot find file: $2"
     exit 1
 endif 
 
-if ($?KJB_VERBOSE) then
+if ($?IVI_VERBOSE) then
     echo 'Script self_update is executing: '/bin/cp \"$2\" \"$1\" 
 endif 
 
-# Also, we cannot use KJB_CP, as it might not be defined yet.  
+# Also, we cannot use IVI_CP, as it might not be defined yet.  
 /bin/cp "$2" "$1"
 if ($status) exit 1
 
 if ($# > 2) then
-    if ($?KJB_VERBOSE) then
+    if ($?IVI_VERBOSE) then
         echo "Script self_update is executing: $argv[3-$#]" 
     endif 
 

@@ -25,7 +25,7 @@ if (-e "test_input") then
         exit 1
     endif 
 else if ($?CREATE_TEST_DIRS) then
-    ${KJB_MKDIR} test_input
+    ${IVI_MKDIR} test_input
     if ($status) then
         ${P_STDERR} " "
         ${P_STDERR} "Script build_test_depend cannot make directory test_input."
@@ -42,7 +42,7 @@ if (! -e "test_input") then
     exit 0
 endif 
 
-${KJB_MKDIR} Include_lines
+${IVI_MKDIR} Include_lines
 if (${status}) exit 1
 
 cat /dev/null > Include_lines/test_programs
@@ -61,7 +61,7 @@ foreach f (${main_file_names})
             exit 1
         endif 
     else if ($?CREATE_TEST_DIRS) then
-        ${KJB_MKDIR} test_input/${prog}
+        ${IVI_MKDIR} test_input/${prog}
         if ($status) then
             ${P_STDERR} " "
             echo "Script build_test_depend cannot make directory test_input/${prog}."

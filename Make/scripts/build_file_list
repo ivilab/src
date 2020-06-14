@@ -30,7 +30,7 @@
 #
 ###############################################################################
 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}build_file_list_2 $* 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_file_list_2 $* 
 exit ${status}
 
 
