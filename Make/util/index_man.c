@@ -56,17 +56,17 @@ int main(int argc, char** argv)
     if ((argc != 3) && (argc != 4))
     {
         p_stderr("Usage: index_man <index_file> <title> { <intro_file> } \n");
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
 
-    NPETE(index_fp = kjb_fopen(argv[ 1 ], "r"));
+    NPETE(index_fp = ivi_fopen(argv[ 1 ], "r"));
 
     EPETE(num_index_lines = count_real_lines(index_fp));
 
     if (num_index_lines == 0)
     {
         p_stderr("Warning : No lines in index file.\n");
-        kjb_exit(EXIT_SUCCESS);
+        ivi_exit(EXIT_SUCCESS);
     }
 
 
@@ -79,18 +79,18 @@ int main(int argc, char** argv)
         line_pos = line;
 
         BUFF_GET_TOKEN(&line_pos, name_buff);
-        NPETE(index_ptr[ i ].name = kjb_strdup(name_buff));
+        NPETE(index_ptr[ i ].name = ivi_strdup(name_buff));
 
         trim_beg(&line_pos);
         trim_end(line_pos);
 
-        NPETE(index_ptr[ i ].category = kjb_strdup(line_pos));
+        NPETE(index_ptr[ i ].category = ivi_strdup(line_pos));
     }
 
     EPETE(man_print_title(stdout, argv[ 2 ], "3"));
     EPETE(pso("\n\n"));
 
-    if ((argc == 4) && ((intro_fp = kjb_fopen(argv[ 3 ], "r")) != NULL))
+    if ((argc == 4) && ((intro_fp = ivi_fopen(argv[ 3 ], "r")) != NULL))
     {
         char intro_buff[ 200000 ];
 
@@ -100,9 +100,9 @@ int main(int argc, char** argv)
         /* Can't use get_real_line, because we want blanks. */
         while (BUFF_FGET_LINE(intro_fp, line) != EOF)
         {
-            IMPORT int kjb_comment_char;
+            IMPORT int ivi_comment_char;
 
-            if (line[ 0 ] != kjb_comment_char)
+            if (line[ 0 ] != ivi_comment_char)
             {
                 /* Be slow and inefficient */
                 BUFF_CAT(intro_buff, line);
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
     man_print_heading(stdout, "Routines by category");
     pso("\n");
 
-    EPETE(kjb_sort((void*)index_ptr, num_index_lines, sizeof(Index),
+    EPETE(ivi_sort((void*)index_ptr, num_index_lines, sizeof(Index),
                    compare_category_fn, USE_SORT_ATN_HANDLING));
 
     prev_category = "";
@@ -149,7 +149,7 @@ int main(int argc, char** argv)
     man_print_heading(stdout, "Routines in alphabetical order");
     pso("\n");
 
-    EPETE(kjb_sort((void*)index_ptr, num_index_lines, sizeof(Index),
+    EPETE(ivi_sort((void*)index_ptr, num_index_lines, sizeof(Index),
                    compare_name_fn, USE_SORT_ATN_HANDLING));
 
     prev_name = "";
@@ -169,13 +169,13 @@ int main(int argc, char** argv)
 
     for (i=0; i<num_index_lines; i++)
     {
-        kjb_free(index_ptr[ i ].name);
-        kjb_free(index_ptr[ i ].category);
+        ivi_free(index_ptr[ i ].name);
+        ivi_free(index_ptr[ i ].category);
     }
-    kjb_free(index_ptr);
+    ivi_free(index_ptr);
 
-    kjb_fclose(index_fp);
-    kjb_fclose(intro_fp);
+    ivi_fclose(index_fp);
+    ivi_fclose(intro_fp);
 
     return EXIT_SUCCESS;
 }
@@ -247,7 +247,7 @@ static int compare_name_fn
     const void* elem_two_ptr
 )
 {
-    return kjb_strcmp(((const Index*)elem_one_ptr)->name,
+    return ivi_strcmp(((const Index*)elem_one_ptr)->name,
                       ((const Index*)elem_two_ptr)->name);
 }
 
@@ -261,12 +261,12 @@ static int compare_category_fn
 {
     int result;
 
-    result = kjb_strcmp(((const Index*)elem_one_ptr)->category,
+    result = ivi_strcmp(((const Index*)elem_one_ptr)->category,
                        ((const Index*)elem_two_ptr)->category);
 
     if (result != EQUAL_STRINGS) return result;
 
-    return kjb_strcmp(((const Index*)elem_one_ptr)->name,
+    return ivi_strcmp(((const Index*)elem_one_ptr)->name,
                       ((const Index*)elem_two_ptr)->name);
 }
 

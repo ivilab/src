@@ -15,16 +15,16 @@ int main(int argc, char** argv)
     char prompt[ 64 ] = "";
 
 
-    kjb_set_verbose_level(0);
+    ivi_set_verbose_level(0);
     /*
-    kjb_init();
+    ivi_init();
     */
 
     check_num_args(argc, 1, 2, (char*)NULL);
 
     BUFF_CPY(file_name, argv[ 1 ]);
 
-    NPETE(fp = kjb_fopen(file_name, "w"));
+    NPETE(fp = ivi_fopen(file_name, "w"));
 
     if (argc == 3) 
     {
@@ -35,11 +35,11 @@ int main(int argc, char** argv)
     {
         EPETE(put_line(line));
         EPETE(fput_line(fp, line));
-        EPETE(kjb_fflush(NULL));
+        EPETE(ivi_fflush(NULL));
         nap(100);
     }
 
-    kjb_fclose(fp); 
+    ivi_fclose(fp); 
 
     return EXIT_SUCCESS; 
 }
@@ -56,13 +56,13 @@ int main(int argc, char** argv)
     char c; 
 
 
-    kjb_init();
+    ivi_init();
 
     check_num_args(argc, 1, 1, (char*)NULL);
 
     BUFF_CPY(file_name, argv[ 1 ]);
 
-    NPETE(fp = kjb_fopen(file_name, "w"));
+    NPETE(fp = ivi_fopen(file_name, "w"));
 
     if (is_interactive())
     {
@@ -70,15 +70,15 @@ int main(int argc, char** argv)
         add_cleanup_function(term_reset);
     }
 
-    while (kjb_read(fileno(stdin), (void*)&c, 1) != EOF)
+    while (ivi_read(fileno(stdin), (void*)&c, 1) != EOF)
     {
         if (c == '') break;
 
-        EPETE(kjb_write(fileno(stdout), (void*)&c, 1));
-        EPETE(kjb_write(fileno(fp), (void*)&c, 1));
+        EPETE(ivi_write(fileno(stdout), (void*)&c, 1));
+        EPETE(ivi_write(fileno(fp), (void*)&c, 1));
     }
 
-    kjb_fclose(fp); 
+    ivi_fclose(fp); 
 
     return EXIT_SUCCESS; 
 }

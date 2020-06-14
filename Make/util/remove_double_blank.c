@@ -11,8 +11,8 @@ int main(int argc, char** __attribute__((unused)) argv)
 
     while (BUFF_FGET_LINE(stdin, line) != EOF)
     {
-        kjb_puts(line);
-        kjb_puts("\n");
+        ivi_puts(line);
+        ivi_puts("\n");
 
         line_pos = line;
 
@@ -33,8 +33,8 @@ int main(int argc, char** __attribute__((unused)) argv)
 
                 if (*line_pos != '\0')
                 {
-                    kjb_puts(line);
-                    kjb_puts("\n");
+                    ivi_puts(line);
+                    ivi_puts("\n");
                     break;
                 }
             }

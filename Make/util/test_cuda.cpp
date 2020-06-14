@@ -1,10 +1,10 @@
 
 #include "l/l_incl.h"
 
-using namespace kjb_c;
+using namespace ivi_c;
 
-#ifdef KJB_HAVE_CUDA
-#ifdef KJB_HAVE_CUDART
+#ifdef IVI_HAVE_CUDA
+#ifdef IVI_HAVE_CUDART
 
 #include "cuda.h" 
 #include "cuda_runtime.h" 
@@ -35,7 +35,7 @@ int main(void)
         2.0*prop.memoryClockRate*(prop.memoryBusWidth/8)/1.0e6);
   }
 
-  kjb_exit(EXIT_SUCCESS);
+  ivi_exit(EXIT_SUCCESS);
 }
 
 
@@ -44,7 +44,7 @@ int main(void)
 {
 
   p_stderr("CUDART is not available.\n");
-  kjb_exit(EXIT_FAILURE);
+  ivi_exit(EXIT_FAILURE);
 }
 
 #endif 
@@ -54,7 +54,7 @@ int main(void)
 {
 
   p_stderr("CUDA is not available.\n");
-  kjb_exit(EXIT_FAILURE);
+  ivi_exit(EXIT_FAILURE);
 }
 
 #endif 

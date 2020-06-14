@@ -11,8 +11,8 @@ int main(int argc, char** __attribute__((unused)) argv)
 
     while (BUFF_FGET_LINE(stdin, line) != EOF)
     {
-        kjb_puts(line);
-        kjb_puts("\n");
+        ivi_puts(line);
+        ivi_puts("\n");
 
         if (    (HEAD_CMP_EQ(line, "/*  /\\ /\\ /\\ /\\ /\\ /\\ /\\ /\\ "))
              || (HEAD_CMP_EQ(line, "/* /\\ /\\ /\\ /\\ /\\ /\\ /\\ /\\ "))
@@ -38,12 +38,12 @@ int main(int argc, char** __attribute__((unused)) argv)
                 }
                 else if (*line_pos == '\0')
                 {
-                    kjb_puts("\n");
+                    ivi_puts("\n");
                 }
                 else if (*line_pos != '\0')
                 {
-                    kjb_puts(line);
-                    kjb_puts("\n");
+                    ivi_puts(line);
+                    ivi_puts("\n");
                     break;
                 }
             }

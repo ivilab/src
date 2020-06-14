@@ -121,15 +121,15 @@ int main(int argc, char** argv)
     {
         p_stderr("No title can be determined.\n");
         p_stderr("Use \"-t <title>\" to specify it.\n");
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
 
-    help_fp = kjb_fopen(help_file_path, "r");
+    help_fp = ivi_fopen(help_file_path, "r");
 
     if (help_fp == NULL)
     {
         BUFF_CAT(help_file_path, ".help");
-        NPETE(help_fp = kjb_fopen(help_file_path, "r"));
+        NPETE(help_fp = ivi_fopen(help_file_path, "r"));
     }
 
     man_print_title(stdout, title, section);
@@ -159,13 +159,13 @@ static Help_request help_to_man_topic(FILE* help_fp, char* topic)
 
     if (read_res == ERROR)
     {
-        kjb_fprintf(stderr, "Error reading help file. ");
-        kjb_fprintf(stderr, "Command aborted.\n");
+        ivi_fprintf(stderr, "Error reading help file. ");
+        ivi_fprintf(stderr, "Command aborted.\n");
         return EXIT_HELP;
     }
     else if (read_res == NOT_FOUND)
     {
-        kjb_fprintf(stderr, "No help found for \"%s\"\n", topic);
+        ivi_fprintf(stderr, "No help found for \"%s\"\n", topic);
         return EXIT_HELP;
     }
 
@@ -345,7 +345,7 @@ static Help_request do_help_to_man_topic
                             }
                             else
                             {
-                                kjb_fputs(stdout, help_line_pos);
+                                ivi_fputs(stdout, help_line_pos);
                             }
 
                             help_line_pos += find_res;
@@ -356,7 +356,7 @@ static Help_request do_help_to_man_topic
                             }
                             else
                             {
-                                kjb_putc(HIGH_LIGHT_CHAR);
+                                ivi_putc(HIGH_LIGHT_CHAR);
                                 help_line_pos++;
                             }
                         }
@@ -370,10 +370,10 @@ static Help_request do_help_to_man_topic
                             }
                             else
                             {
-                                kjb_fputs(stdout, help_line_pos);
+                                ivi_fputs(stdout, help_line_pos);
                             }
 
-                            kjb_puts("\n");
+                            ivi_puts("\n");
                         }
                     }
                 }
@@ -385,7 +385,7 @@ static Help_request do_help_to_man_topic
                     read_res = BUFF_CONST_SGET_LINE(&help_text_pos, help_line);
                 }
            }
-           kjb_puts("\n");
+           ivi_puts("\n");
         }
 
         if ((read_res == EOF) || (query_res == DONT_EXIT_HELP))
@@ -451,7 +451,7 @@ static Help_request do_help_to_man_topic_menu
             read_res = const_sget_line(&help_text_pos, help_line, sizeof(help_line));
             line_count++;
        }
-        kjb_puts("\n");
+        ivi_puts("\n");
 
 
         rewrite_screen = FALSE;

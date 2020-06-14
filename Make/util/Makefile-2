@@ -21,8 +21,8 @@
 
 ################################################################################
 
-PROGRAM_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS) 
-PROGRAM_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS) 
+PROGRAM_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS) 
+PROGRAM_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS) 
 
 ################################################################################
 
@@ -57,11 +57,11 @@ MAKE_UTILS = \
         ../bin/$(MACHINE)/include_def
 
 ../bin/$(MACHINE):
-	$(KJB_MKDIR) $@
+	$(IVI_MKDIR) $@
 
 ../bin/$(MACHINE)/%: $(LD_OBJ_DIR)%
-	$(KJB_CP) $< $@
-	$(KJB_PERMIT_EXECUTION) $@
+	$(IVI_CP) $< $@
+	$(IVI_PERMIT_EXECUTION) $@
  
 make_bin: ../bin/$(MACHINE) $(MAKE_UTILS)
 

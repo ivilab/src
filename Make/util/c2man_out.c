@@ -22,8 +22,8 @@ int main(void)
              {
                  put_line("}");
                  put_line(".br");
-                 kjb_puts(the_type);
-                 kjb_puts(";\n");
+                 ivi_puts(the_type);
+                 ivi_puts(";\n");
 
                  in_type = FALSE;
              }
@@ -42,21 +42,21 @@ int main(void)
                      trim_end(line);
                      char_for_char_translate(line, ',', ';');
 
-                     kjb_puts(line);
+                     ivi_puts(line);
 
                      if (isalpha(last_char(line)))
                      {
-                         kjb_puts(";");
+                         ivi_puts(";");
                      }
 
-                     kjb_puts("\n");
+                     ivi_puts("\n");
                  }
              }
          }
          else if (HEAD_CMP_EQ(line_pos, "typedef_struct "))
          {
              in_type = TRUE;
-             kjb_puts("typedef struct ");
+             ivi_puts("typedef struct ");
              line_pos += 15;
              put_line(line_pos);
              BUFF_CPY(the_type, line_pos);
@@ -64,7 +64,7 @@ int main(void)
          else if (HEAD_CMP_EQ(line_pos, "typedef_union "))
          {
              in_type = TRUE;
-             kjb_puts("typedef union ");
+             ivi_puts("typedef union ");
              line_pos += 14;
              put_line(line_pos);
              BUFF_CPY(the_type, line_pos);

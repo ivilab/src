@@ -34,7 +34,7 @@
 :%s/^\([A-Za-z0-9_\-]*\)\/\([a-z_A-Z0-9\-\.]*\.\<[Ccohit]p*x*c*\>\)/$(\U\1\e_DIR)\2/ge
 :
 :" We have reduced our reliance on this file, so we can be a bit more agressive to deal with the 
-:" case that we are building libKJB.a from the KJB library directory (i.e., lib/), but only need
+:" case that we are building libIVI.a from the IVI library directory (i.e., lib/), but only need
 :" to do object lists, and thus we have one item per line as ../<stuff>/<other_stuff>.h"
 :%s/ \.\.\/\([A-Za-z1-9_\-]*\)\/\([A-Za-z0-9_\-\.]*\.[Ccohit]p*x*c*\) *$/ $(\U\1\e_DIR)\2 /ge
 :%s/^\.\.\/\([A-Za-z1-9_\-]*\)\/\([A-Za-z0-9_\-\.]*\.[Ccohit]p*x*c*\) *$/$(\U\1\e_DIR)\2 /ge

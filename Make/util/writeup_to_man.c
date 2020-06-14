@@ -104,32 +104,32 @@ int main(int argc, char** argv)
     {
         p_stderr("No title can be determined.\n");
         p_stderr("Use \"-t <title>\" to specify it.\n");
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
 
-    writeup_fp = kjb_fopen(writeup_file_path, "r");
+    writeup_fp = ivi_fopen(writeup_file_path, "r");
 
     if (writeup_fp == NULL)
     {
         char buff[ 1000 ];
 
-        kjb_get_error(buff, sizeof(buff)); 
+        ivi_get_error(buff, sizeof(buff)); 
 
         BUFF_CAT(writeup_file_path, ".w");
-        writeup_fp = kjb_fopen(writeup_file_path, "r");
+        writeup_fp = ivi_fopen(writeup_file_path, "r");
 
         if (writeup_fp == NULL)
         {
             set_error(buff); 
             add_error("Also tried %s.", writeup_file_path); 
-            kjb_print_error();
+            ivi_print_error();
             return EXIT_FAILURE;
         }
     }
 
     EPETE(writeup_to_man_guts(writeup_fp, title, section));
 
-    kjb_fclose(writeup_fp);
+    ivi_fclose(writeup_fp);
 
     return EXIT_SUCCESS;
 }
@@ -167,9 +167,9 @@ static int writeup_to_man_guts
      * begining. So, we assume that we have it, if we read effective_buff_size
      * characters. 
     */
-    ERE(read_res = kjb_fread(writeup_fp, initial_buff, effective_buff_size));
+    ERE(read_res = ivi_fread(writeup_fp, initial_buff, effective_buff_size));
 
-    if (read_res < 0) kjb_exit(EXIT_FAILURE);
+    if (read_res < 0) ivi_exit(EXIT_FAILURE);
     ASSERT(read_res < sizeof(initial_buff)); 
     initial_buff[ read_res ] = '\0'; 
 
@@ -190,7 +190,7 @@ static int writeup_to_man_guts
     }
     else
     {
-        kjb_strncpy(writeup_buff, initial_buff, sizeof(writeup_buff));
+        ivi_strncpy(writeup_buff, initial_buff, sizeof(writeup_buff));
     }
 
     EPETE(man_print_title(stdout, title, section));
@@ -253,7 +253,7 @@ static int writeup_to_man_guts
                     }
                     else
                     {
-                        kjb_puts(writeup_line_pos);
+                        ivi_puts(writeup_line_pos);
                     }
 
                     writeup_line_pos += find_res;
@@ -264,7 +264,7 @@ static int writeup_to_man_guts
                     }
                     else
                     {
-                        kjb_putc(HIGH_LIGHT_CHAR);
+                        ivi_putc(HIGH_LIGHT_CHAR);
                         writeup_line_pos++;
                     }
                 }
@@ -278,9 +278,9 @@ static int writeup_to_man_guts
                     }
                     else
                     {
-                        kjb_puts(writeup_line_pos);
+                        ivi_puts(writeup_line_pos);
                     }
-                    kjb_puts("\n");
+                    ivi_puts("\n");
                 }
             }
         }
@@ -385,9 +385,9 @@ static int copy_script_comment_block
             return NO_ERROR;
         }
 
-        kjb_strncat(comment_block, line_pos, comment_block_size);
+        ivi_strncat(comment_block, line_pos, comment_block_size);
         comment_block_size -= (strlen(line_pos));
-        kjb_strncat(comment_block, "\n", comment_block_size);
+        ivi_strncat(comment_block, "\n", comment_block_size);
         comment_block_size --;
     }
 

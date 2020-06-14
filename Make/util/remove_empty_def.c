@@ -92,8 +92,8 @@ int main(void)
             {
                 if (in_empty_else)
                 {
-                    kjb_puts(line);
-                    kjb_puts("\n");
+                    ivi_puts(line);
+                    ivi_puts("\n");
                 }
 
                 in_empty_if = FALSE; 
@@ -112,12 +112,12 @@ int main(void)
             {
                 int i;
 
-                kjb_puts(save_if_line);
-                kjb_puts("\n");
+                ivi_puts(save_if_line);
+                ivi_puts("\n");
 
                 for (i = 0; i < blank_line_count; i++)
                 {
-                    kjb_puts("\n");
+                    ivi_puts("\n");
                 }
 
                 in_empty_if = FALSE; 
@@ -134,7 +134,7 @@ int main(void)
         {
             in_empty_if = TRUE;
             BUFF_CPY(save_if_line, line); 
-            kjb_strncpy(if_prefix, line, count);   
+            ivi_strncpy(if_prefix, line, count);   
             BUFF_CPY(if_suffix, line_pos); 
         }
         else if (else_noted)
@@ -148,8 +148,8 @@ int main(void)
         }
         else
         {
-            kjb_puts(line);
-            kjb_puts("\n");
+            ivi_puts(line);
+            ivi_puts("\n");
         }
 
     }

@@ -120,8 +120,8 @@ int main(int argc, char** argv)
         }
         else
         {
-            kjb_puts(line);
-            kjb_puts("\n");
+            ivi_puts(line);
+            ivi_puts("\n");
         }
 
         skip = skip_next;

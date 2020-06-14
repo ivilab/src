@@ -39,10 +39,10 @@ int main(int argc, char** argv)
     int doing_html = FALSE;
     int option = NOT_SET;
     char value_buff[ MAX_FILE_NAME_SIZE ]; 
-    extern int kjb_debug_level; 
+    extern int ivi_debug_level; 
 
 #ifdef DEBUG
-    kjb_debug_level = 2;
+    ivi_debug_level = 2;
 #endif 
 
 
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     BUFF_CPY(documentor, "Kobus Barnard");
     BUFF_CPY(index_file_name, "index"); 
 
-    while ((option = kjb_getopts(argc, argv, "-hi:", NULL,
+    while ((option = ivi_getopts(argc, argv, "-hi:", NULL,
                                  value_buff, sizeof(value_buff)))
                != EOF
           )
@@ -60,8 +60,8 @@ int main(int argc, char** argv)
         {
             case ERROR :
                 add_error("Program has invalid arguments.");
-                kjb_print_error();
-                kjb_exit(EXIT_FAILURE);
+                ivi_print_error();
+                ivi_exit(EXIT_FAILURE);
             case 'h' :
                 doing_html = TRUE;
                 break;
@@ -86,8 +86,8 @@ int main(int argc, char** argv)
             {
                 p_stderr("Preprocesor directives inside typedef defeat c2man_in's documenting of them.\n"); 
                 p_stderr("You need to to rewite the code so that any # lines are outside the typedef paren block.\n"); 
-                free_queue(&typdef_queue_head, &typdef_queue_tail, kjb_free);
-                kjb_exit(EXIT_FAILURE); 
+                free_queue(&typdef_queue_head, &typdef_queue_tail, ivi_free);
+                ivi_exit(EXIT_FAILURE); 
             }
 
             first_pound_found = TRUE;
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
             p_stderr("Found comment start inside a comment.\n");
             p_stderr("If this is not true, it might be a bug in c2man_in.\n");
             p_stderr("Otherwise, clean up the code.\n");
-            kjb_exit(EXIT_FAILURE); 
+            ivi_exit(EXIT_FAILURE); 
         }
 #ifdef DEF_OUT
         if (in_comment)
@@ -196,21 +196,21 @@ int main(int argc, char** argv)
                     put_line("    This software is somewhat tested.");
                     put_line("    Nonetheless, it is recomended that results are checked independantly.");
                 }
-                kjb_puts("\n");
+                ivi_puts("\n");
             }
 
             if (test_level == NOT_SET)
             {
                 put_line("Test level:");
                 put_line("    Not documented.");
-                kjb_puts("\n");
+                ivi_puts("\n");
             }
 
             if (! have_author) 
             {
                 put_line("Author:");
                 put_line("    Kobus Barnard");
-                kjb_puts("\n");
+                ivi_puts("\n");
             }
 
             if (! have_documenter) 
@@ -221,7 +221,7 @@ int main(int argc, char** argv)
                 */
                 put_line("Documenter:"); 
                 put_line("    Kobus Barnard");
-                kjb_puts("\n");
+                ivi_puts("\n");
             }
 
             /* We do not want extra stuff, like separator lines. But we may
@@ -249,7 +249,7 @@ int main(int argc, char** argv)
                 p_stderr("Apparant code after comment end in line:\n");
                 fput_line(stderr, line);
                 p_stderr("\n");
-                kjb_exit(EXIT_FAILURE); 
+                ivi_exit(EXIT_FAILURE); 
             }
         }
         else if (in_comment) 
@@ -364,7 +364,7 @@ int main(int argc, char** argv)
                 ASSERT(*line_pos == ':'); 
                 line_pos++; 
 
-                kjb_puts("Related:");
+                ivi_puts("Related:");
                 put_line(line_pos); 
             }
             else if (    (IC_HEAD_CMP_EQ(line_pos, "index:"))
@@ -377,7 +377,7 @@ int main(int argc, char** argv)
 
                 if (index_fp == NULL)
                 {
-                    NPETE(index_fp = kjb_fopen(index_file_name, "w"));
+                    NPETE(index_fp = ivi_fopen(index_file_name, "w"));
                 }
 
                 line_pos += 5;   /* len("index"); */
@@ -392,7 +392,7 @@ int main(int argc, char** argv)
 
                 while (BUFF_GEN_GET_TOKEN_OK(&line_pos, phrase, ",."))
                 {
-                    kjb_fprintf(index_fp, "%-35s %s\n", name, phrase);
+                    ivi_fprintf(index_fp, "%-35s %s\n", name, phrase);
                 }
             }
             else if (*line_pos == '|')
@@ -432,7 +432,7 @@ int main(int argc, char** argv)
         else if (in_typedef)
         {
             insert_at_end_of_queue(&typdef_queue_head, &typdef_queue_tail,
-                                   (void*)kjb_strdup(line));
+                                   (void*)ivi_strdup(line));
 
             if (*line_pos == '}')
             {
@@ -449,7 +449,7 @@ int main(int argc, char** argv)
                     cur_elem = cur_elem->next;
                 }
 
-                free_queue(&typdef_queue_head, &typdef_queue_tail, kjb_free);
+                free_queue(&typdef_queue_head, &typdef_queue_tail, ivi_free);
                 /* Swallow the next line. */
                 /* BUFF_FGET_LINE(stdin, line); */
             }
@@ -473,10 +473,10 @@ int main(int argc, char** argv)
                 }
                 else if (line[0] != '\0') 
                 {
-                    kjb_puts(",\n");
+                    ivi_puts(",\n");
                 }
 
-                kjb_puts(line);
+                ivi_puts(line);
             }
         }
         else if (HEAD_CMP_EQ(line_pos, "typedef"))
@@ -497,8 +497,8 @@ int main(int argc, char** argv)
                 if ((FIND_CHAR_YES(line_pos, ';')) || (FIND_CHAR_YES(line_pos, '{')))
                 {
                     p_stderr("\nWarning: Typedef struct or union needs to continue onto next line starting with the '{' to be documented.\n\n");
-                    kjb_puts(line);
-                    kjb_puts("\n");
+                    ivi_puts(line);
+                    ivi_puts("\n");
                 }
                 else
                 {
@@ -509,16 +509,16 @@ int main(int argc, char** argv)
                      *      typedef_struct xxx_mock_function
                     */
 
-                    kjb_puts("typedef_");
-                    kjb_puts(typedef_type);
-                    kjb_puts(" ");
+                    ivi_puts("typedef_");
+                    ivi_puts(typedef_type);
+                    ivi_puts(" ");
 
-                    kjb_puts(line_pos);
-                    kjb_puts("_mock_function");
-                    kjb_puts("\n");
+                    ivi_puts(line_pos);
+                    ivi_puts("_mock_function");
+                    ivi_puts("\n");
 
                     insert_at_end_of_queue(&typdef_queue_head, &typdef_queue_tail,
-                                           (void*)kjb_strdup(line));
+                                           (void*)ivi_strdup(line));
                     in_typedef = TRUE;
                 }
             }
@@ -533,7 +533,7 @@ int main(int argc, char** argv)
         }
     }
 
-    kjb_fclose(index_fp);
+    ivi_fclose(index_fp);
 
     return EXIT_SUCCESS;
 }
