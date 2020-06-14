@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 WRAP_SVM_LIB_CC_FLAGS = $(CC_FLAGS)
-WRAP_SVM_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+WRAP_SVM_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 WRAP_SVM_LIB_CXX_FLAGS = $(CXX_FLAGS)
-WRAP_SVM_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+WRAP_SVM_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 WRAP_SVM_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ WRAP_SVM_LIB_UC_PREFIX = WRAP_SVM
 WRAP_SVM_LIB_SRC_DIR = $(WRAP_SVM_DIR)
 WRAP_SVM_LIB_REAL_SRC_DIR = $(REAL_WRAP_SVM_DIR)
 
-WRAP_SVM_LIB_ARCHIVE = $(WRAP_SVM_DIR)$(OBJ_DIR)libKJB$(WRAP_SVM_LIB_PREFIX).a
-WRAP_SVM_LIB_LD = -L$(WRAP_SVM_DIR)$(OBJ_DIR) -lKJB$(WRAP_SVM_LIB_PREFIX) 
+WRAP_SVM_LIB_ARCHIVE = $(WRAP_SVM_DIR)$(OBJ_DIR)libIVI$(WRAP_SVM_LIB_PREFIX).a
+WRAP_SVM_LIB_LD = -L$(WRAP_SVM_DIR)$(OBJ_DIR) -lIVI$(WRAP_SVM_LIB_PREFIX) 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(WRAP_SVM_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(WRAP_SVM_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(WRAP_SVM_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(WRAP_SVM_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(WRAP_SVM_DIR)$(WRAP_SVM_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(WRAP_SVM_DIR)Include_lines/header_file_list
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

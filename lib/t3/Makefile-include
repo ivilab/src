@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 T3_LIB_CC_FLAGS = $(CC_FLAGS)
-T3_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+T3_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 T3_LIB_CXX_FLAGS = $(CXX_FLAGS)
-T3_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+T3_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 T3_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ T3_LIB_UC_PREFIX = T3
 T3_LIB_SRC_DIR = $(T3_DIR)
 T3_LIB_REAL_SRC_DIR = $(REAL_T3_DIR)
 
-T3_LIB_ARCHIVE = $(T3_DIR)$(OBJ_DIR)libKJBt3.a
-T3_LIB_LD = -L$(T3_DIR)$(OBJ_DIR) -lKJBt3 
+T3_LIB_ARCHIVE = $(T3_DIR)$(OBJ_DIR)libIVIt3.a
+T3_LIB_LD = -L$(T3_DIR)$(OBJ_DIR) -lIVIt3 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(T3_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(T3_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(T3_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(T3_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(T3_DIR)$(T3_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(T3_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

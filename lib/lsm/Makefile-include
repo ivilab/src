@@ -12,7 +12,7 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
@@ -20,7 +20,7 @@
 LSM_LIB_CC_FLAGS = $(CC_FLAGS)
 LSM_LIB_CC_WARNING_FLAGS = $(CC_SHARED_WARNINGS)
 LSM_LIB_CXX_FLAGS = $(CXX_FLAGS)
-LSM_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+LSM_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 LSM_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ LSM_LIB_UC_PREFIX = LSM
 LSM_LIB_SRC_DIR = $(LSM_DIR)
 LSM_LIB_REAL_SRC_DIR = $(REAL_LSM_DIR)
 
-LSM_LIB_ARCHIVE = $(LSM_DIR)$(OBJ_DIR)libKJB$(LSM_LIB_PREFIX).a
-LSM_LIB_LD = -L$(LSM_DIR)$(OBJ_DIR) -lKJB$(LSM_LIB_PREFIX) 
+LSM_LIB_ARCHIVE = $(LSM_DIR)$(OBJ_DIR)libIVI$(LSM_LIB_PREFIX).a
+LSM_LIB_LD = -L$(LSM_DIR)$(OBJ_DIR) -lIVI$(LSM_LIB_PREFIX) 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(LSM_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(LSM_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(LSM_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(LSM_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(LSM_DIR)$(LSM_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LSM_DIR)Include_lines/header_file_list
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 H_LIB_CC_FLAGS = $(CC_FLAGS)
-H_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+H_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 H_LIB_CXX_FLAGS = $(CXX_FLAGS)
-H_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+H_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 H_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ H_LIB_UC_PREFIX = H
 H_LIB_SRC_DIR = $(H_DIR)
 H_LIB_REAL_SRC_DIR = $(REAL_H_DIR)
 
-H_LIB_ARCHIVE = $(H_DIR)$(OBJ_DIR)libKJB$(H_LIB_PREFIX).a
-H_LIB_LD = -L$(H_DIR)$(OBJ_DIR) -lKJB$(H_LIB_PREFIX) 
+H_LIB_ARCHIVE = $(H_DIR)$(OBJ_DIR)libIVI$(H_LIB_PREFIX).a
+H_LIB_LD = -L$(H_DIR)$(OBJ_DIR) -lIVI$(H_LIB_PREFIX) 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(H_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(H_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(H_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(H_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(H_DIR)$(H_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(H_DIR)Include_lines/header_file_list
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

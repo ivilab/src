@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 VIDEO_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-VIDEO_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+VIDEO_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 VIDEO_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-VIDEO_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+VIDEO_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 VIDEO_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ VIDEO_CPP_LIB_UC_PREFIX = VIDEO_CPP
 VIDEO_CPP_LIB_SRC_DIR = $(VIDEO_CPP_DIR)
 VIDEO_CPP_LIB_REAL_SRC_DIR = $(REAL_VIDEO_CPP_DIR)
 
-VIDEO_CPP_LIB_ARCHIVE = $(VIDEO_CPP_DIR)$(OBJ_DIR)libKJBvideo_cpp.a
-VIDEO_CPP_LIB_LD = -L$(VIDEO_CPP_DIR)$(OBJ_DIR) -lKJBvideo_cpp 
+VIDEO_CPP_LIB_ARCHIVE = $(VIDEO_CPP_DIR)$(OBJ_DIR)libIVIvideo_cpp.a
+VIDEO_CPP_LIB_LD = -L$(VIDEO_CPP_DIR)$(OBJ_DIR) -lIVIvideo_cpp 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(VIDEO_CPP_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(VIDEO_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(VIDEO_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(VIDEO_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(VIDEO_CPP_DIR)$(VIDEO_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(VIDEO_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 OPT_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-OPT_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+OPT_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 OPT_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-OPT_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+OPT_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 OPT_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ OPT_CPP_LIB_UC_PREFIX = OPT_CPP
 OPT_CPP_LIB_SRC_DIR = $(OPT_CPP_DIR)
 OPT_CPP_LIB_REAL_SRC_DIR = $(REAL_OPT_CPP_DIR)
 
-OPT_CPP_LIB_ARCHIVE = $(OPT_CPP_DIR)$(OBJ_DIR)libKJBopt_cpp.a
-OPT_CPP_LIB_LD = -L$(OPT_CPP_DIR)$(OBJ_DIR) -lKJBopt_cpp 
+OPT_CPP_LIB_ARCHIVE = $(OPT_CPP_DIR)$(OBJ_DIR)libIVIopt_cpp.a
+OPT_CPP_LIB_LD = -L$(OPT_CPP_DIR)$(OBJ_DIR) -lIVIopt_cpp 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(OPT_CPP_DIR)Makefile-library
 #
 ### # What if .header_file_list does not exist?
 ### $(OPT_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(OPT_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(OPT_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(OPT_CPP_DIR)$(OPT_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(OPT_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

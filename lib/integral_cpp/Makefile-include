@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 INTEGRAL_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-INTEGRAL_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+INTEGRAL_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 INTEGRAL_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-INTEGRAL_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+INTEGRAL_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 INTEGRAL_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ INTEGRAL_CPP_LIB_UC_PREFIX = INTEGRAL_CPP
 INTEGRAL_CPP_LIB_SRC_DIR = $(INTEGRAL_CPP_DIR)
 INTEGRAL_CPP_LIB_REAL_SRC_DIR = $(REAL_INTEGRAL_CPP_DIR)
 
-INTEGRAL_CPP_LIB_ARCHIVE = $(INTEGRAL_CPP_DIR)$(OBJ_DIR)libKJBintegral_cpp.a
-INTEGRAL_CPP_LIB_LD = -L$(INTEGRAL_CPP_DIR)$(OBJ_DIR) -lKJBintegral_cpp 
+INTEGRAL_CPP_LIB_ARCHIVE = $(INTEGRAL_CPP_DIR)$(OBJ_DIR)libIVIintegral_cpp.a
+INTEGRAL_CPP_LIB_LD = -L$(INTEGRAL_CPP_DIR)$(OBJ_DIR) -lIVIintegral_cpp 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(INTEGRAL_CPP_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(INTEGRAL_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(INTEGRAL_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(INTEGRAL_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(INTEGRAL_CPP_DIR)$(INTEGRAL_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(INTEGRAL_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

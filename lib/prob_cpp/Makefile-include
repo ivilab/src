@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 PROB_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-PROB_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+PROB_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 PROB_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-PROB_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+PROB_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 PROB_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ PROB_CPP_LIB_UC_PREFIX = PROB_CPP
 PROB_CPP_LIB_SRC_DIR = $(PROB_CPP_DIR)
 PROB_CPP_LIB_REAL_SRC_DIR = $(REAL_PROB_CPP_DIR)
 
-PROB_CPP_LIB_ARCHIVE = $(PROB_CPP_DIR)$(OBJ_DIR)libKJBprob_cpp.a
-PROB_CPP_LIB_LD = -L$(PROB_CPP_DIR)$(OBJ_DIR) -lKJBprob_cpp 
+PROB_CPP_LIB_ARCHIVE = $(PROB_CPP_DIR)$(OBJ_DIR)libIVIprob_cpp.a
+PROB_CPP_LIB_LD = -L$(PROB_CPP_DIR)$(OBJ_DIR) -lIVIprob_cpp 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(PROB_CPP_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(PROB_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(PROB_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(PROB_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(PROB_CPP_DIR)$(PROB_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(PROB_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

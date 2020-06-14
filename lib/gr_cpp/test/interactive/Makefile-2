@@ -20,7 +20,7 @@
 
 
 
-PROGRAM_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS) 
+PROGRAM_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS) 
 
 
 ################################################################################

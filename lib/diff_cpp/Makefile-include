@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 DIFF_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-DIFF_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+DIFF_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 DIFF_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-DIFF_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+DIFF_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 DIFF_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ DIFF_CPP_LIB_UC_PREFIX = DIFF_CPP
 DIFF_CPP_LIB_SRC_DIR = $(DIFF_CPP_DIR)
 DIFF_CPP_LIB_REAL_SRC_DIR = $(REAL_DIFF_CPP_DIR)
 
-DIFF_CPP_LIB_ARCHIVE = $(DIFF_CPP_DIR)$(OBJ_DIR)libKJBdiff_cpp.a
-DIFF_CPP_LIB_LD = -L$(DIFF_CPP_DIR)$(OBJ_DIR) -lKJBdiff_cpp 
+DIFF_CPP_LIB_ARCHIVE = $(DIFF_CPP_DIR)$(OBJ_DIR)libIVIdiff_cpp.a
+DIFF_CPP_LIB_LD = -L$(DIFF_CPP_DIR)$(OBJ_DIR) -lIVIdiff_cpp 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(DIFF_CPP_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(DIFF_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(DIFF_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(DIFF_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(DIFF_CPP_DIR)$(DIFF_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(DIFF_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

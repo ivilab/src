@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 GLUT_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-GLUT_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+GLUT_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 GLUT_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-GLUT_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+GLUT_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 GLUT_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ GLUT_CPP_LIB_UC_PREFIX = GLUT_CPP
 GLUT_CPP_LIB_SRC_DIR = $(GLUT_CPP_DIR)
 GLUT_CPP_LIB_REAL_SRC_DIR = $(REAL_GLUT_CPP_DIR)
 
-GLUT_CPP_LIB_ARCHIVE = $(GLUT_CPP_DIR)$(OBJ_DIR)libKJBglut_cpp.a
-GLUT_CPP_LIB_LD = -L$(GLUT_CPP_DIR)$(OBJ_DIR) -lKJBglut_cpp 
+GLUT_CPP_LIB_ARCHIVE = $(GLUT_CPP_DIR)$(OBJ_DIR)libIVIglut_cpp.a
+GLUT_CPP_LIB_LD = -L$(GLUT_CPP_DIR)$(OBJ_DIR) -lIVIglut_cpp 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(GLUT_CPP_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(GLUT_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(GLUT_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(GLUT_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(GLUT_CPP_DIR)$(GLUT_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(GLUT_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

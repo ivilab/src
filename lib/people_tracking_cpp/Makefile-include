@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 PEOPLE_TRACKING_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-PEOPLE_TRACKING_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+PEOPLE_TRACKING_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 PEOPLE_TRACKING_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-PEOPLE_TRACKING_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+PEOPLE_TRACKING_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 PEOPLE_TRACKING_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ PEOPLE_TRACKING_CPP_LIB_UC_PREFIX = PEOPLE_TRACKING_CPP
 PEOPLE_TRACKING_CPP_LIB_SRC_DIR = $(PEOPLE_TRACKING_CPP_DIR)
 PEOPLE_TRACKING_CPP_LIB_REAL_SRC_DIR = $(REAL_PEOPLE_TRACKING_CPP_DIR)
 
-PEOPLE_TRACKING_CPP_LIB_ARCHIVE = $(PEOPLE_TRACKING_CPP_DIR)$(OBJ_DIR)libKJBpeople_tracking_cpp.a
-PEOPLE_TRACKING_CPP_LIB_LD = -L$(PEOPLE_TRACKING_CPP_DIR)$(OBJ_DIR) -lKJBpeople_tracking_cpp 
+PEOPLE_TRACKING_CPP_LIB_ARCHIVE = $(PEOPLE_TRACKING_CPP_DIR)$(OBJ_DIR)libIVIpeople_tracking_cpp.a
+PEOPLE_TRACKING_CPP_LIB_LD = -L$(PEOPLE_TRACKING_CPP_DIR)$(OBJ_DIR) -lIVIpeople_tracking_cpp 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(PEOPLE_TRACKING_CPP_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(PEOPLE_TRACKING_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(PEOPLE_TRACKING_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(PEOPLE_TRACKING_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(PEOPLE_TRACKING_CPP_DIR)$(PEOPLE_TRACKING_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(PEOPLE_TRACKING_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

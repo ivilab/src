@@ -12,7 +12,7 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
@@ -20,7 +20,7 @@
 MAGICK_LIB_CC_FLAGS = $(CC_FLAGS)
 MAGICK_LIB_CC_WARNING_FLAGS = $(CC_SHARED_WARNINGS)
 MAGICK_LIB_CXX_FLAGS = $(CXX_FLAGS)
-MAGICK_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+MAGICK_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 MAGICK_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ MAGICK_LIB_UC_PREFIX = MAGICK
 MAGICK_LIB_SRC_DIR = $(MAGICK_DIR)
 MAGICK_LIB_REAL_SRC_DIR = $(REAL_MAGICK_DIR)
 
-MAGICK_LIB_ARCHIVE = $(MAGICK_DIR)$(OBJ_DIR)libKJBmagick.a
-MAGICK_LIB_LD = -L$(MAGICK_DIR)$(OBJ_DIR) -lKJBmagick 
+MAGICK_LIB_ARCHIVE = $(MAGICK_DIR)$(OBJ_DIR)libIVImagick.a
+MAGICK_LIB_LD = -L$(MAGICK_DIR)$(OBJ_DIR) -lIVImagick 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(MAGICK_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(MAGICK_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(MAGICK_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(MAGICK_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(MAGICK_DIR)$(MAGICK_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(MAGICK_DIR)Include_lines/header_file_list
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

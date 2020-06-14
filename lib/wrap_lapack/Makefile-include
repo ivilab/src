@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 WRAP_LAPACK_LIB_CC_FLAGS = $(CC_FLAGS)
-WRAP_LAPACK_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+WRAP_LAPACK_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 WRAP_LAPACK_LIB_CXX_FLAGS = $(CXX_FLAGS)
-WRAP_LAPACK_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+WRAP_LAPACK_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 WRAP_LAPACK_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ WRAP_LAPACK_LIB_UC_PREFIX = WRAP_LAPACK
 WRAP_LAPACK_LIB_SRC_DIR = $(WRAP_LAPACK_DIR)
 WRAP_LAPACK_LIB_REAL_SRC_DIR = $(REAL_WRAP_LAPACK_DIR)
 
-WRAP_LAPACK_LIB_ARCHIVE = $(WRAP_LAPACK_DIR)$(OBJ_DIR)libKJBwrap_lapack.a
-WRAP_LAPACK_LIB_LD = -L$(WRAP_LAPACK_DIR)$(OBJ_DIR) -lKJBwrap_lapack 
+WRAP_LAPACK_LIB_ARCHIVE = $(WRAP_LAPACK_DIR)$(OBJ_DIR)libIVIwrap_lapack.a
+WRAP_LAPACK_LIB_LD = -L$(WRAP_LAPACK_DIR)$(OBJ_DIR) -lIVIwrap_lapack 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(WRAP_LAPACK_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(WRAP_LAPACK_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(WRAP_LAPACK_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(WRAP_LAPACK_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(WRAP_LAPACK_DIR)$(WRAP_LAPACK_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(WRAP_LAPACK_DIR)Include_lines/header_file_list
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

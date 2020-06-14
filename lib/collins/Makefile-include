@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 COLLINS_LIB_CC_FLAGS = $(CC_FLAGS)
-COLLINS_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+COLLINS_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 COLLINS_LIB_CXX_FLAGS = $(CXX_FLAGS)
-COLLINS_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+COLLINS_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 COLLINS_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ COLLINS_LIB_UC_PREFIX = COLLINS
 COLLINS_LIB_SRC_DIR = $(COLLINS_DIR)
 COLLINS_LIB_REAL_SRC_DIR = $(REAL_COLLINS_DIR)
 
-COLLINS_LIB_ARCHIVE = $(COLLINS_DIR)$(OBJ_DIR)libKJBcollins.a
-COLLINS_LIB_LD = -L$(COLLINS_DIR)$(OBJ_DIR) -lKJBcollins 
+COLLINS_LIB_ARCHIVE = $(COLLINS_DIR)$(OBJ_DIR)libIVIcollins.a
+COLLINS_LIB_LD = -L$(COLLINS_DIR)$(OBJ_DIR) -lIVIcollins 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(COLLINS_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(COLLINS_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(COLLINS_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(COLLINS_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(COLLINS_DIR)$(COLLINS_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(COLLINS_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

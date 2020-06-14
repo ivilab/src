@@ -8,15 +8,15 @@
 # For example, to force no optimization for C compiles, replace CC_FLAGS with
 # DONT_OPTIMIZE_CC_FLAGS. 
 #     
-# In developing KJB library code for the U.A. vision lab, this kind of hacking
+# In developing IVI library code for the U.A. vision lab, this kind of hacking
 # MUST BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 DBN_CPP_LIB_CC_FLAGS = $(CC_FLAGS)
-DBN_CPP_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+DBN_CPP_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 DBN_CPP_LIB_CXX_FLAGS = $(CXX_FLAGS)
-DBN_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+DBN_CPP_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 DBN_CPP_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -27,8 +27,8 @@ DBN_CPP_LIB_UC_PREFIX = DBN_CPP
 DBN_CPP_LIB_SRC_DIR = $(DBN_CPP_DIR)
 DBN_CPP_LIB_REAL_SRC_DIR = $(REAL_DBN_CPP_DIR)
 
-DBN_CPP_LIB_ARCHIVE = $(DBN_CPP_DIR)$(OBJ_DIR)libKJBdbn_cpp.a
-DBN_CPP_LIB_LD = -L$(DBN_CPP_DIR)$(OBJ_DIR) -lKJBdbn_cpp 
+DBN_CPP_LIB_ARCHIVE = $(DBN_CPP_DIR)$(OBJ_DIR)libIVIdbn_cpp.a
+DBN_CPP_LIB_LD = -L$(DBN_CPP_DIR)$(OBJ_DIR) -lIVIdbn_cpp 
 
 ################################################################################
 
@@ -50,9 +50,9 @@ include $(DBN_CPP_DIR)Makefile-library
 
 ### # What if Include_lines/header_file_list does not exist?
 ### $(DBN_CPP_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(DBN_CPP_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(DBN_CPP_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(DBN_CPP_DIR)$(DBN_CPP_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(DBN_CPP_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 C2_LIB_CC_FLAGS = $(CC_FLAGS)
-C2_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+C2_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 C2_LIB_CXX_FLAGS = $(CXX_FLAGS)
-C2_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+C2_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 C2_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ C2_LIB_UC_PREFIX = C2
 C2_LIB_SRC_DIR = $(C2_DIR)
 C2_LIB_REAL_SRC_DIR = $(REAL_C2_DIR)
 
-C2_LIB_ARCHIVE = $(C2_DIR)$(OBJ_DIR)libKJBc2.a
-C2_LIB_LD = -L$(C2_DIR)$(OBJ_DIR) -lKJBc2 
+C2_LIB_ARCHIVE = $(C2_DIR)$(OBJ_DIR)libIVIc2.a
+C2_LIB_LD = -L$(C2_DIR)$(OBJ_DIR) -lIVIc2 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(C2_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(C2_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(C2_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(C2_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(C2_DIR)$(C2_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(C2_DIR)Include_lines/header_file_list 
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 

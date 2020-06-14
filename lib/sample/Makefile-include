@@ -12,15 +12,15 @@
 #     $(CC_FLAGS)
 # below with 
 #      $(CC_C99_BASE_FLAGS) $(CC_TEST_OR_OPTIMIZE)
-# In developing KJB library code for the U.A. vision lab, this capability MUST
+# In developing IVI library code for the U.A. vision lab, this capability MUST
 # BE USED ONLY FOR TRANSITION. 
 #
 ################################################################################
 
 SAMPLE_LIB_CC_FLAGS = $(CC_FLAGS)
-SAMPLE_LIB_CC_WARNING_FLAGS = $(CC_KJB_WARNINGS)
+SAMPLE_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 SAMPLE_LIB_CXX_FLAGS = $(CXX_FLAGS)
-SAMPLE_LIB_CXX_WARNING_FLAGS = $(CXX_KJB_WARNINGS)
+SAMPLE_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
 SAMPLE_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
@@ -31,8 +31,8 @@ SAMPLE_LIB_UC_PREFIX = SAMPLE
 SAMPLE_LIB_SRC_DIR = $(SAMPLE_DIR)
 SAMPLE_LIB_REAL_SRC_DIR = $(REAL_SAMPLE_DIR)
 
-SAMPLE_LIB_ARCHIVE = $(SAMPLE_DIR)$(OBJ_DIR)libKJBsample.a
-SAMPLE_LIB_LD = -L$(SAMPLE_DIR)$(OBJ_DIR) -lKJBsample 
+SAMPLE_LIB_ARCHIVE = $(SAMPLE_DIR)$(OBJ_DIR)libIVIsample.a
+SAMPLE_LIB_LD = -L$(SAMPLE_DIR)$(OBJ_DIR) -lIVIsample 
 
 ################################################################################
 
@@ -54,9 +54,9 @@ include $(SAMPLE_DIR)Makefile-library
 #
 ### # What if Include_lines/header_file_list does not exist?
 ### $(SAMPLE_DIR)Include_lines/header_file_list : 
-### 	$(KJB_MKDIR) $(SAMPLE_DIR)Include_lines
-### 	$(KJB_RM) $@.new
-### 	$(KJB_TOUCH) $@
+### 	$(IVI_MKDIR) $(SAMPLE_DIR)Include_lines
+### 	$(IVI_RM) $@.new
+### 	$(IVI_TOUCH) $@
 ### 
 ### $(SAMPLE_DIR)$(SAMPLE_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(SAMPLE_DIR)Include_lines/header_file_list
 ### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
