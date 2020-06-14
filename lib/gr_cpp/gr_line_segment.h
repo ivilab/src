@@ -1,4 +1,4 @@
-/* $Id: gr_line_segment.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_line_segment.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -41,7 +41,7 @@
  * please contact Kobus Barnard.
  */
 
-namespace kjb {
+namespace ivi {
 
 class Image;
 
@@ -147,7 +147,7 @@ public:
     bool point_outside_segment(const Vector& point) const;
 
     /** @brief Returns the mid-point */
-    const kjb::Vector & get_centre() const { return centre; }
+    const ivi::Vector & get_centre() const { return centre; }
 
     /** @brief Returns the x-coordinate of the leftmost point of the segment*/
     inline double get_start_x() const
@@ -162,7 +162,7 @@ public:
     }
 
     /** @brief Returns the leftmost point of the segment */
-    const kjb::Vector & get_start() const { return start_point; }
+    const ivi::Vector & get_start() const { return start_point; }
 
     /// @brief Returns the x-coordinate of the rightmost point of the segment
     inline double get_end_x() const
@@ -177,7 +177,7 @@ public:
     }
 
     /** @brief Returns the rightmost point of the segment */
-    const kjb::Vector & get_end() const { return end_point; }
+    const ivi::Vector & get_end() const { return end_point; }
 
     /**
      * @brief Returns the slope of the line segment.
@@ -202,7 +202,7 @@ public:
     {
         if(is_vertical())
         {
-            throw KJB_error("Vertical segment, there is no y intercept");
+            throw IVI_error("Vertical segment, there is no y intercept");
         }
         return -line.get_c();
     }
@@ -216,7 +216,7 @@ public:
     {
         if(is_horizontal())
         {
-            throw KJB_error("Horizontal segment, there is no x intercept");
+            throw IVI_error("Horizontal segment, there is no x intercept");
         }
         return -line.get_c()/line.get_a();
     }
@@ -251,7 +251,7 @@ public:
 
     /** @brief Draws this line segment */
     void draw(
-        kjb::Image & img,
+        ivi::Image & img,
         double ir,
         double ig,
         double ib,
@@ -259,7 +259,7 @@ public:
     )  const;
 
     /** @brief Randomly colors this line segment on an image */
-    void randomly_color(kjb::Image & img, double width = 1.0)  const;
+    void randomly_color(ivi::Image & img, double width = 1.0)  const;
 
     /** @brief Finds the intersection point of the this line_segment
      *  and the input Line_segment line. Return false if these
@@ -270,11 +270,11 @@ public:
     bool get_intersection
     (
         const Line_segment&      line,
-        kjb::Vector&             point
+        ivi::Vector&             point
     ) const;
 
     /// @brief Returns distance between this line segment and the input point.
-    double get_distance_from_point (const kjb::Vector& point) const;
+    double get_distance_from_point (const ivi::Vector& point) const;
 
     /** @brief Returns the angle between this line segment and the input line*/
     double get_angle_between_line (const Line_segment& line) const;
@@ -287,11 +287,11 @@ public:
      * Notice that this works even if p is not on the line,
      * its projection on it will be considered.
      */
-    double find_t(const kjb::Vector & point) const;
+    double find_t(const ivi::Vector & point) const;
 
     /// @brief Returns distance between this line segment and the input point.
     double get_distance_from_point (
-        const kjb::Vector& point,
+        const ivi::Vector& point,
         double * perp_dist
     ) const;
 
@@ -326,7 +326,7 @@ public:
 
     /** @brief Returns a vector representing the normalized direction of
      * this line_segment */
-    void get_direction(kjb::Vector & idirection) const;
+    void get_direction(ivi::Vector & idirection) const;
 
     /**
      * For debug purposes, checks this line segment is consistent
@@ -420,7 +420,7 @@ protected:
 
 
     /** @brief X coordinate of the centre of this line segment */
-    kjb::Vector centre;
+    ivi::Vector centre;
 
     /** @brief Orientation of this line segment, defined as the angle between
      *  the x axis and the segment, positive angle meaning counter clockwise.
@@ -435,8 +435,8 @@ protected:
      * The following fields are redundant, but it can
      * be helpful to have them pre-computed.
      */
-    kjb::Vector start_point;
-    kjb::Vector end_point;
+    ivi::Vector start_point;
+    ivi::Vector end_point;
 
     /**
      * Line parameters.
@@ -451,5 +451,5 @@ protected:
 
 std::ostream& operator<<(std::ostream& out, const Line_segment& ls);
 
-} // namespace kjb
+} // namespace ivi
 #endif /* GR_CPP_LINE_SEGMENT_H */

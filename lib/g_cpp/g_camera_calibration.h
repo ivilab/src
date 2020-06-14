@@ -1,4 +1,4 @@
-/* $Id: g_camera_calibration.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g_camera_calibration.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,12 +17,12 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_G_CPP_CAMERA_CALIBRATION
-#define KJB_G_CPP_CAMERA_CALIBRATION
+#ifndef IVI_G_CPP_CAMERA_CALIBRATION
+#define IVI_G_CPP_CAMERA_CALIBRATION
 
 #include <iosfwd>
 
-namespace kjb
+namespace ivi
 {
 class Matrix;
 class Vector;

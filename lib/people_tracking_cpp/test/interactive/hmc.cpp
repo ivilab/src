@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: hmc.cpp 19393 2015-06-05 16:49:17Z ernesto $ */
+/* $Id: hmc.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_association.h>
@@ -47,13 +47,13 @@
 #include <boost/optional.hpp>
 #include <boost/foreach.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 
 #include <ergo/record.h>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace ergo;
 using namespace boost;
 
@@ -79,11 +79,11 @@ int main(int argc, char** argv)
 
         // prepare output dir
         string outdir = "output/hmc_cpp";
-        kjb_c::kjb_mkdir(outdir.c_str());
+        ivi_c::ivi_mkdir(outdir.c_str());
 
         // write data
         string datadir = outdir + "/data";
-        kjb_c::kjb_mkdir(datadir.c_str());
+        ivi_c::ivi_mkdir(datadir.c_str());
         vector<string> fnames = strings_from_format(
                                                 datadir + "/%05d.txt",
                                                 num_frames);
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
         // write GT scene
         write_scene(scene, outdir + "/best");
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;

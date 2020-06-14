@@ -12,7 +12,7 @@ void *thread_task(void *param) {
 
     int i = NUM_ITERS;
     while(i-- > 0) {
-        printf("  %x: %f\n", pthread_self(), kjb_rand());
+        printf("  %x: %f\n", pthread_self(), ivi_rand());
         int j = 1000;
         while(j--);
     }
@@ -20,11 +20,11 @@ void *thread_task(void *param) {
 
 void non_threaded() {
     printf("Non-threaded tests...\n");
-    kjb_seed_rand(0, SEED);
+    ivi_seed_rand(0, SEED);
     
     int i = NUM_ITERS;
     while(i-- > 0) {
-        printf("%f\n", kjb_rand());
+        printf("%f\n", ivi_rand());
     }
 }
 
@@ -39,7 +39,7 @@ void threaded() {
     mt_rand_init(n);
     
     /* Programmer has to set the function pointer */
-    kjb_set_rand_function(mt_rand);
+    ivi_set_rand_function(mt_rand);
     
     int t;
     for(t=0; t<n; t++) {

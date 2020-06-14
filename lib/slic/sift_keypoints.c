@@ -1,10 +1,10 @@
-/* $Id: sift_keypoints.c 21059 2017-01-13 00:49:18Z kobus $
+/* $Id: sift_keypoints.c 25499 2020-06-14 13:26:04Z kobus $
  */
 #include "slic/sift_keypoints.h"
 #include "i/i_float_io.h"
 #include "i/i_draw.h"
 
-#warning "[code police] Source code should be modified to follow libkjb style."
+#warning "[code police] Source code should be modified to follow libivi style."
 #warning "[code police] for example, 4-space indentation."
 
 int get_target_SIFT_kp(SIFT_kp **kpp, 
@@ -18,7 +18,7 @@ int get_target_SIFT_kp(SIFT_kp **kpp,
 
   if (*kpp ==  NULL)
   {
-    *kpp = (SIFT_kp*)kjb_malloc(sizeof(SIFT_kp));
+    *kpp = (SIFT_kp*)ivi_malloc(sizeof(SIFT_kp));
   }
   kp = *kpp;
 
@@ -39,7 +39,7 @@ int get_target_SIFT_Kp_list(SIFT_kp_list **sift_kp_list_pp, int num_elements)
     free_SIFT_kp_list(*sift_kp_list_pp);
     *sift_kp_list_pp = NULL;
   }
-  (*sift_kp_list_pp)->elements = (SIFT_kp **)kjb_malloc(sizeof(SIFT_kp*) * num_elements);
+  (*sift_kp_list_pp)->elements = (SIFT_kp **)ivi_malloc(sizeof(SIFT_kp*) * num_elements);
 
   return NO_ERROR;
 }
@@ -79,7 +79,7 @@ int read_SIFT_kp_list(SIFT_kp_list **sift_kp_list_pp, char *keypoint_filename)
   FILE *fp = NULL;
   
   
-  NRE(fp = kjb_fopen(keypoint_filename, "r"));
+  NRE(fp = ivi_fopen(keypoint_filename, "r"));
   
   items_read = fscanf (fp, "%d %d", &num_keypoints, &kp_desc_len);  
   if (items_read != 2)
@@ -95,9 +95,9 @@ int read_SIFT_kp_list(SIFT_kp_list **sift_kp_list_pp, char *keypoint_filename)
     free_SIFT_kp_list(*sift_kp_list_pp);
     *sift_kp_list_pp = NULL;
   }
-  *sift_kp_list_pp = (SIFT_kp_list*)kjb_malloc(sizeof(SIFT_kp_list));
+  *sift_kp_list_pp = (SIFT_kp_list*)ivi_malloc(sizeof(SIFT_kp_list));
   sift_kp_list_p = *sift_kp_list_pp;
-  sift_kp_list_p->elements = (SIFT_kp **)kjb_malloc(sizeof(SIFT_kp*) * num_keypoints);  
+  sift_kp_list_p->elements = (SIFT_kp **)ivi_malloc(sizeof(SIFT_kp*) * num_keypoints);  
 
   /* Read in all the SIFT keypoints from the file*/
   for (i = 0; i < num_keypoints; i++)
@@ -154,7 +154,7 @@ int free_SIFT_kp_list(SIFT_kp_list *sift_kp_p)
     ERE(free_SIFT_kp(sift_kp_p->elements[i]));
   }
   
-  kjb_free(sift_kp_p);
+  ivi_free(sift_kp_p);
   return NO_ERROR;
 }
 
@@ -178,7 +178,7 @@ int free_SIFT_kp_list(SIFT_kp_list *sift_kp_p)
 
 int free_SIFT_kp(SIFT_kp *sift_kp)
 {
-  kjb_free(sift_kp);
+  ivi_free(sift_kp);
 
   return NO_ERROR;
 }
@@ -200,7 +200,7 @@ int free_SIFT_kp(SIFT_kp *sift_kp)
  * -----------------------------------------------------------------------------
  */
     
-int draw_keypoint ( KJB_image* ip, int x, int y ) 
+int draw_keypoint ( IVI_image* ip, int x, int y ) 
 {
     /* How can this possibly do what it is supposed to? !!! */
 
@@ -213,7 +213,7 @@ int draw_keypoint ( KJB_image* ip, int x, int y )
 
     EPETE(image_draw_circle(ip, 200, 60, 70, 1, 200, 0, 0));
 
-    /* EPETE(kjb_display_image(ip, NULL)); */
+    /* EPETE(ivi_display_image(ip, NULL)); */
   
     return NO_ERROR;
 } 
@@ -222,11 +222,11 @@ int draw_keypoint ( KJB_image* ip, int x, int y )
 int draw_keypoints_on_image(char *image_filename, char *keypoints_filename)
 {
   int length,i;
-  KJB_image *ip =NULL;
+  IVI_image *ip =NULL;
 
   SIFT_kp_list *sift_kp_list =NULL;
 
-  ERE(kjb_read_image(&ip, image_filename));
+  ERE(ivi_read_image(&ip, image_filename));
   ERE(read_SIFT_kp_list(&sift_kp_list, keypoints_filename));
   length = sift_kp_list->length;
   for (i = 0; i < length; i++)

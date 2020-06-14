@@ -1,4 +1,4 @@
-/* $Id: st_set_camera_to_view_entire_model.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: st_set_camera_to_view_entire_model.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -54,10 +54,10 @@
 
 #include <st_cpp/st_set_camera_to_view_entire_model.h>
 
-using namespace kjb;
-//using namespace kjb::opengl;
+using namespace ivi;
+//using namespace ivi::opengl;
 
-Vector kjb::set_camera_to_view_entire_model
+Vector ivi::set_camera_to_view_entire_model
 (
     Perspective_camera& c, 
     Polymesh&           p, 

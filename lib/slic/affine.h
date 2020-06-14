@@ -1,4 +1,4 @@
-/* $Id: affine.h 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: affine.h 25499 2020-06-14 13:26:04Z kobus $
  */
 #ifndef SLIC_AFFINE_DEFINED_H_
 #define SLIC_AFFINE_DEFINED_H_
@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -93,26 +93,26 @@ int constraint_affine_2
 
 int get_color_constancy_matrix
 (
-    const KJB_image *src_img,
-    const KJB_image *target_img,
+    const IVI_image *src_img,
+    const IVI_image *target_img,
     const Int_matrix *mask_imp,
     Matrix **color_constancy_mpp
 );
 
 int apply_color_constancy
 (
-    const KJB_image *src_img,
+    const IVI_image *src_img,
     const Int_matrix *mask_imp,
     const Matrix *color_constancy_mp,
-    KJB_image       **res_img
+    IVI_image       **res_img
 );
 
 int do_color_constancy
 (
-    const KJB_image *src_img,
-    const KJB_image *target_img,
+    const IVI_image *src_img,
+    const IVI_image *target_img,
     const Int_matrix *mask_imp,
-    KJB_image       **res_img
+    IVI_image       **res_img
 );
 
 #ifdef __cplusplus

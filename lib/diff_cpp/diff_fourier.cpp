@@ -25,9 +25,9 @@
 #include <algorithm>
 #include <cmath>
 
-using namespace kjb;
+using namespace ivi;
 
-Matrix kjb::fourier_basis(size_t D, size_t num_basis_funcs)
+Matrix ivi::fourier_basis(size_t D, size_t num_basis_funcs)
 {
     size_t nb = std::min(num_basis_funcs, D);
 

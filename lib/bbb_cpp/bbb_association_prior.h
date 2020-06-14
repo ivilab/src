@@ -26,7 +26,7 @@
 #include "bbb_cpp/bbb_activity_library.h"
 
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -57,7 +57,7 @@ private:
 /** @brief  Draw a sample from an association prior. */
 Association sample(const Association_prior& prior);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_ASSOCIATION_PRIOR_H */
 

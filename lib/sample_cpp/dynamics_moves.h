@@ -1,5 +1,5 @@
 
-/* $Id: dynamics_moves.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: dynamics_moves.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -26,7 +26,7 @@
 #include <st_cpp/st_parapiped.h>
 #include <camera_cpp/perspective_camera.h>
 
-namespace kjb {
+namespace ivi {
 
 enum Parapiped_camera_dynamics_params {
     PCD_PARAPIPED_X = 0,
@@ -46,8 +46,8 @@ class Parapiped_camera_dynamics : public Likelihood_dynamics
 public :
     Parapiped_camera_dynamics
     (
-        const kjb::Vector & ideltas,
-        const kjb::Vector & ietas,
+        const ivi::Vector & ideltas,
+        const ivi::Vector & ietas,
         double  (*icompute_likelihood)(Parametric_parapiped & pp,Perspective_camera & c),
         void  (*get_pp_and_camera)(Parametric_parapiped & pp, Perspective_camera & c),
         void  (*log_results)(const Parametric_parapiped & pp, const Perspective_camera & c, double ll),
@@ -83,8 +83,8 @@ class Parapiped_stretch_dynamics : public Likelihood_dynamics
 public:
     Parapiped_stretch_dynamics
     (
-        const kjb::Vector & ideltas,
-        const kjb::Vector & ietas,
+        const ivi::Vector & ideltas,
+        const ivi::Vector & ietas,
         double  (*icompute_likelihood)(Parametric_parapiped & pp,Perspective_camera & c),
         void  (*get_pp_and_camera)(Parametric_parapiped & pp, Perspective_camera & c),
         void  (*log_results)(const Parametric_parapiped & pp, const Perspective_camera & c, double ll),
@@ -123,8 +123,8 @@ class Focal_scale_dynamics : public Likelihood_dynamics
 public:
     Focal_scale_dynamics
     (
-        const kjb::Vector & ideltas,
-        const kjb::Vector & ietas,
+        const ivi::Vector & ideltas,
+        const ivi::Vector & ietas,
         double  (*icompute_likelihood)(Parametric_parapiped & pp,Perspective_camera & c),
         void  (*get_pp_and_camera)(Parametric_parapiped & pp, Perspective_camera & c),
         void  (*log_results)(const Parametric_parapiped & pp, const Perspective_camera & c, double ll),

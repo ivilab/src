@@ -101,7 +101,7 @@ int compare_pixel(const void *_pixel1, const void *_pixel2)
  * -----------------------------------------------------------------------------
  */
 
-int mode_filter(KJB_image_vector *ivp, KJB_image **output_image)
+int mode_filter(IVI_image_vector *ivp, IVI_image **output_image)
 {
   int i, j, k;
   int cur_count, max_count;
@@ -125,7 +125,7 @@ int mode_filter(KJB_image_vector *ivp, KJB_image **output_image)
    *  3. Find the most popular pixel of that array 
    *  4. Copy it to the corresponding i-j in the mode image.
    *  5. Go back to step 1 until all pixels have been copied. */
-  array_of_pixels = (Pixel *)kjb_malloc(sizeof(Pixel)*ivp->length);
+  array_of_pixels = (Pixel *)ivi_malloc(sizeof(Pixel)*ivp->length);
 
   for (i = 0; i < ivp->images[0]->num_rows; i++)
   {
@@ -135,7 +135,7 @@ int mode_filter(KJB_image_vector *ivp, KJB_image **output_image)
       {
         memcpy(&(array_of_pixels[k]), &(ivp->images[k]->pixels[i][j]), sizeof(Pixel));
       }
-      ERE(kjb_sort(array_of_pixels, ivp->length, sizeof(Pixel), compare_pixel,
+      ERE(ivi_sort(array_of_pixels, ivp->length, sizeof(Pixel), compare_pixel,
                    USE_CURRENT_ATN_HANDLING));
 
       /* Find the most popular pixel */
@@ -174,7 +174,7 @@ int mode_filter(KJB_image_vector *ivp, KJB_image **output_image)
     }  
   }
 
-  kjb_free(array_of_pixels);
+  ivi_free(array_of_pixels);
 
   return NO_ERROR;
 }

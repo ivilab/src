@@ -23,7 +23,7 @@ const char* FNAME = "temp_io_matrix";
 
 void test_read_write_int_matrix()
 {
-    using namespace kjb;
+    using namespace ivi;
     
     Int_matrix mat(2,3);
     mat(0,0) = 1;
@@ -49,12 +49,12 @@ void test_read_write_int_matrix()
     Matrix_stream_io::read_int_matrix(in, mat2);
     
     TEST_TRUE(mat == mat2);
-    kjb_c::kjb_unlink( FNAME );
+    ivi_c::ivi_unlink( FNAME );
 }
 
 int main(int /* argc */, char ** /* argv */)
 {
-    TEST_FALSE( kjb_c::is_file( FNAME ) ); // that name ought to be unused now
+    TEST_FALSE( ivi_c::is_file( FNAME ) ); // that name ought to be unused now
 
     test_read_write_int_matrix();
     RETURN_VICTORIOUSLY(); 

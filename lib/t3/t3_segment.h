@@ -1,5 +1,5 @@
 
-/* $Id: t3_segment.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: t3_segment.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -19,7 +19,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -109,14 +109,14 @@ int  t3_set_segmentation_options(const char* option, const char* value);
 
 int  t3_segment_image
 (
-    const KJB_image*  ip,
+    const IVI_image*  ip,
     const Int_matrix* initial_region_map,
     Segmentation_t3** segmentation_ptr_ptr
 );
 
 int  t3_resegment_image
 (
-    const KJB_image*  ip,
+    const IVI_image*  ip,
     const Int_matrix* region_map_mp,
     Segmentation_t3** segmentation_ptr_ptr
 );
@@ -132,61 +132,61 @@ void t3_free_segmentation       (Segmentation_t3* segmentation_ptr);
 #ifdef OBSOLETE
 int  t3_image_draw_segmentation
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Segmentation_t3* segmentation_ptr,
-    KJB_image**      out_ip_list
+    IVI_image**      out_ip_list
 );
 
 int  t3_image_draw_segments_and_outside_boundaries
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Segmentation_t3* segmentation_ptr,
-    KJB_image**      out_ipp
+    IVI_image**      out_ipp
 );
 #endif
 
 int  t3_image_draw_image_segments
 (
-    KJB_image*             ip,
+    IVI_image*             ip,
     const Segmentation_t3* segmentation_ptr
 );
 
 int  t3_image_draw_image_segment_outside_boundaries
 (
-    KJB_image*             ip,
+    IVI_image*             ip,
     const Segmentation_t3* segmentation_ptr
 );
 
 int  t3_image_draw_image_segment_outside_boundaries_2
 (
-    KJB_image*             ip,
+    IVI_image*             ip,
     const Segmentation_t3* segmentation_ptr
 );
 
 int  t3_image_draw_image_segment_boundaries
 (
-    KJB_image*             ip,
+    IVI_image*             ip,
     const Segmentation_t3* segmentation_ptr,
     int                    width
 );
 
 int t3_image_draw_image_segment_fancy_boundaries
 (
-    KJB_image*          ip,
+    IVI_image*          ip,
     const Segmentation_t3* segmentation_ptr,
     int                 width
 );
 
 int  t3_image_draw_image_segment_boundaries_2
 (
-    KJB_image*             ip,
+    IVI_image*             ip,
     const Segmentation_t3* segmentation_ptr,
     int                    width
 );
 
 int  t3_image_draw_non_segments
 (
-    KJB_image*             ip,
+    IVI_image*             ip,
     const Segmentation_t3* segmentation_ptr,
     int                    R,
     int                    G,
@@ -195,7 +195,7 @@ int  t3_image_draw_non_segments
 
 int  t3_image_draw_image_segment_neighbours
 (
-    KJB_image*             ip,
+    IVI_image*             ip,
     const Segmentation_t3* segmentation_ptr,
     int                    width,
     int                    R,

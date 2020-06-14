@@ -1,4 +1,4 @@
-/* $Id: n_svd.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: n_svd.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -23,12 +23,12 @@
 #include <n/n_svd.h>
 #include <l_cpp/l_util.h>
 
-namespace kjb
+namespace ivi
 {
 
-void Svd::compute_svd( const kjb_c::Matrix* pa )
+void Svd::compute_svd( const ivi_c::Matrix* pa )
 {
-    KJB( ETX( do_svd(
+    IVI( ETX( do_svd(
             pa,
             & mat_u.get_underlying_representation_with_guilt(),
             & vec_d.get_underlying_representation_with_guilt(),
@@ -47,7 +47,7 @@ Svd::Svd( const Matrix& mat_a )
     compute_svd( mat_a );
 }
 
-Svd::Svd( const kjb_c::Matrix* pa )
+Svd::Svd( const ivi_c::Matrix* pa )
 {
     compute_svd( pa );
 }
@@ -80,4 +80,4 @@ Matrix Svd::reconstruction() const
     return mat_u * create_diagonal_matrix( vec_d ) * mat_vt;
 }
 
-} // namespace kjb
+} // namespace ivi

@@ -1,4 +1,4 @@
-/* $Id: gr_polygon_renderer.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_polygon_renderer.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #include "l/l_bits.h"
 
 
-using namespace kjb;
+using namespace ivi;
 
 
 /** Does not set color or material effects.
@@ -36,7 +36,7 @@ using namespace kjb;
  */
 void GL_Polygon_Renderer::wire_render(const Polygon & p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     if(p.normal.get_length() != 0)
     {
         ASSERT(fabs(p.normal[3] - 1.0) < 1.0e-8);
@@ -54,7 +54,7 @@ void GL_Polygon_Renderer::wire_render(const Polygon & p)
     }
     glEnd();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -69,8 +69,8 @@ void GL_Polygon_Renderer::wire_render(const Polygon & p)
 */
 unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids(const Polygon &p, unsigned int start_id)
 {
-    using namespace kjb_c;
-#ifdef KJB_HAVE_OPENGL
+    using namespace ivi_c;
+#ifdef IVI_HAVE_OPENGL
     unsigned int pixel_color;
 
     if(p.normal.get_length() != 0)
@@ -84,7 +84,7 @@ unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids(const Polygon 
     for (i = 0; i < (p.pts.size() - 1); i++)
     {
         pixel_color = start_id;
-        if(! kjb_is_bigendian())
+        if(! ivi_is_bigendian())
         {
             bswap_u32((uint32_t *) &(pixel_color));
         }
@@ -96,7 +96,7 @@ unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids(const Polygon 
     if(p.pts.size() > 0)
     {
         pixel_color = start_id;
-        if(! kjb_is_bigendian())
+        if(! ivi_is_bigendian())
         {
             bswap_u32((uint32_t *) &(pixel_color));
         }
@@ -108,7 +108,7 @@ unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids(const Polygon 
 
     return start_id;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -128,9 +128,9 @@ unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids_16bits
     unsigned int start_id
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
     if(p.normal.get_length() != 0)
     {
@@ -143,7 +143,7 @@ unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids_16bits
     for (i = 0; i < (p.pts.size() - 1); i++)
     {
 
-        if(! kjb_is_bigendian())
+        if(! ivi_is_bigendian())
         {
             glColor4ub(0, 0, start_id&0xFF, start_id>>8&0xFF);
         }
@@ -157,7 +157,7 @@ unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids_16bits
     }
     if(p.pts.size() > 0)
     {
-        if(! kjb_is_bigendian())
+        if(! ivi_is_bigendian())
         {
             glColor4ub(0, 0, start_id&0xFF, start_id>>8&0xFF);
         }
@@ -172,16 +172,16 @@ unsigned int GL_Polygon_Renderer::wire_render_with_sequential_ids_16bits
 
     return start_id;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void GL_Polygon_Renderer::solid_render_with_bases(const Polygon & p, unsigned int base1, unsigned int base2)
 {
-    using namespace kjb_c;
-#ifdef KJB_HAVE_OPENGL
+    using namespace ivi_c;
+#ifdef IVI_HAVE_OPENGL
 
-    if(! kjb_is_bigendian())
+    if(! ivi_is_bigendian())
     {
         glColor4ub(base1&0xFF, base2&0xFF, 0, 0);
     }
@@ -202,7 +202,7 @@ void GL_Polygon_Renderer::solid_render_with_bases(const Polygon & p, unsigned in
     }
     glEnd();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -216,7 +216,7 @@ void GL_Polygon_Renderer::solid_render_with_bases(const Polygon & p, unsigned in
  */
 void GL_Polygon_Renderer::wire_occlude_render(const Polygon & p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glClear(GL_STENCIL_BUFFER_BIT);
@@ -254,7 +254,7 @@ void GL_Polygon_Renderer::wire_occlude_render(const Polygon & p)
 
     glColorMask(color_mask[0], color_mask[1], color_mask[2], color_mask[3]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -265,7 +265,7 @@ void GL_Polygon_Renderer::wire_occlude_render(const Polygon & p)
  */
 void GL_Polygon_Renderer::solid_occlude_render(const Polygon & p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLboolean color_mask[4];
     glGetBooleanv(GL_COLOR_WRITEMASK, color_mask);
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -281,7 +281,7 @@ void GL_Polygon_Renderer::solid_occlude_render(const Polygon & p)
 
     glColorMask(color_mask[0], color_mask[1], color_mask[2], color_mask[3]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -291,7 +291,7 @@ void GL_Polygon_Renderer::solid_occlude_render(const Polygon & p)
  *  */
 void GL_Polygon_Renderer::solid_render(const Polygon & p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     if(p.normal.get_length() != 0)
     {
         ASSERT(fabs(p.normal[3] - 1.0) < 1.0e-8);
@@ -305,7 +305,7 @@ void GL_Polygon_Renderer::solid_render(const Polygon & p)
     }
     glEnd();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -319,8 +319,8 @@ void GL_Polygon_Renderer::solid_render(const Polygon & p)
  */
 void GL_Polygon_Renderer::project(Polygon & p)
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb_c;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi_c;
 
     GLdouble glM[16] = {0};
 
@@ -365,7 +365,7 @@ void GL_Polygon_Renderer::project(Polygon & p)
     }
 
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -379,8 +379,8 @@ void GL_Polygon_Renderer::project(Polygon & p)
  */
 void GL_Polygon_Renderer::project(Polygon & p, const Matrix & M, double width, double height)
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb_c;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi_c;
 
     for (unsigned int i = 0; i < p.pts.size(); i++)
     {
@@ -402,6 +402,6 @@ void GL_Polygon_Renderer::project(Polygon & p, const Matrix & M, double width, d
     }
 
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }

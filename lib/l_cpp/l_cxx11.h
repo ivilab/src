@@ -19,32 +19,32 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_L_CPP_L_CXX11_H
-#define KJB_L_CPP_L_CXX11_H
+#ifndef IVI_L_CPP_L_CXX11_H
+#define IVI_L_CPP_L_CXX11_H
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
 #include <utility>
 #include <type_traits>
-namespace kjb { // passthrough
+namespace ivi { // passthrough
     template <typename T> 
     inline typename std::remove_reference<T>::type&& move(T&& v) 
     {
         return std::move(v); 
     }
 
-#ifdef KJB_HAVE_CXX14
+#ifdef IVI_HAVE_CXX14
     template <typename T> 
     inline constexpr typename  std::remove_reference<T>::type&& move(T&& v) 
     { 
         return std::move(v); 
     }
-#endif /* KJB_HAVE_CXX14 */
+#endif /* IVI_HAVE_CXX14 */
 }
 
-#define KJB_STATIC_ASSERT(x,y) static_assert(x,y)
+#define IVI_STATIC_ASSERT(x,y) static_assert(x,y)
 
-#else /* !KJB_HAVE_CXX11 */
-namespace kjb { // C++11 emulation
+#else /* !IVI_HAVE_CXX11 */
+namespace ivi { // C++11 emulation
     template <typename T>
     inline T& move(T& v) { return v; }
 
@@ -52,7 +52,7 @@ namespace kjb { // C++11 emulation
     inline const T& move(const T& v) { return v; }
 }
 
-#define KJB_STATIC_ASSERT(x,y) typedef char __STATIC_ASSERT__[( x )?1:-1]
-#endif /* KJB_HAVE_CXX11 */
+#define IVI_STATIC_ASSERT(x,y) typedef char __STATIC_ASSERT__[( x )?1:-1]
+#endif /* IVI_HAVE_CXX11 */
 
-#endif /* KJB_L_CPP_L_CXX11_H */
+#endif /* IVI_L_CPP_L_CXX11_H */

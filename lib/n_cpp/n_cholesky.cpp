@@ -22,9 +22,9 @@
 #include <m_cpp/m_matrix.h>
 #include <cmath>
 
-using namespace kjb;
+using namespace ivi;
 
-double kjb::log_det(const Matrix& M)
+double ivi::log_det(const Matrix& M)
 {
     Matrix L = cholesky_decomposition(M);
 

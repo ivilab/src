@@ -28,7 +28,7 @@
 #include <cmath>
 #include <boost/function.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 /**
@@ -295,7 +295,7 @@ double Likelihood<Track>::at_track(const Track& track) const
     return log_pdf(mll, Y);
 }
 
-}} //namespace kjb::mcmcda
+}} //namespace ivi::mcmcda
 
 #endif /*MCMCDA_LIKELIHOOD_H_INCLUDED */
 

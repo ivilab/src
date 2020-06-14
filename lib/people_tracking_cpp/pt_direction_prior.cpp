@@ -15,7 +15,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_direction_prior.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_direction_prior.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_direction_prior.h"
@@ -39,8 +39,8 @@
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 double Direction_prior::operator()(const Scene& scene) const
 {
@@ -85,7 +85,7 @@ double Direction_prior::local(const Target& target, size_t t) const
     //const Angle_trajectory& atraj = target.wangle_trajectory();
     int sf = target.get_start_time();
     int ef = target.get_end_time();
-    KJB(ASSERT(ef != -1 && sf != -1));
+    IVI(ASSERT(ef != -1 && sf != -1));
     ASSERT(m_local_sz % 2 != 0);
 
     // target too short -- use regular prior
@@ -176,7 +176,7 @@ double Face_direction_prior::local(const Target& target, size_t t) const
     const Trajectory& traj = target.trajectory();
     int sf = target.get_start_time();
     int ef = target.get_end_time();
-    KJB(ASSERT(ef != -1 && sf != -1));
+    IVI(ASSERT(ef != -1 && sf != -1));
     ASSERT(m_local_sz % 2 != 0);
 
     // target too short -- use regular prior

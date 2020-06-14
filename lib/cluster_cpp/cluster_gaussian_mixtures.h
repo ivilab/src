@@ -17,10 +17,10 @@
 |     Jinyan Guan
 |
 * =========================================================================== */
-/* $Id: cluster_gaussian_mixtures.h 21287 2017-03-06 19:50:38Z jguan1 $ */
+/* $Id: cluster_gaussian_mixtures.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_GAUSSIAN_MIXTURE_COMPONENT_H
-#define KJB_GAUSSIAN_MIXTURE_COMPONENT_H
+#ifndef IVI_GAUSSIAN_MIXTURE_COMPONENT_H
+#define IVI_GAUSSIAN_MIXTURE_COMPONENT_H
 
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_matrix.h>
@@ -36,7 +36,7 @@
 
 #define DEFAULT_CLUSTER 3
 
-namespace kjb {
+namespace ivi {
 
 template<class Data>
 class Gaussian_mixtures
@@ -400,7 +400,7 @@ public:
             {
                 std::string msg("Log marginal should not be computed"
                         "for non positive clusters.");
-                KJB_THROW_2(Runtime_error, msg);
+                IVI_THROW_2(Runtime_error, msg);
             }
         }
         if(cluster_cache_dirty_) update_cluster_cache(data);
@@ -1135,6 +1135,6 @@ void Gaussian_mixtures<Data>::update_data_priors
     }
     data_prior_cache_dirty_ = false;
 } 
-}  //namespace kjb
+}  //namespace ivi
 
-#endif // KJB_GAUSSIAN_MIXTURE_COMPONENT_H
+#endif // IVI_GAUSSIAN_MIXTURE_COMPONENT_H

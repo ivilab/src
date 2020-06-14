@@ -60,8 +60,8 @@
  */
 
 
-#ifndef KJB_PARAPIPED_H
-#define KJB_PARAPIPED_H
+#ifndef IVI_PARAPIPED_H
+#define IVI_PARAPIPED_H
 
 #include <iosfwd>
 #include <vector>
@@ -72,7 +72,7 @@
 #include <gr_cpp/gr_polymesh_renderer.h>
 #include <l_cpp/l_int_matrix.h>
 
-namespace kjb {
+namespace ivi {
 
 
 /** 
@@ -80,7 +80,7 @@ namespace kjb {
  *
  * @brief Parallelepiped: a hexahedron of which each face is a parallelegram.
  */
-class Parapiped : public kjb::Polymesh
+class Parapiped : public ivi::Polymesh
 {
     public:
 
@@ -97,12 +97,12 @@ class Parapiped : public kjb::Polymesh
         /** @brief Constructs a parallelepiped. */
         Parapiped
         (
-            const kjb::Vector & p1,
-            const kjb::Vector & p2,
-            const kjb::Vector & p3,
-            const kjb::Vector & p4
+            const ivi::Vector & p1,
+            const ivi::Vector & p2,
+            const ivi::Vector & p3,
+            const ivi::Vector & p4
         )
-        throw (kjb::Illegal_argument);
+        throw (ivi::Illegal_argument);
 
 
         /** @brief Constructs a parallelepiped by copying another. */
@@ -110,13 +110,13 @@ class Parapiped : public kjb::Polymesh
 
 
         /** @brief Reads a parallelepiped from an input file. */
-        Parapiped(const char* fname) throw (kjb::Illegal_argument,
-                kjb::IO_error);
+        Parapiped(const char* fname) throw (ivi::Illegal_argument,
+                ivi::IO_error);
 
 
         /** @brief Reads a parallelepiped from an input stream. */
-        Parapiped(std::istream& in) throw (kjb::Illegal_argument,
-                kjb::IO_error);
+        Parapiped(std::istream& in) throw (ivi::Illegal_argument,
+                ivi::IO_error);
 
 
         /** @brief Deletes this parallelepiped. */
@@ -131,33 +131,33 @@ class Parapiped : public kjb::Polymesh
         virtual Parapiped* clone() const;
 
         /** @brief Transforms this parallelepiped */
-        virtual void transform(const kjb::Matrix & M)
-            throw (kjb::Illegal_argument);
+        virtual void transform(const ivi::Matrix & M)
+            throw (ivi::Illegal_argument);
 
 
         /** @brief Returns an indexed point defining this parapiped. */
-        const kjb::Vector & get_point(size_t i) const
-            throw (kjb::Illegal_argument);
+        const ivi::Vector & get_point(size_t i) const
+            throw (ivi::Illegal_argument);
 
 
         /** @brief Returns the center vector for this parallelepiped. */
-        const kjb::Vector & get_center() const;
+        const ivi::Vector & get_center() const;
 
         /** @brief Adds a face to this parapiped -> Not implemented here,
          * it will throw an exception, because the use of this method
          * will violate the constraints defining this parapiped
          */
-        virtual void add_face(const Polygon & face) throw (kjb::Illegal_argument);
+        virtual void add_face(const Polygon & face) throw (ivi::Illegal_argument);
 
 
         /** @brief Reads this parallelepiped from an input stream. */
-        virtual void read(std::istream& in) throw (kjb::IO_error,
-                kjb::Illegal_argument);
+        virtual void read(std::istream& in) throw (ivi::IO_error,
+                ivi::Illegal_argument);
 
 
         /** @brief Writes this parallelepiped to an output stream. */
         virtual void write(std::ostream& out) const
-            throw (kjb::IO_error);
+            throw (ivi::IO_error);
 
         /** @brief reset the points of this parapiped */
         void set_points
@@ -173,7 +173,7 @@ class Parapiped : public kjb::Polymesh
          *  of the parallelepiped
          */
         virtual unsigned int adjacent_face(unsigned int f, unsigned int e) const
-                       throw (Index_out_of_bounds,KJB_error);
+                       throw (Index_out_of_bounds,IVI_error);
 
         void draw_orientation_map() const;
 
@@ -227,14 +227,14 @@ class Parapiped : public kjb::Polymesh
     protected:
 
         /** @brief Points defining this parapiped. */
-        std::vector<kjb::Vector > points;
+        std::vector<ivi::Vector > points;
 
         /** 
          * @brief Center of this parallelepiped.
          * 
          * Calculated as the average of the face centroids.
          */
-        kjb::Vector center;
+        ivi::Vector center;
 
     private:
 

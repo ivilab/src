@@ -1,4 +1,4 @@
-/* $Id: orientation_map_likelihood.cpp 10707 2011-09-29 20:05:56Z predoehl $ */
+/* $Id: orientation_map_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -18,4 +18,4 @@
  * =========================================================================== */
 
 #include "likelihood_cpp/orientation_map_likelihood.h"
-using namespace kjb;
+using namespace ivi;

@@ -46,7 +46,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
 #include "wrap_clfft/fft_internal.h"
 #include "wrap_clfft/clFFT.h"
 #include <stdlib.h>
@@ -406,4 +406,4 @@ clFFT_1DTwistPlannar(clFFT_Plan Plan, cl_command_queue queue, cl_mem array_real,
 	return err;	
 }
 
-#endif // KJB_HAVE_OPENCL
+#endif // IVI_HAVE_OPENCL

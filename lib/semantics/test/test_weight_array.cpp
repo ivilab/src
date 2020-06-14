@@ -1,4 +1,4 @@
-/* $Id: test_weight_array.cpp 17426 2014-08-30 00:36:27Z predoehl $ */
+/* $Id: test_weight_array.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*!
  * @file test_weight_array.cpp
@@ -12,12 +12,12 @@
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
     
     typedef boost::array<double, 3> Arr3;
     typedef boost::array<double, 5> Arr5;
-    typedef kjb::Weight_array<5> WA5;
-    typedef kjb::Weight_array<3> WA3;
+    typedef ivi::Weight_array<5> WA5;
+    typedef ivi::Weight_array<3> WA3;
     typedef WA5::Filter Filter;
     typedef boost::array<WA5, 3> WAA;
     size_t errors = 0;

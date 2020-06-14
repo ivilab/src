@@ -1,4 +1,4 @@
-/* $Id: sample_step.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: sample_step.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -157,7 +157,7 @@ Step_log<Model> Abstract_mh_step<Model, Proposer>::run_step(Model& m, double lt_
     // compute acceptance probability
     accept_prob = (lt_m_p - lt_m + q_m - q_m_p) / get_temperature();
 
-    double u = std::log(kjb::sample(kjb::Uniform_distribution(0, 1)));
+    double u = std::log(ivi::sample(ivi::Uniform_distribution(0, 1)));
 
     bool accepted;
 
@@ -759,7 +759,7 @@ public:
      * leapfrom simulation of dynamics.  This is useful to apply constraints
      * to the model and/or momentum after they've been perturbed
      */
-    virtual void post_move_callback(Model& /* q */, kjb::Vector& /* p */) const
+    virtual void post_move_callback(Model& /* q */, ivi::Vector& /* p */) const
     {
         return; // no-op
     }
@@ -785,7 +785,7 @@ protected:
     /**
      * @brief   Momentum
      */
-    mutable kjb::Vector p;
+    mutable ivi::Vector p;
 
     /**
      * @brief Optimization constants. Set to false for true MCMC.
@@ -834,12 +834,12 @@ Step_log<Model> Abstract_hmc_step<Model, CONSTRAINED_TARGET, INCLUDE_ACCEPT_STEP
     // Sample new momentum -- using a partial update.
     // Note: when m_alpha = 0 this algorithm becomes regular HMC
     p *= m_alpha;
-    p += sqrt(1 - m_alpha * m_alpha) * kjb::sample(kjb::MV_gaussian_distribution(hmc_dim)) * sqrt(m_temperature);
+    p += sqrt(1 - m_alpha * m_alpha) * ivi::sample(ivi::MV_gaussian_distribution(hmc_dim)) * sqrt(m_temperature);
 
     // Compute grad_U (which is -grad(log_target))
     // and multiply times epsilon (grad_U never appears alone)
-    kjb::Vector epsilons = get_step_size(q);
-    kjb::Vector grad_x_eps = -1.0 * compute_gradient(q);
+    ivi::Vector epsilons = get_step_size(q);
+    ivi::Vector grad_x_eps = -1.0 * compute_gradient(q);
     std::transform(grad_x_eps.begin(), grad_x_eps.end(), epsilons.begin(),
                    grad_x_eps.begin(), std::multiplies<double>());
 
@@ -849,7 +849,7 @@ Step_log<Model> Abstract_hmc_step<Model, CONSTRAINED_TARGET, INCLUDE_ACCEPT_STEP
 
     Model q_star = q;
 
-    kjb::Vector p_star  = p;
+    ivi::Vector p_star  = p;
     if(m_first_p_full)
     {
         // OPTIMIZATION BRANCH
@@ -871,11 +871,11 @@ Step_log<Model> Abstract_hmc_step<Model, CONSTRAINED_TARGET, INCLUDE_ACCEPT_STEP
     }
 
     // needed for constraints
-    kjb::Vector lower_bounds;
-    kjb::Vector upper_bounds;
+    ivi::Vector lower_bounds;
+    ivi::Vector upper_bounds;
 
     // Alternate full steps for position and momentum   
-    kjb::Vector etp(epsilons.size());
+    ivi::Vector etp(epsilons.size());
     for(int i = 0; i < m_num_dynamics_steps; i++)
     {
         // Perform a full update of the parameters
@@ -998,7 +998,7 @@ Step_log<Model> Abstract_hmc_step<Model, CONSTRAINED_TARGET, INCLUDE_ACCEPT_STEP
         accept_prob = 0.00;
     }
 
-    double r = std::log(kjb::sample(kjb::Uniform_distribution(0, 1)));
+    double r = std::log(ivi::sample(ivi::Uniform_distribution(0, 1)));
     bool accepted;
     double lt_final;
 
@@ -1187,7 +1187,7 @@ public:
 //        return *this;
 //    }
 
-    void set_post_move_callback(const boost::function2<void, Model&, kjb::Vector&>& f)
+    void set_post_move_callback(const boost::function2<void, Model&, ivi::Vector&>& f)
     {
         m_post_move_callback = f;
     }
@@ -1217,7 +1217,7 @@ public:
 
     virtual const Get_upper_bounds& get_upper_bounds_function() const{ return m_get_upper_bounds; }
 
-    virtual void post_move_callback(Model& q, kjb::Vector& p) const
+    virtual void post_move_callback(Model& q, ivi::Vector& p) const
     {
         if(m_post_move_callback)
             return m_post_move_callback(q,p);
@@ -1237,7 +1237,7 @@ protected:
     Get_lower_bounds m_get_lower_bounds;
     Get_upper_bounds m_get_upper_bounds;
 
-    boost::function2<void, Model&, kjb::Vector&> m_post_move_callback;
+    boost::function2<void, Model&, ivi::Vector&> m_post_move_callback;
 };
 
 /**

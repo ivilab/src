@@ -1,4 +1,4 @@
-/* $Id: test_von_mises_fisher.cpp 17739 2014-10-14 12:14:54Z ernesto $ */
+/* $Id: test_von_mises_fisher.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -31,38 +31,38 @@
 #include <gui_cpp/gui_viewer.h>
 
 static const size_t D = 3;
-std::vector<kjb::Vector_d<D> > samples;
+std::vector<ivi::Vector_d<D> > samples;
 
 void display()
 {
     glDisable(GL_LIGHTING);
 
     glColor3f(0.3, 0.3, 0.3);
-    kjb::opengl::Sphere().wire_render();
+    ivi::opengl::Sphere().wire_render();
 
     glBegin(GL_POINTS);
     glColor3f(0.0, 0.7, 0.0);
     for(size_t i = 0; i < samples.size(); ++i)
     {
-        kjb::opengl::glVertex(samples[i]);
+        ivi::opengl::glVertex(samples[i]);
     }
     glEnd();
 }
 
-using namespace kjb;
+using namespace ivi;
 int main(int argc, char** argv)
 {
     static const size_t N = 10000;
 
-//    kjb::Vector_d<D> mu = kjb::sample(Uniform_sphere_distribution<D>());
-    kjb::Vector_d<D> mu = kjb::create_unit_vector<D>(D-1);
+//    ivi::Vector_d<D> mu = ivi::sample(Uniform_sphere_distribution<D>());
+    ivi::Vector_d<D> mu = ivi::create_unit_vector<D>(D-1);
     double kappa = 50;
 
-    kjb::Von_mises_fisher_distribution<D> dist(mu, kappa);
-    kjb::sample(dist, N, std::back_inserter(samples));
+    ivi::Von_mises_fisher_distribution<D> dist(mu, kappa);
+    ivi::sample(dist, N, std::back_inserter(samples));
 
-    kjb::opengl::Glut_window wnd;
-    kjb::gui::Viewer viewer(500, 500);
+    ivi::opengl::Glut_window wnd;
+    ivi::gui::Viewer viewer(500, 500);
     viewer.attach(wnd);
 
     viewer.add_render_callback(display);

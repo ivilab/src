@@ -1,5 +1,5 @@
 
-/* $Id: m_debug.h 24322 2019-07-30 23:42:11Z ivilab $ */
+/* $Id: m_debug.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,14 +28,14 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 /* -------------------------------------------------------------------------- */
 
-IMPORT int kjb_debug_level;
+IMPORT int ivi_debug_level;
 
 /* -------------------------------------------------------------------------- */
 
@@ -46,18 +46,18 @@ IMPORT int kjb_debug_level;
  *
  * This macro prints a vector as a row vector, along with the variable name,
  * file, and line number on standard error. Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the behaviour is different. The default level
  * for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -77,7 +77,7 @@ IMPORT int kjb_debug_level;
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define db_rv(X)                                                               \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         EPE(fp_write_row_vector_with_title(X, stderr, ""#X""));                   \
     }
@@ -86,7 +86,7 @@ IMPORT int kjb_debug_level;
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define db_rv(X)                                                               \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         EPE(fp_write_row_vector_with_title(X, stderr, "X"));                      \
     }
@@ -105,18 +105,18 @@ IMPORT int kjb_debug_level;
  *
  * This macro prints a vector as a column vector, along with the variable name,
  * file, and line number on standard error. Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the behaviour is different. The default level
  * for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -136,7 +136,7 @@ IMPORT int kjb_debug_level;
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define db_cv(X)                                                               \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         fp_write_col_vector_with_title(X, stderr, ""#X"");                        \
     }
@@ -144,7 +144,7 @@ IMPORT int kjb_debug_level;
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define db_cv(X)                                                               \
-   if (kjb_debug_level >= 1)                                                   \
+   if (ivi_debug_level >= 1)                                                   \
    {                                                                           \
        fp_write_col_vector_with_title(X, stderr, "X");                            \
    }
@@ -162,7 +162,7 @@ IMPORT int kjb_debug_level;
  *
  * This macro prints a vector as a column vector, to a file in the current
  * directory determined by the variable name.  Its behaviour is a function of
- * the debugging level, which can be set through the option "debug" if the KJB
+ * the debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the behaviour is different. The default level
@@ -191,22 +191,22 @@ IMPORT int kjb_debug_level;
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define file_db_cv(X)                                                               \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         FILE* fp;                                                              \
                                                                                \
         p_stderr("Writing vector "#X" from line %d of %s to file.    \n",      \
                  __LINE__, __FILE__);                                          \
-        fp = kjb_fopen(""#X"", "w");                                           \
+        fp = ivi_fopen(""#X"", "w");                                           \
                                                                                \
         if (fp == NULL)                                                        \
         {                                                                      \
-            kjb_print_error();                                                 \
+            ivi_print_error();                                                 \
         }                                                                      \
         else                                                                   \
         {                                                                      \
             EPE(fp_write_col_vector_with_title(X, fp, ""#X""));                   \
-            EPE(kjb_fclose(fp));                                               \
+            EPE(ivi_fclose(fp));                                               \
         }                                                                      \
     }
 
@@ -228,18 +228,18 @@ IMPORT int kjb_debug_level;
  *
  * This macro prints a matrix, along with the variable name, file, and line
  * number on standard error. Its behaviour is a function of the debugging level,
- * which can be set through the option "debug" if the KJB library options are
+ * which can be set through the option "debug" if the IVI library options are
  * being made available to the user. The macro is available for both development
  * and production code, but since the default debug level is different in the
  * two cases, the behaviour is different. The default level for development code
  * is 2, whereas for production code it is 0.
  *
  * If the debug level is 1 (or more), then the output is printed to standard
- * error using regular KJB library output routines. Note that this is different
+ * error using regular IVI library output routines. Note that this is different
  * from more basic debug macros where a debug level of 1 is used to print using
- * system routines and a debug level of 2 or more is used for printing using KJB
+ * system routines and a debug level of 2 or more is used for printing using IVI
  * library routines. (The special behavour of debug level 1 in the case of the
- * more basic debug macros is provided to help debug the KJB library I/O
+ * more basic debug macros is provided to help debug the IVI library I/O
  * routines themselve).
  *
  * If the debug level is 0 (default for production code), then the output is
@@ -260,7 +260,7 @@ IMPORT int kjb_debug_level;
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define db_mat(X)                                                              \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         EPE(fp_write_matrix_with_title(X, stderr, ""#X""));                    \
     }
@@ -268,7 +268,7 @@ IMPORT int kjb_debug_level;
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define db_mat(X)                                                              \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         EPE(fp_write_matrix_with_title(X, stderr, "X"));                          \
     }
@@ -287,7 +287,7 @@ IMPORT int kjb_debug_level;
  * This macro prints a matrix to a file in the current directory with the same
  * name as the variable.  The file and line number of the matrix being output to
  * the are printed on standard error.  Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the default behaviour is different. The
@@ -317,21 +317,21 @@ IMPORT int kjb_debug_level;
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define file_db_mat(X)                                                         \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         FILE* fp;                                                              \
                                                                                \
         p_stderr("Writing matrix "#X" from line %d of %s to file.    \n",      \
                  __LINE__, __FILE__);                                          \
-        fp = kjb_fopen(""#X"", "w");                                           \
+        fp = ivi_fopen(""#X"", "w");                                           \
                                                                                \
         if (fp == NULL)                                                        \
         {                                                                      \
-            kjb_print_error();                                                 \
+            ivi_print_error();                                                 \
         }                                                                      \
         else                                                                   \
         {                                                                      \
-            if (kjb_debug_level >= 3)                                          \
+            if (ivi_debug_level >= 3)                                          \
             {                                                                  \
                 EPE(fp_write_matrix_full_precision_with_title(X, fp, ""#X""));    \
             }                                                                  \
@@ -339,7 +339,7 @@ IMPORT int kjb_debug_level;
             {                                                                  \
                 EPE(fp_write_matrix_with_title(X, fp, ""#X""));                   \
             }                                                                  \
-            EPE(kjb_fclose(fp));                                               \
+            EPE(ivi_fclose(fp));                                               \
         }                                                                      \
     }
 

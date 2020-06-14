@@ -1,4 +1,4 @@
-/* $Id: st_draw_shape.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: st_draw_shape.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -52,8 +52,8 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_DRAW_SHAPE_H
-#define KJB_DRAW_SHAPE_H
+#ifndef IVI_DRAW_SHAPE_H
+#define IVI_DRAW_SHAPE_H
 
 #include <m_cpp/m_vector.h>
 #include <gr_cpp/gr_opengl.h>
@@ -67,7 +67,7 @@
 #define rad_to_deg 57.2957795
 //      rad_to_deg = 180.0 / M_PI;
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief Uses opengl to draw a cylinder with the given points as the centers 

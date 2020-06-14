@@ -26,7 +26,7 @@
 #include <vector>
 #include <list>
 
-namespace kjb {
+namespace ivi {
 
 // useful typedefs
 typedef Collinear_segment_chain Chain;
@@ -185,7 +185,7 @@ std::pair<Chain, Chain> align_to_x_axis
     double& angle_magnitude
 );
 
-} // namespace kjb
+} // namespace ivi
 
 #endif //EDGE_LINE_SEGMENTS_LIKELIHOOD
 

@@ -18,9 +18,9 @@
 #include <l_cpp/l_exception.h>
 #include <wrap_dtlib_cpp/texture.h>
 
-namespace kjb{
+namespace ivi{
 
-#warning "[Code police] Please don't indent code using tabs, in libkjb."
+#warning "[Code police] Please don't indent code using tabs, in libivi."
 #warning "[Code police] Please use a 4-space indent, instead."
 class Fh_type
 {
@@ -56,7 +56,7 @@ public:
         int padding
     );
 
-    void draw_darts(kjb::Image & img);
+    void draw_darts(ivi::Image & img);
 
     inline unsigned int get_num_darts()
     {
@@ -67,7 +67,7 @@ public:
 
     double compute_score
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & previous_darts,
         std::vector<Fh_type> & new_darts,
         std::vector<bool> changed_darts,
@@ -76,13 +76,13 @@ public:
 
     double compute_score
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts
     );
 
     double compute_score2
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & previous_darts,
         std::vector<Fh_type> & new_darts,
         std::vector<bool> changed_darts,
@@ -91,19 +91,19 @@ public:
 
     double compute_score2
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts
     );
 
     double compute_score3
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts
     );
 
     double compute_score4
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts
     );
 
@@ -114,53 +114,53 @@ public:
 
     void draw_room
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts,
-        kjb::Image & img
+        ivi::Image & img
     );
 
     void draw_room_floor
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts,
-        kjb::Image & img
+        ivi::Image & img
     );
 
     void draw_room_ceiling
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts,
-        kjb::Image & img
+        ivi::Image & img
     );
 
     void draw_room_walls
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts,
-        kjb::Image & img
+        ivi::Image & img
     );
 
     void draw_object
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts,
         unsigned int obj_index,
-        kjb::Image & img
+        ivi::Image & img
     );
 
 
     void draw_object_polymesh
     (
-        const kjb::Int_matrix & map,
+        const ivi::Int_matrix & map,
         std::vector<Fh_type> & new_darts,
         unsigned int obj_index,
         unsigned int polymsh_index,
-        kjb::Image & img
+        ivi::Image & img
     ) const;
 
     double compute_differential
     (
-        const kjb::Matrix & assignment_matrix
+        const ivi::Matrix & assignment_matrix
     ) const;
 
     const std::vector<Image_dart> & get_darts() const { return darts;}
@@ -187,6 +187,6 @@ private:
 
 }; //class Feature_histogram
 
-}//namespace kjb
+}//namespace ivi
 
 #endif 

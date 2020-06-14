@@ -57,19 +57,19 @@ extern "C" {
 #endif
 
 
-/* Default function pointer for kjb_rand */
-static double (*kjb_rand_function)(void) = &kjb_rand_st;
+/* Default function pointer for ivi_rand */
+static double (*ivi_rand_function)(void) = &ivi_rand_st;
 
-/* Default function pointer for kjb_rand_2 */
-static double (*kjb_rand_2_function)(void) = &kjb_rand_2_st;
+/* Default function pointer for ivi_rand_2 */
+static double (*ivi_rand_2_function)(void) = &ivi_rand_2_st;
 
 
 /* -------------------------------------------------------------------------- */
 
 typedef union Seed_union
 {
-    kjb_int32 i32;
-    kjb_uint16 u16[ 2 ];
+    ivi_int32 i32;
+    ivi_uint16 u16[ 2 ];
 }
 Seed_union;
 
@@ -82,10 +82,10 @@ typedef enum Seed_status
 }
 Seed_status;
 
-static int    fs_first_call_to_kjb_rand   = TRUE;
-static int    fs_first_call_to_kjb_rand_2 = TRUE;
-static kjb_uint16 fs_rand_buff[ 3 ] = { 0, 0, 0 };
-static kjb_uint16 fs_initial_rand_buff[ 3 ] = { 0, 0, 0 };
+static int    fs_first_call_to_ivi_rand   = TRUE;
+static int    fs_first_call_to_ivi_rand_2 = TRUE;
+static ivi_uint16 fs_rand_buff[ 3 ] = { 0, 0, 0 };
+static ivi_uint16 fs_initial_rand_buff[ 3 ] = { 0, 0, 0 };
 static Seed_status fs_initial_seed_status = SEEDED_BY_DEFAULT;
 static Seed_status fs_initial_seed_status_2 = SEEDED_BY_DEFAULT;
 static long fs_initial_seed_2;
@@ -149,8 +149,8 @@ int set_random_options(const char* option, const char* value)
          || match_pattern(lc_option, "seed")
        )
     {
-        kjb_int32 first_value;
-        kjb_int32 second_value;
+        ivi_int32 first_value;
+        ivi_int32 second_value;
         Seed_union first_seed;
 
 
@@ -170,7 +170,7 @@ int set_random_options(const char* option, const char* value)
             first_value = first_seed.i32;
 #endif
 
-            second_value = (kjb_int32)((kjb_int16)fs_rand_buff[ 2 ]);
+            second_value = (ivi_int32)((ivi_int16)fs_rand_buff[ 2 ]);
 
             if (value[ 0 ] == '?')
             {
@@ -187,7 +187,7 @@ int set_random_options(const char* option, const char* value)
 
             if (value[ 0 ] == '\0')
             {
-                if (fs_first_call_to_kjb_rand)
+                if (fs_first_call_to_ivi_rand)
                 {
                     ERE(pso("Random number generator has not been used.\n"));
                 }
@@ -207,7 +207,7 @@ int set_random_options(const char* option, const char* value)
                     first_seed.u16[ 1 ] = fs_initial_rand_buff[ 0 ];
                     first_value = first_seed.i32;
 #endif
-                    second_value = (kjb_int32)((kjb_int16)fs_initial_rand_buff[ 2 ]);
+                    second_value = (ivi_int32)((ivi_int16)fs_initial_rand_buff[ 2 ]);
 
                     ERE(pso("Initial random number generator seed was %ld:%ld\n",
                             (long)first_value, (long)second_value));
@@ -257,7 +257,7 @@ int set_random_options(const char* option, const char* value)
                 second_value = 0;
             }
 
-            kjb_seed_rand(first_value, second_value);
+            ivi_seed_rand(first_value, second_value);
         }
         result = NO_ERROR;
     }
@@ -272,7 +272,7 @@ int set_random_options(const char* option, const char* value)
         }
         else if (value[ 0 ] == '?')
         {
-            if (fs_first_call_to_kjb_rand_2)
+            if (fs_first_call_to_ivi_rand_2)
             {
                 ERE(pso("seed-2 = <not set>\n"));
             }
@@ -287,7 +287,7 @@ int set_random_options(const char* option, const char* value)
         }
         else if (value[ 0 ] == '\0')
         {
-            if (fs_first_call_to_kjb_rand_2)
+            if (fs_first_call_to_ivi_rand_2)
             {
                 ERE(pso("Random number generator 2 has not been used.\n"));
             }
@@ -312,7 +312,7 @@ int set_random_options(const char* option, const char* value)
             {
                 ERE(ss1l(value, &seed));
             }
-            kjb_seed_rand_2(seed);
+            ivi_seed_rand_2(seed);
         }
         result = NO_ERROR;
     }
@@ -323,22 +323,22 @@ int set_random_options(const char* option, const char* value)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_rand
+ *                                ivi_rand
  *
  * Returns a random double between 0 and 1.
  *
  * This routine returns a random double between 0 and 1 using erand48(). The
  * seeding of the random number generator is normally exposed to the user
  * through the option "seed". It may also be seeded using the routine
- * kjb_seed_rand(). If the generator is not seeded, then a default seed is used
+ * ivi_seed_rand(). If the generator is not seeded, then a default seed is used
  * (zeros).
  *
  * The form of the seed option value is <value_1>:<value_2>, where value_1 and
  * value_2 are either integers, or the special value "*", which gets converted
  * to the time of day as returned by the routine time(NULL).
  *
- * This routine sets up a different stream of random numbers from kjb_rand_2. In
- * general, the library code uses kjb_rand_2, with kjb_rand being the normal
+ * This routine sets up a different stream of random numbers from ivi_rand_2. In
+ * general, the library code uses ivi_rand_2, with ivi_rand being the normal
  * choice for higher level code. This random number generator is restartable
  * from the seed value obtained by get_rand_seed().
  *
@@ -347,21 +347,21 @@ int set_random_options(const char* option, const char* value)
  * -----------------------------------------------------------------------------
 */
 
-double kjb_rand(void)
+double ivi_rand(void)
 {
-    ASSERT(kjb_rand_function);
-    return (*kjb_rand_function)();
+    ASSERT(ivi_rand_function);
+    return (*ivi_rand_function)();
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_rand_st
+ *                                ivi_rand_st
  *
- * Implementation of kjb_rand for single-threaded runs.
+ * Implementation of ivi_rand for single-threaded runs.
  *
  * Do not call this function unless you really know what you are doing.
- * Normally you should call kjb_rand() instead.
+ * Normally you should call ivi_rand() instead.
  * This function implements a random number generator that relies on erand48
  * and static seeding.  It can have undefined behavior in multi-threaded
  * programs, unless calls are serialized.
@@ -376,24 +376,24 @@ double kjb_rand(void)
 #ifdef UNIX
 #ifndef NeXT
 
-/* NOT next */ double kjb_rand_st(void)
+/* NOT next */ double ivi_rand_st(void)
 /* NOT next */ {
 /* NOT next */     double erand_res;
 
 #ifdef SUN4
 
-/* SUN4 */         double erand48(kjb_uint16[ 3 ]);
+/* SUN4 */         double erand48(ivi_uint16[ 3 ]);
 
 #endif
 
 /* NOT next */
-/* NOT next */     if (fs_first_call_to_kjb_rand)
+/* NOT next */     if (fs_first_call_to_ivi_rand)
 /* NOT next */     {
 /* NOT next */          fs_initial_rand_buff[ 0 ] = fs_rand_buff[ 0 ];
 /* NOT next */          fs_initial_rand_buff[ 1 ] = fs_rand_buff[ 1 ];
 /* NOT next */          fs_initial_rand_buff[ 2 ] = fs_rand_buff[ 2 ];
 /* NOT next */
-/* NOT next */          fs_first_call_to_kjb_rand = FALSE;
+/* NOT next */          fs_first_call_to_ivi_rand = FALSE;
 /* NOT next */     }
 /* NOT next */
 /* NOT next */     erand_res = erand48(fs_rand_buff);
@@ -403,12 +403,12 @@ double kjb_rand(void)
 
 #else
 
-/* next */ double kjb_rand_st(void)
+/* next */ double ivi_rand_st(void)
 /* next */ {
 /* next */
 /* next */
 /* next */
-/* next */     set_bug("kjb_rand needs to be updated.\n");
+/* next */     set_bug("ivi_rand needs to be updated.\n");
 /* next */     return ERROR;
 /* next */ }
 
@@ -416,11 +416,11 @@ double kjb_rand(void)
 #else    /*  Case not UNIX follows */
 #ifdef MS_16_BIT_OS
 
-/* MS_16_BIT_OS */ double kjb_rand_st(long seed)      /* CHECK */
+/* MS_16_BIT_OS */ double ivi_rand_st(long seed)      /* CHECK */
 /* MS_16_BIT_OS */ {
 /* MS_16_BIT_OS */
 /* MS_16_BIT_OS */
-/* MS_16_BIT_OS */     set_bug("kjb_rand needs to be updated.\n");
+/* MS_16_BIT_OS */     set_bug("ivi_rand needs to be updated.\n");
 /* MS_16_BIT_OS */     return ERROR;
 /* MS_16_BIT_OS */ }
 
@@ -430,11 +430,11 @@ double kjb_rand(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_seed_rand_with_tod
+ *                              ivi_seed_rand_with_tod
  *
- * Sets seed for kjb_rand using the current time
+ * Sets seed for ivi_rand using the current time
  *
- * This routine sets the seed for kjb_rand with the current time.  Normally one
+ * This routine sets the seed for ivi_rand with the current time.  Normally one
  * wants to either control the random number seed, or use use the default value
  * of zero. If a semi-random seed is used, then reproducing the results will be
  * very hard! However, if the program has to do something different on each
@@ -449,27 +449,27 @@ double kjb_rand(void)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_seed_rand_with_tod(void)
+void ivi_seed_rand_with_tod(void)
 {
-    kjb_int32 first_value;
-    kjb_int32 second_value;
+    ivi_int32 first_value;
+    ivi_int32 second_value;
 
     first_value = time((time_t *)NULL);
     second_value = time((time_t *)NULL);
 
-    kjb_seed_rand(first_value, second_value);
+    ivi_seed_rand(first_value, second_value);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_seed_rand
+ *                              ivi_seed_rand
  *
- * Sets seed for kjb_rand.
+ * Sets seed for ivi_rand.
  *
- * This routine sets the seed for kjb_rand. See kjb_seed_rand_with_3_short for
+ * This routine sets the seed for ivi_rand. See ivi_seed_rand_with_3_short for
  * an alternate interface. If neither of these functions are not used, then
- * kjb_rand is seeded with 0 at the first invocation, and it is not seeded
+ * ivi_rand is seeded with 0 at the first invocation, and it is not seeded
  * thereafter. However, an interface to this routine is exposed to the user
  * through the option "seed". Thus this routine is not normally used.
  *
@@ -486,7 +486,7 @@ void kjb_seed_rand_with_tod(void)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_seed_rand(kjb_int32 first_seed_value, kjb_int32 second_seed_value)
+void ivi_seed_rand(ivi_int32 first_seed_value, ivi_int32 second_seed_value)
 {
     Seed_union first_seed, second_seed;
 
@@ -504,7 +504,7 @@ void kjb_seed_rand(kjb_int32 first_seed_value, kjb_int32 second_seed_value)
     fs_rand_buff[ 2 ] = second_seed.u16[ 0 ];
 #endif
 
-    if (fs_first_call_to_kjb_rand)
+    if (fs_first_call_to_ivi_rand)
     {
         fs_initial_seed_status = EXTERNALLY_SEEDED;
     }
@@ -517,13 +517,13 @@ void kjb_seed_rand(kjb_int32 first_seed_value, kjb_int32 second_seed_value)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                        kjb_seed_rand_with_3_short
+ *                        ivi_seed_rand_with_3_short
  *
- * Sets seed for kjb_rand.
+ * Sets seed for ivi_rand.
  *
- * This routine sets the seed for kjb_rand. It is an alternated inteface to the
- * seeding process than kjb_seed_rand. If neither of these two function are not
- * used, then kjb_rand is seeded with 0 at the first invocation, and it is not
+ * This routine sets the seed for ivi_rand. It is an alternated inteface to the
+ * seeding process than ivi_seed_rand. If neither of these two function are not
+ * used, then ivi_rand is seeded with 0 at the first invocation, and it is not
  * seeded thereafter. However, an interface to this routine is exposed to the
  * user through the option "seed". Thus this routine is not normally used.
  *
@@ -536,13 +536,13 @@ void kjb_seed_rand(kjb_int32 first_seed_value, kjb_int32 second_seed_value)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_seed_rand_with_3_short(kjb_uint16 *buff)
+void ivi_seed_rand_with_3_short(ivi_uint16 *buff)
 {
     fs_rand_buff[ 0 ] = buff[ 0 ];
     fs_rand_buff[ 1 ] = buff[ 1 ];
     fs_rand_buff[ 2 ] = buff[ 2 ];
 
-    if (fs_first_call_to_kjb_rand)
+    if (fs_first_call_to_ivi_rand)
     {
         fs_initial_seed_status = EXTERNALLY_SEEDED;
     }
@@ -557,12 +557,12 @@ void kjb_seed_rand_with_3_short(kjb_uint16 *buff)
 /* =============================================================================
  *                            get_rand_seed
  *
- * Provides the current seed used by kjb_rand
+ * Provides the current seed used by ivi_rand
  *
- * This routine provides the current seed used by kjb_rand, normally for the
+ * This routine provides the current seed used by ivi_rand, normally for the
  * purposes of restarting the sequence at some point.
  *
- * A user level interface to kjb_seed_rand and get_rand_seed is provided
+ * A user level interface to ivi_seed_rand and get_rand_seed is provided
  * throught the suite of set routines.
  *
  * Returns:
@@ -574,12 +574,12 @@ void kjb_seed_rand_with_3_short(kjb_uint16 *buff)
  * -----------------------------------------------------------------------------
 */
 
-int get_rand_seed(kjb_uint16 *buff)
+int get_rand_seed(ivi_uint16 *buff)
 {
 
 
 #if 0 /* ifdef HOW_IT_WAS */
-    if (fs_first_call_to_kjb_rand)
+    if (fs_first_call_to_ivi_rand)
     {
         set_error("Random generator has not been seeded.");
         return ERROR;
@@ -604,12 +604,12 @@ int get_rand_seed(kjb_uint16 *buff)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_rand_2
+ *                                ivi_rand_2
  *
  * Returns a random double between 0 and 1.
  *
  * This routine returns a random double between 0 and 1 using drand48(). It
- * provides a second stream of random numbers, separate from kjb_rand. If no
+ * provides a second stream of random numbers, separate from ivi_rand. If no
  * other arrangements have been made, then the random number generator is
  * seeded with zero. The generator may be seeded at any point by the user
  * throught the option "seed_2". The seed so specified may be a number, or the
@@ -617,18 +617,18 @@ int get_rand_seed(kjb_uint16 *buff)
  * day.
  *
  * Note:
- *     Normally, the library routines use kjb_rand_2, and the higher level
- *     routines use kjb_rand. Both random number streams can be seeded, but
- *     only kjb_rand can be restarted.
+ *     Normally, the library routines use ivi_rand_2, and the higher level
+ *     routines use ivi_rand. Both random number streams can be seeded, but
+ *     only ivi_rand can be restarted.
  *
  * Index: random, standard library
  *
  * -----------------------------------------------------------------------------
 */
 
-double kjb_rand_2()
+double ivi_rand_2()
 {
-    return (*kjb_rand_2_function)();
+    return (*ivi_rand_2_function)();
 }
 
 
@@ -636,12 +636,12 @@ double kjb_rand_2()
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_rand_2_st
+ *                                ivi_rand_2_st
  *
- * Implementation of kjb_rand_2 for single-threaded runs.
+ * Implementation of ivi_rand_2 for single-threaded runs.
  *
  * Do not call this function unless you really know what you are doing.
- * Internal library functions should call kjb_rand_2() instead.
+ * Internal library functions should call ivi_rand_2() instead.
  * This function IS called by the library's wrapper on pthreads, thus it is
  * not static.
  *
@@ -652,7 +652,7 @@ double kjb_rand_2()
 #ifdef UNIX
 #ifndef NeXT
 
-/* NOT next */ double kjb_rand_2_st(void)
+/* NOT next */ double ivi_rand_2_st(void)
 /* NOT next */ {
 /* NOT next */     double drand_res;
 #ifdef SUN4
@@ -660,7 +660,7 @@ double kjb_rand_2()
 /* SUN4 */         void   srand48(long);
 #endif
 /* NOT next */
-/* NOT next */     if (fs_first_call_to_kjb_rand_2)
+/* NOT next */     if (fs_first_call_to_ivi_rand_2)
 /* NOT next */     {
 /* NOT next */         if (fs_initial_seed_status_2 == SEEDED_BY_DEFAULT)
 /* NOT next */         {
@@ -668,7 +668,7 @@ double kjb_rand_2()
 /* NOT next */             fs_initial_seed_2 = 0;
 /* NOT next */         }
 /* NOT next */
-/* NOT next */         fs_first_call_to_kjb_rand_2 = FALSE;
+/* NOT next */         fs_first_call_to_ivi_rand_2 = FALSE;
 /* NOT next */     }
 /* NOT next */
 /* NOT next */     drand_res = drand48();
@@ -678,7 +678,7 @@ double kjb_rand_2()
 
 #else
 
-/* next */ double kjb_rand_2_st(void)
+/* next */ double ivi_rand_2_st(void)
 /* next */ {
 /* next */     long   rand_res;
 /* next */     double d_rand_res;
@@ -686,7 +686,7 @@ double kjb_rand_2()
 /* next */
 /* next */     UNTESTED_CODE();
 /* next */
-/* next */     if (fs_first_call_to_kjb_rand_2)
+/* next */     if (fs_first_call_to_ivi_rand_2)
 /* next */     {
 /* next */         if (fs_initial_seed_status_2 == SEEDED_BY_DEFAULT)
 /* next */         {
@@ -694,7 +694,7 @@ double kjb_rand_2()
 /* next */             fs_initial_seed_2 = 0;
 /* next */         }
 /* next */
-/* next */         fs_first_call_to_kjb_rand_2 = FALSE;
+/* next */         fs_first_call_to_ivi_rand_2 = FALSE;
 /* next */     }
 /* next */
 /* next */     rand_res = random();
@@ -708,14 +708,14 @@ double kjb_rand_2()
 #else    /*  Case not UNIX follows */
 #ifdef MS_16_BIT_OS
 
-/* MS_16_BIT_OS */ double kjb_rand_2_st(long seed)      /* CHECK */
+/* MS_16_BIT_OS */ double ivi_rand_2_st(long seed)      /* CHECK */
 /* MS_16_BIT_OS */ {
 /* MS_16_BIT_OS */     double drand_res;
 /* MS_16_BIT_OS */
 /* MS_16_BIT_OS */
 /* MS_16_BIT_OS */     UNTESTED_CODE();
 /* MS_16_BIT_OS */
-/* MS_16_BIT_OS */     if (fs_first_call_to_kjb_rand_2)
+/* MS_16_BIT_OS */     if (fs_first_call_to_ivi_rand_2)
 /* MS_16_BIT_OS */     {
 /* MS_16_BIT_OS */         if (fs_initial_seed_status_2 == SEEDED_BY_DEFAULT)
 /* MS_16_BIT_OS */         {
@@ -723,7 +723,7 @@ double kjb_rand_2()
 /* MS_16_BIT_OS */             fs_initial_seed_2 = 0;
 /* MS_16_BIT_OS */         }
 /* MS_16_BIT_OS */
-/* MS_16_BIT_OS */         fs_first_call_to_kjb_rand_2 = FALSE;
+/* MS_16_BIT_OS */         fs_first_call_to_ivi_rand_2 = FALSE;
 /* MS_16_BIT_OS */     }
 /* MS_16_BIT_OS */
 /* MS_16_BIT_OS */     drand_res = (double)rand();
@@ -737,11 +737,11 @@ double kjb_rand_2()
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_seed_rand_2_with_tod
+ *                              ivi_seed_rand_2_with_tod
  *
- * Sets seed for kjb_rand_2 using the current time
+ * Sets seed for ivi_rand_2 using the current time
  *
- * This routine sets the seed for kjb_rand_2 with the current time. Normally one
+ * This routine sets the seed for ivi_rand_2 with the current time. Normally one
  * wants to either control the random number seed, or use use the default value
  * of zero. If a semi-random seed is used, then reproducing the results will be
  * very hard! However, if the program has to do something different on each
@@ -756,24 +756,24 @@ double kjb_rand_2()
  * -----------------------------------------------------------------------------
 */
 
-void kjb_seed_rand_2_with_tod(void)
+void ivi_seed_rand_2_with_tod(void)
 {
     long seed_value;
 
     seed_value = time((time_t *)NULL);
 
-    kjb_seed_rand_2(seed_value);
+    ivi_seed_rand_2(seed_value);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_seed_rand_2
+ *                              ivi_seed_rand_2
  *
- * Sets seed for kjb_rand_2.
+ * Sets seed for ivi_rand_2.
  *
- * This routine sets the seed for kjb_rand_2. If this function is not used,
- * then kjb_rand_2 is seeded with the default value of zero at the first
+ * This routine sets the seed for ivi_rand_2. If this function is not used,
+ * then ivi_rand_2 is seeded with the default value of zero at the first
  * invocation, and it is not seeded thereafter. An interface to this routine is
  * exposed to the user through the option "seed-2".
  *
@@ -789,14 +789,14 @@ void kjb_seed_rand_2_with_tod(void)
 #ifdef UNIX
 #ifndef NeXT
 
-/* NOT next */ void kjb_seed_rand_2(long seed)
+/* NOT next */ void ivi_seed_rand_2(long seed)
 /* NOT next */
 /* NOT next */ {
 #ifdef SUN4
 /* SUN4 */         void srand48(long);
 #endif
 /* NOT next */
-/* NOT next */     if (fs_first_call_to_kjb_rand)
+/* NOT next */     if (fs_first_call_to_ivi_rand)
 /* NOT next */     {
 /* NOT next */         fs_initial_seed_2 = seed;
 /* NOT next */         fs_initial_seed_status_2 = EXTERNALLY_SEEDED;
@@ -811,12 +811,12 @@ void kjb_seed_rand_2_with_tod(void)
 
 #else
 
-/* next */ void kjb_seed_rand_2(long seed)
+/* next */ void ivi_seed_rand_2(long seed)
 /* next */ {
 /* next */     UNTESTED_CODE();
 /* next */
 /* next */
-/* next */     if (fs_first_call_to_kjb_rand)
+/* next */     if (fs_first_call_to_ivi_rand)
 /* next */     {
 /* next */         fs_initial_seed_2 = seed;
 /* next */         fs_initial_seed_status_2 = EXTERNALLY_SEEDED;
@@ -833,7 +833,7 @@ void kjb_seed_rand_2_with_tod(void)
 #else    /*  Case not UNIX follows */
 #ifdef MS_16_BIT_OS
 
-/* MS_16_BIT_OS */ void kjb_seed_rand_2(long seed)      /* CHECK */
+/* MS_16_BIT_OS */ void ivi_seed_rand_2(long seed)      /* CHECK */
 /* MS_16_BIT_OS */ {
 /* MS_16_BIT_OS */     unsigned int actual_seed;
 /* MS_16_BIT_OS */
@@ -842,7 +842,7 @@ void kjb_seed_rand_2_with_tod(void)
 /* MS_16_BIT_OS */     /* Loose bits here!!! */
 /* MS_16_BIT_OS */     actual_seed = *((unsigned int*)&seed);
 /* MS_16_BIT_OS */
-/* MS_16_BIT_OS */     if (fs_first_call_to_kjb_rand)
+/* MS_16_BIT_OS */     if (fs_first_call_to_ivi_rand)
 /* MS_16_BIT_OS */     {
 /* MS_16_BIT_OS */         fs_initial_seed_2 = actual_seed;
 /* MS_16_BIT_OS */         fs_initial_seed_status_2 = EXTERNALLY_SEEDED;
@@ -861,20 +861,20 @@ void kjb_seed_rand_2_with_tod(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int kjb_set_rand_function(double (*f)(void)) 
+int ivi_set_rand_function(double (*f)(void)) 
 {
     NRE(f);
-    kjb_rand_function = f;
+    ivi_rand_function = f;
     return NO_ERROR;
 }
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int kjb_set_rand_2_function(double (*f)(void)) 
+int ivi_set_rand_2_function(double (*f)(void)) 
 {
     NRE(f);
-    kjb_rand_2_function = f;
+    ivi_rand_2_function = f;
     return NO_ERROR;
 }
 

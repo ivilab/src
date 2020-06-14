@@ -291,12 +291,12 @@ void DTLib::ComputeOrientationEnergy
 
 void DTLib::extract_texture
 (
-	const kjb::Image & img,
-	const kjb::Int_matrix & seg_map,
-    kjb::Matrix & Oe_mean,
-    kjb::Matrix & Oe_var,
-    kjb::Matrix & DOG_mean,
-    kjb::Matrix & DOG_var,
+	const ivi::Image & img,
+	const ivi::Int_matrix & seg_map,
+    ivi::Matrix & Oe_mean,
+    ivi::Matrix & Oe_var,
+    ivi::Matrix & DOG_mean,
+    ivi::Matrix & DOG_var,
 	int m_nGaussScales,
 	int m_nGaussOrientations,
     float m_GaussSigmaY,
@@ -311,7 +311,7 @@ void DTLib::extract_texture
 	FloatCImgPtr m_pAImg = NULL;
 	FloatCImgPtr m_pBImg = NULL;
 	bool m_bColor;
-	FloatCImgPtr m_pInputImage = convert_kjb_to_CImg(img, &m_pAImg, &m_pBImg, m_nCroppedPixels, m_bColor);
+	FloatCImgPtr m_pInputImage = convert_ivi_to_CImg(img, &m_pAImg, &m_pBImg, m_nCroppedPixels, m_bColor);
 	CFilterbank * m_pFilterbank = NULL;
 	FloatCImgVecPtr m_pOEVec = NULL;
 	FloatCImgVecPtr m_pConvVec = NULL;
@@ -328,9 +328,9 @@ void DTLib::extract_texture
 
 }
 
-DTLib::FloatCImgPtr DTLib::convert_kjb_to_CImg
+DTLib::FloatCImgPtr DTLib::convert_ivi_to_CImg
 (
-	const kjb::Image & img,
+	const ivi::Image & img,
 	FloatCImgPtr * m_pAImg,
 	FloatCImgPtr * m_pBImg,
     int m_nCroppedPixels,
@@ -340,14 +340,14 @@ DTLib::FloatCImgPtr DTLib::convert_kjb_to_CImg
 	m_bColor = true;
 	FloatCImgPtr m_pInputImage = NULL;
 	CJPEG* pJPEG = new CJPEG;
-	pJPEG->Convert_from_kjb(img.c_ptr());
+	pJPEG->Convert_from_ivi(img.c_ptr());
 
     const int OrigWidth = pJPEG->Width();
     const int OrigHeight = pJPEG->Height();
 
     if ((m_nCroppedPixels*2 >= OrigWidth) ||
         (m_nCroppedPixels*2 >= OrigHeight)) {
-        KJB_THROW_2(kjb::KJB_error, "Converion from kjb to Cimg, requested cropped area is larger than the entire image");
+        IVI_THROW_2(ivi::IVI_error, "Converion from ivi to Cimg, requested cropped area is larger than the entire image");
     }
 
     // if BPP == 3 && color --> get LAB
@@ -471,7 +471,7 @@ void DTLib::do_textons
 	KM.Prune(1.1f);
 	// remember prunned version
 	m_nTextureKMeansK = KM.nK();
-	*m_pTextonsImg = new CImg<kjb_int32>(KM.pPtClustersDetach(),
+	*m_pTextonsImg = new CImg<ivi_int32>(KM.pPtClustersDetach(),
 								   m_InputWidth, m_InputHeight, false);
 }
 
@@ -698,7 +698,7 @@ void DTLib::ComputeWeberLaw
 
 void DTLib::Compute_Textons_Histograms
 (
-	const kjb::Image & img,
+	const ivi::Image & img,
 	CImg<FloatCHistogramPtr>** m_pTextonHistoImg,
 	CImg<FloatCHistogramPtr>** ColorHist,
     FloatCImgPtr * m_pDualHImg,
@@ -738,7 +738,7 @@ void DTLib::Compute_Textons_Histograms
 
 	FloatCImgPtr m_pAImg = NULL;
 	FloatCImgPtr m_pBImg = NULL;
-	FloatCImgPtr m_pInputImage = convert_kjb_to_CImg(img, &m_pAImg, &m_pBImg, m_nCroppedPixels, m_bColor);
+	FloatCImgPtr m_pInputImage = convert_ivi_to_CImg(img, &m_pAImg, &m_pBImg, m_nCroppedPixels, m_bColor);
 	CFilterbank * m_pFilterbank = NULL;
 	FloatCImgVecPtr m_pOEVec = NULL;
 	FloatCImgVecPtr m_pConvVec = NULL;
@@ -749,7 +749,7 @@ void DTLib::Compute_Textons_Histograms
 	CImgVec<float> * m_pYLocVec = NULL;
 	CImgVec<float> * m_pErrVec = NULL;
 	bool is_colour = true;
-	if(kjb_c::is_black_and_white(img.c_ptr()))
+	if(ivi_c::is_black_and_white(img.c_ptr()))
 	{
 		is_colour = false;
 	}
@@ -823,7 +823,7 @@ void DTLib::Compute_Textons_Histograms
 
 void DTLib::ComputeColorHistoImg
 (
-	const kjb::Image & img,
+	const ivi::Image & img,
     CImg<FloatCHistogramPtr> ** ColorHist,
 	int m_nBinsA,
 	int m_nBinsB,
@@ -855,22 +855,22 @@ void DTLib::ComputeColorHistoImg
 
 	bool m_bColor = false;
 
-    m_pInputImage = convert_kjb_to_CImg(img, &m_pAImg, &m_pBImg, m_nCroppedPixels, m_bColor);
+    m_pInputImage = convert_ivi_to_CImg(img, &m_pAImg, &m_pBImg, m_nCroppedPixels, m_bColor);
 
     bool is_colour = true;
-	if(kjb_c::is_black_and_white(img.c_ptr()))
+	if(ivi_c::is_black_and_white(img.c_ptr()))
 	{
 		is_colour = false;
 	}
     
     //std::cout << " Compute Filter bank " << std::endl;
-    //kjb_c::init_cpu_time();
+    //ivi_c::init_cpu_time();
 	FilterbankConvolve(m_pInputImage, &m_pFilterbank, &m_pConvVec, 
             m_nGaussScales, m_nGaussOrientations, 
             m_GaussSigmaY, m_GaussX2YSigmaRatio, 
             m_nDOGScales, m_DOGExcitSigma, 
             m_DOGInhibSigmaRatio1, m_DOGInhibSigmaRatio2);
-    //double time = kjb_c::get_cpu_time();
+    //double time = ivi_c::get_cpu_time();
     //std::cout << " computing time: " << time/1000.0 << std::endl;
 
     int m_nTextureKMeansK = 36;
@@ -879,13 +879,13 @@ void DTLib::ComputeColorHistoImg
 	LongCImgPtr m_pTextonsImg = NULL;
 
     //std::cout << " Compute textons" << std::endl;
-    //kjb_c::init_cpu_time();
+    //ivi_c::init_cpu_time();
 	do_textons(m_pConvVec, &m_pTextonsImg, 
             m_nGaussScales, m_nGaussOrientations, m_nDOGScales,
 			m_pInputImage->Width(), m_pInputImage->Height(), 
             m_nTextureKMeansK, m_nTextureKMeansIterations);
 
-    //time = kjb_c::get_cpu_time();
+    //time = ivi_c::get_cpu_time();
     //std::cout << " computing time: " << time/1000.0<< std::endl;
 
     // Compute texture scale 
@@ -893,28 +893,28 @@ void DTLib::ComputeColorHistoImg
     int m_maxTextureScale = 0;
 
     //std::cout << "Compute texture scale img" << std::endl;
-    //kjb_c::init_cpu_time();
+    //ivi_c::init_cpu_time();
 	m_pTextureScaleImg = ComputeTextureScale(m_pTextonsImg, &m_pTS, 
             m_pInputImage->Width(), m_pInputImage->Height(),
             m_nTextureKMeansK, m_TextureMinDist, m_TextureMaxDist, 
             m_TextureAlphaScaleFactor, m_minTextureScale, m_maxTextureScale);
-    //time = kjb_c::get_cpu_time();
+    //time = ivi_c::get_cpu_time();
     //std::cout << " computing time: " << time/1000.0 << std::endl;
 
 	//std::cout << "Compute circle masks" << std::endl;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     m_pCircleMasks =  ComputeCircleMasks(m_minTextureScale, m_maxTextureScale);
-    //time = kjb_c::get_cpu_time();
+    //time = ivi_c::get_cpu_time();
     //std::cout << " computing time: " << time/1000.0 << std::endl;
 
     //std::cout << "Compute Color histogram" << std::endl;
-    //kjb_c::init_cpu_time();
+    //ivi_c::init_cpu_time();
 	(*ColorHist) = ComputeColorHistoImg(m_pTextureScaleImg, 
             m_pCircleMasks, m_pInputImage, m_pAImg, m_pBImg,
             m_pInputImage->Width(), m_pInputImage->Height(), 
             m_nBinsA, m_nBinsB, m_nBinsC, 
             m_ColorHistoSoftBinSigma, is_colour);
-    //time = kjb_c::get_cpu_time();
+    //time = ivi_c::get_cpu_time();
     //std::cout << " computing time: " << time/1000.0 << std::endl;
 
     zap(m_pAImg);
@@ -1029,7 +1029,7 @@ DTLib::ByteCImgPtr DTLib::ComputeSparsePattern
 
 void DTLib::PrepareHeatMap
 (
-	kjb::Image & img,
+	ivi::Image & img,
 	CImg<FloatCHistogramPtr>* pHistoImg,
 	int padding,
 	int x_position,
@@ -1070,7 +1070,7 @@ void DTLib::PrepareHeatMap
 
 void DTLib::Compute_All_Histograms
 (
-    const kjb::Image & img,
+    const ivi::Image & img,
     CImg<FloatCHistogramPtr> ** m_pTextonHistoImg,
     CImg<FloatCHistogramPtr> ** ColorHist
 )

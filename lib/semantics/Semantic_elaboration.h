@@ -5,7 +5,7 @@
  * @file Semantic_object.h
  *
 E * @author Colin Dawson 
- * $Id: Semantic_elaboration.h 17357 2014-08-22 00:12:57Z cdawson $ 
+ * $Id: Semantic_elaboration.h 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "semantics/Semantic_db.h"
@@ -428,8 +428,8 @@ public:
      */
     const Val_type& arg(const size_t&) const
     {
-        KJB_THROW_2(
-            kjb::Cant_happen,
+        IVI_THROW_2(
+            ivi::Cant_happen,
             "Attempted to access the argument of a Terminal_elaboration"
             );
     };
@@ -438,8 +438,8 @@ public:
      */
     const Key_type& arg_s(const size_t&) const
     {
-        KJB_THROW_2(
-            kjb::Cant_happen,
+        IVI_THROW_2(
+            ivi::Cant_happen,
             "Attempted to access the argument of a Terminal_elaboration"
             );
     };
@@ -588,7 +588,7 @@ public:
      */
     const Val_type& arg(const size_t& pos) const
     {
-        IFTD(pos < Traits::n_args, kjb::Index_out_of_bounds,
+        IFTD(pos < Traits::n_args, ivi::Index_out_of_bounds,
              "Attempted to access argument %d in a Nonterminal_elaboration"
              " with only %d arguments", (pos)(Traits::n_args));
         return args()[pos];
@@ -598,7 +598,7 @@ public:
      */
     const Key_type& arg_s(const size_t& pos) const
     {
-        IFTD(pos < Traits::n_args, kjb::Index_out_of_bounds,
+        IFTD(pos < Traits::n_args, ivi::Index_out_of_bounds,
              "Attempted to access argument %d in a Nonterminal_elaboration"
              " with only %d arguments", (pos)(Traits::n_args));
         return Data_type::arg_map_list()[pos]->decode(arg(pos));
@@ -639,7 +639,7 @@ public:
     
     const Referent_code& arg_referent(const size_t& pos) const
     {
-        IFTD(pos < Traits::n_args, kjb::Illegal_argument,
+        IFTD(pos < Traits::n_args, ivi::Illegal_argument,
              "Attempted to access referent corresponding to nonexistent "
              "argument %d in a Nonterminal_elaboration with only "
              "%d arguments", (pos)(Traits::n_args));
@@ -932,7 +932,7 @@ template<class T, class Traits>
 typename Nonterminal_elaboration<T,Traits>::Base_ptr
 Nonterminal_elaboration<T, Traits>::child(const size_t& index) const
 {
-    IFTD(index < Traits::n_args, kjb::Illegal_argument,
+    IFTD(index < Traits::n_args, ivi::Illegal_argument,
         "Attempted to access child in nonexistent slot %d in"
          " Nonterminal_elaboration with only %d slots",
          (index)(Traits::n_args)); 
@@ -947,7 +947,7 @@ void Nonterminal_elaboration<T, Traits>::add_child(
     const Base_ptr    child
     )
 {
-    IFTD(pos < Traits::n_args, kjb::Illegal_argument,
+    IFTD(pos < Traits::n_args, ivi::Illegal_argument,
          "Attempted to add child to nonexistent slot %d in Nonterminal_elaboration"
          "which has only %d slots", (pos)(Traits::n_args));
     children_[pos] = child;
@@ -962,7 +962,7 @@ void Nonterminal_elaboration<T, Traits>::insert_child(
     const size_t&   pos_for_old
     )
 {
-    IFTD(pos < Traits::n_args, kjb::Illegal_argument,
+    IFTD(pos < Traits::n_args, ivi::Illegal_argument,
          "Attempted to insert child to nonexistent slot %d in Nonterminal_elaboration"
          "which has only %d slots", (pos)(Traits::n_args));
     Base_ptr old_child = children_[pos];

@@ -1,4 +1,4 @@
-/* $Id: l_scope_guard.h 14082 2013-03-12 18:32:12Z jguan1 $ */
+/* $Id: l_scope_guard.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -19,14 +19,14 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_L_CPP_SCOPE_GUARD_H
-#define KJB_L_CPP_SCOPE_GUARD_H
+#ifndef IVI_L_CPP_SCOPE_GUARD_H
+#define IVI_L_CPP_SCOPE_GUARD_H
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -49,6 +49,6 @@ struct Scope_guard
     boost::shared_ptr<void> on_exit_;
 };
 
-} // namespace kjb;
+} // namespace ivi;
 
 #endif

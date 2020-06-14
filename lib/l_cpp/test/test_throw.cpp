@@ -30,34 +30,34 @@
 
 int main ()
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     const char* str1 = "truth";
     const char* str2 = "fact";
 
-    kjb_c::set_error( "Apples are full of quercetin." );
-    kjb_c::add_error( "Bakers make delicious bread." );
-    kjb_c::add_error( "Charlie digs extreme flight gear, how I judge." );
+    ivi_c::set_error( "Apples are full of quercetin." );
+    ivi_c::add_error( "Bakers make delicious bread." );
+    ivi_c::add_error( "Charlie digs extreme flight gear, how I judge." );
 
     try
     {
-        ETX( kjb_c::ERROR );
+        ETX( ivi_c::ERROR );
     }
-    catch ( kjb::KJB_error& e )
+    catch ( ivi::IVI_error& e )
     {
         e.print( std::cout );
     }
         
     try
     {
-        KJB_THROW_3(kjb::Illegal_argument,
+        IVI_THROW_3(ivi::Illegal_argument,
             "In the land of %s, the man with one %s is king", (str1)(str2));
     }
-    catch (kjb::Illegal_argument& ex)
+    catch (ivi::Illegal_argument& ex)
     {
         ex.print( std::cout );
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return EXIT_SUCCESS;
 }

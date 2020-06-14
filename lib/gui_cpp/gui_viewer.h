@@ -1,4 +1,4 @@
-/* $Id: gui_viewer.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_viewer.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,17 +19,17 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_GR_GENERIC_VIEWER_H
-#define KJB_GR_GENERIC_VIEWER_H
+#ifndef IVI_GR_GENERIC_VIEWER_H
+#define IVI_GR_GENERIC_VIEWER_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <gui_cpp/gui_trackball.h>
 #include <gui_cpp/gui_overlay.h>
 #include <gui_cpp/gui_selectable.h>
 #include <gui_cpp/gui_event_listener.h>
 #include <gui_cpp/gui_window.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 
@@ -57,13 +57,13 @@
 #include <boost/none.hpp>
 #include <boost/utility/in_place_factory.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
 
 /**
- * A 3D interface for viewing a kjb::Rendable object.
+ * A 3D interface for viewing a ivi::Rendable object.
  * 
  * Includes a -rotate-zoom mouse interface, 
  *
@@ -253,11 +253,11 @@ public:
         trackball_.attach(*this);
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     /**
      * window will be resized to the size of this viewer on next glut-loop
      */
-    void attach(kjb::opengl::Glut_window& wnd)
+    void attach(ivi::opengl::Glut_window& wnd)
     {
         using namespace boost;
         wnd.set_size(width(), height());
@@ -275,7 +275,7 @@ public:
     }
 #endif
 
-    inline void set_extrinsic_matrix(const kjb::Matrix& m)
+    inline void set_extrinsic_matrix(const ivi::Matrix& m)
     {
         trackball_.set_extrinsic(m);
     }
@@ -296,7 +296,7 @@ public:
      *
      * @note height is used to fix the vertical field-of-view; horizontal field-of-view remains free, so increasing/reducing the window's width will reveal/clip some of the scene.
      */
-    inline void set_camera(const kjb::Perspective_camera& cam, size_t image_height)
+    inline void set_camera(const ivi::Perspective_camera& cam, size_t image_height)
     {
         trackball_.set_camera(cam, image_height);
     }
@@ -310,12 +310,12 @@ public:
      *
      * @note height is used to fix the vertical field-of-view; horizontal field-of-view remains free, so increasing/reducing the window's width will reveal/clip some of the scene.
      */
-    inline void set_camera(const kjb::Perspective_camera& cam)
+    inline void set_camera(const ivi::Perspective_camera& cam)
     {
         trackball_.set_camera(cam, height_);
     }
 
-    inline kjb::Perspective_camera get_camera() const
+    inline ivi::Perspective_camera get_camera() const
     {
         return trackball_.get_camera();
     }
@@ -324,7 +324,7 @@ public:
      * @param destination_cam Camera to move to by linearly interpolating from the current camera
      * @param duration_msec Length of animation in milliseconds
      */
-    inline void animate_camera(const kjb::Perspective_camera& destination_cam, size_t duration_msec)
+    inline void animate_camera(const ivi::Perspective_camera& destination_cam, size_t duration_msec)
     {
         camera_tween_ = Camera_tween();
         camera_tween_->src = trackball_.get_camera();
@@ -340,7 +340,7 @@ public:
      * the size of the rendered scene, but instead will show more of the scene
      * around the borders.
      */
-    inline void set_camera_free_fovy(const kjb::Perspective_camera& cam)
+    inline void set_camera_free_fovy(const ivi::Perspective_camera& cam)
     {
         trackball_.set_camera(cam);
     }
@@ -367,7 +367,7 @@ public:
             double world_scale = 1.0)
     {
         // TODO: cleanup variable names, handle focal length better
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutFullScreen();
 #endif
 
@@ -416,14 +416,14 @@ public:
         bg_mode_ = gradient_bg;
     }
     
-    void set_background_gradient(const kjb::Vector4& bottom, const kjb::Vector4& top)
+    void set_background_gradient(const ivi::Vector4& bottom, const ivi::Vector4& top)
     {
         bg_mode_ = gradient_bg;
         bg_gradient_bot_ = bottom;
         bg_gradient_top_ = top;
     }
 
-    void set_background_solid(const kjb::Vector4& color)
+    void set_background_solid(const ivi::Vector4& color)
     {
         bg_mode_ = solid_bg;
         bg_color_ = color;
@@ -436,7 +436,7 @@ public:
      *
      * @warning Opengl context must be initialized before calling this (e.g. by constructing a Glut_window)
      */
-    void set_background_image(const kjb::Image& img)
+    void set_background_image(const ivi::Image& img)
     {
         bg_mode_ = image_bg;
         bg_image_ = boost::in_place();
@@ -462,10 +462,10 @@ public:
      *
      * @note due to the Texture object's built-in reference semantics, the texture data won't be copied; it will create a reference of itself which will be stored in this class.  Texture will be freed when no references continue to exist.
      */
-    void set_background_image(const kjb::opengl::Texture& img)
+    void set_background_image(const ivi::opengl::Texture& img)
     {
         bg_mode_ = image_bg;
-        bg_image_.reset(kjb::opengl::Texture(img));
+        bg_image_.reset(ivi::opengl::Texture(img));
     }
 
     /********************************************
@@ -508,7 +508,7 @@ public:
     {
          // EXPERIMENTAL 
         if(old_rotation_origin_)
-            KJB_THROW(Stack_overflow);
+            IVI_THROW(Stack_overflow);
         old_rotation_origin_ = trackball_.get_object_origin();
         trackball_.set_object_origin(o);
     }
@@ -524,7 +524,7 @@ public:
     {
          // EXPERIMENTAL 
         if(!old_rotation_origin_)
-            KJB_THROW(Stack_underflow);
+            IVI_THROW(Stack_underflow);
         trackball_.set_object_origin(*old_rotation_origin_);
 
         old_rotation_origin_ = boost::none;
@@ -672,7 +672,7 @@ public:
         }
         else
         {
-            KJB_THROW(Not_implemented);
+            IVI_THROW(Not_implemented);
         }
 
         GL_ETX();
@@ -696,7 +696,7 @@ public:
         }
         else
         {
-            KJB_THROW(Not_implemented);
+            IVI_THROW(Not_implemented);
         }
 
 
@@ -714,7 +714,7 @@ public:
         glPopAttrib();
     }
 
-    void draw_dispatch(const kjb::Perspective_camera& cam)
+    void draw_dispatch(const ivi::Perspective_camera& cam)
     {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -747,7 +747,7 @@ public:
         render_overlays_();
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     void display()
     {
         draw();
@@ -817,37 +817,37 @@ public:
     }
 
     /**
-     * Add kjb::Renderable object, store by reference
+     * Add ivi::Renderable object, store by reference
      */
-    Render_callback_iterator add_renderable(const kjb::Renderable* renderable)
+    Render_callback_iterator add_renderable(const ivi::Renderable* renderable)
     {
-        return add_render_callback_dispatch_(boost::bind(&kjb::Renderable::render, renderable));
+        return add_render_callback_dispatch_(boost::bind(&ivi::Renderable::render, renderable));
     }
 
     /**
-     * Add kjb::Renderable object, store by shared reference
+     * Add ivi::Renderable object, store by shared reference
      */
-    Render_callback_iterator add_renderable(const boost::shared_ptr<kjb::Renderable>& renderable)
+    Render_callback_iterator add_renderable(const boost::shared_ptr<ivi::Renderable>& renderable)
     {
-        return add_render_callback_dispatch_(boost::bind(&kjb::Renderable::render, renderable));
+        return add_render_callback_dispatch_(boost::bind(&ivi::Renderable::render, renderable));
     }
 
     /**
-     * Add kjb::Renderable object, copy and store by value
+     * Add ivi::Renderable object, copy and store by value
      */
     template <class RenderableType>
-    typename boost::enable_if<boost::is_convertible<RenderableType*, kjb::Renderable*>, Render_callback_iterator>::type
+    typename boost::enable_if<boost::is_convertible<RenderableType*, ivi::Renderable*>, Render_callback_iterator>::type
     copy_renderable(const RenderableType& renderable)
     {
-        BOOST_CONCEPT_ASSERT((boost::Convertible<RenderableType*, kjb::Renderable*>));
+        BOOST_CONCEPT_ASSERT((boost::Convertible<RenderableType*, ivi::Renderable*>));
 
-        return add_render_callback_dispatch_(boost::bind(&kjb::Renderable::render, renderable));
+        return add_render_callback_dispatch_(boost::bind(&ivi::Renderable::render, renderable));
     }
 
     /**
      * Add a render callback function that receives nothing and returns null.
      * Use this when your design doesn't
-     * comply with kjb::Renderable base class, or RenderableObject 
+     * comply with ivi::Renderable base class, or RenderableObject 
      * concept.
      *
      * Callback will be copied into viewer class.  To avoid a copy,
@@ -881,7 +881,7 @@ public:
 
     /**
      * Add a render callback function.  Use this when your design doesn't
-     * comply with kjb::Renderable base class, or RenderableObject 
+     * comply with ivi::Renderable base class, or RenderableObject 
      * concept.
      *
      * This specialization stores the callback by reference, so it won't copy the callback object
@@ -1041,7 +1041,7 @@ public:
     bool get_renderable_visibility(Render_callback_const_iterator it) const
     {
         if(render_visibility_.count(&*it) == 0)
-            KJB_THROW(kjb::Index_out_of_bounds);
+            IVI_THROW(ivi::Index_out_of_bounds);
 
         return render_visibility_.at(&*it);
     }
@@ -1050,7 +1050,7 @@ public:
     bool get_renderable_visibility(size_t i) const
     {
         if(i >= render_callbacks_.size())
-            KJB_THROW(kjb::Index_out_of_bounds);
+            IVI_THROW(ivi::Index_out_of_bounds);
 
         // (renderables are stored in reverse order)
         i = render_callbacks_.size() - i - 1;
@@ -1063,7 +1063,7 @@ public:
     void set_renderable_visibility(Render_callback_iterator it, bool v)
     {
         if(render_visibility_.count(&*it) == 0)
-            KJB_THROW(kjb::Index_out_of_bounds);
+            IVI_THROW(ivi::Index_out_of_bounds);
 
         render_visibility_[&*it] = v;
     }
@@ -1072,7 +1072,7 @@ public:
     void set_renderable_visibility(size_t i, bool v)
     {
         if(i >= render_callbacks_.size())
-            KJB_THROW(kjb::Index_out_of_bounds);
+            IVI_THROW(ivi::Index_out_of_bounds);
 
         // (renderables are stored in reverse order)
         i = render_callbacks_.size() - i - 1;
@@ -1152,7 +1152,7 @@ public:
     {
         Window_iterator item = windows_.find(window);
         if(item == windows_.end())
-            KJB_THROW_2(Illegal_argument, "window not found");
+            IVI_THROW_2(Illegal_argument, "window not found");
         remove_window(item);
     }
 
@@ -1304,7 +1304,7 @@ public:
     {
         Event_listeners::iterator item = event_listeners_.find(listener);
         if(item == event_listeners_.end())
-            KJB_THROW_2(Illegal_argument, "listener not found");
+            IVI_THROW_2(Illegal_argument, "listener not found");
         remove_event_listener(item);
     }
 
@@ -1347,7 +1347,7 @@ public:
         listener->second.special = special_listeners_.begin();
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     template <class Callback>
     void add_timer(const Callback& cb, size_t msec, bool redraw = false)
     {
@@ -1360,7 +1360,7 @@ public:
 
     void redisplay()
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutPostRedisplay();
 #endif
     }
@@ -1570,7 +1570,7 @@ private:
     {
         // might eventually be able to use this with something besides glut,
         // but would need to replace all the glut macros with something more sensible
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         if(state == GLUT_DOWN)
         {
             static const double DBLCLICK_INTERVAL = 250;
@@ -1719,7 +1719,7 @@ private:
         return false;
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     /**
      * Advance an externally-specified timer
      */
@@ -1862,10 +1862,10 @@ private:
     enum Bg_mode { solid_bg, gradient_bg, image_bg };
 
     Bg_mode bg_mode_;
-    kjb::Vector4 bg_color_;
-    kjb::Vector4 bg_gradient_bot_;
-    kjb::Vector4 bg_gradient_top_;
-    boost::optional<kjb::opengl::Texture> bg_image_;
+    ivi::Vector4 bg_color_;
+    ivi::Vector4 bg_gradient_bot_;
+    ivi::Vector4 bg_gradient_top_;
+    boost::optional<ivi::opengl::Texture> bg_image_;
 
     // ANIMATION STATE
     boost::optional<Camera_tween> camera_tween_;
@@ -1882,18 +1882,18 @@ private:
 };
 
 } // namespace opengl 
-} // namespace kjb
+} // namespace ivi
 
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
     // for backward compatibility (temporary)
-    using kjb::gui::Viewer;
+    using ivi::gui::Viewer;
 }
 }
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
 #endif
 
 // TODO

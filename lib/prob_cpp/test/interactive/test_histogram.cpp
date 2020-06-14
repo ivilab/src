@@ -11,11 +11,11 @@
 
 using namespace std;
 using namespace boost;
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     vector<double> samples(5000);
     Gamma_distribution P(2, 2);

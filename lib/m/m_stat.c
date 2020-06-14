@@ -1,5 +1,5 @@
 
-/* $Id: m_stat.c 21704 2017-08-14 19:42:50Z adarsh $ */
+/* $Id: m_stat.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -1046,7 +1046,7 @@ int get_entropy(const Vector* prob_vp, double* result_ptr)
         if (p > 0.0)
         {
             p_sum += p;
-            entropy_sum -= p * kjb_log2(p);
+            entropy_sum -= p * ivi_log2(p);
         }
     }
 
@@ -1127,23 +1127,23 @@ int sample_distribution_using_cumulative(const Vector* cum_dist_vp)
 {
     int    last        = cum_dist_vp->length - 1;
     int    first       = 0;
-    double r           = kjb_rand();
+    double r           = ivi_rand();
     int    mid;
     int    count       = 0;
-    int    max_num_its = kjb_rint(100.0 + log((double)cum_dist_vp->length) / M_LN2);
+    int    max_num_its = ivi_rint(100.0 + log((double)cum_dist_vp->length) / M_LN2);
 
 
 #ifdef TEST_CORNER_CASES
-    if (kjb_rand() < 0.1)
+    if (ivi_rand() < 0.1)
     {
-        int index = MIN_OF(cum_dist_vp->length, (int)(kjb_rand() * (double)cum_dist_vp->length));
+        int index = MIN_OF(cum_dist_vp->length, (int)(ivi_rand() * (double)cum_dist_vp->length));
 
         r = cum_dist_vp->elements[ index ]; 
     }
 #endif 
 
     /*
-     * Binary search. We don't use kjb search routines because they are not
+     * Binary search. We don't use ivi search routines because they are not
      * quite tuned for this situation because an exact match is not expected.
     */
     while (count < max_num_its)

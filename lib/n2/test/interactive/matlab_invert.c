@@ -1,5 +1,5 @@
 
-/* $Id: matlab_invert.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: matlab_invert.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #define NUM_ITS 100000000
@@ -10,7 +10,7 @@
 /*ARGSUSED*/
 int main(void)
 {
-#ifdef KJB_HAVE_MATLAB
+#ifdef IVI_HAVE_MATLAB
     Matrix *mp, *inv_mp; 
     Matrix *ident_mp; 
     Matrix *test_ident_mp = NULL; 
@@ -24,7 +24,7 @@ int main(void)
         return EXIT_CANNOT_TEST;
     }
     
-    kjb_l_set("page", "f"); 
+    ivi_l_set("page", "f"); 
 
     EPETE(get_random_matrix(&mp, 8, 8));
     inv_mp = MATLAB_invert_matrix(mp); 

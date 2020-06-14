@@ -1,5 +1,5 @@
 
-/* $Id: header_int_mat_io.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: header_int_mat_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /*
@@ -15,7 +15,7 @@ int main(argc, argv)
     int     num_rows;
     int     num_cols;
 
-    kjb_init();
+    ivi_init();
     check_num_args(argc, 1, 2, NULL); 
 
     EPETE(read_int_matrix(&mp, argv[ 1 ]));

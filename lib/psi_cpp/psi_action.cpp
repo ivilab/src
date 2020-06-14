@@ -1,4 +1,4 @@
-/* $Id: psi_action.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_action.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -224,7 +224,7 @@ Action_type action_name_to_type(const std::string& name)
 
     if(type_map.count(name) == 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Unknown action name.");
+        IVI_THROW_2(ivi::Illegal_argument, "Unknown action name.");
     }
 
     return type_map[name];
@@ -243,7 +243,7 @@ void validate(Action_type a)
 
     if(a_i >= action_descriptors.size())
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Unknown action type.");
+        IVI_THROW_2(ivi::Illegal_argument, "Unknown action type.");
     }
 }
 
@@ -291,7 +291,7 @@ void validate(const Action& a)
     {
         if(meta.num_params != a.parameters.size())
         {
-            KJB_THROW_2(kjb::Runtime_error, "Actions parameter count is invalid.");
+            IVI_THROW_2(ivi::Runtime_error, "Actions parameter count is invalid.");
         }
     }
     else
@@ -300,7 +300,7 @@ void validate(const Action& a)
         size_t total_num_params = meta.num_params * group_size + 1;
         if(total_num_params != a.parameters.size())
         {
-            KJB_THROW_2(kjb::Runtime_error, "Actions parameter count is invalid.");
+            IVI_THROW_2(ivi::Runtime_error, "Actions parameter count is invalid.");
         }
     }
 
@@ -308,7 +308,7 @@ void validate(const Action& a)
     {
         if(a.parent_type == pt::NUM_ENTITY_TYPES || a.parent_index < 0)
         {
-            KJB_THROW_2(kjb::Runtime_error, "Parent is not initialized.");
+            IVI_THROW_2(ivi::Runtime_error, "Parent is not initialized.");
         }
     }
 
@@ -316,7 +316,7 @@ void validate(const Action& a)
     if(meta.validator)
     {
         if(!meta.validator(a))
-            KJB_THROW_3(kjb::Runtime_error, "%s action validation failed.", (meta.name.c_str()));
+            IVI_THROW_3(ivi::Runtime_error, "%s action validation failed.", (meta.name.c_str()));
     }
 }
 
@@ -417,4 +417,4 @@ Action parse_cli_action(const std::string& str)
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

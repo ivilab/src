@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: autolayer.h 17606 2014-09-26 01:09:51Z predoehl $
+ * $Id: autolayer.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef AUTOLAYER_H_UOFARIZONAVISION
@@ -17,7 +17,7 @@
 
 #include <string>
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -32,10 +32,10 @@ class AutoLayer
     {
         if ( name.size() >= LAYER_FN_SIZE )
         {
-            return kjb_c::ERROR;
+            return ivi_c::ERROR;
         }
         strcpy( my_layer.filename, name.c_str() );
-        return kjb_c::NO_ERROR;
+        return ivi_c::NO_ERROR;
     }
 
     void set_numTracks( int );
@@ -53,7 +53,7 @@ public:
     AutoLayer( const std::string& filename )
     {
         initLayer( &my_layer );
-        KJB( ETX( readTrack_GPX( filename, &my_layer ) ) );
+        IVI( ETX( readTrack_GPX( filename, &my_layer ) ) );
     }
 
 
@@ -78,9 +78,9 @@ public:
     /// @brief Write a layer into a file
     int write( const std::string& filename )
     {
-        KJB( ETX( set_name( filename ) ) );
-        KJB( ETX( writeTrack_GPX( filename, my_layer ) ) );
-        return kjb_c::NO_ERROR;
+        IVI( ETX( set_name( filename ) ) );
+        IVI( ETX( writeTrack_GPX( filename, my_layer ) ) );
+        return ivi_c::NO_ERROR;
     }
 
     /// @brief Dtor makes sure the layer resources are released
@@ -91,7 +91,7 @@ public:
 };
 
 }
-} // end namespace kjb
+} // end namespace ivi
 
 
 #endif /* autolayer.h */

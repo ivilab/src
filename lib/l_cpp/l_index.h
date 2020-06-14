@@ -1,4 +1,4 @@
-/* $Id: l_index.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: l_index.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_L_CPP_INDEX_H
-#define KJB_L_CPP_INDEX_H
+#ifndef IVI_L_CPP_INDEX_H
+#define IVI_L_CPP_INDEX_H
 
 #include "l_cpp/l_exception.h"
 #include "l/l_debug.h"
@@ -36,10 +36,10 @@
 
 #include <limits>
 
-namespace kjb {
+namespace ivi {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -265,7 +265,7 @@ public:
         if(range_i == ranges_.size())
         {
             // didn't find range that contains the index i
-            KJB_THROW(Index_out_of_bounds);
+            IVI_THROW(Index_out_of_bounds);
         }
 
         return (*ranges_[range_i])[i];
@@ -275,7 +275,7 @@ public:
     {
         if(all())
         {
-            KJB_THROW_2(Runtime_error, "Can't know the size of an \"all\" range.  Determining the size is the responsibility of the caller.");
+            IVI_THROW_2(Runtime_error, "Can't know the size of an \"all\" range.  Determining the size is the responsibility of the caller.");
         }
 
         size_t total = 0;
@@ -312,7 +312,7 @@ private:
         {
             if(i == 0)
                 return value_;
-            KJB_THROW(Index_out_of_bounds);
+            IVI_THROW(Index_out_of_bounds);
         }
         virtual size_t size() const { return 1; }
 
@@ -402,12 +402,12 @@ private:
             if(interval_ > 0)
             {
                 if(end_ < result)
-                    KJB_THROW(Index_out_of_bounds);
+                    IVI_THROW(Index_out_of_bounds);
             }
             else
             {
                 if(result < end_)
-                    KJB_THROW(Index_out_of_bounds);
+                    IVI_THROW(Index_out_of_bounds);
             }
 
             return result;
@@ -416,7 +416,7 @@ private:
         virtual size_t size() const
         {
             if(end_ == UNDEFINED_END_INDEX)
-                KJB_THROW_2(Runtime_error, "Can't get size of interval with unknown end.  Calling context must handle this.");
+                IVI_THROW_2(Runtime_error, "Can't get size of interval with unknown end.  Calling context must handle this.");
 
             return size_;
         }
@@ -424,9 +424,9 @@ private:
         virtual size_t max() const
         {
             if(end_ == UNDEFINED_END_INDEX)
-                KJB_THROW_2(Runtime_error, "Can't get max of interval with unknown end.  Calling context must handle this.");
+                IVI_THROW_2(Runtime_error, "Can't get max of interval with unknown end.  Calling context must handle this.");
 
-            KJB(UNTESTED_CODE());
+            IVI(UNTESTED_CODE());
             return begin_ + interval_ * (size() - 1);
         }
 
@@ -469,7 +469,7 @@ private:
             int i = 0;
             while(!iss.eof())
             {
-                if(i >= 3) KJB_THROW_2(Runtime_error, "Parse error: token count exceeded 3.");
+                if(i >= 3) IVI_THROW_2(Runtime_error, "Parse error: token count exceeded 3.");
 
                 iss >> values[i];
                 i++;
@@ -478,7 +478,7 @@ private:
             switch(i)
             {
                 case 0:
-                    KJB_THROW_2(Runtime_error, "Parse error: no tokens found.");
+                    IVI_THROW_2(Runtime_error, "Parse error: no tokens found.");
                 case 1:
                     begin_ = values[0];
                     end_ = begin_;
@@ -495,24 +495,24 @@ private:
                     end_ = values[2];
                     break;
                 default:
-                    KJB_THROW(Cant_happen);
+                    IVI_THROW(Cant_happen);
             }
 
 
             if(interval_ == 0)
             {
-                KJB_THROW_2(Illegal_argument, "Parse error: interval_ must be != 0.");
+                IVI_THROW_2(Illegal_argument, "Parse error: interval_ must be != 0.");
             }
 
             if(interval_ > 0)
             {
                 if(end_ < begin_)
-                    KJB_THROW_2(Illegal_argument, "Parse error: sign(interval) != sign(end - begin).");
+                    IVI_THROW_2(Illegal_argument, "Parse error: sign(interval) != sign(end - begin).");
             }
             else
             {
                 if(begin_ < end_)
-                    KJB_THROW_2(Illegal_argument, "Parse error: sign(interval) != sign(end - begin).");
+                    IVI_THROW_2(Illegal_argument, "Parse error: sign(interval) != sign(end - begin).");
 
             }
 
@@ -586,5 +586,5 @@ inline std::istream& operator>>(std::istream& ist, Index_range& ir)
 
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 #endif

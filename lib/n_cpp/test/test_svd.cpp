@@ -4,7 +4,7 @@
  * @brief test the trivial SVD class
  */
 /*
- * $Id: test_svd.cpp 11723 2012-02-16 17:40:31Z predoehl $
+ * $Id: test_svd.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_def.h>
@@ -39,14 +39,14 @@ int main()
     const double adat[] = { 5, 8, 1,
                             3, 3, 0,
                             2, 6, 1     };
-    const kjb::Matrix amat( rank, rank, adat );
+    const ivi::Matrix amat( rank, rank, adat );
 
     // singular values as computed by Octave
     const double svs[] = { 12.0738, 1.7901, 0.1388 };
-    const kjb::Vector singvs( rank, svs );
+    const ivi::Vector singvs( rank, svs );
 
     // DUT:  The Device Undergoing Testing
-    const kjb::Svd svd( amat );
+    const ivi::Svd svd( amat );
 
     /*
     std::cout << "original matrix:\n";
@@ -69,20 +69,20 @@ int main()
 
     */
 
-    const double    sd = kjb::max_abs_difference( singvs, svd.d() ),
+    const double    sd = ivi::max_abs_difference( singvs, svd.d() ),
 
                     // reconstruction error
-                    rd = kjb::max_abs_difference( amat, svd.reconstruction() ),
+                    rd = ivi::max_abs_difference( amat, svd.reconstruction() ),
 
                     // is-u-columnwise-orthogonal error
-                    ud = kjb::max_abs_difference(
-                            kjb::create_identity_matrix( rank ),
+                    ud = ivi::max_abs_difference(
+                            ivi::create_identity_matrix( rank ),
                             svd.u() * svd.u().transpose()
                         ),
 
                     // is-v-orthogonal error
-                    vd = kjb::max_abs_difference(
-                            kjb::create_identity_matrix( rank ),
+                    vd = ivi::max_abs_difference(
+                            ivi::create_identity_matrix( rank ),
                             svd.vt() * svd.vt().transpose()
                         );
 

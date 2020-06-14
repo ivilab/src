@@ -27,7 +27,7 @@
 #include <people_tracking_cpp/pt_data.h>
 #include <camera_cpp/perspective_camera.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -60,7 +60,7 @@ void refine_target_state
     const Scene_posterior& posterior
 );
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_INIT_SCENE_H */
 

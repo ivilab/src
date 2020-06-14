@@ -1,4 +1,4 @@
-/* $Id: gui_viewer_modes.cpp 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: gui_viewer_modes.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -19,15 +19,15 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL 
+#ifdef IVI_HAVE_OPENGL 
 #include <gui_cpp/gui_viewer_modes.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
 
-void set_visibility(kjb::gui::Viewer& viewer, const Index_range& items, bool visibility)
+void set_visibility(ivi::gui::Viewer& viewer, const Index_range& items, bool visibility)
 {
     for(size_t i = 0; i < items.size(); ++i)
     {
@@ -35,7 +35,7 @@ void set_visibility(kjb::gui::Viewer& viewer, const Index_range& items, bool vis
     }
 }
 
-bool exclusive_display_keys(kjb::gui::Viewer* viewer, boost::shared_ptr<int> state_ptr, const Index_range& items, unsigned char k, int , int )
+bool exclusive_display_keys(ivi::gui::Viewer* viewer, boost::shared_ptr<int> state_ptr, const Index_range& items, unsigned char k, int , int )
 {
     int& state = *state_ptr;
     size_t N = items.size();
@@ -58,7 +58,7 @@ bool exclusive_display_keys(kjb::gui::Viewer* viewer, boost::shared_ptr<int> sta
     }
 }
 
-void enable_exclusive_display_mode(kjb::gui::Viewer& viewer, const kjb::Index_range& items)
+void enable_exclusive_display_mode(ivi::gui::Viewer& viewer, const ivi::Index_range& items)
 {
     // disable all views
     set_visibility(viewer, items, false);
@@ -76,5 +76,5 @@ void enable_exclusive_display_mode(kjb::gui::Viewer& viewer, const kjb::Index_ra
 }
 
 } // namespace gui
-} // namespace kjb
-#endif // KJB_HAVE_OPENGL 
+} // namespace ivi
+#endif // IVI_HAVE_OPENGL 

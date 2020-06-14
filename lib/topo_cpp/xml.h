@@ -7,7 +7,7 @@
  * Originally from TopoFusion.  This code enables GPX input and output.
  */
 /*
- * $Id: xml.h 17606 2014-09-26 01:09:51Z predoehl $
+ * $Id: xml.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef XML_H_MORRISES_INCLUDED_UOFARIZONAVISION
@@ -17,7 +17,7 @@
 
 #include <topo_cpp/layer.h>
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -26,6 +26,6 @@ int readTrack_GPX( const std::string&, layer* );
 int writeTrack_GPX( const std::string&, const layer& );
 
 }
-} // end namespace kjb
+} // end namespace ivi
 
 #endif

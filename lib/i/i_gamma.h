@@ -1,5 +1,5 @@
 
-/* $Id: i_gamma.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_gamma.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,34 +29,34 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int set_gamma_options(const char* option, const char* value);
 
-int ow_gamma_correct_image(KJB_image* in_ip, const Vector* gamma_vp);
+int ow_gamma_correct_image(IVI_image* in_ip, const Vector* gamma_vp);
 
 int gamma_correct_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    gamma_vp
 );
 
 int invert_image_gamma
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Vector*          gamma_vp
 );
 
-int ow_invert_image_gamma(KJB_image* in_ip, Vector* gamma_vp);
+int ow_invert_image_gamma(IVI_image* in_ip, Vector* gamma_vp);
 
-int ow_linearize_pcd(KJB_image* ip);
+int ow_linearize_pcd(IVI_image* ip);
 
-int ow_apply_pcd_output_lut(KJB_image* ip);
+int ow_apply_pcd_output_lut(IVI_image* ip);
 
 
 #ifdef __cplusplus

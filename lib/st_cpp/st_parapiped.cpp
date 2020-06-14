@@ -61,7 +61,7 @@
 #include <sstream>
 #include <typeinfo>
 
-using namespace kjb;
+using namespace ivi;
 
 #define MIN_FOCAL_LENGTH_BLOCK_PROPOSAL 250 /*200 */
 #define SECOND_ATTEMPT_FOCAL_LENGTH_BLOCK_PROPOSAL 350
@@ -84,13 +84,13 @@ using namespace kjb;
  */
 Parametric_parapiped::Parametric_parapiped(double ix, double iy, double iz,
                          double iw, double ih, double il,
-                         double ipitch, double iyaw, double iroll) throw(kjb::Illegal_argument)
+                         double ipitch, double iyaw, double iroll) throw(ivi::Illegal_argument)
 : Renderable_model(false), Readable(), Writeable(), centre(4, 1.0), rotation_angles(3, 0.0),
   rendering_interface(ix -iw/2,iy-ih/2,iz-il/2, ix+iw/2, iy-ih/2, iz-il/2, ix+iw/2,iy+ih/2, iz-il/2, ix+iw/2, iy+ih/2,iz+il/2)
 {
     if( (iw <= 0.0) || (ih <= 0.0) || (il <= 0.0) )
     {
-        throw kjb::Illegal_argument("Parapiped constructor, dimensions must be positive");
+        throw ivi::Illegal_argument("Parapiped constructor, dimensions must be positive");
     }
 
     width = iw;
@@ -121,20 +121,20 @@ Parametric_parapiped::Parametric_parapiped(const Parametric_parapiped & src)
 /*
  * @param fname The name of the file to read this parametric_parapiped from
  */
-Parametric_parapiped::Parametric_parapiped(const char* fname) throw (kjb::Illegal_argument,
-        kjb::IO_error)
+Parametric_parapiped::Parametric_parapiped(const char* fname) throw (ivi::Illegal_argument,
+        ivi::IO_error)
 :  Renderable_model(false),
    centre(4, 1.0),  rotation_angles(3, 0.0),
    rendering_interface(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0)
 {
-    kjb::Readable::read(fname);
+    ivi::Readable::read(fname);
 }
 
 /*
  * @param in The input stream to read this parametric_parapiped from
  */
-Parametric_parapiped::Parametric_parapiped(std::istream& in) throw (kjb::Illegal_argument,
-        kjb::IO_error)
+Parametric_parapiped::Parametric_parapiped(std::istream& in) throw (ivi::Illegal_argument,
+        ivi::IO_error)
 :  Renderable_model(true),
    centre(4, 1.0), rotation_angles(3, 0.0),
    rendering_interface(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0)
@@ -172,11 +172,11 @@ Parametric_parapiped * Parametric_parapiped::clone() const
 /*
  * @param iwidth The new width of this parapiped (along its x axis)
  */
-void Parametric_parapiped::set_width(double iwidth) throw(kjb::Illegal_argument)
+void Parametric_parapiped::set_width(double iwidth) throw(ivi::Illegal_argument)
 {
     if(iwidth <= 0)
     {
-        throw kjb::Illegal_argument("Parapiped width must be positive");
+        throw ivi::Illegal_argument("Parapiped width must be positive");
     }
 
     width = iwidth;
@@ -187,11 +187,11 @@ void Parametric_parapiped::set_width(double iwidth) throw(kjb::Illegal_argument)
 /*
  * @param iheight The new height of this parapiped (along its y axis)
  */
-void Parametric_parapiped::set_height(double iheight) throw(kjb::Illegal_argument)
+void Parametric_parapiped::set_height(double iheight) throw(ivi::Illegal_argument)
 {
     if(iheight <= 0)
     {
-        throw kjb::Illegal_argument("Parapiped height must be positive");
+        throw ivi::Illegal_argument("Parapiped height must be positive");
     }
 
     height = iheight;
@@ -201,11 +201,11 @@ void Parametric_parapiped::set_height(double iheight) throw(kjb::Illegal_argumen
 /*
  * @param ilength The new length of this parapiped (along its z axis)
  */
-void Parametric_parapiped::set_length(double ilength)throw(kjb::Illegal_argument)
+void Parametric_parapiped::set_length(double ilength)throw(ivi::Illegal_argument)
 {
     if(ilength <= 0)
     {
-        throw kjb::Illegal_argument("Parapiped length must be positive");
+        throw ivi::Illegal_argument("Parapiped length must be positive");
     }
 
     length = ilength;
@@ -298,7 +298,7 @@ void Parametric_parapiped::rotate_around_parapiped_axes(double thetax, double th
 /*
  * @param icentre The new centre of this parapiped
  */
-void Parametric_parapiped::set_centre(const kjb::Vector & icentre) throw(kjb::Illegal_argument)
+void Parametric_parapiped::set_centre(const ivi::Vector & icentre) throw(ivi::Illegal_argument)
 {
     if(icentre.size() == 3)
     {
@@ -311,13 +311,13 @@ void Parametric_parapiped::set_centre(const kjb::Vector & icentre) throw(kjb::Il
     {
         if(fabs(icentre(3)) < 1e-126 )
         {
-            throw kjb::Illegal_argument("Parapiped, set centre, input centre vector, homogeneous coordinate = 0.0");
+            throw ivi::Illegal_argument("Parapiped, set centre, input centre vector, homogeneous coordinate = 0.0");
         }
         centre = icentre/icentre(3);
     }
     else
     {
-        throw kjb::Illegal_argument("Parapiped, set centre, input centre vector has wrong dimensions");
+        throw ivi::Illegal_argument("Parapiped, set centre, input centre vector has wrong dimensions");
     }
     set_rendering_representation_dirty();
 }
@@ -325,7 +325,7 @@ void Parametric_parapiped::set_centre(const kjb::Vector & icentre) throw(kjb::Il
 /*
  * @param ix The new x coordinate of the centre of this parapiped
  */
-void Parametric_parapiped::set_centre_x(double ix) throw(kjb::Illegal_argument)
+void Parametric_parapiped::set_centre_x(double ix) throw(ivi::Illegal_argument)
 {
     centre(0) = ix;
     set_rendering_representation_dirty();
@@ -334,7 +334,7 @@ void Parametric_parapiped::set_centre_x(double ix) throw(kjb::Illegal_argument)
 /*
  * @param iy The new y coordinate of the centre of this parapiped
  */
-void Parametric_parapiped::set_centre_y(double iy) throw(kjb::Illegal_argument)
+void Parametric_parapiped::set_centre_y(double iy) throw(ivi::Illegal_argument)
 {
     centre(1) = iy;
     set_rendering_representation_dirty();
@@ -343,7 +343,7 @@ void Parametric_parapiped::set_centre_y(double iy) throw(kjb::Illegal_argument)
 /*
  * @param iz The new z coordinate of the centre of this parapiped
  */
-void Parametric_parapiped::set_centre_z(double iz) throw(kjb::Illegal_argument)
+void Parametric_parapiped::set_centre_z(double iz) throw(ivi::Illegal_argument)
 {
     centre(2) = iz;
     set_rendering_representation_dirty();
@@ -354,9 +354,9 @@ void Parametric_parapiped::set_centre_z(double iz) throw(kjb::Illegal_argument)
  *
  * @param q the input quaternion
  */
-void Parametric_parapiped::set_angles_from_quaternion(const kjb::Quaternion & q)
+void Parametric_parapiped::set_angles_from_quaternion(const ivi::Quaternion & q)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     rendering_interface.set_orientation(q);
     rotation_angles = rendering_interface.get_euler_angles();
 }
@@ -368,7 +368,7 @@ void Parametric_parapiped::set_angles_from_quaternion(const kjb::Quaternion & q)
  * Then it rotates it according to pitch, yaw and roll, and translates
  * it to the position specified by its centre
  */
-void Parametric_parapiped::update_rendering_representation() const throw(kjb::KJB_error)
+void Parametric_parapiped::update_rendering_representation() const throw(ivi::IVI_error)
 {
     rendering_interface.set_points(-width/2, -height/2, -length/2,width/2, -height/2, -length/2,
             width/2, height/2, -length/2, width/2, height/2, length/2);
@@ -388,8 +388,8 @@ Abstract_renderable & Parametric_parapiped::get_rendering_interface() const
 /*
  * @param in The input stream to read this parapiped from
  */
-void Parametric_parapiped::read(std::istream& in) throw (kjb::Illegal_argument,
-        kjb::IO_error)
+void Parametric_parapiped::read(std::istream& in) throw (ivi::Illegal_argument,
+        ivi::IO_error)
 {
     using std::ostringstream;
     using std::istringstream;
@@ -506,7 +506,7 @@ void Parametric_parapiped::read(std::istream& in) throw (kjb::Illegal_argument,
  * @param out The output stream to write this parapiped to
  */
 void Parametric_parapiped::write(std::ostream& out) const
-   throw (kjb::IO_error)
+   throw (ivi::IO_error)
 {
 
     out << "     Type: " << typeid(*this).name() << '\n'
@@ -530,7 +530,7 @@ void Parametric_parapiped::stretch_along_axis(
 {
     if(axis > 2)
     {
-        KJB_THROW_2(Illegal_argument, "Stretch along axis, axis index out of bounds");
+        IVI_THROW_2(Illegal_argument, "Stretch along axis, axis index out of bounds");
     }
 
     Vector translation(2,0.0);
@@ -631,17 +631,17 @@ void Parametric_parapiped::draw_geometric_context_map() const
  *  */
 void Parametric_parapiped::get_point_in_parapiped_coordinates
 (
-    const kjb::Vector & point_in_world_coordinates,
-    kjb::Vector & point_in_parapiped_coordinates
+    const ivi::Vector & point_in_world_coordinates,
+    ivi::Vector & point_in_parapiped_coordinates
 ) const
 {
     if(point_in_world_coordinates.size() != 4)
     {
-        KJB_THROW_2(Illegal_argument,"Point in world coordinates must be in homogeneous coordinates");
+        IVI_THROW_2(Illegal_argument,"Point in world coordinates must be in homogeneous coordinates");
     }
     if( fabs(point_in_world_coordinates(3)) < DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Point in world coordinates has homogeneous coordinate = 0");
+        IVI_THROW_2(Illegal_argument,"Point in world coordinates has homogeneous coordinate = 0");
     }
     point_in_parapiped_coordinates = point_in_world_coordinates/point_in_world_coordinates(3) - centre;
     point_in_parapiped_coordinates(3) = 1.0;
@@ -653,17 +653,17 @@ void Parametric_parapiped::get_point_in_parapiped_coordinates
  *  world coordinates */
 void Parametric_parapiped::get_point_in_world_coordinates
 (
-    const kjb::Vector & point_in_parapiped_coordinates,
-    kjb::Vector & point_in_world_coordinates
+    const ivi::Vector & point_in_parapiped_coordinates,
+    ivi::Vector & point_in_world_coordinates
 ) const
 {
     if(point_in_parapiped_coordinates.size() != 4)
     {
-        KJB_THROW_2(Illegal_argument,"Point in parapiped coordinates must be in homogeneous coordinates");
+        IVI_THROW_2(Illegal_argument,"Point in parapiped coordinates must be in homogeneous coordinates");
     }
     if( fabs(point_in_parapiped_coordinates(3)) < DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Point in parapiped coordinates has homogeneous coordinate = 0");
+        IVI_THROW_2(Illegal_argument,"Point in parapiped coordinates has homogeneous coordinate = 0");
     }
 
     point_in_world_coordinates = point_in_parapiped_coordinates/point_in_parapiped_coordinates(3);
@@ -684,11 +684,11 @@ void Parametric_parapiped::get_vertices(std::vector<Vector> & vertices)
     rendering_interface.get_all_vertices(vertices);
 }
 
-double kjb::propose_parapiped_and_camera_from_orthogonal_corner_good
+double ivi::propose_parapiped_and_camera_from_orthogonal_corner_good
 (
-    kjb::Parametric_parapiped &pp,
-    kjb::Perspective_camera & camera,
-    const kjb::Manhattan_corner & corner,
+    ivi::Parametric_parapiped &pp,
+    ivi::Perspective_camera & camera,
+    const ivi::Manhattan_corner & corner,
     double focal_length,
     unsigned int num_rows,
     unsigned int num_cols,
@@ -699,10 +699,10 @@ double kjb::propose_parapiped_and_camera_from_orthogonal_corner_good
 )
 {
 	//We should take into account the principal point here
-    kjb::Vector corner1;
-    kjb::Vector corner2;
-    kjb::Vector corner3;
-    kjb::Vector position_3D;
+    ivi::Vector corner1;
+    ivi::Vector corner2;
+    ivi::Vector corner3;
+    ivi::Vector position_3D;
 
     double princ_x = (num_cols/2.0) + camera.get_principal_point_x();
     double princ_y = (num_rows/2.0) - camera.get_principal_point_y();
@@ -713,7 +713,7 @@ double kjb::propose_parapiped_and_camera_from_orthogonal_corner_good
     corner.get_3D_corner(corner_3D_z_position, focal_length, princ_x, princ_y,
                         corner1,corner2,corner3, position_3D);
 
-    kjb::Vector corner_pos(4, 1.0);
+    ivi::Vector corner_pos(4, 1.0);
     for(unsigned int i = 0; i < 3; i++)
     {
         corner_pos(i) = position_3D(i);
@@ -750,7 +750,7 @@ double kjb::propose_parapiped_and_camera_from_orthogonal_corner_good
      * camera in a configuration where the parapiped is aligned
      * with the world axes, up to some roll and some yaw
      */
-    kjb::Vector vertical_component(4,0.0);
+    ivi::Vector vertical_component(4,0.0);
     vertical_component(2) = 0.0;
     vertical_component(0) = corner2(0);
     if(corner2(1) < 0)
@@ -844,7 +844,7 @@ double kjb::propose_parapiped_and_camera_from_orthogonal_corner_good
     try
     {
         q.set_axis_angle(rotation_axis, roll);
-    } catch (KJB_error e)
+    } catch (IVI_error e)
     {
         throw e;
     }
@@ -1048,17 +1048,17 @@ double kjb::propose_parapiped_and_camera_from_orthogonal_corner_good
 
 }
 
-bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner
+bool ivi::propose_parapiped_inside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
@@ -1072,7 +1072,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner
 
     if(imin_desired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -1252,14 +1252,14 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner
     double t_x = 0.0;
     double max_t = 0.0;
     bool found_t = false;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
     {
         ASSERT(t_x);
         max_t = t_x;
         found_t = true;
     }
     double t_y = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
     {
         if(!found_t)
         {
@@ -1273,7 +1273,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner
         }
     }
     double t_z = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
     {
         if(!found_t)
         {
@@ -1289,7 +1289,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner
 
     if(!found_t)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
     }
 
     /** We now use t to position the corner in space */
@@ -1743,17 +1743,17 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner
 
 /** Propose supported parapiped inside parapiped from orthogonal_corner
  * The height of the support planes are chosen from feasible ranges */
-bool kjb::propose_parapiped_at_different_depth_from_orthogonal_corner
+bool ivi::propose_parapiped_at_different_depth_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
@@ -1767,7 +1767,7 @@ bool kjb::propose_parapiped_at_different_depth_from_orthogonal_corner
 
     if(imin_desired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -1958,14 +1958,14 @@ bool kjb::propose_parapiped_at_different_depth_from_orthogonal_corner
     double t_x = 0.0;
     double max_t = 0.0;
     bool found_t = false;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
     {
         ASSERT(t_x);
         max_t = t_x;
         found_t = true;
     }
     double t_y = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
     {
         if(!found_t)
         {
@@ -1979,7 +1979,7 @@ bool kjb::propose_parapiped_at_different_depth_from_orthogonal_corner
         }
     }
     double t_z = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
     {
         if(!found_t)
         {
@@ -1995,7 +1995,7 @@ bool kjb::propose_parapiped_at_different_depth_from_orthogonal_corner
 
     if(!found_t)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
         return false; 
     }
 
@@ -2385,21 +2385,21 @@ bool kjb::propose_parapiped_at_different_depth_from_orthogonal_corner
     return true;
 }
 
-bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
+bool ivi::propose_parapiped_onside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
     bool expand_sp_obj, // if it is allowed to expand the supporting object
-    kjb::Vector & sp_obj_centre, // centre of the supporting object
-    kjb::Vector & sp_obj_dimensions // dimensions of the supporting object
+    ivi::Vector & sp_obj_centre, // centre of the supporting object
+    ivi::Vector & sp_obj_dimensions // dimensions of the supporting object
 )
 {
     new_pp = pp;
@@ -2409,7 +2409,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
 
     if(imin_desired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped onside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped onside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -2608,7 +2608,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
 
     //std::cout << "sp_plane: " << sp_plane << std::endl;
     //std::cout << "Cemara centre in pp: " << camera_centre_in_pp << std::endl;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
     {
         ASSERT(t_y);
         if (t_y < 0)
@@ -2616,7 +2616,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
             if (!expand_up)
             {
                 sp_plane(3) = -max_y;
-                if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
+                if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
                 {
                     ASSERT(t_y);
                     if (t_y < 0)
@@ -2638,7 +2638,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
     }
 
     /** We find the intersection of the line from camera to corner and their near x-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x_near, camera_centre_in_pp, camera_to_corner, x_near_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x_near, camera_centre_in_pp, camera_to_corner, x_near_plane) )
     {
         ASSERT(t_x_near);
         if (!found_t_near)
@@ -2653,7 +2653,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
     }
     
     /** We find the intersection of the line from camera to corner and thei further x-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x_far, camera_centre_in_pp, camera_to_corner, x_far_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x_far, camera_centre_in_pp, camera_to_corner, x_far_plane) )
     {
         ASSERT(t_x_far);
         if (!found_t_far)
@@ -2668,7 +2668,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
     }
 
     /** We find the intersection of the line from camera to corner and their near z-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z_near, camera_centre_in_pp, camera_to_corner, z_near_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z_near, camera_centre_in_pp, camera_to_corner, z_near_plane) )
     {
         ASSERT(t_z_near);
         if (!found_t_near)
@@ -2683,7 +2683,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
     }
     
     /** We find the intersection of the line from camera to corner and thei further z-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z_far, camera_centre_in_pp, camera_to_corner, z_far_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z_far, camera_centre_in_pp, camera_to_corner, z_far_plane) )
     {
         ASSERT(t_z_far);
         if (!found_t_far)
@@ -2699,7 +2699,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
 
     if(!found_t_near && !found_t_far)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
         return false; // TODO We probably need to expand the supporting object, but just leave it for now
     }
 
@@ -3065,21 +3065,21 @@ bool kjb::propose_parapiped_onside_parapiped_from_orthogonal_corner
     return true;
 }
 
-bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
+bool ivi::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
     bool expand_sp_obj, // if it is allowed to expand the supporting object
-    kjb::Vector & sp_obj_centre, // centre of the supporting object
-    kjb::Vector & sp_obj_dimensions // dimensions of the supporting object
+    ivi::Vector & sp_obj_centre, // centre of the supporting object
+    ivi::Vector & sp_obj_dimensions // dimensions of the supporting object
 )
 {
     new_pp = pp;
@@ -3089,7 +3089,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
 
     if(imin_desired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped onside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped onside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -3288,7 +3288,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
 
     //std::cout << "sp_plane: " << sp_plane << std::endl;
     //std::cout << "Cemara centre in pp: " << camera_centre_in_pp << std::endl;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
     {
         ASSERT(t_y);
         if (t_y < 0)
@@ -3296,7 +3296,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
             if (!expand_up)
             {
                 sp_plane(3) = -max_y;
-                if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
+                if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
                 {
                     ASSERT(t_y);
                     if (t_y < 0)
@@ -3318,7 +3318,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
     }
 
     /** We find the intersection of the line from camera to corner and their near x-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x_near, camera_centre_in_pp, camera_to_corner, x_near_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x_near, camera_centre_in_pp, camera_to_corner, x_near_plane) )
     {
         ASSERT(t_x_near);
         if (!found_t_near)
@@ -3333,7 +3333,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
     }
     
     /** We find the intersection of the line from camera to corner and thei further x-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x_far, camera_centre_in_pp, camera_to_corner, x_far_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x_far, camera_centre_in_pp, camera_to_corner, x_far_plane) )
     {
         ASSERT(t_x_far);
         if (!found_t_far)
@@ -3348,7 +3348,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
     }
 
     /** We find the intersection of the line from camera to corner and their near z-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z_near, camera_centre_in_pp, camera_to_corner, z_near_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z_near, camera_centre_in_pp, camera_to_corner, z_near_plane) )
     {
         ASSERT(t_z_near);
         if (!found_t_near)
@@ -3363,7 +3363,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
     }
     
     /** We find the intersection of the line from camera to corner and thei further z-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z_far, camera_centre_in_pp, camera_to_corner, z_far_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z_far, camera_centre_in_pp, camera_to_corner, z_far_plane) )
     {
         ASSERT(t_z_far);
         if (!found_t_far)
@@ -3379,7 +3379,7 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
 
     if(!found_t_near && !found_t_far)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
         return false; // TODO We probably need to expand the supporting object, but just leave it for now
     }
 
@@ -3659,21 +3659,21 @@ bool kjb::propose_parapiped_onside_parapiped_from_one_corner_in_the_center
     return true;
 }
 
-bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
+bool ivi::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
     bool expand_sp_obj, // if it is allowed to expand the supporting object
-    kjb::Vector & sp_obj_centre, // centre of the supporting object
-    kjb::Vector & sp_obj_dimensions // dimensions of the supporting object
+    ivi::Vector & sp_obj_centre, // centre of the supporting object
+    ivi::Vector & sp_obj_dimensions // dimensions of the supporting object
 )
 {
     new_pp = pp;
@@ -3683,7 +3683,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
 
     if(imin_desired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -3880,7 +3880,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
 
     //std::cout << "sp_plane: " << sp_plane << std::endl;
     //std::cout << "Cemara centre in pp: " << camera_centre_in_pp << std::endl;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
     {
         ASSERT(t_y);
         if (t_y < 0)
@@ -3888,7 +3888,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
             if (!expand_up)
             {
                 sp_plane(3) = -max_y;
-                if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
+                if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, sp_plane) )
                 {
                     ASSERT(t_y);
                     if (t_y < 0)
@@ -3910,7 +3910,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
     }
 
     /** We find the intersection of the line from camera to corner and thei near x-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x_near, camera_centre_in_pp, camera_to_corner, x_near_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x_near, camera_centre_in_pp, camera_to_corner, x_near_plane) )
     {
         ASSERT(t_x_near);
         if (!found_t_near)
@@ -3925,7 +3925,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
     }
     
     /** We find the intersection of the line from camera to corner and thei further x-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x_far, camera_centre_in_pp, camera_to_corner, x_far_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x_far, camera_centre_in_pp, camera_to_corner, x_far_plane) )
     {
         ASSERT(t_x_far);
         if (!found_t_far)
@@ -3940,7 +3940,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
     }
 
     /** We find the intersection of the line from camera to corner and thei near z-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z_near, camera_centre_in_pp, camera_to_corner, z_near_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z_near, camera_centre_in_pp, camera_to_corner, z_near_plane) )
     {
         ASSERT(t_z_near);
         if (!found_t_near)
@@ -3955,7 +3955,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
     }
     
     /** We find the intersection of the line from camera to corner and thei further z-aligned face of the supported object */
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z_far, camera_centre_in_pp, camera_to_corner, z_far_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z_far, camera_centre_in_pp, camera_to_corner, z_far_plane) )
     {
         ASSERT(t_z_far);
         if (!found_t_far)
@@ -3971,7 +3971,7 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
 
     if(!found_t_near && !found_t_far)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
         return false; // TODO We probably need to expand the supporting object, but just leave it for now
     }
 
@@ -4334,17 +4334,17 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
     return true;
 }
 
-bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
+bool ivi::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
@@ -4361,7 +4361,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
 
     if(imin_desired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -4541,14 +4541,14 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
     double t_x = 0.0;
     double max_t = 0.0;
     bool found_t = false;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
     {
         ASSERT(t_x);
         max_t = t_x;
         found_t = true;
     }
     double t_y = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
     {
         if(!found_t)
         {
@@ -4562,7 +4562,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
         }
     }
     double t_z = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
     {
         if(!found_t)
         {
@@ -4578,7 +4578,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
 
     if(!found_t)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
     }
 
     //Let us find the logic here
@@ -4802,7 +4802,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
                     intersection_plane(0) = 1.0;
                     intersection_plane(3) = -desired_x;
                 }
-                if(kjb::intersect_3D_line_with_plane(intersection, desired_t_x, camera_centre_in_pp, camera_to_corner, intersection_plane) )
+                if(ivi::intersect_3D_line_with_plane(intersection, desired_t_x, camera_centre_in_pp, camera_to_corner, intersection_plane) )
                 {
                     if(desired_t_x < 0)
                     {
@@ -4836,7 +4836,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
                     intersection_plane(2) = 1.0;
                     intersection_plane(3) = -desired_z;
                 }
-                if(kjb::intersect_3D_line_with_plane(intersection, desired_t_z, camera_centre_in_pp, camera_to_corner, intersection_plane) )
+                if(ivi::intersect_3D_line_with_plane(intersection, desired_t_z, camera_centre_in_pp, camera_to_corner, intersection_plane) )
                 {
                     if(desired_t_z < 0)
                     {
@@ -5191,7 +5191,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
 
 }
 
-void kjb::expand_towards_camera
+void ivi::expand_towards_camera
 (
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
@@ -5203,8 +5203,8 @@ void kjb::expand_towards_camera
     bool & expand_z_up
 )
 {
-    kjb::Vector centre(4, 1.0);
-    kjb::Vector dimensions(3, 0.0);
+    ivi::Vector centre(4, 1.0);
+    ivi::Vector dimensions(3, 0.0);
     Parametric_parapiped new_pp = pp;
     new_pp.update_if_needed();
     double princ_x = (num_cols/2.0) + camera.get_principal_point_x();
@@ -5444,18 +5444,18 @@ void kjb::expand_towards_camera
 }
 
 
-bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner_good
+bool ivi::propose_frame_inside_parapiped_from_orthogonal_corner_good
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     unsigned int & face_number,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & idesired_dimensions,
+    const ivi::Vector & idesired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     bool wall_x,
@@ -5468,7 +5468,7 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner_good
     double princ_y = (num_rows/2.0) - camera.get_principal_point_y();
     if(idesired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -5613,14 +5613,14 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner_good
     double t_x = 0.0;
     double max_t;
     bool found_t = false;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
     {
         ASSERT(t_x);
         max_t = t_x;
         found_t = true;
     }
     double t_y = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
     {
         if(!found_t)
         {
@@ -5634,7 +5634,7 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner_good
         }
     }
     double t_z = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
     {
         if(!found_t)
         {
@@ -5650,7 +5650,7 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner_good
 
     if(!found_t)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
     }
 
     double chosen_t = 0.0;
@@ -6009,18 +6009,18 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner_good
 }
 
 
-bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner
+bool ivi::propose_frame_inside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     unsigned int & face_number,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & idesired_dimensions,
+    const ivi::Vector & idesired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols
 )
@@ -6031,7 +6031,7 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner
     double princ_y = (num_rows/2.0) - camera.get_principal_point_y();
     if(idesired_dimensions.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
+        IVI_THROW_2(Illegal_argument, "Propose parapiped inside parapiped, desired_dimensions must be of size 3");
     }
     if(centre.size() != 4)
     {
@@ -6177,14 +6177,14 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner
     double t_x = 0.0;
     double max_t;
     bool found_t = false;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_pp, camera_to_corner, x_plane) )
     {
         ASSERT(t_x);
         max_t = t_x;
         found_t = true;
     }
     double t_y = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
     {
         if(!found_t)
         {
@@ -6198,7 +6198,7 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner
         }
     }
     double t_z = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_pp, camera_to_corner, z_plane) )
     {
         if(!found_t)
         {
@@ -6214,7 +6214,7 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner
 
     if(!found_t)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
     }
 
     double chosen_t = 0.0;
@@ -6577,11 +6577,11 @@ bool kjb::propose_frame_inside_parapiped_from_orthogonal_corner
 }
 
 
-bool kjb::propose_supported_parapiped_inside_parapiped_from_three_corners
+bool ivi::propose_supported_parapiped_inside_parapiped_from_three_corners
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -6711,15 +6711,15 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_three_corners
     Vector floor_intersection3;
     double t_y1, t_y2, t_y3;
     //std::cout << "Check intersections" << std::endl;
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection1, t_y1, camera_centre_in_pp, camera_to_corner1, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection1, t_y1, camera_centre_in_pp, camera_to_corner1, y_plane) )
     {
     	return false;
     }
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection2, t_y2, camera_centre_in_pp, camera_to_corner2, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection2, t_y2, camera_centre_in_pp, camera_to_corner2, y_plane) )
     {
     	return false;
     }
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection3, t_y3, camera_centre_in_pp, camera_to_corner3, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection3, t_y3, camera_centre_in_pp, camera_to_corner3, y_plane) )
     {
     	return false;
     }
@@ -6735,9 +6735,9 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_three_corners
     ls12.get_direction(dir12);
     ls13.get_direction(dir13);
     ls23.get_direction(dir23);
-    double dp12_13 = kjb::dot(dir12, dir13);
-    double dp12_23 = kjb::dot(dir12, dir23);
-    double dp13_23 = kjb::dot(dir13, dir23);
+    double dp12_13 = ivi::dot(dir12, dir13);
+    double dp12_23 = ivi::dot(dir12, dir23);
+    double dp13_23 = ivi::dot(dir13, dir23);
     int middle_position = 1;
     /*std::cout << "Floor ints 1 :" << floor_intersection1(0) << "  " << floor_intersection1(2) << std::endl;
     std::cout << "Floor ints 2 :" << floor_intersection2(0) << "  " << floor_intersection2(2) << std::endl;
@@ -6858,11 +6858,11 @@ bool kjb::propose_supported_parapiped_inside_parapiped_from_three_corners
 
 }
 
-bool kjb::propose_parapiped_inside_parapiped_from_three_corners_on_the_floor
+bool ivi::propose_parapiped_inside_parapiped_from_three_corners_on_the_floor
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -6991,15 +6991,15 @@ bool kjb::propose_parapiped_inside_parapiped_from_three_corners_on_the_floor
     Vector floor_intersection3;
     double t_y1, t_y2, t_y3;
     //std::cout << "Check intersections" << std::endl;
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection1, t_y1, camera_centre_in_pp, camera_to_corner1, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection1, t_y1, camera_centre_in_pp, camera_to_corner1, y_plane) )
     {
     	return false;
     }
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection2, t_y2, camera_centre_in_pp, camera_to_corner2, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection2, t_y2, camera_centre_in_pp, camera_to_corner2, y_plane) )
     {
     	return false;
     }
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection3, t_y3, camera_centre_in_pp, camera_to_corner3, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection3, t_y3, camera_centre_in_pp, camera_to_corner3, y_plane) )
     {
     	return false;
     }
@@ -7015,9 +7015,9 @@ bool kjb::propose_parapiped_inside_parapiped_from_three_corners_on_the_floor
     ls12.get_direction(dir12);
     ls13.get_direction(dir13);
     ls23.get_direction(dir23);
-    double dp12_13 = kjb::dot(dir12, dir13);
-    double dp12_23 = kjb::dot(dir12, dir23);
-    double dp13_23 = kjb::dot(dir13, dir23);
+    double dp12_13 = ivi::dot(dir12, dir13);
+    double dp12_23 = ivi::dot(dir12, dir23);
+    double dp13_23 = ivi::dot(dir13, dir23);
     int middle_position = 1;
     /*std::cout << "Floor ints 1 :" << floor_intersection1(0) << "  " << floor_intersection1(2) << std::endl;
     std::cout << "Floor ints 2 :" << floor_intersection2(0) << "  " << floor_intersection2(2) << std::endl;
@@ -7138,11 +7138,11 @@ bool kjb::propose_parapiped_inside_parapiped_from_three_corners_on_the_floor
 
 }
 
-bool kjb::propose_parapiped_inside_parapiped_from_two_corners_on_the_floor
+bool ivi::propose_parapiped_inside_parapiped_from_two_corners_on_the_floor
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -7258,11 +7258,11 @@ bool kjb::propose_parapiped_inside_parapiped_from_two_corners_on_the_floor
     Vector floor_intersection2;
     double t_y1, t_y2;
     //std::cout << "Check intersections" << std::endl;
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection1, t_y1, camera_centre_in_pp, camera_to_corner1, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection1, t_y1, camera_centre_in_pp, camera_to_corner1, y_plane) )
     {
     	return false;
     }
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection2, t_y2, camera_centre_in_pp, camera_to_corner2, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection2, t_y2, camera_centre_in_pp, camera_to_corner2, y_plane) )
     {
     	return false;
     }
@@ -7340,11 +7340,11 @@ bool kjb::propose_parapiped_inside_parapiped_from_two_corners_on_the_floor
 
 }
 
-bool kjb::propose_parapiped_inside_parapiped_from_one_corner_in_the_centre_on_the_floor
+bool ivi::propose_parapiped_inside_parapiped_from_one_corner_in_the_centre_on_the_floor
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -7444,7 +7444,7 @@ bool kjb::propose_parapiped_inside_parapiped_from_one_corner_in_the_centre_on_th
     Vector floor_intersection;
     double t_y;
     //std::cout << "Check intersections" << std::endl;
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection, t_y, camera_centre_in_pp, camera_to_corner, y_plane) )
     {
     	return false;
     }
@@ -7467,20 +7467,20 @@ bool kjb::propose_parapiped_inside_parapiped_from_one_corner_in_the_centre_on_th
     return true;
 }
 
-double kjb::propose_parapiped_and_camera_from_vanishing_points
+double ivi::propose_parapiped_and_camera_from_vanishing_points
 (
-    kjb::Parametric_parapiped & pp,
-    kjb::Perspective_camera & camera,
+    ivi::Parametric_parapiped & pp,
+    ivi::Perspective_camera & camera,
     const std::vector<Vanishing_point> & vpts,
     double focal_length,
     unsigned int num_rows,
     unsigned int num_cols
 )
 {
-    kjb::Vector corner1(4, 0.0);
-    kjb::Vector corner2(4, 0.0);
-    kjb::Vector corner3(4, 0.0);
-    kjb::Vector position_3D;
+    ivi::Vector corner1(4, 0.0);
+    ivi::Vector corner2(4, 0.0);
+    ivi::Vector corner3(4, 0.0);
+    ivi::Vector position_3D;
 
     double princ_x = (num_cols/2.0) + camera.get_principal_point_x();
     double princ_y = (num_rows/2.0) - camera.get_principal_point_y();
@@ -7501,7 +7501,7 @@ double kjb::propose_parapiped_and_camera_from_vanishing_points
     {
     	if(vpts[1].is_at_infinity())
     	{
-    		KJB_THROW_2(KJB_error, "Cannot have too horizontal vanishing points at infinity");
+    		IVI_THROW_2(IVI_error, "Cannot have too horizontal vanishing points at infinity");
     	}
     	if(vpts[1].get_x() > 0)
     	{
@@ -7524,7 +7524,7 @@ double kjb::propose_parapiped_and_camera_from_vanishing_points
     {
     	if(vpts[0].is_at_infinity())
     	{
-    		KJB_THROW_2(KJB_error, "Cannot have too horizontal vanishing points at infinity");
+    		IVI_THROW_2(IVI_error, "Cannot have too horizontal vanishing points at infinity");
     	}
     	if(vpts[0].get_x() > 0)
     	{
@@ -7681,7 +7681,7 @@ double kjb::propose_parapiped_and_camera_from_vanishing_points
     try
     {
         q.set_axis_angle(rotation_axis, roll);
-    } catch (KJB_error e)
+    } catch (IVI_error e)
     {
         throw e;
     }
@@ -7749,7 +7749,7 @@ double kjb::propose_parapiped_and_camera_from_vanishing_points
 }
 
 
-bool kjb::find_height_from_two_corners
+bool ivi::find_height_from_two_corners
 (
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
@@ -7835,7 +7835,7 @@ bool kjb::find_height_from_two_corners
     y_plane(3) = new_pp.get_height()/2.0;
     Vector floor_intersection;
     double t_y;
-    if(!kjb::intersect_3D_line_with_plane(floor_intersection, t_y, camera_centre_in_pp, camera_to_floor_corner, y_plane) )
+    if(!ivi::intersect_3D_line_with_plane(floor_intersection, t_y, camera_centre_in_pp, camera_to_floor_corner, y_plane) )
     {
         return false;
     }
@@ -7845,7 +7845,7 @@ bool kjb::find_height_from_two_corners
     z_plane_through_point(3) = -floor_intersection(2);
     Vector top_intersection;
     double t_z;
-    if(!kjb::intersect_3D_line_with_plane(top_intersection, t_z, camera_centre_in_pp, camera_to_top_corner, z_plane_through_point) )
+    if(!ivi::intersect_3D_line_with_plane(top_intersection, t_z, camera_centre_in_pp, camera_to_top_corner, z_plane_through_point) )
     {
         return false;
     }
@@ -7860,13 +7860,13 @@ bool kjb::find_height_from_two_corners
     return true;
 }
 
-bool kjb::shift_parapiped_to_match_corner
+bool ivi::shift_parapiped_to_match_corner
 (
-    kjb::Parametric_parapiped & pp,
-    kjb::Perspective_camera & camera,
+    ivi::Parametric_parapiped & pp,
+    ivi::Perspective_camera & camera,
     unsigned int num_rows,
     unsigned int num_cols,
-    const kjb::Vector & corner
+    const ivi::Vector & corner
 )
 {
 	double princ_x = (num_cols/2.0) + camera.get_principal_point_x();
@@ -7920,10 +7920,10 @@ bool kjb::shift_parapiped_to_match_corner
 }
 
 
-bool kjb::propose_frame_inside_parapiped_from_three_corners_on_the_wall
+bool ivi::propose_frame_inside_parapiped_from_three_corners_on_the_wall
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     unsigned int & face_number,
@@ -8045,7 +8045,7 @@ bool kjb::propose_frame_inside_parapiped_from_three_corners_on_the_wall
     double max_t;
     bool found_t = false;
     bool frame_x = true;
-    if(kjb::intersect_3D_line_with_plane(intersection1, t_x, camera_centre_in_pp, camera_to_corner1, x_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection1, t_x, camera_centre_in_pp, camera_to_corner1, x_plane) )
     {
         ASSERT(t_x);
         max_t = t_x;
@@ -8053,7 +8053,7 @@ bool kjb::propose_frame_inside_parapiped_from_three_corners_on_the_wall
         frame_x = false;
     }
     double t_z = 0.0;
-    if(kjb::intersect_3D_line_with_plane(temp_intersection, t_z, camera_centre_in_pp, camera_to_corner1, z_plane) )
+    if(ivi::intersect_3D_line_with_plane(temp_intersection, t_z, camera_centre_in_pp, camera_to_corner1, z_plane) )
     {
         if(!found_t)
         {
@@ -8103,22 +8103,22 @@ bool kjb::propose_frame_inside_parapiped_from_three_corners_on_the_wall
     }
     if(frame_x)
     {
-    	 if(!kjb::intersect_3D_line_with_plane(intersection2, temp_t, camera_centre_in_pp, camera_to_corner2, z_plane) )
+    	 if(!ivi::intersect_3D_line_with_plane(intersection2, temp_t, camera_centre_in_pp, camera_to_corner2, z_plane) )
     	 {
     		 return false;
     	 }
-       	 if(!kjb::intersect_3D_line_with_plane(intersectiontop, temp_t, camera_centre_in_pp, camera_to_corner3, z_plane) )
+       	 if(!ivi::intersect_3D_line_with_plane(intersectiontop, temp_t, camera_centre_in_pp, camera_to_corner3, z_plane) )
 		 {
 			 return false;
 		 }
     }
     else
     {
-   	     if(!kjb::intersect_3D_line_with_plane(intersection2, temp_t, camera_centre_in_pp, camera_to_corner2, x_plane) )
+   	     if(!ivi::intersect_3D_line_with_plane(intersection2, temp_t, camera_centre_in_pp, camera_to_corner2, x_plane) )
    	     {
    		     return false;
    	     }
-      	 if(!kjb::intersect_3D_line_with_plane(intersectiontop, temp_t, camera_centre_in_pp, camera_to_corner3, x_plane) )
+      	 if(!ivi::intersect_3D_line_with_plane(intersectiontop, temp_t, camera_centre_in_pp, camera_to_corner3, x_plane) )
 		 {
 			 return false;
 		 }
@@ -8152,11 +8152,11 @@ bool kjb::propose_frame_inside_parapiped_from_three_corners_on_the_wall
 }
 
 
-bool kjb::backproject_point_to_plane // find out the intersection between the view line and a plane in room coordinate
+bool ivi::backproject_point_to_plane // find out the intersection between the view line and a plane in room coordinate
 (
-	kjb::Vector & intersection,
-	kjb::Vector point2D,
-	kjb::Vector plane,
+	ivi::Vector & intersection,
+	ivi::Vector point2D,
+	ivi::Vector plane,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
 	int num_rows,
@@ -8229,7 +8229,7 @@ bool kjb::backproject_point_to_plane // find out the intersection between the vi
 
 	double t_y;
 	//std::cout << "Check intersections" << std::endl;
-	if(!kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, plane) )
+	if(!ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_pp, camera_to_corner, plane) )
 	{
     	return false;
 	}
@@ -8241,7 +8241,7 @@ bool kjb::backproject_point_to_plane // find out the intersection between the vi
 void update_focal_with_position(Perspective_camera& cam, double ifocal, Parametric_parapiped & pp)
 {
     double focal_ratio = ifocal/cam.get_focal_length();
-    kjb::Vector position = pp.get_centre();
+    ivi::Vector position = pp.get_centre();
     position(3) = 0.0;
 
     cam.set_focal_length(ifocal);

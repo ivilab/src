@@ -1,5 +1,5 @@
 
-/* $Id: i_vector.h 13028 2012-09-26 00:43:03Z qtung $ */
+/* $Id: i_vector.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,16 +24,16 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-typedef struct KJB_image_vector
+typedef struct IVI_image_vector
 {
   int length;
-  struct KJB_image **images;
+  struct IVI_image **images;
 }
-KJB_image_vector;
+IVI_image_vector;
 
 #ifdef TRACK_MEMORY_ALLOCATION
 
@@ -42,7 +42,7 @@ KJB_image_vector;
 
   int debug_read_image_vector
   (
-      KJB_image_vector **ivpp,
+      IVI_image_vector **ivpp,
       const char *file_pattern,
       int         num_rows,
       int         num_cols,
@@ -55,8 +55,8 @@ KJB_image_vector;
 
   int debug_copy_image_vector
   (
-     KJB_image_vector **target_ivpp, 
-     const KJB_image_vector *source_ivp,
+     IVI_image_vector **target_ivpp, 
+     const IVI_image_vector *source_ivp,
      const char* filename,
      int         line_number
   );
@@ -66,7 +66,7 @@ KJB_image_vector;
 
   int debug_get_target_image_vector
   (
-     KJB_image_vector **target_ivpp,
+     IVI_image_vector **target_ivpp,
      int         num_images,
      int         num_rows,
      int         num_cols,
@@ -77,20 +77,20 @@ KJB_image_vector;
 #else
   int read_image_vector
   (
-     KJB_image_vector **target_ivpp, 
+     IVI_image_vector **target_ivpp, 
      const char *file_pattern,
      int num_rows, int num_cols
   );
   
   int copy_image_vector
   (
-     KJB_image_vector **target_ivpp, 
-     const KJB_image_vector *source_ivp
+     IVI_image_vector **target_ivpp, 
+     const IVI_image_vector *source_ivp
   );
   
   int get_target_image_vector
   (
-     KJB_image_vector **target_ivpp, 
+     IVI_image_vector **target_ivpp, 
      int num_images, 
      int num_rows, 
      int num_cols
@@ -98,7 +98,7 @@ KJB_image_vector;
 #endif
   void free_image_vector
   (
-     KJB_image_vector *ivp
+     IVI_image_vector *ivp
   );
 
 #ifdef __cplusplus

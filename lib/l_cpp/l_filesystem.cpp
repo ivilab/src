@@ -1,4 +1,4 @@
-/* $Id: l_filesystem.cpp 15826 2013-10-21 18:24:31Z ksimek $ */
+/* $Id: l_filesystem.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 
 #include <boost/format.hpp>
 
-namespace kjb {
+namespace ivi {
 
 std::vector<std::string> file_names_from_format
 (
@@ -43,7 +43,7 @@ std::vector<std::string> file_names_from_format
     while(file_exists && file_names.size() < num_files)
     {
         std::string file_name = boost::str(boost::format(name_format) % i);
-        if(kjb_c::is_file(file_name.c_str()))
+        if(ivi_c::is_file(file_name.c_str()))
         {
             file_names.push_back(file_name);
         }
@@ -73,7 +73,7 @@ std::vector<std::string> dir_names_from_format
     while(dir_exists)
     {
         std::string dir_name = boost::str(boost::format(name_format) % i);
-        if(kjb_c::is_directory(dir_name.c_str()))
+        if(ivi_c::is_directory(dir_name.c_str()))
         {
             dir_names.push_back(dir_name);
         }
@@ -115,11 +115,11 @@ std::vector<std::string> strings_from_format
 std::string realpath(const std::string& path)
 {
     std::vector<char> real_p(MAXPATHLEN);
-    ETX(kjb_c::kjb_realpath(path.c_str(), & real_p.front(), real_p.size()));
-    const int l = kjb_c::signed_strlen(& real_p.front());
+    ETX(ivi_c::ivi_realpath(path.c_str(), & real_p.front(), real_p.size()));
+    const int l = ivi_c::signed_strlen(& real_p.front());
     ETX(l >= MAXPATHLEN);
     return std::string(& real_p.front(), size_t(l));
 }
 
-} // namespace kjb
+} // namespace ivi
 

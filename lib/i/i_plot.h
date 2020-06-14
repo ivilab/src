@@ -1,5 +1,5 @@
 
-/* $Id: i_plot.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_plot.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,16 +29,16 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int write_plot_image(int plot_num, const char* file_name, int reduction);
 
-int get_plot_image(KJB_image** ipp, int plot_num, int reduction);
+int get_plot_image(IVI_image** ipp, int plot_num, int reduction);
 
-int make_image_from_plot(KJB_image** ipp, int plot_num);
+int make_image_from_plot(IVI_image** ipp, int plot_num);
 
 
 #ifdef __cplusplus

@@ -36,7 +36,7 @@
 #include <algorithm>
 #include <boost/optional.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 //// UTILITY FUNCTIONS ////
@@ -88,9 +88,9 @@ public:
         const Perspective_camera& camera,
         const Activity_library& library
     ) :
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
         glwin_(DEFAULT_WIDTH, DEFAULT_HEIGHT, "Visualize description"),
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
         desc_p_(&description),
         data_p_(&data),
         cam_p_(&camera),
@@ -111,9 +111,9 @@ public:
         const Data& data,
         const Activity_library& library
     ) :
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
         glwin_(DEFAULT_WIDTH, DEFAULT_HEIGHT, "Visualize description"),
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
         desc_p_(&description),
         data_p_(&data),
         cam_p_(0),
@@ -152,11 +152,11 @@ public:
     /** @brief  Resize this viewer. */
     void resize(size_t width, size_t height)
     {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
         glwin_.set_size(width, height);
-#else /* KJB_HAVE_OPENGL */
-        KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+#else /* IVI_HAVE_OPENGL */
+        IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
     }
 
     /** @brief  Set the current frame to the given value. */
@@ -200,11 +200,11 @@ public:
     template<class Func>
     void set_key_callback(const Func& cb)
     {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
         glwin_.set_keyboard_callback(cb);
-#else /* KJB_HAVE_OPENGL */
-        KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+#else /* IVI_HAVE_OPENGL */
+        IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
     }
 
     /** Set whether or not the images are rendered in the background. */
@@ -214,20 +214,20 @@ public:
     /** @brief  Get this viewer's width. */
     double width() const 
     { 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
         return glwin_.get_width(); 
-#else /* KJB_HAVE_OPENGL */
-        KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+#else /* IVI_HAVE_OPENGL */
+        IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
     }
 
     /** @brief  Get this viewer's height. */
     double height() const {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
         return glwin_.get_height();
-#else /* KJB_HAVE_OPENGL */
-        KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+#else /* IVI_HAVE_OPENGL */
+        IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
     }
 
 private:
@@ -248,9 +248,9 @@ private:
     }
 
 private:
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     opengl::Glut_window glwin_;
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
     const Description* desc_p_;
     const Data* data_p_;
     const Perspective_camera* cam_p_;
@@ -269,7 +269,7 @@ private:
     static const size_t DEFAULT_HEIGHT = 800;
 };
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_VISUALIZER_H */
 

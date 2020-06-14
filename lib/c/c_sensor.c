@@ -1,5 +1,5 @@
 
-/* $Id: c_sensor.c 15419 2013-09-25 18:12:40Z predoehl $ */
+/* $Id: c_sensor.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -351,7 +351,7 @@ int get_sensor_version(void)
  * Normalizes illumination spectra.
  *
  * This routine normalizes illumination spectra using the sensors in sensor_sp,
- * or, if sensor_sp is NULL, the ones managed by the KJB library. If KJB library
+ * or, if sensor_sp is NULL, the ones managed by the IVI library. If IVI library
  * options are made available to the user, then the sensors used can be changed
  * using the "sensor-file" or "sf" option. If the user has not specified
  * sensors, then default ones are used.
@@ -365,7 +365,7 @@ int get_sensor_version(void)
  *
  * Returns :
  *    If the sensors are supplied, then this routine returns NO_ERROR on
- *    success, and ERROR on failure.  If the KJB library sensors are used, then
+ *    success, and ERROR on failure.  If the IVI library sensors are used, then
  *    this routine returns the sensor version number on success, and ERROR on
  *    failure, with an appropriate error message being set. The sensor version
  *    number is incremented every time the use user resets the sensor data
@@ -400,7 +400,7 @@ int normalize_illum_spectra
  * Normalizes illumination spectra.
  *
  * This routine normalizes illumination spectra using the sensors in sensor_sp,
- * or, if sensor_sp is NULL, the ones managed by the KJB library. If KJB library
+ * or, if sensor_sp is NULL, the ones managed by the IVI library. If IVI library
  * options are made available to the user, then the sensors used can be changed
  * using the "sensor-file" or "sf" option. If the user has not specified
  * sensors, then default ones are used.
@@ -414,7 +414,7 @@ int normalize_illum_spectra
  *
  * Returns :
  *    If the sensors are supplied, then this routine returns NO_ERROR on
- *    success, and ERROR on failure.  If the KJB library sensors are used, then
+ *    success, and ERROR on failure.  If the IVI library sensors are used, then
  *    this routine returns the sensor version number on success, and ERROR on
  *    failure, with an appropriate error message being set. The sensor version
  *    number is incremented every time the use user resets the sensor data
@@ -1124,7 +1124,7 @@ int get_RGB_vector_from_spectrum
  *
  * This routine generates RGB data from reflectance and illuminant spectra using
  * the sensors in sensor_sp, or, if sensor_sp is NULL, the ones managed by the
- * KJB library. If KJB library options are made available to the user, then the
+ * IVI library. If IVI library options are made available to the user, then the
  * sensors used can be changed using the "sensor-file" or "sf" option. If the
  * user has not specified sensors, then default ones are used.
  *
@@ -1137,7 +1137,7 @@ int get_RGB_vector_from_spectrum
  *
  * Returns:
  *    If the sensors are supplied, then this routine returns NO_ERROR on
- *    success, and ERROR on failure.  If the KJB library sensors are used, then
+ *    success, and ERROR on failure.  If the IVI library sensors are used, then
  *    this routine returns the sensor version number on success, and ERROR on
  *    failure, with an appropriate error message being set. The sensor version
  *    number is incremented every time the use user resets the sensor data
@@ -1199,7 +1199,7 @@ int generate_RGB_data
  * Generates RGB data from spectra.
  *
  * This routine generates RGB data from spectra using the sensors in sensor_sp,
- * or, if sensor_sp is NULL, the ones managed by the KJB library. If KJB library
+ * or, if sensor_sp is NULL, the ones managed by the IVI library. If IVI library
  * options are made available to the user, then the sensors used can be changed
  * using the "sensor-file" or "sf" option. If the user has not specified
  * sensors, then default ones are used.
@@ -1209,7 +1209,7 @@ int generate_RGB_data
  *
  * Returns :
  *    If the sensors are supplied, then this routine returns NO_ERROR on
- *    success, and ERROR on failure.  If the KJB library sensors are used, then
+ *    success, and ERROR on failure.  If the IVI library sensors are used, then
  *    this routine returns the sensor version number on success, and ERROR on
  *    failure, with an appropriate error message being set. The sensor version
  *    number is incremented every time the use user resets the sensor data
@@ -1280,7 +1280,7 @@ int get_RGB_data_from_spectra
  * Generates RGB data from spectra.
  *
  * This routine generates RGB data from a single spectra using the sensors
- * managed by the KJB library. If KJB library options are made available to the
+ * managed by the IVI library. If IVI library options are made available to the
  * user, then the sensors used can be changed using the "sensor-file" or "sf"
  * option. If the user has not specified sensors, then default ones are used.
  *
@@ -1331,7 +1331,7 @@ int get_RGB_vector_from_spectra
  * Generates RGB data from spectra.
  *
  * This routine generates RGB data from a single spectra using the sensors
- * managed by the KJB library. If KJB library options are made available to the
+ * managed by the IVI library. If IVI library options are made available to the
  * user, then the sensors used can be changed using the "sensor-file" or "sf"
  * option. If the user has not specified sensors, then default ones are used.
  *
@@ -1421,7 +1421,7 @@ static int set_RGB_sensors(int count, double offset, double step)
 #endif
             )
         {
-            kjb_print_error();
+            ivi_print_error();
             p_stderr("No sensor file : using internal data\n");
 
             NRE(fs_rgb_original_sp = create_spectra(3, NUM_SPECTROMETER_INTERVALS,
@@ -1540,8 +1540,8 @@ static int set_XYZ_sensors(int count, double offset, double step)
         {
 
 #ifdef DONT_BUG_USER_ABOUT_USUAL_CASE  /* Internal data is the usual case. */
-            kjb_print_error();
-            kjb_fprintf(stderr,
+            ivi_print_error();
+            ivi_fprintf(stderr,
                    "Using internal data due to failure to find XYZ file.\n");
 #endif
 

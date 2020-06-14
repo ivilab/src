@@ -1,5 +1,5 @@
 
-/* $Id: i_int_matrix.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_int_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,7 +30,7 @@ extern "C" {
 
 static int map_integer_to_RGB
 (
-    kjb_uint32 int_val,
+    ivi_uint32 int_val,
     int*   r_ptr,
     int*   g_ptr,
     int*   b_ptr
@@ -75,7 +75,7 @@ static int map_integer_to_RGB
 
 int make_int_matrix_image
 (
-    KJB_image**       ipp,
+    IVI_image**       ipp,
     const Int_matrix* mp,
     int               color_width,
     int               bw_width,
@@ -116,7 +116,7 @@ int make_int_matrix_image
             {
                 for (j = 0; j < num_cols; j++)
                 {
-                    kjb_uint32 int_val = mp->elements[ i ][ j ];
+                    ivi_uint32 int_val = mp->elements[ i ][ j ];
                     int r, g, b;
 
                     if (int_val == 0) continue;
@@ -133,7 +133,7 @@ int make_int_matrix_image
                 {
                     for (j = 0; j < num_cols; j++)
                     {
-                        kjb_uint32 int_val = mp->elements[ i ][ j ];
+                        ivi_uint32 int_val = mp->elements[ i ][ j ];
                         int r, g, b;
 
                         if (int_val == 0) continue;
@@ -189,7 +189,7 @@ int make_int_matrix_image
 
 static int map_integer_to_RGB
 (
-    kjb_uint32 int_val,
+    ivi_uint32 int_val,
     int*       r_ptr,
     int*       g_ptr,
     int*       b_ptr

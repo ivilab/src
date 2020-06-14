@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pixel_move.cpp 15396 2013-09-23 17:29:19Z ernesto $ */
+/* $Id: pixel_move.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene_diff.h>
 #include <st_cpp/st_perspective_camera.h>
@@ -30,8 +30,8 @@
 #include <prob_cpp/prob_sample.h>
 #include <vector>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace std;
 
 /** @brief  Returns true if r + (ex, ez) == s in pixel space. */

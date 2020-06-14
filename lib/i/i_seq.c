@@ -34,7 +34,7 @@ extern "C" {
  *
  * Gets a target image sequence
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of image sequences. If *target_ispp is NULL, then this
  * routine creates the image sequence. If it is not NULL, and it is the right
  * size, then this routine does nothing. If it is the wrong size, then it is 
@@ -54,9 +54,9 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int get_target_image_sequence(KJB_image_sequence** target_ispp, int length)
+int get_target_image_sequence(IVI_image_sequence** target_ispp, int length)
 {
-    KJB_image_sequence* isp;
+    IVI_image_sequence* isp;
     int i;
 
     if(target_ispp == NULL)
@@ -74,11 +74,11 @@ int get_target_image_sequence(KJB_image_sequence** target_ispp, int length)
     }
     free_image_sequence(*target_ispp);
 
-    NRE(isp = TYPE_MALLOC(KJB_image_sequence));
+    NRE(isp = TYPE_MALLOC(IVI_image_sequence));
 
     if(length > 0)
     {
-        NRE(isp->elements = N_TYPE_MALLOC(KJB_image*, length));
+        NRE(isp->elements = N_TYPE_MALLOC(IVI_image*, length));
         isp->length = length;
     }
     else
@@ -124,7 +124,7 @@ int get_target_image_sequence(KJB_image_sequence** target_ispp, int length)
  * -----------------------------------------------------------------------------
 */
 
-int read_image_sequence(KJB_image_sequence** target_ispp, const Word_list* filenames)
+int read_image_sequence(IVI_image_sequence** target_ispp, const Word_list* filenames)
 {
     int i;
 
@@ -143,7 +143,7 @@ int read_image_sequence(KJB_image_sequence** target_ispp, const Word_list* filen
             set_error("%s not a valid file.", filenames->words[i]);
             return ERROR;
         }
-        ERE(kjb_read_image(&(*target_ispp)->elements[i], filenames->words[i]));
+        ERE(ivi_read_image(&(*target_ispp)->elements[i], filenames->words[i]));
     }
 
     return NO_ERROR;
@@ -165,10 +165,10 @@ int read_image_sequence(KJB_image_sequence** target_ispp, const Word_list* filen
  * -----------------------------------------------------------------------------
 */
 
-void free_image_sequence(KJB_image_sequence* isp)
+void free_image_sequence(IVI_image_sequence* isp)
 {
     int i, count;
-    KJB_image** ip_pos;
+    IVI_image** ip_pos;
 
     if(isp == NULL) return;
 
@@ -177,12 +177,12 @@ void free_image_sequence(KJB_image_sequence* isp)
 
     for(i = 0; i < count; i++)
     {
-        kjb_free_image(*ip_pos);
+        ivi_free_image(*ip_pos);
         ip_pos++;
     }
 
-    kjb_free(isp->elements);
-    kjb_free(isp);
+    ivi_free(isp->elements);
+    ivi_free(isp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -212,8 +212,8 @@ void free_image_sequence(KJB_image_sequence* isp)
 
 int average_bw_images
 (
-    KJB_image**               avg_img,
-    const KJB_image_sequence* images
+    IVI_image**               avg_img,
+    const IVI_image_sequence* images
 )
 {
     Matrix* avg_img_mat = NULL;
@@ -256,9 +256,9 @@ int average_bw_images
 
 int std_dev_bw_images
 (
-    KJB_image**               std_dev_img,
-    const KJB_image_sequence* images,
-    const KJB_image*          avg_img
+    IVI_image**               std_dev_img,
+    const IVI_image_sequence* images,
+    const IVI_image*          avg_img
 )
 {
     Matrix* sdv_img_mat = NULL;
@@ -310,7 +310,7 @@ int std_dev_bw_images
 int average_bw_images_2
 (
     Matrix**                  avg_img_mat,
-    const KJB_image_sequence* images
+    const IVI_image_sequence* images
 )
 {
     int i;
@@ -377,7 +377,7 @@ int average_bw_images_2
 int std_dev_bw_images_2
 (
     Matrix**                  std_dev_img_mat,
-    const KJB_image_sequence* images,
+    const IVI_image_sequence* images,
     const Matrix*             avg_img_mat
 )
 {

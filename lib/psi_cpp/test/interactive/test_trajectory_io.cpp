@@ -1,6 +1,6 @@
 #include <psi_cpp/psi_trajectory.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace psi;
 using namespace std;
 

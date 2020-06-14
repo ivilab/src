@@ -27,14 +27,14 @@
 #include "wrap_wordnet/wn_linkedlist.h"
 #include "wrap_wordnet/wn_hash.h"
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -106,7 +106,7 @@ int hash_word_sense
     const void *word_wp
 );
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 int is_word_in_synset
 (
     const SynsetPtr  synset,

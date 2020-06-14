@@ -32,7 +32,7 @@
 #include <iterator>
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 /**
@@ -717,7 +717,7 @@ Marginal_likelihood<Mean, Covariance, Linear_gaussian> make_marginal_likelihood
             inputs.begin(), inputs.end());
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_NORMAL_H_INCLUDED */
 

@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: nedviz.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: nedviz.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_std.h"
@@ -35,11 +35,11 @@ const int FS = 0x100,             // full-scale (too big for a color channel)
           FS_TIDG = (HS>>2) + HS, // alternate way to compute FS*TIDG
           HS_TIDG = FS_TIDG>>1;   // alternate way to compute HS*TIDG
 
-const kjb::PixelRGBA RED  ( FS-6, 0,       0),
+const ivi::PixelRGBA RED  ( FS-6, 0,       0),
                      GREEN( 0,    FS_TIDG, 0);
 }
 
-namespace kjb
+namespace ivi
 {
 
 Image ned_visualize_grid(
@@ -58,12 +58,12 @@ Image ned_visualize_grid(
         ||  elev_de_o.get_num_cols() != cols
         ||  elev_dn_o.get_num_cols() != cols)
     {
-        KJB_THROW_2(Dimension_mismatch, "Input sizes do not match");
+        IVI_THROW_2(Dimension_mismatch, "Input sizes do not match");
     }
 
     if (decimation < 1)
     {
-        KJB_THROW_2(Illegal_argument, "Decimation factor must be 1 or more");
+        IVI_THROW_2(Illegal_argument, "Decimation factor must be 1 or more");
     }
 
     const double    gradmax = std::max(max(elev_de_o), max(elev_dn_o)),
@@ -89,7 +89,7 @@ Image ned_visualize_grid(
 
     if (decimation > 1)
     {
-        Image i2(kjb::gauss_sample_image(i1, decimation, decimation));
+        Image i2(ivi::gauss_sample_image(i1, decimation, decimation));
         i1.swap(i2);
     }
     if (bar_length > 0)

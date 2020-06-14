@@ -1,5 +1,5 @@
 
-/* $Id: n_fit.h 12108 2012-04-18 07:39:01Z ksimek $ */
+/* $Id: n_fit.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

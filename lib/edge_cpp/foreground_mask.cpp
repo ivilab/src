@@ -33,7 +33,7 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 
-namespace kjb {
+namespace ivi {
 
 Foreground_mask::Foreground_mask(const std::string& file_name)
     : mask_matrix(file_name.c_str())
@@ -64,7 +64,7 @@ double Foreground_mask::calc_overlap_ratio(const Int_matrix & predicted_mask)
 
 void Foreground_mask::draw_foreground_image(const std::string & output_path)
 {
-    kjb::Image img(mask_matrix.get_num_rows(), mask_matrix.get_num_cols());
+    ivi::Image img(mask_matrix.get_num_rows(), mask_matrix.get_num_cols());
     for(int i = 0; i < mask_matrix.get_num_rows(); i++)
     {
     	for(int j = 0; j < mask_matrix.get_num_cols(); j++)

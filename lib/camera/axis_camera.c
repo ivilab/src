@@ -1,5 +1,5 @@
 
-/* $Id: axis_camera.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: axis_camera.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "m/m_incl.h"
 #include "i/i_float.h"
@@ -19,7 +19,7 @@ extern "C" {
 
 /* 
  * Kobus: This file is a good start, but it is not very system independent, nor
- * does it conform to the KJB library conventions. 
+ * does it conform to the IVI library conventions. 
 */
 #ifndef SUN5 
 
@@ -236,7 +236,7 @@ int set_tilt ( Axis_camera * camera, int tilt ) /* 0 to 1000 */
 
 int get_image_from_axis_camera ( Camera_bw_byte_image ** image, Axis_camera * camera )
 {
-    KJB_image *kjb_image = NULL;
+    IVI_image *ivi_image = NULL;
     unsigned char *data = NULL;
     char filename[64] = "temp.jpg";
     struct timeval tv;
@@ -253,18 +253,18 @@ int get_image_from_axis_camera ( Camera_bw_byte_image ** image, Axis_camera * ca
     gettimeofday(&tv, NULL);
     save_data_to_file(data, len, filename);    
 
-    if (kjb_read_image_2(&kjb_image, filename) != NO_ERROR)
+    if (ivi_read_image_2(&ivi_image, filename) != NO_ERROR)
     {
-    kjb_free(data);
+    ivi_free(data);
     set_error("unable to read image data");
     return ERROR;
     }
 
-    get_target_camera_bw_byte_image(image, kjb_image->num_rows, kjb_image->num_cols);
+    get_target_camera_bw_byte_image(image, ivi_image->num_rows, ivi_image->num_cols);
     (*image)->image_time = tv;
 
-    kjb_image_to_bw_byte_image(&(*image)->data, kjb_image);
-    kjb_free_image(kjb_image);
+    ivi_image_to_bw_byte_image(&(*image)->data, ivi_image);
+    ivi_free_image(ivi_image);
     free(data);
 
     return NO_ERROR;

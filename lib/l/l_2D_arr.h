@@ -1,5 +1,5 @@
 
-/* $Id: l_2D_arr.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: l_2D_arr.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -60,7 +60,7 @@ namespace kjb_c {
 */
 
 #ifdef __C2MAN__
-    kjb_int16 **allocate_2D_int16_array(int num_rows, int num_cols);
+    ivi_int16 **allocate_2D_int16_array(int num_rows, int num_cols);
 #endif
 
 /*
@@ -89,7 +89,7 @@ namespace kjb_c {
 */
 
 #ifdef __C2MAN__
-     void free_2D_int16_array(kjb_int16 **array);
+     void free_2D_int16_array(ivi_int16 **array);
 #else
 #ifdef INT16_IS_SHORT
 #    define free_2D_int16_array     free_2D_short_array
@@ -127,7 +127,7 @@ namespace kjb_c {
 */
 
 #ifdef __C2MAN__
-    kjb_int32 **allocate_2D_int32_array(int num_rows, int num_cols);
+    ivi_int32 **allocate_2D_int32_array(int num_rows, int num_cols);
 #endif
 
 /*

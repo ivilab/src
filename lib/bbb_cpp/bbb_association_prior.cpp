@@ -26,10 +26,10 @@
 #include <vector>
 #include <string>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
-Association kjb::bbb::sample(const Association_prior& prior)
+Association ivi::bbb::sample(const Association_prior& prior)
 {
     const Activity_library& lib = prior.library();
 

@@ -4,7 +4,7 @@
  * @brief convert a NED elevation datafile into an image
  */
 /*
- * $Id: float2img.cpp 17425 2014-08-30 00:34:38Z predoehl $
+ * $Id: float2img.cpp 25499 2020-06-14 13:26:04Z kobus $
  *
  * Tab size: 4
  */
@@ -106,7 +106,7 @@ const struct option opz[] =
 const char* shortops = "lmrao:h";   // keep this synched with opz[]
 
 
-const kjb_c::Pixel BLACK = kjb::PixelRGBA(0,0,0);
+const ivi_c::Pixel BLACK = ivi::PixelRGBA(0,0,0);
 
 
 // global structure storing program options and input, output filenames
@@ -115,7 +115,7 @@ struct Params
     typedef std::vector< std::string > VS;
     typedef std::pair< VS::const_iterator, VS::const_iterator > Ref;
 
-    enum kjb::NED13_FLOAT_AUTODETECT byteorder; // input byteorder
+    enum ivi::NED13_FLOAT_AUTODETECT byteorder; // input byteorder
     bool rel_ele;   // is the output to be shown in relative-elevation form?
     VS ifilenames, ofilenames;  // input filenames, output filenames
 
@@ -176,21 +176,21 @@ struct Params
 const Params* g_params; // global pointer to the invocation set of Params
 
 
-// are the input filenames ok?  return kjb_c::ERROR if not.
+// are the input filenames ok?  return ivi_c::ERROR if not.
 int Params::validate_filenames()
 {
     if ( ifilenames.empty() )
     {
-        kjb_c::set_error( "Error:  no input filenames were provided.\n" );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Error:  no input filenames were provided.\n" );
+        return ivi_c::ERROR;
     }
 
     if ( ! ofilenames.empty() && ofilenames.size() != ifilenames.size() )
     {
-        kjb_c::set_error( "Error:  unable to pair up %u input filename(s) "
+        ivi_c::set_error( "Error:  unable to pair up %u input filename(s) "
                                 "with %u output filename(s).\n",
                                 ifilenames.size(), ofilenames.size() );
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 
     // look for duplicate input filenames
@@ -230,17 +230,17 @@ int Params::validate_filenames()
                         std::ptr_fun( Params::output_fn ) );
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 // process command line args and options, using getopt_long.  Output in params.
 int read_opts_impl( int argc, char* const argv[], Params* params )
 {
-    KJB( NRE( argv ) );
-    KJB( NRE( params ) );
+    IVI( NRE( argv ) );
+    IVI( NRE( params ) );
 
-    params -> byteorder = kjb::NED_AD_UNCERTAIN;
+    params -> byteorder = ivi::NED_AD_UNCERTAIN;
 
     for( int ccc = 0; ccc != -1; )
     {
@@ -248,11 +248,11 @@ int read_opts_impl( int argc, char* const argv[], Params* params )
         ccc = getopt_long( argc, argv, shortops, opz, &index );
         if ( 'l' == ccc )
         {
-            params -> byteorder = kjb::NED_AD_LSBFIRST;
+            params -> byteorder = ivi::NED_AD_LSBFIRST;
         }
         else if ( 'm' == ccc )
         {
-            params -> byteorder = kjb::NED_AD_MSBFIRST;
+            params -> byteorder = ivi::NED_AD_MSBFIRST;
         }
         else if ( 'r' == ccc )
         {
@@ -269,12 +269,12 @@ int read_opts_impl( int argc, char* const argv[], Params* params )
         else if ( 'h' == ccc )
         {
             std::cout << format;
-            kjb_c::kjb_exit( EXIT_SUCCESS );
+            ivi_c::ivi_exit( EXIT_SUCCESS );
         }
         else if ( '?' == ccc ) // unrecognized option
         {
-            kjb_c::set_error( "Unrecognized option!\n\n" );
-            return kjb_c::ERROR;
+            ivi_c::set_error( "Unrecognized option!\n\n" );
+            return ivi_c::ERROR;
         }
         else
         {
@@ -288,16 +288,16 @@ int read_opts_impl( int argc, char* const argv[], Params* params )
         params -> ifilenames.push_back( argv[ optind++ ] );
     }
 
-    KJB( ERE( params -> validate_filenames() ) );
+    IVI( ERE( params -> validate_filenames() ) );
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 int read_options( int argc, char* const argv[], Params* params )
 {
     int rc = read_opts_impl( argc, argv, params );
-    if ( kjb_c::ERROR == rc )
+    if ( ivi_c::ERROR == rc )
     {
         std::cerr << format;
     }
@@ -308,12 +308,12 @@ int read_options( int argc, char* const argv[], Params* params )
 void absolute_ele( const Params::Ref& iopair )
 {
     // Pull input file points into a matrix
-    kjb::Matrix elevations;
-    KJB( ETX( kjb::get_ned_matrix(
+    ivi::Matrix elevations;
+    IVI( ETX( ivi::get_ned_matrix(
                     * iopair.first, &elevations, g_params -> byteorder ) ) );
 
-    const kjb::Matrix* const cele = &elevations;
-    kjb::Image nim( cele -> get_num_rows(), cele -> get_num_cols() );
+    const ivi::Matrix* const cele = &elevations;
+    ivi::Image nim( cele -> get_num_rows(), cele -> get_num_cols() );
 
     const double MtMcK = 6000.0; // rough height of Mt. McKinley, in meters
     for( int row = 0; row < cele -> get_num_rows(); ++row )
@@ -321,10 +321,10 @@ void absolute_ele( const Params::Ref& iopair )
         for( int col = 0; col < cele -> get_num_cols(); ++col )
         {
             nim.at( row, col )
-                    = kjb::PixelHSVA( cele -> at( row, col ) / MtMcK, 1, 1 );
+                    = ivi::PixelHSVA( cele -> at( row, col ) / MtMcK, 1, 1 );
 
             // show missing data as black
-            if ( kjb::NED_MISSING == cele -> at( row, col ) )
+            if ( ivi::NED_MISSING == cele -> at( row, col ) )
             {
                 nim.at( row, col ) = BLACK;
             }
@@ -341,7 +341,7 @@ void relative_ele( const Params::Ref& iopair )
     FD eld;
 
     // Pull input file points into a deque
-    KJB( ETX( kjb::get_ned_fdeq(
+    IVI( ETX( ivi::get_ned_fdeq(
                             * iopair.first, &eld, g_params -> byteorder ) ) );
 
     /*
@@ -353,7 +353,7 @@ void relative_ele( const Params::Ref& iopair )
     float emax = -FLT_MAX, emin = FLT_MAX;
     for( FD::const_iterator iii = eld.begin(); iii != eld.end(); ++iii, ++mmm )
     {
-        if ( *iii != kjb::NED_MISSING )
+        if ( *iii != ivi::NED_MISSING )
         {
             emax = std::max( emax, *iii );
             emin = std::min( emin, *iii );
@@ -371,8 +371,8 @@ void relative_ele( const Params::Ref& iopair )
      * We do this in two passes, which is probably not optimal, but the code is
      * simpler this way, and I bet the cost is insignificant.
      */
-    kjb::Matrix elm;
-    KJB( ETX( kjb::ned_fdeq_to_matrix( eld, &elm ) ) );
+    ivi::Matrix elm;
+    IVI( ETX( ivi::ned_fdeq_to_matrix( eld, &elm ) ) );
     std::vector< bool >::const_iterator qqq = missing_mask.begin();
 
     for( int row = 0; row < elm.get_num_rows(); ++row )
@@ -393,7 +393,7 @@ void relative_ele( const Params::Ref& iopair )
     }
 
     // Library does lots of work here, turns matrix into grayscale image file.
-    kjb::Image( elm ).write( * iopair.second );
+    ivi::Image( elm ).write( * iopair.second );
 }
 
 
@@ -405,7 +405,7 @@ int main( int argc, char* const argv[] )
 {
     // Read program options and arguments; permit global read-only access.
     Params params;
-    KJB( EPETE( read_options( argc, argv, &params ) ) );
+    IVI( EPETE( read_options( argc, argv, &params ) ) );
     g_params = &params;
 
     try
@@ -414,7 +414,7 @@ int main( int argc, char* const argv[] )
             std::ptr_fun( g_params -> rel_ele ? relative_ele : absolute_ele )
             );
     }
-    catch( kjb::Exception& eee )
+    catch( ivi::Exception& eee )
     {
         eee.print_details_exit();
     }

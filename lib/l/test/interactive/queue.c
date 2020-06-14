@@ -1,5 +1,5 @@
 
-/* $Id: queue.c 21653 2017-08-04 13:42:33Z kobus $ */
+/* $Id: queue.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -30,7 +30,7 @@ int main(void)
     Queue_element* removed_queue_head;
 
 
-    kjb_set_debug_level(5);
+    ivi_set_debug_level(5);
 
     set_io_atn_trap(); 
     dont_restart_on_atn(); 
@@ -38,10 +38,10 @@ int main(void)
     while ((BUFF_STDIN_GET_LINE(">", line)) != EOF) 
     {
         insert_into_queue(&string_stack_head, &string_stack_tail, 
-                          kjb_strdup(line)); 
+                          ivi_strdup(line)); 
 
         insert_at_end_of_queue(&string_list_head, &string_list_tail, 
-                               kjb_strdup(line)); 
+                               ivi_strdup(line)); 
 
         build_ordered_string_queue(line); 
     }
@@ -89,12 +89,12 @@ int main(void)
     print_string_queue_backwards(ordered_string_queue_tail);  
 
 
-    free_queue(&removed_queue_head, (Queue_element**)NULL, kjb_free); 
+    free_queue(&removed_queue_head, (Queue_element**)NULL, ivi_free); 
 
     free_queue(&ordered_string_queue_head, &ordered_string_queue_tail, 
-               kjb_free);
-    free_queue(&string_stack_head, &string_stack_tail, kjb_free);
-    free_queue(&string_list_head,  &string_list_tail, kjb_free); 
+               ivi_free);
+    free_queue(&string_stack_head, &string_stack_tail, ivi_free);
+    free_queue(&string_list_head,  &string_list_tail, ivi_free); 
 
     return EXIT_SUCCESS; 
 }
@@ -107,7 +107,7 @@ int build_ordered_string_queue(char *input_string)
     extern Queue_element *ordered_string_queue_tail;
     char *input_string_copy; 
 
-    input_string_copy = kjb_strdup(input_string); 
+    input_string_copy = ivi_strdup(input_string); 
 
     insert_into_ordered_queue(&ordered_string_queue_head, 
                               &ordered_string_queue_tail, 
@@ -182,6 +182,6 @@ int print_string_queue_backwards(Queue_element *tail)
 int compare_queue_strings(const void *str1, const void *str2)
 {
 
-    return kjb_strcmp((const char*)str1, (const char*)str2);
+    return ivi_strcmp((const char*)str1, (const char*)str2);
 }
 

@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_type.cpp 14240 2013-04-11 08:13:35Z jguan1 $ */
+/* $Id: d_type.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <detector_cpp/d_type.h>
 
@@ -31,7 +31,7 @@
 #include <boost/bimap/list_of.hpp>
 #include <boost/assign.hpp>
 
-using namespace kjb;
+using namespace ivi;
 
 // Map between names and types
 typedef boost::bimap<Detection_type, std::string> Detection_type_map;
@@ -47,7 +47,7 @@ const Detection_type_map detection_type_map = boost::assign::list_of
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<std::string> kjb::get_all_detection_type_names()
+std::vector<std::string> ivi::get_all_detection_type_names()
 {
     std::vector<std::string> result;
 
@@ -63,21 +63,21 @@ std::vector<std::string> kjb::get_all_detection_type_names()
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Detection_type kjb::get_detection_type(const std::string& name)
+Detection_type ivi::get_detection_type(const std::string& name)
 {
     return detection_type_map.right.at(name);
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-const std::string& kjb::get_detection_type_name(Detection_type type)
+const std::string& ivi::get_detection_type_name(Detection_type type)
 {
     return detection_type_map.left.at(type);
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::ostream& kjb::operator<<(std::ostream& ost, Detection_type type)
+std::ostream& ivi::operator<<(std::ostream& ost, Detection_type type)
 {
     // NUM_DETECTION_TYPES is a sentinal value, and should never be read/written
     assert(type != NUM_DETECTION_TYPES);
@@ -88,7 +88,7 @@ std::ostream& kjb::operator<<(std::ostream& ost, Detection_type type)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::istream& kjb::operator>>(std::istream& ist, Detection_type& type)
+std::istream& ivi::operator>>(std::istream& ist, Detection_type& type)
 {
     // NUM_DETECTION_TYPES is a sentinal value, and should never be read/written
     assert(type != NUM_DETECTION_TYPES);

@@ -16,21 +16,21 @@
    |  Author:  Denis Gorbunov, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_optical_flow.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: cv_optical_flow.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 
 #include <wrap_opencv_cpp/cv_optical_flow.h>
 #include <wrap_opencv_cpp/cv_util.h>
 #include <fstream>
 #include <sstream>
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 
 std::vector<Vector> CV_optical_flow_pyr_lk::get_next_features
 (
@@ -58,12 +58,12 @@ std::vector<Vector> CV_optical_flow_pyr_lk::get_next_features
 
     for (unsigned int i = 0; i < feature_count; i++)
     {
-        const kjb::Vector& vector = prev_features[i];
+        const ivi::Vector& vector = prev_features[i];
         double x = vector[0];
         double y = vector[1];
         if(x < 0.0 || y < 0.0)
         {
-            KJB_THROW_2(kjb::Runtime_error, "Optical flow features has negative values. ");
+            IVI_THROW_2(ivi::Runtime_error, "Optical flow features has negative values. ");
         }
         cv_prev_features[i] = cvPoint2D32f(x, y);
     }
@@ -90,7 +90,7 @@ std::vector<Vector> CV_optical_flow_pyr_lk::get_next_features
     {
         std::ostringstream ost;
         ost << "Failed to calculate optical flow. Error: " << e.what();
-        throw kjb::Result_error(ost.str());
+        throw ivi::Result_error(ost.str());
     }
 
     std::vector<Vector> next_features;
@@ -127,7 +127,7 @@ std::vector<CV_optical_flow_feature> CV_optical_flow_pyr_lk::get_next_features
 
     for (unsigned int i = 0; i < feature_count; i++)
     {
-        const kjb::Vector& vector = prev_features[i].value;
+        const ivi::Vector& vector = prev_features[i].value;
         cv_prev_features[i] = vector;
     }
 
@@ -159,7 +159,7 @@ void CV_optical_flow_pyr_lk::write_features
     out.open(out_fname.c_str());
     if(out.fail())
     {
-        KJB_THROW_3(kjb::IO_error, "Could not open file: %s", (out_fname.c_str()));
+        IVI_THROW_3(ivi::IO_error, "Could not open file: %s", (out_fname.c_str()));
     }
     else
     {
@@ -185,7 +185,7 @@ void CV_optical_flow_pyr_lk::write_features
     out.open(out_fname.c_str());
     if(out.fail())
     {
-        KJB_THROW_3(kjb::IO_error, "Could not open file: %s", (out_fname.c_str()));
+        IVI_THROW_3(ivi::IO_error, "Could not open file: %s", (out_fname.c_str()));
     }
     else
     {
@@ -220,5 +220,5 @@ std::vector<CV_optical_flow_feature> CV_optical_flow_pyr_lk::convert_to_optical_
 #endif
 
 } //namespace opencv 
-} //namespace kjb
+} //namespace ivi
 #endif

@@ -5,11 +5,11 @@
  */
 
 /*
- * $Id: gsl_vector.h 20022 2015-11-03 07:39:05Z predoehl $
+ * $Id: gsl_vector.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef GSL_VECTOR_WRAP_H_KJBLIB_UARIZONAVISION
-#define GSL_VECTOR_WRAP_H_KJBLIB_UARIZONAVISION
+#ifndef GSL_VECTOR_WRAP_H_IVILIB_UARIZONAVISION
+#define GSL_VECTOR_WRAP_H_IVILIB_UARIZONAVISION
 
 #include <l/l_sys_sys.h>
 #include <m_cpp/m_cpp_incl.h>
@@ -17,14 +17,14 @@
 
 //include <iterator>
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #include "gsl/gsl_vector.h" /* no need for extern "C" */
 #else
 #warning "GNU GSL is absent, so GNU GSL wrapper will not work properly."
 #include "gsl_cpp/stub_vector.h" /* stand-in types (not executed) */
 #endif
 
-#if ! defined( KJB_HAVE_ISNAN ) || ! defined( KJB_HAVE_FINITE )
+#if ! defined( IVI_HAVE_ISNAN ) || ! defined( IVI_HAVE_FINITE )
 #warning "This code tests for NAN and finite values but your system lacks"
 #warning "this feature.  Method Gsl_Vector::is_normal will always return true."
 #endif
@@ -35,7 +35,7 @@
                                  * so let's use it to avoid isnan() woes too.
                                  */
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief RAII wrapper for GSL vector objects.
@@ -69,12 +69,12 @@ class Gsl_Vector {
          * GCC complains about this test:  "that could never happen!!"
         if ( index < 0 )
         {
-            KJB_THROW( Index_out_of_bounds );
+            IVI_THROW( Index_out_of_bounds );
         }
         */
         if ( size() <= index )
         {
-            KJB_THROW( Index_out_of_bounds );
+            IVI_THROW( Index_out_of_bounds );
         }
     }
 
@@ -84,19 +84,19 @@ public:
     Gsl_Vector( size_t dims )
     :   m_vec( gsl_vector_alloc( dims ) )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         throw_if_null();
 #else
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
 #endif
     }
 
 
-    /// @brief conversion ctor makes a copy of a KJB vector
-    explicit Gsl_Vector( const kjb::Vector& kv )
+    /// @brief conversion ctor makes a copy of a IVI vector
+    explicit Gsl_Vector( const ivi::Vector& kv )
     :   m_vec( gsl_vector_alloc( kv.size() ) )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         throw_if_null();
         size_t KVSZ = std::max( kv.size(), 0 );
         for( size_t iii = 0; iii < KVSZ; ++iii )
@@ -104,7 +104,7 @@ public:
             at( iii ) = kv.at( iii );
         }
 #else
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
 #endif
     }
 
@@ -113,11 +113,11 @@ public:
     Gsl_Vector( const Gsl_Vector& src )
     :   m_vec( gsl_vector_alloc( src.size() ) )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         throw_if_null();
         GSL_ETX( gsl_vector_memcpy( m_vec, src.m_vec ) );
 #else
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
 #endif
     }
 
@@ -126,11 +126,11 @@ public:
     Gsl_Vector( const gsl_vector& vec_to_be_copied )
     :   m_vec( gsl_vector_alloc( vec_to_be_copied.size ) )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         throw_if_null();
         GSL_ETX( gsl_vector_memcpy( m_vec, &vec_to_be_copied ) );
 #else
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
 #endif
     }
 
@@ -138,7 +138,7 @@ public:
     /// @brief assignment operator
     Gsl_Vector& operator=( const Gsl_Vector& src )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( m_vec != src.m_vec )
         {
             if ( size() == src.size() )
@@ -178,7 +178,7 @@ public:
 #if 0
     double* begin()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_vector_ptr( m_vec, 0 );
 #else
         return 00;
@@ -187,7 +187,7 @@ public:
 
     const double* begin() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_vector_const_ptr( m_vec, 0 );
 #else
         return 00;
@@ -196,7 +196,7 @@ public:
 
     double* end()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         int length = std::max(0, (int)size() - 1);
         return gsl_vector_ptr( m_vec, length); // weird semantics!
 #else
@@ -206,7 +206,7 @@ public:
 
     const double* end() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         int length = std::max(0, (int)size() - 1);
         return gsl_vector_const_ptr( m_vec, length); // weird semantics!
 #else
@@ -222,8 +222,8 @@ public:
     void swap( Gsl_Vector& v )
     {
         using std::swap;
-        KJB(ASSERT( m_vec ));
-        KJB(ASSERT( v.m_vec ));
+        IVI(ASSERT( m_vec ));
+        IVI(ASSERT( v.m_vec ));
         swap( m_vec, v.m_vec );
     }
 
@@ -231,8 +231,8 @@ public:
     /// @brief dtor releases the resources in a vector
     ~Gsl_Vector()
     {
-        KJB(ASSERT( m_vec ));
-#ifdef KJB_HAVE_GSL
+        IVI(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
         gsl_vector_free( m_vec );
 #else
         delete m_vec;
@@ -245,7 +245,7 @@ public:
     Gsl_Vector( Iterator begin, Iterator end )
     :   m_vec( gsl_vector_alloc( std::distance( begin, end ) ) )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         throw_if_null();
         size_t iii = 0;
         for( Iterator cur = begin; cur != end; ++cur )
@@ -253,7 +253,7 @@ public:
             at( iii++ ) = *cur;
         }
 #else
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
 #endif
     }
 
@@ -261,7 +261,7 @@ public:
     /// @brief returns the size of the vector
     size_t size() const
     {
-        KJB(ASSERT( m_vec ));
+        IVI(ASSERT( m_vec ));
         return m_vec -> size;
     }
 
@@ -275,13 +275,13 @@ public:
      *
     double operator[]( size_t index ) const
     {
-        KJB(ASSERT( m_vec ));
+        IVI(ASSERT( m_vec ));
         return gsl_vector_get( m_vec, index );
     }
 
     double& operator[]( size_t index )
     {
-        KJB(ASSERT( m_vec );
+        IVI(ASSERT( m_vec );
         return *gsl_vector_ptr( m_vec, index );
     }
     */
@@ -290,8 +290,8 @@ public:
     /// @brief element access for the vector, returning an rvalue
     double at( size_t index ) const
     {
-        KJB(ASSERT( m_vec ));
-#ifdef KJB_HAVE_GSL
+        IVI(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
         check_bounds( index );
         return gsl_vector_get( m_vec, index );
 #else
@@ -303,8 +303,8 @@ public:
     /// @brief element access for the vector, returning an lvalue
     double& at( size_t index )
     {
-        KJB(ASSERT( m_vec ));
-#ifdef KJB_HAVE_GSL
+        IVI(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
         check_bounds( index );
         return *gsl_vector_ptr( m_vec, index );
 #else
@@ -316,7 +316,7 @@ public:
     /// @brief access the first element of the vector, returning an lvalue
     double& front()
     {
-        KJB(ASSERT( m_vec ));
+        IVI(ASSERT( m_vec ));
         return at( 0 );
     }
 
@@ -324,7 +324,7 @@ public:
     /// @brief access the first element of the vector, returning an rvalue
     double front() const
     {
-        KJB(ASSERT( m_vec ));
+        IVI(ASSERT( m_vec ));
         return at( 0 );
     }
 
@@ -332,7 +332,7 @@ public:
     /// @brief access the last element of the vector, returning an lvalue
     double& back()
     {
-        KJB(ASSERT( m_vec ));
+        IVI(ASSERT( m_vec ));
         return at( size() - 1 );
     }
 
@@ -340,7 +340,7 @@ public:
     /// @brief access the last element of the vector, returning an rvalue
     double back() const
     {
-        KJB(ASSERT( m_vec ));
+        IVI(ASSERT( m_vec ));
         return at( size() - 1 );
     }
 
@@ -348,8 +348,8 @@ public:
     /// @brief set all vector members to a given value
     Gsl_Vector& set_all( double val )
     {
-        KJB(ASSERT( m_vec ));
-#ifdef KJB_HAVE_GSL
+        IVI(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
         gsl_vector_set_all( m_vec, val );
 #endif
         return *this;
@@ -359,8 +359,8 @@ public:
     /// @brief set all vector members to zero
     Gsl_Vector& set_zero()
     {
-        KJB(ASSERT( m_vec ));
-#ifdef KJB_HAVE_GSL
+        IVI(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
         gsl_vector_set_zero( m_vec );
 #endif
         return *this;
@@ -375,8 +375,8 @@ public:
      */
     Gsl_Vector& set_basis( size_t index )
     {
-        KJB(ASSERT( m_vec ));
-#ifdef KJB_HAVE_GSL
+        IVI(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
         GSL_ETX( gsl_vector_set_basis( m_vec, index ) );
 #endif
         return *this;
@@ -398,10 +398,10 @@ public:
     }
 
 
-    /// @brief Export contents in a KJB Vector (the C++ kind).
-    kjb::Vector vec() const
+    /// @brief Export contents in a IVI Vector (the C++ kind).
+    ivi::Vector vec() const
     {
-        kjb::Vector kv( size() );
+        ivi::Vector kv( size() );
         for( size_t iii = 0; iii < size(); ++iii )
         {
             kv.at( iii ) = at( iii );
@@ -413,7 +413,7 @@ public:
     /**
      * @brief Perform element-wise multiplcation of two vectors, same size.
      *
-     * This method is similar to kjb_c::multiply_vectors(), and basically a
+     * This method is similar to ivi_c::multiply_vectors(), and basically a
      * wrapped up version of gsl_vector_mul().
      *
      * This is not overloaded star because multiplication between two vectors
@@ -423,17 +423,17 @@ public:
      * similar.  There are two differences between this and that function:
      *  -   That ew_multiply permits two vectors of different sizes to be
      *      arguments, but GSL does not; this follows GSL.
-     *  -   That ew_multiply overwrites one of the original KJB vectors; this
+     *  -   That ew_multiply overwrites one of the original IVI vectors; this
      *      is const.
      */
     Gsl_Vector ew_multiply( const Gsl_Vector& that ) const
     {
         if ( size() != that.size() )
         {
-            KJB_THROW( Dimension_mismatch );
+            IVI_THROW( Dimension_mismatch );
         }
         Gsl_Vector product( *this );    // copy this vector
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         GSL_ETX( gsl_vector_mul( product.m_vec, that.m_vec ) );
 #endif
         return product;
@@ -495,7 +495,7 @@ public:
         for( size_t iii = 0; iii < size(); ++iii )
         {
             double x = at( iii );
-            // The following uses KJB-lib wraps on the lower level facilities.
+            // The following uses IVI-lib wraps on the lower level facilities.
             // On systems lacking these capabilities, all values seem normal.
 
             // 3 Nov. 2015 -- predoehl -- this macro is causing trouble again. :-(
@@ -512,10 +512,10 @@ public:
     /// @brief Add a vector of the same size to this vector, elementwise
     Gsl_Vector& operator+=( const Gsl_Vector& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( that.size() != size() )
         {
-            KJB_THROW( Dimension_mismatch );
+            IVI_THROW( Dimension_mismatch );
         }
         GSL_ETX( gsl_vector_add( m_vec, that.m_vec ) );
 #endif
@@ -534,10 +534,10 @@ public:
     /// @brief Subtract a vector of the same size from this vector, elementwise
     Gsl_Vector& operator-=( const Gsl_Vector& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( that.size() != size() )
         {
-            KJB_THROW( Dimension_mismatch );
+            IVI_THROW( Dimension_mismatch );
         }
         GSL_ETX( gsl_vector_sub( m_vec, that.m_vec ) );
 #endif
@@ -554,13 +554,13 @@ public:
 
 
     /**
-     * @brief Scale by a real value, like kjb_c::ow_multiply_vector_by_scalar.
+     * @brief Scale by a real value, like ivi_c::ow_multiply_vector_by_scalar.
      *
      * For brevity, you might prefer to use operator*= instead of this method.
      */
     Gsl_Vector& ow_multiply_vector_by_scalar( double scalar )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         GSL_ETX( gsl_vector_scale( m_vec, scalar ) );
 #endif
         return *this;
@@ -577,7 +577,7 @@ public:
     /// @brief Reverse the order of the elements of the vector, in place.
     Gsl_Vector& ow_reverse()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         GSL_ETX( gsl_vector_reverse( m_vec ) );
 #endif
         return *this;
@@ -595,7 +595,7 @@ public:
     /// @brief add scalar to each elt. of this vector, in-place
     Gsl_Vector& operator+=( double scalar )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         GSL_ETX( gsl_vector_add_constant( m_vec, scalar ) );
 #endif
         return *this;
@@ -634,8 +634,8 @@ public:
     /// @brief return the maximum value in the vector
     double max() const
     {
-#ifdef KJB_HAVE_GSL
-        KJB(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
+        IVI(ASSERT( m_vec ));
         return gsl_vector_max( m_vec );
 #endif
     }
@@ -644,8 +644,8 @@ public:
     /// @brief return the minimum value in the vector
     double min() const
     {
-#ifdef KJB_HAVE_GSL
-        KJB(ASSERT( m_vec ));
+#ifdef IVI_HAVE_GSL
+        IVI(ASSERT( m_vec ));
         return gsl_vector_min( m_vec );
 #endif
     }
@@ -666,12 +666,12 @@ Gsl_Vector operator*( double scalar, const Gsl_Vector& vector )
 }
 
 
-} // namespace kjb
+} // namespace ivi
 
 
 /// @brief Print out a vector as a column of ASCII-rendered values + newlines.
 inline
-std::ostream& operator<<( std::ostream& os, const kjb::Gsl_Vector& v )
+std::ostream& operator<<( std::ostream& os, const ivi::Gsl_Vector& v )
 {
     for( size_t iii = 0; iii < v.size(); ++iii )
     {
@@ -690,7 +690,7 @@ std::ostream& operator<<( std::ostream& os, const kjb::Gsl_Vector& v )
  * space.
  */
 inline
-std::istream& operator>>( std::istream& is, kjb::Gsl_Vector& v )
+std::istream& operator>>( std::istream& is, ivi::Gsl_Vector& v )
 {
     // To repeat:  v must already know what size it is supposed to be!
     for( size_t iii = 0; iii < v.size(); ++iii )
@@ -710,11 +710,11 @@ namespace std {
      * Library (GSL) that have C++ wrappers of my own invention.
      */
     template<>
-    inline void swap( kjb::Gsl_Vector& v1, kjb::Gsl_Vector& v2 )
+    inline void swap( ivi::Gsl_Vector& v1, ivi::Gsl_Vector& v2 )
     {
         v1.swap( v2 );
     }
 }
 
 
-#endif /* GSL_VECTOR_WRAP_H_KJBLIB_UARIZONAVISION */
+#endif /* GSL_VECTOR_WRAP_H_IVILIB_UARIZONAVISION */

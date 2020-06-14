@@ -2,7 +2,7 @@
  * @file event_parser_test.cpp
  *
  * @author Colin Dawson 
- * $Id: event_parser_test.cpp 17426 2014-08-30 00:36:27Z predoehl $ 
+ * $Id: event_parser_test.cpp 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "l/l_incl.h"
@@ -110,12 +110,12 @@ int main(int argc, char* argv[])
 #endif
     typedef spear::Parameters Parameters;
     
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     /// Seed a random number generator
 
     // Not ready to do anything in batch mode.
-    if(!kjb_c::is_interactive())
+    if(!ivi_c::is_interactive())
     {
     return EXIT_SUCCESS;
     }

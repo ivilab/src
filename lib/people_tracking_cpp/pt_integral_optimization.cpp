@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_integral_optimization.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_integral_optimization.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "people_tracking_cpp/pt_integral_optimization.h"
 #include "people_tracking_cpp/pt_scene.h"
@@ -46,18 +46,18 @@
 #include <boost/bind.hpp>
 #include <boost/optional.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include "ergo/mh.h"
 #include "ergo/record.h"
 #endif
 
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::mcmcda;
 
 double Optimize_likelihood::operator()(const Scene& scene) const
 {
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 
     //// MAXIMIZE likelihood
     // open files and create iterators
@@ -65,7 +65,7 @@ double Optimize_likelihood::operator()(const Scene& scene) const
     std::ofstream info_fs;
     if(record_log_ || record_samples_ || record_proposals_ || record_info_)
     {
-        kjb_c::kjb_mkdir(out_dir_.c_str());
+        ivi_c::ivi_mkdir(out_dir_.c_str());
         if(record_log_) log_fs.open((out_dir_ + "/sample_log.txt").c_str());
         if(record_info_) info_fs.open((out_dir_ + "/scene_info.txt").c_str());
 
@@ -125,7 +125,7 @@ double Optimize_likelihood::operator()(const Scene& scene) const
 
     return dl;
 #else
-    KJB_THROW_2(Missing_dependency, "libergo");
+    IVI_THROW_2(Missing_dependency, "libergo");
 #endif
 }
 

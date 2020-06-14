@@ -45,16 +45,16 @@
 #include <iterator>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Main -- all the magic happens here. */
 int main(int argc, char** argv)
 {
 //#ifdef TEST
-    //kjb_c::kjb_init();
-    //kjb_c::kjb_l_set("heap-checking", "off");
-    //kjb_c::kjb_l_set("initialization-checking", "off");
+    //ivi_c::ivi_init();
+    //ivi_c::ivi_l_set("heap-checking", "off");
+    //ivi_c::ivi_l_set("initialization-checking", "off");
 //#endif
 
     // global stuff
@@ -152,17 +152,17 @@ int main(int argc, char** argv)
     string fmdatafmt = fmdatadir + "/%05d.txt";
 
     // write scene
-    kjb_c::kjb_mkdir(scenedir.c_str());
+    ivi_c::ivi_mkdir(scenedir.c_str());
     write_scene(scene, scenedir);
 
     // write boxes
-    kjb_c::kjb_mkdir(boxdatadir.c_str());
+    ivi_c::ivi_mkdir(boxdatadir.c_str());
     vector<string> fnames = strings_from_format(boxdatafmt, num_frames);
     box_data.write(fnames);
 
     // write OF features
-    kjb_c::kjb_mkdir(ofxdatadir.c_str());
-    kjb_c::kjb_mkdir(ofydatadir.c_str());
+    ivi_c::ivi_mkdir(ofxdatadir.c_str());
+    ivi_c::ivi_mkdir(ofydatadir.c_str());
     vector<string> fnames_x = strings_from_format(ofxdatafmt, num_frames - 1);
     vector<string> fnames_y = strings_from_format(ofydatafmt, num_frames - 1);
     for(size_t i = 0; i < num_frames - 1; i++)
@@ -172,7 +172,7 @@ int main(int argc, char** argv)
     }
 
     // write FM data
-    kjb_c::kjb_mkdir(fmdatadir.c_str());
+    ivi_c::ivi_mkdir(fmdatadir.c_str());
     fnames = strings_from_format(fmdatafmt, num_frames);
     write_deva_facemarks(fm_data, fnames, image_width, image_height);
 

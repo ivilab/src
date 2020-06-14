@@ -1,5 +1,5 @@
 
-/* $Id: l_exception.cpp 19990 2015-10-29 16:06:00Z predoehl $ */
+/* $Id: l_exception.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,7 +30,7 @@
 #include <algorithm>
 
 
-namespace kjb
+namespace ivi
 {
 
 /* --------------------------  Exception  ----------------------------------- */
@@ -131,7 +131,7 @@ void Exception::print_abort(
         bool newline) const
 {
     print(out, newline);
-    kjb_c::kjb_abort();
+    ivi_c::ivi_abort();
 }
 
 void Exception::print_abort() const
@@ -149,7 +149,7 @@ void Exception::print_details_abort(
         bool newline) const
 {
     print_details(out, newline);
-    kjb_c::kjb_abort();
+    ivi_c::ivi_abort();
 }
 
 void Exception::print_details_abort() const
@@ -169,7 +169,7 @@ void Exception::print_exit(
         int status) const
 {
     print(out, newline);
-    kjb_c::kjb_exit(status);
+    ivi_c::ivi_exit(status);
 }
 
 void Exception::print_exit() const
@@ -190,7 +190,7 @@ void Exception::print_details_exit(
 )   const
 {
     print_details(out, newline);
-    kjb_c::kjb_exit(status);
+    ivi_c::ivi_exit(status);
 }
 
 void Exception::print_details_exit() const
@@ -200,14 +200,14 @@ void Exception::print_details_exit() const
 /* -------------------------------------------------------------------------- */
 
 
-/* ----------------------  KJB_exception  ----------------------------------- */
+/* ----------------------  IVI_exception  ----------------------------------- */
 
 /**
  * @param  msg   Error message.
  * @param  file  File where the error occurred.
  * @param  line  Line approximately where the error occurred.
  */
-KJB_error::KJB_error(const char* msg, const char* file, unsigned line)
+IVI_error::IVI_error(const char* msg, const char* file, unsigned line)
 :    Exception(msg, file, line)
 {
 }
@@ -218,7 +218,7 @@ KJB_error::KJB_error(const char* msg, const char* file, unsigned line)
  * @param  file  File where the error occurred.
  * @param  line  Line approximately where the error occurred.
  */
-KJB_error::KJB_error(const std::string& msg, const char* file, unsigned line)
+IVI_error::IVI_error(const std::string& msg, const char* file, unsigned line)
 :    Exception(msg, file, line)
 {
 }
@@ -719,14 +719,14 @@ Stack_underflow::Stack_underflow(const char* file, unsigned line)
 /* -------------------------------------------------------------------------- */
 
 
-/// @brief similar to kjb_c::kjb_get_error(), but this returns std::string.
-std::string kjb_get_error()
+/// @brief similar to ivi_c::ivi_get_error(), but this returns std::string.
+std::string ivi_get_error()
 {
     /*
      * This is very low level code because it deals with reading a C-style
      * string of unknown size, via a C function.
      */
-    const int err_bufsize = 1 + kjb_c::kjb_get_strlen_error();
+    const int err_bufsize = 1 + ivi_c::ivi_get_strlen_error();
 
     if ( err_bufsize <= 1 ) /* it should not be l.t. 1 but let's be paranoid */
     {
@@ -734,22 +734,22 @@ std::string kjb_get_error()
     }
 
     std::vector< char > err_buf( err_bufsize, 0 );
-    kjb_c::kjb_get_error( & err_buf.front(), err_bufsize );
+    ivi_c::ivi_get_error( & err_buf.front(), err_bufsize );
     return & err_buf.front();
 }
 
 
 // "On error throw exception
-void throw_kjb_error(const char* msg, const char* file, unsigned line)
+void throw_ivi_error(const char* msg, const char* file, unsigned line)
 {
-    std::string kjb_err_msg = kjb_get_error();
+    std::string ivi_err_msg = ivi_get_error();
 
     if ( 00 == msg || 0 == msg[ 0 ] )
     {
-        throw kjb::KJB_error( kjb_err_msg, file, line );
+        throw ivi::IVI_error( ivi_err_msg, file, line );
     }
 
-    throw kjb::KJB_error( msg + kjb_err_msg, file, line );
+    throw ivi::IVI_error( msg + ivi_err_msg, file, line );
 }
 
 

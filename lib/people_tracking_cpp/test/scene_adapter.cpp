@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: scene_adapter.cpp 18699 2015-03-23 15:13:14Z ernesto $ */
+/* $Id: scene_adapter.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_data.h>
@@ -26,8 +26,8 @@
 #include "utils.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 bool VERBOSE = false;
 
@@ -166,7 +166,7 @@ int main(int argc, char** argv)
             }
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

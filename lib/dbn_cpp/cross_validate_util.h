@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: cross_validate_util.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: cross_validate_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_CROSS_VALIDATE_UTIL_H
-#define KJB_TIES_CROSS_VALIDATE_UTIL_H
+#ifndef IVI_TIES_CROSS_VALIDATE_UTIL_H
+#define IVI_TIES_CROSS_VALIDATE_UTIL_H
 
 #include <m_cpp/m_vector.h>
 
@@ -30,7 +30,7 @@
 
 #include "dbn_cpp/experiment.h"
 
-namespace kjb{
+namespace ivi{
 namespace ties{
 
 
@@ -85,6 +85,6 @@ void run_fold(const Ties_experiment& exp);
 /** @brief  Run training and testing on all folds. */
 void run_cross_validate(const Ties_experiment& exp);
 
-}}; //namespace kjb::ties
+}}; //namespace ivi::ties
 
-#endif //KJB_TIES_CROSS_VALIDATE_UTIL_H
+#endif //IVI_TIES_CROSS_VALIDATE_UTIL_H

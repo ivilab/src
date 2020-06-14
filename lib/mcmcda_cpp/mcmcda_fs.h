@@ -25,7 +25,7 @@
 #include <l_cpp/l_exception.h>
 #include <l_cpp/l_filesystem.h>
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 /** @brief  Later. */
@@ -79,20 +79,20 @@ public:
         //  true first index is 1.  Also, some old pollen data starts at zero,
         //  so we need to try zero.
         //  --Kyle  Nov 18, 2014
-        all_samples_fps(kjb::file_names_from_format(all_samples_fpf,0)),
-        tracked_images_fps(kjb::file_names_from_format(tracked_images_fpf,0)),
-        curved_images_fps(kjb::file_names_from_format(curved_images_fpf,0)),
-        curves_fps(kjb::file_names_from_format(curves_fpf,0))
+        all_samples_fps(ivi::file_names_from_format(all_samples_fpf,0)),
+        tracked_images_fps(ivi::file_names_from_format(tracked_images_fpf,0)),
+        curved_images_fps(ivi::file_names_from_format(curved_images_fpf,0)),
+        curves_fps(ivi::file_names_from_format(curves_fpf,0))
     {}
 
     void make_dirs() const
     {
-        ETX(kjb_c::kjb_mkdir(experiment_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(association_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(all_samples_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(tracked_images_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(curved_images_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(curves_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(experiment_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(association_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(all_samples_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(tracked_images_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(curved_images_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(curves_dp.c_str()));
     }
 
 public:
@@ -139,14 +139,14 @@ public:
         preprocessed_fpf(preprocessed_dp + "/" + preprocessed_fnf),
         blobbed_fpf(blobbed_dp + "/" + blobbed_fnf),
         pixels_fpf(pixels_dp + "/" + pixels_fnf),
-        points_fps(kjb::file_names_from_format(points_fpf,0)),
-        preprocessed_fps(kjb::file_names_from_format(preprocessed_fpf,0)),
-        blobbed_fps(kjb::file_names_from_format(blobbed_fpf,0)),
-        pixels_fps(kjb::file_names_from_format(pixels_fpf,0))
+        points_fps(ivi::file_names_from_format(points_fpf,0)),
+        preprocessed_fps(ivi::file_names_from_format(preprocessed_fpf,0)),
+        blobbed_fps(ivi::file_names_from_format(blobbed_fpf,0)),
+        pixels_fps(ivi::file_names_from_format(pixels_fpf,0))
     {
-        ETX(kjb_c::kjb_mkdir(experiment_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(blobbed_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(pixels_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(experiment_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(blobbed_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(pixels_dp.c_str()));
     }
 
     Association_directory get_association_dir(const std::string& name)
@@ -167,7 +167,7 @@ private:
     static const std::string pixels_fnf;
 };
 
-}} //namespace kjb::mcmcda
+}} //namespace ivi::mcmcda
 
 #endif /*MCMCDAFS_H_INCLUDED */
 

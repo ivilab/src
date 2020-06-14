@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_net.c 22170 2018-06-23 23:01:50Z kobus $ */
+/* $Id: l_sys_net.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -39,7 +39,7 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 
 #ifdef UNIX
-int kjb_get_host_name(char* host_buff, size_t buff_len)
+int ivi_get_host_name(char* host_buff, size_t buff_len)
 {
     static int first_time = TRUE;
     static char host_name_cache[ 200 ] = { '\0' } ;
@@ -61,7 +61,7 @@ int kjb_get_host_name(char* host_buff, size_t buff_len)
      */
     if ( ! first_time )
     {
-        kjb_strncpy(host_buff, host_name_cache, buff_len);
+        ivi_strncpy(host_buff, host_name_cache, buff_len);
         return NO_ERROR;
     }
 
@@ -83,7 +83,7 @@ int kjb_get_host_name(char* host_buff, size_t buff_len)
     }
     else
     {
-        host_fp = kjb_fopen("/etc/hosts", "r");
+        host_fp = ivi_fopen("/etc/hosts", "r");
 
         if (host_fp == NULL) return NO_ERROR;
 
@@ -128,7 +128,7 @@ int kjb_get_host_name(char* host_buff, size_t buff_len)
                     {
                         if (HEAD_CMP_EQ(host_string, host_buff))
                         {
-                            kjb_strncpy(host_buff, host_string, buff_len);
+                            ivi_strncpy(host_buff, host_string, buff_len);
                             done = TRUE;
                         }
                      }
@@ -136,7 +136,7 @@ int kjb_get_host_name(char* host_buff, size_t buff_len)
              }
          }
 
-        kjb_fclose(host_fp);  /* Ignore return--only reading. */
+        ivi_fclose(host_fp);  /* Ignore return--only reading. */
 
         /*
          * Success, so cache it !
@@ -149,7 +149,7 @@ int kjb_get_host_name(char* host_buff, size_t buff_len)
 }
 #else
 #ifdef NOVELL
-int kjb_get_host_name(host_buff, buff_len)
+int ivi_get_host_name(host_buff, buff_len)
     char*   host_buff;
     long buff_len;
 {
@@ -163,7 +163,7 @@ int kjb_get_host_name(host_buff, buff_len)
 }
 
 #else
-int kjb_get_host_name(host_buff, buff_len)
+int ivi_get_host_name(host_buff, buff_len)
     char*   host_buff;
     size_t buff_len;
 {

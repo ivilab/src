@@ -1,5 +1,5 @@
 
-/* $Id: poly.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: poly.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -176,7 +176,7 @@ void qh_attachnewfacets (void ) {
 	visible->f.replace= newfacet;
 	qh_setreplace (horizon->neighbors, visible, newfacet);
       }else {
-	kjb_fprintf (qh ferr, "qhull internal error (qh_attachnewfacets): couldn't find visible facet for horizon f%d of newfacet f%d\n",
+	ivi_fprintf (qh ferr, "qhull internal error (qh_attachnewfacets): couldn't find visible facet for horizon f%d of newfacet f%d\n",
 		 horizon->id, newfacet->id);
 	qh_errexit2 (qh_ERRqhull, horizon, newfacet);
       }
@@ -286,7 +286,7 @@ void qh_deletevisible (/*qh visible_list*/) {
     qh_delfacet(visible);
   }
   if (numvisible != qh num_visible) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_deletevisible): qh num_visible %d is not number of visible facets %d\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_deletevisible): qh num_visible %d is not number of visible facets %d\n",
              qh num_visible, numvisible);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -349,7 +349,7 @@ setT *qh_facetintersect (facetT *facetA, facetT *facetB,
     }
   }
   if (i >= dim || j >= dim) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_facetintersect): f%d or f%d not in others neighbors\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_facetintersect): f%d or f%d not in others neighbors\n",
             facetA->id, facetB->id);
     qh_errexit2 (qh_ERRqhull, facetA, facetB);
   }
@@ -511,7 +511,7 @@ facetT *qh_makenew_nonsimplicial (facetT *visible, vertexT *apex, int *numnew) {
       }else {  /* qh_attachnewfacets */
         if (neighbor->seen) {
 	  if (neighbor->simplicial) {
-	    kjb_fprintf (qh ferr, "qhull internal error (qh_makenew_nonsimplicial): simplicial f%d sharing two ridges with f%d\n",
+	    ivi_fprintf (qh ferr, "qhull internal error (qh_makenew_nonsimplicial): simplicial f%d sharing two ridges with f%d\n",
 	           neighbor->id, visible->id);
 	    qh_errexit2 (qh_ERRqhull, neighbor, visible);
 	  }
@@ -619,7 +619,7 @@ void qh_matchneighbor (facetT *newfacet, int newskip, int hashsize, int *hashcou
     if (qh_matchvertices (1, newfacet->vertices, newskip, facet->vertices, &skip, &same)) {
       if (SETelem_(newfacet->vertices, newskip) ==
           SETelem_(facet->vertices, skip)) {
-        kjb_fprintf (qh ferr, "qhull precision error: Vertex sets are the same for f%d and f%d.  Can not force output.\n",
+        ivi_fprintf (qh ferr, "qhull precision error: Vertex sets are the same for f%d and f%d.  Can not force output.\n",
           facet->id, newfacet->id);
         qh_errexit2 (qh_ERRprec, facet, newfacet);
       }
@@ -634,7 +634,7 @@ void qh_matchneighbor (facetT *newfacet, int newskip, int hashsize, int *hashcou
         return;
       }
       if (!qh PREmerge && !qh MERGEexact) {
-	kjb_fprintf (qh ferr, "qhull precision error: facets f%d, f%d and f%d meet at a ridge with more than 2 neighbors.  Can not continue.\n",
+	ivi_fprintf (qh ferr, "qhull precision error: facets f%d, f%d and f%d meet at a ridge with more than 2 neighbors.  Can not continue.\n",
 		 facet->id, newfacet->id, getid_(matchfacet));
 	qh_errexit2 (qh_ERRprec, facet, newfacet);
       }
@@ -733,7 +733,7 @@ void qh_matchnewfacets (void) {
 	  break;
       }
       if (count != hashcount) {
-	kjb_fprintf (qh ferr, "qh_matchnewfacets: after adding facet %d, hashcount %d != count %d\n",
+	ivi_fprintf (qh ferr, "qh_matchnewfacets: after adding facet %d, hashcount %d != count %d\n",
 		 newfacet->id, hashcount, count);
 	qh_errexit (qh_ERRqhull, newfacet, (ridgeT*)NULL);
       }
@@ -753,7 +753,7 @@ void qh_matchnewfacets (void) {
     }
   }
   if (hashcount) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_matchnewfacets): %d neighbors did not match up\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_matchnewfacets): %d neighbors did not match up\n",
         hashcount);
     qh_printhashtable (qh ferr);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
@@ -764,7 +764,7 @@ void qh_matchnewfacets (void) {
       if (!facet)
         numfree++;
     }
-    kjb_fprintf (qh ferr, "qh_matchnewfacets: %d new facets, %d unused hash entries .  hashsize %d\n",
+    ivi_fprintf (qh ferr, "qh_matchnewfacets: %d new facets, %d unused hash entries .  hashsize %d\n",
 	     numnew, numfree, qh_setsize (qh hash_table));
   }
 #endif /* !qh_NOtrace */
@@ -856,7 +856,7 @@ ridgeT *qh_newridge(void) {
   memset ((char *)ridge, 0, sizeof(ridgeT));
   zinc_(Ztotridges);
   if (qh ridge_id == 0xFFFFFF) {
-    kjb_fprintf(qh ferr, "\
+    ivi_fprintf(qh ferr, "\
 qhull warning: more than %d ridges.  Id field overflows and two ridges\n\
 may have the same identifier.  Otherwise output ok.\n", 0xFFFFFF);
   }

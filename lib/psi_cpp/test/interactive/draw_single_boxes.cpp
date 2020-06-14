@@ -13,7 +13,7 @@
 
 #include <psi_cpp/psi_human_box.h>
 
-using namespace kjb::psi;
+using namespace ivi::psi;
 
 void print_usage(const char* cmd_name)
 {
@@ -23,7 +23,7 @@ void print_usage(const char* cmd_name)
 int main(int argc, char* argv[])
 {
     using std::string;
-    using kjb::Image;
+    using ivi::Image;
     using std::vector;
     // image filename, boxes filename
     // output image with boxes
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     frame_fname.append(frame_str);
     frame_fname.append(".txt");
 	std::ifstream ifs(frame_fname.c_str());
-	std::vector<kjb::psi::Human_boxes> hbs = parse_human_boxes(ifs);
+	std::vector<ivi::psi::Human_boxes> hbs = parse_human_boxes(ifs);
 
 	string image_name(argv[1]);
 	image_name.append("/frames/");

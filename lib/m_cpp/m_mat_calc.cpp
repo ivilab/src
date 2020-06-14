@@ -1,4 +1,4 @@
-/* $Id: m_mat_calc.cpp 11961 2012-03-26 19:54:36Z ksimek $ */
+/* $Id: m_mat_calc.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,13 +20,13 @@
 #include "l_cpp/l_cpp_incl.h"
 #include "m_cpp/m_matrix.h"
 
-namespace kjb
+namespace ivi
 {
 Matrix derivative_matrix(int degree, int N)
 {
     if(degree <= 0)
     {
-        KJB_THROW_2(Illegal_argument, "Derivative degree must be > 0");
+        IVI_THROW_2(Illegal_argument, "Derivative degree must be > 0");
     }
 
     Matrix D;
@@ -52,7 +52,7 @@ Matrix derivative_matrix(int degree, int N)
     }
     else // should rewrite in closed-form
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
 
         D = create_identity_matrix(N);
         for(int d = 0; d < degree; d++)
@@ -64,10 +64,10 @@ Matrix derivative_matrix(int degree, int N)
     return D;
 }
 
-kjb::Matrix create_integral_matrix(const std::vector<double>& deltas)
+ivi::Matrix create_integral_matrix(const std::vector<double>& deltas)
 {
     size_t N = deltas.size();
-    kjb::Matrix result(N,N, 0.0);
+    ivi::Matrix result(N,N, 0.0);
 
     for(size_t r = 0; r < N; ++r)
     for(size_t c = 0; c <= r; ++c)
@@ -81,9 +81,9 @@ kjb::Matrix create_integral_matrix(const std::vector<double>& deltas)
 /**
  * Returns a lower-triangular matrix with all 1's.
  */
-kjb::Matrix create_integral_matrix(size_t N)
+ivi::Matrix create_integral_matrix(size_t N)
 {
-    kjb::Matrix result(N,N, 0.0);
+    ivi::Matrix result(N,N, 0.0);
 
     for(size_t r = 0; r < N; ++r)
     for(size_t c = 0; c <= r; ++c)

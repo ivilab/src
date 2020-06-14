@@ -13,7 +13,7 @@
 #include <string>
 #include <sstream>
 
-using namespace kjb;
+using namespace ivi;
 
 // typedefs
 typedef std::list<Line_segment> Segment_list;
@@ -127,7 +127,7 @@ void display_scene()
         display_GL_bitmap_string(info_stream.str(), win_width / 2.0 - 150,
                                                     -win_height / 2.0 + 80);
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
     }
@@ -290,13 +290,13 @@ void process_key(unsigned char key, int, int)
             {
                 delete segments;
 
-                kjb_c::kjb_exit(0);
+                ivi_c::ivi_exit(0);
             }
 
             default: return;
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
     }

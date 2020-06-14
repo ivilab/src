@@ -1,5 +1,5 @@
 
-/* $Id: vec_thresh.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: vec_thresh.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -41,8 +41,8 @@ int main(int argc, char **argv)
     {   
         double factor_for_linear = pow((double)test_factor, 1.0/3.0);
 
-        num_loops = kjb_rint((double)NUM_LOOPS * factor_for_linear);
-        num_tries = kjb_rint((double)BASE_NUM_TRIES * factor_for_linear);
+        num_loops = ivi_rint((double)NUM_LOOPS * factor_for_linear);
+        num_tries = ivi_rint((double)BASE_NUM_TRIES * factor_for_linear);
     } 
 
     for (count=0; count<num_tries; count++)

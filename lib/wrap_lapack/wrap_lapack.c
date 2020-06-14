@@ -1,5 +1,5 @@
 
-/* $Id: wrap_lapack.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: wrap_lapack.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -27,7 +27,7 @@
 #include "wrap_lapack/wrap_lapack_gen.h"  
 #include "wrap_lapack/wrap_lapack.h"
 
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
 
 #define HAVE_LAPACK_ARGS
 
@@ -44,19 +44,50 @@
 #        include <Accelerate/Accelerate.h>
 #    endif 
 
-#    ifdef __CLAPACK_H
-#        ifndef LAPACK_USES_C_CONVENTIONS
-#            define LAPACK_USES_C_CONVENTIONS
-#        endif 
+#    include "lapack.h"
 
+#    ifdef _LAPACKE_CONFIG_H_
+#        define LAPACK_USES_C_CONVENTIONS
+#        define lapack_integer lapack_int
+#    else  
+#    ifdef __CLAPACK_H
+#        define LAPACK_USES_C_CONVENTIONS
 #        define lapack_integer __CLPK_integer
 #    else 
+#    ifdef MACPORTS_LAPACK 
+#        define LAPACK_USES_C_CONVENTIONS
+#        define lapack_integer lapack_int
+#    else 
+         /* We can test this case by copying lapack.h in include_after to
+          * include_before.
+         */
 #        define lapack_integer int
+#        define HAVE_ILAENV_DEF
 #    endif 
-#
-#    /* This should, at a minimum, be available in include_after. */
-#    include "lapack.h"
-#else 
+#    endif 
+#    endif 
+
+#    ifndef HAVE_ILAENV_DEF
+         extern lapack_integer ilaenv_
+         (
+             const int*  ISPEC,
+             const char* DSYTRD,
+             const char* UPLO,
+             const int*  N3,
+             const int*  N4,
+             const int*  N5,
+             const int*  N6
+#       ifndef LAPACK_USES_C_CONVENTIONS
+             ,
+             const int   len_DSYTRD,
+             const int   len_UPLO
+#        endif 
+         );
+#    endif 
+
+
+
+#else  /* Not MAC. */
 #    ifdef LAPACK_IS_ACML
 #        include "acml.h"
 #    else
@@ -88,7 +119,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifndef KJB_HAVE_LAPACK
+#ifndef IVI_HAVE_LAPACK
 /* -----------------------------------------------------------------------------
 |                              no LAPACK
 |                                  ||
@@ -113,7 +144,7 @@ static void set_dont_have_lapack_error(void)
 
 int have_lapack(void)
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     return TRUE;
 #else
     return FALSE;
@@ -142,7 +173,7 @@ static int lapack_solve_triangular_general
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     char UPLO[ 1 ]; /* L: lower triangular, U: upper triangular*/
     char TRANS[ 1 ]   = { 'N' }; /* no transpose */
     char DIAG[ 1 ]   = { 'N' }; /* not unit triangular */
@@ -210,8 +241,8 @@ static int lapack_solve_triangular_general
         result = get_matrix_from_fortran_1D_dp_array(X_mpp, N, NRHS, B);
     }
 
-    kjb_free(A);
-    kjb_free(B);
+    ivi_free(A);
+    ivi_free(B);
 
     if (result == ERROR)
     {
@@ -223,7 +254,7 @@ static int lapack_solve_triangular_general
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -338,7 +369,7 @@ int lapack_solve_symmetric
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     char UPLO[ 1 ] = { 'L' }; /* L: lower triangle  is used*/
     lapack_integer N;
     lapack_integer NRHS;
@@ -405,10 +436,10 @@ int lapack_solve_symmetric
         result = get_matrix_from_fortran_1D_dp_array(X_mpp, N, NRHS, B);
     }
 
-    kjb_free(A);
-    kjb_free(B);
-    kjb_free(WORK);
-    kjb_free(IPIV_ptr);
+    ivi_free(A);
+    ivi_free(B);
+    ivi_free(WORK);
+    ivi_free(IPIV_ptr);
 
     if (result == ERROR)
     {
@@ -420,7 +451,7 @@ int lapack_solve_symmetric
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -477,7 +508,7 @@ int lapack_solve_symmetric_pd
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     char UPLO[ 1 ] = { 'L' }; /* L: lower triangle  is used*/
     lapack_integer N;
     lapack_integer NRHS;
@@ -538,8 +569,8 @@ int lapack_solve_symmetric_pd
         result = get_matrix_from_fortran_1D_dp_array(X_mpp, N, NRHS, B);
     }
 
-    kjb_free(A);
-    kjb_free(B);
+    ivi_free(A);
+    ivi_free(B);
 
     if (result == ERROR)
     {
@@ -551,7 +582,7 @@ int lapack_solve_symmetric_pd
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -607,7 +638,7 @@ int lapack_solve
     Matrix**      __attribute__((unused)) dummy_X_mpp)
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     lapack_integer N;
     lapack_integer NRHS;
     lapack_integer LDA;
@@ -661,9 +692,9 @@ int lapack_solve
         result = get_matrix_from_fortran_1D_dp_array(X_mpp, N, NRHS, B);
     }
 
-    kjb_free(A);
-    kjb_free(B);
-    kjb_free(IPIV_ptr);
+    ivi_free(A);
+    ivi_free(B);
+    ivi_free(IPIV_ptr);
 
     if (result == ERROR)
     {
@@ -675,7 +706,7 @@ int lapack_solve
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -733,7 +764,7 @@ int lapack_diagonalize
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     int       i, j;
     char JOBVL[ 1 ] = { 'N' };
     char JOBVR[ 1 ] = { 'V' };
@@ -856,11 +887,11 @@ int lapack_diagonalize
     free_vector(D_vp);
     free_matrix(E_mp);
 
-    kjb_free(A);
-    kjb_free(WI);
-    kjb_free(VR);
-    kjb_free(VL);
-    kjb_free(WORK);
+    ivi_free(A);
+    ivi_free(WI);
+    ivi_free(VR);
+    ivi_free(VL);
+    ivi_free(WORK);
 
     if (INFO == 0)
     {
@@ -876,7 +907,7 @@ int lapack_diagonalize
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -919,7 +950,7 @@ int lapack_diagonalize_2
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     int   i;
     int   j;
     lapack_integer   N;
@@ -1078,10 +1109,10 @@ int lapack_diagonalize_2
 
     free_matrix(vr_mp);
 
-    kjb_free(A);
-    kjb_free(VR);
-    kjb_free(VL);
-    kjb_free(WORK);
+    ivi_free(A);
+    ivi_free(VR);
+    ivi_free(VL);
+    ivi_free(WORK);
 
 
     if (INFO == 0)
@@ -1098,7 +1129,7 @@ int lapack_diagonalize_2
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /*--------------------------------------------------------------------------
@@ -1157,7 +1188,7 @@ int lapack_qr_decompose
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
 
     int            i, j;
     lapack_integer M;
@@ -1181,10 +1212,8 @@ int lapack_qr_decompose
 
     /*  VARIABLE SETUP */
     NB = ilaenv_(&ONE, DGEQRF, OPTS, &M, &N, &MINUS_ONE, &MINUS_ONE
-#if !defined(MAC_OS_X_VERSION_MIN_REQUIRED) || MAC_OS_X_VERSION_MIN_REQUIRED < 1070
 #ifndef LAPACK_USES_C_CONVENTIONS
             , strlen(DGEQRF), strlen(OPTS)
-#endif 
 #endif
             );
 
@@ -1302,9 +1331,9 @@ int lapack_qr_decompose
     }
 
     /*  FREE ALL TEMPS */
-    kjb_free(A);
-    kjb_free(TAU);
-    kjb_free(WORK);
+    ivi_free(A);
+    ivi_free(TAU);
+    ivi_free(WORK);
 
 
 
@@ -1322,7 +1351,7 @@ int lapack_qr_decompose
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -1356,7 +1385,7 @@ int lapack_diagonalize_symmetric
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     int            i, j;
     lapack_integer N;
     lapack_integer INFO;
@@ -1419,10 +1448,8 @@ int lapack_diagonalize_symmetric
 #endif
 
     NB = ilaenv_(&ONE, DSYTRD, UPLO, &N, &MINUS_ONE, &MINUS_ONE, &MINUS_ONE
-#if !defined(MAC_OS_X_VERSION_MIN_REQUIRED) || MAC_OS_X_VERSION_MIN_REQUIRED < 1070
 #ifndef LAPACK_USES_C_CONVENTIONS
             , strlen(DSYTRD), strlen(UPLO)
-#endif 
 #endif
             );
 
@@ -1488,8 +1515,8 @@ int lapack_diagonalize_symmetric
     free_vector(D_vp);
     free_matrix(E_mp);
 
-    kjb_free(A);
-    kjb_free(WORK);
+    ivi_free(A);
+    ivi_free(WORK);
 
     if (INFO == 0)
     {
@@ -1505,7 +1532,7 @@ int lapack_diagonalize_symmetric
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -1565,9 +1592,9 @@ int do_lapack_svd
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     /* -------------------------------------------------------------------------
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     |                                  ||
     |                                 \||/
     |                                  \/
@@ -1664,10 +1691,10 @@ int do_lapack_svd
         result = get_matrix_from_fortran_1D_dp_array(vt_mpp, N, N, VT);
     }
 
-    kjb_free(A);
-    kjb_free(VT);
-    kjb_free(U);
-    kjb_free(WORK);
+    ivi_free(A);
+    ivi_free(VT);
+    ivi_free(U);
+    ivi_free(WORK);
 
     free_vector(allocated_d_vp);
 
@@ -1681,7 +1708,7 @@ int do_lapack_svd
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -1774,9 +1801,9 @@ int do_lapack_matrix_inversion_2
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     /* -------------------------------------------------------------------------
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     |                                  ||
     |                                 \||/
     |                                  \/
@@ -1872,10 +1899,8 @@ int do_lapack_matrix_inversion_2
     }
 
     NB = ilaenv_(&ONE, DGETRI, OPTS, &N, &MINUS_ONE, &MINUS_ONE, &MINUS_ONE
-#if !defined(MAC_OS_X_VERSION_MIN_REQUIRED) || MAC_OS_X_VERSION_MIN_REQUIRED < 1070
 #ifndef LAPACK_USES_C_CONVENTIONS
             , strlen(DGETRI), strlen(OPTS)
-#endif 
 #endif
             );
 
@@ -1893,8 +1918,8 @@ int do_lapack_matrix_inversion_2
 
 cleanup:
 
-    kjb_free(IPIV_ptr);
-    kjb_free(WORK);
+    ivi_free(IPIV_ptr);
+    ivi_free(WORK);
 
     if (result == ERROR)
     {
@@ -1906,7 +1931,7 @@ cleanup:
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -1958,9 +1983,9 @@ int do_lapack_cholesky_decomposition
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     /* -------------------------------------------------------------------------
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     |                                  ||
     |                                 \||/
     |                                  \/
@@ -2037,7 +2062,7 @@ cleanup:
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------- */
 #else
     /* -------------------------------------------------------------------------
@@ -2128,9 +2153,9 @@ int do_lapack_dot_product
 )
 #endif 
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     /* -----------------------------------------------------------------------------
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     |                                  ||
     |                                 \||/
     |                                  \/
@@ -2155,7 +2180,7 @@ int do_lapack_dot_product
     |                                  /\
     |                                 /||\
     |                                  ||
-    |                              KJB_HAVE_LAPACK
+    |                              IVI_HAVE_LAPACK
     ------------------------------------------------------------------------ */
 #else
     /* -------------------------------------------------------------------------

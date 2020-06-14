@@ -1,5 +1,5 @@
 
-/* $Id: sequential_lds.c 10664 2011-09-29 19:51:58Z predoehl $ */
+/* $Id: sequential_lds.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -46,7 +46,7 @@ extern "C" {
  * n being the dimension of the state variable.
  *
  * As usual, *x and *y are reused if possible and created if needed, according
- * to the KJB allocation semantics.
+ * to the IVI allocation semantics.
  *
  * Returns:
  *     NO_ERROR on success, and ERROR on failure, with an appropriate error
@@ -125,7 +125,7 @@ int sample_from_LDS
  * n being the dimension of the state variable.
  *
  * As usual, *x and *y are reused if possible and created if needed, according
- * to the KJB allocation semantics.
+ * to the IVI allocation semantics.
  *
  * Returns:
  *     NO_ERROR on success, and ERROR on failure, with an appropriate error
@@ -222,7 +222,7 @@ int sample_from_LDS_2
  *              log p(y_1, y_2, ..., y_N | A, H, Q, R, mu_0, S_0).
  *
  * As usual, *means and *covariances are reused if possible and created
- * if needed, according to the KJB allocation semantics. Any result that is
+ * if needed, according to the IVI allocation semantics. Any result that is
  * not desired can be omitted by passing NULL to the rouitne.
  *
  * Returns:
@@ -474,7 +474,7 @@ int compute_kalman_filter
  * S_k = (I-K_k*H)S'_k.
  *
  * As usual, *means and *covariances are reused if possible and created
- * if needed, according to the KJB allocation semantics. Any result that is
+ * if needed, according to the IVI allocation semantics. Any result that is
  * not desired can be omitted by passing NULL to the rouitne.
  *
  * Returns:
@@ -720,7 +720,7 @@ int compute_kalman_filter_stable
  *              log p(y_1, y_2, ..., y_N | A, H, Q, R, mu_0, S_0).
  *
  * As usual, *means and *covariances are reused if possible and created
- * if needed, according to the KJB allocation semantics. Any result that is
+ * if needed, according to the IVI allocation semantics. Any result that is
  * not desired can be omitted by passing NULL to the rouitne.
  *
  * Returns:
@@ -980,7 +980,7 @@ int compute_kalman_filter_2
  * S_k = (I-K_k*H_k)S'_k.
  *
  * As usual, *means and *covariances are reused if possible and created
- * if needed, according to the KJB allocation semantics. Any result that is
+ * if needed, according to the IVI allocation semantics. Any result that is
  * not desired can be omitted by passing NULL to the rouitne.
  *
  * Returns:

@@ -30,7 +30,7 @@
 
 #include <boost/optional.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /** @brief  2D face information resulting from projecting the 3D head/face. */
@@ -100,7 +100,7 @@ double face_distance
     const Deva_facemark facemark
 );
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_FACE_2D_H */
 

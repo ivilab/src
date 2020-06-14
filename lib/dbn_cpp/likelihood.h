@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: likelihood.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_LIKELIHOOD_H
-#define KJB_TIES_LIKELIHOOD_H
+#ifndef IVI_TIES_LIKELIHOOD_H
+#define IVI_TIES_LIKELIHOOD_H
 
 #include <m_cpp/m_vector.h>
 #include <prob_cpp/prob_distribution.h>
@@ -32,7 +32,7 @@
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/util.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /**
@@ -137,7 +137,7 @@ std::vector<double> individual_likelihoods
     size_t num_threads
 );
 
-}} // namepsace kjb::ties
+}} // namepsace ivi::ties
 
-#endif // KJB_TIES_LIKELIHOOD_H
+#endif // IVI_TIES_LIKELIHOOD_H
 

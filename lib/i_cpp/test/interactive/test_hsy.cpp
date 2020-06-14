@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_hsy.cpp 9345 2011-04-21 03:28:07Z predoehl $
+ * $Id: test_hsy.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <m_cpp/m_cpp_incl.h>
@@ -13,9 +13,9 @@
 int main()
 {
     const int CHUNK = 100, NUMCHUNK = 10;
-    kjb::Image circles( 1 + CHUNK * NUMCHUNK, 1 + CHUNK * NUMCHUNK );
+    ivi::Image circles( 1 + CHUNK * NUMCHUNK, 1 + CHUNK * NUMCHUNK );
 
-    const kjb::PixelRGBA gray( kjb::PixelRGBA::create_gray( 150 ) );
+    const ivi::PixelRGBA gray( ivi::PixelRGBA::create_gray( 150 ) );
     circles.draw_aa_rectangle( 0,0,CHUNK*NUMCHUNK,CHUNK*NUMCHUNK, gray );
 
     float luma = 0, step = 2.0 / ( CHUNK - 1 );
@@ -27,7 +27,7 @@ int main()
             int rorigin = CHUNK / 2 + chunkrow * CHUNK,
                 corigin = CHUNK / 2 + chunkcol * CHUNK;
 
-            kjb::Vector bc( 3, luma );
+            ivi::Vector bc( 3, luma );
 
             float yy = -1;
             for( int rr = CHUNK-1 - CHUNK/2; rr >= -CHUNK/2; --rr, yy += step )
@@ -37,15 +37,15 @@ int main()
                 {
                     bc[ 0 ] = xx; // red-cyan axis
                     bc[ 1 ] = yy; // green-blue axis
-                    kjb::PixelRGBA p(0,0,0);
-                    int rc = kjb::get_pixel_from_hsluma_space( bc, &p );
+                    ivi::PixelRGBA p(0,0,0);
+                    int rc = ivi::get_pixel_from_hsluma_space( bc, &p );
                     if ( EXIT_SUCCESS == rc )
                     {
                         circles( rr+rorigin, cc+corigin ) = p;
                     }
                 }
             }
-            circles( rorigin, corigin ) = kjb::PixelRGBA(0,0,0);
+            circles( rorigin, corigin ) = ivi::PixelRGBA(0,0,0);
         }
     }
 

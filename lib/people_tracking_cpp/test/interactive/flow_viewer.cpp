@@ -21,7 +21,7 @@
 /* $Id$ */
 
 #include <gr_cpp/gr_opengl.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <gr_cpp/gr_opengl_headers.h>
@@ -38,8 +38,8 @@
 #include <boost/optional.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 // types
 const size_t IMAGE = 0;
@@ -129,7 +129,7 @@ int main(int argc, char** argv)
         // start rendering
         glutMainLoop();
     }
-    catch(const kjb::Exception& kex)
+    catch(const ivi::Exception& kex)
     {
         kex.print_details();
         cout << endl;

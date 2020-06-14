@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_dcel.cpp 19784 2015-09-14 05:27:52Z predoehl $
+ * $Id: test_dcel.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_std.h>
@@ -19,17 +19,17 @@
 namespace
 {
 
-using kjb::qd::Doubly_connected_edge_list;
-using kjb::qd::RatPoint_line_segment;
-using kjb::qd::RatPoint;
+using ivi::qd::Doubly_connected_edge_list;
+using ivi::qd::RatPoint_line_segment;
+using ivi::qd::RatPoint;
 
 
 
 int test1()
 {
     const Doubly_connected_edge_list d;
-    KJB(ERE(is_valid(d)));
-    return kjb_c::NO_ERROR;
+    IVI(ERE(is_valid(d)));
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -37,8 +37,8 @@ int test2()
 {
     const RatPoint_line_segment s(RatPoint(1, 1), RatPoint(2, 1));
     const Doubly_connected_edge_list d(s);
-    KJB(ERE(is_valid(d)));
-    return kjb_c::NO_ERROR;
+    IVI(ERE(is_valid(d)));
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -49,10 +49,10 @@ int test3()
     const Doubly_connected_edge_list d1(s1);
     const Doubly_connected_edge_list d2(s2);
     const Doubly_connected_edge_list d3(d1.merge(d2));
-    KJB(ERE(is_valid(d1)));
-    KJB(ERE(is_valid(d2)));
-    KJB(ERE(is_valid(d3)));
-    return kjb_c::NO_ERROR;
+    IVI(ERE(is_valid(d1)));
+    IVI(ERE(is_valid(d2)));
+    IVI(ERE(is_valid(d3)));
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -64,10 +64,10 @@ int test4()
     const Doubly_connected_edge_list d2(s2);
     d1.merge(d2);
     const Doubly_connected_edge_list d3(d1.merge(d2));
-    KJB(ERE(is_valid(d1)));
-    KJB(ERE(is_valid(d2)));
-    KJB(ERE(is_valid(d3)));
-    return kjb_c::NO_ERROR;
+    IVI(ERE(is_valid(d1)));
+    IVI(ERE(is_valid(d2)));
+    IVI(ERE(is_valid(d3)));
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -99,8 +99,8 @@ Doubly_connected_edge_list square()
 int test5()
 {
     const Doubly_connected_edge_list d1234(square());
-    KJB(ERE(is_valid(d1234)));
-    return kjb_c::NO_ERROR;
+    IVI(ERE(is_valid(d1234)));
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -113,22 +113,22 @@ int test6()
     d2.transform(grow);
     const Doubly_connected_edge_list d3(d2.merge(d1));
     const Doubly_connected_edge_list d5(d3.merge(d4));
-    KJB(ERE(is_valid(d5)));
+    IVI(ERE(is_valid(d5)));
     
     std::ofstream f("test6.svg");
-    KJB(NRE(f));
-    f << kjb::qd::draw_dcel_as_svg(d5) << '\n';
-    return kjb_c::NO_ERROR;
+    IVI(NRE(f));
+    f << ivi::qd::draw_dcel_as_svg(d5) << '\n';
+    return ivi_c::NO_ERROR;
 }
 
 int test7()
 {
-    kjb::qd::PixPoint p1(0,0), p2(0,0);
+    ivi::qd::PixPoint p1(0,0), p2(0,0);
     Doubly_connected_edge_list d;
     for (size_t t = 1; t < 100; ++t)
     {
-        const kjb::qd::PixPoint p(t, 10*kjb_c::kjb_rand()+100*sin(0.0628*t));
-        kjb::qd::PixPoint_line_segment s(p,p);
+        const ivi::qd::PixPoint p(t, 10*ivi_c::ivi_rand()+100*sin(0.0628*t));
+        ivi::qd::PixPoint_line_segment s(p,p);
         if (t&1)
         {
             s.a = p1;
@@ -144,9 +144,9 @@ int test7()
     }
 
     std::ofstream f("test7.svg");
-    KJB(NRE(f));
-    f << kjb::qd::draw_dcel_as_svg(d) << '\n';
-    return kjb_c::NO_ERROR;
+    IVI(NRE(f));
+    f << ivi::qd::draw_dcel_as_svg(d) << '\n';
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -155,19 +155,19 @@ int test7()
 
 int main(int argc, char** argv)
 {
-    KJB(kjb_init());
+    IVI(ivi_init());
 
     try
     {
-        KJB(EPETE(test1()));
-        KJB(EPETE(test2()));
-        KJB(EPETE(test3()));
-        KJB(EPETE(test4()));
-        KJB(EPETE(test5()));
-        KJB(EPETE(test6()));
-        KJB(EPETE(test7()));
+        IVI(EPETE(test1()));
+        IVI(EPETE(test2()));
+        IVI(EPETE(test3()));
+        IVI(EPETE(test4()));
+        IVI(EPETE(test5()));
+        IVI(EPETE(test6()));
+        IVI(EPETE(test7()));
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details_exit();
     }
@@ -176,6 +176,6 @@ int main(int argc, char** argv)
         std::cerr << "std::exception caught: " << e.what() << '\n';
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return EXIT_SUCCESS;
 }

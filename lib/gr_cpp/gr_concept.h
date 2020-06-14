@@ -1,4 +1,4 @@
-/* $Id: gr_concept.h 11211 2011-11-22 17:56:38Z ksimek $ */
+/* $Id: gr_concept.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,12 +19,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_GR_CPP_GR_CONCEPT_H
-#define KJB_GR_CPP_GR_CONCEPT_H
+#ifndef IVI_GR_CPP_GR_CONCEPT_H
+#define IVI_GR_CPP_GR_CONCEPT_H
 
 #include <boost/concept_check.hpp> 
 
-namespace kjb 
+namespace ivi 
 {
 template <class X>
 struct RenderableObject

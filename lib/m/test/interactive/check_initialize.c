@@ -1,5 +1,5 @@
 
-/* $Id: check_initialize.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: check_initialize.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /*
@@ -17,9 +17,9 @@ int main(int argc, char **argv)
     Vector* vp = NULL; 
     Matrix* mp = NULL; 
     int i; 
-    IMPORT int kjb_debug_level; 
+    IMPORT int ivi_debug_level; 
 
-    kjb_debug_level = 100; 
+    ivi_debug_level = 100; 
 
     ERE(get_target_vector(&vp, 10));
 

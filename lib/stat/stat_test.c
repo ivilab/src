@@ -1,5 +1,5 @@
 
-/* $Id: stat_test.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: stat_test.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -80,11 +80,11 @@ int welch_t_test_one_sided
 
     if (*t_prime_ptr < 0.0)
     {
-        ERE(kjb_cdf_tdist_P(p_value_ptr, *t_prime_ptr, *df_ptr));
+        ERE(ivi_cdf_tdist_P(p_value_ptr, *t_prime_ptr, *df_ptr));
     }
     else
     {
-        ERE(kjb_cdf_tdist_Q(p_value_ptr, *t_prime_ptr, *df_ptr));
+        ERE(ivi_cdf_tdist_Q(p_value_ptr, *t_prime_ptr, *df_ptr));
     }
 
     return NO_ERROR;

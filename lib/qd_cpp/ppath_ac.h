@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: ppath_ac.h 20057 2015-11-10 07:11:36Z predoehl $
+ * $Id: ppath_ac.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef PPATH_AC_H_UOFARIZONAVISION
@@ -12,7 +12,7 @@
 
 #include <qd_cpp/pixpath.h>
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -36,7 +36,7 @@ class PixPathAc
 
     /**
      * @brief update arclen_cache if it is marked as being stale
-     * @throws KJB_error in case of a (rare) problem.
+     * @throws IVI_error in case of a (rare) problem.
      */
     void refresh_the_cache_if_stale() const
     {
@@ -156,16 +156,16 @@ public:
      *
      * @param alvec Pointer to vector of floats into which we return the
      *              cumulative polygonal path lengths from start to each vertex
-     * @return kjb_c::ERROR or kjb_c::NO_ERROR as appropriate
+     * @return ivi_c::ERROR or ivi_c::NO_ERROR as appropriate
      */
     int arclength( std::vector< float >* alvec ) const
     {
-        KJB( NRE( alvec ) );
+        IVI( NRE( alvec ) );
 
         refresh_the_cache_if_stale();
         alvec -> resize( m_path.size() );
         std::copy( arclen_cache.begin(), arclen_cache.end(), alvec->begin() );
-        return kjb_c::NO_ERROR;
+        return ivi_c::NO_ERROR;
     }
 
     /**

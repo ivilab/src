@@ -1,4 +1,4 @@
-/* $Id: l_functors.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: l_functors.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Generator that increments (++) its state everytime it is called.
@@ -255,7 +255,7 @@ public:
 
 
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /* L_FUNCTORS_H_INCLUDED */
 

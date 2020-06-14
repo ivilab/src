@@ -4,7 +4,7 @@
  * @author Scott Morris
  * @author Alan Morris
  * @author Andrew Predoehl
- * @todo use of socket headers and functions violates libkjb design philosophy.
+ * @todo use of socket headers and functions violates libivi design philosophy.
  *
  * Originally from TopoFusion.
  *
@@ -51,7 +51,7 @@ extern "C" {
 #include <string>
 #include <sstream>
 
-#define TRACE(x) KJB(TEST_PSE(x))   /**< TopoFusion macro for debug */
+#define TRACE(x) IVI(TEST_PSE(x))   /**< TopoFusion macro for debug */
 
 namespace
 {
@@ -88,7 +88,7 @@ int terraserver_validate(
     const std::string& hostname
 )
 {
-    KJB(NRE( ips ));
+    IVI(NRE( ips ));
 
 #if 0
     // we already know what the answers are supposed to be.  we think.
@@ -97,23 +97,23 @@ int terraserver_validate(
 
     if ( 1 == ips -> size() && the_right_answer == ips -> at( 0 ) )
     {
-        KJB(TEST_PSE(( "Warning: DNS says %s has but one address.\n", 
+        IVI(TEST_PSE(( "Warning: DNS says %s has but one address.\n", 
                        hostname.c_str())));
-        return kjb_c::NO_ERROR;
+        return ivi_c::NO_ERROR;
     }
 
     if ( ips -> size() != 2 )
     {
-        KJB(set_error( "host(1) gave %u addresses for %s, expected 2.\n",
+        IVI(set_error( "host(1) gave %u addresses for %s, expected 2.\n",
                        ips -> size(), hostname.c_str()));
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 
     if ( ips -> at( 0 ) == ips -> at( 1 ) )
     {
-        KJB(set_error( "host(1) gave duplicate addrs (%s) for %s",
+        IVI(set_error( "host(1) gave duplicate addrs (%s) for %s",
                        ips -> at( 0 ).c_str(), hostname.c_str()));
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 
     if ( ips -> at( 0 ) > ips -> at( 1 ) )
@@ -123,37 +123,37 @@ int terraserver_validate(
 
     if ( the_right_answer != ips -> at( 0 ) || almost != ips -> at( 1 ) )
     {
-        KJB(set_error( "host(1) gave unexpected/unusable results for %s",
+        IVI(set_error( "host(1) gave unexpected/unusable results for %s",
                        hostname.c_str()));
-        KJB(TEST_PSE(( "DNS lookup on %s gave unexpected results.\n"
+        IVI(TEST_PSE(( "DNS lookup on %s gave unexpected results.\n"
                 "(Addresses were %s and %s.)  We assume that is wrong.\n"
                 "If they really have moved their server, someone will\n"
                 "have to update lib/topo_cpp/%s.\n", hostname.c_str(),
                 ips -> at( 0 ).c_str(), ips -> at( 1 ).c_str(),
                 __FILE__ )));
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 #else
     const std::string the_right_answer("65.54.113.33");
     if (ips->size() < 1 || ips->front() != the_right_answer)
     {
-        KJB(set_error(
+        IVI(set_error(
             "Bad or unusable results when trying to look up msrmaps.com." ));
         for (size_t i = 0; i < ips -> size(); ++i)
         {
-            KJB(add_error( "Result # %d from host(1) was %s.\n",
+            IVI(add_error( "Result # %d from host(1) was %s.\n",
                            ips -> at(i).c_str()));
         }
-        KJB(add_error("Expected address was %s.\n", the_right_answer.c_str()));
-        KJB(add_error("If the address really has changed, someone will have "
+        IVI(add_error("Expected address was %s.\n", the_right_answer.c_str()));
+        IVI(add_error("If the address really has changed, someone will have "
                     "to update lib/topo_cpp, either to insert the new address "
                     "or to skip this test as unnecessary paranoia."));
-        KJB(NOTE_ERROR());
-        return kjb_c::ERROR;
+        IVI(NOTE_ERROR());
+        return ivi_c::ERROR;
     }
 #endif
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -161,20 +161,20 @@ int terraserver_validate(
 // AMP
 int really_look_up_terraserver_address( std::string* quads )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     NRE( quads );
 
     std::vector< std::string > adrs;
-    kjb::Temporary_File tf;
+    ivi::Temporary_File tf;
     const std::string   dns = "msrmaps.com",
                         host = "host " + dns + " > " + tf.get_filename();
-    kjb_system( host.c_str() );             // shell out
-    ERE( kjb_fflush( tf ) );
-    ERE( kjb_fseek( tf, 0L, SEEK_SET ) );   // rewind
+    ivi_system( host.c_str() );             // shell out
+    ERE( ivi_fflush( tf ) );
+    ERE( ivi_fseek( tf, 0L, SEEK_SET ) );   // rewind
 
     // Scan every line of output
     std::string line;
-    for( int rc; NO_ERROR == ( rc = kjb::getline( tf, &line ) ); line.clear() )
+    for( int rc; NO_ERROR == ( rc = ivi::getline( tf, &line ) ); line.clear() )
     {
         // Scan a line
         const std::string fmt = dns + " has address %d.%d.%d.%d";
@@ -216,7 +216,7 @@ int really_look_up_terraserver_address( std::string* quads )
 // AMP
 int get_terraserver_address( std::string* dotted_quads )
 {
-    KJB( NRE( dotted_quads ) );
+    IVI( NRE( dotted_quads ) );
 
     // cache the value after the first lookup
     static std::string quads;
@@ -224,17 +224,17 @@ int get_terraserver_address( std::string* dotted_quads )
     // look up IP address of msrmaps.com using host(1)
     if ( 0 == quads.size() )
     {
-        KJB( ERE( really_look_up_terraserver_address( &quads ) ) );
+        IVI( ERE( really_look_up_terraserver_address( &quads ) ) );
         ASSERT( 0 < quads.size() );
     }
 
     *dotted_quads = quads;
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 // AMP
-void debug_print( const char* msg, const kjb::TopoFusion::tile_entry* te )
+void debug_print( const char* msg, const ivi::TopoFusion::tile_entry* te )
 {
     ASSERT( te );
     TRACE(( "DEBUG: %s tile_entry(%d,%d,%d,%d)\n", msg,
@@ -268,19 +268,19 @@ int findContentLength(char *buffer, int /*size*/ )
 
 int handleChunked(char *buffer,int bufsize)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
 #ifdef debugnasa
     TRACE(( "handling chunked data, bufsize = %d\n",bufsize));
     TRACE(( "writing out response.txt\n"));
 
-    FILE *f = kjb_fopen("reponse.txt","wb");
+    FILE *f = ivi_fopen("reponse.txt","wb");
 
-    kjb_fwrite(buffer,1,bufsize,f);
-    kjb_fclose(f);
+    ivi_fwrite(buffer,1,bufsize,f);
+    ivi_fclose(f);
 #endif
 
-    char *outbuffer = (char *) KJB_MALLOC(sizeof(char)*bufsize);
+    char *outbuffer = (char *) IVI_MALLOC(sizeof(char)*bufsize);
 
     if (outbuffer == NULL) return -4;
     /*
@@ -292,7 +292,7 @@ int handleChunked(char *buffer,int bufsize)
 
     if (curpos == NULL)
     { // no chunked in buffer
-        kjb_free( outbuffer );
+        ivi_free( outbuffer );
         curpos = strstr(buffer,"jpeg");
         if (curpos == NULL) curpos = strstr(buffer,"png");
 
@@ -361,7 +361,7 @@ int handleChunked(char *buffer,int bufsize)
 
         curpos++;
 
-        kjb_memcpy(&outbuffer[outpos], curpos, chunksize);
+        ivi_memcpy(&outbuffer[outpos], curpos, chunksize);
         outpos+=chunksize;
 
         curpos+=chunksize;
@@ -378,9 +378,9 @@ int handleChunked(char *buffer,int bufsize)
     TRACE(( "processed chunks\n"));
 #endif
 
-    kjb_memcpy(buffer,outbuffer,outpos);
+    ivi_memcpy(buffer,outbuffer,outpos);
 
-    kjb_free(outbuffer);
+    ivi_free(outbuffer);
 
     return outpos;
 }
@@ -417,11 +417,11 @@ int checkTile (char *buffer, int bufsize)
     if (jpegfound == false)
     {
 #if 0
-        using namespace kjb_c;
+        using namespace ivi_c;
         DbgLog("checkTile: Didn't find JFIF header, first 512 bytes:\n");
         char buf[511];
         size_t cplen = std::min(bufsize, sizeof(buf)-1);
-        kjb_memcpy (buf, buffer, cplen);
+        ivi_memcpy (buf, buffer, cplen);
         buf[ cplen ] = 0;
         DbgLog("%s\n",buf);
         DbgLog("No tile from TerraServer\n");
@@ -468,7 +468,7 @@ int GetHTTP(
 
     if (0 == buffer)
     {
-        KJB(NPE(buffer));
+        IVI(NPE(buffer));
         return -1;
     }
 
@@ -519,9 +519,9 @@ int GetHTTP(
         }
 
         std::string tsad;
-        if ( kjb_c::ERROR == get_terraserver_address( &tsad ) )
+        if ( ivi_c::ERROR == get_terraserver_address( &tsad ) )
         {
-            kjb_c::set_error( "Unable to obtain terraserver's IP address" );
+            ivi_c::set_error( "Unable to obtain terraserver's IP address" );
             return -1;
         }
 
@@ -658,7 +658,7 @@ int GetHTTP(
 } // end anonymous namespace
 
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -666,7 +666,7 @@ namespace TopoFusion
 
 int download_tile( const tile_entry *entry, char *buffer, int bufsize )
 {
-    using kjb_c::TopoFusion::TileSource;
+    using ivi_c::TopoFusion::TileSource;
 
     if (VERBOSE) 
     {
@@ -675,16 +675,16 @@ int download_tile( const tile_entry *entry, char *buffer, int bufsize )
             << entry -> zone << '\n';
     }
 
-    bool useNasa =  entry->tileset >= kjb_c::TopoFusion::NASA_MIN
-                    &&  entry->tileset <= kjb_c::TopoFusion::NASA_MAX;
+    bool useNasa =  entry->tileset >= ivi_c::TopoFusion::NASA_MIN
+                    &&  entry->tileset <= ivi_c::TopoFusion::NASA_MAX;
     if (useNasa)
     {
         if (retry_delay)
         {
-            if (kjb_c::get_real_time() < 10000) // less than ten secs elapsed?
+            if (ivi_c::get_real_time() < 10000) // less than ten secs elapsed?
             {
                 // this is the duration scott specified -- excessive?
-                kjb_c::nap(1000000); // one million milliseconds = 17 minutes
+                ivi_c::nap(1000000); // one million milliseconds = 17 minutes
                 return -4;
             }
             retry_delay = false;
@@ -704,7 +704,7 @@ int download_tile( const tile_entry *entry, char *buffer, int bufsize )
     char tilestr[255];
     if (useNasa)
     {
-        const kjb_c::TopoFusion::st_TileSource& meta_tile
+        const ivi_c::TopoFusion::st_TileSource& meta_tile
                                     = TileSource[ int( entry -> tileset ) ];
         const long &UtmSize = meta_tile.UTM_Size;
         const double &metersPerPixel = meta_tile.metersPerPixel;
@@ -717,8 +717,8 @@ int download_tile( const tile_entry *entry, char *buffer, int bufsize )
                             entry -> zone );
 
         double lat, lon, lat2, lon2;
-        kjb::TopoFusion::utm_to_lat_long( 23, u1, lat, lon );
-        kjb::TopoFusion::utm_to_lat_long( 23, u2, lat2, lon2 );
+        ivi::TopoFusion::utm_to_lat_long( 23, u1, lat, lon );
+        ivi::TopoFusion::utm_to_lat_long( 23, u2, lat2, lon2 );
 
 #if 0
         sprintf(request,"GET /landsat.cgi?zoom=0.0011112&x0=%f&y0=%f"
@@ -740,7 +740,7 @@ int download_tile( const tile_entry *entry, char *buffer, int bufsize )
             lon,lat,lon2,lat2);
 #endif
 
-        kjb_c::kjb_sprintf( tilestr, sizeof(tilestr), "wms.cgi?request=GetMap"
+        ivi_c::ivi_sprintf( tilestr, sizeof(tilestr), "wms.cgi?request=GetMap"
                 "&layers=global_mosaic&srs=EPSG:4326&width=204&height=204"
                 "&bbox=%f,%f,%f,%f"
                 "&format=image/jpeg&styles=visual&zoom= "
@@ -750,7 +750,7 @@ int download_tile( const tile_entry *entry, char *buffer, int bufsize )
     }
     else
     {
-        kjb_c::kjb_sprintf( tilestr, sizeof(tilestr),
+        ivi_c::ivi_sprintf( tilestr, sizeof(tilestr),
                     "tile.ashx?S=%d&T=%d&X=%d&Y=%d&Z=%d "
                     /*"HTTP/1.1\r\nHost: terraserver-usa.com\r\n", obsolete */
                     "HTTP/1.1\r\nHost: msrmaps.com\r\n",
@@ -799,7 +799,7 @@ int download_tile( const tile_entry *entry, char *buffer, int bufsize )
             if (retval <= 0)
             {   // probably overloading it with too many requests, this seems
                 // to be necessary to avoid complete shut out of downloading
-                kjb_c::init_real_time();
+                ivi_c::init_real_time();
                 retry_delay = true;
                 //Sleep(5000);
                 TRACE(( "Dying, waiting for timeout\n"));
@@ -811,5 +811,5 @@ int download_tile( const tile_entry *entry, char *buffer, int bufsize )
 }
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi
 

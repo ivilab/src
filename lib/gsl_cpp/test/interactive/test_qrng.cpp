@@ -42,15 +42,15 @@ public:
 
 int main()
 {
-    //kjb::Gsl_Qrng_Niederreiter qrng( 2 );
-    //kjb::Gsl_Qrng_Sobol qrng( 2 );
-    kjb::Gsl_Qrng_Halton qrng( 2 );
-    //kjb::Gsl_Qrng_Rvs_Halton qrng( 2 );
+    //ivi::Gsl_Qrng_Niederreiter qrng( 2 );
+    //ivi::Gsl_Qrng_Sobol qrng( 2 );
+    ivi::Gsl_Qrng_Halton qrng( 2 );
+    //ivi::Gsl_Qrng_Rvs_Halton qrng( 2 );
     Gridly g;
     //double xy[ 2 ];
     for( int j = 0; j < 500; ++j ) {
         //qrng.read( xy );
-        kjb::Vector xy( qrng.read() );
+        ivi::Vector xy( qrng.read() );
         assert( 2 == xy.size() );
         std::cout << "Iter " << j << " yielded sample (" << xy[0] << ','
                 << xy[1] << ")\n";

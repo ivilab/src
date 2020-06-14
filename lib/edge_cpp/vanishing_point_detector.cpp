@@ -27,7 +27,7 @@
 #include <cmath>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 /** This is an approximation of the position of the
  * vanishing points located at infinity
@@ -124,7 +124,7 @@ struct ComparePenalty : public std::binary_function<double ,double,bool >
  */
 double Vanishing_point_detector::compute_alpha
 (
-    const kjb::Vanishing_point &  vp,
+    const ivi::Vanishing_point &  vp,
     const Line_segment *        edge_segment
 )
 {
@@ -683,7 +683,7 @@ double Vanishing_point_detector::jointly_find_vpts_with_ransac
              }
          }
 
-         if(!kjb::find_vertical_vanishing_point(temp_vp1, temp_vp2, temp_vertical, _num_cols, _num_rows))
+         if(!ivi::find_vertical_vanishing_point(temp_vp1, temp_vp2, temp_vertical, _num_cols, _num_rows))
          {
              continue;
          }
@@ -1020,7 +1020,7 @@ double Vanishing_point_detector::geometric_find_vpts_with_ransac
              {
                  continue;
              }
-             if(!kjb::find_vertical_vanishing_point(temp_vp1, temp_vp2, temp_vertical, _num_cols, _num_rows))
+             if(!ivi::find_vertical_vanishing_point(temp_vp1, temp_vp2, temp_vertical, _num_cols, _num_rows))
              {
                  continue;
              }
@@ -1286,10 +1286,10 @@ bool Vanishing_point_detector::check_vpts_consistency
     A(2,2) = vp1y + vp3y;
     A(2,3) = 1.0;
 
-    ETX( kjb_c::get_matrix_transpose( &Atranspose, A.get_c_matrix() ) );
-    ETX(kjb_c::multiply_matrices(&AA, Atranspose, A.get_c_matrix()));
+    ETX( ivi_c::get_matrix_transpose( &Atranspose, A.get_c_matrix() ) );
+    ETX(ivi_c::multiply_matrices(&AA, Atranspose, A.get_c_matrix()));
 
-    if( kjb_c::diagonalize_symmetric(AA, &E_mp, &D_vp) != kjb_c::NO_ERROR)
+    if( ivi_c::diagonalize_symmetric(AA, &E_mp, &D_vp) != ivi_c::NO_ERROR)
     {
         /** These three vanishing points are no good, we cannot estimate an absolute
          * conic from them (the system admits no solution).
@@ -1312,14 +1312,14 @@ bool Vanishing_point_detector::check_vpts_consistency
 
 
     /** We retrieve the intrinsic camera matrix K from w = inv(K*K') */
-    if( kjb_c::cholesky_decomposition(&decomposition, absolute_conic.get_c_matrix()) != kjb_c::NO_ERROR)
+    if( ivi_c::cholesky_decomposition(&decomposition, absolute_conic.get_c_matrix()) != ivi_c::NO_ERROR)
     {
         /** If we cannot decompose the matrix it means that the triplet of vanishing points
          *  is not a valid configuration */
         return false;
     }
 
-    if( kjb_c::get_matrix_inverse( &inverse, decomposition ) != kjb_c::NO_ERROR)
+    if( ivi_c::get_matrix_inverse( &inverse, decomposition ) != ivi_c::NO_ERROR)
     {
         return false;
     }
@@ -1509,10 +1509,10 @@ bool Vanishing_point_detector::groundtruth_check_vpts_consistency
     A(2,2) = vp1y + vp3y;
     A(2,3) = 1.0;
 
-    ETX( kjb_c::get_matrix_transpose( &Atranspose, A.get_c_matrix() ) );
-    ETX(kjb_c::multiply_matrices(&AA, Atranspose, A.get_c_matrix()));
+    ETX( ivi_c::get_matrix_transpose( &Atranspose, A.get_c_matrix() ) );
+    ETX(ivi_c::multiply_matrices(&AA, Atranspose, A.get_c_matrix()));
 
-    if( kjb_c::diagonalize_symmetric(AA, &E_mp, &D_vp) != kjb_c::NO_ERROR)
+    if( ivi_c::diagonalize_symmetric(AA, &E_mp, &D_vp) != ivi_c::NO_ERROR)
     {
         /** These three vanishing points are no good, we cannot estimate an absolute
          * conic from them (the system admits no solution).
@@ -1535,14 +1535,14 @@ bool Vanishing_point_detector::groundtruth_check_vpts_consistency
 
 
     /** We retrieve the intrinsic camera matrix K from w = inv(K*K') */
-    if( kjb_c::cholesky_decomposition(&decomposition, absolute_conic.get_c_matrix()) != kjb_c::NO_ERROR)
+    if( ivi_c::cholesky_decomposition(&decomposition, absolute_conic.get_c_matrix()) != ivi_c::NO_ERROR)
     {
         /** If we cannot decompose the matrix it means that the triplet of vanishing points
          *  is not a valid configuration */
         return false;
     }
 
-    if( kjb_c::get_matrix_inverse( &inverse, decomposition ) != kjb_c::NO_ERROR)
+    if( ivi_c::get_matrix_inverse( &inverse, decomposition ) != ivi_c::NO_ERROR)
     {
         return false;
     }
@@ -1847,7 +1847,7 @@ double Vanishing_point_detector::compute_focal_length(const std::vector<Vanishin
     double focal;
     if(v_pts.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Compute focal length, expected three vanishing points");
+        IVI_THROW_2(Illegal_argument, "Compute focal length, expected three vanishing points");
     }
 
     if(_regular_segments.size() < 4)
@@ -1859,7 +1859,7 @@ double Vanishing_point_detector::compute_focal_length(const std::vector<Vanishin
     {
         if(!relaxed_check_vpts_consistency(v_pts[VPD_HORIZONTAL_VP_1], v_pts[VPD_HORIZONTAL_VP_1], v_pts[VPD_VERTICAL_VP], focal))
         {
-            KJB_THROW_2(Illegal_argument, "Compute focal length, invalid set of vanishing points");
+            IVI_THROW_2(Illegal_argument, "Compute focal length, invalid set of vanishing points");
         }
     }
 
@@ -1982,20 +1982,20 @@ bool Vanishing_point_detector::guess_horizontal_vpts_from_two_segments(Vanishing
     {
         return false;
     }
-    kjb::Vector direction;
-    const kjb::Vector & centre = _regular_segments[0]->get_centre();
+    ivi::Vector direction;
+    const ivi::Vector & centre = _regular_segments[0]->get_centre();
     _regular_segments[0]->get_direction(direction);
 
-    kjb::Vector vp1_position(2);
+    ivi::Vector vp1_position(2);
     vp1_position(0) = centre(0) + direction(0);
     vp1_position(1) = centre(1) + direction(1);
     vp1.set_position(vp1_position);
 
-    kjb::Vector direction2;
-    const kjb::Vector & centre2 = _regular_segments[1]->get_centre();
+    ivi::Vector direction2;
+    const ivi::Vector & centre2 = _regular_segments[1]->get_centre();
     _regular_segments[1]->get_direction(direction2);
 
-    kjb::Vector vp2_position(2);
+    ivi::Vector vp2_position(2);
     vp2_position(0) = centre2(0) + direction2(0);
     vp2_position(1) = centre2(1) + direction2(1);
     vp2.set_position(vp2_position);
@@ -2009,11 +2009,11 @@ bool Vanishing_point_detector::guess_horizontal_vpts_from_three_segments(Vanishi
         return false;
     }
 
-    kjb::Vector ints1_2;
+    ivi::Vector ints1_2;
     _regular_segments[0]->get_intersection(*_regular_segments[1], ints1_2);
-    kjb::Vector ints1_3;
+    ivi::Vector ints1_3;
     _regular_segments[0]->get_intersection(*_regular_segments[2], ints1_3);
-    kjb::Vector ints2_3;
+    ivi::Vector ints2_3;
     _regular_segments[1]->get_intersection(*_regular_segments[2], ints2_3);
 
     double dist1_2 = _regular_segments[0]->get_distance_from_point(ints1_2) +
@@ -2025,48 +2025,48 @@ bool Vanishing_point_detector::guess_horizontal_vpts_from_three_segments(Vanishi
 
     if( (dist1_2 > dist1_3) && (dist1_2 > dist2_3) )
     {
-        kjb::Vector vp1_position(2);
+        ivi::Vector vp1_position(2);
         vp1_position(0) = ints1_2(0);
         vp1_position(1) = ints1_2(1);
         vp1.set_position(vp1_position);
 
-        kjb::Vector direction;
-        const kjb::Vector & centre = _regular_segments[2]->get_centre();
+        ivi::Vector direction;
+        const ivi::Vector & centre = _regular_segments[2]->get_centre();
         _regular_segments[2]->get_direction(direction);
 
-        kjb::Vector vp2_position(2);
+        ivi::Vector vp2_position(2);
         vp2_position(0) = centre(0) + direction(0);
         vp2_position(1) = centre(1) + direction(1);
         vp2.set_position(vp2_position);
     }
     else if( (dist1_3 > dist1_2) && (dist1_3 > dist2_3) )
     {
-        kjb::Vector position(2);
+        ivi::Vector position(2);
         position(0) = ints1_3(0);
         position(1) = ints1_3(1);
         vp1.set_position(position);
 
-         kjb::Vector direction;
-        const kjb::Vector & centre = _regular_segments[1]->get_centre();
+         ivi::Vector direction;
+        const ivi::Vector & centre = _regular_segments[1]->get_centre();
         _regular_segments[1]->get_direction(direction);
 
-        kjb::Vector vp2_position(2);
+        ivi::Vector vp2_position(2);
         vp2_position(0) = centre(0) + direction(0);
         vp2_position(1) = centre(1) + direction(1);
         vp2.set_position(vp2_position);
     }
     else
     {
-        kjb::Vector position(2);
+        ivi::Vector position(2);
         position(0) = ints2_3(0);
         position(1) = ints2_3(1);
         vp1.set_position(position);
 
-         kjb::Vector direction;
-        const kjb::Vector & centre = _regular_segments[0]->get_centre();
+         ivi::Vector direction;
+        const ivi::Vector & centre = _regular_segments[0]->get_centre();
         _regular_segments[0]->get_direction(direction);
 
-        kjb::Vector vp2_position(2);
+        ivi::Vector vp2_position(2);
         vp2_position(0) = centre(0) + direction(0);
         vp2_position(1) = centre(1) + direction(1);
         vp2.set_position(vp2_position);
@@ -2088,7 +2088,7 @@ void Vanishing_point_detector::sample_n_from_m_without_repetitions(unsigned int 
 
     if(n > m)
     {
-        throw kjb::Illegal_argument("Sample n from m without repetitions, n is bigger than m!!!");
+        throw ivi::Illegal_argument("Sample n from m without repetitions, n is bigger than m!!!");
     }
 
     if( ( (unsigned int)iv.size() ) != n)
@@ -2098,7 +2098,7 @@ void Vanishing_point_detector::sample_n_from_m_without_repetitions(unsigned int 
 
     for(unsigned int i = 0; i < n; i++)
     {
-        unsigned int position = (unsigned int) kjb_c::kjb_rand_int(0, m-i-1);
+        unsigned int position = (unsigned int) ivi_c::ivi_rand_int(0, m-i-1);
         unsigned int counter = 0;
         for(unsigned int j = 0; j < m; j++ )
         {
@@ -2195,11 +2195,11 @@ double Vanishing_point_detector::compute_average_inlier_penalty(double outlier_t
  *
  * =============================================================================
  */
-bool kjb::robustly_estimate_vanishing_points
+bool ivi::robustly_estimate_vanishing_points
 (
     std::vector<Vanishing_point> & vpts,
     double & focal_length,
-    const kjb::Image & img,
+    const ivi::Image & img,
     double success_probability,
     bool jointly_estimate,
     std::vector<Vanishing_point> right_ones
@@ -2263,7 +2263,7 @@ bool kjb::robustly_estimate_vanishing_points
     cp.write("uffa.jpg");
     cp2.write("uffa2.jpg");
 
-    Edge_set_ptr ptr_temp(new kjb::Edge_set(*ptr));
+    Edge_set_ptr ptr_temp(new ivi::Edge_set(*ptr));
 
     bool found = false;
     Vanishing_point_detector vpd(edge_set, img.get_num_rows(), img.get_num_cols());
@@ -2315,7 +2315,7 @@ bool kjb::robustly_estimate_vanishing_points
 
 }
 
-double kjb::robustly_estimate_vanishing_points_Kovesi
+double ivi::robustly_estimate_vanishing_points_Kovesi
 (
     std::vector<Vanishing_point> & vpts,
     double & focal_length,
@@ -2435,11 +2435,11 @@ double kjb::robustly_estimate_vanishing_points_Kovesi
  *        that is a little off its correct position
  *
  */
-bool kjb::relaxed_vanishing_point_estimation
+bool ivi::relaxed_vanishing_point_estimation
 (
     std::vector<Vanishing_point> & vpts,
     double & focal_length,
-    const kjb::Image & img,
+    const ivi::Image & img,
     double success_probability
 )
 {
@@ -2473,7 +2473,7 @@ bool kjb::relaxed_vanishing_point_estimation
     Edge_segment_set edge_set( &(*ptr));
     edge_set.remove_overlapping_segments(*ptr);
 
-    Edge_set_ptr ptr_temp(new kjb::Edge_set(*ptr));
+    Edge_set_ptr ptr_temp(new ivi::Edge_set(*ptr));
 
     bool found = false;
     Vanishing_point_detector vpd(edge_set, img.get_num_rows(), img.get_num_cols(), 0.12, 0.1); //0.12
@@ -2520,7 +2520,7 @@ bool kjb::relaxed_vanishing_point_estimation
  *
  * =============================================================================
  */
-unsigned int kjb::assign_to_vanishing_point
+unsigned int ivi::assign_to_vanishing_point
 (
     double outlier_threshold,
     const Line_segment * isegment,
@@ -2605,10 +2605,10 @@ unsigned int kjb::assign_to_vanishing_point
  *
  * =============================================================================
  */
-bool kjb::robustly_estimate_vertical_vanishing_point
+bool ivi::robustly_estimate_vertical_vanishing_point
 (
     Vanishing_point & vertical,
-    const kjb::Image & img,
+    const ivi::Image & img,
     double success_probability
 )
 {
@@ -2658,7 +2658,7 @@ bool kjb::robustly_estimate_vertical_vanishing_point
     Edge_segment_set edge_set( &(*ptr));
     edge_set.remove_frame_segments(ptr->get_num_rows(),ptr->get_num_cols(),*ptr);
 
-    Edge_set_ptr ptr_temp(new kjb::Edge_set(*ptr));
+    Edge_set_ptr ptr_temp(new ivi::Edge_set(*ptr));
 
     bool found = false;
     double length = start_length;
@@ -2700,7 +2700,7 @@ bool kjb::robustly_estimate_vertical_vanishing_point
 
 }
 
-bool kjb::detect_vanishing_points
+bool ivi::detect_vanishing_points
 (
     std::vector<Vanishing_point> & vpts,
     double & focal_length,
@@ -2712,13 +2712,13 @@ bool kjb::detect_vanishing_points
     double scale_factor = -10.0;
     if( (img.get_num_rows() > 600) && (img.get_num_cols() > 400))
     {
-        using namespace kjb_c;
+        using namespace ivi_c;
         /* If the image is very big, we will just scale so that the number
          * of columns is a little above 401 pixels, remember that
          * this is the threshold above which we prune all edges that are
          * shorter than 30. */
         scale_factor = 401.0/((double)img.get_num_cols());
-        kjb_c::KJB_image * cimg = 0;
+        ivi_c::IVI_image * cimg = 0;
         EPETE(scale_image_size
         (
             &cimg,

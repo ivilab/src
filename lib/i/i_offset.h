@@ -1,5 +1,5 @@
 
-/* $Id: i_offset.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_offset.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,7 +38,7 @@ int set_offset_removal_options(const char*, const char*);
 int set_camera_vector_offset(const char* file_name);
 int set_camera_image_offset(const char* file_name);
 int set_camera_spatial_chrom_file(const char* file_name);
-int remove_camera_offset_from_image(KJB_image*);
+int remove_camera_offset_from_image(IVI_image*);
 int remove_camera_offset_from_data(Matrix*);
 
 

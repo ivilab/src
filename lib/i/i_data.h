@@ -1,5 +1,5 @@
 
-/* $Id: i_data.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_data.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,17 +30,17 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-int get_image_pixels(const KJB_image* ip, Matrix** mpp);
+int get_image_pixels(const IVI_image* ip, Matrix** mpp);
 
 int get_registered_image_pixels
 (
-    const KJB_image* ip1,
-    const KJB_image* ip2,
+    const IVI_image* ip1,
+    const IVI_image* ip2,
     Matrix**         mp1_ptr,
     Matrix**         mp2_ptr,
     int**            invalid_registered_ptr

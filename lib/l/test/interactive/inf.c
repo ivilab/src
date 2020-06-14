@@ -1,5 +1,5 @@
 
-/* $Id: inf.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: inf.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -8,7 +8,7 @@
 int main(int argc, char **argv)
 {
     float test, zero;
-    kjb_int32 i;
+    ivi_int32 i;
 
 
 

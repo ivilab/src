@@ -33,8 +33,8 @@
 
 using namespace std;
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 void draw();
 void reshape(int width, int height);

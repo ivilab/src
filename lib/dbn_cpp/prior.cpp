@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: prior.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: prior.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_pdf.h>
@@ -38,8 +38,8 @@
 #include "dbn_cpp/coupled_oscillator.h"
 #include "dbn_cpp/linear_state_space.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 

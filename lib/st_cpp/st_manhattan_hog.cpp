@@ -17,7 +17,7 @@
 #include <cmath>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 Manhattan_hog::Manhattan_hog
 (
@@ -39,7 +39,7 @@ Manhattan_hog::Manhattan_hog
     double princ_y = (image.get_num_rows()/2.0) - camera.get_principal_point_y();
     if(camera.get_focal_length() <= DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Bad value for focal length");
+        IVI_THROW_2(Illegal_argument,"Bad value for focal length");
     }
 
     hog_maxs.zero_out(3);
@@ -48,22 +48,22 @@ Manhattan_hog::Manhattan_hog
     num_hog_rows = hog_responses.get_hog_num_rows();
     bin_size = hog_responses.get_bin_size();
     int num_angle_bins = 9;
-    std::vector<kjb::Vector> manhattan_dir_3d_horizontal;
-    std::vector<kjb::Vector> manhattan_dir_3d_vertical1;
-    std::vector<kjb::Vector> manhattan_dir_3d_vertical2;
+    std::vector<ivi::Vector> manhattan_dir_3d_horizontal;
+    std::vector<ivi::Vector> manhattan_dir_3d_vertical1;
+    std::vector<ivi::Vector> manhattan_dir_3d_vertical2;
     std::cout << "Man 3D manhattan dirs" <<std::endl;
     get_3D_manhattan_directions(manhattan_dir_3d_horizontal, manhattan_dir_3d_vertical1,
             manhattan_dir_3d_vertical2, num_angle_bins);
-    std::vector<kjb::Vector> projected_horizontal;
-    std::vector<kjb::Vector> projected_vertical1;
-    std::vector<kjb::Vector> projected_vertical2;
+    std::vector<ivi::Vector> projected_horizontal;
+    std::vector<ivi::Vector> projected_vertical1;
+    std::vector<ivi::Vector> projected_vertical2;
 
     camera.prepare_for_rendering(true);
     double z_distance = 10.0;
-    kjb::Vector position_3D(4, 1.0);
+    ivi::Vector position_3D(4, 1.0);
     position_3D(2) = -camera.get_focal_length();
-    kjb::Vector position_3D_world;
-    kjb::Vector position_3D_in_pp;
+    ivi::Vector position_3D_world;
+    ivi::Vector position_3D_in_pp;
     const float * hog_responses_2D = hog_responses.get_hog_responses();
     double angle_increment = M_PI / ((double) (num_angle_bins));
     for(int  i = 0; i < num_hog_rows; i++)
@@ -112,25 +112,25 @@ void Manhattan_hog::read(std::istream& in)
 
     /*if (!(field_value = read_field_value(in, "bin_size")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing bin_size");
+        IVI_THROW_2(Illegal_argument, "Missing bin_size");
     }
     istringstream ist(field_value);
     ist >> bin_size;
     if (ist.fail() || (bin_size <= 0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line bin_size");
+        IVI_THROW_2(Illegal_argument, "Invalid line bin_size");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "num_rows")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing num_rows");
+        IVI_THROW_2(Illegal_argument, "Missing num_rows");
     }
     ist.str(field_value);
     ist >> num_rows;
     if (ist.fail() || (num_rows < 0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid num_rows");
+        IVI_THROW_2(Illegal_argument, "Invalid num_rows");
     }
     ist.clear(std::ios_base::goodbit);*/
 }
@@ -141,7 +141,7 @@ void Manhattan_hog::write(std::ostream& out) const
 
 }
 
-void Manhattan_hog::find_2D_hog_directions(std::vector<kjb::Vector> & directions_2D, int num_angle_bins) const
+void Manhattan_hog::find_2D_hog_directions(std::vector<ivi::Vector> & directions_2D, int num_angle_bins) const
 {
     Vector initial_vector(2, 0.0);
     initial_vector(1) = 1.0;
@@ -196,9 +196,9 @@ double Manhattan_hog::find_2D_weight_by_interpolation
 
 void Manhattan_hog::get_3D_manhattan_directions
 (
-    std::vector<kjb::Vector> & manhattan_dir_3d_horizontal,
-    std::vector<kjb::Vector> & manhattan_dir_3d_vertical1,
-    std::vector<kjb::Vector> & manhattan_dir_3d_vertical2,
+    std::vector<ivi::Vector> & manhattan_dir_3d_horizontal,
+    std::vector<ivi::Vector> & manhattan_dir_3d_vertical1,
+    std::vector<ivi::Vector> & manhattan_dir_3d_vertical2,
     int num_directions
 ) const
 {
@@ -245,26 +245,26 @@ void Manhattan_hog::get_3D_manhattan_directions
 
 void Manhattan_hog::get_projected_manhattan_directions
 (
-    const std::vector<kjb::Vector> & manhattan_dir_3d_horizontal,
-    const std::vector<kjb::Vector> & manhattan_dir_3d_vertical1,
-    const std::vector<kjb::Vector> & manhattan_dir_3d_vertical2,
-    const kjb::Vector & center_in_pp_coordinates,
-    const kjb::Parametric_parapiped & pp,
-    const kjb::Perspective_camera & camera,
+    const std::vector<ivi::Vector> & manhattan_dir_3d_horizontal,
+    const std::vector<ivi::Vector> & manhattan_dir_3d_vertical1,
+    const std::vector<ivi::Vector> & manhattan_dir_3d_vertical2,
+    const ivi::Vector & center_in_pp_coordinates,
+    const ivi::Parametric_parapiped & pp,
+    const ivi::Perspective_camera & camera,
     int img_height,
-    std::vector<kjb::Vector> & projected_manhattan_dir_horizontal,
-    std::vector<kjb::Vector> & projected_manhattan_dir_vertical1,
-    std::vector<kjb::Vector> & projected_manhattan_dir_vertical2
+    std::vector<ivi::Vector> & projected_manhattan_dir_horizontal,
+    std::vector<ivi::Vector> & projected_manhattan_dir_vertical1,
+    std::vector<ivi::Vector> & projected_manhattan_dir_vertical2
 ) const
 {
     projected_manhattan_dir_horizontal.clear();
     projected_manhattan_dir_vertical1.clear();
     projected_manhattan_dir_vertical2.clear();
     int num_directions = manhattan_dir_3d_horizontal.size();
-    kjb::Vector direction_3Dpp(4, 1.0);
-    kjb::Vector direction_3Dworld(3, 0.0);
-    kjb::Vector center_3Dworld(3, 0.0);
-    kjb::Vector temp_2D_dir(2, 0.0);
+    ivi::Vector direction_3Dpp(4, 1.0);
+    ivi::Vector direction_3Dworld(3, 0.0);
+    ivi::Vector center_3Dworld(3, 0.0);
+    ivi::Vector temp_2D_dir(2, 0.0);
     double _x, _y, _z;
     double _xc, _yc, _zc;
 
@@ -307,7 +307,7 @@ void Manhattan_hog::get_projected_manhattan_directions
 
 void Manhattan_hog::interpolate_projected_directions
 (
-    const std::vector<kjb::Vector> & projected_directions,
+    const std::vector<ivi::Vector> & projected_directions,
     const float * weights_2D,
     float * weights_3D,
     double angle_increment,
@@ -324,7 +324,7 @@ void Manhattan_hog::interpolate_projected_directions
 void Manhattan_hog::get_line_segments_for_drawing
 (
     std::vector<Line_segment> & line_segments,
-    const std::vector<kjb::Vector> & projected_directions,
+    const std::vector<ivi::Vector> & projected_directions,
     double center_x,
     double center_y,
     double length
@@ -370,23 +370,23 @@ Image Manhattan_hog::draw_image_with_vertical_segments
     double princ_y = (image.get_num_rows()/2.0) - camera.get_principal_point_y();
     if(camera.get_focal_length() <= DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Bad value for focal length");
+        IVI_THROW_2(Illegal_argument,"Bad value for focal length");
     }
 
-    std::vector<kjb::Vector> manhattan_dir_3d_horizontal;
-    std::vector<kjb::Vector> manhattan_dir_3d_vertical1;
-    std::vector<kjb::Vector> manhattan_dir_3d_vertical2;
+    std::vector<ivi::Vector> manhattan_dir_3d_horizontal;
+    std::vector<ivi::Vector> manhattan_dir_3d_vertical1;
+    std::vector<ivi::Vector> manhattan_dir_3d_vertical2;
     get_3D_manhattan_directions(manhattan_dir_3d_horizontal, manhattan_dir_3d_vertical1,
     manhattan_dir_3d_vertical2, num_angle_bins);
-    std::vector<kjb::Vector> projected_horizontal;
-    std::vector<kjb::Vector> projected_vertical1;
-    std::vector<kjb::Vector> projected_vertical2;
+    std::vector<ivi::Vector> projected_horizontal;
+    std::vector<ivi::Vector> projected_vertical1;
+    std::vector<ivi::Vector> projected_vertical2;
 
     double z_distance = 50.0;
-    kjb::Vector position_3D(4, 1.0);
+    ivi::Vector position_3D(4, 1.0);
     position_3D(2) = -camera.get_focal_length();
-    kjb::Vector position_3D_world;
-    kjb::Vector position_3D_in_pp;
+    ivi::Vector position_3D_world;
+    ivi::Vector position_3D_in_pp;
     const float * hog_responses_2D = hog_responses.get_hog_responses();
     for(int  i = 0; i < num_hog_rows; i++)
     {

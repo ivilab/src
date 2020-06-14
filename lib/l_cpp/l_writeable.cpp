@@ -1,4 +1,4 @@
-/* $Id: l_writeable.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: l_writeable.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,13 +29,13 @@
 #include <l_cpp/l_writeable.h>
 
 
-using namespace kjb;
+using namespace ivi;
 
 
 /**
  * @param  fname  Output file to write to.
  *
- * @throw  kjb::IO_error  Could not write to @em fname.
+ * @throw  ivi::IO_error  Could not write to @em fname.
  */
 void Writeable::write(const char* fname) const 
 {
@@ -46,7 +46,7 @@ void Writeable::write(const char* fname) const
     if (out.fail())
     {
         ost << fname << ": Could not open file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
 
     try
@@ -56,13 +56,13 @@ void Writeable::write(const char* fname) const
     catch (IO_error e)
     {
         ost << fname << ": " << e.get_msg();
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
 
     out.close();
     if (out.fail())
     {
         ost << fname << ": Could not close file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
 }

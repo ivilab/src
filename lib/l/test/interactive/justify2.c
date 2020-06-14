@@ -1,5 +1,5 @@
 
-/* $Id: justify2.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: justify2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -10,7 +10,7 @@
 
 int main(int argc, char **argv)
 {
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
     char in_buff[ 10000 ];
     char out_buff[ 10000 ] = "XXXXX";
     char *buff_pos = in_buff;
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
             *buff_pos = '\0';
 
-            kjb_debug_level = 0; 
+            ivi_debug_level = 0; 
 
             p_stderr("---------------------\n");
             p_stderr("TESTING BUFFER OVERFLOW\n");
@@ -66,9 +66,9 @@ int main(int argc, char **argv)
                              i, width, no_format_margin); 
                 }
 
-                if (kjb_debug_level > 1)
+                if (ivi_debug_level > 1)
                 {
-                    kjb_fputs(stderr, out_buff); 
+                    ivi_fputs(stderr, out_buff); 
                     p_stderr("---------------------\n"); 
                 }
             }
@@ -95,9 +95,9 @@ int main(int argc, char **argv)
                              width, no_format_margin); 
                 }
 
-                if (kjb_debug_level > 1)
+                if (ivi_debug_level > 1)
                 {
-                    kjb_fputs(stderr, out_buff); 
+                    ivi_fputs(stderr, out_buff); 
                     p_stderr("---------------------\n"); 
                 }
             }
@@ -125,9 +125,9 @@ int main(int argc, char **argv)
                              width, no_format_margin); 
                 }
 
-                if (kjb_debug_level > 1)
+                if (ivi_debug_level > 1)
                 {
-                    kjb_fputs(stderr, out_buff); 
+                    ivi_fputs(stderr, out_buff); 
                     p_stderr("---------------------\n"); 
                 }
             }
@@ -154,9 +154,9 @@ int main(int argc, char **argv)
                              width, no_format_margin); 
                 }
 
-                if (kjb_debug_level > 1)
+                if (ivi_debug_level > 1)
                 {
-                    kjb_fputs(stderr, out_buff); 
+                    ivi_fputs(stderr, out_buff); 
                     p_stderr("---------------------\n"); 
                 }
             }
@@ -183,9 +183,9 @@ int main(int argc, char **argv)
                              width, no_format_margin); 
                 }
 
-                if (kjb_debug_level > 1)
+                if (ivi_debug_level > 1)
                 {
-                    kjb_fputs(stderr, out_buff); 
+                    ivi_fputs(stderr, out_buff); 
                     p_stderr("---------------------\n"); 
                 }
             }
@@ -212,16 +212,16 @@ int main(int argc, char **argv)
                              width, no_format_margin); 
                 }
 
-                if (kjb_debug_level > 1)
+                if (ivi_debug_level > 1)
                 {
-                    kjb_fputs(stderr, out_buff); 
+                    ivi_fputs(stderr, out_buff); 
                     p_stderr("---------------------\n"); 
                 }
             }
 
             p_stderr("---------------------\n"); 
 
-            kjb_debug_level = 2; 
+            ivi_debug_level = 2; 
 
             i = sizeof(out_buff);
             width = 3;
@@ -240,11 +240,11 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
 
             p_stderr("---------------------\n"); 
 
-            kjb_debug_level = 2; 
+            ivi_debug_level = 2; 
 
             dbw();
 
@@ -266,7 +266,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
 
             p_stderr("---------------------\n"); 
             i = sizeof(out_buff);
@@ -287,9 +287,9 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             i = sizeof(out_buff);
@@ -310,7 +310,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             i = sizeof(out_buff);
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             i = sizeof(out_buff);
@@ -352,7 +352,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             i = sizeof(out_buff);
@@ -373,7 +373,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             i = sizeof(out_buff);
@@ -394,7 +394,7 @@ int main(int argc, char **argv)
                          no_format_margin); 
             }
 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             i = sizeof(out_buff);
@@ -415,7 +415,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             p_stderr("Using no_justify_chars == \"*@\"\n");
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
 
             p_stderr("Using no_justify_chars == \"*@\"\n");
@@ -459,7 +459,7 @@ int main(int argc, char **argv)
             }
 
             dbr(justify_res); 
-            kjb_fputs(stderr, out_buff); 
+            ivi_fputs(stderr, out_buff); 
             p_stderr("---------------------\n"); 
         }
     }

@@ -1,5 +1,5 @@
 
-/* $Id: g_quaternion.h 20911 2016-10-30 17:50:20Z ernesto $ */
+/* $Id: g_quaternion.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -18,19 +18,19 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_QUATERNION_H
-#define KJB_QUATERNION_H
+#ifndef IVI_QUATERNION_H
+#define IVI_QUATERNION_H
 
 #include <iosfwd>
 
 #include "m_cpp/m_matrix.h"
 #include "m_cpp/m_vector.h"
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/access.hpp>
 #endif
 
-namespace kjb {
+namespace ivi {
 
 //forward declarations
 template <size_t D>
@@ -39,7 +39,7 @@ typedef Vector_d<3> Vector3;
 
 class Quaternion
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
     friend Quaternion slerp(const Quaternion& q1, const Quaternion& q2, double t);
@@ -319,7 +319,7 @@ private:
     static void _eul_get_ord(int ord, Euler_axis &i, Euler_axis &j, Euler_axis &k, Euler_axis&h, Euler_parity &n, Euler_repeat &s, Euler_frame &f);
 /********** END SHOEMAKE ADAPTATION *********/
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     template <class Archive>
     void serialize(Archive& ar, const unsigned int /* version */)
     {
@@ -417,5 +417,5 @@ Quaternion nlerp(const Quaternion& q1, const Quaternion& q2, double t);
 /** @brief  Non-member swap function. */
 inline void swap(Quaternion& q1, Quaternion& q2) { q1.swap(q2); }
 
-} // namespace kjb
+} // namespace ivi
 #endif

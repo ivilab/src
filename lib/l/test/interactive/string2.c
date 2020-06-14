@@ -1,5 +1,5 @@
 
-/* $Id: string2.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: string2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 
         BUFF_CPY(line, line_copy);
         put_line("Lets add 12345 but suppose the buffer size is 8");
-        kjb_strncat(line, "12345", 8);
+        ivi_strncat(line, "12345", 8);
         pso("Line is ->%s<-\n", line);
         put_line("");
     }

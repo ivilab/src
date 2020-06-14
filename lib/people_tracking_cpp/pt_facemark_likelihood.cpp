@@ -18,14 +18,14 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_facemark_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_facemark_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "people_tracking_cpp/pt_facemark_likelihood.h"
 #include "detector_cpp/d_deva_facemark.h"
 #include "prob_cpp/prob_pdf.h"
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 double Facemark_likelihood::operator()(const Scene& scene) const
 {

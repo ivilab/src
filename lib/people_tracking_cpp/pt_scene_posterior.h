@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_scene_posterior.h 20945 2016-11-08 17:32:43Z jguan1 $ */
+/* $Id: pt_scene_posterior.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_SCENE_POSTERIOR_H
 #define PT_SCENE_POSTERIOR_H
@@ -39,7 +39,7 @@
 #include <detector_cpp/d_bbox.h>
 #include <iostream>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -278,7 +278,7 @@ private:
     Scene_adapter adapter_;
 };
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_SCENE_POSTERIOR_H */
 

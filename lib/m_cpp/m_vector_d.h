@@ -1,4 +1,4 @@
-/* $Id: m_vector_d.h 18367 2014-12-08 18:29:27Z ksimek $ */
+/* $Id: m_vector_d.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,14 +19,14 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_VECTOR_D_H
-#define KJB_M_VECTOR_D_H
+#ifndef IVI_M_VECTOR_D_H
+#define IVI_M_VECTOR_D_H
 
 #include <boost/array.hpp>
 #include <algorithm>
 //#include <iterator>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/access.hpp>
 #endif
 
@@ -42,13 +42,13 @@
  * be included by your code.
  */
 
-namespace kjb
+namespace ivi
 {
 
 class Vector;
 class Matrix;
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -57,7 +57,7 @@ class Vector_d : public boost::array<double, D>
 {
     typedef typename boost::array<double, D> Base;
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
 
@@ -208,7 +208,7 @@ public:
 
     Vector_d<D>& negate();
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /* version */);
 #endif
@@ -320,10 +320,10 @@ typedef Vector_d<4> Vector4;
 
 // MATH FUNCTIONS
 template <size_t D>
-double norm1(const kjb::Vector_d<D>& v);
+double norm1(const ivi::Vector_d<D>& v);
 
 template <size_t D>
-double norm2(const kjb::Vector_d<D>& v);
+double norm2(const ivi::Vector_d<D>& v);
 
 
 // UTILITY FUNCTIONS
@@ -396,7 +396,7 @@ inline Vector3 cross(const Vector3& op1, const Vector3& op2)
 
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 
 #endif
 

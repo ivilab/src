@@ -1,5 +1,5 @@
 
-/* $Id: i_display.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: i_display.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -173,7 +173,7 @@ int create_image_display(void)
     int display_pid;
 
 
-    if (KJB_IS_SET(fs_image_display_pid))
+    if (IVI_IS_SET(fs_image_display_pid))
     {
         dbp("Early exit of create_image_display, as we already have it set up.");
 
@@ -195,7 +195,7 @@ int create_image_display(void)
     dbi(fs_display_result_pipe[ WRITE_END ]);
     */
 
-    display_pid = kjb_fork();
+    display_pid = ivi_fork();
 
     if (display_pid == ERROR)
     {
@@ -240,7 +240,7 @@ int create_image_display(void)
             fs_image_display_info[ count ] = NULL;
         }
 
-        EPE(kjb_signal(SIGINT, SIG_IGN));
+        EPE(ivi_signal(SIGINT, SIG_IGN));
 
         /*
         // Althought the normal for the child to finish up is with the "quit"
@@ -280,7 +280,7 @@ int create_image_display(void)
                 // The exit closes all displayed images due to having added
                 // slave_close_all_displayed_images to the cleanup functions
                 */
-                kjb_exit( EXIT_SUCCESS );
+                ivi_exit( EXIT_SUCCESS );
                 /*NOTREACHED*/
             }
             else if (STRCMP_EQ(command, "display"))
@@ -299,11 +299,11 @@ int create_image_display(void)
                 display_result = slave_display_image_file(file_name, title,
                                                           display_program);
 
-                kjb_sprintf(display_result_string,
+                ivi_sprintf(display_result_string,
                             sizeof(display_result_string),
                             "%d\n", display_result);
 
-                kjb_write(fs_display_result_pipe[ WRITE_END ],
+                ivi_write(fs_display_result_pipe[ WRITE_END ],
                           display_result_string,
                           strlen(display_result_string));
             }
@@ -320,10 +320,10 @@ int create_image_display(void)
 
                 if (result == ERROR)
                 {
-                    kjb_fprintf(stderr, "Possible program problem.\n");
-                    kjb_fprintf(stderr,
+                    ivi_fprintf(stderr, "Possible program problem.\n");
+                    ivi_fprintf(stderr,
                                 "Invalid image display number to close.\n");
-                    kjb_print_error();
+                    ivi_print_error();
                 }
                 else
                 {
@@ -402,11 +402,11 @@ int display_any_image
 
     line_len = strlen(line);
 
-    result = kjb_write(fs_display_command_pipe[ WRITE_END ], line, line_len);
+    result = ivi_write(fs_display_command_pipe[ WRITE_END ], line, line_len);
 
     if (result == ERROR)
     {
-        kjb_unlink(temp_file_name);
+        ivi_unlink(temp_file_name);
         return ERROR;
     }
     else
@@ -452,9 +452,9 @@ int close_displayed_image(int image_num)
     int result;
 
 
-    ERE(kjb_sprintf(command, sizeof(command), "close,%d\n", image_num));
+    ERE(ivi_sprintf(command, sizeof(command), "close,%d\n", image_num));
 
-    result = kjb_write(fs_display_command_pipe[ WRITE_END ], command,
+    result = ivi_write(fs_display_command_pipe[ WRITE_END ], command,
                        strlen(command));
 
     if (result == ERROR)
@@ -499,21 +499,21 @@ void destroy_image_display(void)
 
     INIT_SIGNAL_INFO(new_broken_pipe_vec);
     new_broken_pipe_vec.SIGNAL_HANDLER = SIG_IGN;
-    kjb_sigvec(SIGPIPE, &new_broken_pipe_vec, &save_broken_pipe_vec);
+    ivi_sigvec(SIGPIPE, &new_broken_pipe_vec, &save_broken_pipe_vec);
 
-    write_res = kjb_write(fs_display_command_pipe[ WRITE_END ], "quit\n", 5);
+    write_res = ivi_write(fs_display_command_pipe[ WRITE_END ], "quit\n", 5);
 
-    kjb_sigvec(SIGPIPE, &save_broken_pipe_vec, (Signal_info*)NULL);
+    ivi_sigvec(SIGPIPE, &save_broken_pipe_vec, (Signal_info*)NULL);
 
     if (write_res != ERROR)
     {
 #ifdef TEST
         int waitpid_result;
 
-        waitpid_result = kjb_waitpid(fs_image_display_pid);
+        waitpid_result = ivi_waitpid(fs_image_display_pid);
         TEST_PSO(("Wait result is %d.\n", waitpid_result));
 #else
-        kjb_waitpid(fs_image_display_pid);
+        ivi_waitpid(fs_image_display_pid);
 #endif
     }
 #ifdef TEST
@@ -563,18 +563,18 @@ static int slave_display_image_file
         return ERROR;
     }
 
-    ERE(display_pid = kjb_fork());
+    ERE(display_pid = ivi_fork());
 
     if (IS_PARENT(display_pid))
     {
         NRE(displayed_image_ptr = TYPE_MALLOC(Displayed_image));
         displayed_image_ptr->pid = display_pid;
 
-        displayed_image_ptr->temp_file_name = kjb_strdup(file_name);
+        displayed_image_ptr->temp_file_name = ivi_strdup(file_name);
 
         if (displayed_image_ptr->temp_file_name == NULL)
         {
-            kjb_free(displayed_image_ptr);
+            ivi_free(displayed_image_ptr);
             return ERROR;
         }
 
@@ -586,7 +586,7 @@ static int slave_display_image_file
     {
         EPE(display_image_file(file_name, title, display_program));
 
-        _exit( EXIT_FAILURE );   /* Don't use kjb_exit, or even exit(),
+        _exit( EXIT_FAILURE );   /* Don't use ivi_exit, or even exit(),
                                     because we don't want to clean up.
                                  */
     }
@@ -626,11 +626,11 @@ static int slave_close_displayed_image(int image_num)
             pid = image_info_ptr->pid;
             kill(pid, SIGTERM);
 
-            kjb_waitpid(pid);
+            ivi_waitpid(pid);
 
-            kjb_unlink(image_info_ptr->temp_file_name);
-            kjb_free(image_info_ptr->temp_file_name);
-            kjb_free(image_info_ptr);
+            ivi_unlink(image_info_ptr->temp_file_name);
+            ivi_free(image_info_ptr->temp_file_name);
+            ivi_free(image_info_ptr);
 
             fs_image_display_info[ image_num ] = NULL;
         }
@@ -662,12 +662,12 @@ static void slave_close_all_displayed_images(void)
             kill(pid, SIGTERM);
 
             TEST_PSO(("Waiting for process %d to finish.\n", pid));
-            kjb_waitpid(pid);
+            ivi_waitpid(pid);
             TEST_PSO(("Process %d has finished.\n", pid));
 
-            kjb_unlink(fs_image_display_info[ i ]->temp_file_name);
-            kjb_free(fs_image_display_info[ i ]->temp_file_name);
-            kjb_free(fs_image_display_info [ i ] );
+            ivi_unlink(fs_image_display_info[ i ]->temp_file_name);
+            ivi_free(fs_image_display_info[ i ]->temp_file_name);
+            ivi_free(fs_image_display_info [ i ] );
             fs_image_display_info[ i ] = NULL;
         }
     }
@@ -694,24 +694,24 @@ int fork_display_any_image
     ERE((*image_write_fn)(ip, temp_file_name));
 
     verbose_pso(2, "Verbose level before fork for displaying images %d.\n", 
-                kjb_get_verbose_level());
+                ivi_get_verbose_level());
 
-    ERE(cleanup_pid = kjb_fork());
+    ERE(cleanup_pid = ivi_fork());
 
     if (IS_CHILD(cleanup_pid))
     {
-        display_pid = kjb_fork();
+        display_pid = ivi_fork();
 
         if (display_pid < 0)
         {
-            kjb_fprintf(stderr, "Fork of display process failed.%S");
-            kjb_unlink(temp_file_name);
+            ivi_fprintf(stderr, "Fork of display process failed.%S");
+            ivi_unlink(temp_file_name);
             return ERROR;
         }
         else if (IS_PARENT(display_pid))
         {
-            kjb_waitpid(display_pid);
-            kjb_unlink(temp_file_name);
+            ivi_waitpid(display_pid);
+            ivi_unlink(temp_file_name);
             _exit(EXIT_SUCCESS);
             /*NOTREACHED*/
         }
@@ -752,7 +752,7 @@ static int display_image_file
     static const char *display_programs[ ] =
     {
         "s2_display++ -title",
-        "kjb_display -title",
+        "ivi_display -title",
         "display++ -title",
         "display -title",
         "xv -name"
@@ -775,10 +775,10 @@ static int display_image_file
         /*
          * We are assuming that the title string is in quotes.
          */
-        EPETE(kjb_sprintf(exec_string, sizeof(exec_string), "%s %s %s",
+        EPETE(ivi_sprintf(exec_string, sizeof(exec_string), "%s %s %s",
                           display_program, title, file_name));
 
-        if (kjb_exec(exec_string) != ERROR)
+        if (ivi_exec(exec_string) != ERROR)
         {
             SET_CANT_HAPPEN_BUG();
             return ERROR;
@@ -799,10 +799,10 @@ static int display_image_file
         /*
          * We are assuming that the title string is in quotes.
          */
-        EPETE(kjb_sprintf(exec_string, sizeof(exec_string), "%s %s %s",
+        EPETE(ivi_sprintf(exec_string, sizeof(exec_string), "%s %s %s",
                           display_programs[ i ], title, file_name));
 
-        if (kjb_exec(exec_string) != ERROR)
+        if (ivi_exec(exec_string) != ERROR)
         {
             SET_CANT_HAPPEN_BUG();
             return ERROR;

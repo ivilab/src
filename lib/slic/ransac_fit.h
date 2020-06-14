@@ -1,4 +1,4 @@
-/* $Id: ransac_fit.h 21596 2017-07-30 23:33:36Z kobus $
+/* $Id: ransac_fit.h 25499 2020-06-14 13:26:04Z kobus $
  */
 #ifndef SLIC_RANSAC_DEFINED_H_
 #define SLIC_RANSAC_DEFINED_H_
@@ -18,7 +18,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

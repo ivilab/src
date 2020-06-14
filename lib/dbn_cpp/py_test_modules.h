@@ -5,8 +5,8 @@
 */
 
 
-#ifndef KJB_TIES_PY_TEST_ODE_SOLVER_H
-#define KJB_TIES_PY_TEST_ODE_SOLVER_H
+#ifndef IVI_TIES_PY_TEST_ODE_SOLVER_H
+#define IVI_TIES_PY_TEST_ODE_SOLVER_H
 
 int test_ode_solver(void);
 

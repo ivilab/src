@@ -1,5 +1,5 @@
 /*
- * $Id: view_dcel.cpp 20129 2015-11-24 23:57:03Z predoehl $
+ * $Id: view_dcel.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_tsig.h>
@@ -23,37 +23,37 @@ int main(int argc, char** argv)
     if (!f) return fail("cannot read from file");
 
 
-    kjb::qd::Doubly_connected_edge_list d;
+    ivi::qd::Doubly_connected_edge_list d;
     try
     {
-        kjb::qd::Doubly_connected_edge_list
-            e = kjb::qd::Doubly_connected_edge_list::ctor_xml_stream(f);
+        ivi::qd::Doubly_connected_edge_list
+            e = ivi::qd::Doubly_connected_edge_list::ctor_xml_stream(f);
         d.swap(e);
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details(std::cerr);
         return fail("file parsing error");
     }
 
-    kjb::Temporary_Recursively_Removing_Directory dir;
+    ivi::Temporary_Recursively_Removing_Directory dir;
     const std::string fnsvg(dir.get_pathname() + DIR_STR + "1.svg"),
                       fntif(dir.get_pathname() + DIR_STR + "1.tif");
     std::ofstream fosvg(fnsvg.c_str());
-    fosvg << kjb::qd::draw_dcel_as_svg(d);
+    fosvg << ivi::qd::draw_dcel_as_svg(d);
     fosvg.close();
-    kjb_c::kjb_system(("convert " + fnsvg + " " + fntif).c_str());
+    ivi_c::ivi_system(("convert " + fnsvg + " " + fntif).c_str());
 
-    if (0 == kjb_c::kjb_fork())
+    if (0 == ivi_c::ivi_fork())
     {
-        kjb_c::kjb_system(("display " + fntif).c_str());
+        ivi_c::ivi_system(("display " + fntif).c_str());
         while (true)
         {
-            kjb_c::nap(1000);
+            ivi_c::nap(1000);
         }
         /* NOTREACHED */
     }
-    kjb_c::nap(1000);
+    ivi_c::nap(1000);
 
     return EXIT_SUCCESS;
 }

@@ -50,15 +50,15 @@
   | Author: Emily Hartley
  *=========================================================================== */
 
-#ifndef KJB_LEARNED_DISCRETE_PRIOR_H_
-#define KJB_LEARNED_DISCRETE_PRIOR_H_
+#ifndef IVI_LEARNED_DISCRETE_PRIOR_H_
+#define IVI_LEARNED_DISCRETE_PRIOR_H_
 
 #include "m_cpp/m_vector.h"
 #include "l_cpp/l_readable.h"
 #include "l_cpp/l_writeable.h"
 #include <cmath>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   This class creates a histogram of a list of points and 
@@ -112,15 +112,15 @@ public:
     Learned_discrete_prior(const Learned_discrete_prior& dp);
 
     /** @brief Constructs a parametric_parapiped from an input file. */
-    Learned_discrete_prior(const char* fname) throw (kjb::Illegal_argument,
-                kjb::IO_error)
+    Learned_discrete_prior(const char* fname) throw (ivi::Illegal_argument,
+                ivi::IO_error)
 	{
         read(fname);
 	}
 
     /** @brief Constructs a parametric_parapiped from an input stream. */
-    Learned_discrete_prior(std::istream& in) throw (kjb::Illegal_argument,
-            kjb::IO_error)
+    Learned_discrete_prior(std::istream& in) throw (ivi::Illegal_argument,
+            ivi::IO_error)
 	{
         read(in);
 	}
@@ -132,22 +132,22 @@ public:
     Learned_discrete_prior& operator=(const Learned_discrete_prior& dp);
 
     /** @brief Reads this parametric_parapiped from an input stream. */
-    virtual void read(std::istream& in) throw (kjb::Illegal_argument,
-            kjb::IO_error);
+    virtual void read(std::istream& in) throw (ivi::Illegal_argument,
+            ivi::IO_error);
 
     /** @brief Reads this parametric_parapiped from a file */
-    virtual void read(const char * fname) throw (kjb::IO_error,  kjb::Illegal_argument)
+    virtual void read(const char * fname) throw (ivi::IO_error,  ivi::Illegal_argument)
     {
         Readable::read(fname);
     }
 
     /** @brief Writes this parametric_parapiped to a file. */
     virtual void write(std::ostream& out) const
-       throw (kjb::IO_error);
+       throw (ivi::IO_error);
 
     /** @brief Writes this parametric_parapiped to an output stream. */
     virtual void write(const char * fname) const
-       throw (kjb::IO_error)
+       throw (ivi::IO_error)
     {
         Writeable::write(fname);
     }
@@ -182,7 +182,7 @@ public:
 
 };
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_LEARNED_DISCRETE_PRIOR_H_ */
+#endif /* IVI_LEARNED_DISCRETE_PRIOR_H_ */
 

@@ -41,7 +41,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -58,14 +58,14 @@ namespace kjb_c {
 
 
 #ifdef LINUX
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 extern "C"
 {
 #endif
     extern int sighold(int);
     extern int sigrelse(int);
     extern void (*sigset(int, void (*)(int)))(int);
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 }
 #endif
 #endif
@@ -73,15 +73,15 @@ extern "C"
 
 #ifdef UNIX                /* UNIX */
 #    ifdef MAC_OSX
-#        define KJB_SIGNAL                signal
-#        define KJB_SIGVEC                sigaction
+#        define IVI_SIGNAL                signal
+#        define IVI_SIGVEC                sigaction
 #    else
 #    ifdef SYSV_SIGNALS
-#        define KJB_SIGNAL                sigset
-#        define KJB_SIGVEC                sigaction
+#        define IVI_SIGNAL                sigset
+#        define IVI_SIGVEC                sigaction
 #    else     /* not SYSV (BSD ? ) */
-#        define KJB_SIGNAL                signal
-#        define KJB_SIGVEC                sigvec
+#        define IVI_SIGNAL                signal
+#        define IVI_SIGVEC                sigvec
 #    endif
 #    endif
 
@@ -89,11 +89,11 @@ extern "C"
 
 #ifdef MS_OS
 
-#   define KJB_SIGNAL signal
+#   define IVI_SIGNAL signal
 
 #else
 
-#    define KJB_SIGNAL signal
+#    define IVI_SIGNAL signal
 
 #endif
 
@@ -119,9 +119,9 @@ extern "C"
 
 #    ifdef SUN4
         /* Long way to say zero! (Keeps error checkers happy) */
-#        define KJB_SIG_DFL ((TRAP_FN_RETURN_TYPE(*)(TRAP_FN_ARGS)) 0)
+#        define IVI_SIG_DFL ((TRAP_FN_RETURN_TYPE(*)(TRAP_FN_ARGS)) 0)
 #    else
-#        define KJB_SIG_DFL  SIG_DFL
+#        define IVI_SIG_DFL  SIG_DFL
 #    endif
 
         /* End of signal handler definition for UNIX */
@@ -137,7 +137,7 @@ extern "C"
 #        define TRAP_FN_RETURN_TYPE      void
 #        define TRAP_FN_ARGS             int sig
 #        define TRAP_FN_DUMMY_ARGS       int dummy_sig
-#        define KJB_SIG_DFL  SIG_DFL
+#        define IVI_SIG_DFL  SIG_DFL
 
 
 #else  /* Default -- Likely won't work for any system! */
@@ -302,23 +302,23 @@ TRAP_FN_RETURN_TYPE reset_terminal_size_on_sig_fn(TRAP_FN_ARGS);
    );
 #endif
 
-int kjb_signal
+int ivi_signal
 (
     int                 sig,
     TRAP_FN_RETURN_TYPE (MS_OS_USERENTRY *fn)(TRAP_FN_ARGS)
 );
 
-    int kjb_sigvec
+    int ivi_sigvec
     (
         int          sig,
         Signal_info* old_vec_ptr,
         Signal_info* cur_vec_ptr
     );
 #ifdef SYSV_SIGNALS
-    int kjb_sigemptyset(sigset_t* mask_ptr);
-    int kjb_sigaddset  (sigset_t* mask_ptr, int sig);
+    int ivi_sigemptyset(sigset_t* mask_ptr);
+    int ivi_sigaddset  (sigset_t* mask_ptr, int sig);
 
-    int kjb_sigprocmask
+    int ivi_sigprocmask
     (
         int       sig,
         sigset_t* mask_ptr,

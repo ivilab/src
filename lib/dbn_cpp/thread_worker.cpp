@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: thread_worker.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: thread_worker.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/record.h>
 #else 
@@ -39,7 +39,7 @@
 #include "dbn_cpp/drift_sampler.h"
 #include "dbn_cpp/proposer.h"
 
-#ifdef KJB_HAVE_BOOST
+#ifdef IVI_HAVE_BOOST
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -49,8 +49,8 @@
 #error "Boost library is not available"
 #endif
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
  
 
 void Mh_step_thread::run
@@ -98,11 +98,11 @@ void Mh_step_thread::run
 
             if(log_fs->fail())
             {
-                KJB_THROW_2(IO_error, "Can't open file " + log_fname);
+                IVI_THROW_2(IO_error, "Can't open file " + log_fname);
             }
             if(bst_fs->fail()) 
             {
-                KJB_THROW_2(IO_error, "Can't open file " + bst_fname);
+                IVI_THROW_2(IO_error, "Can't open file " + bst_fname);
             }
         }
         if(record_trace_)
@@ -114,11 +114,11 @@ void Mh_step_thread::run
 
             if(trace_fs->fail()) 
             {
-                KJB_THROW_2(IO_error, "Can't open file " + trace_fname);
+                IVI_THROW_2(IO_error, "Can't open file " + trace_fname);
             }
             if(accept_fs->fail()) 
             {
-                KJB_THROW_2(IO_error, "Can't open file " + accept_fname);
+                IVI_THROW_2(IO_error, "Can't open file " + accept_fname);
             }
         }
         
@@ -658,7 +658,7 @@ void Drift_step_thread::run
             // set the drift prior to be false
             posteriors_[i].use_clo_drift_prior(true);
         } 
-        catch(kjb::KJB_error& err)
+        catch(ivi::IVI_error& err)
         {
             ep = boost::current_exception();
         }

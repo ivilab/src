@@ -1,5 +1,5 @@
 
-/* $Id: c2_fluorescence.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: c2_fluorescence.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -50,7 +50,7 @@ extern "C" {
  *
  * This routine generates RGB data from a fluorescent database and illuminant
  * spectra using the sensors in sensor_sp, or, if sensor_sp is NULL, the ones
- * managed by the KJB library. If KJB library options are made available to the
+ * managed by the IVI library. If IVI library options are made available to the
  * user, then the sensors used can be changed using the "sensor-file" or "sf"
  * option. If the user has not specified sensors, then default ones are used.
  *
@@ -63,7 +63,7 @@ extern "C" {
  *
  * Returns :
  *    If the sensors are supplied, then this routine returns NO_ERROR on
- *    success, and ERROR on failure.  If the KJB library sensors are used, then
+ *    success, and ERROR on failure.  If the IVI library sensors are used, then
  *    this routine returns the sensor version number on success, and ERROR on
  *    failure, with an appropriate error message being set. The sensor version
  *    number is incremented every time the use user resets the sensor data

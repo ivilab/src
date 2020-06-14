@@ -70,13 +70,13 @@ static void create_2D_gaussian_mask_dx
 
     if ( *maskpp == NULL )
     {
-        *maskpp = (JWS_Mask*) kjb_malloc( sizeof( JWS_Mask ) );
+        *maskpp = (JWS_Mask*) ivi_malloc( sizeof( JWS_Mask ) );
         (*maskpp)->mp = NULL;
     }
     maskp = *maskpp;
 
     maskp->sigma = sigma;
-    maskp->width = kjb_rint(1.0 + 2.0 * sigma);
+    maskp->width = ivi_rint(1.0 + 2.0 * sigma);
     maskp->size  = 1 + 2 * maskp->width;
     maskp->sum   = 0.0;
 
@@ -121,13 +121,13 @@ static void create_2D_gaussian_mask_dy
 
     if (*maskpp == NULL)
     {
-        *maskpp = (JWS_Mask*) kjb_malloc( sizeof( JWS_Mask ) );
+        *maskpp = (JWS_Mask*) ivi_malloc( sizeof( JWS_Mask ) );
         (*maskpp)->mp = NULL;
     }
     maskp = *maskpp;
 
     maskp->sigma = sigma;
-    maskp->width = kjb_rint(1.0 + 2.0 * sigma);
+    maskp->width = ivi_rint(1.0 + 2.0 * sigma);
     maskp->size  = 1 + 2 * maskp->width;
     maskp->sum   = 0.0;
 
@@ -205,7 +205,7 @@ static void zero_gradient_map_border
  * @brief Zeros all pixels that are within @em width of the border of the
  * image.
  */
-static void zero_image_border( KJB_image* img, int width )
+static void zero_image_border( IVI_image* img, int width )
 {
     int num_rows = img->num_rows;
     int num_cols = img->num_cols;
@@ -243,7 +243,7 @@ static void zero_image_border( KJB_image* img, int width )
 static void convolve_and_create_image_gradient_map
 (
     Gradient*** gradient_map,
-    KJB_image* img,
+    IVI_image* img,
     JWS_Mask* gauss_dx_maskp,
     JWS_Mask* gauss_dy_maskp
 )
@@ -269,17 +269,17 @@ static void convolve_and_create_image_gradient_map
 
     if ( *gradient_map == NULL )
     {
-        *gradient_map = (Gradient**) kjb_calloc( num_rows,
+        *gradient_map = (Gradient**) ivi_calloc( num_rows,
                                                           sizeof( Gradient* ) );
         for ( i = 0; i < num_rows; i++ )
         {
-            (*gradient_map)[ i ] = (Gradient*) kjb_calloc(num_cols,
+            (*gradient_map)[ i ] = (Gradient*) ivi_calloc(num_cols,
                                                               sizeof(Gradient));
         }
     }
 
     {
-        KJB_image* img_dxdy = kjb_create_image( num_rows, num_cols );
+        IVI_image* img_dxdy = ivi_create_image( num_rows, num_cols );
 
         for ( i = 0; i < num_rows; i++ )
         {
@@ -354,8 +354,8 @@ static void convolve_and_create_image_gradient_map
             }
         }
 
-        kjb_copy_image( &img, img_dxdy );
-        kjb_free_image( img_dxdy );
+        ivi_copy_image( &img, img_dxdy );
+        ivi_free_image( img_dxdy );
     }
 
     zero_gradient_map_border( *gradient_map, num_rows, num_cols,
@@ -567,7 +567,7 @@ static Edge_point* create_point
 {
     Edge_point* point;
 
-    point = (Edge_point*) kjb_malloc( sizeof( Edge_point ) );
+    point = (Edge_point*) ivi_malloc( sizeof( Edge_point ) );
 
     point->x = x;
     point->y = y;
@@ -614,7 +614,7 @@ static Edge_point* create_point
 static int get_edge_points_from_gradient_map
 (
     Edge_point** points_out,
-    const KJB_image* img,
+    const IVI_image* img,
     Gradient** gradient_map,
     double begin_threshold,
     double end_threshold
@@ -729,8 +729,8 @@ static int get_edge_points_from_gradient_map
 void detect_edge_points_DEPRECATED
 (
     Edge_point** points_out,
-    KJB_image** img_out,
-    const KJB_image* img_in,
+    IVI_image** img_out,
+    const IVI_image* img_in,
     double sigma,
     double begin_threshold,
     double end_threshold
@@ -739,7 +739,7 @@ void detect_edge_points_DEPRECATED
     JWS_Mask* gauss_dx_maskp = NULL;
     JWS_Mask* gauss_dy_maskp = NULL;
     Gradient** gradient_map = NULL;
-    KJB_image* img = NULL;
+    IVI_image* img = NULL;
     int i;
 
     create_2D_gaussian_mask_dx( &gauss_dx_maskp, sigma );
@@ -747,7 +747,7 @@ void detect_edge_points_DEPRECATED
 
     if ( img_out == NULL)
     {
-        kjb_copy_image( &img, img_in );
+        ivi_copy_image( &img, img_in );
     }
     else if (*img_out == img_in)
     {
@@ -755,7 +755,7 @@ void detect_edge_points_DEPRECATED
     }
     else
     {
-        kjb_copy_image( img_out, img_in );
+        ivi_copy_image( img_out, img_in );
         img = *img_out;
     }
 
@@ -767,18 +767,18 @@ void detect_edge_points_DEPRECATED
 
     free_matrix( gauss_dx_maskp->mp );
     free_matrix( gauss_dy_maskp->mp );
-    kjb_free( gauss_dx_maskp );
-    kjb_free( gauss_dy_maskp );
+    ivi_free( gauss_dx_maskp );
+    ivi_free( gauss_dy_maskp );
 
     for ( i = 0; i < img_in->num_rows; i++ )
     {
-        kjb_free( gradient_map[ i ] );
+        ivi_free( gradient_map[ i ] );
     }
-    kjb_free( gradient_map );
+    ivi_free( gradient_map );
 
     if ( img_out == NULL )
     {
-        kjb_free_image( img );
+        ivi_free_image( img );
         img = NULL;
     }
 }
@@ -799,11 +799,11 @@ void free_edge_points_DEPRECATED( Edge_point* points )
 
     while ( ( point = point->next ) != NULL)
     {
-        kjb_free( point_prev );
+        ivi_free( point_prev );
         point_prev = point;
     }
 
-    kjb_free( point_prev );
+    ivi_free( point_prev );
 }
 
 /**
@@ -850,7 +850,7 @@ void sample_edge_points_DEPRECATED
             {
                 if ( !point->marked && point->r > max_intensity )
                 {
-                    max_intensity = kjb_rint(point->r);
+                    max_intensity = ivi_rint(point->r);
                     max_point = point;
                 }
             }
@@ -869,7 +869,7 @@ void sample_edge_points_DEPRECATED
                          point_distance_DEPRECATED( max_point, point ) <= radius )
                     {
                         point_prev->next = point->next;
-                        kjb_free(point);
+                        ivi_free(point);
                         point = point_prev;
                         num_points--;
                     }
@@ -888,7 +888,7 @@ void sample_edge_points_DEPRECATED
  */
 void color_edge_points_DEPRECATED
 (
-    KJB_image* img,
+    IVI_image* img,
     Edge_point* points,
     float r,
     float g,
@@ -907,8 +907,8 @@ void color_edge_points_DEPRECATED
             x = rintf( point->x );
             y = rintf( point->y );
         */
-        x = kjb_rintf( point->x );
-        y = kjb_rintf( point->y );
+        x = ivi_rintf( point->x );
+        y = ivi_rintf( point->y );
 
         img->pixels[ y ][ x ].r *= r;
         img->pixels[ y ][ x ].g *= g;

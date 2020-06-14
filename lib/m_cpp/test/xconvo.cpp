@@ -1,4 +1,4 @@
-/* $Id: xconvo.cpp 20268 2016-01-24 00:08:26Z ksimek $ */
+/* $Id: xconvo.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <m_cpp/m_convolve.h>
 #include <iostream>
@@ -16,14 +16,14 @@ int main(int, char**)
                          12,12,8,4,0,4,8,12,
                          0,0,0,0,0,0,0,0 };
 
-    const kjb::Matrix u(5,8, z), rr(5,8, r);
-    const kjb::Vector g2(3, 2.0);
-    kjb::Matrix s;
+    const ivi::Matrix u(5,8, z), rr(5,8, r);
+    const ivi::Vector g2(3, 2.0);
+    ivi::Matrix s;
 
-    kjb::x_convolve_matrix(&s, u, g2);
+    ivi::x_convolve_matrix(&s, u, g2);
 	const bool success( s==rr );
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         std::cout << u << '\n'
                   << g2 << "\n\n"

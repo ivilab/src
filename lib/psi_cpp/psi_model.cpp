@@ -1,4 +1,4 @@
-/* $Id: psi_model.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_model.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -29,11 +29,11 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/io/ios_state.hpp>
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 #include <MathLib/Vector3d.h>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -46,9 +46,9 @@ std::istream& read_model_v2(std::istream& ist, Model& m);
 std::istream& read_model_v3(std::istream& ist, Model& m);
 std::istream& read_model_v4(std::istream& ist, Model& m);
 
-// adapter between cartwheel and kjb units.
+// adapter between cartwheel and ivi units.
 // currently the same since I implemented them both ;-D
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 Unit_type get_extended_action_units(const CartWheel::ExtendedAction& action, size_t i)
 {
     CartWheel::UnitType unit = action.getParamUnits(i);
@@ -74,7 +74,7 @@ Unit_type get_extended_action_units(const CartWheel::ExtendedAction& action, siz
         case CartWheel::OTHER_UNIT:
             return OTHER_UNIT;
         default:
-            KJB_THROW_2(kjb::Runtime_error, "Unknown Cartwheel unit type");
+            IVI_THROW_2(ivi::Runtime_error, "Unknown Cartwheel unit type");
     }
 }
 #endif
@@ -108,14 +108,14 @@ Unit_type Model::get_units(size_t dimension) const
             {
                 const Action& action = actions[a];
                 if(dimension < action.parameters.size())
-                    return ::kjb::psi::get_units(action.type, dimension);
+                    return ::ivi::psi::get_units(action.type, dimension);
                 dimension -= action.parameters.size();
             }
         }
 
     }
 
-    KJB_THROW(kjb::Index_out_of_bounds);
+    IVI_THROW(ivi::Index_out_of_bounds);
 }
 
 
@@ -161,7 +161,7 @@ double Model::get(size_t dimension) const
         }
     }
 
-    KJB_THROW(kjb::Index_out_of_bounds);
+    IVI_THROW(ivi::Index_out_of_bounds);
 }
 
 void Model::set(size_t dimension, double value) 
@@ -207,7 +207,7 @@ void Model::set(size_t dimension, double value)
         }
     }
 
-    KJB_THROW(kjb::Index_out_of_bounds);
+    IVI_THROW(ivi::Index_out_of_bounds);
 }
 
 size_t Model::size() const
@@ -301,7 +301,7 @@ std::istream& operator>>(std::istream& ist, Model& m)
     }
     catch(std::exception& e)
     {
-        KJB_THROW_2(IO_error, "Invalid file format.");
+        IVI_THROW_2(IO_error, "Invalid file format.");
     }
 }
 
@@ -333,7 +333,7 @@ std::istream& read_model(std::istream& ist, size_t version, Model& m)
         return read_model_v4(ist, m);
     }
 
-    KJB_THROW_2(kjb::Runtime_error, "Unknown file format version");
+    IVI_THROW_2(ivi::Runtime_error, "Unknown file format version");
 }
 
 
@@ -488,7 +488,7 @@ std::istream& read_model_v4(std::istream& ist, Model& m)
 
     if(num_entity_types > pt::NUM_ENTITY_TYPES)
     {
-        KJB_THROW_2(IO_error, "Invalid file format: num_entity_types exceeds number of known entities");
+        IVI_THROW_2(IO_error, "Invalid file format: num_entity_types exceeds number of known entities");
     }
 
     m.start_state.resize(num_entity_types);
@@ -546,7 +546,7 @@ std::istream& read_model_v4(std::istream& ist, Model& m)
 
 
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 std::vector<CartWheel::StartStatePtr> to_cw_start_state(const Model& m)
 {
     int id = 1;
@@ -568,7 +568,7 @@ std::vector<CartWheel::StartStatePtr> to_cw_start_state(const Model& m)
 }
 #endif
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 /**
  * @param box The box to convert to cartwheel format
  * @param i The index of the box (indexes must be unique)
@@ -591,7 +591,7 @@ CartWheel::BoxStatePtr to_cw(const Weighted_box& box, size_t i)
 }
 #endif
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 #if 0
 // no longer support boxes explicityl
 std::vector<CartWheel::BoxStatePtr> to_cw_boxes(const Model& m)
@@ -625,7 +625,7 @@ const std::vector<Weighted_box> to_boxes(const Model& m)
 
 
 /// Construct cartwheel actions from
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 std::vector<std::vector<CartWheel::ExtendedActionPtr> > to_cw_actions(const Model& m)
 {
     using namespace CartWheel;
@@ -680,7 +680,7 @@ std::vector<std::vector<CartWheel::ExtendedActionPtr> > to_cw_actions(const Mode
                     break;
                 }
                 default:
-                KJB_THROW_2(kjb::Illegal_argument, "Unknown action");
+                IVI_THROW_2(ivi::Illegal_argument, "Unknown action");
             }
         }
 
@@ -758,15 +758,15 @@ double model_prior (const Model& m)
 
 
     // log-normal distributions
-//    kjb::Normal_distribution p_size(log(0.25), log(3));
-//    kjb::Normal_distribution p_mass(log(1), log(20));
+//    ivi::Normal_distribution p_size(log(0.25), log(3));
+//    ivi::Normal_distribution p_mass(log(1), log(20));
 //    for(size_t i = 0; i < m.boxes.size(); i++)
 //    {
 //        const Weighted_box& box = m.boxes[i]; 
-//        prior += log(kjb::pdf(p_size, log(box.get_size()[0])));
-//        prior += log(kjb::pdf(p_size, log(box.get_size()[1])));
-//        prior += log(kjb::pdf(p_size, log(box.get_size()[2])));
-//        prior += log(kjb::pdf(p_mass, log(box.get_mass())));
+//        prior += log(ivi::pdf(p_size, log(box.get_size()[0])));
+//        prior += log(ivi::pdf(p_size, log(box.get_size()[1])));
+//        prior += log(ivi::pdf(p_size, log(box.get_size()[2])));
+//        prior += log(ivi::pdf(p_mass, log(box.get_mass())));
 //    }
 
     return prior;
@@ -774,4 +774,4 @@ double model_prior (const Model& m)
 
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

@@ -5,7 +5,7 @@
 #include <edge_cpp/collinear_segment_chain.h>
 #include <l_cpp/l_test.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char** argv)

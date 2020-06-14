@@ -1,5 +1,5 @@
 
-/* $Id: sort_vector.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: sort_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     int try_count, i; 
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
     for (try_count = 0; try_count < num_tries; try_count++)
     {
-        int length = 1 + kjb_rint(1.0 + BASE_LENGTH * kjb_rand());
+        int length = 1 + ivi_rint(1.0 + BASE_LENGTH * ivi_rand());
 
         EPETE(get_random_vector(&vp, length));
         EPETE(ascend_sort_vector(vp));

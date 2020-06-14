@@ -1,5 +1,5 @@
 
-/* $Id: camera_bw_byte_image.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: camera_bw_byte_image.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -39,7 +39,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -71,7 +71,7 @@ typedef struct Camera_face
 }Camera_face;
 
 int get_target_camera_bw_byte_image(Camera_bw_byte_image **target_ipp, int num_rows, int num_cols);
-void kjb_free_camera_bw_byte_image(Camera_bw_byte_image* ip);
+void ivi_free_camera_bw_byte_image(Camera_bw_byte_image* ip);
 
 
 #ifdef __cplusplus

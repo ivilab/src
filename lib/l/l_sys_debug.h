@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_debug.h 21712 2017-08-20 18:21:41Z kobus $ */
+/* $Id: l_sys_debug.h 25499 2020-06-14 13:26:04Z kobus $ */
 
  
 /* =========================================================================== *
@@ -44,18 +44,18 @@
  *
  * This macro prints the file and line number, on standard error. Its behaviour
  * is a function of the debugging level, which can be set through the option
- * "debug" if the KJB library options are being made available to the user. The
+ * "debug" if the IVI library options are being made available to the user. The
  * macro is available for both development and production code, but since the
  * default debug level is different in the two cases, the behaviour is
  * different. The default level for development code is 2, whereas for
  * production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -71,18 +71,18 @@
 #ifndef __C2MAN__  /* Just doing "else" confuses ctags for the first such line.
                       I have no idea what the problem is. */
 #define  dbw()                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) Process %d (fork depth %d) at line %d of %s (ignore line for regression testing)\n", \
-                MY_PID, kjb_fork_depth, __LINE__, __FILE__);                    \
+                "(no-ivi) Process %d (fork depth %d) at line %d of %s (ignore line for regression testing)\n", \
+                MY_PID, ivi_fork_depth, __LINE__, __FILE__);                    \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
         p_stderr("Process %d (fork depth %d) at line %d of %s (ignore line for regression testing)\n", \
-                 MY_PID, kjb_fork_depth, __LINE__, __FILE__);                   \
+                 MY_PID, ivi_fork_depth, __LINE__, __FILE__);                   \
     }
 
 #endif
@@ -94,21 +94,21 @@
  *
  * (MACRO) Debug printing status code
  *
- * This macro prints a tag corresponding to the KJB library status meaning of
+ * This macro prints a tag corresponding to the IVI library status meaning of
  * an integer, along with the file and line number, on standard error. Its
  * behaviour is a function of the debugging level, which can be set through the
- * option "debug" if the KJB library options are being made available to the
+ * option "debug" if the IVI library options are being made available to the
  * user. The macro is available for both development and production code, but
  * since the default debug level is different in the two cases, the behaviour is
  * different. The default level for development code is 2, whereas for
  * production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -123,20 +123,20 @@
 #else
 
 #define dbr(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbr: Status is %ld on source line %d of %s\n",       \
+                "(no-ivi) dbr: Status is %ld on source line %d of %s\n",       \
                 (long)(X), __LINE__, __FILE__);                                \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
         char buff[ 100 ];                                                      \
                                                                                \
-        kjb_sprintf(buff, sizeof(buff), "%R", X);                              \
-        kjb_fprintf(stderr, "dbr: Status is %s on source line %d of %s\n",     \
+        ivi_sprintf(buff, sizeof(buff), "%R", X);                              \
+        ivi_fprintf(stderr, "dbr: Status is %s on source line %d of %s\n",     \
                     buff, __LINE__, __FILE__);                                 \
     }
 
@@ -154,18 +154,18 @@
  * up debugging output.
  *
  * The behaviour of dbp() is a function of the debugging level, which can be set
- * through the option "debug" if the KJB library options are being made
+ * through the option "debug" if the IVI library options are being made
  * available to the user. The macro is available for both development and
  * production code, but since the default debug level is different in the two
  * cases, the behaviour is different. The default level for development code is
  * 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -180,15 +180,15 @@
 #else
 
 #define dbp(X) \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr, "%s\n", (X));                                          \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "%s\n", (X));                                      \
+        ivi_fprintf(stderr, "%s\n", (X));                                      \
     }
 
 #endif    /*   #ifdef __C2MAN__ */
@@ -202,18 +202,18 @@
  *
  * This macro prints an integer (or long) in hex along with the variable name,
  * file, and line number on standard error. Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the behaviour is different. The default level
  * for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -234,37 +234,37 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbx(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbx: "#X" is %lx on source line %d of %s\n", \
+        fprintf(stderr, "(no-ivi) dbx: "#X" is %lx on source line %d of %s\n", \
                 (unsigned long)(X), __LINE__, __FILE__);                       \
         fflush(stderr);                                                        \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbx: "#X" is %lx on source line %d of %s\n",      \
+        ivi_fprintf(stderr, "dbx: "#X" is %lx on source line %d of %s\n",      \
                     (unsigned long)(X), __LINE__, __FILE__);                   \
-        kjb_fflush(stderr);                                                    \
+        ivi_fflush(stderr);                                                    \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbx(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbx: X is %lx on source line %d of %s\n",    \
+        fprintf(stderr, "(no-ivi) dbx: X is %lx on source line %d of %s\n",    \
                 (unsigned long)(X), __LINE__, __FILE__);                       \
         fflush(stderr);                                                        \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbx: X is %lx on source line %d of %s\n",         \
+        ivi_fprintf(stderr, "dbx: X is %lx on source line %d of %s\n",         \
                     (unsigned long)(X), __LINE__, __FILE__);                   \
-        kjb_fflush(stderr);                                                    \
+        ivi_fflush(stderr);                                                    \
     }
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -280,18 +280,18 @@
  *
  * This macro prints an integer (or long) in octal along with the variable name,
  * file, and line number on standard error. Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the behaviour is different. The default level
  * for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -312,32 +312,32 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbo(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbo: "#X" is %lo on source line %d of %s\n",          \
+        fprintf(stderr, "(no-ivi) dbo: "#X" is %lo on source line %d of %s\n",          \
                 (long)(X), __LINE__, __FILE__);                                \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbo: "#X" is %lo on source line %d of %s\n",      \
+        ivi_fprintf(stderr, "dbo: "#X" is %lo on source line %d of %s\n",      \
                     (long)(X), __LINE__, __FILE__);                            \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbo(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbo: X is %lo on source line %d of %s\n",             \
+        fprintf(stderr, "(no-ivi) dbo: X is %lo on source line %d of %s\n",             \
                 (long)(X), __LINE__, __FILE__);                                \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbo: X is %lo on source line %d of %s\n",         \
+        ivi_fprintf(stderr, "dbo: X is %lo on source line %d of %s\n",         \
                     (long)(X), __LINE__, __FILE__);                            \
     }
 
@@ -354,18 +354,18 @@
  *
  * This macro prints an integer (or long) along with the variable name, file,
  * and line number, on standard error. Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the behaviour is different. The default level
  * for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -386,33 +386,33 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbi(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbi: "#X" is %ld on source line %d of %s\n",         \
+                "(no-ivi) dbi: "#X" is %ld on source line %d of %s\n",         \
                 (long)(X), __LINE__, __FILE__);                                \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbi: "#X" is %ld on source line %d of %s\n",      \
+        ivi_fprintf(stderr, "dbi: "#X" is %ld on source line %d of %s\n",      \
                     (long)(X), __LINE__, __FILE__);                            \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbi(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbi: X is %ld on source line %d of %s\n",    \
+        fprintf(stderr, "(no-ivi) dbi: X is %ld on source line %d of %s\n",    \
                 (long)(X), __LINE__, __FILE__);                                \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbi: X is %ld on source line %d of %s\n",         \
+        ivi_fprintf(stderr, "dbi: X is %ld on source line %d of %s\n",         \
                     (long)(X),  __LINE__, __FILE__);                           \
     }
 
@@ -448,33 +448,33 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbj(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbj: "#X" is %ld on source line %d of %s\n",         \
+                "(no-ivi) dbj: "#X" is %ld on source line %d of %s\n",         \
                 (long)(X), __LINE__, __FILE__);                                \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbj: "#X" is %,ld on source line %d of %s\n",     \
+        ivi_fprintf(stderr, "dbj: "#X" is %,ld on source line %d of %s\n",     \
                     (long)(X), __LINE__, __FILE__);                            \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbj(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbj: X is %ld on source line %d of %s\n",    \
+        fprintf(stderr, "(no-ivi) dbj: X is %ld on source line %d of %s\n",    \
                 (long)(X), __LINE__, __FILE__);                                \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbj: X is %,ld on source line %d of %s\n",        \
+        ivi_fprintf(stderr, "dbj: X is %,ld on source line %d of %s\n",        \
                     (long)(X),  __LINE__, __FILE__);                           \
     }
 
@@ -508,34 +508,34 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbu(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbu: "#X" is %lu on source line %d of %s\n",         \
+                "(no-ivi) dbu: "#X" is %lu on source line %d of %s\n",         \
                 (unsigned long)(X),                                            \
                __LINE__, __FILE__);                                            \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbu: "#X" is %,lu on source line %d of %s\n",     \
+        ivi_fprintf(stderr, "dbu: "#X" is %,lu on source line %d of %s\n",     \
                     (unsigned long)(X), __LINE__, __FILE__);                   \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbu(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbu: X is %lu on source line %d of %s\n",    \
+        fprintf(stderr, "(no-ivi) dbu: X is %lu on source line %d of %s\n",    \
                 (unsigned long)(X), __LINE__, __FILE__);                       \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbu: X is %,lu on source line %d of %s\n",        \
+        ivi_fprintf(stderr, "dbu: X is %,lu on source line %d of %s\n",        \
                     (unsigned long)(X),  __LINE__, __FILE__);                  \
     }
 
@@ -553,17 +553,17 @@
  * This macro prints a floating point number in fixed format, along with the
  * variable name, file, and line number, on standard error. Its behaviour is a
  * function of the debugging level, which can be set through the option "debug"
- * if the KJB library options are being made available to the user. The macro is
+ * if the IVI library options are being made available to the user. The macro is
  * available for both development and production code, but since the default
  * debug level is different in the two cases, the behaviour is different. The
  * default level for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -584,32 +584,32 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbf(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbf: "#X" is %f on source line %d of %s\n",  \
+        fprintf(stderr, "(no-ivi) dbf: "#X" is %f on source line %d of %s\n",  \
                (double)(X), __LINE__, __FILE__);                               \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbf: "#X" is %f on source line %d of %s\n",       \
+        ivi_fprintf(stderr, "dbf: "#X" is %f on source line %d of %s\n",       \
                     (double)(X), __LINE__, __FILE__);                          \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbf(X) \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbf: X is %f on source line %d of %s\n",     \
+        fprintf(stderr, "(no-ivi) dbf: X is %f on source line %d of %s\n",     \
                 (double)(X), __LINE__, __FILE__);                              \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbf: X is %f on source line %d of %s\n",          \
+        ivi_fprintf(stderr, "dbf: X is %f on source line %d of %s\n",          \
                     (double)(X), __LINE__, __FILE__);                          \
     }
 
@@ -627,18 +627,18 @@
  * This macro prints a floating point number in scientific notatation, along
  * with the variable name, file, and line number, on standard error. Its
  * behaviour is a function of the debugging level, which can be set through the
- * option "debug" if the KJB library options are being made available to the
+ * option "debug" if the IVI library options are being made available to the
  * user. The macro is available for both development and production code, but
  * since the default debug level is different in the two cases, the behaviour is
  * different. The default level for development code is 2, whereas for
  * production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -659,32 +659,32 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbe(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbe: "#X" is %e on source line %d of %s\n",  \
+        fprintf(stderr, "(no-ivi) dbe: "#X" is %e on source line %d of %s\n",  \
                 (double)(X), __LINE__, __FILE__);                              \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbe: "#X" is %e on source line %d of %s\n",       \
+        ivi_fprintf(stderr, "dbe: "#X" is %e on source line %d of %s\n",       \
                     (double)(X), __LINE__, __FILE__);                          \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbe(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbe: X is %e on source line %d of %s\n",     \
+        fprintf(stderr, "(no-ivi) dbe: X is %e on source line %d of %s\n",     \
                 (double)(X), __LINE__, __FILE__);                              \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbe: X is %e on source line %d of %s\n",          \
+        ivi_fprintf(stderr, "dbe: X is %e on source line %d of %s\n",          \
                     (double)(X), __LINE__, __FILE__);                          \
     }
 
@@ -702,18 +702,18 @@
  * This macro prints a character as a character, in hex, and in regular integer
  * format, along with the variable name, file, and line number, on standard
  * error. Its behaviour is a function of the debugging level, which can be set
- * through the option "debug" if the KJB library options are being made
+ * through the option "debug" if the IVI library options are being made
  * available to the user. The macro is available for both development and
  * production code, but since the default debug level is different in the two
  * cases, the behaviour is different. The default level for development code is
  * 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -733,17 +733,17 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbc(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbc: "#X" is ->%c<- (0x%x, %d) on source line %d of %s\n", \
+                "(no-ivi) dbc: "#X" is ->%c<- (0x%x, %d) on source line %d of %s\n", \
                 (int)(X), (int)(X), (int)(X), __LINE__, __FILE__);             \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr,                                                    \
+        ivi_fprintf(stderr,                                                    \
                     "dbc: "#X" is ->%c<- (0x%x, %d) on source line %d of %s\n",\
                     (int)(X), (int)(X), (int)(X), __LINE__, __FILE__);         \
     }
@@ -751,17 +751,17 @@
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbc(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbc: X is ->%c<- (0x%x, %d) on source line %d of %s\n", \
+                "(no-ivi) dbc: X is ->%c<- (0x%x, %d) on source line %d of %s\n", \
                  (int)(X), (int)(X), (int)(X), __LINE__, __FILE__);            \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr,                                                    \
+        ivi_fprintf(stderr,                                                    \
                     "dbc: X is ->%c<- (0x%x, %d) on source line %d of %s\n",   \
                     (int)(X), (int)(X), (int)(X), __LINE__, __FILE__);         \
     }
@@ -779,18 +779,18 @@
  *
  * This macro prints n characters as a string, along with the variable name,
  * file, and line number on standard error. Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the behaviour is different. The default level
  * for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -807,25 +807,25 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbnc(X, Y)                                                             \
-    if (kjb_debug_level>0)                                                     \
+    if (ivi_debug_level>0)                                                     \
      {                                                                         \
          char dbnc_buff[ 200 ];                                                \
          long len;                                                             \
                                                                                \
          len = MIN_OF(200 - ROOM_FOR_NULL, (long)(Y ));                        \
-         kjb_strncpy(dbnc_buff, (X), (unsigned int)(len + ROOM_FOR_NULL));     \
+         ivi_strncpy(dbnc_buff, (X), (unsigned int)(len + ROOM_FOR_NULL));     \
                                                                                \
-         if (    (kjb_debug_level == 1)                                        \
-              || ((kjb_cleanup_started) && (kjb_debug_level > 0))              \
+         if (    (ivi_debug_level == 1)                                        \
+              || ((ivi_cleanup_started) && (ivi_debug_level > 0))              \
             )                                                                  \
          {                                                                     \
              fprintf(stderr,                                                   \
-                     "(no-kjb) dbnc: "#X"(1, "#Y") is ->%s<- on source line %d of %s\n",\
+                     "(no-ivi) dbnc: "#X"(1, "#Y") is ->%s<- on source line %d of %s\n",\
                      dbnc_buff, __LINE__, __FILE__);                           \
          }                                                                     \
-         else if (kjb_debug_level >= 2)                                        \
+         else if (ivi_debug_level >= 2)                                        \
          {                                                                     \
-             kjb_fprintf(stderr,                                               \
+             ivi_fprintf(stderr,                                               \
                     "dbnc: "#X"(1, "#Y") is ->%s<- on source line %d of %s\n", \
                     dbnc_buff, __LINE__, __FILE__);                            \
          }                                                                     \
@@ -834,26 +834,26 @@
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbnc(X, Y)                                                             \
-    if (kjb_debug_level > 0)                                                   \
+    if (ivi_debug_level > 0)                                                   \
     {                                                                          \
         char dbnc_buff[ 200 ];                                                 \
         long len;                                                              \
                                                                                \
          len = MIN_OF(200 - ROOM_FOR_NULL, (long)(Y ));                        \
          len = MAX_OF(len, 0);                                                 \
-         kjb_strncpy(dbnc_buff, (X), len + ROOM_FOR_NULL);                     \
+         ivi_strncpy(dbnc_buff, (X), len + ROOM_FOR_NULL);                     \
                                                                                \
-         if (    (kjb_debug_level == 1)                                        \
-              || ((kjb_cleanup_started) && (kjb_debug_level > 0))              \
+         if (    (ivi_debug_level == 1)                                        \
+              || ((ivi_cleanup_started) && (ivi_debug_level > 0))              \
             )                                                                  \
          {                                                                     \
              fprintf(stderr,                                                   \
-                     "(no-kjb) dbnc: X(1, Y) is ->%s<- on source line %d of %s\n", \
+                     "(no-ivi) dbnc: X(1, Y) is ->%s<- on source line %d of %s\n", \
                      dbnc_buff, __LINE__, __FILE__);                           \
          }                                                                     \
-         else if (kjb_debug_level >= 2)                                        \
+         else if (ivi_debug_level >= 2)                                        \
          {                                                                     \
-             kjb_fprintf(stderr,                                               \
+             ivi_fprintf(stderr,                                               \
                          "dbnc: X(1, Y) is ->%s<- on source line %d of %s\n",  \
                          dbnc_buff, __LINE__, __FILE__);                       \
          }                                                                     \
@@ -873,18 +873,18 @@
  * This macro prints a string, along with the variable name, file, and line
  * number, on standard error. The string is delimited by -> and <-. Its
  * behaviour is a function of the debugging level, which can be set through the
- * option "debug" if the KJB library options are being made available to the
+ * option "debug" if the IVI library options are being made available to the
  * user. The macro is available for both development and production code, but
  * since the default debug level is different in the two cases, the behaviour is
  * different. The default level for development code is 2, whereas for
  * production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -906,33 +906,33 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbs(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbs: "#X" is ->%s<- on source line %d of %s\n",      \
+                "(no-ivi) dbs: "#X" is ->%s<- on source line %d of %s\n",      \
                 (X) ? (X) : "NULL", __LINE__, __FILE__);                       \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbs: "#X" is ->%s<- on source line %d of %s\n",   \
+        ivi_fprintf(stderr, "dbs: "#X" is ->%s<- on source line %d of %s\n",   \
                     (X) ? (X) : "NULL",  __LINE__, __FILE__);                  \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbs(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbs: X is ->%s<- on source line %d of %s\n", \
+        fprintf(stderr, "(no-ivi) dbs: X is ->%s<- on source line %d of %s\n", \
                 (X) ? (X) : "NULL", __LINE__, __FILE__);                       \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbs: X is ->%s<- on source line %d of %s\n",      \
+        ivi_fprintf(stderr, "dbs: X is ->%s<- on source line %d of %s\n",      \
                     (X) ? (X) : "NULL", __LINE__, __FILE__);                   \
     }
 
@@ -950,18 +950,18 @@
  * This macro prints a string inside an array of charaters, along with the
  * variable name, file, and line number, on standard error. The string is
  * delimited by -> and <-. Its behaviour is a function of the debugging level,
- * which can be set through the option "debug" if the KJB library options are
+ * which can be set through the option "debug" if the IVI library options are
  * being made available to the user. The macro is available for both development
  * and production code, but since the default debug level is different in the
  * two cases, the behaviour is different. The default level for development code
  * is 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -979,33 +979,33 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbb(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
         fprintf(stderr,                                                        \
-                "(no-kjb) dbs: "#X" is ->%s<- on source line %d of %s\n",      \
+                "(no-ivi) dbs: "#X" is ->%s<- on source line %d of %s\n",      \
                 (X), __LINE__, __FILE__);                                      \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbs: "#X" is ->%s<- on source line %d of %s\n",   \
+        ivi_fprintf(stderr, "dbs: "#X" is ->%s<- on source line %d of %s\n",   \
                  (X), __LINE__, __FILE__);                                     \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbb(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) dbs: X is ->%s<- on source line %d of %s\n", \
+        fprintf(stderr, "(no-ivi) dbs: X is ->%s<- on source line %d of %s\n", \
                 (X), __LINE__, __FILE__);                                      \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "dbs: X is ->%s<- on source line %d of %s\n",      \
+        ivi_fprintf(stderr, "dbs: X is ->%s<- on source line %d of %s\n",      \
                  (X), __LINE__, __FILE__);                                     \
     }
 
@@ -1022,18 +1022,18 @@
  *
  * This macro prints a message, along with the file and line number on standard
  * error. Its behaviour is a function of the debugging level, which can be set
- * through the option "debug" if the KJB library options are being made
+ * through the option "debug" if the IVI library options are being made
  * available to the user. The macro is available for both development and
  * production code, but since the default debug level is different in the two
  * cases, the behaviour is different. The default level for development code is
  * 2, whereas for production code it is 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -1054,32 +1054,32 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbm(X) \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) message: %s (from source line %d of %s)\n",  \
+        fprintf(stderr, "(no-ivi) message: %s (from source line %d of %s)\n",  \
                 (X),  __LINE__, __FILE__);                                     \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "message: %s (from source line %d of %s)\n", (X),  \
+        ivi_fprintf(stderr, "message: %s (from source line %d of %s)\n", (X),  \
                     __LINE__, __FILE__);                                       \
     }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbm(X)                                                                 \
-    if (    (kjb_debug_level == 1)                                             \
-         || ((kjb_cleanup_started) && (kjb_debug_level > 0))                   \
+    if (    (ivi_debug_level == 1)                                             \
+         || ((ivi_cleanup_started) && (ivi_debug_level > 0))                   \
        )                                                                       \
     {                                                                          \
-        fprintf(stderr, "(no-kjb) message: %s (from source line %d of %s)\n",  \
+        fprintf(stderr, "(no-ivi) message: %s (from source line %d of %s)\n",  \
                 (X), __LINE__, __FILE__);                                      \
     }                                                                          \
-    else if (kjb_debug_level >= 2)                                             \
+    else if (ivi_debug_level >= 2)                                             \
     {                                                                          \
-        kjb_fprintf(stderr, "message: %s (from source line %d of %s)\n", (X),  \
+        ivi_fprintf(stderr, "message: %s (from source line %d of %s)\n", (X),  \
                     __LINE__, __FILE__);                                       \
     }
 
@@ -1097,18 +1097,18 @@
  * This macro prints an integer vector as a row vector, along with the variable
  * name, file, and line number on standard error. Its behaviour is a function
  * of the debugging level, which can be set through the option "debug" if the
- * KJB library options are being made available to the user. The macro is
+ * IVI library options are being made available to the user. The macro is
  * available for both development and production code, but since the default
  * debug level is different in the two cases, the behaviour is different. The
  * default level for development code is 2, whereas for production code it is
  * 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -1125,7 +1125,7 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define db_irv(X)                                                              \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         fp_write_row_int_vector_with_title(X, stderr, ""#X"");                 \
     }
@@ -1134,7 +1134,7 @@
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define db_irv(X)                                                              \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         fp_write_row_int_vector_with_title(X, stderr, "X");                    \
     }
@@ -1154,18 +1154,18 @@
  * This macro prints an integer vector as a column vector, along with the
  * variable name, file, and line number on standard error. Its behaviour is a
  * function of the debugging level, which can be set through the option "debug"
- * if the KJB library options are being made available to the user. The macro
+ * if the IVI library options are being made available to the user. The macro
  * is available for both development and production code, but since the default
  * debug level is different in the two cases, the behaviour is different. The
  * default level for development code is 2, whereas for production code it is
  * 0.
  *
  * If the debug level is 2 (or more), then the output is printed to standard
- * error using regular KJB library output routines.
+ * error using regular IVI library output routines.
  *
  * If the debug level is 1, then the output is printed to standard error using
- * standard C library routines instead of regular KJB library routines. This
- * facility is provided for KJB library I/O routines themselves.
+ * standard C library routines instead of regular IVI library routines. This
+ * facility is provided for IVI library I/O routines themselves.
  *
  * If the debug level is 0 (default for production code), then the output is
  * disabled.
@@ -1182,7 +1182,7 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define db_icv(X)                                                              \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         fp_write_col_int_vector_with_title(X, stderr, ""#X"");                              \
     }
@@ -1190,7 +1190,7 @@
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define db_icv(X)                                                              \
-   if (kjb_debug_level >= 1)                                                   \
+   if (ivi_debug_level >= 1)                                                   \
    {                                                                           \
        fp_write_col_int_vector_with_title(X, stderr, "X");                                  \
    }
@@ -1209,7 +1209,7 @@
  * This macro prints an integer vector as a column vector, to a file in the
  * current directory determined by the variable name.  Its behaviour is a
  * function of the debugging level, which can be set through the option "debug"
- * if the KJB library options are being made available to the user. The macro
+ * if the IVI library options are being made available to the user. The macro
  * is available for both development and production code, but since the default
  * debug level is different in the two cases, the behaviour is different. The
  * default level for development code is 2, whereas for production code it is
@@ -1235,22 +1235,22 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define file_db_icv(X)                                                               \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         FILE* fp;                                                              \
                                                                                \
         p_stderr("Writing vector "#X" from line %d of %s to file.    \n",      \
                  __LINE__, __FILE__);                                          \
-        fp = kjb_fopen(""#X"", "w");                                           \
+        fp = ivi_fopen(""#X"", "w");                                           \
                                                                                \
         if (fp == NULL)                                                        \
         {                                                                      \
-            kjb_print_error();                                                 \
+            ivi_print_error();                                                 \
         }                                                                      \
         else                                                                   \
         {                                                                      \
             EPE(fp_write_col_int_vector_with_title(X, fp, ""#X""));            \
-            EPE(kjb_fclose(fp));                                               \
+            EPE(ivi_fclose(fp));                                               \
         }                                                                      \
     }
 
@@ -1272,18 +1272,18 @@
  *
  * This macro prints an integer matrix, along with the variable name, file, and
  * line number on standard error. Its behaviour is a function of the debugging
- * level, which can be set through the option "debug" if the KJB library
+ * level, which can be set through the option "debug" if the IVI library
  * options are being made available to the user. The macro is available for
  * both development and production code, but since the default debug level is
  * different in the two cases, the behaviour is different. The default level
  * for development code is 2, whereas for production code it is 0.
  *
  * If the debug level is 1 (or more), then the output is printed to standard
- * error using regular KJB library output routines. Note that this is different
+ * error using regular IVI library output routines. Note that this is different
  * from more basic debug macros where a debug level of 1 is used to print using
  * system routines and a debug level of 2 or more is used for printing using
- * KJB library routines. (The special behavour of debug level 1 in the case of
- * the more basic debug macros is provided to help debug the KJB library I/O
+ * IVI library routines. (The special behavour of debug level 1 in the case of
+ * the more basic debug macros is provided to help debug the IVI library I/O
  * routines themselve).
  *
  * If the debug level is 0 (default for production code), then the output is
@@ -1301,7 +1301,7 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define dbi_mat(X)                                                             \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         fp_write_int_matrix_with_title(X, stderr, ""#X"");                        \
     }
@@ -1309,7 +1309,7 @@
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
 #define dbi_mat(X)                                                             \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         fp_write_int_matrix_with_title(X, stderr, "X");                           \
     }
@@ -1328,7 +1328,7 @@
  * This macro prints a matrix to a file in the current directory with the same
  * name as the variable.  The file and line number of the matrix being output to
  * the are printed on standard error.  Its behaviour is a function of the
- * debugging level, which can be set through the option "debug" if the KJB
+ * debugging level, which can be set through the option "debug" if the IVI
  * library options are being made available to the user. The macro is available
  * for both development and production code, but since the default debug level
  * is different in the two cases, the default behaviour is different. The
@@ -1354,21 +1354,21 @@
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
 #define file_dbi_mat(X)                                                        \
-    if (kjb_debug_level >= 1)                                                  \
+    if (ivi_debug_level >= 1)                                                  \
     {                                                                          \
         FILE* fp;                                                              \
                                                                                \
         p_stderr("Writing matrix "#X" from line %d of %s to file.    \n",      \
                  __LINE__, __FILE__);                                          \
-        fp = kjb_fopen(""#X"", "w");                                           \
+        fp = ivi_fopen(""#X"", "w");                                           \
                                                                                \
         if (fp == NULL)                                                        \
         {                                                                      \
-            kjb_print_error();                                                 \
+            ivi_print_error();                                                 \
         }                                                                      \
         else                                                                   \
         {                                                                      \
-            if (kjb_debug_level >= 3)                                          \
+            if (ivi_debug_level >= 3)                                          \
             {                                                                  \
                 EPE(fp_write_int_matrix_with_title(X, fp, ""#X""));    \
             }                                                                  \
@@ -1376,7 +1376,7 @@
             {                                                                  \
                 EPE(fp_write_int_matrix_with_title(X, fp, ""#X""));            \
             }                                                                  \
-            EPE(kjb_fclose(fp));                                               \
+            EPE(ivi_fclose(fp));                                               \
         }                                                                      \
     }
 
@@ -1392,24 +1392,24 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbw_no_kjb
+ *                             dbw_no_ivi
  *
  * (MACRO) Prints file and line number
  *
  * This macro prints the file and line number, on standard error without using
- * the KJB library. This routine is thus normally used only to help debug the
- * lowest level KJB library routines (all in "l") in conjunction with other code
- * (so that kjb_debug_level) does not need to be set/reset.
+ * the IVI library. This routine is thus normally used only to help debug the
+ * lowest level IVI library routines (all in "l") in conjunction with other code
+ * (so that ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
  * -----------------------------------------------------------------------------
 */
 #ifdef __C2MAN__
-    void dbw_no_kjb(void);
+    void dbw_no_ivi(void);
 #else
 
-#define  dbw_no_kjb()                                                          \
+#define  dbw_no_ivi()                                                          \
     fprintf(stderr, "At line %d of %s\n", __LINE__, __FILE__);
 
 #endif
@@ -1417,15 +1417,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbr_no_kjb
+ *                             dbr_no_ivi
  *
  * (MACRO) Debug printing status code
  *
- * This macro prints an tag corresponding to the KJB library status meaning of
- * an integer, along with the file and line number, on standard error. KJB
+ * This macro prints an tag corresponding to the IVI library status meaning of
+ * an integer, along with the file and line number, on standard error. IVI
  * library facilities are not used. This routine is thus normally used only to
- * help debug the lowest level KJB library routines (all in "l") in conjunction
- * with other code (so that kjb_debug_level) does not need to be set/reset.
+ * help debug the lowest level IVI library routines (all in "l") in conjunction
+ * with other code (so that ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1433,12 +1433,12 @@
 */
 
 #ifdef __C2MAN__
-    void dbr_no_kjb(int i);
+    void dbr_no_ivi(int i);
 #else
 
-#define dbr_no_kjb(X)                                                          \
+#define dbr_no_ivi(X)                                                          \
         fprintf(stderr,                                                        \
-                "dbr_no_kjb: Status is %ld on source line %d of %s\n",         \
+                "dbr_no_ivi: Status is %ld on source line %d of %s\n",         \
                 (long)(X), __LINE__, __FILE__);
 
 #endif    /*   #ifdef __C2MAN__ */
@@ -1446,15 +1446,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbp_no_kjb
+ *                             dbp_no_ivi
  *
  * (MACRO) Debug printing of a string
  *
  * This macro prints a string on standard error. Unlike the other "db" macros,
  * dbp does NOT output the file or the line number. It is normally used to tidy
- * up debugging output.  KJB library facilities are not used. This routine is
- * thus normally used only to help debug the lowest level KJB library routines
- * (all in "l") in conjunction with other code (so that kjb_debug_level) does
+ * up debugging output.  IVI library facilities are not used. This routine is
+ * thus normally used only to help debug the lowest level IVI library routines
+ * (all in "l") in conjunction with other code (so that ivi_debug_level) does
  * not need to be set/reset.
  *
  * Index: debugging
@@ -1463,25 +1463,25 @@
 */
 
 #ifdef __C2MAN__
-    void dbp_no_kjb(char* text_to_print);
+    void dbp_no_ivi(char* text_to_print);
 #else
 
-#define dbp_no_kjb(X) fprintf(stderr, "%s\n", (X));
+#define dbp_no_ivi(X) fprintf(stderr, "%s\n", (X));
 
 #endif    /*   #ifdef __C2MAN__ */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbx_no_kjb
+ *                             dbx_no_ivi
  *
  * (MACRO) Debug printing of integer in hex
  *
  * This macro prints an integer (or long) in hex along with the variable name,
- * file, and line number on standard error. KJB library facilities are not used.
- * This routine is thus normally used only to help debug the lowest level KJB
+ * file, and line number on standard error. IVI library facilities are not used.
+ * This routine is thus normally used only to help debug the lowest level IVI
  * library routines (all in "l") in conjunction with other code (so that
- * kjb_debug_level) does not need to be set/reset.
+ * ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1489,19 +1489,19 @@
 */
 
 #ifdef __C2MAN__
-    void dbx_no_kjb(int i);
+    void dbx_no_ivi(int i);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbx_no_kjb(X)                                                          \
-        fprintf(stderr, "dbx_no_kjb: "#X" is %lx on source line %d of %s\n",   \
+#define dbx_no_ivi(X)                                                          \
+        fprintf(stderr, "dbx_no_ivi: "#X" is %lx on source line %d of %s\n",   \
                 (unsigned long)(X), __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbx_no_kjb(X)                                                          \
-        fprintf(stderr, "db_no_kjbx: X is %lx on source line %d of %s\n",      \
+#define dbx_no_ivi(X)                                                          \
+        fprintf(stderr, "db_no_ivix: X is %lx on source line %d of %s\n",      \
                 (unsigned long)(X), __LINE__, __FILE__);
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -1511,15 +1511,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbo_no_kjb
+ *                             dbo_no_ivi
  *
  * (MACRO) Debug printing of integer in octal
  *
  * This macro prints an integer (or long) in octal along with the variable name,
- * file, and line number on standard error. KJB library facilities are not
+ * file, and line number on standard error. IVI library facilities are not
  * used. This routine is thus normally used only to help debug the lowest level
- * KJB library routines (all in "l") in conjunction with other code (so that
- * kjb_debug_level) does not need to be set/reset.
+ * IVI library routines (all in "l") in conjunction with other code (so that
+ * ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1527,19 +1527,19 @@
 */
 
 #ifdef __C2MAN__
-    void dbo_no_kjb(int i);
+    void dbo_no_ivi(int i);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbo_no_kjb(X)                                                          \
-        fprintf(stderr, "dbo_no_kjb: "#X" is %lo on source line %d of %s\n",   \
+#define dbo_no_ivi(X)                                                          \
+        fprintf(stderr, "dbo_no_ivi: "#X" is %lo on source line %d of %s\n",   \
                 (long)(X), __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbo_no_kjb(X)                                                          \
-        fprintf(stderr, "dbo_no_kjb: X is %lo on source line %d of %s\n",      \
+#define dbo_no_ivi(X)                                                          \
+        fprintf(stderr, "dbo_no_ivi: X is %lo on source line %d of %s\n",      \
                 (long)(X), __LINE__, __FILE__);
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -1549,15 +1549,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbi_no_kjb
+ *                             dbi_no_ivi
  *
  * (MACRO) Debug printing of integer
  *
  * This macro prints an integer (or long) along with the variable name, file,
- * and line number, on standard error. KJB library facilities are not
+ * and line number, on standard error. IVI library facilities are not
  * used. This routine is thus normally used only to help debug the lowest level
- * KJB library routines (all in "l") in conjunction with other code (so that
- * kjb_debug_level) does not need to be set/reset.
+ * IVI library routines (all in "l") in conjunction with other code (so that
+ * ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1565,20 +1565,20 @@
 */
 
 #ifdef __C2MAN__
-    void dbi_no_kjb(int i);
+    void dbi_no_ivi(int i);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbi_no_kjb(X)                                                          \
+#define dbi_no_ivi(X)                                                          \
         fprintf(stderr,                                                        \
-                "dbi_no_kjb: "#X" is %ld on source line %d of %s\n", (long)(X),\
+                "dbi_no_ivi: "#X" is %ld on source line %d of %s\n", (long)(X),\
                __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbi_no_kjb(X)                                                          \
-        fprintf(stderr, "dbi_no_kjb: X is %ld on source line %d of %s\n",      \
+#define dbi_no_ivi(X)                                                          \
+        fprintf(stderr, "dbi_no_ivi: X is %ld on source line %d of %s\n",      \
                 (long)(X), __LINE__, __FILE__);
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -1588,15 +1588,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbf_no_kjb
+ *                             dbf_no_ivi
  *
  * (MACRO) Debug printing of floating point
  *
  * This macro prints a floating point number in fixed format, along with the
- * variable name, file, and line number, on standard error.  KJB library
+ * variable name, file, and line number, on standard error.  IVI library
  * facilities are not used. This routine is thus normally used only to help
- * debug the lowest level KJB library routines (all in "l") in conjunction with
- * other code (so that kjb_debug_level) does not need to be set/reset.
+ * debug the lowest level IVI library routines (all in "l") in conjunction with
+ * other code (so that ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1604,19 +1604,19 @@
 */
 
 #ifdef __C2MAN__
-    void dbf_no_kjb(double float_num);
+    void dbf_no_ivi(double float_num);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbf_no_kjb(X)                                                          \
-        fprintf(stderr, "dbf_no_kjb: "#X" is %f on source line %d of %s\n",    \
+#define dbf_no_ivi(X)                                                          \
+        fprintf(stderr, "dbf_no_ivi: "#X" is %f on source line %d of %s\n",    \
                (double)(X), __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbf_no_kjb(X) \
-        fprintf(stderr, "dbf_no_kjb: X is %f on source line %d of %s\n",       \
+#define dbf_no_ivi(X) \
+        fprintf(stderr, "dbf_no_ivi: X is %f on source line %d of %s\n",       \
                 (double)(X), __LINE__, __FILE__);
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -1626,15 +1626,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbe_no_kjb
+ *                             dbe_no_ivi
  *
  * (MACRO) Debug printing of floating point
  *
  * This macro prints a floating point number in scientific notatation, along
- * with the variable name, file, and line number, on standard error. KJB library
+ * with the variable name, file, and line number, on standard error. IVI library
  * facilities are not used. This routine is thus normally used only to help
- * debug the lowest level KJB library routines (all in "l") in conjunction with
- * other code (so that kjb_debug_level) does not need to be set/reset.
+ * debug the lowest level IVI library routines (all in "l") in conjunction with
+ * other code (so that ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1642,19 +1642,19 @@
 */
 
 #ifdef __C2MAN__
-    void dbe_no_kjb(double float_num);
+    void dbe_no_ivi(double float_num);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbe_no_kjb(X)                                                          \
-        fprintf(stderr, "dbe_no_kjb: "#X" is %e on source line %d of %s\n",    \
+#define dbe_no_ivi(X)                                                          \
+        fprintf(stderr, "dbe_no_ivi: "#X" is %e on source line %d of %s\n",    \
                 (double)(X), __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbe_no_kjb(X)                                                          \
-        fprintf(stderr, "dbe_no_kjb: X is %e on source line %d of %s\n",       \
+#define dbe_no_ivi(X)                                                          \
+        fprintf(stderr, "dbe_no_ivi: X is %e on source line %d of %s\n",       \
                 (double)(X), __LINE__, __FILE__);
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -1664,15 +1664,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbc_no_kjb
+ *                             dbc_no_ivi
  *
  * (MACRO) Debug printing of a character
  *
  * This macro prints a character as a character, in hex, and in regular integer
  * format, along with the variable name, file, and line number, on standard
- * error.  KJB library facilities are not used. This routine is thus normally
- * used only to help debug the lowest level KJB library routines (all in "l") in
- * conjunction with other code (so that kjb_debug_level) does not need to be
+ * error.  IVI library facilities are not used. This routine is thus normally
+ * used only to help debug the lowest level IVI library routines (all in "l") in
+ * conjunction with other code (so that ivi_debug_level) does not need to be
  * set/reset.
  *
  * Index: debugging
@@ -1681,21 +1681,21 @@
 */
 
 #ifdef __C2MAN__
-    void dbc_no_kjb(char c);
+    void dbc_no_ivi(char c);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbc_no_kjb(X)                                                          \
+#define dbc_no_ivi(X)                                                          \
         fprintf(stderr,                                                        \
-             "dbc_no_kjb: "#X" is ->%c<- (0x%x, %d) on source line %d of %s\n",\
+             "dbc_no_ivi: "#X" is ->%c<- (0x%x, %d) on source line %d of %s\n",\
                 (int)(X), (int)(X), (int)(X), __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbc_no_kjb(X)                                                          \
+#define dbc_no_ivi(X)                                                          \
         fprintf(stderr,                                                        \
-                "dbc_no_kjb: X is ->%c<- (0x%x, %d) on source line %d of %s\n",\
+                "dbc_no_ivi: X is ->%c<- (0x%x, %d) on source line %d of %s\n",\
                  (int)(X), (int)(X), (int)(X), __LINE__, __FILE__);
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -1705,15 +1705,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbnc_no_kjb
+ *                             dbnc_no_ivi
  *
  * (MACRO) Debug printing of n characters
  *
  * This macro prints n characters as a string, along with the variable name,
- * file, and line number on standard error. KJB library facilities are not used.
- * This routine is thus normally used only to help debug the lowest level KJB
+ * file, and line number on standard error. IVI library facilities are not used.
+ * This routine is thus normally used only to help debug the lowest level IVI
  * library routines (all in "l") in conjunction with other code (so that
- * kjb_debug_level) does not need to be set/reset.
+ * ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1721,37 +1721,37 @@
 */
 
 #ifdef __C2MAN__
-    void dbnc_no_kjb(char* buff, int count);
+    void dbnc_no_ivi(char* buff, int count);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbnc_no_kjb(X, Y)                                                      \
+#define dbnc_no_ivi(X, Y)                                                      \
      {                                                                         \
          char dbnc_buff[ 200 ];                                                \
          long len;                                                             \
                                                                                \
          len = MIN_OF(200 - ROOM_FOR_NULL, (long)(Y ));                        \
-         kjb_strncpy(dbnc_buff, (X), len + ROOM_FOR_NULL);                     \
+         ivi_strncpy(dbnc_buff, (X), len + ROOM_FOR_NULL);                     \
                                                                                \
          fprintf(stderr,                                                       \
-              "dbnc_no_kjb: "#X"(1, "#Y") is ->%s<- on source line %d of %s\n",\
+              "dbnc_no_ivi: "#X"(1, "#Y") is ->%s<- on source line %d of %s\n",\
                  dbnc_buff, __LINE__, __FILE__);                               \
      }
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbnc_no_kjb(X, Y)                                                      \
+#define dbnc_no_ivi(X, Y)                                                      \
     {                                                                          \
         char dbnc_buff[ 200 ];                                                 \
         long len;                                                              \
                                                                                \
          len = MIN_OF(200 - ROOM_FOR_NULL, (long)(Y ));                        \
          len = MAX_OF(len, 0);                                                 \
-         kjb_strncpy(dbnc_buff, (X), len + ROOM_FOR_NULL);                     \
+         ivi_strncpy(dbnc_buff, (X), len + ROOM_FOR_NULL);                     \
                                                                                \
          fprintf(stderr,                                                       \
-                 "dbnc_no_kjb: X(1, Y) is ->%s<- on source line %d of %s\n",   \
+                 "dbnc_no_ivi: X(1, Y) is ->%s<- on source line %d of %s\n",   \
                  dbnc_buff, __LINE__, __FILE__);                               \
      }
 
@@ -1762,15 +1762,15 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbs_no_kjb
+ *                             dbs_no_ivi
  *
  * (MACRO) Debug printing of a string
  *
  * This macro prints a string, along with the variable name, file, and line
- * number, on standard error. The string is delimited by -> and <-.  KJB library
+ * number, on standard error. The string is delimited by -> and <-.  IVI library
  * facilities are not used. This routine is thus normally used only to help
- * debug the lowest level KJB library routines (all in "l") in conjunction with
- * other code (so that kjb_debug_level) does not need to be set/reset.
+ * debug the lowest level IVI library routines (all in "l") in conjunction with
+ * other code (so that ivi_debug_level) does not need to be set/reset.
  *
  * Index: debugging
  *
@@ -1778,20 +1778,20 @@
 */
 
 #ifdef __C2MAN__
-    void dbs_no_kjb(char* str);
+    void dbs_no_ivi(char* str);
 #else
 
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbs_no_kjb(X)                                                          \
-        fprintf(stderr, "dbs_no_kjb: "#X" is ->%s<- on source line %d of %s\n",\
+#define dbs_no_ivi(X)                                                          \
+        fprintf(stderr, "dbs_no_ivi: "#X" is ->%s<- on source line %d of %s\n",\
                 (X) ? (X) : "NULL", __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbs_no_kjb(X)                                                          \
-        fprintf(stderr, "dbs_no_kjb: X is ->%s<- on source line %d of %s\n",   \
+#define dbs_no_ivi(X)                                                          \
+        fprintf(stderr, "dbs_no_ivi: X is ->%s<- on source line %d of %s\n",   \
                 (X) ? (X) : "NULL", __LINE__, __FILE__);
 
 #endif    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ... #else  .....   */
@@ -1801,14 +1801,14 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             dbm_no_kjb
+ *                             dbm_no_ivi
  *
  * (MACRO) Debug printing of a message
  *
  * This macro prints a message, along with the file and line number on standard
- * error. KJB library facilities are not used. This routine is thus normally
- * used only to help debug the lowest level KJB library routines (all in "l") in
- * conjunction with other code (so that kjb_debug_level) does not need to be
+ * error. IVI library facilities are not used. This routine is thus normally
+ * used only to help debug the lowest level IVI library routines (all in "l") in
+ * conjunction with other code (so that ivi_debug_level) does not need to be
  * set/reset.
  *
  * Index: debugging
@@ -1817,18 +1817,18 @@
 */
 
 #ifdef __C2MAN__
-    void dbm_no_kjb(char* msg);
+    void dbm_no_ivi(char* msg);
 #else
 
 #ifdef HASH_MARK_SUBSTITUTION_OK
 
-#define dbm_no_kjb(X) \
+#define dbm_no_ivi(X) \
         fprintf(stderr, "message: %s (from source line %d of %s)\n", (X),      \
                 __LINE__, __FILE__);
 
 #else    /*   #ifdef HASH_MARK_SUBSTITUTION_OK ....     */
 
-#define dbm_no_kjb(X) \
+#define dbm_no_ivi(X) \
         fprintf(stderr, "message: %s (from source line %d of %s)\n", (X),      \
                 __LINE__, __FILE__);
 
@@ -1841,14 +1841,14 @@
 /* =============================================================================
  *                             ASSERT
  *
- * (MACRO) Calls kjb_abort if argument is false
+ * (MACRO) Calls ivi_abort if argument is false
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the argument "boolean_expression" is false, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * If you use this macro, you'll also need to include the header defining
  * the p_stderr function, since this header does not include that one (since
@@ -1872,11 +1872,11 @@
 #        define ASSERT(X)                                                      \
                     if (!(X))                                                  \
                     {                                                          \
-                          USING_KJB_C();                                       \
+                          USING_IVI_C();                                       \
                           p_stderr("Assert ("#X") failed on line %d of %s\n",  \
                                      __LINE__, __FILE__);                      \
-                          p_stderr("Calling kjb_abort.\n");              \
-                          kjb_abort();                                   \
+                          p_stderr("Calling ivi_abort.\n");              \
+                          ivi_abort();                                   \
                     }
 
 #    else
@@ -1886,8 +1886,8 @@
                     {                                                          \
                          p_stderr("Assert failed on line %d of %s\n",          \
                                       __LINE__, __FILE__);                     \
-                         p_stderr("Calling kjb_abort.\n");                     \
-                         kjb_abort();                                          \
+                         p_stderr("Calling ivi_abort.\n");                     \
+                         ivi_abort();                                          \
                     }
 #    endif
 
@@ -1921,14 +1921,14 @@
 /* =============================================================================
  *                             ASSERT_IS_BOOL
  *
- * (MACRO) Calls kjb_abort if the integer argument is not 0 or 1
+ * (MACRO) Calls ivi_abort if the integer argument is not 0 or 1
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the argument "boolean_expression" is false, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -1947,7 +1947,7 @@ if ((x != FALSE) || (x != TRUE))  \
     dbp("ASSERT_IS_BOOL failed"); \
     dbi(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -1961,14 +1961,14 @@ if ((x != FALSE) || (x != TRUE))  \
 /* =============================================================================
  *                             ASSERT_IS_EQUAL_INT
  *
- * (MACRO) Calls kjb_abort if the two integer arguments are not the same
+ * (MACRO) Calls ivi_abort if the two integer arguments are not the same
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the argument "boolean_expression" is false, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -1988,7 +1988,7 @@ if (x != y)  \
     dbi(x); \
     dbi(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2002,14 +2002,14 @@ if (x != y)  \
 /* =============================================================================
  *                             ASSERT_IS_NON_NEGATIVE_INT
  *
- * (MACRO) Calls kjb_abort if the integer argument is negative
+ * (MACRO) Calls ivi_abort if the integer argument is negative
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the argument "boolean_expression" is false, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2026,7 +2026,7 @@ if (x < 0)  \
     dbp("ASSERT_IS_NON_NEGATIVE_INT failed"); \
     dbi(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2037,14 +2037,14 @@ if (x < 0)  \
 /* =============================================================================
  *                             ASSERT_IS_POSITIVE_INT
  *
- * (MACRO) Calls kjb_abort if argument is argument is not postive
+ * (MACRO) Calls ivi_abort if argument is argument is not postive
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the argument integer_expression is not positive, then this macro prints
  * the assertion, together with the file and line number, on standard error. It
- * then calls kjb_abort.
+ * then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2061,7 +2061,7 @@ if (x <= 0)  \
     dbp("ASSERT_IS_POSITIVE_INT failed"); \
     dbi(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2073,14 +2073,14 @@ if (x <= 0)  \
 /* =============================================================================
  *                             ASSERT_IS_NOT_EQUAL_INT
  *
- * (MACRO) Calls kjb_abort if the two integer arguments are not equal
+ * (MACRO) Calls ivi_abort if the two integer arguments are not equal
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the two integer arguments are not equal, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2099,7 +2099,7 @@ if (IS_EQUAL_INT(x,y))  \
     dbi(x); \
     dbi(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2110,14 +2110,14 @@ if (IS_EQUAL_INT(x,y))  \
 /* =============================================================================
  *                             ASSERT_IS_GREATER_INT
  *
- * (MACRO) Calls kjb_abort if first argument is less than or equal the second.
+ * (MACRO) Calls ivi_abort if first argument is less than or equal the second.
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first integer argument is less than or equal than the second, then
  * this macro prints the assertion, together with the file and line number, on
- * standard error. It then calls kjb_abort.
+ * standard error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2135,7 +2135,7 @@ if (x <= y)  \
     dbi(x); \
     dbi(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2146,14 +2146,14 @@ if (x <= y)  \
 /* =============================================================================
  *                             ASSERT_IS_LESS_INT
  *
- * (MACRO) Calls kjb_abort if first argument greater than or equal the second.
+ * (MACRO) Calls ivi_abort if first argument greater than or equal the second.
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first integer argument  greater than or equal the second, then this
  * macro prints the assertion, together with the file and line number, on
- * standard error. It then calls kjb_abort.
+ * standard error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2171,7 +2171,7 @@ if (x >= y)  \
     dbi(x); \
     dbi(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2183,14 +2183,14 @@ if (x >= y)  \
 /* =============================================================================
  *                             ASSERT_IS_NOT_GREATER_INT
  *
- * (MACRO) Calls kjb_abort if first argument is greater than second
+ * (MACRO) Calls ivi_abort if first argument is greater than second
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first integer argument is greater than the second, then this macro
  * prints the assertion, together with the file and line number, on standard
- * error. It then calls kjb_abort.
+ * error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2208,7 +2208,7 @@ if (x > y)  \
     dbi(x); \
     dbi(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2220,14 +2220,14 @@ if (x > y)  \
 /* =============================================================================
  *                             ASSERT_IS_NOT_LESS_INT
  *
- * (MACRO) Calls kjb_abort if first argument is less than second
+ * (MACRO) Calls ivi_abort if first argument is less than second
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first integer argument is less than the second, then this macro prints
  * the assertion, together with the file and line number, on standard error. It
- * then calls kjb_abort.
+ * then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2245,7 +2245,7 @@ if (x < y)  \
     dbi(x); \
     dbi(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2257,14 +2257,14 @@ if (x < y)  \
 /* =============================================================================
  *                             ASSERT_IS_NUMBER_DBL
  *
- * (MACRO) Calls kjb_abort if double precesion argument is NaN
+ * (MACRO) Calls ivi_abort if double precesion argument is NaN
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precesion argument is not a number (NaN), then this macro
  * prints the assertion, together with the file and line number, on standard
- * error. It then calls kjb_abort.
+ * error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2283,7 +2283,7 @@ if (isnand(x))  \
     dbx(*((int*)&x)); \
     dbx(*(1 + (int*)&x)); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2295,14 +2295,14 @@ if (isnand(x))  \
 /* =============================================================================
  *                             ASSERT_IS_FINITE_DBL
  *
- * (MACRO) Calls kjb_abort if double precesion argument is Inf
+ * (MACRO) Calls ivi_abort if double precesion argument is Inf
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precesion argument is infinite (Inf), then this macro prints
  * the assertion, together with the file and line number, on standard error. It
- * then calls kjb_abort.
+ * then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2319,7 +2319,7 @@ if (!isfinited(x))  \
     dbp("ASSERT_IS_FINITE_DBL failed"); \
     dbe(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2331,14 +2331,14 @@ if (!isfinited(x))  \
 /* =============================================================================
  *                             ASSERT_IS_NON_NEGATIVE_DBL
  *
- * (MACRO) Calls kjb_abort if argument is negative
+ * (MACRO) Calls ivi_abort if argument is negative
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precision argument is negative, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2355,7 +2355,7 @@ if (x < 0.0)  \
     dbp("ASSERT_IS_NON_NEGATIVE_DBL failed"); \
     dbe(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2367,14 +2367,14 @@ if (x < 0.0)  \
 /* =============================================================================
  *                             ASSERT_IS_ZERO_DBL
  *
- * (MACRO) Calls kjb_abort if argument is not approximately zero
+ * (MACRO) Calls ivi_abort if argument is not approximately zero
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precision argument is approximately zero, then this macro
  * prints the assertion, together with the file and line number, on standard
- * error. It then calls kjb_abort.
+ * error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2391,7 +2391,7 @@ if (! IS_ZERO_DBL(x))  \
     dbp("ASSERT_IS_ZERO_DBL failed"); \
     dbe(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2403,14 +2403,14 @@ if (! IS_ZERO_DBL(x))  \
 /* =============================================================================
  *                             ASSERT_IS_NOT_ZERO_DBL
  *
- * (MACRO) Calls kjb_abort if argument is not approximately zero
+ * (MACRO) Calls ivi_abort if argument is not approximately zero
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precision argument is not approximately zero, then this macro
  * prints the assertion, together with the file and line number, on standard
- * error. It then calls kjb_abort.
+ * error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2427,7 +2427,7 @@ if (IS_ZERO_DBL(x))  \
     dbp("ASSERT_IS_ZERO_DBL failed"); \
     dbe(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2439,14 +2439,14 @@ if (IS_ZERO_DBL(x))  \
 /* =============================================================================
  *                             ASSERT_IS_POSITIVE_DBL
  *
- * (MACRO) Calls kjb_abort if argument is zero or less
+ * (MACRO) Calls ivi_abort if argument is zero or less
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precision argument is zero or less, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2463,7 +2463,7 @@ if (x <= 0.0)  \
     dbp("ASSERT_IS_POSITIVE_DBL failed"); \
     dbe(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2475,14 +2475,14 @@ if (x <= 0.0)  \
 /* =============================================================================
  *                             ASSERT_IS_PROB_DBL
  *
- * (MACRO) Calls kjb_abort if argument is not a valid probability
+ * (MACRO) Calls ivi_abort if argument is not a valid probability
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precision argument is outside [0,1] then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2499,7 +2499,7 @@ if ((x > 1.0) || (x < 0.0))  \
     dbp("ASSERT_IS_PROB_DBL failed"); \
     dbe(x); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2511,14 +2511,14 @@ if ((x > 1.0) || (x < 0.0))  \
 /* =============================================================================
  *                             ASSERT_IS_EQUAL_DBL
  *
- * (MACRO) Calls kjb_abort if arguments are not almost exactly equal
+ * (MACRO) Calls ivi_abort if arguments are not almost exactly equal
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the double precision arguments are not eqaul, then this macro prints the
  * assertion, together with the file and line number, on standard error. It then
- * calls kjb_abort.
+ * calls ivi_abort.
  *
  * This assert only makes sense if the numbers are meant to be exactly equal.
  * Otherwise, use IS_NEARLY_EQUAL_DBL().
@@ -2540,7 +2540,7 @@ if ( ! IS_EQUAL_DBL(x,y))  \
     dbe(y); \
     dbe(x - y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2552,14 +2552,14 @@ if ( ! IS_EQUAL_DBL(x,y))  \
 /* =============================================================================
  *                             ASSERT_IS_NEARLY_EQUAL_DBL
  *
- * (MACRO) Calls kjb_abort if arguments are not equal within tolerence
+ * (MACRO) Calls ivi_abort if arguments are not equal within tolerence
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first two arguments are not nearly equal given the third, relative
  * precision argument, then this macro prints the assertion, together with the
- * file and line number, on standard error. It then calls kjb_abort.
+ * file and line number, on standard error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2578,7 +2578,7 @@ if ( ! IS_NEARLY_EQUAL_DBL(x,y,e))  \
     dbe(y); \
     dbe(x - y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2590,14 +2590,14 @@ if ( ! IS_NEARLY_EQUAL_DBL(x,y,e))  \
 /* =============================================================================
  *                             ASSERT_IS_NOT_EQUAL_DBL
  *
- * (MACRO) Calls kjb_abort if argument arguments are nearly equal
+ * (MACRO) Calls ivi_abort if argument arguments are nearly equal
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the two arguments are equal, then this macro prints the assertion,
  * together with the file and line number, on standard error. It then calls
- * kjb_abort.
+ * ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2615,7 +2615,7 @@ if (IS_EQUAL_DBL(x,y))  \
     dbe(x); \
     dbe(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2627,14 +2627,14 @@ if (IS_EQUAL_DBL(x,y))  \
 /* =============================================================================
  *                             ASSERT_IS_GREATER_DBL
  *
- * (MACRO) Calls kjb_abort if first argument is less than or equal the second
+ * (MACRO) Calls ivi_abort if first argument is less than or equal the second
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first double precision argument is less than or equal the second, then
  * this macro prints the assertion, together with the file and line number, on
- * standard error. It then calls kjb_abort.
+ * standard error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2652,7 +2652,7 @@ if (x <= y)  \
     dbe(x); \
     dbe(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2664,14 +2664,14 @@ if (x <= y)  \
 /* =============================================================================
  *                             ASSERT_IS_LESS_DBL
  *
- * (MACRO) Calls kjb_abort if first argument is greater than or equal the second
+ * (MACRO) Calls ivi_abort if first argument is greater than or equal the second
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first double precision argument is greater than or equal the secon,
  * then this macro prints the assertion, together with the file and line number,
- * on standard error. It then calls kjb_abort.
+ * on standard error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2689,7 +2689,7 @@ if (x >= y)  \
     dbe(x); \
     dbe(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2701,14 +2701,14 @@ if (x >= y)  \
 /* =============================================================================
  *                             ASSERT_IS_NOT_GREATER_DBL
  *
- * (MACRO) Calls kjb_abort if first argument is greater than the second
+ * (MACRO) Calls ivi_abort if first argument is greater than the second
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first double precision argument is greater than the second, then this
  * macro prints the assertion, together with the file and line number, on
- * standard error. It then calls kjb_abort.
+ * standard error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2726,7 +2726,7 @@ if (x > y)  \
     dbe(x); \
     dbe(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else
@@ -2738,14 +2738,14 @@ if (x > y)  \
 /* =============================================================================
  *                             ASSERT_IS_NOT_LESS_DBL
  *
- * (MACRO) Calls kjb_abort if first argument is less than the second
+ * (MACRO) Calls ivi_abort if first argument is less than the second
  *
  * This macro only does something in development code. In production code (i.e.
  * code compiled without -DTEST, this macro evaluates to null.
  *
  * If the first double precision argument is less than second, then
  * this macro prints the assertion, together with the file and line number, on
- * standard error. It then calls kjb_abort.
+ * standard error. It then calls ivi_abort.
  *
  * Index: debugging, Macros, asserts
  *
@@ -2763,7 +2763,7 @@ if (x < y)  \
     dbe(x); \
     dbe(y); \
     term_beep_beep(3, 1000); \
-    kjb_abort(); \
+    ivi_abort(); \
     dbp("====================================="); \
 }
 #else

@@ -4,7 +4,7 @@
  * @brief test program for minimum bipartite match function
  */
 /*
- * $Id: test_mbm.cpp 22174 2018-07-01 21:49:18Z kobus $
+ * $Id: test_mbm.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <graph_cpp/graph_min_bp.h>
@@ -16,8 +16,8 @@
 int main( int argc, char** argv )
 {
     int iii, jjj, nnn;
-    kjb::Matrix wt( NRW, NCL );
-    kjb::Int_vector as;
+    ivi::Matrix wt( NRW, NCL );
+    ivi::Int_vector as;
     double cost;
 
     const int w2[NRW * NCL] =   {   23, 42, 17, 93, 20, 17,
@@ -27,7 +27,7 @@ int main( int argc, char** argv )
                                     82, 64, 93, 11, 44, 10,
                                     23, 23, 23, 23, 23, 23  };
 
-    kjb_c::kjb_disable_paging();
+    ivi_c::ivi_disable_paging();
 
     /*
      * Solution:
@@ -51,8 +51,8 @@ int main( int argc, char** argv )
         }
     }
 
-    KJB( EPETE( kjb::min_bipartite_match( wt, &as, &cost ) ) );
-    KJB( EPETE( as.get_length() == NRW ? NO_ERROR : ERROR ) );
+    IVI( EPETE( ivi::min_bipartite_match( wt, &as, &cost ) ) );
+    IVI( EPETE( as.get_length() == NRW ? NO_ERROR : ERROR ) );
 
     if ( cost != 91 ) return EXIT_FAILURE;
     if ( as[0] != 4 ) return EXIT_FAILURE;
@@ -62,7 +62,7 @@ int main( int argc, char** argv )
     if ( as[4] != 3 ) return EXIT_FAILURE;
     if ( as[5] != 1 ) return EXIT_FAILURE;
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
         for( iii = 0; iii < NRW; ++iii )
         {
@@ -85,8 +85,8 @@ int main( int argc, char** argv )
     //////////////////////////////////////////////////////////////////
 
     wt.at(0,0) *= -1; // this should provoke an error
-    int rc = kjb::min_bipartite_match( wt, &as, &cost );
-    if ( rc != kjb_c::ERROR ) return EXIT_FAILURE; // result must be ERROR.
+    int rc = ivi::min_bipartite_match( wt, &as, &cost );
+    if ( rc != ivi_c::ERROR ) return EXIT_FAILURE; // result must be ERROR.
 
     return EXIT_SUCCESS;
 }

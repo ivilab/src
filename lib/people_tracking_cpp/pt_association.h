@@ -24,12 +24,12 @@
 #include <mcmcda_cpp/mcmcda_association.h>
 #include <people_tracking_cpp/pt_target.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 typedef mcmcda::Association<Target> Ascn;
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_ASSOCIATION */
 

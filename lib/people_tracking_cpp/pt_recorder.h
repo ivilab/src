@@ -27,7 +27,7 @@
 #include <people_tracking_cpp/pt_scene_posterior.h>
 #include <people_tracking_cpp/pt_scene_info.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -130,7 +130,7 @@ Proposed_info_recorder<OutputIterator> make_pi_recorder
     return Proposed_info_recorder<OutputIterator>(it, post);
 }
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /* PT_RECORDER_H */
 

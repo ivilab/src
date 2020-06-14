@@ -1,5 +1,5 @@
 
-/* $Id: least_squares.c 21662 2017-08-05 17:00:07Z kobus $ */
+/* $Id: least_squares.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "n/n_incl.h" 
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     const char* invert_method_str; 
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -59,8 +59,8 @@ int main(int argc, char *argv[])
     {   
         double factor_for_linear = pow((double)test_factor, 1.0/4.0);
 
-        num_tries = kjb_rint(factor_for_linear * (double)BASE_NUM_TRIES);
-        max_size = kjb_rint(factor_for_linear * (double)BASE_MAX_SIZE);
+        num_tries = ivi_rint(factor_for_linear * (double)BASE_NUM_TRIES);
+        max_size = ivi_rint(factor_for_linear * (double)BASE_MAX_SIZE);
     } 
 
     if (is_interactive())
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 
     for (count = 0; count<num_tries; count++)
     {
-        num_unknowns = 1 + ((double)max_size) * kjb_rand();
-        num_eq = num_unknowns + ((double)max_size) * kjb_rand();
+        num_unknowns = 1 + ((double)max_size) * ivi_rand();
+        num_eq = num_unknowns + ((double)max_size) * ivi_rand();
 
         EPETE(get_random_matrix(&mp, num_eq, num_unknowns));
         EPETE(get_random_vector(&vp, num_eq)); 

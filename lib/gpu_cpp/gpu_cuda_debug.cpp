@@ -1,4 +1,4 @@
-/* $Id: gpu_cuda_debug.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gpu_cuda_debug.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -22,8 +22,8 @@
 #include "gpu_cpp/gpu_cuda_debug.h"
 #include "m_cpp/m_vector.h"
 
-#ifdef KJB_HAVE_CUDA
-kjb::Vector kjb_gpu_debug_to_vector_uint(CUdeviceptr ptr, int width, int height, int pitch)
+#ifdef IVI_HAVE_CUDA
+ivi::Vector ivi_gpu_debug_to_vector_uint(CUdeviceptr ptr, int width, int height, int pitch)
 {
    unsigned int* o_data = new unsigned int[width * height];
 
@@ -48,7 +48,7 @@ kjb::Vector kjb_gpu_debug_to_vector_uint(CUdeviceptr ptr, int width, int height,
 
    CU_ETX(cuMemcpy2D(&cpy_meta));
 
-   kjb::Vector result( width * height, 123.0);
+   ivi::Vector result( width * height, 123.0);
 
    for(int i = 0; i < width * height; i++)
    {

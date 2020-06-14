@@ -16,10 +16,10 @@
    |  Author:  Jinyan Guan, Ernesto Brau
  * =========================================================================== */
 
-/* $Id: flow_integral_flow.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: flow_integral_flow.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_FLOW_INTEGRAL_FLOW_H
-#define KJB_FLOW_INTEGRAL_FLOW_H
+#ifndef IVI_FLOW_INTEGRAL_FLOW_H
+#define IVI_FLOW_INTEGRAL_FLOW_H
 
 #include <m_cpp/m_matrix.h>
 #include <gr_cpp/gr_2D_bounding_box.h>
@@ -28,7 +28,7 @@
 #include <utility>
 #include <string>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class   Integral_flow
@@ -121,7 +121,7 @@ private:
     std::vector<float> image_;
 };
 
-} //namespace kjb
+} //namespace ivi
 
-#endif /*KJB_FLOW_INTEGRAL_FLOW_H */
+#endif /*IVI_FLOW_INTEGRAL_FLOW_H */
 

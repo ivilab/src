@@ -1,5 +1,5 @@
 
-/* $Id: i_plot.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_plot.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -31,9 +31,9 @@ extern "C" {
 
 int write_plot_image(int plot_num, const char* file_name, int reduction)
 {
-    KJB_image*       ip         = NULL;
-    KJB_image*       reduced_ip = NULL;
-    const KJB_image* output_ip;
+    IVI_image*       ip         = NULL;
+    IVI_image*       reduced_ip = NULL;
+    const IVI_image* output_ip;
     int              result     = NO_ERROR;
 
 
@@ -51,20 +51,20 @@ int write_plot_image(int plot_num, const char* file_name, int reduction)
 
     if (result != ERROR)
     {
-        result = kjb_write_image(ip, file_name);
+        result = ivi_write_image(ip, file_name);
     }
 
-    kjb_free_image(ip);
-    kjb_free_image(reduced_ip);
+    ivi_free_image(ip);
+    ivi_free_image(reduced_ip);
 
     return result;
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int get_plot_image(KJB_image** ipp, int plot_num, int reduction)
+int get_plot_image(IVI_image** ipp, int plot_num, int reduction)
 {
-    KJB_image* ip     = NULL;
+    IVI_image* ip     = NULL;
     int        result = NO_ERROR;
 
 
@@ -79,14 +79,14 @@ int get_plot_image(KJB_image** ipp, int plot_num, int reduction)
         ERE(make_image_from_plot(ipp, plot_num));
     }
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
 
     return result;
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int make_image_from_plot(KJB_image** ipp, int plot_num)
+int make_image_from_plot(IVI_image** ipp, int plot_num)
 {
     char temp_plot_file_name[ MAX_FILE_NAME_SIZE ];
     int result;
@@ -96,7 +96,7 @@ int make_image_from_plot(KJB_image** ipp, int plot_num)
     BUFF_CAT(temp_plot_file_name, ".pbm");
     ERE(save_plot_as_pbm(plot_num, temp_plot_file_name));
 
-    result = kjb_read_image_2(ipp, temp_plot_file_name);
+    result = ivi_read_image_2(ipp, temp_plot_file_name);
 
 #ifdef IMPLEMENT_REVERSING_COLORS
     /*
@@ -105,7 +105,7 @@ int make_image_from_plot(KJB_image** ipp, int plot_num)
 
     if (result != ERROR)
     {
-        KJB_image* ip = *ipp;
+        IVI_image* ip = *ipp;
         int i;
         int j;
         int num_rows = (*ipp)->num_rows;
@@ -171,11 +171,11 @@ int make_image_from_plot(KJB_image** ipp, int plot_num)
     // about to return error, the message will be attached to the more critical
     // error message.
     */
-    if (kjb_unlink(temp_plot_file_name) == ERROR)
+    if (ivi_unlink(temp_plot_file_name) == ERROR)
     {
         if (result != ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
         }
     }
 

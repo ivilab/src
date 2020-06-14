@@ -17,10 +17,10 @@
 
 int main(int argc, char* argv[])
 {
-    KJB_image* ip = NULL; 
+    IVI_image* ip = NULL; 
 
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
   
     create_image_display(); 
     
@@ -31,13 +31,13 @@ int main(int argc, char* argv[])
     EPETE(image_draw_wrapped_text_top_left(ip, "Test\nthree\nwrapping with\ntimesb18", 
                                            200, 200, 150, "timesb18"));
 
-    EPETE(kjb_display_image(ip, NULL));
+    EPETE(ivi_display_image(ip, NULL));
 
     prompt_to_continue();
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS;
 }

@@ -19,7 +19,7 @@
 #include <sstream>
 #include <fstream>
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * Read an edge segment set from an input stream.
@@ -40,13 +40,13 @@ void Line_segment_set::read(std::istream& in )
     // Camera centre
     if (!(field_value = read_field_value(in, "num_segments")))
     {
-        KJB_THROW_2(Illegal_argument, "Edge segment set, Could not read number of segments");
+        IVI_THROW_2(Illegal_argument, "Edge segment set, Could not read number of segments");
     }
     istringstream ist(field_value);
     ist >> _size;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line segment set");
+        IVI_THROW_2(Illegal_argument, "Invalid line segment set");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -74,7 +74,7 @@ void Line_segment_set::read_from_Kovesi_format(const std::string path_to_file)
     std::ifstream ifs(path_to_file.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open Line_segment_set file in Kovesi format");
+        IVI_THROW_2(IO_error, "Could not open Line_segment_set file in Kovesi format");
     }
 
     try
@@ -103,7 +103,7 @@ void Line_segment_set::read_from_Kovesi_format(const std::string path_to_file)
     }
     catch(...)
     {
-        KJB_THROW_2(IO_error, "Could not read Line_segment_set in Kovesi format");
+        IVI_THROW_2(IO_error, "Could not read Line_segment_set in Kovesi format");
     }
 }
 
@@ -113,7 +113,7 @@ void Line_segment_set::read_from_Kovesi_formatb(const std::string path_to_file)
     std::ifstream ifs(path_to_file.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open Line_segment_set file in Kovesi format");
+        IVI_THROW_2(IO_error, "Could not open Line_segment_set file in Kovesi format");
     }
 
     try
@@ -142,7 +142,7 @@ void Line_segment_set::read_from_Kovesi_formatb(const std::string path_to_file)
     }
     catch(...)
     {
-        KJB_THROW_2(IO_error, "Could not read Line_segment_set in Kovesi format");
+        IVI_THROW_2(IO_error, "Could not read Line_segment_set in Kovesi format");
     }
 }
 
@@ -155,7 +155,7 @@ void Line_segment_set::read_from_Kovesi_formatb(const std::string path_to_file)
  * @param ib the blue channel
  * @param width the width of the segment to be drawn (in pixel)
  */
-void Line_segment_set::draw( kjb::Image & img, double ir, double ig, double ib, double width)  const
+void Line_segment_set::draw( ivi::Image & img, double ir, double ig, double ib, double width)  const
 {
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
@@ -169,7 +169,7 @@ void Line_segment_set::draw( kjb::Image & img, double ir, double ig, double ib, 
  * @param img the image
  * @param width the width of the segment to be drawn (in pixel)
  */
-void Line_segment_set::randomly_color(kjb::Image & img, double width)  const
+void Line_segment_set::randomly_color(ivi::Image & img, double width)  const
 {
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
@@ -182,7 +182,7 @@ void Line_segment_set::randomly_color(kjb::Image & img, double width)  const
  *
  * @param edge_set the detected edges
  */
-Edge_segment_set::Edge_segment_set(const kjb::Edge_set * edge_set, bool use_num_pts_as_length )
+Edge_segment_set::Edge_segment_set(const ivi::Edge_set * edge_set, bool use_num_pts_as_length )
 : Readable(), Writeable()
 {
     init_from_edge_set(edge_set, use_num_pts_as_length);
@@ -196,7 +196,7 @@ Edge_segment_set::Edge_segment_set(const kjb::Edge_set * edge_set, bool use_num_
  * @param edge_set set of edges fitted to the line segments to be read
  * @param in the input stream to read this edge segment set from
  */
-Edge_segment_set::Edge_segment_set(const kjb::Edge_set * edge_set, std::istream& in)
+Edge_segment_set::Edge_segment_set(const ivi::Edge_set * edge_set, std::istream& in)
 : Readable(), Writeable()
 {
     read(in, edge_set);
@@ -210,7 +210,7 @@ Edge_segment_set::Edge_segment_set(const kjb::Edge_set * edge_set, std::istream&
  * @param edge_set set of edges fitted to the line segments to be read
  * @param filename the input file to read this edge segment set from
  */
-Edge_segment_set::Edge_segment_set(const kjb::Edge_set * edge_set, const char * filename)
+Edge_segment_set::Edge_segment_set(const ivi::Edge_set * edge_set, const char * filename)
 : Readable(), Writeable()
 {
     read(filename, edge_set);
@@ -218,13 +218,13 @@ Edge_segment_set::Edge_segment_set(const kjb::Edge_set * edge_set, const char * 
 
 Edge_segment_set::Edge_segment_set
 (
-    const kjb::Edge_set * edge_set,
+    const ivi::Edge_set * edge_set,
     const std::vector<Line_segment> & isegments
 ) : Readable(), Writeable()
 {
     if(isegments.size() != edge_set->num_edges())
     {
-        KJB_THROW_2(KJB_error, "Constructor of edge_segment_set, size of line_segment_set must match number of edges");
+        IVI_THROW_2(IVI_error, "Constructor of edge_segment_set, size of line_segment_set must match number of edges");
     }
     for(unsigned int i = 0; i < isegments.size(); i++)
     {
@@ -239,7 +239,7 @@ Edge_segment_set::Edge_segment_set
  *
  * @param edge_set the input Edge_set
  */
-void Edge_segment_set::init_from_edge_set(const kjb::Edge_set * edge_set, bool use_num_pts_as_length)
+void Edge_segment_set::init_from_edge_set(const ivi::Edge_set * edge_set, bool use_num_pts_as_length)
 {
     _segments.clear();
     for(unsigned int i = 0; i < edge_set->num_edges(); i++ )
@@ -256,7 +256,7 @@ void Edge_segment_set::init_from_edge_set(const kjb::Edge_set * edge_set, bool u
  * @param edge_set set of edges fitted to the line segments to be read
  * @param in the input stream to read this edge segment set from
  */
-void Edge_segment_set::read(std::istream& in, const kjb::Edge_set * edge_set )
+void Edge_segment_set::read(std::istream& in, const ivi::Edge_set * edge_set )
 {
     using std::istringstream;
 
@@ -267,17 +267,17 @@ void Edge_segment_set::read(std::istream& in, const kjb::Edge_set * edge_set )
     // Camera centre
     if (!(field_value = read_field_value(in, "num_segments")))
     {
-        KJB_THROW_2(Illegal_argument, "Edge segment set, Could not read number of segments");
+        IVI_THROW_2(Illegal_argument, "Edge segment set, Could not read number of segments");
     }
     istringstream ist(field_value);
     ist >> _size;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line segment set");
+        IVI_THROW_2(Illegal_argument, "Invalid line segment set");
     }
     if (_size != edge_set->num_edges())
     {
-        KJB_THROW_2(Illegal_argument, "Edge segment set and edge set size do not match, could"
+        IVI_THROW_2(Illegal_argument, "Edge segment set and edge set size do not match, could"
                                     "not read Edge segment set");
     }
     ist.clear(std::ios_base::goodbit);
@@ -297,7 +297,7 @@ void Edge_segment_set::read(std::istream& in, const kjb::Edge_set * edge_set )
  * @param edge_set set of edges fitted to the line segments to be read
  * @param in the input file to read this edge segment set from
  */
-void Edge_segment_set::read(const char * filename, const kjb::Edge_set * edge_set )
+void Edge_segment_set::read(const char * filename, const ivi::Edge_set * edge_set )
 {
     std::ifstream in;
     std::ostringstream ost;
@@ -306,7 +306,7 @@ void Edge_segment_set::read(const char * filename, const kjb::Edge_set * edge_se
     if (in.fail())
     {
         ost << filename << ": Could not open edge segments file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
 
     try
@@ -316,14 +316,14 @@ void Edge_segment_set::read(const char * filename, const kjb::Edge_set * edge_se
         catch (IO_error e)
         {
             ost << filename << ": " << e.get_msg();
-            KJB_THROW_2(IO_error,ost.str());
+            IVI_THROW_2(IO_error,ost.str());
         }
 
     in.close();
     if (in.fail())
     {
         ost << filename << ": Could not close edge segments file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
 }
 
@@ -332,7 +332,7 @@ void Edge_segment_set::read(const char * filename, const kjb::Edge_set * edge_se
  */
 void Edge_segment_set::read(std::istream& /* in */)
 {
-    KJB_THROW_2(KJB_error, "Read method requires for edge segment set requires an input edge_set");
+    IVI_THROW_2(IVI_error, "Read method requires for edge segment set requires an input edge_set");
 }
 
 /** @brief Writes this Edge_segment_set to an output stream. */
@@ -355,7 +355,7 @@ void Edge_segment_set::write(std::ostream& out) const
  * @param ib the blue channel
  * @param width the width of the segment to be drawn (in pixel)
  */
-void Edge_segment_set::draw( kjb::Image & img, double ir, double ig, double ib, double width)  const
+void Edge_segment_set::draw( ivi::Image & img, double ir, double ig, double ib, double width)  const
 {
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
@@ -370,7 +370,7 @@ void Edge_segment_set::draw( kjb::Image & img, double ir, double ig, double ib, 
  * @param img the image
  * @param width the width of the segment to be drawn (in pixel)
  */
-void Edge_segment_set::randomly_color(kjb::Image & img, double width)  const
+void Edge_segment_set::randomly_color(ivi::Image & img, double width)  const
 {
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
@@ -429,7 +429,7 @@ void Edge_segment_set::find_vertical_segment_pairs(std::vector<Segment_pair> & p
  */
 void Edge_segment_set::remove_overlapping_segments
 (
-    kjb::Edge_set & edges,
+    ivi::Edge_set & edges,
     double collinear_threshold,
     double overlapping_threshold
 )
@@ -473,7 +473,7 @@ void Edge_segment_set::remove_overlapping_segments
  *
  *  @param edges The edge_set this edge_segment_set was built from
  */
-void Edge_segment_set::remove_frame_segments(unsigned int num_rows, unsigned int num_cols, kjb::Edge_set & edges)
+void Edge_segment_set::remove_frame_segments(unsigned int num_rows, unsigned int num_cols, ivi::Edge_set & edges)
 {
     std::vector<Edge_segment> copies = _segments;
     std::vector<bool> used(copies.size(), false);
@@ -560,7 +560,7 @@ void Line_segment_set::remove_frame_segments(unsigned int num_rows, unsigned int
     }
 }
 
-void Edge_segment_set::remove_non_straight_segments(kjb::Edge_set & edges, double threshold)
+void Edge_segment_set::remove_non_straight_segments(ivi::Edge_set & edges, double threshold)
 {
     std::vector<Edge_segment> copies;
 
@@ -585,7 +585,7 @@ void Edge_segment_set::remove_non_straight_segments(kjb::Edge_set & edges, doubl
  *
  *  @param edges The edge_set this edge_segment_set was built from
  */
-void Edge_segment_set::update_edge_set(kjb::Edge_set & edges)
+void Edge_segment_set::update_edge_set(ivi::Edge_set & edges)
 {
     /** First, we find all the edges that must be removed from
      * the edge_set (basically, all of those that are no longer
@@ -597,7 +597,7 @@ void Edge_segment_set::update_edge_set(kjb::Edge_set & edges)
         unsigned int edge_index = edges.find_index(_segments[i].get_edge());
         if(! (_to_remove[edge_index] ))
         {
-//          KJB_THROW_2(KJB_error, "Duplicated edges");
+//          IVI_THROW_2(IVI_error, "Duplicated edges");
         }
         _to_remove[edge_index] = false;
     }
@@ -617,26 +617,26 @@ void Edge_segment_set::update_edge_set(kjb::Edge_set & edges)
     /** We accordingly update the pointers */
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
-        kjb::Edge temp_edge = edges.get_edge(i);
+        ivi::Edge temp_edge = edges.get_edge(i);
         _segments[i].set_edge(temp_edge);
     }
 }
 
-kjb::Edge_set * Edge_segment_set::convert_to_edge_set(unsigned int num_rows, unsigned int num_cols)
+ivi::Edge_set * Edge_segment_set::convert_to_edge_set(unsigned int num_rows, unsigned int num_cols)
 {
-    kjb::Vector lengths(_segments.size());
+    ivi::Vector lengths(_segments.size());
 
     unsigned int total_num_points = 0;
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
         unsigned int length;
-        kjb_c::find_edge_length_from_end_points(_segments[i].get_start_x(), _segments[i].get_start_y(),
+        ivi_c::find_edge_length_from_end_points(_segments[i].get_start_x(), _segments[i].get_start_y(),
                 _segments[i].get_end_x(), _segments[i].get_end_y(),&length );
         total_num_points += length;
         lengths(i) = length;
     }
 
-    kjb_c::Edge_set * edge_set = kjb_c::create_edge_set(total_num_points, _segments.size(),
+    ivi_c::Edge_set * edge_set = ivi_c::create_edge_set(total_num_points, _segments.size(),
                    lengths.get_c_vector(), num_rows, num_cols);
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
@@ -644,25 +644,25 @@ kjb::Edge_set * Edge_segment_set::convert_to_edge_set(unsigned int num_rows, uns
                 //_segments[i].get_end_x(), _segments[i].get_end_y(), lengths(i), edge_set, i);
                 _segments[i].get_end_x(), _segments[i].get_end_y(), edge_set, i);
     }
-    return new kjb::Edge_set(edge_set);
+    return new ivi::Edge_set(edge_set);
 }
 
 
-kjb::Edge_set * Line_segment_set::convert_to_edge_set(unsigned int num_rows, unsigned int num_cols)
+ivi::Edge_set * Line_segment_set::convert_to_edge_set(unsigned int num_rows, unsigned int num_cols)
 {
-    kjb::Vector lengths(_segments.size());
+    ivi::Vector lengths(_segments.size());
 
     unsigned int total_num_points = 0;
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
         unsigned int length;
-        kjb_c::find_edge_length_from_end_points(_segments[i].get_start_x(), _segments[i].get_start_y(),
+        ivi_c::find_edge_length_from_end_points(_segments[i].get_start_x(), _segments[i].get_start_y(),
                 _segments[i].get_end_x(), _segments[i].get_end_y(),&length );
         total_num_points += length;
         lengths(i) = length;
     }
 
-    kjb_c::Edge_set * edge_set = kjb_c::create_edge_set(total_num_points, _segments.size(),
+    ivi_c::Edge_set * edge_set = ivi_c::create_edge_set(total_num_points, _segments.size(),
                    lengths.get_c_vector(), num_rows, num_cols);
     for(unsigned int i = 0; i < _segments.size(); i++)
     {
@@ -670,17 +670,17 @@ kjb::Edge_set * Line_segment_set::convert_to_edge_set(unsigned int num_rows, uns
                 //_segments[i].get_end_x(), _segments[i].get_end_y(), lengths(i), edge_set, i);
                 _segments[i].get_end_x(), _segments[i].get_end_y(), edge_set, i);
     }
-    return new kjb::Edge_set(edge_set);
+    return new ivi::Edge_set(edge_set);
 }
 
 
-void kjb::detect_long_connected_segments(Line_segment_set & segments, const std::string & img_path, int max_length)
+void ivi::detect_long_connected_segments(Line_segment_set & segments, const std::string & img_path, int max_length)
 {
     char * path_to_edges = getenv ("PATH_TO_GET_LONG_STRAIGHT_EDGES");
     char * path_to_matlab = getenv ("PATH_TO_MATLAB");
     if(!path_to_edges)
     {
-        KJB_THROW_2(KJB_error, "Could not read environment variable PATH_TO_GET_LONG_STRAIGHT_EDGES!!");
+        IVI_THROW_2(IVI_error, "Could not read environment variable PATH_TO_GET_LONG_STRAIGHT_EDGES!!");
     }
     std::string command(path_to_edges);
     command.append("/run_APPgetLargeConnectedEdges.sh ");

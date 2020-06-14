@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: m_vector.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vector.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef VECTOR_WRAP_H
 #define VECTOR_WRAP_H
@@ -22,7 +22,7 @@
  * @author Ernesto Brau
  * @author Luca Del Pero
  *
- * @brief Definition for the Vector class, a thin wrapper on the KJB
+ * @brief Definition for the Vector class, a thin wrapper on the IVI
  *        Vector struct and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -49,13 +49,13 @@
 #include <iterator>
 #include <vector>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/access.hpp>
 #endif
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
-namespace kjb {
+namespace ivi {
 
 class Matrix;
 class Vector;
@@ -73,7 +73,7 @@ template <class T>
 class Generic_matrix_view;
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -85,11 +85,11 @@ class Generic_matrix_view;
  * Value_type typedef, instead of referring to 'double' directly.
  *
  * Most methods of this class are implemented in the C language portion of the
- * KJB library, with this class forming a thin (usually inlined) layer.
+ * IVI library, with this class forming a thin (usually inlined) layer.
  */
 class Vector
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
 
@@ -102,7 +102,7 @@ public:
      */
 
     typedef double          Value_type; ///< data type of the elements
-    typedef kjb_c::Vector   Impl_type;  ///< the underlying implementation
+    typedef ivi_c::Vector   Impl_type;  ///< the underlying implementation
     typedef Matrix          Mat_type;   ///< the associated matrix type
     typedef Generic_matrix_view<Matrix> Mat_view_type;   ///< view type of the associated matrix type
     typedef Vector          Vec_type;   ///< the associated vector type
@@ -186,7 +186,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, length) );
+        ETX( ivi_c::get_target_vector(&m_vector, length) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -202,7 +202,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, static_cast<int>(length)) );
+        ETX( ivi_c::get_target_vector(&m_vector, static_cast<int>(length)) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -218,7 +218,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, static_cast<int>(length)) );
+        ETX( ivi_c::get_target_vector(&m_vector, static_cast<int>(length)) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -230,7 +230,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_initialized_vector(&m_vector, length, num) );
+        ETX( ivi_c::get_initialized_vector(&m_vector, length, num) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -242,7 +242,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, length) );
+        ETX( ivi_c::get_target_vector(&m_vector, length) );
         std::copy( data, data + length, m_vector -> elements );
     }
 
@@ -262,7 +262,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, length) );
+        ETX( ivi_c::get_target_vector(&m_vector, length) );
         std::copy( data, data + length, m_vector -> elements );
     }
 
@@ -272,7 +272,7 @@ public:
      * @brief   Conversion ctor:  claim ownership of an existing vector
      *          pointer (i.e., make a shallow copy).
      *
-     * This method is the proper way to say, ''Here is a kjb_c::Vector
+     * This method is the proper way to say, ''Here is a ivi_c::Vector
      * struct that I am responsible for deleting, and I must make sure that
      * it gets destroyed when it goes out of scope.''  This is a good way
      * to wrap a vector "dynamically," after it has already been created.
@@ -292,7 +292,7 @@ public:
         if ( 0 == vec_ptr )
         {
             // Test program was HERE.
-            ETX( kjb_c::get_target_vector(&m_vector, 0) );
+            ETX( ivi_c::get_target_vector(&m_vector, 0) );
         }
         //else
         //{
@@ -317,7 +317,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_initialized_vector(&m_vector, 1, val) );
+        ETX( ivi_c::get_initialized_vector(&m_vector, 1, val) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -343,7 +343,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, 2) );
+        ETX( ivi_c::get_target_vector(&m_vector, 2) );
         m_vector->elements[0] = val1;
         m_vector->elements[1] = val2;
     }
@@ -357,7 +357,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, 3) );
+        ETX( ivi_c::get_target_vector(&m_vector, 3) );
         m_vector->elements[0] = val1;
         m_vector->elements[1] = val2;
         m_vector->elements[2] = val3;
@@ -372,7 +372,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_vector(&m_vector, 4) );
+        ETX( ivi_c::get_target_vector(&m_vector, 4) );
         m_vector->elements[0] = val1;
         m_vector->elements[1] = val2;
         m_vector->elements[2] = val3;
@@ -384,7 +384,7 @@ public:
     /**
      * @brief   Ctor copies contents (i.e., deep copy) of an existing vector.
      *
-     * @warning This method should be seldom used:  kjb_c::Vector objects
+     * @warning This method should be seldom used:  ivi_c::Vector objects
      *          should rarely be left in an unwrapped state.
      *
      * This kind of conversion is relatively expensive, thus we restrict its
@@ -394,7 +394,7 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::copy_vector(&m_vector, &vec_ref) );
+        ETX( ivi_c::copy_vector(&m_vector, &vec_ref) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -428,7 +428,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
     /**
-     * @brief   Copy ctor -- calls the kjb_c function to copy a vector.
+     * @brief   Copy ctor -- calls the ivi_c function to copy a vector.
      *
      * Although this method is essential, I hope it is seldom actually used.
      * Most of the time it should be unnecessary or optimized away somehow.
@@ -437,12 +437,12 @@ public:
         : m_vector(0)
     {
         // Test program was HERE.
-        ETX( kjb_c::copy_vector(&m_vector, vec_ref.m_vector) );
+        ETX( ivi_c::copy_vector(&m_vector, vec_ref.m_vector) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
     /**
      * @brief   Move ctor
      */
@@ -452,7 +452,7 @@ public:
         m_vector = vec_ref.m_vector;
         vec_ref.m_vector = 0;
     }
-#endif /* KJB_HAVE_CXX11 */
+#endif /* IVI_HAVE_CXX11 */
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
@@ -476,7 +476,7 @@ public:
     Vector(InputIterator_ begin_, InputIterator_ end_)
         : m_vector(0)
     {
-        ETX( kjb_c::get_target_vector(&m_vector, 8) );
+        ETX( ivi_c::get_target_vector(&m_vector, 8) );
         m_vector->length = 0;
 
         typedef typename std::iterator_traits<InputIterator_>::
@@ -488,12 +488,12 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
     /**
-     * @brief   Destructor -- which just calls the KJB destructor.
+     * @brief   Destructor -- which just calls the IVI destructor.
      */
     ~Vector()
     {
         // Test program was HERE.
-        kjb_c::free_vector(m_vector);
+        ivi_c::free_vector(m_vector);
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -627,14 +627,14 @@ public:
     /**
      * @brief   Clobber current vector; resize and fill with random values.
      * @return  an lvalue to this object
-     * @see     kjb_c::kjb_rand()
+     * @see     ivi_c::ivi_rand()
      *
      * Random values are uniformly distributed between 0 and 1.
      */
     Vector& randomize(int length)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_random_vector(&m_vector, length) );
+        ETX( ivi_c::get_random_vector(&m_vector, length) );
         return *this;
     }
 
@@ -643,7 +643,7 @@ public:
     /**
      * @brief   Clobber current vector contents with random values.
      * @return  an lvalue to this object
-     * @see     kjb_c::kjb_rand()
+     * @see     ivi_c::ivi_rand()
      *
      * Random values are uniformly distributed between 0 and 1.
      */
@@ -674,7 +674,7 @@ public:
     Vector& zero_out(int length)
     {
         // Test program was HERE.
-        ETX( kjb_c::get_zero_vector(&m_vector, length) );
+        ETX( ivi_c::get_zero_vector(&m_vector, length) );
         return *this;
     }
 
@@ -764,7 +764,7 @@ public:
     Vector& operator=(const Mat_view_type& vec_ref);
 
     /**
-     * @brief   Assignment operator:  assign from a kjb_c::Vector,
+     * @brief   Assignment operator:  assign from a ivi_c::Vector,
      *          a C struct.
      */
     Vector& operator=(const Impl_type& vec_ref)
@@ -772,7 +772,7 @@ public:
         if ( m_vector != &vec_ref )
         {
             // Test program was HERE.
-            ETX( kjb_c::copy_vector(&m_vector, &vec_ref) );
+            ETX( ivi_c::copy_vector(&m_vector, &vec_ref) );
         }
         //else
         //{
@@ -783,7 +783,7 @@ public:
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
     /**
      * @brief   Move assignment
      */
@@ -792,23 +792,23 @@ public:
         if(this == &other)
             return *this;
 
-        kjb_c::free_vector( m_vector );
+        ivi_c::free_vector( m_vector );
         m_vector = other.m_vector;
         other.m_vector = 0;
         return *this;
     }
-#endif /* KJB_HAVE_CXX11 */
+#endif /* IVI_HAVE_CXX11 */
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
     /**
-     * @brief   Assignment operator:  assign from a kjb::Vector,
+     * @brief   Assignment operator:  assign from a ivi::Vector,
      *          a C++ object.
      */
     Vector& operator=(const Vector& src)
     {
         // Test program was HERE.
-        // call assignment operator for kjb_c::Vector
+        // call assignment operator for ivi_c::Vector
         return operator=( *src.m_vector );
     }
 
@@ -841,7 +841,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
     /**
-     * @brief   Get const pointer to the underlying kjb_c::Vector C
+     * @brief   Get const pointer to the underlying ivi_c::Vector C
      *          struct.
      */
     const Impl_type* get_c_vector() const
@@ -853,7 +853,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
     /**
-     * @brief   Get pointer to the underlying kjb_c::Vector C
+     * @brief   Get pointer to the underlying ivi_c::Vector C
      *          struct.
      * @warning:  This should only be used if you know what you're doing.  generally, it should only be used to write wrapper functions for c functions.
      */
@@ -866,7 +866,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
     /**
-     * @brief   Get pointer to the underlying kjb_c::Vector C
+     * @brief   Get pointer to the underlying ivi_c::Vector C
      *          struct.
      * @warning This should NOT be used except inside wrapper functions.  This function breaks encapsulation, and has the potential to completely screw up the C++ matrix object, so be sure you know what you're doing before calling this!!  This method's name is intentionally long and scary to discourage its use outside of wrapper code.
      *
@@ -1149,7 +1149,7 @@ public:
 
     /**
      * @brief   Write vector as a row to a file, or to standard output.
-     * @see     kjb_c::write_row_vector_full_precision()
+     * @see     ivi_c::write_row_vector_full_precision()
      * @warning This function doesn't handle "empty" vectors correctly.  For this reason, write_col is currently preferred.
      *
      * If filename equals NULL or filename[0] is a null character
@@ -1158,14 +1158,14 @@ public:
     void write_row( const char* filename = 0 ) const
     {
         // Test program was HERE.
-        ETX(kjb_c::write_row_vector_full_precision( m_vector, filename ));
+        ETX(ivi_c::write_row_vector_full_precision( m_vector, filename ));
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
     /**
      * @brief   Write vector as a column to a file, or to standard output.
-     * @see     kjb_c::write_col_vector_with_header()
+     * @see     ivi_c::write_col_vector_with_header()
      *
      * If filename equals NULL or filename[0] is the null character
      * then the output is directed to standard output.
@@ -1173,7 +1173,7 @@ public:
     void write_col( const char* filename = 0 ) const
     {
         // Test program was HERE.
-        ETX(kjb_c::write_col_vector_with_header( m_vector, filename ));
+        ETX(ivi_c::write_col_vector_with_header( m_vector, filename ));
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -1186,7 +1186,7 @@ public:
     void read( const char* filename = 0 )
     {
         // Test program was HERE.
-        ETX(kjb_c::read_vector( &m_vector, filename ));
+        ETX(ivi_c::read_vector( &m_vector, filename ));
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -1221,7 +1221,7 @@ public:
     Vector& operator*= (Value_type op2)
     {
         // Test program was HERE.
-        ETX( kjb_c::ow_multiply_vector_by_scalar(m_vector, op2) );
+        ETX( ivi_c::ow_multiply_vector_by_scalar(m_vector, op2) );
         return *this;
     }
 
@@ -1243,7 +1243,7 @@ public:
      */
     Vector& ew_multiply(const Vector & op2)
     {
-        ETX( kjb_c::ow_multiply_vectors(m_vector, op2.m_vector) );
+        ETX( ivi_c::ow_multiply_vectors(m_vector, op2.m_vector) );
         return *this;
     }
 
@@ -1256,7 +1256,7 @@ public:
     Vector& operator/= (Value_type op2)
     {
         // Test program was HERE.
-        ETX( kjb_c::ow_divide_vector_by_scalar(m_vector, op2) );
+        ETX( ivi_c::ow_divide_vector_by_scalar(m_vector, op2) );
         return *this;
     }
 
@@ -1278,7 +1278,7 @@ public:
      */
     Vector& ew_divide(const Vector & op2)
     {
-        ETX( kjb_c::ow_divide_vectors(m_vector, op2.m_vector) );
+        ETX( ivi_c::ow_divide_vectors(m_vector, op2.m_vector) );
         return *this;
     }
 
@@ -1290,7 +1290,7 @@ public:
     Vector& operator+= (const Vector& op2)
     {
         // Test program was HERE.
-        ETX( kjb_c::ow_add_vectors(m_vector, op2.m_vector) );
+        ETX( ivi_c::ow_add_vectors(m_vector, op2.m_vector) );
         return *this;
     }
 
@@ -1320,7 +1320,7 @@ public:
     Vector& operator-= (const Vector& op2)
     {
         // Test program was HERE.
-        ETX( kjb_c::ow_subtract_vectors(m_vector, op2.m_vector) );
+        ETX( ivi_c::ow_subtract_vectors(m_vector, op2.m_vector) );
         return *this;
     }
 
@@ -1389,18 +1389,18 @@ public:
         if ( 0 == get_length() )
         {
             // Test program was HERE.
-            KJB_THROW_2( Result_error,
+            IVI_THROW_2( Result_error,
                                 "Vector is empty; min is undefined" );
         }
         if ( 0 == min_index )
         {
             // Test program was HERE.
-            //return kjb::min(*this);
-            return kjb_c::min_vector_element(m_vector);
+            //return ivi::min(*this);
+            return ivi_c::min_vector_element(m_vector);
         }
         // Test program was HERE.
         Value_type min_val;
-        *min_index = kjb_c::get_min_vector_element(m_vector, &min_val);
+        *min_index = ivi_c::get_min_vector_element(m_vector, &min_val);
         return min_val;
     }
 
@@ -1430,18 +1430,18 @@ public:
         if ( 0 == get_length() )
         {
             // Test program was HERE.
-            KJB_THROW_2( Result_error,
+            IVI_THROW_2( Result_error,
                                 "Vector is empty; max is undefined" );
         }
         if ( 0 == max_index )
         {
             // Test program was HERE.
-            //return kjb::max(*this);
-            return kjb_c::max_vector_element(m_vector);
+            //return ivi::max(*this);
+            return ivi_c::max_vector_element(m_vector);
         }
         // Test program was HERE.
         Value_type max_val;
-        *max_index = kjb_c::get_max_vector_element(m_vector, &max_val);
+        *max_index = ivi_c::get_max_vector_element(m_vector, &max_val);
         return max_val;
     }
 
@@ -1474,7 +1474,7 @@ public:
         Hat of (a b c)' :=  (  c  0 -a )
                             ( -b  a  0 ).</pre>
      */
-    kjb::Matrix hat() const;
+    ivi::Matrix hat() const;
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
 
@@ -1493,7 +1493,7 @@ public:
     Value_type magnitude() const
     {
         // Test program was HERE.
-        return kjb_c::vector_magnitude(m_vector);
+        return ivi_c::vector_magnitude(m_vector);
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -1504,7 +1504,7 @@ public:
     Value_type magnitude_squared() const
     {
         // Test program was HERE.
-        return kjb_c::sum_vector_squared_elements(m_vector);
+        return ivi_c::sum_vector_squared_elements(m_vector);
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -1515,7 +1515,7 @@ public:
     Value_type sum_vector_elements() const
     {
         // Test program was HERE.
-        return kjb_c::sum_vector_elements(m_vector);
+        return ivi_c::sum_vector_elements(m_vector);
     }
 
     /**
@@ -1524,13 +1524,13 @@ public:
      */
     Vector& square_elements()
     {
-        ETX(kjb_c::ow_square_vector_elements(m_vector));
+        ETX(ivi_c::ow_square_vector_elements(m_vector));
         return *this;
     }
 
     Vector& ew_reciprocal()
     {
-        ETX(kjb_c::ow_invert_vector(m_vector));
+        ETX(ivi_c::ow_invert_vector(m_vector));
         return *this;
     }
 
@@ -1540,17 +1540,17 @@ public:
      * @brief Normalize vector in place by choice of method (default by
      *        magnitude).
      */
-    Vector& normalize(kjb_c::Norm_method method =kjb_c::NORMALIZE_BY_MAGNITUDE)
+    Vector& normalize(ivi_c::Norm_method method =ivi_c::NORMALIZE_BY_MAGNITUDE)
     {
         // Test program was HERE.
-        kjb_c::normalize_vector(&m_vector, m_vector, method);
+        ivi_c::normalize_vector(&m_vector, m_vector, method);
         return *this;
     }
 
     /**
      * @brief non=mutating version of "normalize()"
      */
-    Vector normalized(kjb_c::Norm_method method =kjb_c::NORMALIZE_BY_MAGNITUDE) const
+    Vector normalized(ivi_c::Norm_method method =ivi_c::NORMALIZE_BY_MAGNITUDE) const
     {
         Vector tmp(*this);
         tmp.normalize(method);
@@ -1564,7 +1564,7 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-        return kjb_serialize(ar, *this, version);
+        return ivi_serialize(ar, *this, version);
     }
 
 };
@@ -1662,8 +1662,8 @@ inline
 Vector create_random_vector(int length)
 {
     // Test program was HERE.
-    kjb_c::Vector* result = 0;
-    ETX( kjb_c::get_random_vector( &result, length ) );
+    ivi_c::Vector* result = 0;
+    ETX( ivi_c::get_random_vector( &result, length ) );
     return Vector(result);
 }
 
@@ -1692,7 +1692,7 @@ Vector create_zero_vector(int length)
 
 /**
  * @brief   Construct a vector by deep-copying a section of another vector.
- * @see     kjb_c::copy_vector_segment()
+ * @see     ivi_c::copy_vector_segment()
  *
  * @note The stl-style "fill" constructor is a more generic alternative to this:
  *  Vector v(v2.begin()+start, v2.begin()+start+length)
@@ -1701,8 +1701,8 @@ inline
 Vector create_vector_from_vector_section(const Vector& iv, int begin, int length)
 {
     // Test program was HERE.
-    kjb_c::Vector* outvec = 0;
-    ETX_2(kjb_c::copy_vector_segment(&outvec, iv.get_c_vector(), begin, length),
+    ivi_c::Vector* outvec = 0;
+    ETX_2(ivi_c::copy_vector_segment(&outvec, iv.get_c_vector(), begin, length),
                             "Failure in create_vector_from_vector_section : allocation error or bad indices");
     return Vector(outvec);
 }
@@ -1899,7 +1899,7 @@ bool operator==(const Vector& op1, const Vector::Impl_type& op2);
 /**
  * @brief   Test for exact equality between vectors.
  *
- * This is an inline to allow the KJB C struct appear on the left side
+ * This is an inline to allow the IVI C struct appear on the left side
  * of the ==.
  */
 inline
@@ -1927,7 +1927,7 @@ bool operator!=(const Vector& op1, const Vector::Impl_type &op2)
 /**
  * @brief   Test for inequality between vectors.
  *
- * This is an inline to allow the KJB C struct appear on the left side
+ * This is an inline to allow the IVI C struct appear on the left side
  * of the ==.
  */
 inline
@@ -2010,7 +2010,7 @@ bool operator>=(const Vector& op1, const Vector& op2)
  * @brief   Display vector contents in an ASCII format.
  *
  * This routine is mostly for debugging; consider one of the many
- * KJB output routines for more output in a more standardized form.
+ * IVI output routines for more output in a more standardized form.
  */
 std::ostream& operator<<(std::ostream& out, const Vector& m);
 
@@ -2058,13 +2058,13 @@ Vector::Value_type max_abs_difference( const Vector& op1, const Vector& op2 )
     if ( op1.get_length() != op2.get_length() )
     {
         // Test program was HERE.
-        KJB_THROW( Dimension_mismatch );
+        IVI_THROW( Dimension_mismatch );
     }
     //else
     //{
     //    // Test program was HERE.
     //}
-    return kjb_c::max_abs_vector_difference( op1.get_c_vector(), op2.get_c_vector() );
+    return ivi_c::max_abs_vector_difference( op1.get_c_vector(), op2.get_c_vector() );
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -2077,7 +2077,7 @@ Vector::Value_type dot(const Vector& op1, const Vector& op2)
 {
     // Test program was HERE.
     Vector::Value_type result;
-    ETX( kjb_c::get_dot_product(op1.get_c_vector(), op2.get_c_vector(), &result) );
+    ETX( ivi_c::get_dot_product(op1.get_c_vector(), op2.get_c_vector(), &result) );
     return result;
 }
 
@@ -2095,7 +2095,7 @@ Vector cross(const Vector& op1, const Vector& op2);
 /**
  * @brief   Compute L1-norm of vector
  *
- * This function is required for some KJB algorithms, and is 
+ * This function is required for some IVI algorithms, and is 
  * required to adhere to the ModelParameters concept.
  */
 inline
@@ -2114,7 +2114,7 @@ double norm1(const Vector& op)
 /**
  * @brief   Compute L2-norm of vector
  *
- * This function is required for some KJB algorithms, and is 
+ * This function is required for some IVI algorithms, and is 
  * required to adhere to the ModelParameters concept.
  */
 inline
@@ -2133,7 +2133,7 @@ double norm2(const Vector& op1)
 inline
 double vector_distance(const Vector& op1, const Vector& op2)
 {
-    return kjb_c::vector_distance(op1.get_c_vector(), op2.get_c_vector());
+    return ivi_c::vector_distance(op1.get_c_vector(), op2.get_c_vector());
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -2147,7 +2147,7 @@ double vector_distance(const Vector& op1, const Vector& op2)
 inline
 double vector_distance_squared(const Vector& op1, const Vector& op2)
 {
-    return kjb_c::vector_distance_sqrd(op1.get_c_vector(), op2.get_c_vector());
+    return ivi_c::vector_distance_sqrd(op1.get_c_vector(), op2.get_c_vector());
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -2159,7 +2159,7 @@ inline
 Vector::Value_type max(const Vector& vec)
 {
     // Test program was HERE.
-    return kjb_c::max_vector_element(vec.get_c_vector());
+    return ivi_c::max_vector_element(vec.get_c_vector());
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -2171,7 +2171,7 @@ inline
 Vector::Value_type min(const Vector& vec)
 {
     // Test program was HERE.
-    return kjb_c::min_vector_element(vec.get_c_vector());
+    return ivi_c::min_vector_element(vec.get_c_vector());
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  */
@@ -2230,7 +2230,7 @@ OutputIterator separate_vector(const Vector& vec, int sz, OutputIterator result)
 
     if(n == 0)
     {
-        KJB_THROW_2(Illegal_argument, "separate_vectors: cannot desired vector size is too large.");
+        IVI_THROW_2(Illegal_argument, "separate_vectors: cannot desired vector size is too large.");
     }
 
     for(int i = 0; i < n; i++)
@@ -2242,7 +2242,7 @@ OutputIterator separate_vector(const Vector& vec, int sz, OutputIterator result)
 }
 
 /**
- * @brief   Treat a std::vector of kjb::Vectors as a matrix and get its
+ * @brief   Treat a std::vector of ivi::Vectors as a matrix and get its
  *          'transpose'.
  */
 std::vector<Vector> get_transpose(const std::vector<Vector>& m);
@@ -2256,7 +2256,7 @@ Int_vector floor( const Vector& realv );
  * @param  double a - start point, double b - end point, double n - number of points
  * @author Josh Bowdish
  */
-kjb::Vector create_uniformly_spaced_vector(double a,double b, unsigned n);
+ivi::Vector create_uniformly_spaced_vector(double a,double b, unsigned n);
 
 
 /** @} */
@@ -2266,7 +2266,7 @@ inline void swap(Vector& v1, Vector& v2) { v1.swap(v2); }
 
 } 
 
-//namespace kjb
+//namespace ivi
 
 
 #endif /*VECTOR_WRAP_H */

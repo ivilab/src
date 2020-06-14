@@ -1,11 +1,11 @@
-/* $Id: test_color_likelihood.cpp 15736 2013-10-19 05:44:01Z predoehl $ */
+/* $Id: test_color_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 #include <likelihood_cpp/color_likelihood.h>
 #include <iostream>
 #include <map>
 #include <i_cpp/i_image.h>
 #include <l/l_io.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char **argv)
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     map<int, Region_vector> regions = get_regions_from_mask(mask, 2);
     cout << "likelihood: " << clh(regions) << endl;
 
-    kjb_c::prompt_to_continue();
+    ivi_c::prompt_to_continue();
 
     return EXIT_SUCCESS;
 }

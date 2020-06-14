@@ -1,4 +1,4 @@
-/* $Id: test_beta_binomial.cpp 20241 2016-01-20 22:34:46Z jguan1 $ */
+/* $Id: test_beta_binomial.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -24,7 +24,7 @@
 
 int main()
 {
-    kjb::Matrix data("input/bbinopdf.mat");
+    ivi::Matrix data("input/bbinopdf.mat");
 
     size_t errors = 0;
     for(size_t i = 0; i < data.get_num_rows(); ++i)
@@ -35,8 +35,8 @@ int main()
         double b = data(i,3);
         double p = data(i,4);
 
-        kjb::Beta_binomial_distribution dist(n,a,b);
-        double test_p = kjb::pdf(dist, k);
+        ivi::Beta_binomial_distribution dist(n,a,b);
+        double test_p = ivi::pdf(dist, k);
 
         if(fabs(test_p - p)/p > FLT_EPSILON)
         {

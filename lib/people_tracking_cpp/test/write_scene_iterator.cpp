@@ -39,8 +39,8 @@
 #include "utils.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 bool VERBOSE = true;
 const double eps = 1e-6;
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
         
 
         // WRITE USING OUTPUT ITERATOR
-        kjb_c::kjb_mkdir(outdir.c_str());
+        ivi_c::ivi_mkdir(outdir.c_str());
         copy(scenes.begin(), scenes.end(), Write_scene_iterator(outdir));
 
         // READ SCENES
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
             TEST_TRUE(compare_scenes(sc, scenes[i]));
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

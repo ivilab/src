@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: posterior_laplace.cpp 20472 2016-03-03 16:57:16Z ernesto $ */
+/* $Id: posterior_laplace.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_glut.h>
@@ -43,7 +43,7 @@
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using boost::bind;
 

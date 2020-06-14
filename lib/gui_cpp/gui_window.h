@@ -1,4 +1,4 @@
-/* $Id: gui_window.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_window.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,10 +19,10 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_WINDOW_H
-#define KJB_CPP_GUI_WINDOW_H
+#ifndef IVI_CPP_GUI_WINDOW_H
+#define IVI_CPP_GUI_WINDOW_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <gui_cpp/gui_overlay.h>
 #include <gui_cpp/gui_button.h>
@@ -30,7 +30,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -180,7 +180,7 @@ private:
      * Attempt to handle click/release as a title bar click
      * @pre x, y is inside window
      */
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     bool title_bar_click_(int button, int state, int x, int y);
 #endif
 
@@ -188,7 +188,7 @@ private:
      * Attempt to handle click/release as a resize event.
      * @pre x, y is inside window
      */
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     bool resize_click_(int button, int state, int x, int y);
 #endif
 

@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_scan.c 21342 2017-03-26 03:55:31Z kobus $ */
+/* $Id: l_sys_scan.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -205,14 +205,14 @@ int set_low_level_scan_options(const char* option, const char* value)
  * Returns:
  *    If "str" represents a valid long, then NO_ERROR is returned. Otherwise the
  *    problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1u64, ss1u32, ss1u16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -299,14 +299,14 @@ int ss1ul(const char* input_str, unsigned long* ulong_ptr)
  * Returns:
  *    If "str" represents a valid long, then NO_ERROR is returned. Otherwise the
  *    problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1i64, ss1i32, ss1i16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -424,14 +424,14 @@ int ss1l(const char* input_str, long* long_ptr)
  *    If "str" represents a valid positive long, then NO_ERROR is returned.
  *    Otherwise the problem with "str" is reported in the set error message, and
  *    ERRROR is returned.  The problem with "str" can be printed with
- *    kjb_print_error.
+ *    ivi_print_error.
  *
  * Macros:
  *    ss1spi64, ss1spi32, ss1spi16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -474,14 +474,14 @@ int ss1spl(const char* input_str, long* long_ptr)
  *    If "str" represents a valid positive long, then NO_ERROR is returned.
  *    Otherwise the problem with "str" is reported in the set error message, and
  *    ERRROR is returned.  The problem with "str" can be printed with
- *    kjb_print_error.
+ *    ivi_print_error.
  *
  * Macros:
  *    ss1pi64, ss1pi32, ss1pi16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -558,14 +558,14 @@ int ss1pl(const char* input_str, long* long_ptr)
  *    If "str" represents a valid positive long, or the special values
  *    mentioned above, then NO_ERROR is returned.  Otherwise the problem with
  *    "str" is reported in the set error message, and ERRROR is returned.  The
- *    problem with "str" can be printed with kjb_print_error.
+ *    problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1pi64_2, ss1pi32_2, ss1pi16_2
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -609,14 +609,14 @@ int ss1pl_2(const char* input_str, long* long_ptr)
  * Returns:
  *    If "str" represents a valid int, then NO_ERROR is returned. Otherwise the
  *    problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1u64, ss1u32, ss1u16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -705,14 +705,14 @@ int ss1ui(const char* input_str, unsigned int* uint_ptr)
  * Returns:
  *    If "str" is a valid int, then NO_ERROR is returned. Otherwise the problem
  *    with "str" is reported in the set error message, and ERRROR is returned.
- *    The problem with "str" can be printed with kjb_print_error.
+ *    The problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1i64, ss1i32, ss1i16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -830,14 +830,14 @@ int ss1i(const char* input_str, int* int_ptr)
  *    If "str" represents a valid positive integer, then NO_ERROR is returned.
  *    Otherwise the problem with "str" is reported in the set error message, and
  *    ERRROR is returned.  The problem with "str" can be printed with
- *    kjb_print_error.
+ *    ivi_print_error.
  *
  * Macros:
  *    ss1spi64, ss1spi32, ss1spi16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -880,14 +880,14 @@ int ss1spi(const char* input_str, int* int_ptr)
  *    If "str" represents a valid positive integer, then NO_ERROR is returned.
  *    Otherwise the problem with "str" is reported in the set error message, and
  *    ERRROR is returned.  The problem with "str" can be printed with
- *    kjb_print_error.
+ *    ivi_print_error.
  *
  * Macros:
  *    ss1pi64, ss1pi32, ss1pi16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -976,14 +976,14 @@ int ss1pi(const char* input_str, int* int_ptr)
  *    If "str" represents a valid positive integer, or "off", or "none", then
  *    NO_ERROR is returned.  Otherwise the problem with "str" is reported in
  *    the set error message, and ERRROR is returned.  The problem with "str"
- *    can be printed with kjb_print_error.
+ *    can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1pi64_2, ss1pi32_2, ss1pi16_2
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -1027,14 +1027,14 @@ int ss1pi_2(const char* input_str, int* int_ptr)
  * Returns:
  *    If "str" represents a valid short, then NO_ERROR is returned. Otherwise the
  *    problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1u64, ss1u32, ss1u16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -1124,14 +1124,14 @@ int ss1us(const char* input_str, unsigned short* ushort_ptr)
  * Returns:
  *    If "str" represents a valid short, then NO_ERROR is returned. Otherwise
  *    the problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1i64, ss1i32, ss1i16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -1249,13 +1249,13 @@ int ss1s(const char* input_str, short* short_ptr)
  *    If "str" represents a valid strictly positive short, then NO_ERROR is
  *    returned.  Otherwise the problem with "str" is reported in the set error
  *    message, and ERRROR is returned.  The problem with "str" can be printed
- *    with kjb_print_error.
+ *    with ivi_print_error.
  *
  * Macros:
  *    ss1spi64, ss1spi32, ss1spi16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to kjb_int32 or kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to ivi_int32 or ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -1297,14 +1297,14 @@ int ss1sps(const char* input_str, short* short_ptr)
  *    If "str" represents a valid positive short, then NO_ERROR is returned.
  *    Otherwise the problem with "str" is reported in the set error message, and
  *    ERRROR is returned.  The problem with "str" can be printed with
- *    kjb_print_error.
+ *    ivi_print_error.
  *
  * Macros:
  *    ss1pi64, ss1pi32, ss1pi16
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to  kjb_int64, kjb_int32, or
- *    kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to  ivi_int64, ivi_int32, or
+ *    ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -1381,13 +1381,13 @@ int ss1ps(const char* input_str, short* short_ptr)
  *    If "str" represents a valid positive short, or the special values
  *    mentioned above, then NO_ERROR is returned.  Otherwise the problem with
  *    "str" is reported in the set error message, and ERRROR is returned.  The
- *    problem with "str" can be printed with kjb_print_error.
+ *    problem with "str" can be printed with ivi_print_error.
  *
  * Macros:
  *    ss1pi64_2, ss1pi32_2, ss1pi16_2
  *
  *    These macros can be used to force scanning of a certain integer size. The
- *    argument of these is normally a pointer to kjb_int32 or kjb_int16 as appropriate.
+ *    argument of these is normally a pointer to ivi_int32 or ivi_int16 as appropriate.
  *
  * Index: I/O, scanning
  *
@@ -1436,7 +1436,7 @@ int ss1ps_2(const char* input_str, short* short_ptr)
  * Returns:
  *    If "str" represents a valid float, then NO_ERROR is returned. Otherwise
  *    the problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Index: I/O, scanning
  *
@@ -1565,7 +1565,7 @@ int ss1f(const char* input_str, float* float_ptr)
  * Returns:
  *    If "str" represents a valid float, then NO_ERROR is returned. Otherwise
  *    the problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Index: I/O, scanning
  *
@@ -1667,7 +1667,7 @@ int ss1snf(const char* input_str, float* float_ptr)
  * Returns:
  *    If "str" represents a valid double, then NO_ERROR is returned. Otherwise
  *    the problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Index: I/O, scanning
  *
@@ -1806,7 +1806,7 @@ int ss1d(const char* input_str, double* double_ptr)
  * Returns:
  *    If "str" represents a valid double, then NO_ERROR is returned. Otherwise
  *    the problem with "str" is reported in the set error message, and ERRROR is
- *    returned.  The problem with "str" can be printed with kjb_print_error.
+ *    returned.  The problem with "str" can be printed with ivi_print_error.
  *
  * Index: I/O, scanning
  *

@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: drift_sampler.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: drift_sampler.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_DRIFT_SAMPLER_H
-#define KJB_TIES_DRIFT_SAMPLER_H
+#ifndef IVI_TIES_DRIFT_SAMPLER_H
+#define IVI_TIES_DRIFT_SAMPLER_H
 
 #include <l/l_sys_debug.h>
 #include <l/l_sys_def.h>
@@ -45,7 +45,7 @@
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/posterior.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 class Drift_sampler
@@ -106,12 +106,12 @@ public:
             bst_ofs_.open(bst_fname_p->c_str(), std::ofstream::app);
             if(log_ofs_.fail())
             {
-                KJB_THROW_3(IO_error, "Can't open file %s", 
+                IVI_THROW_3(IO_error, "Can't open file %s", 
                                       (log_fname_p->c_str()));
             }
             if(bst_ofs_.fail())
             {
-                KJB_THROW_3(IO_error, "Can't open file %s", 
+                IVI_THROW_3(IO_error, "Can't open file %s", 
                                       (bst_fname_p->c_str()));
             }
             record_ = true;
@@ -131,7 +131,7 @@ public:
         }
 
         // set cholesky decomposition method, default is "native"
-        KJB(EPETE(set_cholesky_options("cholesky", "lapack")));
+        IVI(EPETE(set_cholesky_options("cholesky", "lapack")));
     }
 
     /** @brief  Sample until burned in. */
@@ -243,7 +243,7 @@ private:
     bool record_;
 };
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
-#endif // KJB_TIES_DRIFT_SAMPLER_H
+#endif // IVI_TIES_DRIFT_SAMPLER_H
 

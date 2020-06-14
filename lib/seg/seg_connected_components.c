@@ -1,5 +1,5 @@
 
-/* $Id: seg_connected_components.c 15487 2013-10-03 22:04:16Z predoehl $ */
+/* $Id: seg_connected_components.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -26,7 +26,7 @@ extern "C" {
  *
  * Gets target region list.
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of region list.  If *target_rlpp is NULL, then this
  * routine creates the region list.  If it is not NULL, and it is the right
  * size, then this routine does nothing.  If it is the wrong size, then it is
@@ -36,8 +36,8 @@ extern "C" {
  * fails, then the original contents of the *target_rlpp will be lost.
  * However,
  * (*target_rlpp)->regions will be set to NULL, so (*target_rlpp) can be safely
- * sent to kjb_free().  Note that this is in fact the convention throughout
- * the KJB library:  if destruction on failure is a problem (usually when
+ * sent to ivi_free().  Note that this is in fact the convention throughout
+ * the IVI library:  if destruction on failure is a problem (usually when
  * *target_rlpp is global) then work on a copy!
  *
  *
@@ -45,10 +45,10 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int get_target_region_list(KJB_region_list** target_rlpp, int num_regions)
+int get_target_region_list(IVI_region_list** target_rlpp, int num_regions)
 {
-    KJB_region_list* temp_rlp;
-    KJB_region_list* rlp = *target_rlpp;
+    IVI_region_list* temp_rlp;
+    IVI_region_list* rlp = *target_rlpp;
 
     if (num_regions < 0)
     {
@@ -58,10 +58,10 @@ int get_target_region_list(KJB_region_list** target_rlpp, int num_regions)
 
     if (rlp == NULL)
     {
-        NRE(temp_rlp = TYPE_MALLOC(KJB_region_list));
+        NRE(temp_rlp = TYPE_MALLOC(IVI_region_list));
         rlp = temp_rlp;
         
-        NRE(rlp->regions = N_TYPE_MALLOC(KJB_region, num_regions));
+        NRE(rlp->regions = N_TYPE_MALLOC(IVI_region, num_regions));
         rlp->num_regions = num_regions;
         
         *target_rlpp = rlp;
@@ -77,11 +77,11 @@ int get_target_region_list(KJB_region_list** target_rlpp, int num_regions)
     }
     else
     {
-        kjb_free(rlp->regions);
+        ivi_free(rlp->regions);
 
         if (num_regions > 0)
         {
-            NRE(rlp->regions = N_TYPE_MALLOC(KJB_region, num_regions));
+            NRE(rlp->regions = N_TYPE_MALLOC(IVI_region, num_regions));
         }
         else
         {
@@ -99,9 +99,9 @@ int get_target_region_list(KJB_region_list** target_rlpp, int num_regions)
 /* =============================================================================
  *                             free_region_list
  *
- * Frees the space associated with a KJB_region_list.
+ * Frees the space associated with a IVI_region_list.
  *
- * This routine frees the storage associated with a KJB_region_list obtained from
+ * This routine frees the storage associated with a IVI_region_list obtained from
  * get_target_region_list (perhaps indirectly). If the argument is NULL, then this
  * routine returns safely without doing anything.
  *
@@ -109,7 +109,7 @@ int get_target_region_list(KJB_region_list** target_rlpp, int num_regions)
  * -----------------------------------------------------------------------------
 */
 
-void free_region_list(KJB_region_list* rlp)
+void free_region_list(IVI_region_list* rlp)
 {
 
     if (rlp != NULL)
@@ -122,16 +122,16 @@ void free_region_list(KJB_region_list* rlp)
              * otherwise problems such as double free can look like unitialized
              * memory.
             */
-            if (kjb_debug_level >= 10)
+            if (ivi_debug_level >= 10)
             {
-                check_initialization(rlp->regions, rlp->num_regions, sizeof(KJB_region));
+                check_initialization(rlp->regions, rlp->num_regions, sizeof(IVI_region));
             }
 #endif
-            kjb_free(rlp->regions);
+            ivi_free(rlp->regions);
         }
     }
 
-    kjb_free(rlp);
+    ivi_free(rlp);
 
 }
 
@@ -143,7 +143,7 @@ void free_region_list(KJB_region_list* rlp)
  * Binary connected component labeling using 4-connectivity definition.
  *
  *    This routine does connected component labeling using 4-connectivity
- *    definition. It employs a custom data structure (KJB_region) to achieve fast
+ *    definition. It employs a custom data structure (IVI_region) to achieve fast
  *    connected component labeling by doing only one pass through the image. The
  *    custom data structure is designed so that all the information required to
  *    uniquely label the 4-connected regions in the image is available after a
@@ -154,15 +154,15 @@ void free_region_list(KJB_region_list* rlp)
  *    connected components are labeled by this routine.
  *
  *    The argument region_list_rlpp is a pointer to a pointer to custom data 
- *    type named KJB_region_list. The data structure KJB_region_list encloses an 
- *    array of elements of type KJB_region. If it is not NULL, then it is resized 
+ *    type named IVI_region_list. The data structure IVI_region_list encloses an 
+ *    array of elements of type IVI_region. If it is not NULL, then it is resized 
  *    by the routine to contain (ceil(num_rows*num_cols/2) + 1) elements. If it is 
- *    NULL, then a local KJB_region_list is allocated and deallocated when done. 
+ *    NULL, then a local IVI_region_list is allocated and deallocated when done. 
  *    This is to give the user the option of passing in an appropriately pre-allocated 
- *    KJB_region_list and cutting down on the time spent in memory allocation within the 
+ *    IVI_region_list and cutting down on the time spent in memory allocation within the 
  *    routine. This might be helpful in cases where the routine is called repeatedly 
  *    from a higher level routine using different input images of the same size
- *    but with the same pre-allocated KJB_region_list to re-use memory.
+ *    but with the same pre-allocated IVI_region_list to re-use memory.
  *    The allocation size is related to the fact that the maximum number of
  *    4-connected components in an image is ceil(num_rows*num_cols/2) plus one
  *    for the background component.
@@ -179,7 +179,7 @@ void free_region_list(KJB_region_list* rlp)
  *
  *    The labeled image with a unique positive integer label for each foreground
  *    pixel is returned in out_mpp. It is allocated or resized to the same size
- *    as the input image following the semantics of the KJB library. If
+ *    as the input image following the semantics of the IVI library. If
  *    merge_eqvlnt_labels is set to 1, then a unique label is assigned to all
  *    the pixels of a connected component and the unique labels are consecutive
  *    positive integers (1, 2, ....) for the different components. Otherwise a
@@ -212,11 +212,11 @@ void free_region_list(KJB_region_list* rlp)
 */
 
 int label_four_connected_regions(Int_matrix**      out_mpp,
-                                 KJB_region_list** region_list_rlpp,
+                                 IVI_region_list** region_list_rlpp,
                                  Segmentation_t3** segmentation_ptr_ptr,
                                  int*              num_regions_intp,
                                  int*              max_label_intp,
-                                 const KJB_image*  in_ip,
+                                 const IVI_image*  in_ip,
                                  const Int_matrix* in_mp,
                                  const int         merge_eqvlnt_labels)
 {
@@ -231,7 +231,7 @@ int label_four_connected_regions(Int_matrix**      out_mpp,
         int i, j;
 
         Int_matrix*      out_mp          = NULL;
-        KJB_region_list* region_list_rlp = NULL;
+        IVI_region_list* region_list_rlp = NULL;
 
         int top_pixel_value, left_pixel_value;
         int top_pixel_label, left_pixel_label;
@@ -240,7 +240,7 @@ int label_four_connected_regions(Int_matrix**      out_mpp,
 
         int min_region_label, max_region_label;
         int next_region_label, new_max_region_label;
-        KJB_region* next_region_ptr = NULL;
+        IVI_region* next_region_ptr = NULL;
 
         int root_label, new_root_label, junction_label;
         int region_label;
@@ -672,7 +672,7 @@ int label_four_connected_regions(Int_matrix**      out_mpp,
                     root_label   = region_list_rlp->regions[region_label].root_label;
 
                     /* Kobus. Check that this is what you mean. */
-                    out_mp->elements[i][j] = kjb_rint(serial_labels_vp->elements[root_label]);
+                    out_mp->elements[i][j] = ivi_rint(serial_labels_vp->elements[root_label]);
                 }
             }
         }
@@ -713,7 +713,7 @@ int label_four_connected_regions(Int_matrix**      out_mpp,
  * Binary connected component labeling using 8-connectivity definition.
  *
  *    This routine does connected component labeling using 8-connectivity
- *    definition. It employs a custom data structure (KJB_region) to achieve fast
+ *    definition. It employs a custom data structure (IVI_region) to achieve fast
  *    connected component labeling by doing only one pass through the image. The
  *    custom data structure is designed so that all the information required to
  *    uniquely label the 8-connected regions in the image is available after a
@@ -724,15 +724,15 @@ int label_four_connected_regions(Int_matrix**      out_mpp,
  *    connected components are labeled by this routine.
  *
  *    The argument region_list_rlpp is a pointer to a pointer to custom data 
- *    type named KJB_region_list. The data structure KJB_region_list encloses an 
- *    array of elements of type KJB_region. If it is not NULL, then it is resized 
+ *    type named IVI_region_list. The data structure IVI_region_list encloses an 
+ *    array of elements of type IVI_region. If it is not NULL, then it is resized 
  *    by the routine to contain (ceil(num_rows*num_cols/4) + 1) elements. If it is 
- *    NULL, then a local KJB_region_list is allocated and deallocated when done. 
+ *    NULL, then a local IVI_region_list is allocated and deallocated when done. 
  *    This is to give the user the option of passing in an appropriately pre-allocated 
- *    KJB_region_list and cutting down on the time spent in memory allocation within the 
+ *    IVI_region_list and cutting down on the time spent in memory allocation within the 
  *    routine. This might be helpful in cases where the routine is called repeatedly 
  *    from a higher level routine using different input images of the same size
- *    but with the same pre-allocated KJB_region_list to re-use memory.
+ *    but with the same pre-allocated IVI_region_list to re-use memory.
  *    The allocation size is related to the fact that the maximum number of
  *    8-connected components in an image is ceil(num_rows*num_cols/4) plus one
  *    for the background component.
@@ -749,7 +749,7 @@ int label_four_connected_regions(Int_matrix**      out_mpp,
  *
  *    The labeled image with a unique positive integer label for each foreground
  *    pixel is returned in out_mpp. It is allocated or resized to the same size
- *    as the input image following the semantics of the KJB library. If
+ *    as the input image following the semantics of the IVI library. If
  *    merge_eqvlnt_labels is set to 1, then a unique label is assigned to all
  *    the pixels of a connected component and the unique labels are consecutive
  *    positive integers (1, 2, ....) for the different components. Otherwise a
@@ -782,11 +782,11 @@ int label_four_connected_regions(Int_matrix**      out_mpp,
 */
 
 int label_eight_connected_regions(Int_matrix**      out_mpp,
-                                  KJB_region_list** region_list_rlpp,
+                                  IVI_region_list** region_list_rlpp,
                                   Segmentation_t3** segmentation_ptr_ptr,
                                   int*              num_regions_intp,
                                   int*              max_label_intp,
-                                  const KJB_image*  in_ip,
+                                  const IVI_image*  in_ip,
                                   const Int_matrix* in_mp,
                                   const int         merge_eqvlnt_labels)
 {
@@ -801,7 +801,7 @@ int label_eight_connected_regions(Int_matrix**      out_mpp,
         int i, j, k, l, m, n;
 
         Int_matrix*      out_mp          = NULL;
-        KJB_region_list* region_list_rlp = NULL;
+        IVI_region_list* region_list_rlp = NULL;
 
         /*
         int top_pixel_value, left_pixel_value;
@@ -815,7 +815,7 @@ int label_eight_connected_regions(Int_matrix**      out_mpp,
 
         int min_region_label, max_region_label;
         int next_region_label, new_max_region_label;
-        KJB_region* next_region_ptr = NULL;
+        IVI_region* next_region_ptr = NULL;
 
         int root_label, new_root_label, junction_label;
         int region_label;
@@ -1206,7 +1206,7 @@ int label_eight_connected_regions(Int_matrix**      out_mpp,
                     root_label   = region_list_rlp->regions[region_label].root_label;
 
                     /* Kobus. Check that this is what you mean. */
-                    out_mp->elements[i][j] = kjb_rint(serial_labels_vp->elements[root_label]);
+                    out_mp->elements[i][j] = ivi_rint(serial_labels_vp->elements[root_label]);
                 }
             }
         }

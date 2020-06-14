@@ -1,5 +1,5 @@
 
-/* $Id: i_float_io.h 15303 2013-09-06 22:24:39Z predoehl $ */
+/* $Id: i_float_io.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,32 +38,32 @@ int set_image_input_options(const char* option, const char* value);
 
 int set_image_output_options(const char* option, const char* value);
 
-int kjb_read_image(KJB_image** ip, const char* file_name);
+int ivi_read_image(IVI_image** ip, const char* file_name);
 
 int read_image_from_kiff
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int*        validity_data_possible_ptr
 );
 
-int kjb_read_image_2
+int ivi_read_image_2
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* file_name_gz_and_sub_image
 );
 
-int kjb_write_image(const KJB_image* ip, const char* file_name);
+int ivi_write_image(const IVI_image* ip, const char* file_name);
 
 #if 0
-int write_image_with_transparency(const KJB_image* ip, const char* file_name);
+int write_image_with_transparency(const IVI_image* ip, const char* file_name);
 #endif
 
 int display_matrix(const Matrix* mp, const char* title); 
 
-int kjb_display_image(const KJB_image* ip, const char* title);
+int ivi_display_image(const IVI_image* ip, const char* title);
 
-int fork_display_image(const KJB_image* ip, const char* title);
+int fork_display_image(const IVI_image* ip, const char* title);
 
 
 #ifdef __cplusplus

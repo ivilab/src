@@ -1,4 +1,4 @@
-/* $Id: m_matrix_d.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_matrix_d.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 #include "m_cpp/m_matrix_d.impl.h"
 #include <boost/preprocessor.hpp>
 
-namespace kjb{
+namespace ivi{
 
 #define MAX_DIMENSION 4
 
@@ -49,7 +49,7 @@ template class Matrix_d<2,4,false>;
 #define FREE_FUNCTION_LIST(NROWS,NCOLS,TRANSPOSED) \
 template Matrix_d<NROWS, NCOLS, TRANSPOSED> operator*(double scalar, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& mat); \
 template Matrix operator*(const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op1, const Matrix& op2); \
-template Matrix operator*(const kjb::Matrix& op1, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op2); \
+template Matrix operator*(const ivi::Matrix& op1, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op2); \
 template bool operator==(const Matrix& op2, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op1); \
 template bool operator!=(const Matrix& op2, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op1); \
 template Matrix_d<NROWS, NCOLS, TRANSPOSED> operator-(const Matrix op1, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op2); \
@@ -157,7 +157,7 @@ Matrix_d<3,3> matrix_inverse(const Matrix_d<3,3>& m)
     return out / det(m);
 }
     
-void symmetric_eigs(const kjb::Matrix3& A, double& eig1, double& eig2, double& eig3)
+void symmetric_eigs(const ivi::Matrix3& A, double& eig1, double& eig2, double& eig3)
 {
     // from wikipedia:
     // http://en.wikipedia.org/wiki/Eigenvalue_algorithm#3.C3.973_matrices
@@ -179,8 +179,8 @@ void symmetric_eigs(const kjb::Matrix3& A, double& eig1, double& eig2, double& e
         const double A33_q = (A(2,2) - q);
         const double p2 = A11_q*A11_q + A22_q*A22_q + A33_q * A33_q + 2 * p1;
         const double p = sqrt(p2 / 6);
-        static const kjb::Matrix3 I = create_identity_matrix<3>();
-        const kjb::Matrix3 B = (1 / p) * (A - q * I);
+        static const ivi::Matrix3 I = create_identity_matrix<3>();
+        const ivi::Matrix3 B = (1 / p) * (A - q * I);
         const double r = det(B) / 2;
        
         // In exact arithmetic for a symmetric matrix  -1 <= r <= 1
@@ -205,4 +205,4 @@ void symmetric_eigs(const kjb::Matrix3& A, double& eig1, double& eig2, double& e
     }
 }
 
-} // namespace kjb
+} // namespace ivi

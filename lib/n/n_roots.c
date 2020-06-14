@@ -1,5 +1,5 @@
 
-/* $Id: n_roots.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: n_roots.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,7 +22,7 @@
 
 #include "n/n_roots.h"
 
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
 #include "nr/nr_roots.h"
 #endif
 
@@ -73,7 +73,7 @@ int real_roots_of_real_polynomial
         double c = polynomial[ 0 ];
         double d = b*b - 4.0*a*c;
         double root_d;
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
 #ifdef TEST
         double num_roots;
 
@@ -83,7 +83,7 @@ int real_roots_of_real_polynomial
 
         if (d < 0.0)
         {
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
 #ifdef TEST
             ASSERT(num_roots == 0);
 #endif
@@ -93,7 +93,7 @@ int real_roots_of_real_polynomial
 
         root_d = sqrt(d);
 
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
 #ifdef TEST
         ASSERT(num_roots == 2);
         if (ABS_OF(roots[ 0 ] - (-b + root_d) / (2.0 * a)) > ABS_OF(roots[ 0 ] - (-b - root_d) / (2.0 * a)))
@@ -115,7 +115,7 @@ int real_roots_of_real_polynomial
     }
     else
     {
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
         return nr_real_roots_of_real_polynomial(degree, polynomial, roots);
 #else
         set_error("No routine for real roots of real polynomial is availble.");

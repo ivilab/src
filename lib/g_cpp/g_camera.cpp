@@ -1,4 +1,4 @@
-/* $Id: g_camera.cpp 21776 2017-09-17 16:44:49Z clayton $ */
+/* $Id: g_camera.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 #include <g_cpp/g_quaternion.h>
 #include <l_cpp/l_exception.h>
 
-namespace kjb {
+namespace ivi {
 
 template <class VectorType, class MatrixType, class M_MatrixType>
 VectorType backproject_dispatch_
@@ -104,7 +104,7 @@ Vector backproject_with_m_inv
 {
     if(homo_screen_coord.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument,
+        IVI_THROW_2(Illegal_argument,
                     "Point must be in 2D homogenuous coordinates "
                     "(pt.size() == 3)");
     }
@@ -178,7 +178,7 @@ Matrix lerp_extrinsic_camera_matrix(
     assert(extrinsic.size() == timestamps.size());
 
     if(t > timestamps.back() || t < timestamps.front())
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
 
     typedef std::vector<double>::const_iterator Time_iterator;
     // NOT_USED typedef std::vector<Matrix>::const_iterator Mat_iterator;
@@ -220,5 +220,5 @@ Matrix lerp_extrinsic_camera_matrix(
     );
 }
 
-} // namespace kjb;
+} // namespace ivi;
 

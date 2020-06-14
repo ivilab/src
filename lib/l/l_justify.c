@@ -1,5 +1,5 @@
 
-/* $Id: l_justify.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_justify.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -48,7 +48,7 @@ static void free_justify_big_buff(void);
  *
  * This is a simple left_justify routine. More comprehensive code can be found
  * as part of the program "par". One day, I may even incorperate this (or other
- * formating) code into the KJB library.
+ * formating) code into the IVI library.
  *
  * The input string parameter is written reformatted to the output string
  * parameter.   The rerortting strips returns and re-adds them so that if the
@@ -169,7 +169,7 @@ int left_justify
         }
         else
         {
-            kjb_free(fs_big_buff);
+            ivi_free(fs_big_buff);
         }
 
         NRE(fs_big_buff = STR_MALLOC(input_size));
@@ -418,7 +418,7 @@ static void free_justify_big_buff(void)
 {
 
 
-    kjb_free(fs_big_buff);
+    ivi_free(fs_big_buff);
 
     fs_big_buff = NULL; 
 }

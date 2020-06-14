@@ -26,7 +26,7 @@
 #include <vector>
 #include <utility>
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 /**
@@ -210,11 +210,11 @@ std::pair<std::vector<Track>, std::vector<size_t> > sample
     for(size_t t = 1; t <= T; t++)
     {
         // new tracks
-        size_t e_t = t == 1 ? kjb::sample(P_e1) : kjb::sample(P_e);
+        size_t e_t = t == 1 ? ivi::sample(P_e1) : ivi::sample(P_e);
         for(size_t r = 1; r <= e_t; r++)
         {
             // get track length
-            size_t l_r = kjb::sample(P_l);
+            size_t l_r = ivi::sample(P_l);
 
             // create track
             Track track = def;
@@ -228,7 +228,7 @@ std::pair<std::vector<Track>, std::vector<size_t> > sample
         // add detections
         BOOST_FOREACH(Track& track, tracks)
         {
-            size_t a_rt = kjb::sample(P_a);
+            size_t a_rt = ivi::sample(P_a);
 
             // all tracks already have 1 detection in first and last frames
             if(track.get_start_time() == t || track.get_end_time() == t)
@@ -243,7 +243,7 @@ std::pair<std::vector<Track>, std::vector<size_t> > sample
         }
 
         // false alarms
-        size_t n_t = kjb::sample(P_N);
+        size_t n_t = ivi::sample(P_N);
         false_alarms[t - 1] = n_t;
     }
 
@@ -398,7 +398,7 @@ double Prior<Track>::operator()(const Association<Track>& w) const
 }*/
 
 
-}} // namespace kjb::mcmcda
+}} // namespace ivi::mcmcda
 
 #endif /*MCMCDA_PRIOR_H_INCLUDED */
 

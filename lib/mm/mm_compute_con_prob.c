@@ -16,7 +16,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -148,7 +148,7 @@ int compute_con_prob
                     if ((enable_missing_data) && (IS_MISSING_DBL(*x_ptr)))
                     {
                         UNTESTED_CODE();  /* Un-written in fact! */
-                        kjb_abort();
+                        ivi_abort();
                     }
 
                     sum += (*x_ptr) * (*u_ptr);

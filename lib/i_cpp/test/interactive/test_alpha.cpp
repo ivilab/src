@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_alpha.cpp 15303 2013-09-06 22:24:39Z predoehl $
+ * $Id: test_alpha.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <i_cpp/i_image.h>
@@ -12,12 +12,12 @@
 
 int main (int argc, char** argv)
 {
-    kjb::Image i(100, 100, 0, 0, 0), j(i);
+    ivi::Image i(100, 100, 0, 0, 0), j(i);
 
-    kjb::enable_transparency(i);
-    kjb::enable_transparency(j);
+    ivi::enable_transparency(i);
+    ivi::enable_transparency(j);
 
-    kjb::PixelRGBA p(200, 0, 0, 255), q(0, 200, 0, 255);
+    ivi::PixelRGBA p(200, 0, 0, 255), q(0, 200, 0, 255);
 
     /* draw fading rectangles */
     for (int a = 0; a < 50; ++a)

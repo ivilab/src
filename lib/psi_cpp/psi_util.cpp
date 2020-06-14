@@ -1,4 +1,4 @@
-/* $Id: psi_util.cpp 18331 2014-12-02 04:30:55Z ksimek $ */
+/* $Id: psi_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -34,29 +34,29 @@
 
 #include <fstream>
  
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 #include <Core/Visualization.h>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
-void set_camera(CartWheel::Visualization& vis, const kjb::Perspective_camera& cam, double WIDTH, double HEIGHT)
+#ifdef IVI_HAVE_UA_CARTWHEEL
+void set_camera(CartWheel::Visualization& vis, const ivi::Perspective_camera& cam, double WIDTH, double HEIGHT)
 {
-    using kjb::Vector;
-    using kjb::Quaternion;
+    using ivi::Vector;
+    using ivi::Quaternion;
 
     vis.setWidth(WIDTH);
     vis.setHeight(HEIGHT);
 
     const Quaternion& cam_to_world = cam.get_orientation().conj();
     Vector up = cam_to_world.rotate(Vector(0.0, 1.0, 0.0));
-    Vector center =  kjb::geometry::projective_to_euclidean(cam.get_camera_centre());
+    Vector center =  ivi::geometry::projective_to_euclidean(cam.get_camera_centre());
     Vector target = center + cam_to_world.rotate(Vector(0.0, 0.0, -10.0));
 
     vis.setCameraLocation(to_cw_pt_3d(center));
@@ -107,7 +107,7 @@ std::istream& operator>>(std::istream& ist, Simulator_type& type)
     ist >> token;
     if(simulator_name_map.count(token) == 0)
     {
-        KJB_THROW_2(IO_error, "Uknown simulator_type name");
+        IVI_THROW_2(IO_error, "Uknown simulator_type name");
     }
     type = simulator_name_map[token];
 
@@ -157,7 +157,7 @@ void prune_by_height
         double min_height = average_height/2.0;
         if(box_height <= max_height && box_height >= min_height)
         {
-            kjb::Vector pt3d = back_project(sbox.get_bottom_center()[0],
+            ivi::Vector pt3d = back_project(sbox.get_bottom_center()[0],
                                             sbox.get_bottom_center()[1]);
             if(pt3d.empty())
             {
@@ -176,5 +176,5 @@ void prune_by_height
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 

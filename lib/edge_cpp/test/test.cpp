@@ -56,7 +56,7 @@ Gradient;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
     Image img("001.jpg");
 
@@ -118,7 +118,7 @@ int main()
     img.write("001edges.jpg");
 
 
-    Edge_set_ptr ptr2(new kjb::Edge_set(*ptr));
+    Edge_set_ptr ptr2(new ivi::Edge_set(*ptr));
     if(!ptr2->is_edge_set_consistenct())
     {
         std::cout << "EDGESET not consistent!" << std::endl;

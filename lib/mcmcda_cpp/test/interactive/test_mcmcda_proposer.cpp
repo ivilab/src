@@ -33,9 +33,9 @@
 #include <boost/program_options.hpp>
 #include <boost/bind.hpp>
 
-using namespace kjb;
-using namespace kjb::opengl;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::opengl;
+using namespace ivi::mcmcda;
 using namespace std;
 using namespace boost;
 

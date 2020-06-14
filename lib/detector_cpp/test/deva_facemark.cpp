@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: deva_facemark.cpp 21293 2017-03-07 02:32:04Z jguan1 $ */
+/* $Id: deva_facemark.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <detector_cpp/d_deva_facemark.h>
 #include <m_cpp/m_vector.h>
@@ -28,7 +28,7 @@
 #include <fstream>
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 bool equal(const Deva_facemark& f1, const Deva_facemark& f2)
@@ -142,7 +142,7 @@ int main(int argc, char** argv)
         TEST_TRUE(equal(dfm2[i], dfm[i]));
     }
 
-    ETX(kjb_c::kjb_unlink(out_fpath.c_str()));
+    ETX(ivi_c::ivi_unlink(out_fpath.c_str()));
 
     RETURN_VICTORIOUSLY();
 }

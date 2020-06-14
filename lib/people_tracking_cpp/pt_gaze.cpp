@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_gaze.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_gaze.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_gaze.h"
@@ -29,10 +29,10 @@
 
 #include <vector>
 
-using namespace kjb;
-using namespace kjb::pt; 
+using namespace ivi;
+using namespace ivi::pt; 
 
-bool kjb::pt::get_corresponding_entity
+bool ivi::pt::get_corresponding_entity
 (
     const Bbox& face_box,
     const Box_trajectory_map& body_trajs,
@@ -70,7 +70,7 @@ bool kjb::pt::get_corresponding_entity
 
 /** /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
-void kjb::pt::estimate_gaze_direction_from_data
+void ivi::pt::estimate_gaze_direction_from_data
 (
     const Box_trajectory_map& btrajs,
     Trajectory_map& trajs,

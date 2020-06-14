@@ -24,16 +24,16 @@
 
 int main (int argc, char *argv[])
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
     const int NUM_ROWS = 256;
     const int NUM_COLS = 256;
     int row, col;
 
-    kjb_init();
+    ivi_init();
 
     EPETE(get_target_image(&ip, NUM_ROWS, NUM_COLS));
 
-    EPETE(kjb_write_image(ip, "out.png"));
+    EPETE(ivi_write_image(ip, "out.png"));
 
     
     return EXIT_SUCCESS;

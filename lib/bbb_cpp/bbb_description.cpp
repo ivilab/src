@@ -37,10 +37,10 @@
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
-std::ostream& kjb::bbb::operator<<(std::ostream& ost, const Description& desc)
+std::ostream& ivi::bbb::operator<<(std::ostream& ost, const Description& desc)
 {
     // assign ids to activities
     std::map<const Intentional_activity*, size_t> ids;
@@ -183,7 +183,7 @@ void Description_info::extract_tree
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Description kjb::bbb::make_trivial_description(const Data& data)
+Description ivi::bbb::make_trivial_description(const Data& data)
 {
     const size_t sf = 0;
     const size_t ef = data.end_frame();

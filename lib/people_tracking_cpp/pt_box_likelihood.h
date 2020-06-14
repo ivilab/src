@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_box_likelihood.h 18657 2015-03-18 14:43:48Z ernesto $ */
+/* $Id: pt_box_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_BOX_LIKELIHOOD_H_
 #define PT_BOX_LIKELIHOOD_H_
@@ -31,7 +31,7 @@
 #include <cmath>
 #include <string>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -110,7 +110,7 @@ private:
     std::string m_dist_name;
 };
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_BOX_LIKELIHOOD_H_ */
 

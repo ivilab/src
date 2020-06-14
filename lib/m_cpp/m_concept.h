@@ -1,4 +1,4 @@
-/* $Id: m_concept.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: m_concept.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,12 +19,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_CPP_M_CONCEPT_H
-#define KJB_M_CPP_M_CONCEPT_H
+#ifndef IVI_M_CPP_M_CONCEPT_H
+#define IVI_M_CPP_M_CONCEPT_H
 
 #include <boost/concept_check.hpp> 
 
-namespace kjb 
+namespace ivi 
 {
 template <class X>
 struct SimpleVector
@@ -52,5 +52,5 @@ private:
     const X* i2;
 };
 
-} // namespace kjb
+} // namespace ivi
 #endif

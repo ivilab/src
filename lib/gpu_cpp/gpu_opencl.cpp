@@ -1,4 +1,4 @@
-/* $Id: gpu_opencl.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gpu_opencl.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -21,9 +21,9 @@
 
 #include "gpu_cpp/gpu_opencl.h"
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
 
-namespace kjb  {
+namespace ivi  {
 namespace gpu {
 
 const char* get_opencl_error_string(cl_int err)
@@ -80,5 +80,5 @@ const char* get_opencl_error_string(cl_int err)
 }
 
 } // namespace gpu
-} // namespace kjb
+} // namespace ivi
 #endif

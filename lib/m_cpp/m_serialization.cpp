@@ -1,4 +1,4 @@
-/* $Id: m_serialization.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_serialization.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -29,28 +29,28 @@
 
 #include <l_cpp/l_serialization.h>
 
-namespace kjb
+namespace ivi
 {
 
 
-void kjb_serialize(boost::archive::text_iarchive& ar, Matrix& obj, const unsigned int version)
+void ivi_serialize(boost::archive::text_iarchive& ar, Matrix& obj, const unsigned int version)
 {
-    return kjb_serialize_default(ar, obj, version);
+    return ivi_serialize_default(ar, obj, version);
 }
 
-void kjb_serialize(boost::archive::text_oarchive& ar, Matrix& obj, const unsigned int version)
+void ivi_serialize(boost::archive::text_oarchive& ar, Matrix& obj, const unsigned int version)
 {
-    return kjb_serialize_default(ar, obj, version);
+    return ivi_serialize_default(ar, obj, version);
 }
 
-void kjb_serialize(boost::archive::text_iarchive& ar, Vector& obj, const unsigned int version)
+void ivi_serialize(boost::archive::text_iarchive& ar, Vector& obj, const unsigned int version)
 {
-    return kjb_serialize_default(ar, obj, version);
+    return ivi_serialize_default(ar, obj, version);
 }
 
-void kjb_serialize(boost::archive::text_oarchive& ar, Vector& obj, const unsigned int version)
+void ivi_serialize(boost::archive::text_oarchive& ar, Vector& obj, const unsigned int version)
 {
-    return kjb_serialize_default(ar, obj, version);
+    return ivi_serialize_default(ar, obj, version);
 }
 
 }

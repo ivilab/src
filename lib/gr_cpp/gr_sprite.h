@@ -1,4 +1,4 @@
-/* $Id: gr_sprite.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_sprite.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_sprite_H
-#define KJB_sprite_H
+#ifndef IVI_sprite_H
+#define IVI_sprite_H
 
 
 #include <gr_cpp/gr_opengl_texture.h> /* comes before other opengl includes */
@@ -27,7 +27,7 @@
 #include <gr_cpp/gr_opengl_headers.h>
 #include <map>
 
-namespace kjb
+namespace ivi
 {
 
 namespace opengl
@@ -44,7 +44,7 @@ namespace opengl
  *
  *  @author Kyle Simek
  */
-#ifdef  KJB_HAVE_OPENGL
+#ifdef  IVI_HAVE_OPENGL
     class Sprite : public Renderable
     {
         enum Origin_type {TOP_LEFT, CENTER};
@@ -238,17 +238,17 @@ namespace opengl
 //            void m_set(const Matrix& mat);
 //    }; // class Sprite
 
-#endif     /* KJB_HAVE_OPENGL */
+#endif     /* IVI_HAVE_OPENGL */
 
 } // namespace opengl
 
 
-#ifdef  KJB_HAVE_OPENGL
+#ifdef  IVI_HAVE_OPENGL
 /** 
- * Deprecated.  Sprite is now under the opengl namespace, making the 'Gl_' prefix superfluous.  Use kjb::opengl::Sprite.
+ * Deprecated.  Sprite is now under the opengl namespace, making the 'Gl_' prefix superfluous.  Use ivi::opengl::Sprite.
  */
 typedef opengl::Sprite Gl_sprite;
 #endif
 
-} // namespace kjb
-#endif /* ----- #ifndef KJB_sprite_H  ----- */
+} // namespace ivi
+#endif /* ----- #ifndef IVI_sprite_H  ----- */

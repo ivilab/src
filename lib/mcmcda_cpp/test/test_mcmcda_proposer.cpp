@@ -28,8 +28,8 @@
 #include <ergo/mh.h>
 #include <ergo/rand.h>
 
-using namespace kjb;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::mcmcda;
 using namespace std;
 
 typedef Generic_track<Vector> Track;
@@ -55,8 +55,8 @@ int main(int argc, char** argv)
     seed_sampling_rand(4000);
     //ergo::rng<boost::mt19937>().seed(44000);
     ergo::global_rng<ergo::default_rng_t>().seed(44000);
-    kjb_c::kjb_seed_rand(41000, 42000);
-    kjb_c::kjb_seed_rand_2(43000);
+    ivi_c::ivi_seed_rand(41000, 42000);
+    ivi_c::ivi_seed_rand_2(43000);
     const int d_bar = 10;
     const double v_bar = 1.0 / num_frames;
     const double gamm = 0.1;

@@ -1,4 +1,4 @@
-/* $Id: m_vector_d.impl.h 24406 2019-09-25 20:53:51Z simonswenson $ */
+/* $Id: m_vector_d.impl.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,13 +19,13 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_VECTOR_D_IMPL_H
-#define KJB_M_VECTOR_D_IMPL_H
+#ifndef IVI_M_VECTOR_D_IMPL_H
+#define IVI_M_VECTOR_D_IMPL_H
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "l_cpp/l_exception.h"
-#include "l/l_sys_rand.h" /* for kjb_rand() */
-#include "sample/sample_gauss.h" /* for kjb_rand() */
+#include "l/l_sys_rand.h" /* for ivi_rand() */
+#include "sample/sample_gauss.h" /* for ivi_rand() */
 
 #include <boost/array.hpp>
 #include <algorithm>
@@ -37,7 +37,7 @@
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_matrix.h>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #if BOOST_VERSION >= 106400
 #include <boost/serialization/boost_array.hpp>
 #else
@@ -45,7 +45,7 @@
 #endif
 #endif
 
-namespace kjb
+namespace ivi
 {
 
 template <size_t D>
@@ -84,7 +84,7 @@ Vector_d<D>::Vector_d(const Vector& v) :
 {
     if (v.size() != D)
     {
-        KJB_THROW_3(Illegal_argument, "Cannot construct Vector_d<%d> from Vector of length %d", (D)(v.size()));
+        IVI_THROW_3(Illegal_argument, "Cannot construct Vector_d<%d> from Vector of length %d", (D)(v.size()));
     }
 
     std::copy(v.begin(), v.end(), this->begin());
@@ -141,7 +141,7 @@ double Vector_d<D>::x() const
 {
     if (D < 1)
     {
-        KJB_THROW_2(Runtime_error, "Can't get x: vector dimension < 1");
+        IVI_THROW_2(Runtime_error, "Can't get x: vector dimension < 1");
     }
 
     return this->operator[](0); 
@@ -156,7 +156,7 @@ double& Vector_d<D>::x()
 {
     if (D < 1)
     {
-        KJB_THROW_2(Runtime_error, "Can't set x: vector dimension < 1");
+        IVI_THROW_2(Runtime_error, "Can't set x: vector dimension < 1");
     }
     return this->operator[](0);
 }
@@ -176,7 +176,7 @@ double Vector_d<D>::y() const
 {
     if (D < 2)
     {
-        KJB_THROW_2(Runtime_error, "Can't get y: vector dimension < 1");
+        IVI_THROW_2(Runtime_error, "Can't get y: vector dimension < 1");
     }
 
     return this->operator[](1); 
@@ -191,7 +191,7 @@ double& Vector_d<D>::y()
 {
     if (D < 2)
     {
-        KJB_THROW_2(Runtime_error, "Can't set y: vector dimension < 1");
+        IVI_THROW_2(Runtime_error, "Can't set y: vector dimension < 1");
     }
 
     return this->operator[](1); 
@@ -212,7 +212,7 @@ double Vector_d<D>::z() const
 {
     if (D < 3)
     {
-        KJB_THROW_2(Runtime_error, "Can't get z: vector dimension < 3");
+        IVI_THROW_2(Runtime_error, "Can't get z: vector dimension < 3");
     }
     return this->operator[](2); 
 }
@@ -226,7 +226,7 @@ double& Vector_d<D>::z()
 {
     if (D < 3)
     {
-        KJB_THROW_2(Runtime_error, "Can't set z: vector dimension < 3");
+        IVI_THROW_2(Runtime_error, "Can't set z: vector dimension < 3");
     }
     return this->operator[](2); 
 }
@@ -258,7 +258,7 @@ double& Vector_d<D>::w()
 {
     if (D < 4)
     {
-        KJB_THROW_2(Runtime_error, "Can't set w: vector dimension < 4");
+        IVI_THROW_2(Runtime_error, "Can't set w: vector dimension < 4");
     }
     return this->operator[](3); 
 }
@@ -282,7 +282,7 @@ Vector_d<D>& Vector_d<D>::operator=(const Vector& other)
 {
     if (other.size() != D)
     {
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
     std::copy(other.begin(), other.end(), this->begin());
@@ -346,7 +346,7 @@ void Vector_d<D>::resize(size_t n)
 {
     if (n != D)
     {
-        KJB_THROW_2(Illegal_argument, "Can't resize Vector_d.");
+        IVI_THROW_2(Illegal_argument, "Can't resize Vector_d.");
     }
 }
 
@@ -403,7 +403,7 @@ Vector_d<D>& Vector_d<D>::negate()
     return *this;
 }
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 template <size_t D>
 template <class Archive>
 void Vector_d<D>::serialize(Archive &ar, const unsigned int /* version */)
@@ -579,13 +579,13 @@ typedef Vector_d<4> Vector4;
 
 // MATH FUNCTIONS
 template <size_t D>
-double norm1(const kjb::Vector_d<D>& v)
+double norm1(const ivi::Vector_d<D>& v)
 {
     return v.norm1();
 }
 
 template <size_t D>
-double norm2(const kjb::Vector_d<D>& v)
+double norm2(const ivi::Vector_d<D>& v)
 {
     return v.magnitude();
 }
@@ -596,7 +596,7 @@ template <size_t D>
 Vector_d<D> create_random_vector()
 {
     Vector_d<D> result;
-    std::generate(result.begin(), result.end(), kjb_c::kjb_rand);
+    std::generate(result.begin(), result.end(), ivi_c::ivi_rand);
     return result;
 }
 
@@ -604,7 +604,7 @@ template <size_t D>
 Vector_d<D> create_gauss_random_vector()
 {
     Vector_d<D> result;
-    std::generate(result.begin(), result.end(), kjb_c::gauss_rand);
+    std::generate(result.begin(), result.end(), ivi_c::gauss_rand);
     return result;
 }
 
@@ -679,6 +679,6 @@ double vector_distance_squared(const Vector_d<D>& op1, const Vector_d<D>& op2)
 
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_M_VECTOR_D_IMPL_H */
+#endif /* IVI_M_VECTOR_D_IMPL_H */

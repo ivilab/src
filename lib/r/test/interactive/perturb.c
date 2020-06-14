@@ -1,5 +1,5 @@
 
-/* $Id: perturb.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: perturb.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -32,14 +32,14 @@ int main(int argc, char** argv)
     Matrix_vector* input_mvp = NULL; 
     Matrix_vector* perturb_mvp = NULL; 
     Matrix* perturb_mp = NULL; 
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
     int i;
     Int_vector* disable_feature_input_vp = NULL; 
     Int_vector* disable_feature_vp = NULL; 
     Matrix* diff_mp = NULL; 
 
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -48,8 +48,8 @@ int main(int argc, char** argv)
         return EXIT_CANNOT_TEST;
     }
 
-    kjb_set_verbose_level(5);
-    kjb_debug_level = 10;
+    ivi_set_verbose_level(5);
+    ivi_debug_level = 10;
 
     if (argc > 1)
     {
@@ -163,7 +163,7 @@ int main(int argc, char** argv)
     free_matrix_vector(input_mvp);
     free_matrix_vector(perturb_mvp);
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

@@ -1,5 +1,5 @@
 
-/* $Id: t3_set.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: t3_set.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /*
@@ -23,7 +23,7 @@ extern "C" {
 
 /*
  * =============================================================================
- *                            kjb_t3_set
+ *                            ivi_t3_set
  *
  *
  *
@@ -34,7 +34,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
  */
 
-int kjb_t3_set(const char* option, const char* value)
+int ivi_t3_set(const char* option, const char* value)
 {
     int         temp_result;
     int         result = NOT_FOUND;

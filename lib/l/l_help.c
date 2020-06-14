@@ -1,5 +1,5 @@
 
-/* $Id: l_help.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_help.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -138,7 +138,7 @@ static int set_default_help_file(const char* program_name);
 
 static void close_help_file(void);
 
-static int kjb_help_guts
+static int ivi_help_guts
 (
     FILE*       help_fp,
     int         (*remote_get_help_topic_fn)(const char*, char*, size_t ),
@@ -232,7 +232,7 @@ int set_help_file(const char* help_file)
     FILE* help_fp;
 
 
-    help_fp = kjb_fopen(help_file, "r");
+    help_fp = ivi_fopen(help_file, "r");
 
     if (fs_help_fp == NULL)
     {
@@ -256,7 +256,7 @@ int set_help_file(const char* help_file)
         }
         else
         {
-            (void)kjb_fclose(fs_help_fp);  /* Ignore return--only reading. */
+            (void)ivi_fclose(fs_help_fp);  /* Ignore return--only reading. */
             fs_help_fp = help_fp;
         }
     }
@@ -301,7 +301,7 @@ static int set_default_help_file(const char* program_name)
     NRE(help_fp = open_help_file(program_name));
 
     /* Close previous help file. (OK if NULL).   */
-    (void)kjb_fclose(fs_help_fp);  /* Ignore return--only reading. */
+    (void)ivi_fclose(fs_help_fp);  /* Ignore return--only reading. */
 
     fs_help_fp = help_fp;
 
@@ -317,7 +317,7 @@ static void close_help_file(void)
 
     if (fs_help_fp != NULL)
     {
-        (void)kjb_fclose(fs_help_fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fs_help_fp);  /* Ignore return--only reading. */
         fs_help_fp = NULL;
     }
 }
@@ -325,7 +325,7 @@ static void close_help_file(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                   kjb_help
+ *                                   ivi_help
  *
  * Implements a simple help system.
  *
@@ -351,7 +351,7 @@ static void close_help_file(void)
  * If the high level input module "get_command_text()" is being used for input,
  * then help is called as part of pre-processing, and the code calling
  * get_command_text() will never see a command "h" or "help". Thus there is no
- * need to implement a user help command in this case. However, kjb_help() can
+ * need to implement a user help command in this case. However, ivi_help() can
  * be additionally called in other contexts with no ill affect.
  *
  * Returns:
@@ -415,12 +415,12 @@ static void close_help_file(void)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_help(const char* program_name, const char* topic_line)
+int ivi_help(const char* program_name, const char* topic_line)
 {
     int res;
 
 
-    kjb_clear_error();
+    ivi_clear_error();
 
     ERE(set_default_help_file(program_name));
 
@@ -434,7 +434,7 @@ int kjb_help(const char* program_name, const char* topic_line)
 
     if (topic_line == NULL) topic_line = "";
 
-    res = kjb_help_guts(fs_help_fp,
+    res = ivi_help_guts(fs_help_fp,
                         (int (*) (const char*, char*, size_t)) NULL,
                         (int (*) (char*, size_t)) NULL,
                         topic_line);
@@ -443,7 +443,7 @@ int kjb_help(const char* program_name, const char* topic_line)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int kjb_help_guts(FILE* help_fp,
+static int ivi_help_guts(FILE* help_fp,
                          int (*remote_get_help_topic_fn)(const char *, char *, size_t),
                          int (*remote_get_topic_list_fn) (char *, size_t),
                          const char* topic_line)
@@ -486,7 +486,7 @@ static int kjb_help_guts(FILE* help_fp,
     else
     {
         fs_help_topic_level = 0;
-        kjb_disable_paging();
+        ivi_disable_paging();
         prev_topic [ 0 ] = '\0';
 
         interactive = is_interactive();
@@ -498,7 +498,7 @@ static int kjb_help_guts(FILE* help_fp,
 #if 0 /* was ifdef TRY_WITHOUT */
             if (block_user_signals() == ERROR)
             {
-                kjb_restore_paging();
+                ivi_restore_paging();
                 return ERROR;
             }
 #endif
@@ -507,8 +507,8 @@ static int kjb_help_guts(FILE* help_fp,
                 == ERROR)
             {
                 reset_signals();
-                kjb_restore_paging();
-                set_bug("Unable to set raw mode in kjb_help_guts.");
+                ivi_restore_paging();
+                set_bug("Unable to set raw mode in ivi_help_guts.");
                 return ERROR;
             }
 
@@ -516,8 +516,8 @@ static int kjb_help_guts(FILE* help_fp,
             {
                 reset_signals();
                 unset_atn_trap();
-                kjb_restore_paging();
-                set_bug("Unable to set raw mode in kjb_help_guts.");
+                ivi_restore_paging();
+                set_bug("Unable to set raw mode in ivi_help_guts.");
                 return ERROR;
             }
 
@@ -545,7 +545,7 @@ static int kjb_help_guts(FILE* help_fp,
             res = ERROR;
         }
 
-        kjb_restore_paging();
+        ivi_restore_paging();
     }
 
     return res;
@@ -589,8 +589,8 @@ static Help_request help_topic
     }
     else if (read_res == ERROR)
     {
-        kjb_fprintf(stderr, "Error reading help file. ");
-        kjb_fprintf(stderr, "Command aborted.\n");
+        ivi_fprintf(stderr, "Error reading help file. ");
+        ivi_fprintf(stderr, "Command aborted.\n");
         return EXIT_HELP;
     }
     else if (read_res == NOT_FOUND)
@@ -643,8 +643,8 @@ static Help_request do_help_topic
     const char* help_text
 )
 {
-    IMPORT volatile int kjb_tty_rows;
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_rows;
+    IMPORT volatile int ivi_tty_cols;
     static char         no_justify_chars [ ] =
                             { HELP_FILE_COMMENT_LINE_CHAR,
                               DONT_FORMAT_CHAR,
@@ -680,13 +680,13 @@ static Help_request do_help_topic
     int                 chunk_len;
     int                 char_count;
     Help_request        result;
-    int                 save_tty_cols = kjb_tty_cols;
-    int                 initial_tty_cols = kjb_tty_cols;
+    int                 save_tty_cols = ivi_tty_cols;
+    int                 initial_tty_cols = ivi_tty_cols;
     char*               save_initial_help_pos;
 
 
     justify_res = left_justify(help_text, 
-                               kjb_tty_cols,
+                               ivi_tty_cols,
                                0,    /* No indent level to turn off justify */
                                no_justify_chars,
                                TRUE,    /* Keep indent level */
@@ -703,13 +703,13 @@ static Help_request do_help_topic
     help_text_pos = justified_help_text;
     save_initial_help_pos = justified_help_text;
 
-    if (kjb_isatty(fileno(stdout))) output_to_terminal = TRUE;
+    if (ivi_isatty(fileno(stdout))) output_to_terminal = TRUE;
     else output_to_terminal = FALSE;
 
     /*CONSTCOND*/
     while (TRUE)
     {
-        if (kjb_tty_rows < 10)
+        if (ivi_tty_rows < 10)
         {
             set_error(
                 "Insufficent room for help page. Perhaps window is too small?");
@@ -739,7 +739,7 @@ static Help_request do_help_topic
         */
         if (read_res == EOF)
         {
-            while (count < kjb_tty_rows-4)
+            while (count < ivi_tty_rows-4)
             {
                 count++;
                 if (output_to_terminal) pso("\n");
@@ -767,7 +767,7 @@ static Help_request do_help_topic
 
            help_print_title(topic, prev_topic);
 
-           while (((output_to_terminal) && (count < kjb_tty_rows-4)) ||
+           while (((output_to_terminal) && (count < ivi_tty_rows-4)) ||
                   (( ! output_to_terminal) &&
                    (read_res != EOF) && ( ! menu_item)))
            {
@@ -782,7 +782,7 @@ static Help_request do_help_topic
                {
                    menu_item = TRUE;
 
-                   while (count < kjb_tty_rows-4)
+                   while (count < ivi_tty_rows-4)
                    {
                        count++;
                        if (output_to_terminal) pso("\n");
@@ -839,9 +839,9 @@ static Help_request do_help_topic
 
                    line_finished = FALSE;
                    /*
-                   // char_count = kjb_tty_cols - 1;
+                   // char_count = ivi_tty_cols - 1;
                    */
-                   char_count = kjb_tty_cols;  /* Changed the above, July, 96 */
+                   char_count = ivi_tty_cols;  /* Changed the above, July, 96 */
 
                    while ( ! line_finished)
                    {
@@ -860,7 +860,7 @@ static Help_request do_help_topic
                                    *(help_line_pos+char_count) = '\0';
                                }
 
-                               kjb_fputs(stdout, help_line_pos);
+                               ivi_fputs(stdout, help_line_pos);
                                char_count -= chunk_len;
                                help_line_pos += find_res;
 
@@ -870,7 +870,7 @@ static Help_request do_help_topic
                                }
                                else
                                {
-                                   kjb_putc(HIGH_LIGHT_CHAR);
+                                   ivi_putc(HIGH_LIGHT_CHAR);
                                    help_line_pos++;
                                    char_count--;
                                }
@@ -884,7 +884,7 @@ static Help_request do_help_topic
                            {
                                *(help_line_pos+char_count) = '\0';
 
-                               kjb_fputs(stdout, help_line_pos);
+                               ivi_fputs(stdout, help_line_pos);
                                pso("\n");
                            }
                        }
@@ -892,7 +892,7 @@ static Help_request do_help_topic
                    count++;
                }
 
-               if (    (    (output_to_terminal) && (count < kjb_tty_rows-4))
+               if (    (    (output_to_terminal) && (count < ivi_tty_rows-4))
                     || (    ( ! output_to_terminal)
                          && (read_res != EOF)
                          && ( ! menu_item)
@@ -907,7 +907,7 @@ static Help_request do_help_topic
                                         help_line, sizeof(help_line));
                    if (read_res == EOF)
                    {
-                       while (count < kjb_tty_rows-4)
+                       while (count < ivi_tty_rows-4)
                        {
                            count++;
                            if (output_to_terminal) pso("\n");
@@ -977,7 +977,7 @@ static Help_request do_help_topic
                page_pos_stack_elem = remove_first_element(&page_pos_stack,
                                                          (Queue_element**)NULL);
                help_text_pos = (char*)(page_pos_stack_elem->contents);
-               kjb_free( page_pos_stack_elem);
+               ivi_free( page_pos_stack_elem);
            }
            else
            {
@@ -1009,7 +1009,7 @@ static Help_request do_help_topic
         // current position, as we may have pointers into previous parts of
         // the help page string.
         */
-        if (kjb_tty_cols != save_tty_cols)
+        if (ivi_tty_cols != save_tty_cols)
         {
             char  re_justified_help_text[ MAX_HELP_TOPIC_LEN ];
             size_t   offset = help_text_pos - save_initial_help_pos;
@@ -1017,7 +1017,7 @@ static Help_request do_help_topic
 
             ASSERT((size_t)offset <= sizeof(justified_help_text));
 
-            if (left_justify(help_text_pos, kjb_tty_cols, 0,
+            if (left_justify(help_text_pos, ivi_tty_cols, 0,
                              no_justify_chars, TRUE, 0,
                              re_justified_help_text,
                              sizeof(re_justified_help_text))
@@ -1027,10 +1027,10 @@ static Help_request do_help_topic
                 return EXIT_HELP;
             }
 
-            kjb_strncpy(help_text_pos, re_justified_help_text,
+            ivi_strncpy(help_text_pos, re_justified_help_text,
                         (int)(sizeof(justified_help_text) - offset));
 
-            save_tty_cols = kjb_tty_cols;
+            save_tty_cols = ivi_tty_cols;
         }
     }
 
@@ -1039,7 +1039,7 @@ static Help_request do_help_topic
     while (page_pos_stack_elem != NULL)
     {
         next_page_pos_stack_elem = page_pos_stack_elem->next;
-        kjb_free(page_pos_stack_elem);
+        ivi_free(page_pos_stack_elem);
         page_pos_stack_elem = next_page_pos_stack_elem;
     }
 
@@ -1062,7 +1062,7 @@ static Help_request do_help_topic_menu
     const char* help_text
 )
 {
-    IMPORT volatile int kjb_tty_rows;
+    IMPORT volatile int ivi_tty_rows;
     char                sub_topics[ MAX_NUM_SUB_TOPICS ][ 100 ];
     const char*         help_text_pos;
     char                help_line[ 2000 ];
@@ -1080,7 +1080,7 @@ static Help_request do_help_topic_menu
 
     cur_menu_item = 1;
 
-    if (kjb_isatty(fileno(stdout))) output_to_terminal = TRUE;
+    if (ivi_isatty(fileno(stdout))) output_to_terminal = TRUE;
     else output_to_terminal = FALSE;
 
     /*CONSTCOND*/
@@ -1136,7 +1136,7 @@ static Help_request do_help_topic_menu
                                        help_line, sizeof(help_line));
         }
 
-        while (line_count < kjb_tty_rows - 7)
+        while (line_count < ivi_tty_rows - 7)
         {
             line_count++;
             if (output_to_terminal) pso("\n");
@@ -1211,7 +1211,7 @@ static Help_request do_help_topic_menu
             {
                 if (output_to_terminal)
                 {
-                    move_cursor_up(kjb_tty_rows-4-cur_menu_item);
+                    move_cursor_up(ivi_tty_rows-4-cur_menu_item);
                 }
 
                 cur_menu_item--;
@@ -1245,7 +1245,7 @@ static Help_request do_help_topic_menu
 
                 if (output_to_terminal)
                 {
-                    move_cursor_down(kjb_tty_rows-6-cur_menu_item);
+                    move_cursor_down(ivi_tty_rows-6-cur_menu_item);
                 }
 
                 rewrite_screen = FALSE;
@@ -1254,7 +1254,7 @@ static Help_request do_help_topic_menu
             {
                 if (output_to_terminal)
                 {
-                    move_cursor_up(kjb_tty_rows-6-cur_menu_item);
+                    move_cursor_up(ivi_tty_rows-6-cur_menu_item);
                 }
 
                 cur_menu_item++;
@@ -1278,7 +1278,7 @@ static Help_request do_help_topic_menu
 
                 if (output_to_terminal)
                 {
-                    move_cursor_down(kjb_tty_rows-4-cur_menu_item);
+                    move_cursor_down(ivi_tty_rows-4-cur_menu_item);
                 }
 
                 rewrite_screen = FALSE;
@@ -1336,7 +1336,7 @@ static void print_menu_item
 
 static int help_print_title(const char* topic, const char* prev_topic)
 {
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_cols;
     int                 num_dashes;
     char                uc_topic[ 200 ];
     int                 topic_len;
@@ -1352,7 +1352,7 @@ static int help_print_title(const char* topic, const char* prev_topic)
         prev_topic_len = strlen(prev_topic) + 2;
     }
 
-    num_dashes = (kjb_tty_cols - topic_len - prev_topic_len - 4)/2;
+    num_dashes = (ivi_tty_cols - topic_len - prev_topic_len - 4)/2;
 
     rep_print(stdout, '-', num_dashes);
 
@@ -1360,16 +1360,16 @@ static int help_print_title(const char* topic, const char* prev_topic)
 
     if (*prev_topic != '\0')
     {
-        kjb_fputs(stdout, prev_topic);
+        ivi_fputs(stdout, prev_topic);
         pso(": ");
     }
 
     set_high_light(stdout);
-    kjb_fputs(stdout, uc_topic);
+    ivi_fputs(stdout, uc_topic);
     unset_high_light(stdout);
     pso("  ");
 
-    num_dashes = kjb_tty_cols - topic_len - prev_topic_len - 4 - num_dashes;
+    num_dashes = ivi_tty_cols - topic_len - prev_topic_len - 4 - num_dashes;
 
     rep_print(stdout, '-', num_dashes);
     pso("\n\n");
@@ -1523,11 +1523,11 @@ static void list_topics(FILE* help_fp,
 
     if (res == ERROR)
     {
-        kjb_fprintf(stderr, "Help is not available\n");
+        ivi_fprintf(stderr, "Help is not available\n");
     }
     else
     {
-        kjb_fputs(stdout, topic_list);
+        ivi_fputs(stdout, topic_list);
     }
 }
 
@@ -1694,7 +1694,7 @@ static Help_request help_topic_query(int prev_page_ok, int next_page_ok)
     Bool                good_input;
 
 
-    if ( ! kjb_isatty(fileno(stdout)))
+    if ( ! ivi_isatty(fileno(stdout)))
     {
         return FORWARD_HELP_PAGE;
     }
@@ -1859,7 +1859,7 @@ static Help_request help_menu_query(int* item_ptr, int topic_count,
     int                 item;
 
 
-    if ( ! kjb_isatty(fileno(stdout)))
+    if ( ! ivi_isatty(fileno(stdout)))
     {
         return CONTINUE_WITH_TOPIC;
     }
@@ -2118,11 +2118,11 @@ int man_print_title(FILE* fp, const char* title, const char* section)
 
     if (head_len + title_len + 4 > MAN_OUTPUT_WIDTH)
     {
-        ERE(kjb_fprintf(fp, "%.*s\n", MAN_OUTPUT_WIDTH, full_title));
+        ERE(ivi_fprintf(fp, "%.*s\n", MAN_OUTPUT_WIDTH, full_title));
     }
     else if (head_len + 2 * title_len + 6 > MAN_OUTPUT_WIDTH)
     {
-        ERE(kjb_fprintf(fp, "%s    %s\n", full_title, heading));
+        ERE(ivi_fprintf(fp, "%s    %s\n", full_title, heading));
     }
     else
     {
@@ -2130,14 +2130,14 @@ int man_print_title(FILE* fp, const char* title, const char* section)
         unsigned int right_sep_len =
                 MAN_OUTPUT_WIDTH - left_sep_len - 2*title_len - head_len;
 
-        ERE(kjb_fputs(fp, full_title));
+        ERE(ivi_fputs(fp, full_title));
         ERE(print_blanks(fp, left_sep_len));
-        ERE(kjb_fputs(fp, heading));
+        ERE(ivi_fputs(fp, heading));
         ERE(print_blanks(fp, right_sep_len));
         ERE(fput_line(fp, full_title));
     }
 
-    ERE(kjb_fputs(fp, "\n"));
+    ERE(ivi_fputs(fp, "\n"));
 
     return NO_ERROR;
 }

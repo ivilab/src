@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_basic.c 21712 2017-08-20 18:21:41Z kobus $ */
+/* $Id: m_mat_basic.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -96,7 +96,7 @@ int random_split_matrix_by_rows
     ERE(ascend_sort_indexed_vector(index_vp));
 
 
-    num_rows_1 = MAX_OF(0, MIN_OF(num_rows, kjb_rint(fraction * num_rows)));
+    num_rows_1 = MAX_OF(0, MIN_OF(num_rows, ivi_rint(fraction * num_rows)));
     num_rows_2 = num_rows - num_rows_1;
 
     for (i=0; i<num_rows_1; i++)
@@ -407,7 +407,7 @@ int debug_copy_matrix
     int           line_number
 )
 {
-    IMPORT int kjb_use_memcpy;
+    IMPORT int ivi_use_memcpy;
     int   i;
     int   j;
     int   num_rows;
@@ -437,7 +437,7 @@ int debug_copy_matrix
         return NO_ERROR;
     }
 
-    if (    (kjb_use_memcpy)
+    if (    (ivi_use_memcpy)
          && (num_cols == source_mp->max_num_cols)
          /* Don't need to check source becase we just did the get_target. */
        )
@@ -473,7 +473,7 @@ int debug_copy_matrix
 
 int copy_matrix(Matrix** target_mpp, const Matrix* source_mp)
 {
-    IMPORT int kjb_use_memcpy;
+    IMPORT int ivi_use_memcpy;
     int   i;
     int   j;
     int   num_rows;
@@ -503,7 +503,7 @@ int copy_matrix(Matrix** target_mpp, const Matrix* source_mp)
     }
 
 
-    if (    (kjb_use_memcpy)
+    if (    (ivi_use_memcpy)
          && (num_cols == source_mp->max_num_cols)
          /* Don't need to check source becase we just did the get_target. */
        )
@@ -1276,7 +1276,7 @@ int copy_matrix_to_int_matrix
 
         for (j=0; j<num_cols; j++)
         {
-            *target_pos = kjb_rint(*source_pos);
+            *target_pos = ivi_rint(*source_pos);
             target_pos++;
             source_pos++;
         }
@@ -1559,7 +1559,7 @@ int mp_row_get_indexed_vector
 
 int get_random_matrix_row(Vector** vpp, const Matrix* mp)
 {
-    int index = (int)(kjb_rand_2() * mp->num_rows);
+    int index = (int)(ivi_rand_2() * mp->num_rows);
 
 
     if (index == mp->num_rows) index--;
@@ -1887,7 +1887,7 @@ int copy_matrix_row
 
 int get_random_matrix_col(Vector** vpp, const Matrix* mp)
 {
-    int index = (int)(kjb_rand_2() * mp->num_cols);
+    int index = (int)(ivi_rand_2() * mp->num_cols);
 
 
     ERE(get_matrix_col(vpp, mp, index));
@@ -2760,7 +2760,7 @@ int stack_matrix_rows(Vector** vpp, const Matrix* mp)
         ERE(get_target_vector(vpp, len));
         vec_pos = (*vpp)->elements;
 
-        if (kjb_use_memcpy)
+        if (ivi_use_memcpy)
         {
             UNTESTED_CODE();
 
@@ -2831,7 +2831,7 @@ int unstack_matrix_rows
 
         ERE(get_target_matrix(mpp, num_rows, num_cols));
 
-        if (kjb_use_memcpy)
+        if (ivi_use_memcpy)
         {
             UNTESTED_CODE();
 

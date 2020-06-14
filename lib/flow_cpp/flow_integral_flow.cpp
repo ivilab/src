@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan, Ernesto Brau
  * =========================================================================== */
 
-/* $Id: flow_integral_flow.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: flow_integral_flow.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <flow_cpp/flow_integral_flow.h>
 #include <m_cpp/m_matrix.h>
@@ -34,7 +34,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
+using namespace ivi;
 
 Integral_flow::Integral_flow(const Matrix& flow, size_t subsample_rate) :
     ss_rate_(subsample_rate),
@@ -84,7 +84,7 @@ Integral_flow::Integral_flow(const std::string& fname)
     ifstream ifs(fname.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_3(IO_error, "Can't open file %s", (fname.c_str()));
+        IVI_THROW_3(IO_error, "Can't open file %s", (fname.c_str()));
     }
 
     // get the first line which has the following information

@@ -8,7 +8,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 template<class D>
 struct sample_helper

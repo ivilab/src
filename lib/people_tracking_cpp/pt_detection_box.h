@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: pt_detection_box.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: pt_detection_box.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_DETECTION_BOX_H
 #define PT_DETECTION_BOX_H
@@ -31,7 +31,7 @@
 #include <sstream>
 #include <ios>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -168,7 +168,7 @@ bool box_on_ground(const Detection_box& dbox, const Perspective_camera& cam)
     return !gbp(bbot[0], bbot[1]).empty();
 }
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_DETECTION_BOX_H */
 

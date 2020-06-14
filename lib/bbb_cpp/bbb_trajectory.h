@@ -31,7 +31,7 @@
 #include <iostream>
 #include <boost/bind.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -258,7 +258,7 @@ void Trajectory::copy(VecIter out) const
 /** @brief  Push trajectory to output stream. */
 std::ostream& operator<<(std::ostream& ost, const Trajectory& traj);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_TRAJECTORY_H */
 

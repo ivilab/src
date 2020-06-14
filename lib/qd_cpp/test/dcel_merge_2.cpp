@@ -4,7 +4,7 @@
  * @brief check that DCEL adds a new vertex when merging crossing segments
  */
 /*
- * $Id: dcel_merge_2.cpp 20167 2015-12-09 22:13:05Z predoehl $
+ * $Id: dcel_merge_2.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -16,7 +16,7 @@
 
 namespace
 {
-using namespace kjb::qd;
+using namespace ivi::qd;
 
 const char *ref1a =
     "<?xml version='1.0' ?>"
@@ -36194,7 +36194,7 @@ int test1()
 
     TEST_TRUE(is_isomorphic(c_ref, c_test, 00));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -36203,11 +36203,11 @@ int test1()
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
 
-    KJB(EPETE(test1()));
+    IVI(EPETE(test1()));
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

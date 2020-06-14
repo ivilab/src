@@ -1,5 +1,5 @@
 
-/* $Id: camera_bw_byte_image_io.c 21059 2017-01-13 00:49:18Z kobus $ */
+/* $Id: camera_bw_byte_image_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -26,12 +26,12 @@ extern "C" {
 int write_camera_bw_byte_image(Camera_bw_byte_image *image, const char * file_name)
 {
     int i, j;
-    KJB_image *pImage = NULL;
+    IVI_image *pImage = NULL;
 
-    pImage = kjb_create_image(image->data->num_rows, image->data->num_cols);
+    pImage = ivi_create_image(image->data->num_rows, image->data->num_cols);
     if (!pImage)
     {
-        printf("Failed to create a KJB image \n");
+        printf("Failed to create a IVI image \n");
         return -1;
     }
     for(i= 0; i < image->data->num_rows; i++)
@@ -46,9 +46,9 @@ int write_camera_bw_byte_image(Camera_bw_byte_image *image, const char * file_na
     /*will have to remove this... to do*/
     /*ow_horizontal_flip_image(pImage);*/
 
-    kjb_write_image(pImage, file_name);
+    ivi_write_image(pImage, file_name);
 
-    kjb_free_image(pImage);
+    ivi_free_image(pImage);
     return 0;
 }
 

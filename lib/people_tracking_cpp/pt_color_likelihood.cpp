@@ -15,7 +15,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_color_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_color_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_color_likelihood.h"
@@ -39,8 +39,8 @@
 #include <algorithm>
 #include <boost/shared_array.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 void Color_likelihood::read_frames(const std::vector<std::string>& frame_fps)
 {

@@ -10,13 +10,13 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
 
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
-using namespace kjb_c;
+using namespace ivi_c;
 
 
 namespace DTLib {
@@ -29,8 +29,8 @@ namespace DTLib {
     // POSTCOND: Fills up 'ChannelVec''s images with a single region per
     // image, all regions taken from 'CombImg', such that the region's
     // pixels are nonzero and everything else is zero.
-    void SeparateChannels(CImg<kjb_int32>& InCombImg, CImgVec<BYTE>& OutChannelVec,
-                          const kjb_int32& nSegments);
+    void SeparateChannels(CImg<ivi_int32>& InCombImg, CImgVec<BYTE>& OutChannelVec,
+                          const ivi_int32& nSegments);
 
 } // namespace DTLib {
 

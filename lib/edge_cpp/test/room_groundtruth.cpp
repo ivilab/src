@@ -31,7 +31,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     if(argc < 3)
     {
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 
     std::vector<Vanishing_point> vpts;
 
-    kjb::Edge_set * edges;
+    ivi::Edge_set * edges;
     Edge_segment_set * edge_segments;
     Canny_edge_detector edge_detector(1.2, 2.55, 2.04, 20, true);
     edges = edge_detector.detect_edges(or_map);
@@ -116,9 +116,9 @@ int main(int argc, char **argv)
     imggg.write("./faus.jpg");
 
     double focal_length;
-    if(!kjb::relaxed_vanishing_point_estimation(vpts, focal_length, or_map, 0.95))
+    if(!ivi::relaxed_vanishing_point_estimation(vpts, focal_length, or_map, 0.95))
     {
-        KJB_THROW_2(KJB_error,"Error, could not compute vanishing points");
+        IVI_THROW_2(IVI_error,"Error, could not compute vanishing points");
     }
 
 

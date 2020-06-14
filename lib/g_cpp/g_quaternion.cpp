@@ -1,5 +1,5 @@
 
-/* $Id: g_quaternion.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g_quaternion.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,7 +30,7 @@
 
 using std::ostream;
 
-namespace kjb
+namespace ivi
 {
 
 const Quaternion::Euler_axis Quaternion::EulSafe[4] = {EulX, EulY, EulZ, EulX};
@@ -80,7 +80,7 @@ Quaternion::Quaternion(double x, double y, double z, double w) :
     _q(),
     _euler_order(-1)
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
     _q.x = x; _q.y = y; _q.z = z; _q.w = w;
 
     _update_euler_order();
@@ -211,7 +211,7 @@ Quaternion::Quaternion(const Vector& v) :
     _euler_order(-1)
 {
     if(v.get_length() != 3) {
-        KJB_THROW_2(Illegal_argument, "Quaternion(const Vector&): Vector must be of dimension = 3");
+        IVI_THROW_2(Illegal_argument, "Quaternion(const Vector&): Vector must be of dimension = 3");
     }
 
     _q.x = v(0);
@@ -334,7 +334,7 @@ Quaternion& Quaternion::set_rotation_matrix(const Matrix& rotation_matrix)
         // TODO: add this check to the 4x4 case, too.  currently, det is only implemented up to 3x3
         if(det(rotation_matrix) < 0.0)
         {
-            KJB_THROW_2(Illegal_argument, "rotation matrix may not have negative determinant.");
+            IVI_THROW_2(Illegal_argument, "rotation matrix may not have negative determinant.");
         }
 
         _rotation_matrix = rotation_matrix;
@@ -351,7 +351,7 @@ Quaternion& Quaternion::set_rotation_matrix(const Matrix& rotation_matrix)
     else if(rotation_matrix.get_num_rows() != 4 || 
             rotation_matrix.get_num_cols() != 4)
     {
-        KJB_THROW_2(Illegal_argument, "Rotation matrix must be 4x4");
+        IVI_THROW_2(Illegal_argument, "Rotation matrix must be 4x4");
     }
     else
     {
@@ -372,7 +372,7 @@ Quaternion& Quaternion::set_axis_angle(const Vector& axis, double angle)
     if(axis == _axis && std::fabs(angle - _angle) < FLT_EPSILON) return *this;
 
     if(axis.get_length() != 3) {
-        KJB_THROW_2(Illegal_argument, "Axis vector must be of dimension = 3.");
+        IVI_THROW_2(Illegal_argument, "Axis vector must be of dimension = 3.");
     }
 
     _axis = axis;
@@ -397,7 +397,7 @@ Quaternion& Quaternion::set_axis_angle(const Vector& axis, double angle)
 Quaternion& Quaternion::set_axis_angle(const Vector& axis_angle)
 {
     if(axis_angle.size() != 3)
-        KJB_THROW_2(Illegal_argument, "axis_angle vector must have size = 3.");
+        IVI_THROW_2(Illegal_argument, "axis_angle vector must have size = 3.");
 
     double angle = axis_angle.magnitude();
     Vector axis = axis_angle / angle;
@@ -564,7 +564,7 @@ float Quaternion::get_epsilon()
 
 Vector Quaternion::rotate(const Vector& v) const
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     bool homogeneous = false;
 
@@ -578,7 +578,7 @@ Vector Quaternion::rotate(const Vector& v) const
     }
     else if(v_tmp.get_length() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Rotate(v): v must be of dimension = 3");
+        IVI_THROW_2(Illegal_argument, "Rotate(v): v must be of dimension = 3");
     }
 
     double mag = v_tmp.magnitude();
@@ -661,7 +661,7 @@ Quaternion& Quaternion::operator*=(const Quaternion& q)
 
 Quaternion& Quaternion::operator/=(const Quaternion& q)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     assert(std::fabs(1 - magnitude_squared()) < EPSILON);
 
     // identity quaternion
@@ -861,7 +861,7 @@ double Quaternion::norm(unsigned int l) const
  * *********************************/
 Quaternion Quaternion::operator*(const Quaternion& op_2) const
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     Quaternion q(*this);
 
@@ -870,7 +870,7 @@ Quaternion Quaternion::operator*(const Quaternion& op_2) const
 
 Quaternion Quaternion::operator/(const Quaternion& op_2) const
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
 
     Quaternion q(*this);
 
@@ -883,7 +883,7 @@ Quaternion Quaternion::operator/(const Quaternion& op_2) const
  *********************************/
 void Quaternion::_update_rotation_matrix() const
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     assert(fabs(magnitude_squared() - 1.0) < FLT_EPSILON);
 
@@ -939,7 +939,7 @@ void Quaternion::_update_rotation_matrix() const
 
 void Quaternion::_update_axis_angle() const
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     if(!_axis_angle_dirty) return;
     _axis_angle_dirty = false;
@@ -960,7 +960,7 @@ void Quaternion::_update_euler_angles() const
     using std::atan2;
     using std::sqrt;
 
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     if(!_eulers_dirty) return;
     _eulers_dirty = false;
@@ -1022,7 +1022,7 @@ void Quaternion::_update_euler_angles() const
 
 void Quaternion::_update_from_rotation_matrix()
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     // Credit: J.M.P. van Waveren
     // From article: "From Quaternion to Matrix and Back"
@@ -1068,7 +1068,7 @@ void Quaternion::_update_from_rotation_matrix()
 
 void Quaternion::_update_from_axis_angle()
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     // Taken from wikipedia "Quaternions_and_spatial_rotation".
     double sin_a = std::sin(_angle/2);
@@ -1087,7 +1087,7 @@ void Quaternion::_update_from_axis_angle()
 
 void Quaternion::_update_from_euler_angles()
 {
-//    KJB(UNTESTED_CODE());
+//    IVI(UNTESTED_CODE());
 
     // EXTRACT QUATERNION FROM EULER ANGLES
     // This function is quite unreadable.  Luckilly, it is
@@ -1142,7 +1142,7 @@ void Quaternion::_update_from_euler_angles()
 
 void Quaternion::_update_euler_order()
 {
-    //KJB(UNTESTED_CODE());
+    //IVI(UNTESTED_CODE());
     switch(_euler_mode)
     {
         // innermost, parity, repeat, frame
@@ -1221,7 +1221,7 @@ void Quaternion::_update_euler_order()
             _euler_order = _eul_ord(EulZ,EulParOdd,EulRepNo,EulFrmR);
             break;
         default:
-            KJB_THROW(Runtime_error); // can't happen
+            IVI_THROW(Runtime_error); // can't happen
     }
 }
 
@@ -1356,7 +1356,7 @@ Quaternion& Quaternion::_normalize()
     else
     {
         //abort(); // bug
-        KJB_THROW_2(KJB_error, "Quaternion magnitude is zero!!");
+        IVI_THROW_2(IVI_error, "Quaternion magnitude is zero!!");
     }
 
     return *this;
@@ -1365,13 +1365,13 @@ Quaternion& Quaternion::_normalize()
 
 Quaternion slerp(const Quaternion& q1, const Quaternion& q2, double t)
 {
-    if(t < 0 || t > 1) KJB_THROW(Index_out_of_bounds);
+    if(t < 0 || t > 1) IVI_THROW(Index_out_of_bounds);
 
     if(t < FLT_EPSILON) return  q1;
     if(1-t < FLT_EPSILON) return q2;
 
-    kjb::Vector4 v1( q1._q.x, q1._q.y, q1._q.z, q1._q.w);
-    kjb::Vector4 v2( q2._q.x, q2._q.y, q2._q.z, q2._q.w);
+    ivi::Vector4 v1( q1._q.x, q1._q.y, q1._q.z, q1._q.w);
+    ivi::Vector4 v2( q2._q.x, q2._q.y, q2._q.z, q2._q.w);
 
     double cos_theta = dot(v1, v2);
 
@@ -1401,13 +1401,13 @@ Quaternion slerp(const Quaternion& q1, const Quaternion& q2, double t)
 
 Quaternion slerp2(const Quaternion& q1, const Quaternion& q2, double t)
 {
-    if(t < 0 || t > 1) KJB_THROW(Index_out_of_bounds);
+    if(t < 0 || t > 1) IVI_THROW(Index_out_of_bounds);
 
     if(t < FLT_EPSILON) return  q1;
     if(1-t < FLT_EPSILON) return q2;
 
-    kjb::Vector4 v1( q1._q.x, q1._q.y, q1._q.z, q1._q.w);
-    kjb::Vector4 v2( q2._q.x, q2._q.y, q2._q.z, q2._q.w);
+    ivi::Vector4 v1( q1._q.x, q1._q.y, q1._q.z, q1._q.w);
+    ivi::Vector4 v2( q2._q.x, q2._q.y, q2._q.z, q2._q.w);
 
     double cos_theta = dot(v1, v2);
 
@@ -1441,13 +1441,13 @@ Quaternion slerp2(const Quaternion& q1, const Quaternion& q2, double t)
 
 Quaternion nlerp(const Quaternion& q1, const Quaternion& q2, double t)
 {
-    if(t < 0 || t > 1) KJB_THROW(Index_out_of_bounds);
+    if(t < 0 || t > 1) IVI_THROW(Index_out_of_bounds);
 
     if(t < FLT_EPSILON) return  q1;
     if(1-t < FLT_EPSILON) return q2;
 
-    kjb::Vector4 v1( q1._q.x, q1._q.y, q1._q.z, q1._q.w);
-    kjb::Vector4 v2( q2._q.x, q2._q.y, q2._q.z, q2._q.w);
+    ivi::Vector4 v1( q1._q.x, q1._q.y, q1._q.z, q1._q.w);
+    ivi::Vector4 v2( q2._q.x, q2._q.y, q2._q.z, q2._q.w);
 
     // use the smallest angle between the two vectors,
     // since the north and south hemisphere in Quaternion space

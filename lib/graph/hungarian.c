@@ -1,5 +1,5 @@
 
-/* $Id: hungarian.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: hungarian.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /*
@@ -515,7 +515,7 @@ done:
             {
                 if (result != ERROR)
                 {
-                    kjb_clear_error();
+                    ivi_clear_error();
                 }
                 add_error("Row %d is matched to out of range col %d.",
                           k, j);
@@ -526,7 +526,7 @@ done:
             {
                 if (result != ERROR)
                 {
-                    kjb_clear_error();
+                    ivi_clear_error();
                 }
                 add_error("Column %d is doubly matched.", j);
 
@@ -537,19 +537,19 @@ done:
         }
     }
 
-    kjb_free(matched_cols);
+    ivi_free(matched_cols);
 
     *cost_ptr = cost;
 
     free_int_matrix(aa_mp);
-    kjb_free(col_mate);
-    kjb_free(row_mate);
-    kjb_free(parent_row);
-    kjb_free(unchosen_row);
-    kjb_free(row_dec);
-    kjb_free(col_inc);
-    kjb_free(slack);
-    kjb_free(slack_row);
+    ivi_free(col_mate);
+    ivi_free(row_mate);
+    ivi_free(parent_row);
+    ivi_free(unchosen_row);
+    ivi_free(row_dec);
+    ivi_free(col_inc);
+    ivi_free(slack);
+    ivi_free(slack_row);
 
     return result;
 }
@@ -1003,7 +1003,7 @@ done:
             {
                 if (result != ERROR)
                 {
-                    kjb_clear_error();
+                    ivi_clear_error();
                 }
                 add_error("Row %d is matched to out of range col %d.",
                           k, j);
@@ -1014,7 +1014,7 @@ done:
             {
                 if (result != ERROR)
                 {
-                    kjb_clear_error();
+                    ivi_clear_error();
                 }
                 add_error("Column %d is doubly matched.", j);
 
@@ -1025,20 +1025,20 @@ done:
         }
     }
 
-    kjb_free(matched_cols);
+    ivi_free(matched_cols);
 
 
     *cost_ptr = cost;
 
     free_matrix(aa_mp);
-    kjb_free(col_mate);
-    kjb_free(row_mate);
-    kjb_free(parent_row);
-    kjb_free(unchosen_row);
-    kjb_free(row_dec);
-    kjb_free(col_inc);
-    kjb_free(slack);
-    kjb_free(slack_row);
+    ivi_free(col_mate);
+    ivi_free(row_mate);
+    ivi_free(parent_row);
+    ivi_free(unchosen_row);
+    ivi_free(row_dec);
+    ivi_free(col_inc);
+    ivi_free(slack);
+    ivi_free(slack_row);
 
     return result;
 

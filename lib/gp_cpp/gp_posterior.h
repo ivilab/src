@@ -32,12 +32,14 @@
 #include <vector>
 #include <sstream>
 #include <boost/bind.hpp>
+#include <boost/bind/placeholders.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
-#endif /* KJB_HAVE_ERGO */
+#endif /* IVI_HAVE_ERGO */
 
-namespace kjb {
+namespace bph = boost::placeholders;
+namespace ivi {
 namespace gp {
 
 // forward declaration for ownership
@@ -228,7 +230,7 @@ private:
 template<class Mean, class Covariance>
 class Cp_proposer
 {
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 public:
     typedef ergo::mh_proposal_result result_type;
 #endif
@@ -283,7 +285,7 @@ public:
     /** @brief  Get current control piont index. */
     size_t current_control() const { return cur_c_; }
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 public:
     /** @brief  Propose a new model. */
     ergo::mh_proposal_result operator()(const Vector& m, Vector& m_p) const;
@@ -427,7 +429,7 @@ void Cp_proposer<M, C>::set_covariance_function(const C& cf)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 template<class M, class C>
 ergo::mh_proposal_result Cp_proposer<M, C>::operator()
 (
@@ -472,7 +474,7 @@ ergo::mh_proposal_result Cp_proposer<M, C>::operator()
 
     return ergo::mh_proposal_result(0.0, 0.0, sst.str());
 }
-#endif /* KJB_HAVE_ERGO */
+#endif /* IVI_HAVE_ERGO */
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
@@ -505,16 +507,16 @@ public:
             num_ctrl_pts,
             post.mean_function(),
             post.covariance_function()),
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
         step_(
-            boost::bind(&Self::log_posterior, this, _1),
-            boost::bind(propose_, _1, _2)),
+            boost::bind(&Self::log_posterior, this, bph::_1),
+            boost::bind(propose_, bph::_1, bph::_2)),
 #endif
         num_burn_its_(num_burn_its),
         burned_in_(false)
     {
-#ifndef KJB_HAVE_ERGO
-        KJB_THROW_2(kjb::Missing_dependency, "ergo");
+#ifndef IVI_HAVE_ERGO
+        IVI_THROW_2(ivi::Missing_dependency, "ergo");
 #endif
     }
 
@@ -524,16 +526,16 @@ public:
         outputs_(sampler.outputs_),
         log_target_(sampler.log_target_),
         propose_(sampler.propose_),
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
         step_(
-            boost::bind(&Self::log_posterior, this, _1),
-            boost::bind(propose_, _1, _2)),
+            boost::bind(&Self::log_posterior, this, bph::_1),
+            boost::bind(propose_, bph::_1, bph::_2)),
 #endif
         num_burn_its_(sampler.num_burn_its_),
         burned_in_(sampler.burned_in_)
     {
-#ifndef KJB_HAVE_ERGO
-        KJB_THROW_2(kjb::Missing_dependency, "ergo");
+#ifndef IVI_HAVE_ERGO
+        IVI_THROW_2(ivi::Missing_dependency, "ergo");
 #endif
     }
 
@@ -549,12 +551,12 @@ public:
         num_burn_its_ = sampler.num_burn_its_;
         burned_in_ = sampler.burned_in_;
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
         step_ = ergo::mh_step<Vector>(
-                    boost::bind(&Self::log_posterior, this, _1),
-                    boost::bind(propose_, _1, _2));
+                    boost::bind(&Self::log_posterior, this, bph::_1),
+                    boost::bind(propose_, bph::_1, bph::_2));
 #else
-        KJB_THROW_2(kjb::Missing_dependency, "ergo");
+        IVI_THROW_2(ivi::Missing_dependency, "ergo");
 #endif
 
         return *this;
@@ -567,10 +569,10 @@ public:
     /** @brief  Generate a sample from the posterior distribution. */
     void sample() const
     {
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
         step_(outputs_, log_target_);
 #else
-        KJB_THROW_2(kjb::Missing_dependency, "ergo");
+        IVI_THROW_2(ivi::Missing_dependency, "ergo");
 #endif
     }
 
@@ -587,7 +589,7 @@ private:
     mutable Vector outputs_;
     mutable double log_target_;
     Cp_proposer<Mean, Covariance> propose_;
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
     ergo::mh_step<Vector> step_;
 #endif
     size_t num_burn_its_;
@@ -599,7 +601,7 @@ private:
 template<class M, class C, class L>
 void Cp_sampler<M, C, L>::burn_in() const
 {
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
     if(burned_in_) return;
 
     for(size_t i = 0; i < num_burn_its_; i++)
@@ -609,7 +611,7 @@ void Cp_sampler<M, C, L>::burn_in() const
 
     burned_in_ = true;
 #else
-    KJB_THROW_2(kjb::Missing_dependency, "ergo");
+    IVI_THROW_2(ivi::Missing_dependency, "ergo");
 #endif
 }
 
@@ -678,7 +680,7 @@ Inputs uniform_control_inputs
     return control_inputs;
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /* GP_POSTERIOR_H_INCLUDED */
 

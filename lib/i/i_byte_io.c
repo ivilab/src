@@ -1,5 +1,5 @@
 
-/* $Id: i_byte_io.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_byte_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -59,22 +59,22 @@ static int write_byte_image_for_display(const void* ip, char* title);
 int read_byte_image(Byte_image** ipp, char* file_name)
 {
     FILE*  fp;
-    kjb_uint32 magic_number;
+    ivi_uint32 magic_number;
     int    result;
 
 
-    NRE(fp = kjb_fopen(file_name, "rb"));
+    NRE(fp = ivi_fopen(file_name, "rb"));
 
     if (FIELD_READ(fp, magic_number) == ERROR)
     {
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
         return ERROR;
     }
 
     if (magic_number == RASTER_MAGIC_NUM)
     {
         result = read_raster_byte_image(ipp, fp);
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
     }
     else
     {
@@ -83,14 +83,14 @@ int read_byte_image(Byte_image** ipp, char* file_name)
         ERE(verbose_pso(3, "%F is not a raster file. Arranging conversion.\n",
                         fp));
 
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
 
         ERE(BUFF_GET_TEMP_FILE_NAME(temp_file_name));
         BUFF_CAT(temp_file_name, ".sun");
 
         ERE(convert_image_file_to_raster(file_name, temp_file_name));
 
-        NRE(fp = kjb_fopen(temp_file_name, "rb"));
+        NRE(fp = ivi_fopen(temp_file_name, "rb"));
 
         if (FIELD_READ(fp, magic_number) == ERROR)
         {
@@ -98,8 +98,8 @@ int read_byte_image(Byte_image** ipp, char* file_name)
 
             /* We don't want to miss unlinking error. */
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(fp);
-            (void)kjb_unlink(temp_file_name);
+            (void)ivi_fclose(fp);
+            (void)ivi_unlink(temp_file_name);
             set_error_action(save_error_action);
 
             return ERROR;
@@ -116,8 +116,8 @@ int read_byte_image(Byte_image** ipp, char* file_name)
         }
 
         /* We don't want to miss unlinking error. */
-        EPE(kjb_fclose(fp));
-        EPE(kjb_unlink(temp_file_name));
+        EPE(ivi_fclose(fp));
+        EPE(ivi_unlink(temp_file_name));
     }
 
     return result;
@@ -129,7 +129,7 @@ static int read_raster_byte_image(Byte_image** ipp, FILE* fp)
 {
 #ifdef NOT_USED
     /*
-    // KJB_image stripping is currently only used with float images.
+    // IVI_image stripping is currently only used with float images.
     */
     extern int  strip_images_on_read;
     int         strip_image = FALSE;
@@ -211,7 +211,7 @@ static int read_raster_byte_image(Byte_image** ipp, FILE* fp)
 
 #ifdef NOT_USED
     /*
-    // KJB_image stripping is currently only used with float images.
+    // IVI_image stripping is currently only used with float images.
     */
     if (    (strip_images_on_read)
          && (num_rows == FULL_VIDEO_NUM_ROWS)
@@ -228,7 +228,7 @@ static int read_raster_byte_image(Byte_image** ipp, FILE* fp)
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -236,15 +236,15 @@ static int read_raster_byte_image(Byte_image** ipp, FILE* fp)
 
 #ifdef NOT_USED
     /*
-    // KJB_image stripping is currently only used with float images.
+    // IVI_image stripping is currently only used with float images.
     */
     if (strip_image)
     {
         for (i=0; i<STRIP_TOP; i++)
         {
-            if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+            if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
             {
-                kjb_free(data_row);
+                ivi_free(data_row);
                 return ERROR;
             }
         }
@@ -253,9 +253,9 @@ static int read_raster_byte_image(Byte_image** ipp, FILE* fp)
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -263,7 +263,7 @@ static int read_raster_byte_image(Byte_image** ipp, FILE* fp)
 
 #ifdef NOT_USED
         /*
-        // KJB_image stripping is currently only used with float images.
+        // IVI_image stripping is currently only used with float images.
         */
         if (strip_image)
         {
@@ -335,7 +335,7 @@ static int read_raster_byte_image(Byte_image** ipp, FILE* fp)
 
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
@@ -383,7 +383,7 @@ int write_byte_image(const Byte_image* ip, char* file_name)
 
         result = convert_image_file_from_raster(temp_file_name, file_name);
 
-        kjb_unlink(temp_file_name);
+        ivi_unlink(temp_file_name);
         return result;
     }
 }
@@ -403,7 +403,7 @@ static int write_raster_byte_image(const Byte_image* ip, char* file_name)
     Byte_pixel*    out_pos;
 
 
-    NRE(fp = kjb_fopen(file_name, "wb"));
+    NRE(fp = ivi_fopen(file_name, "wb"));
 
     sun_header.magic     = 0x59a66a95;
     sun_header.width     = ip->num_cols;
@@ -416,7 +416,7 @@ static int write_raster_byte_image(const Byte_image* ip, char* file_name)
 
     if (FIELD_WRITE(fp, sun_header) == ERROR)
     {
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
         return ERROR;
     }
 
@@ -429,7 +429,7 @@ static int write_raster_byte_image(const Byte_image* ip, char* file_name)
 
     if (data_row == NULL)
     {
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
         return ERROR;
     }
 
@@ -453,20 +453,20 @@ static int write_raster_byte_image(const Byte_image* ip, char* file_name)
             *data_row_pos++ = 0;
         }
 
-        if (kjb_fwrite(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fwrite(fp, data_row, (size_t)row_length) == ERROR)
         {
             Error_action save_error_action = get_error_action();
 
-            kjb_free(data_row);
+            ivi_free(data_row);
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(fp);
+            (void)ivi_fclose(fp);
             set_error_action(save_error_action);
             return ERROR;
         }
     }
 
-    kjb_free(data_row);
-    ERE(kjb_fclose(fp));
+    ivi_free(data_row);
+    ERE(ivi_fclose(fp));
 
     return NO_ERROR;
 }

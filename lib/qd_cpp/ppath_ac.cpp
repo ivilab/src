@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: ppath_ac.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: ppath_ac.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
@@ -16,7 +16,7 @@
 #include "l/l_sys_io.h"
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -50,7 +50,7 @@ size_t PixPathAc::whereis_arclength_ratio( float rat ) const
 {
     if ( 0 == m_path.size() )
     {
-        KJB_THROW_2(Illegal_argument, "Too small for a/l ratio" );
+        IVI_THROW_2(Illegal_argument, "Too small for a/l ratio" );
     }
     if ( rat <= 0 )
     {
@@ -65,15 +65,15 @@ size_t PixPathAc::whereis_arclength_ratio( float rat ) const
         return 0;
     }
 
-    KJB( ASSERT( 0 == arclength( size_t( 0 ) ) ) );
-    KJB( ASSERT( arclength() == arclength( m_path.size() - 1 ) ) );
+    IVI( ASSERT( 0 == arclength( size_t( 0 ) ) ) );
+    IVI( ASSERT( arclength() == arclength( m_path.size() - 1 ) ) );
     const float target_al = rat * arclength();
 
     size_t low = 0, high = m_path.size() - 1, mid; // OK to leave mid uninitialized
     while( low < high && ( mid = (low + high) / 2 ) != low )
     {
-        KJB( ASSERT( arclength( low ) <= target_al ) );
-        KJB( ASSERT( arclength( high ) > target_al ) );
+        IVI( ASSERT( arclength( low ) <= target_al ) );
+        IVI( ASSERT( arclength( high ) > target_al ) );
         if ( target_al < arclength( mid ) )
         {
             high = mid;
@@ -93,7 +93,7 @@ float PixPathAc::arclength() const
     refresh_the_cache_if_stale();
     if ( 0 == m_path.size() )
     {
-        KJB_THROW_2(Illegal_argument, "PixPath too small to have arclength" );
+        IVI_THROW_2(Illegal_argument, "PixPath too small to have arclength" );
     }
     return arclen_cache.back();
 }
@@ -101,5 +101,5 @@ float PixPathAc::arclength() const
 
 
 } // end namespace qd
-} // end namespace kjb
+} // end namespace ivi
 

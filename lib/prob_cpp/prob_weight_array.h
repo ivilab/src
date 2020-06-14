@@ -1,4 +1,4 @@
-/* $Id: prob_weight_array.h 20243 2016-01-20 22:59:59Z jguan1 $ */
+/* $Id: prob_weight_array.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PROB_WEIGHT_ARRAY_H_
 #define PROB_WEIGHT_ARRAY_H_
@@ -22,7 +22,7 @@
 #include <ostream>
 #include <cmath>
 
-namespace kjb
+namespace ivi
 {
 /// Forward declarations
 template<size_t D> class Weight_array;
@@ -346,10 +346,10 @@ const size_t& position
 {
 if(!(position < D))
 {
-    KJB_THROW_2(
+    IVI_THROW_2(
     Index_out_of_bounds,
     "Attempted to access nonexistent data position in "
-    "kjb::Weight_array"
+    "ivi::Weight_array"
     );
 }
 return values_[position];
@@ -538,6 +538,6 @@ template<typename T, size_t D> std::ostream& operator<<
     os << ")";
     return os;
 }
-};//namespace kjb
+};//namespace ivi
 
 #endif

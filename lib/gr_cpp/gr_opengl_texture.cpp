@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_texture.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_opengl_texture.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -25,8 +25,8 @@
 #include "gr_cpp/gr_opengl_texture.h"
 #include "m_cpp/m_int_matrix.h"
 
-#ifdef KJB_HAVE_OPENGL
-namespace kjb
+#ifdef IVI_HAVE_OPENGL
+namespace ivi
 {
 namespace opengl
 {
@@ -123,18 +123,18 @@ void set_mask_1f_dispatch_(Texture& tx, const Matrix_type& mat, GLenum target = 
     float* array = create_gl_mask_1f(mat);
 
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
     if(GLEW_ARB_texture_rg)
         tx.set(target, 0, GL_R32F, mat.get_num_cols(), mat.get_num_rows(), 0, GL_RED, array);
     else
     {
-        KJB_THROW(Not_implemented);
-//            KJB(UNTESTED_CODE());
+        IVI_THROW(Not_implemented);
+//            IVI(UNTESTED_CODE());
 //            color.allocate(GL_RED, width_, height_);
     }
 #else
-    KJB_THROW(Not_implemented);
-//        KJB(UNTESTED_CODE());
+    IVI_THROW(Not_implemented);
+//        IVI(UNTESTED_CODE());
 //        color.allocate(GL_RED, width_, height_);
 #endif
 
@@ -147,12 +147,12 @@ Texture::Texture() :
     width_(0),
     height_(0)
 {
-#if defined(DEBUGGING) && defined(KJB_HAVE_GLUT)
-    Glut::test_initialized("kjb::opengl::Texture");
+#if defined(DEBUGGING) && defined(IVI_HAVE_GLUT)
+    Glut::test_initialized("ivi::opengl::Texture");
 #endif
 
-#if defined(DEBUGGING) && defined(KJB_HAVE_GLEW)
-    Glew::test_initialized("kjb::opengl::Texture");
+#if defined(DEBUGGING) && defined(IVI_HAVE_GLEW)
+    Glew::test_initialized("ivi::opengl::Texture");
 #endif
 
     glGenTextures(1, &handle_);
@@ -254,7 +254,7 @@ Texture& Texture::set(
 
     if(data_type == GL_INVALID_ENUM)
     {
-        KJB_THROW_2(Opengl_error, "Invalid data type for texture.");
+        IVI_THROW_2(Opengl_error, "Invalid data type for texture.");
     }
 
     bind();
@@ -328,10 +328,10 @@ Texture& Texture::set(
         GLint border)
 {
     bind();
-    kjb::opengl::glTexImage2D(target, level, border, img);
+    ivi::opengl::glTexImage2D(target, level, border, img);
 // TODO: make a version of this that takes target, level, and border
 // TODO: This creates mucked-up looking textures...
-//        kjb::opengl::gluBuild2DMipmaps(img);
+//        ivi::opengl::gluBuild2DMipmaps(img);
     unbind();
     GL_ETX();
 
@@ -350,7 +350,7 @@ Texture& Texture::set(const Matrix& mat, GLenum target, GLenum level, GLint bord
 {
     float* array = create_gl_array(mat/255);
 
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
 
     set(target, level, GL_LUMINANCE, mat.get_num_cols(), mat.get_num_rows(), border, GL_LUMINANCE, array);
 
@@ -361,7 +361,7 @@ Texture& Texture::set(const Matrix& mat, GLenum target, GLenum level, GLint bord
 
 Texture& Texture::set_float(const Matrix& mat, GLenum target)
 {
-    using kjb_c::kjb_endian_test;
+    using ivi_c::ivi_endian_test;
 
     // convert matrix to float array
     float* array = create_gl_array(mat);
@@ -374,7 +374,7 @@ Texture& Texture::set_float(const Matrix& mat, GLenum target)
      */
 #if 0
     // only check this once.
-    static const bool LITTLE_ENDIAN_ = !kjb_is_bigendian();
+    static const bool LITTLE_ENDIAN_ = !ivi_is_bigendian();
     if(!LITTLE_ENDIAN_)
     {
 //            swap_array_bytes(array, num_rows * num_cols);
@@ -384,20 +384,20 @@ Texture& Texture::set_float(const Matrix& mat, GLenum target)
     // can get this back out using glReadPixels with GL_UNSIGNED_BYTE and GL_BGRA.
 //        set(target, 0, GL_FLOAT_R32_NV, num_cols, num_rows, 0, GL_RED, (float*) array);
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
     if(GLEW_ARB_texture_rg)
         set(target, 0, GL_R32F, num_cols, num_rows, 0, GL_RED, (float*) array);
     else
     {
-        KJB_THROW(Not_implemented);
-//            KJB(UNTESTED_CODE());
+        IVI_THROW(Not_implemented);
+//            IVI(UNTESTED_CODE());
 //            color.allocate(GL_RED, width_, height_);
     }
 #else
-    KJB_THROW(Not_implemented);
+    IVI_THROW(Not_implemented);
     // this is trash, but added it to kill "unused parameter 'target'" warning
     set(target, 0, GL_RGB, num_cols, num_rows, 0, GL_RED, (float*) array);
-//        KJB(UNTESTED_CODE());
+//        IVI(UNTESTED_CODE());
 //        color.allocate(GL_RED, width_, height_);
 #endif
 
@@ -409,7 +409,7 @@ Texture& Texture::set_float(const Matrix& mat, GLenum target)
 
 Texture& Texture::set_packed_float(const Matrix& mat, GLenum target)
 {
-    using kjb_c::kjb_endian_test;
+    using ivi_c::ivi_endian_test;
 
     // convert matrix to float array
     float* array = create_gl_array(mat);
@@ -423,7 +423,7 @@ Texture& Texture::set_packed_float(const Matrix& mat, GLenum target)
      */
 #if 0
     // only check this once.
-    static const bool LITTLE_ENDIAN_ = !kjb_is_bigendian();
+    static const bool LITTLE_ENDIAN_ = !ivi_is_bigendian();
     if(!LITTLE_ENDIAN_)
     {
 //            swap_array_bytes(array, num_rows * num_cols);
@@ -439,13 +439,13 @@ Texture& Texture::set_packed_float(const Matrix& mat, GLenum target)
 
 }
 
-Texture& Texture::set_mask_1f(const kjb::Matrix& mat, GLenum target)
+Texture& Texture::set_mask_1f(const ivi::Matrix& mat, GLenum target)
 {
     set_mask_1f_dispatch_(*this, mat, target);
     return *this;
 }
 
-Texture& Texture::set_mask_1f(const kjb::Int_matrix& mat, GLenum target)
+Texture& Texture::set_mask_1f(const ivi::Int_matrix& mat, GLenum target)
 {
     set_mask_1f_dispatch_(*this, mat, target);
     return *this;
@@ -470,12 +470,12 @@ void Texture::unbind() const
 
 int Texture::max_color_attachments()
 {
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
     int result;
     glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &result);
     return result;
 #else
-    KJB_THROW_2(Missing_dependency,"GLEW");
+    IVI_THROW_2(Missing_dependency,"GLEW");
 #endif
 }
 
@@ -522,7 +522,7 @@ void draw_fullscreen_textured_quad(const Texture& texture)
     glPushMatrix();
     glLoadIdentity();
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
     glActiveTexture(GL_TEXTURE0);
 #endif
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -546,7 +546,7 @@ void draw_fullscreen_textured_quad(const Texture& texture)
 }
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
 

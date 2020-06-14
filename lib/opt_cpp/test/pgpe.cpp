@@ -1,4 +1,4 @@
-/* $Id: pgpe.cpp 18546 2015-02-09 20:41:08Z jguan1 $ */
+/* $Id: pgpe.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -21,7 +21,7 @@
 #include <m_cpp/m_vector.h>
 #include <opt_cpp/opt_pgpe.h>
 
-using namespace kjb;
+using namespace ivi;
 
 class Evaluator
 {
@@ -55,10 +55,10 @@ int main (int argc, char ** argv)
     Vector stds(num_params, 1e10);
 
     Vector data(num_params, 0.0);
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
     for(size_t i = 0; i < data.size(); i++)
     {
-        data[i] = 1000.0 + kjb_c::kjb_rand() * 1.0;
+        data[i] = 1000.0 + ivi_c::ivi_rand() * 1.0;
     }
     if(VERBOSE)
         std::cout << "data: " << data << std::endl;

@@ -1,5 +1,5 @@
 
-/* $Id: test_ncut.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: test_ncut.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -34,13 +34,13 @@ int main(int argc, char** argv)
     /* *************************************************
      * Test connected component labeling code.
     */ 
-    KJB_image* input_ip  = NULL;
-    KJB_image* output_ip = NULL;
+    IVI_image* input_ip  = NULL;
+    IVI_image* output_ip = NULL;
 
     Int_matrix* input_mp  = NULL;
     Int_matrix* output_mp = NULL;
 
-    KJB_region_list* region_list_rlp  = NULL;
+    IVI_region_list* region_list_rlp  = NULL;
     Segmentation_t3* segmentation_ptr = NULL;
 
     int num_rows, num_cols;
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     int i, j;
 
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -92,11 +92,11 @@ int main(int argc, char** argv)
     if (argc != 3)
     {
         set_error("Insufficient number of arguments:\nUsage: test_ncut <input_image> <output_image>");
-        kjb_print_error();
+        ivi_print_error();
         return EXIT_FAILURE;
     }
  
-    EPETE(kjb_read_image_2(&input_ip, argv[1]));
+    EPETE(ivi_read_image_2(&input_ip, argv[1]));
 
     num_rows = input_ip->num_rows;
     num_cols = input_ip->num_cols;
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
     }
     
     /* OLD CODE.
-    regions_rp = (KJB_region*) KJB_MALLOC(num_rows*num_cols*sizeof(KJB_region));
+    regions_rp = (IVI_region*) IVI_MALLOC(num_rows*num_cols*sizeof(IVI_region));
     */
 
     /*
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
                                          0) );
 
     /* Only for allocating output_ip. */
-    EPETE(kjb_copy_image(&output_ip, input_ip));
+    EPETE(ivi_copy_image(&output_ip, input_ip));
     
     for (i = 0; i < num_rows; i++)
     {
@@ -165,16 +165,16 @@ int main(int argc, char** argv)
         }
     }
 
-    EPETE(kjb_write_image(output_ip, argv[2]));
+    EPETE(ivi_write_image(output_ip, argv[2]));
 
-    kjb_free_image(input_ip);
-    kjb_free_image(output_ip);
+    ivi_free_image(input_ip);
+    ivi_free_image(output_ip);
     free_int_matrix(input_mp);
     free_int_matrix(output_mp);
     free_region_list(region_list_rlp);
     t3_free_segmentation(segmentation_ptr);
     
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

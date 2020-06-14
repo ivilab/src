@@ -19,8 +19,8 @@
  */
 using namespace std;
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_X11
 #ifdef MAC_OSX
 #include <OpenGL/OpenGL.h>
 #else
@@ -30,7 +30,7 @@ using namespace std;
 #endif
 #endif
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -44,14 +44,14 @@ using namespace std;
 
 #define WRITE_PARAPIPED 9
 #define EXIT_ID 10
-static kjb::Offscreen_buffer* offscreen2 = 0;
-static kjb::Perspective_camera * camera = 0;
-static kjb::Perspective_camera * best_camera = 0;
-static kjb::Parametric_parapiped * pp = 0;
-static kjb::Parametric_parapiped * best_pp = 0;
-static kjb::Edge_set * edge_set = 0;
-static kjb::Independent_edge_points_likelihood * likelihood = 0;
-static kjb::Image * background = 0;
+static ivi::Offscreen_buffer* offscreen2 = 0;
+static ivi::Perspective_camera * camera = 0;
+static ivi::Perspective_camera * best_camera = 0;
+static ivi::Parametric_parapiped * pp = 0;
+static ivi::Parametric_parapiped * best_pp = 0;
+static ivi::Edge_set * edge_set = 0;
+static ivi::Independent_edge_points_likelihood * likelihood = 0;
+static ivi::Image * background = 0;
 static float gwidth = 400;
 static float gheight = 300;
 static uint32_t _current_action = 0;
@@ -72,7 +72,7 @@ boost::mutex _mutex;
 void init_onscreen_buffer(int argc, char **argv);
 
 
-namespace kjb
+namespace ivi
 {
 
 /** Template specialization for computing the likelihood from
@@ -95,7 +95,7 @@ double Independent_edge_points_likelihood::compute_likelihood
 {
 	if(mode != FROM_MAP_AND_EDGES)
 	{
-		KJB_THROW_2(Illegal_argument, "Likelihood computation mode not supported for camera and parapiped");
+		IVI_THROW_2(Illegal_argument, "Likelihood computation mode not supported for camera and parapiped");
 	}
 
 	/** We update the camera and the parapiped so that their
@@ -118,7 +118,7 @@ double Independent_edge_points_likelihood::compute_likelihood
 
 }
 
-using namespace kjb;
+using namespace ivi;
 
 
 double compute_likelihood(Parametric_parapiped & ipp,Perspective_camera & ic)
@@ -168,7 +168,7 @@ static void display_glut()
     //std::cout << "GLUT:" << pp->get_centre_x() << std::endl;
     _mutex.unlock();
 
-    kjb::Image image;
+    ivi::Image image;
     glFlush();
     camera->get_rendering_interface().capture_gl_view(image);
     edge_set->draw(image, 255.0, 0.0, 0.0);
@@ -185,14 +185,14 @@ void dynamics_function()
 	double alpha = 0.95;
 	unsigned int kick = 0;
 
-	offscreen2 = kjb::create_and_initialize_offscreen_buffer(gwidth, gheight);
+	offscreen2 = ivi::create_and_initialize_offscreen_buffer(gwidth, gheight);
 
 
-	kjb::Vector deltas(3);
+	ivi::Vector deltas(3);
 	deltas(0) = 0.02;
 	deltas(1) = 0.02;
 	deltas(2) = 0.02;
-	kjb::Vector etas(3);
+	ivi::Vector etas(3);
 	etas(0) = 20.0; //50
 	etas(1) = 20.0; //100
 	etas(2) = 20.0; //50
@@ -233,9 +233,9 @@ void dynamics_function()
 
 	);
 	std::cout << "Created offscreen buffer" << std::endl;
-	kjb::Vector deltas1(1);
+	ivi::Vector deltas1(1);
 	deltas1(0) = 0.08;
-	kjb::Vector etas1(1);
+	ivi::Vector etas1(1);
 	etas1(0) = 10.0;
 
 	Focal_scale_dynamics focal_scale
@@ -296,7 +296,7 @@ void dynamics_function()
 	);
 
 
-	kjb::Vector deltaall(10);
+	ivi::Vector deltaall(10);
 	deltaall(PCD_PARAPIPED_X) = 0.03; //0.05
 	deltaall(PCD_PARAPIPED_Y) = 0.03; //0.05
 	deltaall(PCD_PARAPIPED_Z) = 0.03; //0.05
@@ -307,7 +307,7 @@ void dynamics_function()
 	deltaall(PCD_CAMERA_FOCAL) = 0.05;
 	deltaall(PCD_CAMERA_PITCH) =  0.000003;//8
 	deltaall(PCD_CAMERA_ROLL) =  0.000003;//8
-	kjb::Vector etaall(10);
+	ivi::Vector etaall(10);
 	etaall(PCD_PARAPIPED_X) = 4.0; //10
 	etaall(PCD_PARAPIPED_Y) = 4.0; //10
 	etaall(PCD_PARAPIPED_Z) = 4.0; //10
@@ -414,12 +414,12 @@ void dynamics_function()
 	{
 	for(unsigned int i = 0; i < 500; i++) //110
 	{
-		double cvd = kjb_c::sample_from_uniform_distribution(0.0, 1.0);
+		double cvd = ivi_c::sample_from_uniform_distribution(0.0, 1.0);
 		if(cvd < 0.85)
 		{
 		    Vector distr(4, 1.0/4.0);
 		    int position;
-		    kjb_c::sample_from_discrete_distribution(&position, distr.get_c_vector());
+		    ivi_c::sample_from_discrete_distribution(&position, distr.get_c_vector());
 		    std::cout << "Position:" << position << std::endl;
 		    if(position == 0)
 		    {
@@ -434,7 +434,7 @@ void dynamics_function()
 		{
 			//Vector distr(6, 1.0/6.0);
 			//int position;
-			//kjb_c::sample_from_discrete_distribution(&position, distr.get_c_vector());
+			//ivi_c::sample_from_discrete_distribution(&position, distr.get_c_vector());
 			std::cout << "DISCRETE MOVE" << std::endl;
 			for(unsigned int j = 0; j < discrete_moves.size(); j++)
 			{
@@ -444,7 +444,7 @@ void dynamics_function()
 		}
 	    }
 	}
-	catch (KJB_error e)
+	catch (IVI_error e)
 	{
 		e.print_details(cout);
 	}
@@ -464,7 +464,7 @@ void dynamics_function()
 	std::cout << "Render pp" << std::endl;
 	best_pp->wire_render();
 	std::cout << "After render pp" << std::endl;
-	kjb_c::KJB_image * capture = NULL;
+	ivi_c::IVI_image * capture = NULL;
 	Base_gl_interface::capture_gl_view(&capture);
 	Image img2(capture);
 	img2.write(output_img_name.c_str());
@@ -535,7 +535,7 @@ static void timer_glut(int ignored)
 
 static void main_menu_glut(int id)
 {
-    using namespace kjb;
+    using namespace ivi;
 	_current_action = id;
 
 	if(id == EXIT_ID)
@@ -559,7 +559,7 @@ void init_onscreen_buffer(int argc, char **argv)
     glutKeyboardFunc(keyboard_glut);
     glutTimerFunc(10, timer_glut, 0);
 
-    kjb::opengl::default_init_opengl(gwidth, gheight);
+    ivi::opengl::default_init_opengl(gwidth, gheight);
 
     int camera_menu = Glut_perspective_camera::create_glut_perspective_camera_submenu(camera_callback, camera);
     Glut_perspective_camera::update_width_increment(29);
@@ -654,13 +654,13 @@ int main(int argc, char** argv)
 		try
 		{
 			const Manhattan_corner & corner = fm.get_manhattan_world().get_corner_3(i);
-			kjb::robustly_propose_parapiped_and_camera_from_orthogonal_corner(*pp, *camera, corner,
+			ivi::robustly_propose_parapiped_and_camera_from_orthogonal_corner(*pp, *camera, corner,
 				fm.get_manhattan_world().get_focal_length(), img.get_num_rows(), img.get_num_cols(), 1000);
 			found = true;
 			corner_index = i;
 			break;
 		}
-		catch(KJB_error e)
+		catch(IVI_error e)
 		{
 			continue;
 		}
@@ -673,7 +673,7 @@ int main(int argc, char** argv)
 	if(!found)
 	{
 		std::cout << "Could not do it!" << std::endl;
-		KJB_THROW_2(KJB_error,"Could not do it");
+		IVI_THROW_2(IVI_error,"Could not do it");
 	}
 	init_onscreen_buffer(argc, argv);
 
@@ -712,7 +712,7 @@ int main(int argc, char** argv)
 	    boost::thread t1(dynamics_function);
 		//dynamics_function();
 	}
-	catch(KJB_error e)
+	catch(IVI_error e)
 	{
 		e.print_details();
 	}

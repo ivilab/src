@@ -1,5 +1,5 @@
 
-/* $Id: path.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: path.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     int res; 
 
 
-    kjb_l_set("debug_level", "1"); 
+    ivi_l_set("debug_level", "1"); 
 
     while ((res=BUFF_STDIN_GET_LINE("file> ",line)) != EOF) 
     {

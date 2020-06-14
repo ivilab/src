@@ -17,7 +17,7 @@ omap_computer is the base for all the functions under compute_omap.m
 #include <sstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 Omap_computer::Omap_computer
@@ -101,7 +101,7 @@ Constructor for when you don't have the feature manager already computed
 Warning: takes forfuckingever.
 ======================================================================================
 */
-Omap_computer::Omap_computer(const kjb::Image & img)
+Omap_computer::Omap_computer(const ivi::Image & img)
 {
     featman = new Features_manager(img);
     delete_features = true;
@@ -343,7 +343,7 @@ lineclass - repmat(lines(i).lineclass,n_sample,1);
 /****************************************************************************************/
 
 /****************************************************************************************/
-std::vector<double>  Omap_computer::move_line_towards_vp(kjb::Vector p1, kjb::Vector p2, Vanishing_point vp, double amount){
+std::vector<double>  Omap_computer::move_line_towards_vp(ivi::Vector p1, ivi::Vector p2, Vanishing_point vp, double amount){
 
     //things to return
     double p1x;
@@ -425,7 +425,7 @@ std::vector<double>  Omap_computer::move_line_towards_vp(kjb::Vector p1, kjb::Ve
 /****************************************************************************************/
 
 /****************************************************************************************/
-Matrix Omap_computer::extend_line(Omap_segment line, Vanishing_point vp, int toward_or_away, std::vector<kjb::Vector> samples, int imgheight, int imgwidth){
+Matrix Omap_computer::extend_line(Omap_segment line, Vanishing_point vp, int toward_or_away, std::vector<ivi::Vector> samples, int imgheight, int imgwidth){
 
     Vector startpt = line.get_start_point();
     Vector endpt = line.get_end_point();
@@ -482,7 +482,7 @@ Matrix Omap_computer::extend_line(Omap_segment line, Vanishing_point vp, int tow
             for(unsigned i=startchecking;i<samples.size();i++){
             //  cout << "sample " << i << ":\n";
                 Vector ref = samples[i];
-                if(kjb::geometry::is_point_in_polygon_new(region,ref)){
+                if(ivi::geometry::is_point_in_polygon_new(region,ref)){
                     //failed polygon check 
                 //  cout << "found a point in the polygon\n";
                     failed = 1;//exit loop
@@ -618,9 +618,9 @@ void Omap_computer::initialize_lines_and_samples(){
     int index2 = 0;
     int index3 = 0;
     for(unsigned i=0;i<lines.size();i++){
-        std::vector<kjb::Vector> csam = lines[i].get_sample();
+        std::vector<ivi::Vector> csam = lines[i].get_sample();
         for(unsigned j=0;j<csam.size();j++){
-            kjb::Vector cvec = csam[j];
+            ivi::Vector cvec = csam[j];
             mastersamples[masterindex] = cvec;
             masterout << cvec(0) << " " << cvec(1) << endl;         
             masterlcout << lines[i].get_lineclass() << endl;
@@ -803,7 +803,7 @@ void Omap_computer::compute_tricolor_image
             bsf = std::floor(255.0/(bmax-bmin));//scaling factor
         }
 
-        img = kjb::Image(red.get_num_rows(),red.get_num_cols(),0,0,0);
+        img = ivi::Image(red.get_num_rows(),red.get_num_cols(),0,0,0);
 
         for(int i = 0; i < red.get_num_rows(); i++)
         {
@@ -880,12 +880,12 @@ std::vector<Omap_segment> Omap_computer::get_lines_at_3(){ return lines_at_3; }
 
 double Omap_computer::get_imgsize(){ return imgsize; }
 
-std::vector<kjb::Vector> Omap_computer::get_samples_at_0(){ return samples_at_0; }
-std::vector<kjb::Vector> Omap_computer::get_samples_at_1(){ return samples_at_1; }
-std::vector<kjb::Vector> Omap_computer::get_samples_at_2(){ return samples_at_2; }
-std::vector<kjb::Vector> Omap_computer::get_samples_at_3(){ return samples_at_3; }
+std::vector<ivi::Vector> Omap_computer::get_samples_at_0(){ return samples_at_0; }
+std::vector<ivi::Vector> Omap_computer::get_samples_at_1(){ return samples_at_1; }
+std::vector<ivi::Vector> Omap_computer::get_samples_at_2(){ return samples_at_2; }
+std::vector<ivi::Vector> Omap_computer::get_samples_at_3(){ return samples_at_3; }
     
-std::vector<kjb::Vector> Omap_computer::get_samples_at_vp(int vp){
+std::vector<ivi::Vector> Omap_computer::get_samples_at_vp(int vp){
     if(vp==0){return get_samples_at_0();}
     else if(vp==1){return get_samples_at_1();}
     else if(vp==2){return get_samples_at_2();}
@@ -1067,8 +1067,8 @@ Omap_segment::Omap_segment(Manhattan_segment seg){
     double ex = seg.get_edge_segment().get_end_x();
     double ey = seg.get_edge_segment().get_end_y();
 
-    kjb::Vector sp(sx,sy);
-    kjb::Vector ep(ex,ey);
+    ivi::Vector sp(sx,sy);
+    ivi::Vector ep(ex,ey);
 
     startpoint = sp;
     endpoint = ep;
@@ -1127,7 +1127,7 @@ void Omap_segment::develop_sample(){//might rename to "get_samples()"
 
     Vector xsamples = create_uniformly_spaced_vector(startpoint(0),endpoint(0),n_sample);
     Vector ysamples = create_uniformly_spaced_vector(startpoint(1),endpoint(1),n_sample);
-    std::vector<kjb::Vector> tempsample;
+    std::vector<ivi::Vector> tempsample;
         
     for(int k=0; k< xsamples.size(); k++){
         Vector thispoint(xsamples[k],ysamples[k]);

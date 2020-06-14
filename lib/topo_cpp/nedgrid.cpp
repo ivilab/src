@@ -5,10 +5,10 @@
  *
  * This performs interpolation on NED data using Gaussian processes, a
  * technique historically called "kriging."  This file uses its own
- * implementation rather than the libkjb Gaussian process code (sorry).
+ * implementation rather than the libivi Gaussian process code (sorry).
  */
 /*
- * $Id: nedgrid.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: nedgrid.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
@@ -46,13 +46,13 @@
  * parallelization of the kriging procedure, using pthreads.
  * If you lack pthreads then obviously we cannot use this feature.
  * Also if you are running a TEST compilation we cannot use this feature
- * because kjb_malloc(), used down deep in the library, is not thread safe
+ * because ivi_malloc(), used down deep in the library, is not thread safe
  * when compiled with macro TEST true (which enables static tracking).
  * The value of sixteen was chosen half-capriciously, because a single El Gato
  * node has sixteen cores.
  */
 #ifndef NED_THREADS_COUNT
-#if defined(KJB_HAVE_PTHREAD) && ! defined(TEST)
+#if defined(IVI_HAVE_PTHREAD) && ! defined(TEST)
 #define NED_THREADS_COUNT 16 /* Number of threads used, when we parallelize. */
 #else
 #define NED_THREADS_COUNT 1 /* NO_LIBS or no threads or development mode */
@@ -70,16 +70,16 @@ namespace
 {
 
 #if NED_THREADS_COUNT > 1
-kjb::Pthread_mutex grid_cache_serialization;
+ivi::Pthread_mutex grid_cache_serialization;
 #endif
 
 
 typedef boost::scoped_ptr< std::vector< std::string > > AutoPath;
 
-typedef kjb::TopoFusion::pt TopoPt;
+typedef ivi::TopoFusion::pt TopoPt;
 
 // Name stands for "Grid integral latitude, longitude [pair]."
-typedef kjb::Ned13_one_degree_grid::IntegralLL GILL;
+typedef ivi::Ned13_one_degree_grid::IntegralLL GILL;
 
 // Name stands for "multimap keyed on [grid] integral lat-longitude [pairs]."
 typedef std::multimap< GILL, std::pair<TopoPt, size_t> > MMILL;
@@ -123,7 +123,7 @@ const GILL whatever = GILL::from_lat_lon(45, -90);
 // return true iff the given filename corresponds to a file that exists.
 inline bool file_exists(const std::string& filename)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     return TRUE == is_file(filename.c_str());
 }
 
@@ -131,7 +131,7 @@ inline bool file_exists(const std::string& filename)
 // determine the "proper" zone for a given UTM point (which might be fudged).
 inline char zone_of(const TopoPt& p)
 {
-    return kjb::TopoFusion::zone_of(kjb::NED_ELLIPSOID, p);
+    return ivi::TopoFusion::zone_of(ivi::NED_ELLIPSOID, p);
 }
 
 
@@ -145,7 +145,7 @@ void zone_validation(
 {
     if (zone_of(center) != center.zone)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Input point has improper zone");
+        IVI_THROW_2(ivi::Illegal_argument, "Input point has improper zone");
     }
 
     /*
@@ -163,12 +163,12 @@ void zone_validation(
              * too much.  Small leakage into a nearby zone causes but small
              * distortion.  Large leakage, though, is a problem.
              */
-            KJB_THROW_2(kjb::Illegal_argument, "Grid request spans UTM zones "
+            IVI_THROW_2(ivi::Illegal_argument, "Grid request spans UTM zones "
                     "and is too large to give accurate results.");
         }
         else
         {
-            KJB(TEST_PSE(("Warning:  elevation grid requested spans UTM "
+            IVI(TEST_PSE(("Warning:  elevation grid requested spans UTM "
                "zones.\n\t\tElevation accuracy might be poorer than usual.")));
         }
     }
@@ -180,7 +180,7 @@ std::vector< TopoPt > get_training_elevation_data(
     const TopoPt& center,
     int ew_size_m,
     int ns_size_m, 
-    kjb::Ned13_grid_cache* cache
+    ivi::Ned13_grid_cache* cache
 )
 {
     ASSERT(cache);
@@ -199,8 +199,8 @@ std::vector< TopoPt > get_training_elevation_data(
     zone_validation(center, nw_corner, ne_corner); // this might throw
 
     return fill_training_elevation_grid(
-            kjb::utm_to_se_ned13_ill(nw_corner),
-            kjb::utm_to_se_ned13_ill(se_corner),
+            ivi::utm_to_se_ned13_ill(nw_corner),
+            ivi::utm_to_se_ned13_ill(se_corner),
             cache,
             0
         );
@@ -208,15 +208,15 @@ std::vector< TopoPt > get_training_elevation_data(
 
 
 
-kjb::Image debug_view_ned_training_data(
+ivi::Image debug_view_ned_training_data(
     const std::vector< std::vector< TopoPt > >& training
 )
 {
     const int   ROWS = int(training.size()),
                 COLS = int(training.front().size());
-    if (0 == training.size()) return kjb::Image();
+    if (0 == training.size()) return ivi::Image();
 
-    kjb::Matrix m[4];
+    ivi::Matrix m[4];
 
     for (int iii=0; iii<4; ++iii)
     {
@@ -234,13 +234,13 @@ kjb::Image debug_view_ned_training_data(
             m[3].at(rrr, ccc) = p.ele;
         }
     }
-    kjb::Image i[4];
+    ivi::Image i[4];
     for (int iii=0; iii<4; ++iii)
     {
-        i[iii] = kjb::matrix_to_max_contrast_8bit_bw_image(m[iii]);
+        i[iii] = ivi::matrix_to_max_contrast_8bit_bw_image(m[iii]);
     }
 
-    return kjb::make_collage(i, 2, 2);
+    return ivi::make_collage(i, 2, 2);
 }
 #endif
 
@@ -269,7 +269,7 @@ std::string get_filename(
         std::string zip_fn = path.at(iii) + DIR_STR + latlon + ".zip";
         if (file_exists(zip_fn)) return zip_fn;
     }
-    KJB_THROW_2(kjb::IO_error, "File " + latlon + " not found");
+    IVI_THROW_2(ivi::IO_error, "File " + latlon + " not found");
 }
 
 
@@ -316,14 +316,14 @@ MMILL get_cell_identities(
         for (int x = 0; x < eastwest_size_meters; x += resolution_meters)
         {
             cursor.x = nw.x + x;
-            cells.insert( std::make_pair(   kjb::utm_to_se_ned13_ill(cursor), 
+            cells.insert( std::make_pair(   ivi::utm_to_se_ned13_ill(cursor), 
                                             std::make_pair(cursor, rmix)
                 ));
             ++rmix;
         }
     }
 
-    KJB(ASSERT(    (northsouth_size_meters/resolution_meters)
+    IVI(ASSERT(    (northsouth_size_meters/resolution_meters)
                  * (eastwest_size_meters/resolution_meters)
                 == int(rmix)
             ));
@@ -340,7 +340,7 @@ MMILL get_cell_identities(
 
 int grid_validate(int ew_sz, int ns_sz, int res)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     if (ew_sz < 1)
     {
         add_error("Bad east-west size of %d in ned13_grid()", ew_sz);
@@ -385,20 +385,20 @@ bool sanity_check(const MMILL& cells)
 
 int interpolate_elevation(
     MMILL* cells,
-    kjb::Ned13_grid_cache* cache,
-    kjb::Matrix* elev_o,
-    kjb::Matrix* elev_de_o,
-    kjb::Matrix* elev_dn_o,
+    ivi::Ned13_grid_cache* cache,
+    ivi::Matrix* elev_o,
+    ivi::Matrix* elev_de_o,
+    ivi::Matrix* elev_dn_o,
     bool verbose
 )
 {
-    const double CSF2=1/kjb::Ned13_gp_reader::characteristic_length_squared();
+    const double CSF2=1/ivi::Ned13_gp_reader::characteristic_length_squared();
 
-    kjb::Heartbeat heart("kriging the elevation model", cells -> size(), 4);
+    ivi::Heartbeat heart("kriging the elevation model", cells -> size(), 4);
     for (GILL key(whatever); fetch_key(*cells, &key); cells -> erase(key))
     {
         // The kriger object performs interpolation near the key DEM point.
-        const kjb::Kriging_interpolator
+        const ivi::Kriging_interpolator
 #if NED_THREADS_COUNT > 1
                 kriger(CSF2, key, cache, &grid_cache_serialization);
 #else
@@ -419,17 +419,17 @@ int interpolate_elevation(
     }
     if (verbose) heart.stop();
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 struct Interpolation_task
 {
     MMILL* cells;
-    kjb::Ned13_grid_cache* cache;
-    kjb::Matrix* elev_o;
-    kjb::Matrix* elev_de_o;
-    kjb::Matrix* elev_dn_o;
+    ivi::Ned13_grid_cache* cache;
+    ivi::Matrix* elev_o;
+    ivi::Matrix* elev_de_o;
+    ivi::Matrix* elev_dn_o;
     bool verbose;
 };
 
@@ -437,9 +437,9 @@ struct Interpolation_task
 // thread worker function
 void* interp_worker(void* vp)
 {
-    KJB(NRN(vp));
+    IVI(NRN(vp));
     Interpolation_task* tp = (Interpolation_task*) vp;
-    KJB(ERN(interpolate_elevation(tp->cells, tp->cache, tp->elev_o,
+    IVI(ERN(interpolate_elevation(tp->cells, tp->cache, tp->elev_o,
                            tp->elev_de_o, tp->elev_dn_o, tp->verbose)));
     return vp;
 }
@@ -448,20 +448,20 @@ void* interp_worker(void* vp)
 #if NED_THREADS_COUNT > 1
 int multithread_interp_el(
     MMILL* cells,
-    kjb::Ned13_grid_cache* cache,
-    kjb::Matrix* elev_o,
-    kjb::Matrix* elev_de_o,
-    kjb::Matrix* elev_dn_o,
+    ivi::Ned13_grid_cache* cache,
+    ivi::Matrix* elev_o,
+    ivi::Matrix* elev_de_o,
+    ivi::Matrix* elev_dn_o,
     size_t threadcount
 )
 {
     typedef MMILL::iterator Iter;
-    KJB(NRE(cells));
+    IVI(NRE(cells));
 
     if (threadcount < 2)
     {
-        kjb_c::add_error("threadcount %d expected to be >= 2", threadcount);
-        return kjb_c::ERROR;
+        ivi_c::add_error("threadcount %d expected to be >= 2", threadcount);
+        return ivi_c::ERROR;
     }
 
     // partition *cells
@@ -483,24 +483,24 @@ int multithread_interp_el(
     std::vector<Interpolation_task> vtask(threadcount, DETA);
 
     // launch threads
-    std::vector< kjb_c::kjb_pthread_t > vtid(threadcount);
+    std::vector< ivi_c::ivi_pthread_t > vtid(threadcount);
     for (size_t i = 0; i < threadcount; ++i)
     {
         vtask.at(i).cells = & vcells.at(i);
         vtask.at(i).verbose = (VERBOSE && 0==i);
         void* vp = (void*) & vtask.at(i);
-        KJB(ERE(kjb_pthread_create(& vtid.at(i), 0, interp_worker, vp)));
+        IVI(ERE(ivi_pthread_create(& vtid.at(i), 0, interp_worker, vp)));
     }
 
     // join threads
     for (size_t i = 0; i < threadcount; ++i)
     {
         void* vp;
-        KJB(ERE(kjb_pthread_join(vtid.at(i), &vp)));
-        KJB(NRE(vp));
+        IVI(ERE(ivi_pthread_join(vtid.at(i), &vp)));
+        IVI(NRE(vp));
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 #endif
 
@@ -545,14 +545,14 @@ void validate_southeast_enough(
 
     if (! is_southish)
     {
-        KJB(TEST_PSE(("Query northing %f, SE rounded northing %f\n"
+        IVI(TEST_PSE(("Query northing %f, SE rounded northing %f\n"
             "northerly error: %f\nQuery SE-round ILL %d, %d\n", 
             query.y, q_se.y, (q_se.y - query.y), gill_se.ilat, gill_se.ilon)));
     }
 
     if (! is_eastish)
     {
-        KJB(TEST_PSE(("Query easting %f, SE rounded easting %f, "
+        IVI(TEST_PSE(("Query easting %f, SE rounded easting %f, "
             "Westerly error: %f\nQuery SE-round ILL %d, %d\n", 
             query.x, q_se.x, (query.x - q_se.x), gill_se.ilat, gill_se.ilon)));
     }
@@ -572,7 +572,7 @@ boost::scoped_ptr<std::ostream> spy_o;
 
 
 
-namespace kjb
+namespace ivi
 {
 
 const int NED_ELLIPSOID = TopoFusion::ELLIPSOID_GRS_1980;
@@ -587,11 +587,11 @@ TopoPt force_zone_to_this(const TopoPt& p, char use_this_zone)
     // Cast to int in case char is unsigned.
     if (std::abs(int(p.zone) - int(use_this_zone)) != 1)
     {
-        KJB_THROW_2(Illegal_argument, "point is not in adjacent zone");
+        IVI_THROW_2(Illegal_argument, "point is not in adjacent zone");
     }
 
     TopoPt p2(p);
-    p2.x = kjb::TopoFusion::getNewEasting(p, use_this_zone);
+    p2.x = ivi::TopoFusion::getNewEasting(p, use_this_zone);
     p2.zone = use_this_zone;
     return p2;
 }
@@ -610,7 +610,7 @@ int ned13_grid(
     const std::vector< std::string > &path
 )
 {
-    KJB(ERE(grid_validate(eastwest_size_meters, northsouth_size_meters,
+    IVI(ERE(grid_validate(eastwest_size_meters, northsouth_size_meters,
                     resolution_meters)));
 
     const int   EW_COUNT = eastwest_size_meters / resolution_meters,
@@ -642,20 +642,20 @@ int ned13_grid(
     if (elev_de_o)  elev_de_o -> resize(NS_COUNT, EW_COUNT);
     if (elev_dn_o)  elev_dn_o -> resize(NS_COUNT, EW_COUNT);
 
-    if (VERBOSE && elev_o)    kjb_c::kjb_puts("fetch elevation\n");
-    if (VERBOSE && elev_de_o) kjb_c::kjb_puts("fetch east west gradient\n");
-    if (VERBOSE && elev_dn_o) kjb_c::kjb_puts("fetch north south gradient\n");
+    if (VERBOSE && elev_o)    ivi_c::ivi_puts("fetch elevation\n");
+    if (VERBOSE && elev_de_o) ivi_c::ivi_puts("fetch east west gradient\n");
+    if (VERBOSE && elev_dn_o) ivi_c::ivi_puts("fetch north south gradient\n");
 
     // Now, for each key DEM point, interpolate all its nearby query points.
 #if NED_THREADS_COUNT > 1
-    KJB(ERE( multithread_interp_el(&cells, & cache -> cache,
+    IVI(ERE( multithread_interp_el(&cells, & cache -> cache,
                         elev_o, elev_de_o, elev_dn_o, NED_THREADS_COUNT ) ));
 #else
-    KJB(ERE( interpolate_elevation(&cells, & cache -> cache,
+    IVI(ERE( interpolate_elevation(&cells, & cache -> cache,
                                     elev_o, elev_de_o, elev_dn_o, VERBOSE) ));
 #endif
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -688,15 +688,15 @@ Ned13_one_degree_grid::IntegralLL::IntegralLL(
 {
     if (ABS_OF(ilat) > 90 * int(THIRD_ARCSEC_PER_DEG))
     {
-        KJB_THROW_2(Illegal_argument, "Latitude overrange");
+        IVI_THROW_2(Illegal_argument, "Latitude overrange");
     }
     if (ABS_OF(ilon) > 180 * int(THIRD_ARCSEC_PER_DEG))
     {
-        KJB_THROW_2(Illegal_argument, "Longitude overrange");
+        IVI_THROW_2(Illegal_argument, "Longitude overrange");
     }
     if (ilon > 0)
     {
-        KJB_THROW_2(Illegal_argument, WEST_IS_NEGATIVE);
+        IVI_THROW_2(Illegal_argument, WEST_IS_NEGATIVE);
     }
 }
 
@@ -790,7 +790,7 @@ Ned13_one_degree_grid::Ned13_one_degree_grid(
         std::string command = "unzip ";
         if (!VERBOSE) command += "-qq ";
         command += zip_fn + " " + **fn + " -d " + td.get_pathname();
-        kjb_c::kjb_system(command.c_str());
+        ivi_c::ivi_system(command.c_str());
         if (file_exists(td.get_pathname() + DIR_STR + **fn))
         {
             break; // if unzip was successful (i.e., target file is there now).
@@ -798,7 +798,7 @@ Ned13_one_degree_grid::Ned13_one_degree_grid(
     }
     if (00 == *fn)
     {
-        KJB_THROW_2(IO_error, "Unable to open zip file " + zip_fn);
+        IVI_THROW_2(IO_error, "Unable to open zip file " + zip_fn);
     }
 
     // read the floating point elevation data
@@ -810,7 +810,7 @@ Ned13_one_degree_grid::Ned13_one_degree_grid(
         os << "File " << zip_fn << " size is incorrect "
                 "(expected " << GRID_VOLUME << " points, "
                 "read " << elevation.size() << ").";
-        KJB_THROW_2(IO_error, os.str());
+        IVI_THROW_2(IO_error, os.str());
     }
 }
 
@@ -822,7 +822,7 @@ void Ned13_one_degree_grid::display(
     int edge_size
 )   const
 {
-    if (kjb_c::kjb_fork()) return;
+    if (ivi_c::ivi_fork()) return;
 
     // find the min and max
     const std::pair<float, float> EEXT = max_and_min_elevations();
@@ -831,7 +831,7 @@ void Ned13_one_degree_grid::display(
 
     // turn data into a matrix
     Matrix *mel = new Matrix;
-    KJB(EPETE(ned_fdeq_to_matrix(elevation, mel)));
+    IVI(EPETE(ned_fdeq_to_matrix(elevation, mel)));
 
     // force freeing of deq memory, using some violence (ok because post-fork)
     std::deque<float> *e = const_cast<std::deque<float>*>(&elevation);
@@ -872,7 +872,7 @@ void Ned13_one_degree_grid::display(
     iel = 0;
 
     // child process does not willingly finish
-    while(true) { kjb_c::nap(1000); }
+    while(true) { ivi_c::nap(1000); }
 }
 #endif
 
@@ -907,7 +907,7 @@ double delta_e_meters(const Ned13_one_degree_grid::IntegralLL& ill)
     }
 
     // rare case:  pe crosses into a new zone, so we have to try one step west.
-    // KJB(UNTESTED_CODE()); this branch was hit on 2013 August 28.
+    // IVI(UNTESTED_CODE()); this branch was hit on 2013 August 28.
     ie.ilon -= 2;
     const TopoPt pw = ned13_ill_to_utm(ie);
     ASSERT(p0.zone == pw.zone);
@@ -968,7 +968,7 @@ double Ned13_one_degree_grid::IntegralLL::dd_latitude() const
 double Ned13_one_degree_grid::IntegralLL::dd_longitude() const
 {
     /*
-    KJB(TEST_PSE(("%s:%d -- ilon=%d, THIRD_ARCSEC_PER_DEG=%d, ratio = %f\n",
+    IVI(TEST_PSE(("%s:%d -- ilon=%d, THIRD_ARCSEC_PER_DEG=%d, ratio = %f\n",
                     __FILE__, __LINE__, ilon, THIRD_ARCSEC_PER_DEG,
                     double(ilon) / THIRD_ARCSEC_PER_DEG))); // debug
     */
@@ -1012,8 +1012,8 @@ std::pair<float, float> Ned13_one_degree_grid::max_and_min_elevations() const
     std::pair<float, float> Ee = std::make_pair(*i, *i);
     if (elevation.end() == i)
     {
-        KJB(UNTESTED_CODE());
-        KJB(TEST_PSE(("Suspiciously early end to scan in %s (%s:%d)\n",
+        IVI(UNTESTED_CODE());
+        IVI(TEST_PSE(("Suspiciously early end to scan in %s (%s:%d)\n",
                                             __func__, __FILE__, __LINE__)));
         return Ee;
     }
@@ -1045,7 +1045,7 @@ GILL round_nw_to_whole_degrees(const GILL& ill)
 {
     if (ill.ilat <= 0 || ill.ilon >= 0)
     {
-        KJB_THROW_2(Illegal_argument,
+        IVI_THROW_2(Illegal_argument,
                         "Input must be in northern and western hemispheres");
     }
 
@@ -1148,7 +1148,7 @@ const Ned13_one_degree_grid& Ned13_grid_cache::fetch(
          * probably are going to see this message a bunch of times, and then
          * run out of RAM and start swapping.
          */
-        KJB(TEST_PSE(("Warning: call to Ned13_grid_cache::fetch(p) where p "
+        IVI(TEST_PSE(("Warning: call to Ned13_grid_cache::fetch(p) where p "
                 "was expected to be\na grid corner point (i.e., at an "
                 "integral-degree north latitude line\nand an integral-degree "
                 "west longitude line).  Actual lat and long:\n"
@@ -1185,7 +1185,7 @@ float Ned13_bilinear_reader::elevation_meters(
     TopoPt utm_se = ned13_ill_to_utm(qse);
 
     // If southeast point lies in a different zone, fudge it into query zone.
-    KJB(UNTESTED_CODE()); // hit on 29 Aug 2013 by tp#104 in hdtrails5
+    IVI(UNTESTED_CODE()); // hit on 29 Aug 2013 by tp#104 in hdtrails5
     utm_se = force_zone_to_this(utm_se, utm.zone);
 
     /* Truncation to southeast turns out not to be guaranteed, but here we
@@ -1198,10 +1198,10 @@ float Ned13_bilinear_reader::elevation_meters(
 
     if (exact_easting) // uncommon
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         if (exact_northing) // very uncommon: exact grid hit
         {
-            KJB(UNTESTED_CODE());
+            IVI(UNTESTED_CODE());
             return ese;
         }
 
@@ -1214,7 +1214,7 @@ float Ned13_bilinear_reader::elevation_meters(
 
     if (exact_northing) // uncommon
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         GILL qw(qse);  // nearest point to west
         qw.ilon -= 1;
 
@@ -1283,7 +1283,7 @@ float Ned13_gp_reader::elevation_meters(const TopoFusion::pt& utm)
  */
 TopoFusion::pt dem_to_doq_displacement(const TopoFusion::pt& dem_p)
 {
-    using namespace kjb::TopoFusion;
+    using namespace ivi::TopoFusion;
     double la, lo;
     utm_to_lat_long(ELLIPSOID_GRS_1980, dem_p, la, lo);
     //utm_to_lat_long(ELLIPSOID_WGS_84, dem_p, la, lo);

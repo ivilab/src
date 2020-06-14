@@ -1,5 +1,5 @@
 
-/* $Id: likelihood_dynamics.cpp 10704 2011-09-29 19:52:57Z predoehl $ */
+/* $Id: likelihood_dynamics.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,7 +21,7 @@
 
 #include "sample_cpp/likelihood_dynamics.h"
 
-using namespace kjb;
+using namespace ivi;
 
 Likelihood_dynamics::Likelihood_dynamics(const Likelihood_dynamics & src) :
     Abstract_dynamics(src),
@@ -45,7 +45,7 @@ void Likelihood_dynamics::compute_energy_gradient()
 
     if( callbacks.size() != (size_t) parameters.size() )
     {
-        throw KJB_error("The number of callbacks does not match the number of parameters");
+        throw IVI_error("The number of callbacks does not match the number of parameters");
     }
     try{
         for(int i = 0; i < parameters.size(); i++)
@@ -69,7 +69,7 @@ void Likelihood_dynamics::compute_energy_gradient()
              /** We set the parameter to its original value prior to the likelihood computations */
              callbacks[i](parameters(i));
         }
-    } catch (KJB_error e)
+    } catch (IVI_error e)
     {
         // TODO What do we do here?
     }
@@ -79,7 +79,7 @@ void Likelihood_dynamics::run(unsigned int iterations)
 {
     if(parameter_getters.size() != (unsigned int)parameters.size())
     {
-        throw KJB_error("The number of parameter getters does not match the number of parameters");
+        throw IVI_error("The number of parameter getters does not match the number of parameters");
     }
     for(int i = 0; i < parameters.size(); i++)
     {

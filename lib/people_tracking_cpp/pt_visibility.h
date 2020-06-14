@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_visibility.h 18971 2015-04-29 23:31:48Z jguan1 $ */
+/* $Id: pt_visibility.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_VISIBILITY_H
 #define PT_VISIBILITY_H
@@ -27,7 +27,7 @@
 
 #include <boost/optional.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -59,7 +59,7 @@ void update_visibilities
     bool infer_head = true
 );
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_VISIBILITY_H */
 

@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: test_vector.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: test_vector.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_incl.h"
 #include "l_cpp/l_stdio_wrap.h"
@@ -23,7 +23,7 @@
 #include <sstream>
 #include <fstream>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #endif
@@ -32,8 +32,8 @@
 
 namespace {
 
-// I'm trying to limit the number of places that "kjb_c" appears anywhere
-const int SUCCESS_CODE = kjb_c::NO_ERROR;
+// I'm trying to limit the number of places that "ivi_c" appears anywhere
+const int SUCCESS_CODE = ivi_c::NO_ERROR;
 
 
 template< typename VEC_T, typename LENGTH_T >
@@ -113,7 +113,7 @@ int test_ctor_3()
     typedef typename VEC_T::Mat_type MAT_T;
 
     const int SZ=10;
-    /* VEC_T rr = kjb::create_random_vector( SZ ); */
+    /* VEC_T rr = ivi::create_random_vector( SZ ); */
     VEC_T rr(SZ);
     rr.randomize();
 
@@ -169,8 +169,8 @@ int test_ctor_3()
     rrrr = rrrr;                // self-assignment?  more like SAFE-assignment!
     TEST_TRUE( rrrr == rrdupe );
 
-    MAT_T mu1 = kjb::create_column_matrix( rr );
-    MAT_T mu2 = kjb::create_row_matrix( rr );
+    MAT_T mu1 = ivi::create_column_matrix( rr );
+    MAT_T mu2 = ivi::create_row_matrix( rr );
     MAT_T dud1, dud2( 2,2 );
     MAT_T boring(1,1,-.654321);
 
@@ -205,16 +205,16 @@ void do_nothing(const char*)
 
 int test_ctor_4()
 {
-    kjb::Vector singleton(1, M_PI);
+    ivi::Vector singleton(1, M_PI);
     TEST_TRUE( 1 == singleton.get_length() );
     TEST_TRUE( singleton.at(0) == M_PI );
     singleton.at(0) = M_E;
     TEST_FALSE( singleton.at(0) == M_PI );
 
     const double dat[] = { M_E, M_E * 2, M_E * 4, M_E * 8, M_E * 16, M_E * 32};
-    const kjb::Vector ref( 6, dat );
+    const ivi::Vector ref( 6, dat );
 
-    kjb::Int_vector iref( kjb::floor( ref ) );
+    ivi::Int_vector iref( ivi::floor( ref ) );
     TEST_TRUE( 6 == iref.size() );
     TEST_TRUE( 2 == iref[0] );  // floor 2.72
     TEST_TRUE( 5 == iref[1] );  // floor 5.44
@@ -223,25 +223,25 @@ int test_ctor_4()
     TEST_TRUE( 43 == iref[4] ); // floor 43.49
     TEST_TRUE( 86 == iref[5] ); // floor 86.99
 
-    kjb::Vector slice1 = kjb::create_vector_from_vector_section( ref, 0, 6 );
+    ivi::Vector slice1 = ivi::create_vector_from_vector_section( ref, 0, 6 );
     TEST_TRUE( slice1 == ref );
 
-    kjb_c::set_bug_handler( do_nothing );
+    ivi_c::set_bug_handler( do_nothing );
     // bad start index
-    TEST_FAIL( kjb::create_vector_from_vector_section( ref, -1,  1 ) );
+    TEST_FAIL( ivi::create_vector_from_vector_section( ref, -1,  1 ) );
     // length too long
-    TEST_FAIL( kjb::create_vector_from_vector_section( ref,  0,  7 ) );
+    TEST_FAIL( ivi::create_vector_from_vector_section( ref,  0,  7 ) );
     // length negative
-    TEST_FAIL( kjb::create_vector_from_vector_section( ref,  0, -1 ) );
+    TEST_FAIL( ivi::create_vector_from_vector_section( ref,  0, -1 ) );
     // start + length too long
-    TEST_FAIL( kjb::create_vector_from_vector_section( ref,  4,  4 ) );
-    kjb_c::set_bug_handler( kjb_c::default_bug_handler );
+    TEST_FAIL( ivi::create_vector_from_vector_section( ref,  4,  4 ) );
+    ivi_c::set_bug_handler( ivi_c::default_bug_handler );
 
     // and speaking of "section" --
     // as of nov 26 2010 this member does not exist...i have no idea
     // where it went
 
-    /* kjb::Vector vec( 10, M_PI );
+    /* ivi::Vector vec( 10, M_PI );
     vec.copy_from_vector_section( ref, 3, 0, 6 );
     vec.copy_from_vector_section( ref, 1, 0, 0 );
     TEST_TRUE( vec.at(0) == M_PI );
@@ -266,16 +266,16 @@ int test_ctor_4()
 int test_ctor_5f()
 {
     const int SZ = 5;
-    kjb_c::Vector *raw = 0, *nil = 0;
-    kjb_c::get_target_vector( &raw, SZ );
+    ivi_c::Vector *raw = 0, *nil = 0;
+    ivi_c::get_target_vector( &raw, SZ );
     for( int iii = 0; iii < SZ; ++iii )
     {
         double val = M_E * (double)(1<<iii);
         raw -> elements[ iii ] = val;
     }
 
-    kjb::Vector safe( *raw ), shallow( nil );
-    kjb::Vector zer0 = kjb::create_zero_vector( SZ );
+    ivi::Vector safe( *raw ), shallow( nil );
+    ivi::Vector zer0 = ivi::create_zero_vector( SZ );
     TEST_TRUE( SZ == safe.get_length() );
     TEST_TRUE( SZ == zer0.get_length() );
     TEST_TRUE( 0 == shallow.get_length() );
@@ -304,18 +304,18 @@ int test_ctor_5f()
     TEST_TRUE( *raw != safe );
     TEST_FALSE( safe == *raw );
     TEST_FALSE( *raw == safe );
-    TEST_TRUE( zer0 == kjb::Vector( *raw ) );
-    kjb_c::free_vector( raw );
+    TEST_TRUE( zer0 == ivi::Vector( *raw ) );
+    ivi_c::free_vector( raw );
 
     // test the int-to-double conversion ctor
-    kjb::Int_vector ivec( 5 );
-    kjb::Vector ref_vec( 5 );
+    ivi::Int_vector ivec( 5 );
+    ivi::Vector ref_vec( 5 );
     for( int iii = 0; iii < 5; ++iii )
     {
         ivec.at(iii) = 17 + iii;
         ref_vec.at(iii) = double( 17 + iii );
     }
-    kjb::Vector test_vec( ivec );
+    ivi::Vector test_vec( ivec );
     TEST_TRUE( test_vec == ref_vec );
 
     return SUCCESS_CODE;
@@ -325,16 +325,16 @@ int test_ctor_5f()
 int test_ctor_5i()
 {
     const int SZ = 5;
-    kjb_c::Int_vector* raw = 0;
-    kjb_c::get_target_int_vector( &raw, SZ );
+    ivi_c::Int_vector* raw = 0;
+    ivi_c::get_target_int_vector( &raw, SZ );
     for( int iii = 0; iii < SZ; ++iii )
     {
         int val = M_E * (double)(1<<iii);
         raw -> elements[ iii ] = val;
     }
 
-    kjb::Int_vector safe( *raw );
-    kjb::Int_vector zer0( SZ, 0 );
+    ivi::Int_vector safe( *raw );
+    ivi::Int_vector zer0( SZ, 0 );
     TEST_TRUE( SZ == safe.get_length() );
     TEST_TRUE( SZ == zer0.get_length() );
     for( int iii = 0; iii < SZ; ++iii )
@@ -362,21 +362,21 @@ int test_ctor_5i()
     TEST_TRUE( *raw != safe );
     TEST_FALSE( safe == *raw );
     TEST_FALSE( *raw == safe );
-    TEST_TRUE( zer0 == kjb::Int_vector( *raw ) );
-    kjb_c::free_int_vector( raw );
+    TEST_TRUE( zer0 == ivi::Int_vector( *raw ) );
+    ivi_c::free_int_vector( raw );
     return SUCCESS_CODE;
 }
 
 int test_insert()
 {
-    kjb::Vector v0;
-    kjb::Vector v1(4);
+    ivi::Vector v0;
+    ivi::Vector v1(4);
     v1[0] = 0;
     v1[1] = 1;
     v1[2] = 4;
     v1[3] = 5;
 
-    kjb::Vector v2(2);
+    ivi::Vector v2(2);
     v2[0] = 2;
     v2[1] = 3;
 
@@ -437,7 +437,7 @@ int test_insert()
 
 int test_work_1()
 {
-    kjb::Vector vec( 5, M_PI );
+    ivi::Vector vec( 5, M_PI );
     vec.zero_out();
     TEST_TRUE( 5 == vec.get_length() );
 
@@ -463,7 +463,7 @@ int test_work_1()
     }
     TEST_FALSE( is_all_0 ); // there's an infinitesimal (read: very, very small :P) chance this won't work
 
-    const kjb::Vector& cvec = vec;
+    const ivi::Vector& cvec = vec;
     is_all_0 = true;
     for( int iii = 0; iii < 5; ++iii )
     {
@@ -474,8 +474,8 @@ int test_work_1()
     }
     TEST_FALSE( is_all_0 ); // there's an infinitesimal chance this won't work
 
-     kjb::Vector vec2, vec3;
-    const kjb_c::Vector *alias = vec.get_c_vector();
+     ivi::Vector vec2, vec3;
+    const ivi_c::Vector *alias = vec.get_c_vector();
     vec2.randomize( 5 );
     TEST_TRUE( vec.get_length() == vec2.get_length() );
     TEST_FALSE( vec == vec2 ); // infinitesimal risk of failure
@@ -488,10 +488,10 @@ int test_work_1()
     TEST_TRUE( vec3 == vec2 );
     vec3.at(0) += 0.5;
     TEST_FALSE( vec3 == vec2 );
-    kjb::Vector *enigma1 = &vec3;
-    kjb::Vector *enigma2 = 0;
+    ivi::Vector *enigma1 = &vec3;
+    ivi::Vector *enigma2 = 0;
     enigma2 = enigma1;
-    kjb::Vector& enigma3 = *enigma2;
+    ivi::Vector& enigma3 = *enigma2;
     enigma3 = vec3; // no assignment, since they are the same object
 
     return SUCCESS_CODE;
@@ -508,15 +508,15 @@ int test_work_2()
         data3[iii] = data1[iii] + data2[iii];
     }
 
-    const kjb::Vector v1_ref( 4, data1 );
-    const kjb::Vector v2_ref( 4, data2 );
-    const kjb::Vector v3_ref( 4, data3 );
-    const kjb::Vector v4_ref;
-    kjb::Vector v1( v1_ref );
-    kjb::Vector v2( v2_ref );
-    kjb::Vector v3_test = v1 + v2;
+    const ivi::Vector v1_ref( 4, data1 );
+    const ivi::Vector v2_ref( 4, data2 );
+    const ivi::Vector v3_ref( 4, data3 );
+    const ivi::Vector v4_ref;
+    ivi::Vector v1( v1_ref );
+    ivi::Vector v2( v2_ref );
+    ivi::Vector v3_test = v1 + v2;
 
-    kjb::Vector v1cp( v1 );
+    ivi::Vector v1cp( v1 );
     v1cp.add( v2 );
     v2 += v1;
 
@@ -527,12 +527,12 @@ int test_work_2()
         TEST_TRUE( v3_ref.at( iii ) == v2.at( iii ) );
     }
 
-    TEST_FAIL( kjb::max_abs_difference( kjb::Vector(3), v1cp - v1_ref ) < 1e-15 );
-    TEST_TRUE( kjb::max_abs_difference( v2_ref, v1cp - v1_ref ) < 1e-15 );
+    TEST_FAIL( ivi::max_abs_difference( ivi::Vector(3), v1cp - v1_ref ) < 1e-15 );
+    TEST_TRUE( ivi::max_abs_difference( v2_ref, v1cp - v1_ref ) < 1e-15 );
     v2 -= v2_ref;
-    TEST_TRUE( kjb::max_abs_difference( v1_ref, v2 ) < 1e-15 );
+    TEST_TRUE( ivi::max_abs_difference( v1_ref, v2 ) < 1e-15 );
     v2.subtract( v1_ref );
-    TEST_TRUE( kjb::max_abs_difference( v2, kjb::Vector(4,0.0) ) < 1e-15 );
+    TEST_TRUE( ivi::max_abs_difference( v2, ivi::Vector(4,0.0) ) < 1e-15 );
 
     v2 = -v2_ref;
     for( int iii = 0; iii < 4 ; ++iii )
@@ -542,10 +542,10 @@ int test_work_2()
     v2.negate();
     TEST_TRUE( v2 == v2_ref );
 
-    TEST_TRUE( kjb::min(v1_ref) == -(M_E) );
-    TEST_TRUE( kjb::min(v2_ref) == M_1_PI );
-    TEST_TRUE( kjb::max(v1_ref) == M_PI );
-    TEST_TRUE( kjb::max(v2_ref) == M_LOG2E );
+    TEST_TRUE( ivi::min(v1_ref) == -(M_E) );
+    TEST_TRUE( ivi::min(v2_ref) == M_1_PI );
+    TEST_TRUE( ivi::max(v1_ref) == M_PI );
+    TEST_TRUE( ivi::max(v2_ref) == M_LOG2E );
 
     TEST_TRUE( v1_ref.min(0) == -(M_E) );
     TEST_TRUE( v2_ref.min(0) == M_1_PI );
@@ -581,7 +581,7 @@ int test_work_2()
     TEST_TRUE( fabs( mag1 - v1_ref.magnitude() ) < 1e-15 );
     TEST_TRUE( fabs( mag2 - v2_ref.magnitude() ) < 1e-15 );
 
-    kjb::Vector n1( v1_ref ), n2( v2_ref );
+    ivi::Vector n1( v1_ref ), n2( v2_ref );
     n1.normalize();
     n2.normalize();
     for( int iii = 0; iii < 4; ++iii )
@@ -599,7 +599,7 @@ int test_work_2()
 template< typename VEC_T >
 int test_work_3()
 {
-    kjb::Temporary_File tf1, tf2;
+    ivi::Temporary_File tf1, tf2;
 
     VEC_T vec;
     vec.randomize( 100 );
@@ -609,9 +609,9 @@ int test_work_3()
     fflush(tf2);
 
     VEC_T x1( tf1.get_filename() );
-    TEST_TRUE( kjb::max_abs_difference( vec, x1 ) < 5e-6 );
+    TEST_TRUE( ivi::max_abs_difference( vec, x1 ) < 5e-6 );
     VEC_T x2( tf2.get_filename() );
-    TEST_TRUE( kjb::max_abs_difference( vec, x2 ) < 5e-6 );
+    TEST_TRUE( ivi::max_abs_difference( vec, x2 ) < 5e-6 );
     VEC_T x3;
     TEST_FAIL( x3 = VEC_T( (const char*)0 ) );
 
@@ -621,11 +621,11 @@ int test_work_3()
 template <class VEC_T>
 void test_serialization(const VEC_T& v)
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     VEC_T v2;
     v2.randomize( 100 );
 
-    kjb::Temporary_File tf;
+    ivi::Temporary_File tf;
 
     do
     {
@@ -716,8 +716,8 @@ int test_hat()
 
 int test_work_5f()
 {
-    const kjb::Vector::Value_type data[]={M_PI, M_E, M_SQRT2, M_LOG2E, M_LN2};
-    kjb::Vector v( 5, data );
+    const ivi::Vector::Value_type data[]={M_PI, M_E, M_SQRT2, M_LOG2E, M_LN2};
+    ivi::Vector v( 5, data );
     std::ostringstream so;
     so << v;
     TEST_TRUE( so.str() ==
@@ -726,21 +726,21 @@ int test_work_5f()
                 );
 
     // zero length assignment (a corner case that causes trouble for Matrix)
-    kjb_c::Vector *danger = 0;
-    kjb_c::get_target_vector( &danger, 0 );
-    kjb::Vector vv( 3 );
+    ivi_c::Vector *danger = 0;
+    ivi_c::get_target_vector( &danger, 0 );
+    ivi::Vector vv( 3 );
     TEST_TRUE( 3 == vv.get_length() );
     vv = *danger;
     TEST_TRUE( 0 == vv.get_length() );
-    kjb_c::free_vector( danger );
+    ivi_c::free_vector( danger );
     return SUCCESS_CODE;
 }
 
 
 int test_work_5i()
 {
-    const kjb::Int_vector::Value_type data[] = { 123, 0, -765, 999, -1 };
-    kjb::Int_vector v( 5, data );
+    const ivi::Int_vector::Value_type data[] = { 123, 0, -765, 999, -1 };
+    ivi::Int_vector v( 5, data );
     std::ostringstream so;
     so << v;
     TEST_TRUE( so.str() ==
@@ -749,10 +749,10 @@ int test_work_5i()
                 );
 
 
-    kjb_c::Int_vector *nassty(0), *nassty2(0);
-    kjb_c::get_target_int_vector( &nassty, 100 );
-    kjb::Int_vector raii( nassty );
-    kjb::Int_vector raii2( nassty2 ); // doesn't freak out if nassty2 equals 0
+    ivi_c::Int_vector *nassty(0), *nassty2(0);
+    ivi_c::get_target_int_vector( &nassty, 100 );
+    ivi::Int_vector raii( nassty );
+    ivi::Int_vector raii2( nassty2 ); // doesn't freak out if nassty2 equals 0
     TEST_TRUE( 0 == raii2.get_length() );
     // The "test" here is that we never call free_int_vector() for nassty,
     // yet nevertheless there is no memory leak (no scolding message at exit).
@@ -767,13 +767,13 @@ int test_work_5i()
     TEST_FAIL( v.divide( 0 ) );
 
     // zero length assignment (a corner case that causes trouble for Matrix)
-    kjb_c::Int_vector *danger = 0;
-    kjb_c::get_target_int_vector( &danger, 0 );
-    kjb::Int_vector vv( 3 );
+    ivi_c::Int_vector *danger = 0;
+    ivi_c::get_target_int_vector( &danger, 0 );
+    ivi::Int_vector vv( 3 );
     TEST_TRUE( 3 == vv.get_length() );
     vv = *danger;
     TEST_TRUE( 0 == vv.get_length() );
-    kjb_c::free_int_vector( danger );
+    ivi_c::free_int_vector( danger );
 
     return SUCCESS_CODE;
 }
@@ -824,8 +824,8 @@ int test_work_6()
     TEST_TRUE( (thundercats = optimi - voltron) == -dtcons );
     thundercats.negate();
     TEST_TRUE( thundercats == dtcons );
-    TEST_TRUE( kjb::max(optimi) == 37 );
-    TEST_TRUE( kjb::min(optimi) == 2 );
+    TEST_TRUE( ivi::max(optimi) == 37 );
+    TEST_TRUE( ivi::min(optimi) == 2 );
 
     int index;
     TEST_TRUE( optimi.max( &index ) == 37 );
@@ -839,9 +839,9 @@ int test_work_6()
     TEST_FAIL( empty.max(0) );
     TEST_FAIL( empty.min(0) );
 
-    TEST_TRUE( 34 == kjb::max_abs_difference( VEC_T(12,DATUM_T(36)), optimi ) );
-    TEST_FAIL( 34 == kjb::max_abs_difference( VEC_T(13,DATUM_T(36)), optimi ) );
-    TEST_TRUE( 3 == kjb::max_abs_difference( voltron, optimi ) );
+    TEST_TRUE( 34 == ivi::max_abs_difference( VEC_T(12,DATUM_T(36)), optimi ) );
+    TEST_FAIL( 34 == ivi::max_abs_difference( VEC_T(13,DATUM_T(36)), optimi ) );
+    TEST_TRUE( 3 == ivi::max_abs_difference( voltron, optimi ) );
 
     TEST_TRUE( 4136 == dot( voltron, optimi ) );
 
@@ -854,8 +854,8 @@ int test_work_6()
 template< typename VEC_T>
 void test_fail()
 {
-    using kjb::create_zero_matrix;
-    using kjb::create_zero_vector;
+    using ivi::create_zero_matrix;
+    using ivi::create_zero_vector;
 
     typedef typename VEC_T::Value_type DATUM_T;
     typedef typename VEC_T::Mat_type MAT_T;
@@ -875,20 +875,20 @@ int test_resize()
 {
     // test resize bug
     {
-        kjb::Vector v;
+        ivi::Vector v;
         v.resize(1);
     }
     static const int SZ = 10;
 
-    kjb::Vector a10 = kjb::create_random_vector(SZ);
-    kjb::Vector a11(a10);
+    ivi::Vector a10 = ivi::create_random_vector(SZ);
+    ivi::Vector a11(a10);
     a11.resize(SZ + 1, 1234);
 
     TEST_TRUE(a11.back() == 1234);
     for(size_t i = 0; i < SZ; ++i)
         TEST_TRUE(a11[i] = a10[i]);
 
-    const kjb_c::Vector* a11_vp = a11.get_c_vector();
+    const ivi_c::Vector* a11_vp = a11.get_c_vector();
     a11.resize(SZ);
     // actually resized?
     TEST_TRUE(a11.size() == SZ);
@@ -907,30 +907,30 @@ int test_resize()
 
 int main()
 {
-    using kjb_c::ERROR;
-    using kjb_c::kjb_debug_level;
-    using kjb_c::add_error;
+    using ivi_c::ERROR;
+    using ivi_c::ivi_debug_level;
+    using ivi_c::add_error;
 
     try {
         // Usually I dislike reusing little objects like ints, but now I want to.
         // The multi-argument templates make me do it.
         int rc;
         //////////////////////////////////////////////////////////////////
-        rc = test_ctors<kjb::Vector, int>();                    ERE( rc );
-        rc = test_ctors<kjb::Vector, unsigned>();               ERE( rc );
-        rc = test_ctors<kjb::Vector, unsigned long>();          ERE( rc );
+        rc = test_ctors<ivi::Vector, int>();                    ERE( rc );
+        rc = test_ctors<ivi::Vector, unsigned>();               ERE( rc );
+        rc = test_ctors<ivi::Vector, unsigned long>();          ERE( rc );
         //////////////////////////////////////////////////////////////////
-        rc = test_ctors<kjb::Int_vector, int>();                ERE( rc );
-        rc = test_ctors<kjb::Int_vector, unsigned>();           ERE( rc );
-        rc = test_ctors<kjb::Int_vector, unsigned long>();      ERE( rc );
+        rc = test_ctors<ivi::Int_vector, int>();                ERE( rc );
+        rc = test_ctors<ivi::Int_vector, unsigned>();           ERE( rc );
+        rc = test_ctors<ivi::Int_vector, unsigned long>();      ERE( rc );
         //////////////////////////////////////////////////////////////////
 
-        ERE( test_ctors_2<kjb::Vector>() );
-        ERE( test_ctors_2<kjb::Vector>() );
-        ERE( test_ctors_2<kjb::Int_vector>() );
+        ERE( test_ctors_2<ivi::Vector>() );
+        ERE( test_ctors_2<ivi::Vector>() );
+        ERE( test_ctors_2<ivi::Int_vector>() );
 
-        ERE( test_ctor_3<kjb::Vector>() );
-        ERE( test_ctor_3<kjb::Int_vector>() );
+        ERE( test_ctor_3<ivi::Vector>() );
+        ERE( test_ctor_3<ivi::Int_vector>() );
 
         ERE( test_ctor_4() );
 
@@ -942,38 +942,38 @@ int main()
 
         ERE( test_work_2() );
 
-        ERE( test_work_3<kjb::Vector>() );
-        ERE( test_work_3<kjb::Int_vector>() );
+        ERE( test_work_3<ivi::Vector>() );
+        ERE( test_work_3<ivi::Int_vector>() );
 
-        ERE( test_work_4<kjb::Vector>() );
-        ERE( test_work_4<kjb::Int_vector>() );
+        ERE( test_work_4<ivi::Vector>() );
+        ERE( test_work_4<ivi::Int_vector>() );
 
-        ERE( test_hat< kjb::Vector >() );
-        ERE( test_hat< kjb::Int_vector >() );
+        ERE( test_hat< ivi::Vector >() );
+        ERE( test_hat< ivi::Int_vector >() );
 
         ERE( test_work_5f() );
         ERE( test_work_5i() );
 
-        ERE( test_work_6<kjb::Vector>() );
-        ERE( test_work_6<kjb::Int_vector>() );
+        ERE( test_work_6<ivi::Vector>() );
+        ERE( test_work_6<ivi::Int_vector>() );
 
         {
-            kjb::Int_vector iv;
+            ivi::Int_vector iv;
             iv.randomize(1000);
-            kjb::Vector v(iv);
+            ivi::Vector v(iv);
 
             test_serialization(iv);
             test_serialization(v);
         }
 
-        test_fail<kjb::Vector>();
-        test_fail<kjb::Int_vector>();
+        test_fail<ivi::Vector>();
+        test_fail<ivi::Int_vector>();
 
         ERE( test_resize() );
     }
 
 
-    catch(kjb::Exception& e)
+    catch(ivi::Exception& e)
     {
         e.print_details();
         DOWN_IN_FLAMES("unexpected err 1","(everything)");

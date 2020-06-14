@@ -7,9 +7,9 @@
 void draw();
 void reshape(int width, int height);
 
-using namespace kjb;
-using namespace kjb::opengl;
-using kjb_c::pause_on_next;
+using namespace ivi;
+using namespace ivi::opengl;
+using ivi_c::pause_on_next;
 
 int main(int argc, char *argv[])
 {
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100,100);
     glutInitWindowSize(320,320);
-    glutCreateWindow("KJB Bezier Test");
+    glutCreateWindow("IVI Bezier Test");
     glutDisplayFunc(draw);
 //  glutIdleFunc(draw);
     glutReshapeFunc(reshape);

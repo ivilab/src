@@ -59,7 +59,7 @@
 
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 
 #define  ERR_BUF_LEN  256
@@ -120,7 +120,7 @@ double mullers_potential_d(double x, double y)
 #if defined MULLER_HAVE_ISINF && defined MULLER_HAVE_ISNAN
     if (isinf(V) || isnan(V))
     {
-        KJB_THROW_3(Runtime_error, "Muller's potential precision error: x=%e y=%e", (x)(y));
+        IVI_THROW_3(Runtime_error, "Muller's potential precision error: x=%e y=%e", (x)(y));
     }
 #endif
 
@@ -185,7 +185,7 @@ void grad_mullers_potential_d
                 "Gradient of Muller's potential precision error: x=%e y=%e", 
                 x, y);
 
-        KJB_THROW_2(Runtime_error, err_buf);
+        IVI_THROW_2(Runtime_error, err_buf);
     }
 
     *dx_V_out = dx_V;

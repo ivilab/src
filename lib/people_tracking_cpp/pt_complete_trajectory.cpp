@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_complete_trajectory.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_complete_trajectory.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_complete_trajectory.h"
@@ -34,10 +34,10 @@
 #include <iterator>
 #include <limits>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
-namespace kjb {
+namespace ivi {
 namespace tracking {
 template <>
 bool Trajectory_element::parse(const std::string& line)
@@ -50,7 +50,7 @@ bool Trajectory_element::parse(const std::string& line)
     copy(istream_iterator<double>(istr), istream_iterator<double>(),
          back_inserter(elems));
 
-    KJB(ASSERT(elems.size() > 3));
+    IVI(ASSERT(elems.size() > 3));
     IFT(elems.size() <= 7 && elems.size() != 6, Runtime_error,
         "Cannot read trajectory element: line has wrong format.");
 
@@ -117,7 +117,7 @@ bool Trajectory::parse_header(const std::string& line)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::pt::get_initial_direction
+double ivi::pt::get_initial_direction
 (
     Trajectory& traj, 
     size_t frame1, 
@@ -153,7 +153,7 @@ double kjb::pt::get_initial_direction
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::update_direction(Trajectory& traj, size_t frame, bool ow)
+void ivi::pt::update_direction(Trajectory& traj, size_t frame, bool ow)
 {
     size_t sz = traj.size();
     size_t t = frame - 1;
@@ -192,7 +192,7 @@ void kjb::pt::update_direction(Trajectory& traj, size_t frame, bool ow)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::initialize_directions
+void ivi::pt::initialize_directions
 (
     Trajectory& traj, 
     size_t st, 
@@ -210,7 +210,7 @@ void kjb::pt::initialize_directions
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-/*std::vector<Visibility> kjb::pt::get_visibilities(const Trajectory& traj)
+/*std::vector<Visibility> ivi::pt::get_visibilities(const Trajectory& traj)
 {
     size_t sf = traj.start_time();
     size_t ef = traj.end_time();

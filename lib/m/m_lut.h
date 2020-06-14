@@ -1,5 +1,5 @@
 
-/* $Id: m_lut.h 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: m_lut.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -37,7 +37,7 @@ namespace kjb_c {
  *
  * Lut type
  *
- * This type is the lookup table type for the KJB library.
+ * This type is the lookup table type for the IVI library.
  *
  * Related:
  *    create_lut, free_lut, get_target_lut

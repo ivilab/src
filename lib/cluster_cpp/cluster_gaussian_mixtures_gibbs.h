@@ -17,10 +17,10 @@
 |     Jinyan Guan
 |
 * =========================================================================== */
-/* $Id: cluster_gaussian_mixtures_gibbs.h 20635 2016-04-22 22:57:34Z jguan1 $ */
+/* $Id: cluster_gaussian_mixtures_gibbs.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_CLUSTER_GAUSSIAN_MIXTURES_GIBBS_H
-#define KJB_CLUSTER_GAUSSIAN_MIXTURES_GIBBS_H
+#ifndef IVI_CLUSTER_GAUSSIAN_MIXTURES_GIBBS_H
+#define IVI_CLUSTER_GAUSSIAN_MIXTURES_GIBBS_H
 
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_matrix.h>
@@ -38,7 +38,7 @@
 #include <boost/bind.hpp>
 
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   A class that does Gibbs step to infer the clusters from
@@ -161,5 +161,5 @@ private:
 
 }; // Gaussian_mixture_gibbs_step
  
-}  //namespace kjb
-#endif // KJB_CLUSTER_GAUSSIAN_MIXTURES_GIBBS_H
+}  //namespace ivi
+#endif // IVI_CLUSTER_GAUSSIAN_MIXTURES_GIBBS_H

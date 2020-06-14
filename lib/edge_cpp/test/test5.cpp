@@ -29,12 +29,12 @@ using namespace std;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
     unsigned int n = 2;
     unsigned int m = 30;
 
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
 
     Int_vector iv(7);
     Vanishing_point_detector::sample_n_from_m_without_repetitions(n,m,iv);
@@ -55,11 +55,11 @@ int main()
     Vector real_ints(2,0.0);
     if( ! (ints == real_ints) )
     {
-        throw KJB_error("Line intersection, Different point expected!");
+        throw IVI_error("Line intersection, Different point expected!");
     }
     if(!res)
     {
-        throw KJB_error("Line intersection, Different result expected!");
+        throw IVI_error("Line intersection, Different result expected!");
     }
 
 
@@ -70,11 +70,11 @@ int main()
     res = Line::find_line_intersection(lsa.get_line(), lsb.get_line(), ints);
     if( ! (ints == real_ints) )
     {
-        throw KJB_error("Line intersection, Different point expected!");
+        throw IVI_error("Line intersection, Different point expected!");
     }
     if(!res)
     {
-        throw KJB_error("Line intersection, Different result expected!");
+        throw IVI_error("Line intersection, Different result expected!");
     }
 
     lsa.init_from_end_points(0.0, 0.0, 1.0, 1.0);
@@ -82,7 +82,7 @@ int main()
     res = Line::find_line_intersection(lsa.get_line(), lsb.get_line(), ints);
     if(res)
     {
-        throw KJB_error("Line intersection, Different result expected!");
+        throw IVI_error("Line intersection, Different result expected!");
     }
 
     return 0;

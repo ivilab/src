@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_pdf.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_pdf.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PROB_PDF_H_INCLUDED
 #define PROB_PDF_H_INCLUDED
@@ -32,14 +32,14 @@
 #include "m_cpp/m_special.h"
 #include "prob_cpp/prob_distribution.h"
 
-namespace kjb {
+namespace ivi {
 
 /*============================================================================
   pdf functions; notice that we import all boost pdfs here as well
   ----------------------------------------------------------------------------*/
 
 // importing the boost::math::pdf into this namespace so that we
-// can call the boost ones using the kjb:: prefix.
+// can call the boost ones using the ivi:: prefix.
 using boost::math::pdf;
 
 #if BOOST_VERSION < 104600
@@ -117,23 +117,23 @@ inline double pdf(const Beta_binomial_distribution& dist, double k)
 
 // forward declaration
 template <size_t D> 
-inline double log_pdf(const Von_mises_fisher_distribution<D>& dist, const kjb::Vector_d<D>& v);
+inline double log_pdf(const Von_mises_fisher_distribution<D>& dist, const ivi::Vector_d<D>& v);
 
 /// Evaluate the probability density function of a Von-mises Fisher distribtuion (x's magnitude is ignored/assumed 1.0)
 template <size_t D>
 inline 
-double pdf(const Von_mises_fisher_distribution<D>& dist, const kjb::Vector_d<D>& v)
+double pdf(const Von_mises_fisher_distribution<D>& dist, const ivi::Vector_d<D>& v)
 {
     return exp(log_pdf(dist, v));
 }
 
 // forward declaration
 template <size_t D>
-inline double log_pdf(const Uniform_sphere_distribution<D>& P, const kjb::Vector_d<D>& x);
+inline double log_pdf(const Uniform_sphere_distribution<D>& P, const ivi::Vector_d<D>& x);
 
 /// Evaluate the probability density function of a uniform sphere distribution (x's magnitude is ignored / assumed 1.0)
 template <size_t D>
-inline double pdf(const Uniform_sphere_distribution<D>& P, const kjb::Vector_d<D>& x)
+inline double pdf(const Uniform_sphere_distribution<D>& P, const ivi::Vector_d<D>& x)
 {
     return exp(log_pdf(P,x));
 }
@@ -143,7 +143,7 @@ inline double pdf(const Uniform_sphere_distribution<D>& P, const kjb::Vector_d<D
   ----------------------------------------------------------------------------*/
 
 // importing the boost::math::cdf into this namespace so that we
-// can call the boost ones using the kjb:: prefix.
+// can call the boost ones using the ivi:: prefix.
 using boost::math::cdf;
 
 /**
@@ -302,19 +302,19 @@ double log_pdf(const MV_gaussian_distribution& P, const Vector& x);
  * It returns 1/S, where S is the surface area of a D-dimensional unit-sphere
  */
 template <size_t D>
-inline double log_pdf(const Uniform_sphere_distribution<D>& /*dist*/, const kjb::Vector_d<D>& /*v*/)
+inline double log_pdf(const Uniform_sphere_distribution<D>& /*dist*/, const ivi::Vector_d<D>& /*v*/)
 {
-    return -log(kjb_c::unit_sphere_surface_area(D));
+    return -log(ivi_c::unit_sphere_surface_area(D));
 }
 
 
 template <size_t D>
-double log_pdf(const Von_mises_fisher_distribution<D>& dist, const kjb::Vector_d<D>& v)
+double log_pdf(const Von_mises_fisher_distribution<D>& dist, const ivi::Vector_d<D>& v)
 {
     static const double LOG_2_PI = log(2*M_PI);
 
     double kappa_ = dist.kappa();
-    const kjb::Vector_d<D>& mu_ = dist.mu();
+    const ivi::Vector_d<D>& mu_ = dist.mu();
 
     double log_exponential = kappa_ * dot(v.normalized(), mu_);
     if(D == 3)
@@ -338,7 +338,7 @@ double log_pdf(const Von_mises_fisher_distribution<D>& dist, const kjb::Vector_d
     }
     else
     {
-        //KJB_THROW(kjb::Not_implemented);
+        //IVI_THROW(ivi::Not_implemented);
 
         // THIS SHOULD BE RIGHT AND IS TESTED FOR THE D==3 case:
         double log_normalization = (D/2.0 - 1) * log(kappa_) - (D/2.0)*log(2 * M_PI) - log(boost::math::cyl_bessel_i(D/2.0-1, kappa_));
@@ -453,7 +453,7 @@ inline double log_pdf
     return log_pdf(dist.normal_, mean) + log_pdf(dist.iw_, sigma);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*PROB_PDF_H_INCLUDED */
 

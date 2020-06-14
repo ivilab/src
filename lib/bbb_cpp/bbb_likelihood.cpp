@@ -39,8 +39,8 @@
 #include <boost/foreach.hpp>
 #include <boost/variant.hpp>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
 double Likelihood::operator()(const Description& desc) const
 {
@@ -49,7 +49,7 @@ double Likelihood::operator()(const Description& desc) const
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Data kjb::bbb::sample(const Likelihood& likelihood, const Description& desc)
+Data ivi::bbb::sample(const Likelihood& likelihood, const Description& desc)
 {
     typedef Description::Act_tree Act_tree;
     typedef Activity_sequence::Activity Activity;
@@ -114,7 +114,7 @@ Data kjb::bbb::sample(const Likelihood& likelihood, const Description& desc)
         std::vector<Vector> x0(2);
         for(size_t d = 0; d < D; d++)
         {
-            x0[d].set(kjb::sample(Normal_distribution(m[d], sqrt(var))));
+            x0[d].set(ivi::sample(Normal_distribution(m[d], sqrt(var))));
         }
 
         trajs[j].set_dimensions(t0, x0.begin(), x0.end());
@@ -148,7 +148,7 @@ Data kjb::bbb::sample(const Likelihood& likelihood, const Description& desc)
                 for(size_t d = 0; d < D; d++)
                 {
                     ep2[d].set(
-                        kjb::sample(Normal_distribution(m[d], sqrt(var))));
+                        ivi::sample(Normal_distribution(m[d], sqrt(var))));
                 }
 
                 trajs[j].append_dimensions(ep2.begin(), ep2.end());
@@ -179,7 +179,7 @@ Data kjb::bbb::sample(const Likelihood& likelihood, const Description& desc)
                 // sample endpoint[d]
                 // this is a vector of Vector because that's how Trajectory
                 // requires it to be
-                ep2[d].set(kjb::sample(Normal_distribution(m[d], sqrt(var))));
+                ep2[d].set(ivi::sample(Normal_distribution(m[d], sqrt(var))));
 
                 // set training outputs (from endpoints)
                 Vector trouts(2);

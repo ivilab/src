@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: l_int_vector.cpp 19804 2015-09-20 04:11:36Z predoehl $ */
+/* $Id: l_int_vector.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /** @file
  *
@@ -19,7 +19,7 @@
  *
  * @brief Definition for the Int_vector class methods.
  *
- * The Int_vector class is a thin wrapper on the KJB Int_vector struct
+ * The Int_vector class is a thin wrapper on the IVI Int_vector struct
  * and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -35,7 +35,7 @@
 #include <ostream>
 #include <iomanip>
 
-#ifndef KJB_HAVE_BST_SERIAL
+#ifndef IVI_HAVE_BST_SERIAL
 // forward declarations
 namespace boost {
 namespace archive {
@@ -46,10 +46,10 @@ namespace archive {
 #endif
 
 
-namespace kjb {
+namespace ivi {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -61,7 +61,7 @@ void Int_vector::throw_bad_bounds( int index ) const
     std::ostringstream msg;
     msg << "Invalid Int_vector access at (" << index << ").  "
            "Int_vector size is " << get_length() << ".\n";
-    KJB_THROW_2( Index_out_of_bounds, msg.str() );
+    IVI_THROW_2( Index_out_of_bounds, msg.str() );
 }
 
 /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
@@ -94,23 +94,23 @@ void Int_vector::m_ensure_capacity(size_type c)
 
 /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-Int_vector::Int_vector(const kjb::Int_matrix& src)
+Int_vector::Int_vector(const ivi::Int_matrix& src)
     : m_vector(0)
 {
     if( 1 == src.get_num_cols() )
     {
         // Test program was HERE.
-        kjb_c::get_int_matrix_col(&m_vector, src.get_c_matrix(), 0);
+        ivi_c::get_int_matrix_col(&m_vector, src.get_c_matrix(), 0);
     }
     else if ( 1 == src.get_num_rows() )
     {
         // Test program was HERE.
-        kjb_c::get_int_matrix_row(&m_vector, src.get_c_matrix(), 0);
+        ivi_c::get_int_matrix_row(&m_vector, src.get_c_matrix(), 0);
     }
     else
     {
         // Test program was HERE.
-        KJB_THROW_2(Illegal_argument, "Cannot convert matrix to vector:  "
+        IVI_THROW_2(Illegal_argument, "Cannot convert matrix to vector:  "
                                 "matrix is not a column or row vector." );
     }
 }
@@ -126,16 +126,16 @@ Int_vector::Int_vector(const std::string& file_name)
     if ( file_name.length() == 0 )
     {
         // Test program was HERE.
-        KJB_THROW_2(Illegal_argument, "Cannot read vector from file:  "
+        IVI_THROW_2(Illegal_argument, "Cannot read vector from file:  "
                                             "file name is empty");
     }
     else
     {
         // Test program was HERE.
-        int err = kjb_c::read_int_vector(&m_vector, file_name.c_str());
+        int err = ivi_c::read_int_vector(&m_vector, file_name.c_str());
         if(err)
         {
-            KJB_THROW_3(kjb::IO_error, "File not found %s", (file_name.c_str()));
+            IVI_THROW_3(ivi::IO_error, "File not found %s", (file_name.c_str()));
         }
     }
 }
@@ -174,10 +174,10 @@ Int_vector& Int_vector::randomize( int length )
 
 void Int_vector::serialize(boost::archive::text_iarchive &ar, const unsigned int version)
 {
-#ifndef KJB_HAVE_BST_SERIAL
-    return kjb_serialize(ar, *this, version);
+#ifndef IVI_HAVE_BST_SERIAL
+    return ivi_serialize(ar, *this, version);
 #else
-    KJB_THROW(kjb::Runtime_error); // can't happen; "ar" isn't defined, so this can't can't be called
+    IVI_THROW(ivi::Runtime_error); // can't happen; "ar" isn't defined, so this can't can't be called
 #endif
 }
 
@@ -188,10 +188,10 @@ void Int_vector::serialize(
     const unsigned int version
 )
 {
-#ifndef KJB_HAVE_BST_SERIAL
-    return kjb_serialize(ar, *this, version);
+#ifndef IVI_HAVE_BST_SERIAL
+    return ivi_serialize(ar, *this, version);
 #else
-    KJB_THROW_2(kjb::Runtime_error, "Cannot happen, 'ar' is not defined");
+    IVI_THROW_2(ivi::Runtime_error, "Cannot happen, 'ar' is not defined");
 #endif
 }
 
@@ -218,15 +218,15 @@ Int_vector operator*(const Int_vector& op1, const Int_matrix& op2)
     if( op1.get_length() != op2.get_num_rows() )
     {
         // Test program was HERE.
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
     //else
     //{
     //    // Test program was HERE.
     //}
 
-    kjb_c::Int_vector* result = 0;
-    ETX(kjb_c::multiply_int_vector_and_int_matrix( &result, op1.get_c_vector(),
+    ivi_c::Int_vector* result = 0;
+    ETX(ivi_c::multiply_int_vector_and_int_matrix( &result, op1.get_c_vector(),
                                                             op2.get_c_matrix() ));
     return Int_vector(result);
 }
@@ -240,14 +240,14 @@ Int_vector operator*(const Int_matrix& op1, const Int_vector& op2)
     if ( op1.get_num_cols() != op2.get_length() )
     {
         // Test program was HERE.
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
     //else
     //{
     //    // Test program was HERE.
     //}
     Int_vector::Impl_type *result = 0;
-    ETX(kjb_c::multiply_int_matrix_and_int_vector( &result, op1.get_c_matrix(),
+    ETX(ivi_c::multiply_int_matrix_and_int_vector( &result, op1.get_c_matrix(),
                                                             op2.get_c_vector() ));
     return Int_vector( result );
 }
@@ -271,7 +271,7 @@ bool operator==(const Int_vector& op1, const Int_vector::Impl_type& op2)
          * But if that invariant were to be relaxed, then the answer should be
          * false.
          */
-        KJB(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
+        IVI(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
         return false;
     }
     else if ( op1.get_length() != op2.length )
@@ -282,7 +282,7 @@ bool operator==(const Int_vector& op1, const Int_vector::Impl_type& op2)
     else
     {
         // Test program was HERE.
-        return 0 == kjb_c::max_abs_int_vector_difference( op1.get_c_vector(), &op2 );
+        return 0 == ivi_c::max_abs_int_vector_difference( op1.get_c_vector(), &op2 );
     }
 }
 
@@ -309,7 +309,7 @@ Int_vector& Int_vector::operator/=( int op2 )
     if ( 0 == op2 )
     {
         // Test program was HERE.
-        KJB_THROW( Divide_by_zero );
+        IVI_THROW( Divide_by_zero );
     }
 
     // Test program was HERE.
@@ -342,7 +342,7 @@ Int_matrix Int_vector::hat() const
     if( get_length() != 3)
     {
         // Test program was HERE.
-        KJB_THROW_2(Not_implemented, "Hat operator is only implemented "
+        IVI_THROW_2(Not_implemented, "Hat operator is only implemented "
                                             "for vectors of dimension 3.");
     }
     //else
@@ -369,7 +369,7 @@ Int_vector& Int_vector::cross_with( const Int_vector& op2 )
     if ( get_length() != 3 || op2.get_length() != 3 )
     {
         // Test program was HERE.
-        KJB_THROW_2( Illegal_argument,
+        IVI_THROW_2( Illegal_argument,
                 "Cross product is undefined for vectors not of size 3." );
     }
     //else
@@ -386,7 +386,7 @@ Int_vector cross( const Int_vector& op1, const Int_vector& op2 )
     if ( op1.get_length() != 3 || op2.get_length() != 3 )
     {
         // Test program was HERE.
-        KJB_THROW_2( Illegal_argument,
+        IVI_THROW_2( Illegal_argument,
                 "Cross product is undefined for vectors not of size 3." );
     }
     //else

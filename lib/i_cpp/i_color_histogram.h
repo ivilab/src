@@ -5,11 +5,11 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: i_color_histogram.h 17393 2014-08-23 20:19:14Z predoehl $
+ * $Id: i_color_histogram.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef KJB_CPP_COLOR_HISTOGRAM_H
-#define KJB_CPP_COLOR_HISTOGRAM_H
+#ifndef IVI_CPP_COLOR_HISTOGRAM_H
+#define IVI_CPP_COLOR_HISTOGRAM_H
 
 #define DEFAULT_COL_HIST_NUM_BINS 8
 
@@ -20,11 +20,11 @@
 
 #include <numeric>
 
-namespace kjb 
+namespace ivi 
 {
 
 /**
- * @addtogroup kjbImageProc
+ * @addtogroup iviImageProc
  * @{
  */
 
@@ -45,7 +45,7 @@ public:
     Color_histogram(unsigned int inum_bins = DEFAULT_COL_HIST_NUM_BINS);
 
     /// @brief Constructor. Color histogram for entire image is computed
-    Color_histogram(unsigned int inum_bins, const kjb::Image & img);
+    Color_histogram(unsigned int inum_bins, const ivi::Image & img);
 
     /// @brief Constructor. Constructs a color histogram by reading it from a file
     Color_histogram(const char * fname)
@@ -79,7 +79,7 @@ public:
     /// @brief Computes a color histogram over the specified image region, and using the input number of bins
     void compute_histogram
     (
-        const kjb::Image & img,
+        const ivi::Image & img,
         unsigned int inum_bins,
         int top_left_x,
         int top_left_y,
@@ -88,15 +88,15 @@ public:
     );
 
     /// @brief Computes a color histogram over the entire image, and using the input number of bins 
-    void compute_histogram(const kjb::Image & img, unsigned int inum_bins);
+    void compute_histogram(const ivi::Image & img, unsigned int inum_bins);
 
     /// @brief Computes a color histogram over the entire image, without changin the number of bins 
-    void compute_histogram(const kjb::Image & img);
+    void compute_histogram(const ivi::Image & img);
 
     /// @brief Computes a color histogram over the specified image portion, without changin the number of bins 
     void compute_histogram
     (
-        const kjb::Image & img,
+        const ivi::Image & img,
         int top_left_x,
         int top_left_y,
         int bottom_right_x,
@@ -180,4 +180,4 @@ void read_histograms(std::vector<Color_histogram> & chs, const std::string & fil
 
 }
 
-#endif /*KJB_CPP_IMAGE_H */
+#endif /*IVI_CPP_IMAGE_H */

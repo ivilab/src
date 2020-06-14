@@ -1,5 +1,5 @@
 
-/* $Id: l_def.h 24322 2019-07-30 23:42:11Z ivilab $ */
+/* $Id: l_def.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,15 +24,15 @@
 #include "l/l_sys_def.h"
 
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-#    define USING_KJB_C() using namespace kjb_c;
+#    define USING_IVI_C() using namespace ivi_c;
 #else 
-#    define USING_KJB_C()   
+#    define USING_IVI_C()   
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -123,8 +123,8 @@ namespace kjb_c {
 //  However, until we use them in conjunction with windows code, there
 //  is no need to use windows' definition of them. Furthermore, it may
 //  be preferable to use WINDOWS_ERROR and WINDOWS_NO_ERROR in this case.
-//  Alternately, we could change ERROR to KJB_ERROR, and NO_ERROR to
-//  KJB_NO_ERROR.
+//  Alternately, we could change ERROR to IVI_ERROR, and NO_ERROR to
+//  IVI_NO_ERROR.
 //
 //  Since this is a little dangerous, try without, and deal with it when
 //  necessary.
@@ -167,7 +167,7 @@ Return_status;
 
 /* -------------------------------------------------------------------------- */
 
-#define KJB_IS_SET(x)   ((x) != NOT_SET)
+#define IVI_IS_SET(x)   ((x) != NOT_SET)
 /*
 #define IF_SET(x)   if ((x) != NOT_SET)
 */

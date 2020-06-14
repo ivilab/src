@@ -31,7 +31,7 @@
 #define CAMERA_SELECTED 1
 #define POLYMESH_SELECTED 2
 
-using namespace kjb;
+using namespace ivi;
 
 Parametric_parapiped * p = NULL;
 Perspective_camera * camera = NULL;
@@ -88,7 +88,7 @@ static void camera_callback(int i)
 
 static void main_menu_glut(int id)
 {
-    using namespace kjb;
+    using namespace ivi;
     /*_current_action = id;
     if(id == EXIT_ID)
     {
@@ -111,7 +111,7 @@ static void keyboard_glut(unsigned char key, int a, int b)
 
     if(key == 'w')
     {
-        kjb_c::KJB_image * cimg = NULL;
+        ivi_c::IVI_image * cimg = NULL;
         Base_gl_interface::capture_gl_view(&cimg);
         Image img(cimg);
         img.write("screenshot.jpg");
@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
   glutDisplayFunc(display_glut);
   glutTimerFunc(10, timer_glut, 0);
   glutKeyboardFunc(keyboard_glut);
-  kjb::opengl::default_init_opengl(gwidth, gheight);
+  ivi::opengl::default_init_opengl(gwidth, gheight);
 
   int camera_menu = Glut_perspective_camera::create_glut_perspective_camera_submenu(camera_callback, camera);
   Glut_perspective_camera::update_width_increment(29);
@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
   glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
         glutMainLoop();
     }

@@ -31,12 +31,12 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Body_2d kjb::pt::project_cstate
+Body_2d ivi::pt::project_cstate
 (
     const Complete_state& cs,
     const Perspective_camera& cam,
@@ -74,7 +74,7 @@ Body_2d kjb::pt::project_cstate
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::pt::model_direction
+Vector ivi::pt::model_direction
 (
     const Complete_state& cs1,
     const Complete_state& cs2,
@@ -108,7 +108,7 @@ Vector kjb::pt::model_direction
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Bbox kjb::pt::cylinder_bounding_box
+Bbox ivi::pt::cylinder_bounding_box
 (
     const Vector_vec& pts,
     const Vector& bot,

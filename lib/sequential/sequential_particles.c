@@ -1,5 +1,5 @@
 
-/* $Id: sequential_particles.c 10665 2011-09-29 19:51:59Z predoehl $ */
+/* $Id: sequential_particles.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -45,7 +45,7 @@ static int resample(Vector_vector* original_samples, const Vector* distribution)
  * are provided in case the prior or the likelihood depend on extra variables.
  *
  * As usual, *samples is reused if possible and created if needed, according
- * to the KJB allocation semantics.
+ * to the IVI allocation semantics.
  *
  * Returns:
  *     NO_ERROR on success, and ERROR on failure, with an appropriate error

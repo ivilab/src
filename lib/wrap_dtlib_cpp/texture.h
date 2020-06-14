@@ -58,12 +58,12 @@ void ComputeOrientationEnergy
 
 void extract_texture
 (
-	const kjb::Image & img,
-	const kjb::Int_matrix & seg_map,
-    kjb::Matrix & Oe_mean,
-    kjb::Matrix & Oe_var,
-    kjb::Matrix & DOG_mean,
-    kjb::Matrix & DOG_var,
+	const ivi::Image & img,
+	const ivi::Int_matrix & seg_map,
+    ivi::Matrix & Oe_mean,
+    ivi::Matrix & Oe_var,
+    ivi::Matrix & DOG_mean,
+    ivi::Matrix & DOG_var,
 	int m_nGaussScales,
 	int m_nGaussOrientations,
     float m_GaussSigmaY,
@@ -75,9 +75,9 @@ void extract_texture
     int m_nCroppedPixels
 );
 
-FloatCImgPtr convert_kjb_to_CImg
+FloatCImgPtr convert_ivi_to_CImg
 (
-	const kjb::Image & img,
+	const ivi::Image & img,
 	FloatCImgPtr * m_pAImg,
 	FloatCImgPtr * m_pBImg,
     int m_nCroppedPixels,
@@ -187,7 +187,7 @@ void ComputeWeberLaw
 
 void Compute_Textons_Histograms
 (
-	const kjb::Image & img,
+	const ivi::Image & img,
 	CImg<FloatCHistogramPtr>** m_pTextonHistoImg,
 	CImg<FloatCHistogramPtr>** ColorHist,
     FloatCImgPtr * m_pDualHImg,
@@ -225,14 +225,14 @@ void Compute_Textons_Histograms
 
 void Compute_All_Histograms
 (
-	const kjb::Image & img,
+	const ivi::Image & img,
     CImg<FloatCHistogramPtr> ** m_pTextonHistoImg,
     CImg<FloatCHistogramPtr> ** ColorHist
 );
 
 void ComputeColorHistoImg
 (
-	const kjb::Image & img,
+	const ivi::Image & img,
     CImg<FloatCHistogramPtr> ** ColorHist,
 	int m_nBinsA = 8,
 	int m_nBinsB = 8,
@@ -319,7 +319,7 @@ void WriteColorHistoImg
 
 void PrepareHeatMap
 (
-	kjb::Image & img,
+	ivi::Image & img,
 	CImg<FloatCHistogramPtr>* pHistoImg,
 	int padding,
 	int x_position,

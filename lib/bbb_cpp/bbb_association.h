@@ -29,7 +29,7 @@
 #include <iterator>
 #include <boost/foreach.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -107,7 +107,7 @@ void Association::set(SetIt first_set, SetIt last_set, StrIt first_name)
     check_consistent();
 }
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_ASSOCIATION_H */
 

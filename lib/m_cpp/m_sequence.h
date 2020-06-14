@@ -1,4 +1,4 @@
-/* $Id: m_sequence.h 18280 2014-11-25 03:36:33Z ksimek $ */
+/* $Id: m_sequence.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,13 +17,13 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_CPP_M_SEQUENCE
-#define KJB_CPP_M_SEQUENCE
+#ifndef IVI_CPP_M_SEQUENCE
+#define IVI_CPP_M_SEQUENCE
 
 #include <vector>
 #include <stdlib.h>
 
-namespace kjb
+namespace ivi
 {
 /**
  * @file  A set of classes representing numeric sequences
@@ -76,6 +76,6 @@ private:
     double interval_;
 };
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

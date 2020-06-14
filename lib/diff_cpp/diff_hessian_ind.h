@@ -25,7 +25,7 @@
 #include <diff_cpp/diff_util.h>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Computes the Hessian of a function, evaluated at a point, using
@@ -329,7 +329,7 @@ Vector hessian_ind_diagonal
     return hessian_ind_diagonal(f, x, dx, Vector_adapter<Vec>(), is, ie);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_HESSIAN_H_IND */
 

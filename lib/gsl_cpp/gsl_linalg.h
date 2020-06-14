@@ -16,10 +16,10 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-/* $Id: gsl_linalg.h 19607 2015-07-17 00:11:07Z predoehl $ */
+/* $Id: gsl_linalg.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_CPP_GSL_LINALG_H
-#define KJB_CPP_GSL_LINALG_H
+#ifndef IVI_CPP_GSL_LINALG_H
+#define IVI_CPP_GSL_LINALG_H
 
 /**
  * @file
@@ -32,7 +32,7 @@
 #include <gsl_cpp/gsl_util.h>
 #include <gsl_cpp/gsl_matrix.h>
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_mode.h>
 #else
@@ -42,7 +42,7 @@ typedef unsigned int gsl_mode_t;
 #endif
 
 
-namespace kjb
+namespace ivi
 {
 
 inline void gsl_matrix_exponential
@@ -52,10 +52,10 @@ inline void gsl_matrix_exponential
     gsl_mode_t mode = GSL_MODE_DEFAULT
 )
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     GSL_ETX(gsl_linalg_exponential_ss(A.const_ptr(), eA.ptr(), mode));
 #else
-    KJB_THROW_2( Missing_dependency, "GNU GSL" );
+    IVI_THROW_2( Missing_dependency, "GNU GSL" );
 #endif
 }
 
@@ -67,7 +67,7 @@ inline void gsl_matrix_exponential
     Matrix& eA
 )
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 
     Gsl_matrix gsl_A(A);
     Gsl_matrix gsl_eA(gsl_A.num_rows(), gsl_A.num_cols());
@@ -83,10 +83,10 @@ inline void gsl_matrix_exponential
     }
 
 #else
-    KJB_THROW_2( Missing_dependency, "GNU GSL" );
+    IVI_THROW_2( Missing_dependency, "GNU GSL" );
 #endif
 }
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_CPP_GSL_LINALG_H */
+#endif /* IVI_CPP_GSL_LINALG_H */

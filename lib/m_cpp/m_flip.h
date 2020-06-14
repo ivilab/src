@@ -1,11 +1,11 @@
-/* $Id: m_flip.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_flip.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_CPP_EDGE_FLIP_H
-#define KJB_CPP_EDGE_FLIP_H
+#ifndef IVI_CPP_EDGE_FLIP_H
+#define IVI_CPP_EDGE_FLIP_H
 
 #include "m_cpp/m_matrix.h"
 
-namespace kjb
+namespace ivi
 {
 
 /// @brief deprecated synonym for Matrix::ow_vertical_flip
@@ -20,6 +20,6 @@ inline void flip_matrix_lr(Matrix& m)
     m.ow_horizontal_flip();
 }
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

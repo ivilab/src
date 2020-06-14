@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: pt_scene.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_scene.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_scene.h"
@@ -37,10 +37,10 @@
 #include <fstream>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
-size_t kjb::pt::dims
+size_t ivi::pt::dims
 (   
     const Scene& scene, 
     bool respect_changed,
@@ -61,7 +61,7 @@ size_t kjb::pt::dims
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::read_scene
+void ivi::pt::read_scene
 (
     Scene& s,
     const std::string& tracks_dp,
@@ -108,7 +108,7 @@ void kjb::pt::read_scene
     BOOST_FOREACH(const Target& tg, s.association)
     {
         std::string hess_fp = (hess_fmt % idx).str();
-        if(kjb_c::is_file(hess_fp.c_str()))
+        if(ivi_c::is_file(hess_fp.c_str()))
         {
             size_t dim = dims(tg, false, infer_head);
             Vector hd(hess_fp);
@@ -135,7 +135,7 @@ void kjb::pt::read_scene
     }
 
     // read attention matrix
-    if(kjb_c::is_file(attn_fp.c_str()))
+    if(ivi_c::is_file(attn_fp.c_str()))
     {
         s.attn_matrix = Int_matrix(attn_fp);
         parse_attention_matrix(s);
@@ -144,7 +144,7 @@ void kjb::pt::read_scene
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::write_scene
+void ivi::pt::write_scene
 (
     const Scene& s,
     const std::string& tracks_dp,
@@ -158,7 +158,7 @@ void kjb::pt::write_scene
     const Entity_type person_et = get_entity_type("person");
     Trajectory_map per_tmap(s.association.get_data().size());
 
-    kjb_c::kjb_mkdir(tracks_dp.c_str());
+    ivi_c::ivi_mkdir(tracks_dp.c_str());
     boost::format hess_fmt(tracks_dp + "/hessian_%d.txt");
 
     size_t idx = 1;
@@ -206,7 +206,7 @@ void kjb::pt::write_scene
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::parse_attention_matrix(const Scene& scene)
+void ivi::pt::parse_attention_matrix(const Scene& scene)
 {
     const Int_matrix& attns = scene.attn_matrix;
     if(attns.get_num_rows() == 0 || attns.get_num_cols() == 0) return;
@@ -247,7 +247,7 @@ void kjb::pt::parse_attention_matrix(const Scene& scene)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::update_attention_matrix(Scene& scene)
+void ivi::pt::update_attention_matrix(Scene& scene)
 {
     const Ascn& ascn = scene.association;
 
@@ -299,7 +299,7 @@ void kjb::pt::update_attention_matrix(Scene& scene)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::set_trajectory_at_frame
+void ivi::pt::set_trajectory_at_frame
 (
     const Scene& scene,
     const Target& target,
@@ -352,7 +352,7 @@ void kjb::pt::set_trajectory_at_frame
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::set_trajectories_at_frames
+void ivi::pt::set_trajectories_at_frames
 (
     const Scene& scene,
     const Target& target1,
@@ -384,7 +384,7 @@ void kjb::pt::set_trajectories_at_frames
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::set_trajectory_dir_at_frame
+void ivi::pt::set_trajectory_dir_at_frame
 (
     const Scene& scene,
     const Target& target,
@@ -430,7 +430,7 @@ void kjb::pt::set_trajectory_dir_at_frame
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::set_trajectory_dirs_at_frames
+void ivi::pt::set_trajectory_dirs_at_frames
 (
     const Scene& scene,
     const Target& target1,
@@ -461,7 +461,7 @@ void kjb::pt::set_trajectory_dirs_at_frames
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::set_trajectory_face_dir_at_frame
+void ivi::pt::set_trajectory_face_dir_at_frame
 (
     const Scene& scene,
     const Target& target,
@@ -526,7 +526,7 @@ void kjb::pt::set_trajectory_face_dir_at_frame
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::set_trajectory_face_dirs_at_frames
+void ivi::pt::set_trajectory_face_dirs_at_frames
 (
     const Scene& scene,
     const Target& target1,
@@ -557,7 +557,7 @@ void kjb::pt::set_trajectory_face_dirs_at_frames
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::update_body_model_directions
+void ivi::pt::update_body_model_directions
 (
     const Target& target,
     size_t frame,
@@ -596,7 +596,7 @@ void kjb::pt::update_body_model_directions
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::update_face_model_directions
+void ivi::pt::update_face_model_directions
 (
     const Target& target,
     size_t frame,

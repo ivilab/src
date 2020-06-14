@@ -10,14 +10,14 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
 
 using namespace std;
 using namespace DTLib;
-using namespace kjb_c;
+using namespace ivi_c;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ void DTLib::ComputePTextureImg(CCircleMasks& CircleMasks,
                                CImg<BYTE>& NMSCombImg,
                                CImg<float>& ThetaStarImg,
                                CImg<float>& TextureScaleImg,
-                               CImg<kjb_int32>& TextonMembershipImg,
+                               CImg<ivi_int32>& TextonMembershipImg,
                                const int& K,
                                const float& DiskMiddleBandThickness,
                                const float& Tau, const float& Beta,
@@ -50,7 +50,7 @@ void DTLib::ComputePTextureImg(CCircleMasks& CircleMasks,
     const int StartX = Padding, EndX = Padding+Width;
     const int StartY = Padding, EndY = Padding+Height;
 
-    CImg<kjb_int32> PaddedMemberImg(PaddedWidth, PaddedHeight);
+    CImg<ivi_int32> PaddedMemberImg(PaddedWidth, PaddedHeight);
     PaddedMemberImg.ChangeROI(StartX, EndX, StartY, EndY);
     PaddedMemberImg.CopyFromBuf(TextonMembershipImg.pBuffer());
     PaddedMemberImg.ReflectToROI(); // here is where the mirror's done!
@@ -61,7 +61,7 @@ void DTLib::ComputePTextureImg(CCircleMasks& CircleMasks,
     PaddedNMSCombImg.ReflectToROI(); // here is where the mirror's done!
 
     const int Skip = PaddedMemberImg.ROISkipCols();
-    kjb_int32* pMemb = PaddedMemberImg.pROI();
+    ivi_int32* pMemb = PaddedMemberImg.pROI();
     BYTE* pNMSComb = PaddedNMSCombImg.pROI();
     float* pThetaStar = ThetaStarImg.pBuffer();
     float* pTextureScale = TextureScaleImg.pBuffer();
@@ -97,7 +97,7 @@ void DTLib::ComputePTextureImg(CCircleMasks& CircleMasks,
 
                 BYTE* pCircle = CircleMasks.GetCircleMaskBuffer(Rad);
 
-                kjb_int32* pMembYOffset;
+                ivi_int32* pMembYOffset;
                 for (int yy_i = -Rad; yy_i <= Rad; yy_i++) {
                     const float yy = (float)yy_i;
                     pMembYOffset = pMemb+yy_i*PaddedWidth;
@@ -107,7 +107,7 @@ void DTLib::ComputePTextureImg(CCircleMasks& CircleMasks,
                             const float DotProd =
                                 xx*MinusSinThetaStar+yy*CosThetaStar;
                             const float AbsDotProd = (float)fabs(DotProd);
-                            const kjb_int32 iTexton = *(pMembYOffset+xx_i);
+                            const ivi_int32 iTexton = *(pMembYOffset+xx_i);
                             ASSERT((iTexton >= 0) && (iTexton < K));
                             if (AbsDotProd < HalfMidbandThickness) {
                                 HistoC.IncrementBin((int)iTexton, 1.0f);

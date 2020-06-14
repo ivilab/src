@@ -30,7 +30,7 @@
 #include <string>
 #include <utility>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -109,7 +109,7 @@ typedef Activity_sequence_prior As_prior;
 /** @brief  Sample an activity sequence from the given prior. */
 Activity_sequence sample(const As_prior& prior);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_ACTIVITY_SEQUENCE_PRIOR_H */
 

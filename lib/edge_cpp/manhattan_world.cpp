@@ -27,7 +27,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * Draws a line on the image between the segment mid point and the vanishing point
@@ -41,7 +41,7 @@ using namespace kjb;
  */
 void Manhattan_segment::draw_mid_point_to_vanishing_point
 (
-    kjb::Image & img,
+    ivi::Image & img,
     double ir,
     double ig,
     double ib,
@@ -80,7 +80,7 @@ void Manhattan_segment::draw_mid_point_to_vanishing_point
             break;
     }
 
-    kjb_c::image_draw_segment_2(img.non_const_c_ptr(), _segment.get_centre_y(),_segment.get_centre_x(),
+    ivi_c::image_draw_segment_2(img.non_const_c_ptr(), _segment.get_centre_y(),_segment.get_centre_x(),
          _y, _x, width, ir,ig,ib);
 }
 
@@ -97,7 +97,7 @@ unsigned int Manhattan_corner::num_available_segments() const
     return counter;
 }
 
-void Manhattan_corner::draw(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_corner::draw(ivi::Image & img, bool draw_full_segments, double width) const
 {
     if(draw_full_segments)
     {
@@ -197,7 +197,7 @@ void Manhattan_world::assign_segments_to_vpts(const Edge_segment_set & isegments
  * @param img the image to draw the segments on
  * @param width the width to use when drawing the line segments
  */
-void Manhattan_world::draw_lines_from_segments_midpoint_to_vp(kjb::Image & img, double width) const
+void Manhattan_world::draw_lines_from_segments_midpoint_to_vp(ivi::Image & img, double width) const
 {
     for(unsigned int i = 0; i < _assignments[0].size(); i++ )
     {
@@ -224,7 +224,7 @@ void Manhattan_world::draw_lines_from_segments_midpoint_to_vp(kjb::Image & img, 
  * @param img the image to draw the segments on
  * @param width the width to use when drawing the line segments
  */
-void Manhattan_world::draw_segments_with_vp_assignments(kjb::Image & img, double width) const
+void Manhattan_world::draw_segments_with_vp_assignments(ivi::Image & img, double width) const
 {
     for(unsigned int i = 0; i < _assignments[0].size(); i++ )
     {
@@ -248,11 +248,11 @@ const Manhattan_segment & Manhattan_world::get_manhattan_segment(unsigned int vp
 {
     if(vp_index > 3)
     {
-        KJB_THROW_2(Illegal_argument, "Index of requested manhattan segment is out of bounds");
+        IVI_THROW_2(Illegal_argument, "Index of requested manhattan segment is out of bounds");
     }
     if(segment_index >= _assignments[vp_index].size())
     {
-        KJB_THROW_2(Illegal_argument, "Index of requested manhattan segment is out of bounds");
+        IVI_THROW_2(Illegal_argument, "Index of requested manhattan segment is out of bounds");
     }
     return _assignments[vp_index][segment_index];
 }
@@ -293,13 +293,13 @@ void Manhattan_world::read(std::istream& in, const Edge_segment_set & isegments,
     const char* field_value;
     if (!(field_value = Readable::read_field_value(in, "focal_length")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Manhattan world focal length");
+        IVI_THROW_2(Illegal_argument, "Missing Manhattan world focal length");
     }
     istringstream ist(field_value);
     ist >> focal_length;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid focal length");
+        IVI_THROW_2(Illegal_argument, "Invalid focal length");
     }
     ist.clear(std::ios_base::goodbit);
     
@@ -326,13 +326,13 @@ void Manhattan_world::read(std::istream& in)
     const char* field_value;
     if (!(field_value = Readable::read_field_value(in, "focal_length")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Manhattan world focal length");
+        IVI_THROW_2(Illegal_argument, "Missing Manhattan world focal length");
     }
     istringstream ist(field_value);
     ist >> focal_length;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid focal length");
+        IVI_THROW_2(Illegal_argument, "Invalid focal length");
     }
     ist.clear(std::ios_base::goodbit);
     read_corners(in);
@@ -352,14 +352,14 @@ void Manhattan_world::read(const char * filename)
     if (in.fail())
     {
         ost << filename << ": Could not open file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
     read(in);
     in.close();
     if (in.fail())
     {
         ost << filename << ": Could not close file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
 }
 
@@ -377,14 +377,14 @@ void Manhattan_world::read(const char * filename, const Edge_segment_set & isegm
     if (in.fail())
     {
         ost << filename << ": Could not open file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
     read(in, isegments, outlier_threshold);
     in.close();
     if (in.fail())
     {
         ost << filename << ": Could not close file";
-        KJB_THROW_2(IO_error,ost.str());
+        IVI_THROW_2(IO_error,ost.str());
     }
 }
 
@@ -496,12 +496,12 @@ bool Manhattan_corner::is_right_segment(unsigned int i)
     if(i >= 2)
     {
         std::cout << "SHOULD BE 0 or 1!!!!" << std::endl;
-        KJB_THROW_2(Illegal_argument, "is_right_segment can only be called on segment 0 or 1");
+        IVI_THROW_2(Illegal_argument, "is_right_segment can only be called on segment 0 or 1");
     }
     if(!is_available(i))
     {
         std::cout << "SHOULD BE AVAILABLE!!!!" << std::endl;
-        KJB_THROW_2(KJB_error, "Cannot call is_right_segment on a non available segment");
+        IVI_THROW_2(IVI_error, "Cannot call is_right_segment on a non available segment");
     }
     double diff1 = (position(0) - segments[i]->get_edge_segment().get_start_x())*(position(0) - segments[i]->get_edge_segment().get_start_x())
                  + (position(1) - segments[i]->get_edge_segment().get_start_y())*(position(1) - segments[i]->get_edge_segment().get_start_y());
@@ -540,18 +540,18 @@ void Manhattan_corner::get_3D_corner
     double focal_length,
     double princ_x,
     double princ_y,
-    kjb::Vector & corner3D_1,
-    kjb::Vector & corner3D_2,
-    kjb::Vector & corner3D_3,
-    kjb::Vector & position_3D
+    ivi::Vector & corner3D_1,
+    ivi::Vector & corner3D_2,
+    ivi::Vector & corner3D_3,
+    ivi::Vector & position_3D
 ) const
 {
     if(focal_length <= DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Bad value for focal length");
+        IVI_THROW_2(Illegal_argument,"Bad value for focal length");
     }
 
-    kjb::Vector position_2D(3, 1.0);
+    ivi::Vector position_2D(3, 1.0);
     position_2D(0) = position(0) - princ_x;
     position_2D(1) = -(position(1) - princ_y);
 
@@ -560,7 +560,7 @@ void Manhattan_corner::get_3D_corner
     position_3D(1) = (position_2D(1)*position_3D(2))/focal_length;
     position_3D(0) = (position_2D(0)*position_3D(2))/focal_length;
 
-    std::vector<kjb::Vector> segments2d(3, Vector(3, 1.0));
+    std::vector<ivi::Vector> segments2d(3, Vector(3, 1.0));
 
     for(unsigned int i = 0; i < 3; i++)
     {
@@ -605,13 +605,13 @@ void Manhattan_corner::get_3D_corner
             corner3D_3
         );
     }
-    catch(KJB_error e)
+    catch(IVI_error e)
     {
-        KJB_THROW_2(KJB_error,"Could not create orthogonal 3D corner from 2D corner");
+        IVI_THROW_2(IVI_error,"Could not create orthogonal 3D corner from 2D corner");
     }
 
     Matrix rotation_matrix(3,3);
-    kjb::Vector to_check(3);
+    ivi::Vector to_check(3);
     for(unsigned int i = 0; i < 3; i++)
     {
         rotation_matrix(0,i) = corner3D_1(i);
@@ -639,9 +639,9 @@ void Manhattan_corner::get_3D_corner
                 corner3D_3
             );
         }
-        catch(KJB_error e)
+        catch(IVI_error e)
         {
-            KJB_THROW_2(KJB_error,"Could not create orthogonal 3D corner from 2D corner");
+            IVI_THROW_2(IVI_error,"Could not create orthogonal 3D corner from 2D corner");
         }
 
         for(unsigned int i = 0; i < 3; i++)
@@ -655,17 +655,17 @@ void Manhattan_corner::get_3D_corner
         to_check = rotation_matrix*to_check;
        if( (to_check(0) < 0) || (to_check(1) < 0) || (to_check(2) < 0) )
        {
-           //KJB_THROW_2(KJB_error,"Could not create orthogonal 3D corner from 2D corner");
+           //IVI_THROW_2(IVI_error,"Could not create orthogonal 3D corner from 2D corner");
        }
     }
 
 }
 
-void Manhattan_corner::get_direction(unsigned int segment_index, kjb::Vector & direction) const
+void Manhattan_corner::get_direction(unsigned int segment_index, ivi::Vector & direction) const
 {
     if(segment_index > 2)
     {
-        KJB_THROW_2(Illegal_argument, "Corner. segment index must be between 0 and 2");
+        IVI_THROW_2(Illegal_argument, "Corner. segment index must be between 0 and 2");
     }
     orthogonal_segments[segment_index].get_direction(direction);
     double diff1 = (position(0) - orthogonal_segments[segment_index].get_start_x())*(position(0) - orthogonal_segments[segment_index].get_start_x())
@@ -728,7 +728,7 @@ double Manhattan_corner::get_avg_segment_size() const
 
 void Manhattan_world::write_manhattan_corner(const Manhattan_corner & corner, std::ostream& out) const
 {
-    const kjb::Vector & position = corner.get_position();
+    const ivi::Vector & position = corner.get_position();
     out << "position:" << position(0) << " " << position(1) << "\n";
     for(unsigned int i =0; i < 3; i++)
     {
@@ -746,7 +746,7 @@ void Manhattan_world::write_manhattan_corner(const Manhattan_corner & corner, st
     }
 }
 
-void Manhattan_world::draw_corners2smart(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_world::draw_corners2smart(ivi::Image & img, bool draw_full_segments, double width) const
 {
     for(unsigned int i = 0; i < _corners2.size(); i++)
     {
@@ -757,7 +757,7 @@ void Manhattan_world::draw_corners2smart(kjb::Image & img, bool draw_full_segmen
     }
 }
 
-void Manhattan_world::draw_corners3smart(kjb::Image & img, bool draw_full_segments, double width ) const
+void Manhattan_world::draw_corners3smart(ivi::Image & img, bool draw_full_segments, double width ) const
 {
     for(unsigned int i = 0; i < _corners3.size(); i++)
     {
@@ -768,7 +768,7 @@ void Manhattan_world::draw_corners3smart(kjb::Image & img, bool draw_full_segmen
     }
 }
 
-void Manhattan_world::draw_extra_corners(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_world::draw_extra_corners(ivi::Image & img, bool draw_full_segments, double width) const
 {
     for(unsigned int i = 0; i < _extra_corners.size(); i++)
     {
@@ -787,15 +787,15 @@ void Manhattan_world::read_manhattan_corner(Manhattan_corner & corner, std::istr
     const char* field_value;
     if (!(field_value = Readable::read_field_value(in, "position")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing corner position");
+        IVI_THROW_2(Illegal_argument, "Missing corner position");
     }
     istringstream ist(field_value);
-    kjb::Vector position(2);
+    ivi::Vector position(2);
     ist >> position(0) >> position(1);
     corner.set_position(position);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid corner position");
+        IVI_THROW_2(Illegal_argument, "Invalid corner position");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -803,13 +803,13 @@ void Manhattan_world::read_manhattan_corner(Manhattan_corner & corner, std::istr
     {
         if (!(field_value = Readable::read_field_value(in, "corner_segment_available")))
         {
-            KJB_THROW_2(Illegal_argument, "Missing corner segment");
+            IVI_THROW_2(Illegal_argument, "Missing corner segment");
         }
         ist.str(field_value);
         ist >> available;
         if (ist.fail())
         {
-            KJB_THROW_2(Illegal_argument, "Invalid corner segment");
+            IVI_THROW_2(Illegal_argument, "Invalid corner segment");
         }
         ist.clear(std::ios_base::goodbit);
 
@@ -817,37 +817,37 @@ void Manhattan_world::read_manhattan_corner(Manhattan_corner & corner, std::istr
         {
             if (!(field_value = Readable::read_field_value(in, "corner_segment_index")))
             {
-                KJB_THROW_2(Illegal_argument, "Missing corner segment");
+                IVI_THROW_2(Illegal_argument, "Missing corner segment");
             }
             ist.str(field_value);
             ist >> index;
             if (ist.fail())
             {
-                KJB_THROW_2(Illegal_argument, "Invalid corner segment distance");
+                IVI_THROW_2(Illegal_argument, "Invalid corner segment distance");
             }
             ist.clear(std::ios_base::goodbit);
 
             if (!(field_value = Readable::read_field_value(in, "corner_segment_distance")))
             {
-                KJB_THROW_2(Illegal_argument, "Missing corner segment distance");
+                IVI_THROW_2(Illegal_argument, "Missing corner segment distance");
             }
             ist.str(field_value);
             ist >> distance;
             if (ist.fail())
             {
-                KJB_THROW_2(Illegal_argument, "Invalid corner segment distance");
+                IVI_THROW_2(Illegal_argument, "Invalid corner segment distance");
             }
             ist.clear(std::ios_base::goodbit);
 
             if (!(field_value = Readable::read_field_value(in, "corner_segment_perp_distance")))
             {
-                KJB_THROW_2(Illegal_argument, "Missing corner segment perpendicular distance");
+                IVI_THROW_2(Illegal_argument, "Missing corner segment perpendicular distance");
             }
             ist.str(field_value);
             ist >> perp_distance;
             if (ist.fail())
             {
-                KJB_THROW_2(Illegal_argument, "Invalid corner segment perpendicular distance");
+                IVI_THROW_2(Illegal_argument, "Invalid corner segment perpendicular distance");
             }
             ist.clear(std::ios_base::goodbit);
             try
@@ -859,7 +859,7 @@ void Manhattan_world::read_manhattan_corner(Manhattan_corner & corner, std::istr
             }
             catch(Illegal_argument e)
             {
-                KJB_THROW_2(IO_error, "Could not read Manhattan corner, bad segment index");
+                IVI_THROW_2(IO_error, "Could not read Manhattan corner, bad segment index");
             }
         }
         else
@@ -895,13 +895,13 @@ void Manhattan_world::read_corners(std::istream& in)
 
     if (!(field_value = Readable::read_field_value(in, "num_corners2")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
+        IVI_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
     }
     istringstream ist(field_value);
     ist >> num_corners;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
+        IVI_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -914,13 +914,13 @@ void Manhattan_world::read_corners(std::istream& in)
 
     if (!(field_value = Readable::read_field_value(in, "num_corners3")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
+        IVI_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
     }
     ist.str(field_value);
     ist >> num_corners;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
+        IVI_THROW_2(Illegal_argument, "Missing Number of Manhattan Corners");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -932,13 +932,13 @@ void Manhattan_world::read_corners(std::istream& in)
     }
 }
 
-void Manhattan_world::draw_corners(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_world::draw_corners(ivi::Image & img, bool draw_full_segments, double width) const
 {
     draw_corners2(img, draw_full_segments, width);
     draw_corners3(img, draw_full_segments, width);
 }
 
-void Manhattan_world::draw_corners2(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_world::draw_corners2(ivi::Image & img, bool draw_full_segments, double width) const
 {
     for(unsigned int i = 0; i< _corners2.size(); i++)
     {
@@ -946,7 +946,7 @@ void Manhattan_world::draw_corners2(kjb::Image & img, bool draw_full_segments, d
     }
 }
 
-void Manhattan_world::draw_corners3(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_world::draw_corners3(ivi::Image & img, bool draw_full_segments, double width) const
 {
     for(unsigned int i = 0; i< _corners3.size(); i++)
     {
@@ -954,7 +954,7 @@ void Manhattan_world::draw_corners3(kjb::Image & img, bool draw_full_segments, d
     }
 }
 
-void Manhattan_world::draw_corners2up(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_world::draw_corners2up(ivi::Image & img, bool draw_full_segments, double width) const
 {
     for(unsigned int i = 0; i< _corners2.size(); i++)
     {
@@ -965,7 +965,7 @@ void Manhattan_world::draw_corners2up(kjb::Image & img, bool draw_full_segments,
     }
 }
 
-void Manhattan_world::draw_corners3up(kjb::Image & img, bool draw_full_segments, double width) const
+void Manhattan_world::draw_corners3up(ivi::Image & img, bool draw_full_segments, double width) const
 {
     for(unsigned int i = 0; i< _corners3.size(); i++)
     {
@@ -999,7 +999,7 @@ bool Manhattan_world::create_corner
 {
     if(index1 == index2)
     {
-        KJB_THROW_2(Illegal_argument,"Segments of a Manhattan corner must converge to different vpts");
+        IVI_THROW_2(Illegal_argument,"Segments of a Manhattan corner must converge to different vpts");
     }
     const Edge_segment & e1 = seg1.get_edge_segment();
     const Edge_segment & e2 = seg2.get_edge_segment();
@@ -1062,7 +1062,7 @@ bool Manhattan_world::create_corner3
     }
 
     double dist, perp_dist;
-    const kjb::Vector & position = corner.get_position();
+    const ivi::Vector & position = corner.get_position();
     dist = seg3.get_edge_segment().get_distance_from_point(position, &perp_dist);
     if( (dist > max_stretch) || (perp_dist > max_perp_stretch) )
     {
@@ -1077,7 +1077,7 @@ bool Manhattan_world::create_corner3_from_incomplete
    Manhattan_corner & corner,
    unsigned int index3,
    bool towards_vp,
-   const kjb::Vector & position,
+   const ivi::Vector & position,
    bool check_consistency
 )
 {
@@ -1268,10 +1268,10 @@ void Manhattan_world::create_corners3()
 
 bool Manhattan_world::corner3_exists(const Manhattan_corner & c)
 {
-    const kjb::Vector & position = c.get_position();
+    const ivi::Vector & position = c.get_position();
     for( unsigned int i = 0; i < _corners3.size(); i++)
     {
-        const kjb::Vector & position2 = _corners3[i].get_position();
+        const ivi::Vector & position2 = _corners3[i].get_position();
         double diff = position.get_max_abs_difference(position2);
         if(diff < 5.0)
         {
@@ -1304,7 +1304,7 @@ void Manhattan_world::print_corners2(std::ostream& out) const
 
 void Manhattan_world::print_corners3(std::ostream& out) const
 {
-    kjb::Vector  direction;
+    ivi::Vector  direction;
     std::cout << "Corners 3:" << std::endl;
     for(unsigned int i = 0; i < _corners3.size(); i++)
     {
@@ -1342,17 +1342,17 @@ void Manhattan_world::get_3D_corner
     double princ_y,
     unsigned int corner_index,
     bool usecorner3,
-    kjb::Vector & corner3D_1,
-    kjb::Vector & corner3D_2,
-    kjb::Vector & corner3D_3,
-    kjb::Vector & position
+    ivi::Vector & corner3D_1,
+    ivi::Vector & corner3D_2,
+    ivi::Vector & corner3D_3,
+    ivi::Vector & position
 ) const
 {
     if(usecorner3)
     {
         if(corner_index >= _corners3.size())
         {
-            KJB_THROW_2(Illegal_argument,"Corner index out of bounds");
+            IVI_THROW_2(Illegal_argument,"Corner index out of bounds");
         }
 
         try
@@ -1360,25 +1360,25 @@ void Manhattan_world::get_3D_corner
             _corners3[corner_index].get_3D_corner(z_distance, focal_length, princ_x, princ_y,
                     corner3D_1,corner3D_2,corner3D_3, position);
         }
-        catch(KJB_error e)
+        catch(IVI_error e)
         {
-            KJB_THROW_2(KJB_error,"Could not get 3D corner from Manhattan corner");
+            IVI_THROW_2(IVI_error,"Could not get 3D corner from Manhattan corner");
         }
     }
     else
     {
         if(corner_index >= _corners2.size())
         {
-            KJB_THROW_2(Illegal_argument,"Corner index out of bounds");
+            IVI_THROW_2(Illegal_argument,"Corner index out of bounds");
         }
         try
         {
               _corners2[corner_index].get_3D_corner(z_distance, focal_length, princ_x, princ_y,
                     corner3D_1,corner3D_2,corner3D_3, position);
         }
-        catch(KJB_error e)
+        catch(IVI_error e)
         {
-            KJB_THROW_2(KJB_error,"Could not get 3D corner from Manhattan corner");
+            IVI_THROW_2(IVI_error,"Could not get 3D corner from Manhattan corner");
         }
     }
 }
@@ -1528,7 +1528,7 @@ void Manhattan_world::set_extra_corners_from_vertical_pairs(const std::vector<Se
 
 }
 
-std::ostream & kjb::operator<<(std::ostream& out, const Manhattan_corner& mc)
+std::ostream & ivi::operator<<(std::ostream& out, const Manhattan_corner& mc)
 {
     std::cout << "Corner position:" << mc.position(0) << " | " << mc.position(1) << std::endl;
     for(unsigned int i = 0; i < 3; i++)
@@ -1547,7 +1547,7 @@ std::ostream & kjb::operator<<(std::ostream& out, const Manhattan_corner& mc)
     return out;
 }
 
-std::ostream & kjb::operator<<(std::ostream& out, const Manhattan_corner_segment& mcs)
+std::ostream & ivi::operator<<(std::ostream& out, const Manhattan_corner_segment& mcs)
 {
     out << mcs.get_manhattan_segment();
     out << "Distance:" << mcs.distance_to_centre << std::endl;
@@ -1555,7 +1555,7 @@ std::ostream & kjb::operator<<(std::ostream& out, const Manhattan_corner_segment
     return out;
 }
 
-std::ostream & kjb::operator<<(std::ostream& out, const Manhattan_segment& ms)
+std::ostream & ivi::operator<<(std::ostream& out, const Manhattan_segment& ms)
 {
     if(ms._outlier)
     {
@@ -1569,25 +1569,25 @@ std::ostream & kjb::operator<<(std::ostream& out, const Manhattan_segment& ms)
     return out;
 }
 
-Manhattan_world * kjb::create_manhattan_world_from_CMU_file(const std::string & file_name)
+Manhattan_world * ivi::create_manhattan_world_from_CMU_file(const std::string & file_name)
 {
-    std::vector<kjb::Vanishing_point> vpts;
+    std::vector<ivi::Vanishing_point> vpts;
     double focal_length;
     read_CMU_vanishing_points(vpts, focal_length, file_name);
-    return new kjb::Manhattan_world(vpts, focal_length);
+    return new ivi::Manhattan_world(vpts, focal_length);
 }
 
-Manhattan_world * kjb::create_mw_from_CMU_file_and_compute_focal_length
+Manhattan_world * ivi::create_mw_from_CMU_file_and_compute_focal_length
 (
     const std::string & file_name,
-    const kjb::Edge_segment_set & iset,
+    const ivi::Edge_segment_set & iset,
     unsigned int num_rows,
     unsigned int num_cols
 )
 {
 
-    kjb::Manhattan_world * mw = kjb::create_manhattan_world_from_CMU_file(file_name);
-    kjb::Vanishing_point_detector vpd(iset, num_rows, num_cols);
+    ivi::Manhattan_world * mw = ivi::create_manhattan_world_from_CMU_file(file_name);
+    ivi::Vanishing_point_detector vpd(iset, num_rows, num_cols);
     double fl = vpd.compute_focal_length(mw->get_vanishing_points());
     mw->set_focal_length(fl);
     return mw;

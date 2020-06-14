@@ -1,4 +1,4 @@
-/* $Id: test_graph.cpp 11267 2011-12-03 01:47:55Z ksimek $ */
+/* $Id: test_graph.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 #include <iostream>
 using namespace std;
 
-#ifndef KJB_HAVEGLUT_
+#ifndef IVI_HAVEGLUT_
 int main(int argc, char** argv)
 {
     cout << "opengl not installed" << endl;
@@ -39,8 +39,8 @@ int main(int argc, char** argv)
 #include <boost/iterator/counting_iterator.hpp>
 
 
-using namespace kjb;
-using namespace kjb::gui;
+using namespace ivi;
+using namespace ivi::gui;
 
 float x_offset = 0;
 float y_offset = 0;

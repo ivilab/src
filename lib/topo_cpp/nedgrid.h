@@ -13,7 +13,7 @@
  * /data_3/trails/ned_13as/original.
  */
 /*
- * $Id: nedgrid.h 18278 2014-11-25 01:42:10Z ksimek $
+ * $Id: nedgrid.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef NEDGRID_H_UOFARIZONA_VISION
@@ -30,7 +30,7 @@
 
 #include <boost/scoped_ptr.hpp>
 
-namespace kjb
+namespace ivi
 {
 
 
@@ -222,8 +222,8 @@ inline bool operator==(
 
 /// @brief impose an order on coordinate locations (geographically silly).
 inline bool operator<(
-    const kjb::Ned13_one_degree_grid::IntegralLL& p,
-    const kjb::Ned13_one_degree_grid::IntegralLL& q
+    const ivi::Ned13_one_degree_grid::IntegralLL& p,
+    const ivi::Ned13_one_degree_grid::IntegralLL& q
 )
 {
     return p.ilat == q.ilat ? p.ilon < q.ilon : p.ilat < q.ilat;
@@ -407,7 +407,7 @@ struct Ned13_gp_reader
  * @param[in]  resolution_meters number of meters between pixel rows or columns
  * @param[in]  cache optional cache object possibly storing DEM tiles
  * @param[in]  path optional vector of directory names to search for tiles
- * @returns kjb_c::ERROR or kjb_c::NO_ERROR as appropriate
+ * @returns ivi_c::ERROR or ivi_c::NO_ERROR as appropriate
  *
  * Pixels are assumed square, as measured in meters.
  *
@@ -490,7 +490,7 @@ namespace std
 
 //template<> // <-- overloading is preferred to template specialization in this context.
 //                  (also, this doesn't compile in c++11)
-inline void swap(kjb::Ned13_one_degree_grid &p, kjb::Ned13_one_degree_grid &q)
+inline void swap(ivi::Ned13_one_degree_grid &p, ivi::Ned13_one_degree_grid &q)
 {
     p.swap(q);
 }

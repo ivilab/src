@@ -1,5 +1,5 @@
 
-/* $Id: likelihood_dynamics.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: likelihood_dynamics.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #include <boost/bind.hpp>
 #include <l_cpp/l_int_matrix.h>
 
-namespace kjb {
+namespace ivi {
 
 /** @class Likelihood_dynamics Implements stochastic dynamics sampling on a set
  *  of parameters.This implementation follows the algorithm described in
@@ -68,16 +68,16 @@ public:
      */
     Likelihood_dynamics
     (
-        kjb::Vector iparameters,
-        kjb::Vector ideltas,
-        kjb::Vector ietas,
+        ivi::Vector iparameters,
+        ivi::Vector ideltas,
+        ivi::Vector ietas,
         double ialpha = 0.99,
         unsigned int ikick = 0
     ) : Abstract_dynamics(iparameters, ideltas, ialpha, ikick)
     {
         if(ietas.size() != iparameters.size())
         {
-            KJB_THROW_2(Illegal_argument, "The number of eta steps does not match the number of parameters");
+            IVI_THROW_2(Illegal_argument, "The number of eta steps does not match the number of parameters");
         }
         etas = ietas;
     }
@@ -110,7 +110,7 @@ protected:
     /** @brief The size of the step to use when computing the gradient of the
      *  energy function, in a two point estimate fashion. This varies for each
      *  parameter we are sampling over */
-    kjb::Vector etas;
+    ivi::Vector etas;
 
     /** @brief We have a callback for each parameter we are sampling over.
      *  Each of them returns a void and accepts a double. Each callback

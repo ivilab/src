@@ -1,4 +1,4 @@
-/* $Id: sample2_recorder.h 18301 2014-11-26 19:17:13Z ksimek $ */
+/* $Id: sample2_recorder.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -29,7 +29,7 @@
 #include <boost/make_shared.hpp>
 
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 template <class Model>
 class Target_plot_recorder
 {
@@ -38,10 +38,10 @@ private:
     Target_plot_recorder& operator=(const Target_plot_recorder&){ return *this;}
 public:
     typedef Model Model_type;
-    typedef kjb::gui::Plot Value_type;
+    typedef ivi::gui::Plot Value_type;
     typedef std::map<double, double> Data_map;
 
-    const kjb::gui::Plot& get() const{ return plot_;}
+    const ivi::gui::Plot& get() const{ return plot_;}
 
     Target_plot_recorder(size_t width, size_t height) :
         wnd_(),
@@ -50,14 +50,14 @@ public:
         cull_begin_(0),
         cull_end_(0)
     {
-        typedef kjb::opengl::Glut_window Glut_window;
+        typedef ivi::opengl::Glut_window Glut_window;
 
-        kjb::opengl::Glut::push_current_window();
+        ivi::opengl::Glut::push_current_window();
 
         wnd_ = boost::shared_ptr<Glut_window>(new Glut_window(width, height, "Target Distribution vs. Iteration"));
         wnd_->set_current();
 
-        viewer_ = boost::make_shared<kjb::gui::Viewer>(width, height);
+        viewer_ = boost::make_shared<ivi::gui::Viewer>(width, height);
 
         viewer_->attach(*wnd_);
         viewer_->attach_overlay(&plot_);
@@ -65,7 +65,7 @@ public:
         plot_.auto_axis(false, true);
         GL_ETX();
 
-        kjb::opengl::Glut::pop_current_window();
+        ivi::opengl::Glut::pop_current_window();
     }
 
     void include_y_origin(bool b) 
@@ -127,11 +127,11 @@ public:
     }
 
 private:
-    boost::shared_ptr<kjb::opengl::Glut_window> wnd_;
-    boost::shared_ptr<kjb::gui::Viewer> viewer_;
-    mutable kjb::gui::Plot plot_;
-    kjb::gui::Plot::Data_set_iterator dataset_;
+    boost::shared_ptr<ivi::opengl::Glut_window> wnd_;
+    boost::shared_ptr<ivi::gui::Viewer> viewer_;
+    mutable ivi::gui::Plot plot_;
+    ivi::gui::Plot::Data_set_iterator dataset_;
     size_t cull_begin_;
     size_t cull_end_;
 };
-#endif  /* KJB_HAVE_OPENGL */
+#endif  /* IVI_HAVE_OPENGL */

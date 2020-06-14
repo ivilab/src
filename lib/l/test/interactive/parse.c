@@ -1,5 +1,5 @@
 
-/* $Id: parse.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: parse.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     static const char *suffixes[ 5 ] = { "h", "c", NULL } ; 
 
     /*
-    kjb_set_debug_level(1); 
+    ivi_set_debug_level(1); 
     */
 
     term_puts("Testing get_last_token with NULL second argument \n\n");

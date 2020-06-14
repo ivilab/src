@@ -24,7 +24,7 @@
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_pdf.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /** @brief  Class that represents the camera prior. */
@@ -62,7 +62,7 @@ private:
     Normal_distribution N_f;
 };
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_CAMERA_PRIOR_H_ */
 

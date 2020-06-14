@@ -21,10 +21,10 @@
 #include "bbb_cpp/bbb_trajectory.h"
 #include <iostream>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
-std::ostream& kjb::bbb::operator<<(std::ostream& ost, const Trajectory& traj)
+std::ostream& ivi::bbb::operator<<(std::ostream& ost, const Trajectory& traj)
 {
     for(size_t t = traj.start(); t <= traj.end(); t++)
     {

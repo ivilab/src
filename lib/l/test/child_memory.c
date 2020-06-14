@@ -2,7 +2,7 @@
 
 int main()
 {
-    kjb_system("echo hello world!");
+    ivi_system("echo hello world!");
     return 0;
 }
 

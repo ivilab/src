@@ -19,10 +19,10 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CUDA_RUNTIME_H
-#define KJB_CUDA_RUNTIME_H
+#ifndef IVI_CUDA_RUNTIME_H
+#define IVI_CUDA_RUNTIME_H
 
-#ifdef KJB_HAVE_CUDART
+#ifdef IVI_HAVE_CUDART
 #include <cuda_runtime.h>
 
 #define CUDA_ETX(x) \
@@ -31,7 +31,7 @@
     if(err)  \
     { \
         std::cerr << "cuda_error: " << err << std::endl; \
-        KJB_THROW_2(kjb::Exception, cudaGetErrorString(err)); \
+        IVI_THROW_2(ivi::Exception, cudaGetErrorString(err)); \
     } \
 }
 
@@ -43,6 +43,6 @@
         exit(err); \
     }
 
-#endif /* KJB_HAVE_CUDART */
+#endif /* IVI_HAVE_CUDART */
 
 #endif

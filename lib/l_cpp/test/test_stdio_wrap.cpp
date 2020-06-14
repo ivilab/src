@@ -26,12 +26,12 @@ long strcmp_chomp( const std::string& str )
     return strcmp( & buf.front(), str.substr( 0, str.size() - 1 ).c_str() );
 }
 
-int test_x( kjb::File_Ptr& f1, const std::string& fname )
+int test_x( ivi::File_Ptr& f1, const std::string& fname )
 {
     // write some crap
-    long    c1 = kjb_c::kjb_fputs( f1, text1.c_str() ),
-            c2 = kjb_c::kjb_fputs( f1, text2.c_str() ),
-            c3 = kjb_c::kjb_fputs( f1, text3.c_str() );
+    long    c1 = ivi_c::ivi_fputs( f1, text1.c_str() ),
+            c2 = ivi_c::ivi_fputs( f1, text2.c_str() ),
+            c3 = ivi_c::ivi_fputs( f1, text3.c_str() );
 
     assert( '\n' == text1[ text1.size() - 1 ] );
     assert( '\n' == text2[ text2.size() - 1 ] );
@@ -43,15 +43,15 @@ int test_x( kjb::File_Ptr& f1, const std::string& fname )
     fflush( f1 );
 
     // read it back in by reopening the already-open file, which should be cool
-    kjb::File_Ptr_Read f2( fname );
+    ivi::File_Ptr_Read f2( fname );
 
     // fget_line does NOT append the newline char, unlike our old friend fgets.
     // That is why the assertions below have equality off by one.
-    long    d1 = kjb_c::fget_line( f2, & buf.front(), buf.size() ),
+    long    d1 = ivi_c::fget_line( f2, & buf.front(), buf.size() ),
             e1 = strcmp_chomp( text1 ),
-            d2 = kjb_c::fget_line( f2, & buf.front(), buf.size() ),
+            d2 = ivi_c::fget_line( f2, & buf.front(), buf.size() ),
             e2 = strcmp_chomp( text2 ),
-            d3 = kjb_c::fget_line( f2, & buf.front(), buf.size() ),
+            d3 = ivi_c::fget_line( f2, & buf.front(), buf.size() ),
             e3 = strcmp_chomp( text3 );
 
     assert( 1 + d1 == c1 );
@@ -66,34 +66,34 @@ int test_x( kjb::File_Ptr& f1, const std::string& fname )
 
 int test1()
 {
-    kjb::File_Ptr_Write f1( filename );
+    ivi::File_Ptr_Write f1( filename );
     return test_x( f1, filename );
 }
 
 int test2()
 {
-    kjb::Temporary_File tf;
+    ivi::Temporary_File tf;
     return test_x( tf, tf.get_filename() );
 }
 
 // similar to test_x but with the same file pointer, since it was mode "r+"
 int test3()
 {
-    kjb::Temporary_File tf;
-    long    c1 = kjb_c::kjb_fputs( tf, text1.c_str() ),
-            c2 = kjb_c::kjb_fputs( tf, text2.c_str() ),
-            c3 = kjb_c::kjb_fputs( tf, text3.c_str() );
+    ivi::Temporary_File tf;
+    long    c1 = ivi_c::ivi_fputs( tf, text1.c_str() ),
+            c2 = ivi_c::ivi_fputs( tf, text2.c_str() ),
+            c3 = ivi_c::ivi_fputs( tf, text3.c_str() );
 
     assert( c1 == long( text1.size() ) );
     assert( c2 == long( text2.size() ) );
     assert( c3 == long( text3.size() ) );
     rewind( tf );
 
-    long    d1 = kjb_c::fget_line( tf, & buf.front(), buf.size() ),
+    long    d1 = ivi_c::fget_line( tf, & buf.front(), buf.size() ),
             e1 = strcmp_chomp( text1 ),
-            d2 = kjb_c::fget_line( tf, & buf.front(), buf.size() ),
+            d2 = ivi_c::fget_line( tf, & buf.front(), buf.size() ),
             e2 = strcmp_chomp( text2 ),
-            d3 = kjb_c::fget_line( tf, & buf.front(), buf.size() ),
+            d3 = ivi_c::fget_line( tf, & buf.front(), buf.size() ),
             e3 = strcmp_chomp( text3 );
 
     assert( 1 + d1 == c1 );
@@ -106,7 +106,7 @@ int test3()
     return EXIT_SUCCESS;
 }
 
-void cat( kjb::File_Ptr& fp )
+void cat( ivi::File_Ptr& fp )
 {
     for( int c ; ( c = std::getc( fp ) ) != EOF; )
         std::putchar( c );
@@ -114,32 +114,32 @@ void cat( kjb::File_Ptr& fp )
 
 int test4()
 {
-    kjb::File_Ptr_Write f( filename );
-    kjb_c::kjb_fputs( f, text1.c_str() );
-    kjb_c::kjb_fputs( f, text2.c_str() );
-    kjb_c::kjb_fputs( f, text3.c_str() );
+    ivi::File_Ptr_Write f( filename );
+    ivi_c::ivi_fputs( f, text1.c_str() );
+    ivi_c::ivi_fputs( f, text2.c_str() );
+    ivi_c::ivi_fputs( f, text3.c_str() );
     f.close();
 
-    kjb_c::kjb_system( ( "bzip2 " + filename ).c_str() );
+    ivi_c::ivi_system( ( "bzip2 " + filename ).c_str() );
 
     bool caught = false;
     try {
-        kjb::File_Ptr_Read f( filename );
+        ivi::File_Ptr_Read f( filename );
         // next line is not reached
         cat( f );
     }
-    catch ( kjb::IO_error& ) {
+    catch ( ivi::IO_error& ) {
         caught = true;
     }
     assert( caught );
 
-    kjb::File_Ptr_Smart_Read f2( filename );
+    ivi::File_Ptr_Smart_Read f2( filename );
 
-    long    d1 = kjb_c::fget_line( f2, & buf.front(), buf.size() ),
+    long    d1 = ivi_c::fget_line( f2, & buf.front(), buf.size() ),
             e1 = strcmp_chomp( text1 ),
-            d2 = kjb_c::fget_line( f2, & buf.front(), buf.size() ),
+            d2 = ivi_c::fget_line( f2, & buf.front(), buf.size() ),
             e2 = strcmp_chomp( text2 ),
-            d3 = kjb_c::fget_line( f2, & buf.front(), buf.size() ),
+            d3 = ivi_c::fget_line( f2, & buf.front(), buf.size() ),
             e3 = strcmp_chomp( text3 );
 
     assert( 1 + d1 == long( text1.size() ) );
@@ -157,17 +157,17 @@ int test4()
 
 int main( int, char** )
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
-    KJB( EPETE( test1() != EXIT_SUCCESS ) );
-    KJB( EPETE( kjb_c::kjb_unlink( filename.c_str() ) ) );
+    IVI( EPETE( test1() != EXIT_SUCCESS ) );
+    IVI( EPETE( ivi_c::ivi_unlink( filename.c_str() ) ) );
 
-    KJB( EPETE( test2() != EXIT_SUCCESS ) );
-    KJB( EPETE( test3() != EXIT_SUCCESS ) );
-    KJB( EPETE( test4() != EXIT_SUCCESS ) );
-    KJB( EPETE( kjb_c::kjb_unlink( ( filename + ".bz2" ).c_str() ) ) );
+    IVI( EPETE( test2() != EXIT_SUCCESS ) );
+    IVI( EPETE( test3() != EXIT_SUCCESS ) );
+    IVI( EPETE( test4() != EXIT_SUCCESS ) );
+    IVI( EPETE( ivi_c::ivi_unlink( ( filename + ".bz2" ).c_str() ) ) );
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return EXIT_SUCCESS;
 }
 

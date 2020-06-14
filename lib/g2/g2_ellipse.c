@@ -1,5 +1,5 @@
 
-/* $Id: g2_ellipse.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: g2_ellipse.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -24,7 +24,7 @@ extern "C" {
  *
  * Gets target ellipse list
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of ellipse_lists. If *target_list_ptr_ptr is NULL, then
  * this routine creates the ellipse_list. If it is not null, and it is the
  * right size, then this routine does nothing. If it is the wrong size, then it
@@ -195,13 +195,13 @@ Ellipse_list* debug_create_ellipse_list
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     NRN(list_ptr = DEBUG_TYPE_MALLOC(Ellipse_list, file_name, line_number));
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     list_ptr->ellipses = DEBUG_N_TYPE_MALLOC(Ellipse*, num_ellipses, file_name,
@@ -209,7 +209,7 @@ Ellipse_list* debug_create_ellipse_list
 
    if (list_ptr->ellipses == NULL)
    {
-       kjb_free(list_ptr);
+       ivi_free(list_ptr);
        return NULL;
    }
 
@@ -247,7 +247,7 @@ Ellipse_list* create_ellipse_list(int num_ellipses)
 
     if (list_ptr->ellipses == NULL)
     {
-       kjb_free(list_ptr);
+       ivi_free(list_ptr);
        return NULL;
     }
 
@@ -302,7 +302,7 @@ void free_ellipse_list(Ellipse_list* list_ptr)
              * otherwise problems such as double free can look like unitialized
              * memory.
             */
-            kjb_check_free(list_ptr);
+            ivi_check_free(list_ptr);
 
             check_initialization(list_ptr->ellipses, list_ptr->num_ellipses,
                                  sizeof(Ellipse));
@@ -313,11 +313,11 @@ void free_ellipse_list(Ellipse_list* list_ptr)
                 free_ellipse(list_ptr->ellipses[ i ]);
             }
 
-            kjb_free(list_ptr->ellipses);
+            ivi_free(list_ptr->ellipses);
         }
     }
 
-    kjb_free(list_ptr);
+    ivi_free(list_ptr);
 
 }
 
@@ -331,7 +331,7 @@ void free_ellipse(Ellipse* ellipse_ptr)
         free_matrix(ellipse_ptr->rotation_mp);
         free_vector(ellipse_ptr->offset_vp);
 
-        kjb_free(ellipse_ptr);
+        ivi_free(ellipse_ptr);
     }
 }
 

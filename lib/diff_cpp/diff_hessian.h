@@ -25,7 +25,7 @@
 #include <diff_cpp/diff_util.h>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Computes the Hessian of a function, evaluated at a point, using
@@ -281,7 +281,7 @@ Matrix hessian_diagonal
     return hessian_diagonal(f, x, dx, Vector_adapter<Vec>());
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_HESSIAN_H */
 

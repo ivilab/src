@@ -15,7 +15,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_position_prior.h 19963 2015-10-27 05:33:01Z jguan1 $ */
+/* $Id: pt_position_prior.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_POSITION_PRIOR_H_
 #define PT_POSITION_PRIOR_H_
@@ -25,7 +25,7 @@
 #include <gp_cpp/gp_prior.h>
 #include <gp_cpp/gp_normal.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -128,7 +128,7 @@ private:
     size_t m_local_sz;
 };
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_POSITION_PRIOR_H_ */
 

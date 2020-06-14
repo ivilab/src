@@ -17,10 +17,10 @@
 |     Jinyan Guan
 |
 * =========================================================================== */
-/* $Id: bayesian_linear_regression.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: bayesian_linear_regression.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_BAYESIAN_LINEAR_REGRESSION_H
-#define KJB_BAYESIAN_LINEAR_REGRESSION_H
+#ifndef IVI_BAYESIAN_LINEAR_REGRESSION_H
+#define IVI_BAYESIAN_LINEAR_REGRESSION_H
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "m_cpp/m_vector.h"
@@ -33,7 +33,7 @@
 #include <limits>
 #include <cmath>
 
-namespace kjb
+namespace ivi
 {
 
 enum Variance_type {INVERSE_GAMMA, INVERSE_CHI_SQUARED, INVALID_TYPE};
@@ -101,7 +101,7 @@ public:
     {
         if(type_ == INVALID_TYPE) 
         {
-            KJB_THROW_2(Illegal_argument, "prior-type must be either inverse-gamma"
+            IVI_THROW_2(Illegal_argument, "prior-type must be either inverse-gamma"
                     " or inverse-chi-squared");
         }
         // check the dimention
@@ -425,5 +425,5 @@ private:
 
 }; // class Bayesian_linear_regression
 
-} //namepsace kjb
-#endif // KJB_BAYESIAN_LINEAR_REGRESSION_H
+} //namepsace ivi
+#endif // IVI_BAYESIAN_LINEAR_REGRESSION_H

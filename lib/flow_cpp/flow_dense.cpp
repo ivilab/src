@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flow_dense.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: flow_dense.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <flow_cpp/flow_dense.h>
 #include <l_cpp/l_exception.h>
@@ -24,9 +24,9 @@
 
 #include <algorithm>
 
-using namespace kjb;
+using namespace ivi;
 
-Vector kjb::average_flow
+Vector ivi::average_flow
 (
     const Matrix& x_flows, 
     const Matrix& y_flows,
@@ -73,7 +73,7 @@ Vector kjb::average_flow
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix kjb::flow_magnitude(const Matrix& x_flows, const Matrix& y_flows)
+Matrix ivi::flow_magnitude(const Matrix& x_flows, const Matrix& y_flows)
 {
 
     IFT((x_flows.get_num_cols() == y_flows.get_num_cols()

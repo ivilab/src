@@ -1,4 +1,4 @@
-/* $Id: m_arith.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_arith.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,14 +19,14 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_M_VECTOR_UTIL_H
-#define KJB_CPP_M_VECTOR_UTIL_H
+#ifndef IVI_CPP_M_VECTOR_UTIL_H
+#define IVI_CPP_M_VECTOR_UTIL_H
 
 #include "m_cpp/m_matrix.h"
 #include "m_cpp/m_vector.h"
 #include "m_cpp/m_vector_d.h"
 
-namespace kjb 
+namespace ivi 
 {
 
 
@@ -36,7 +36,7 @@ namespace kjb
  * to precision loss than a sequential sum, a problem that is
  * quite drastic when summing large arrays of small numbers.
  *
- * @tparam Array_type Any type that implements deep-copy semantics with operator=  and implements operator[] (this includes kjb::Matrix, but not c-style arrays)
+ * @tparam Array_type Any type that implements deep-copy semantics with operator=  and implements operator[] (this includes ivi::Matrix, but not c-style arrays)
  */
 template <class Assignable_array_type>
 double reduce(const Assignable_array_type& array, size_t length)
@@ -50,7 +50,7 @@ double reduce(const Assignable_array_type& array, size_t length)
  * to precision loss than a sequential sum, a problem that is
  * quite drastic when summing large arrays of small numbers.
  *
- * @tparam Array_type Any type that implements operator[] (this includes kjb::Matrix and c-style arrays)
+ * @tparam Array_type Any type that implements operator[] (this includes ivi::Matrix and c-style arrays)
  *
  * @warning input array will be modified and should not be used after calling
  */
@@ -75,5 +75,5 @@ double reduce_in_place(Array_type& array, size_t length)
     return array[0];
 }
 
-} //namespace kjb
+} //namespace ivi
 #endif

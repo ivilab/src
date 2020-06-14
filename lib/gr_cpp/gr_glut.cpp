@@ -1,4 +1,4 @@
-/* $Id: gr_glut.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_glut.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -26,14 +26,14 @@
 
 #include <iostream>
 
-#ifdef KJB_HAVE_GLUT
-namespace kjb
+#ifdef IVI_HAVE_GLUT
+namespace ivi
 {
 namespace opengl
 {
 
 // STATIC MEMBER INITIALIZATION
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
 boost::mutex* Glut::mutex = new boost::mutex;
 boost::thread::id* Glut::thread_id_ = new boost::thread::id;
 #endif
@@ -91,7 +91,7 @@ void Glut::set_display_mode(unsigned int display_mode)
 {
     if(initialized_)
     {
-        KJB_THROW_2(Runtime_error, "Can't set display mode on an initialized glut instance.  This must be called before creating any windows");
+        IVI_THROW_2(Runtime_error, "Can't set display mode on an initialized glut instance.  This must be called before creating any windows");
     }
 
     display_mode_ = display_mode;
@@ -100,7 +100,7 @@ void Glut::set_display_mode(unsigned int display_mode)
 void Glut::set_init_window_size(int w, int h)
 {
     if(initialized_)
-        KJB_THROW_2(Runtime_error, "Can't set initial window size after Glut has been initialized.  This must be called before creating any windows.");
+        IVI_THROW_2(Runtime_error, "Can't set initial window size after Glut has been initialized.  This must be called before creating any windows.");
 
     init_w_ = w; 
     init_h_ = h;
@@ -109,7 +109,7 @@ void Glut::set_init_window_size(int w, int h)
 void Glut::set_init_window_position(int x, int y)
 {
     if(initialized_)
-        KJB_THROW_2(Runtime_error, "Can't set initial window position after Glut has been initialized.  This must be called before creating any windows.");
+        IVI_THROW_2(Runtime_error, "Can't set initial window position after Glut has been initialized.  This must be called before creating any windows.");
 
     init_x_ = x;
     init_y_ = y;
@@ -280,7 +280,7 @@ void Glut::task_pump()
 
 void Glut::task_pump_t()
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     std::vector<boost::function0<void> > tasks_2;
 
     // important not to hold the lock while we call the callbacks.
@@ -299,13 +299,13 @@ void Glut::task_pump_t()
         tasks_2[i]();
     }
 #else
-    KJB_THROW_2(kjb::Missing_dependency, "opengl");
+    IVI_THROW_2(ivi::Missing_dependency, "opengl");
 #endif
 }
 
 void Glut::enable_multithreading()
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     multithreading_enabled_ = true;
 
     // store thread id, so later we can check if we're in the GUI thread.
@@ -317,28 +317,28 @@ void Glut::enable_multithreading()
     if(initialized_)
         glutIdleFunc(Glut::idle_t);
 #else
-    KJB_THROW_2(Runtime_error, "Cannot enable multithreaded glut: compiled without Boost::thread.");
+    IVI_THROW_2(Runtime_error, "Cannot enable multithreaded glut: compiled without Boost::thread.");
 #endif
 }
 
 boost::thread::id Glut::thread_id()
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     return *thread_id_;
 #else
-    KJB_THROW_2(Runtime_error, "Cannot enable multithreaded glut: compiled without Boost::thread.");
+    IVI_THROW_2(Runtime_error, "Cannot enable multithreaded glut: compiled without Boost::thread.");
 #endif
 }
 
 
 void Glut::post_redisplay_t(int wnd_handle)
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     boost::lock_guard<boost::mutex> lock(*mutex);
 
     if(!multithreading_enabled_)
     {
-        KJB_THROW_2(Runtime_error, "post_redisplay_t: Glut multithreading not enabled.");
+        IVI_THROW_2(Runtime_error, "post_redisplay_t: Glut multithreading not enabled.");
 
     }
     
@@ -352,22 +352,22 @@ void Glut::post_redisplay_t(int wnd_handle)
     redisplay_flags_[wnd_handle] = true;
     redisplay_wnds_.push_back(wnd_handle);
 #else
-    KJB_THROW_2(Missing_dependency, "boost::thread");
+    IVI_THROW_2(Missing_dependency, "boost::thread");
 #endif
 }
 
 void Glut::push_task_t(boost::function0<void> task)
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     boost::lock_guard<boost::mutex> lock(*mutex);
     if(!multithreading_enabled_)
     {
-        KJB_THROW_2(Runtime_error, "push_task_t: Glut multithreading not enabled.");
+        IVI_THROW_2(Runtime_error, "push_task_t: Glut multithreading not enabled.");
 
     }
     tasks_.push_back(task);
 #else
-    KJB_THROW_2(Missing_dependency, "boost::thread");
+    IVI_THROW_2(Missing_dependency, "boost::thread");
 #endif
 }
 
@@ -389,7 +389,7 @@ void Glut::test_initialized(const std::string& obj_name)
         std::cerr << "<<TEST>> WARNING: Glut appears to be uninitialized, suggesting that an OpenGL context probably isn't active.\n";
         std::cerr << "<<TEST>>     Constructing a(n) " << obj_name << " will fail without an active OpenGL context.\n";
         std::cerr << "<<TEST>>     To solve this, create an active opengl context by either:\n";
-        std::cerr << "<<TEST>>       (a) Construct a kjb::opengl::Glut_window.\n";
+        std::cerr << "<<TEST>>       (a) Construct a ivi::opengl::Glut_window.\n";
         std::cerr << "<<TEST>>       (b) Construct a glut window using the native GLUT calls.\n";
         std::cerr << "<<TEST>>       (c) Construct an opengl context by some other means.\n";
         std::cerr << "<<TEST>>     If using method (b) or (c), calling Glut::disable_warnings() will suppress this message.\n";
@@ -413,7 +413,7 @@ void Glut::timer(int i)
 
 void Glut::idle_t()
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     ASSERT(multithreading_enabled_);
     // handle redisplay calls sent from other threads
     {
@@ -459,7 +459,7 @@ void Glut::idle_t()
         boost::thread::yield();
     }
 #else
-    KJB_THROW_2(Missing_dependency, "boost::thread");
+    IVI_THROW_2(Missing_dependency, "boost::thread");
 #endif
 }
 
@@ -559,7 +559,7 @@ Glut_window::~Glut_window()
 // ////////////////////
 void Glut_window::set_size(int width, int height)
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     boost::lock_guard<boost::mutex> lock(*Glut::mutex);
 #endif
 
@@ -586,7 +586,7 @@ int Glut_window::get_height() const
 
 void Glut_window::set_position(int x, int y)
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     boost::lock_guard<boost::mutex> lock(*Glut::mutex);
 #endif
 
@@ -631,7 +631,7 @@ void Glut_window::redisplay_t() const
 
 bool Glut_window::is_thread_safe() const
 {
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     return true;
 #else
     return false;
@@ -887,7 +887,7 @@ void Glut_window::init()
     // CREATE WINDOW AND ADD IT TO THE GLOBAL WINDOW REGISTRY
     handle_ = glutCreateWindow(title_.c_str());
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
     // for convenience, initialize glew here.  Calling twice is okay
     Glew::init();
 #endif
@@ -994,6 +994,6 @@ void Glut_window::special_callback(int k, int x, int y)  const
 
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */

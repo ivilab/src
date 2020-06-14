@@ -1,4 +1,4 @@
-/* $Id: g2_ransac_line_fitting.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: g2_ransac_line_fitting.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -17,15 +17,15 @@
    |  Author:  Jinyan Guan
  * =========================================================================== }}}*/
 
-#ifndef KJB_CPP_G_RANSAC_LINE_FITTING_H
-#define KJB_CPP_G_RANSAC_LINE_FITTING_H
+#ifndef IVI_CPP_G_RANSAC_LINE_FITTING_H
+#define IVI_CPP_G_RANSAC_LINE_FITTING_H
 
 #include <m_cpp/m_vector.h>
 #include <g_cpp/g_line.h>
 
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -74,6 +74,6 @@ private:
 
 };
 
-} //namespace kjb
-#endif /*KJB_CPP_G_RANSAC_LINE_FITTING_H */
+} //namespace ivi
+#endif /*IVI_CPP_G_RANSAC_LINE_FITTING_H */
 

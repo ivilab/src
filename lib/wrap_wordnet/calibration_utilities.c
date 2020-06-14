@@ -1,5 +1,5 @@
 
-/* $Id: calibration_utilities.c 10666 2011-09-29 19:52:00Z predoehl $ */
+/* $Id: calibration_utilities.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -132,7 +132,7 @@ int read_min_max(double *imin, double *imax, char *filename)
         add_error("Read min-max, could not allocate memory");
         return ERROR;
     }
-    fp = kjb_fopen(filename,"r");
+    fp = ivi_fopen(filename,"r");
     if(fp == NULL)
     {
         add_error("Min-max file does not exist");
@@ -146,7 +146,7 @@ int read_min_max(double *imin, double *imax, char *filename)
     {
         add_error("Could not read min from min-max file");
         free(line);
-        kjb_fclose(fp);
+        ivi_fclose(fp);
         return ERROR;
     }
     if(getline(&line, &nbytes, fp) > 0)
@@ -157,11 +157,11 @@ int read_min_max(double *imin, double *imax, char *filename)
     {
         add_error("Could not read max from min-max file");
         free(line);
-        kjb_fclose(fp);
+        ivi_fclose(fp);
         return ERROR;
     }
     free(line);
-    kjb_fclose(fp);
+    ivi_fclose(fp);
 
     return NO_ERROR;
 }
@@ -182,7 +182,7 @@ int read_padding(int * x_padding, int * y_padding, char * path_to_padding)
     FILE * fp = NULL;
     Int_vector * pads = NULL;
 
-    fp = kjb_fopen(path_to_padding,"r");
+    fp = ivi_fopen(path_to_padding,"r");
     if(fp == NULL)
     {
     	add_error("Padding file does not exist");
@@ -192,14 +192,14 @@ int read_padding(int * x_padding, int * y_padding, char * path_to_padding)
     if(fp_read_int_vector(&pads, fp) != NO_ERROR)
     {
     	add_error("Padding file is corrupted");
-    	kjb_fclose(fp);
+    	ivi_fclose(fp);
     	return ERROR;
     }
 
     if( (pads->length != 2) || (pads->elements[0] < 0) || (pads->elements[1] < 0))
     {
     	add_error("Padding file is corrupted");
-		kjb_fclose(fp);
+		ivi_fclose(fp);
 		free_int_vector(pads);
 		return ERROR;
     }
@@ -208,7 +208,7 @@ int read_padding(int * x_padding, int * y_padding, char * path_to_padding)
     (*y_padding) = pads->elements[1];
 
     free_int_vector(pads);
-    kjb_fclose(fp);
+    ivi_fclose(fp);
 	return NO_ERROR;
 }
 
@@ -331,7 +331,7 @@ int read_image_list
 	int nbytes = 0;
 
 	(*num_images) = 0;
-	data_fp = kjb_fopen(path,"r");
+	data_fp = ivi_fopen(path,"r");
 	if(!data_fp)
 	{
 		add_error("Add object detectors, could not read image list");
@@ -341,7 +341,7 @@ int read_image_list
 	line = (char *) malloc((MAX_FILE_NAME_SIZE*2) + 100);
 	if(line == NULL)
 	{
-		kjb_fclose(data_fp);
+		ivi_fclose(data_fp);
 		add_error("Add object detectors, read image list, could not allocate memory for line buffer");
 		return ERROR;
 	}
@@ -358,7 +358,7 @@ int read_image_list
 		}
 		if( (!image_list) )
 		{
-			kjb_fclose(data_fp);
+			ivi_fclose(data_fp);
 			free(line);
 			add_error("Read image list, could not allocate memory for detector list");
 			return ERROR;
@@ -366,7 +366,7 @@ int read_image_list
 		(*image_list)[*num_images] = (char *)malloc(sizeof(char)*(strlen(line)));
 		if( !(*image_list)[*num_images] )
 		{
-			kjb_fclose(data_fp);
+			ivi_fclose(data_fp);
 			free(line);
 			add_error("Read image list, could not allocate memory for detector list");
 			return ERROR;
@@ -378,7 +378,7 @@ int read_image_list
 
 
 	free(line);
-	kjb_fclose(data_fp);
+	ivi_fclose(data_fp);
 	return NO_ERROR;
 }
 
@@ -395,7 +395,7 @@ int read_detector_list
 	int nbytes = 0;
 
 	(*num_detectors) = 0;
-	data_fp = kjb_fopen(path_to_detector_list,"r");
+	data_fp = ivi_fopen(path_to_detector_list,"r");
 	if(!data_fp)
 	{
 		add_error("Add object detectors, could not read detector list");
@@ -405,7 +405,7 @@ int read_detector_list
 	line = (char *) malloc((MAX_FILE_NAME_SIZE*2) + 100);
 	if(line == NULL)
 	{
-		kjb_fclose(data_fp);
+		ivi_fclose(data_fp);
 		add_error("Add object detectors, read detector list, could not allocate memory for line buffer");
 		return ERROR;
 	}
@@ -422,7 +422,7 @@ int read_detector_list
 		}
 		if( (!detector_list) )
 		{
-			kjb_fclose(data_fp);
+			ivi_fclose(data_fp);
 			free(line);
 			add_error("Add object detectors, read detector list, could not allocate memory for detector list");
 			return ERROR;
@@ -430,7 +430,7 @@ int read_detector_list
 		(*detector_list)[*num_detectors] = (char *)malloc(sizeof(char)*(strlen(line)));
 		if( !(*detector_list)[*num_detectors] )
 		{
-			kjb_fclose(data_fp);
+			ivi_fclose(data_fp);
 			free(line);
 			add_error("Add object detectors, read detector list, could not allocate memory for detector list");
 			return ERROR;
@@ -442,7 +442,7 @@ int read_detector_list
 
 
 	free(line);
-	kjb_fclose(data_fp);
+	ivi_fclose(data_fp);
 	return NO_ERROR;
 }
 
@@ -632,7 +632,7 @@ int read_detector_information
 					return ERROR;
 				}
 
-				fp = kjb_fopen(detector_file_name, "r");
+				fp = ivi_fopen(detector_file_name, "r");
 
 				if(fp == NULL)
 				{
@@ -664,11 +664,11 @@ int read_detector_information
 					free_v3(*calibrations);
 					free_int_vector(counts);
                     free_vector_vector(*min_maxs);
-					kjb_fclose(fp);
+					ivi_fclose(fp);
 					return ERROR;
 				}
 
-				kjb_fclose(fp);
+				ivi_fclose(fp);
 
 				for(k = 0; k < counts->elements[i]; k++)
 				{
@@ -792,7 +792,7 @@ int write_image_list
 	FILE * fp = 0;
 	int i = 0;
 
-	fp = kjb_fopen(path,"w");
+	fp = ivi_fopen(path,"w");
 	if(fp == 0)
 	{
 		add_error("Could not open file for writing image list");

@@ -1,5 +1,5 @@
 
-/* $Id: l_arg.c 21712 2017-08-20 18:21:41Z kobus $ */
+/* $Id: l_arg.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -51,11 +51,11 @@ extern "C" {
  * | argv = [ "it"  "cluster"  "display"  NULL ].
  *
  * Then the output will be a pointer to the string "cluster display "; this
- * string uses heap memory which must be released using kjb_free().
+ * string uses heap memory which must be released using ivi_free().
  *
  * Returns:
  *    If successful, this function returns a pointer to a string allocated on
- *    the heap.  The caller is obliged to free this string using kjb_free().
+ *    the heap.  The caller is obliged to free this string using ivi_free().
  *    If the allocation fails, the return value is NULL.
  *
  * Author: Kobus Barnard
@@ -125,10 +125,10 @@ void free_args (int arg_count, char*** args_ptr)
 
     for (i=0;i<arg_count; ++i)
     {
-        kjb_free((*args_ptr)[i]);
+        ivi_free((*args_ptr)[i]);
     }
 
-    kjb_free(*args_ptr);
+    ivi_free(*args_ptr);
 
     *args_ptr = NULL;
 }
@@ -158,11 +158,11 @@ int get_string_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
 
     if (default_str == NULL) default_str = "";
 
-    kjb_strncpy(buff, default_str, buff_size);
+    ivi_strncpy(buff, default_str, buff_size);
 
     if ((argc_ptr != NULL) && (argv_ptr != NULL) && (*argc_ptr > 0))
     {
-        kjb_strncpy(buff, **argv_ptr, buff_size);
+        ivi_strncpy(buff, **argv_ptr, buff_size);
         (*argc_ptr)--;
         (*argv_ptr)++;
     }
@@ -173,7 +173,7 @@ int get_string_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
         char* line_pos;
 
 
-        ERE(kjb_sprintf(prompt, sizeof(prompt), "Enter %s (%s) ", prompt_str,
+        ERE(ivi_sprintf(prompt, sizeof(prompt), "Enter %s (%s) ", prompt_str,
                         default_str));
 
         BUFF_TERM_GET_LINE(prompt, line);
@@ -184,7 +184,7 @@ int get_string_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
 
         if (*line_pos != '\0')
         {
-            kjb_strncpy(buff, line_pos, buff_size);
+            ivi_strncpy(buff, line_pos, buff_size);
         }
 
     }
@@ -214,7 +214,7 @@ int get_integer_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
         char line[ 100 ];
 
 
-        ERE(kjb_sprintf(prompt, sizeof(prompt), "Enter %s (%d) ", prompt_str,
+        ERE(ivi_sprintf(prompt, sizeof(prompt), "Enter %s (%d) ", prompt_str,
                         default_value));
 
         /*CONSTCOND*/
@@ -229,7 +229,7 @@ int get_integer_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
             {
                 break;
             }
-            else kjb_print_error();
+            else ivi_print_error();
         }
 
     }
@@ -260,7 +260,7 @@ int get_boolean_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
         char line[ 100 ];
 
 
-        ERE(kjb_sprintf(prompt, sizeof(prompt), "Use %s ? (%s) ", prompt_str,
+        ERE(ivi_sprintf(prompt, sizeof(prompt), "Use %s ? (%s) ", prompt_str,
                         default_value ? "true": "false" ));
 
         /*CONSTCOND*/
@@ -275,7 +275,7 @@ int get_boolean_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
             {
                 break;
             }
-            else kjb_print_error();
+            else ivi_print_error();
         }
     }
 
@@ -287,7 +287,7 @@ int get_boolean_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             kjb_getopts
+ *                             ivi_getopts
  *
  * Gets the next command option in GNU getopt style
  *
@@ -298,7 +298,7 @@ int get_boolean_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
  * |     man -S 3 getopt_long_only 
  *
  * Returns:
- *    Each call to kjb_getopts() parses some of argv. When all are dealt with,
+ *    Each call to ivi_getopts() parses some of argv. When all are dealt with,
  *    then EOF is returned.  On error, this routine returns ERROR, with an error
  *    message being set.  On success it returns the short option as a char, 0
  *    for a long option, and if the options string begins with "-", then
@@ -315,7 +315,7 @@ int get_boolean_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
  *    that do one thing such as filters. 
  *
  * Example:
- *    See kjb_image_program_driver() in i/i_driver.c for an example that uses
+ *    See ivi_image_program_driver() in i/i_driver.c for an example that uses
  *    many of the option reading features. 
  *
  * Bugs:
@@ -324,7 +324,7 @@ int get_boolean_arg(int* argc_ptr, char*** argv_ptr, const char* prompt_str,
  * -----------------------------------------------------------------------------
 */
 
-int kjb_getopts
+int ivi_getopts
 (
     int                  argc,
     char**               argv,
@@ -372,7 +372,7 @@ int kjb_getopts
 
     if (gnu_optarg != NULL)
     {
-        kjb_strncpy(value_buff, gnu_optarg, value_buff_size);
+        ivi_strncpy(value_buff, gnu_optarg, value_buff_size);
     }
 
     return option;

@@ -1,4 +1,4 @@
-/* $Id: prob_util.h 20234 2016-01-18 04:22:22Z jguan1 $ */
+/* $Id: prob_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* ======================================================================== *
  |                                                                          |
  | Copyright (c) 2007-2010, by members of University of Arizona Computer    |
@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace kjb{
+namespace ivi{
 
     //forward declarations
     class Vector;
@@ -46,7 +46,7 @@ template<class Iterator, class distance_type>
 inline
 Iterator element_uar(Iterator first, distance_type size)
 {
-    int dist = kjb::sample(kjb::Categorical_distribution<size_t>(0, size - 1, 1));
+    int dist = ivi::sample(ivi::Categorical_distribution<size_t>(0, size - 1, 1));
     Iterator p = first;
     std::advance(p, dist);
 
@@ -255,7 +255,7 @@ double multivariate_gamma_function(size_t D, double val);
  */
 double log_multivariate_gamma_function(size_t D, double val);
     
-}; // namespace kjb
+}; // namespace ivi
 
 #endif /*PROB_UTIL_H_INCLUDED */
 

@@ -1,5 +1,5 @@
 
-/* $Id: l_test.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: l_test.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     FILE*        option_fp;
 
 
-    kjb_init();
+    ivi_init();
 
     set_atn_trap(confirm_exit_sig_fn, DONT_RESTART_AFTER_SIGNAL); 
 
@@ -62,12 +62,12 @@ int main(int argc, char **argv)
         {
             insert_error("Processing of hard coded default option %q failed.",
                          *cur_option);
-            kjb_print_error();
+            ivi_print_error();
         }
         cur_option++;
     }
 
-    if ((option_fp = kjb_fopen("options", "r")) != NULL)
+    if ((option_fp = ivi_fopen("options", "r")) != NULL)
     {
         char line[ 1000 ];
 
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
         {
             EPE(process_option_string(line, process_option));
         }
-        kjb_fclose(option_fp); 
+        ivi_fclose(option_fp); 
     }
 
     dbi(sizeof(float));
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 
 #endif 
 
-    kjb_cleanup(); /* Not needed on most platforms, but doing it twice is OK. */
+    ivi_cleanup(); /* Not needed on most platforms, but doing it twice is OK. */
     
     return EXIT_SUCCESS; 
 }
@@ -103,7 +103,7 @@ static int process_option(const char *option, const char *value)
     int  temp_result; 
     int  (*set_fn_list[ MAX_NUM_SET_FN ]) (const char* opt, const char* val);
 
-    set_fn_list[ 0 ] = kjb_l_set;
+    set_fn_list[ 0 ] = ivi_l_set;
 
     ERE(temp_result = call_set_fn(1, set_fn_list, "Low Level Options",
                                       option, value));

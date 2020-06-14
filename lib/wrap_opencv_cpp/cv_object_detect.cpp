@@ -15,18 +15,18 @@
    |
    |  Author:  Jinyan Guan
  * =========================================================================== */
-/* $Id: cv_object_detect.cpp 21074 2017-01-15 02:46:25Z jguan1 $ */
+/* $Id: cv_object_detect.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <wrap_opencv_cpp/cv_object_detect.h>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 void CV_cascade_classifier::detect_multiscale
 (
     const Image& img,
@@ -39,8 +39,8 @@ void CV_cascade_classifier::detect_multiscale
 )
 {
     using namespace cv;
-    Matrix kjb_mat = img.to_grayscale_matrix();
-    cv::Ptr<IplImage> cv_img = to_opencv_gray(kjb_mat);
+    Matrix ivi_mat = img.to_grayscale_matrix();
+    cv::Ptr<IplImage> cv_img = to_opencv_gray(ivi_mat);
     Mat mat = cvarrToMat(cv_img);
     Size size(width, height);
 
@@ -63,4 +63,4 @@ void CV_cascade_classifier::detect_multiscale
 
 #endif    
 } // namespace opencv
-} // namespace kjb
+} // namespace ivi

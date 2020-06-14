@@ -31,8 +31,8 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
 void Trajectory_prior::update_priors() const
 {

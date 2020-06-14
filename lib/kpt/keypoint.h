@@ -9,7 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -170,7 +170,7 @@ void free_keypoint_vector_vector(Keypoint_vector_vector* kvvp);
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 int draw_oriented_keypoint 
 ( 
-    KJB_image* ip, 
+    IVI_image* ip, 
     float x, 
     float y, 
     float scale, 
@@ -179,7 +179,7 @@ int draw_oriented_keypoint
 
 int draw_oriented_keypoint_1 
 ( 
-    KJB_image* ip, 
+    IVI_image* ip, 
     float x, 
     float y, 
     float scale, 
@@ -187,21 +187,21 @@ int draw_oriented_keypoint_1
     int red, int green, int blue  
 );
 
-int draw_vl_keypoints_from_file (KJB_image* ip, char *keypoint_filename);
+int draw_vl_keypoints_from_file (IVI_image* ip, char *keypoint_filename);
 
-int draw_ubc_keypoints_from_file (KJB_image* ip, char *keypoint_filename);
+int draw_ubc_keypoints_from_file (IVI_image* ip, char *keypoint_filename);
 
-int fp_draw_vl_keypoints(FILE* fp, KJB_image* ip);
+int fp_draw_vl_keypoints(FILE* fp, IVI_image* ip);
 
 int draw_keypoints_from_keypoint_vector
 (
-  KJB_image* ip, 
+  IVI_image* ip, 
   const Keypoint_vector* keypoint_kvp
 );
 
 int draw_vl_keypoint_vector_with_mask
 (
-  KJB_image*                ip, 
+  IVI_image*                ip, 
   const Keypoint_vector*    keypoint_kvp,
   const Int_vector*         mask_ivp
 );
@@ -209,7 +209,7 @@ int draw_vl_keypoint_vector_with_mask
 
 int draw_vl_keypoint_vector_with_mask_value
 (
-  KJB_image*                ip, 
+  IVI_image*                ip, 
   const Keypoint_vector*    keypoint_kvp,
   const Int_vector*         mask_ivp,
   const int                 val
@@ -244,31 +244,31 @@ int get_local_keypoint_match
 
 int draw_keypoint_correspondences
 (
-    const KJB_image           *img1_ip,
-    const KJB_image           *img2_ip,
+    const IVI_image           *img1_ip,
+    const IVI_image           *img2_ip,
     const Keypoint_vector     *img1_kvp,
     const Keypoint_vector     *img2_kvp,
-    KJB_image                 **result_ip
+    IVI_image                 **result_ip
 );
 
 int draw_keypoint_matches
 (
-    const KJB_image           *img1_ip,
-    const KJB_image           *img2_ip,
+    const IVI_image           *img1_ip,
+    const IVI_image           *img2_ip,
     const Keypoint_vector     *img1_kvp,
     const Keypoint_vector     *img2_kvp,
     const Int_matrix          *match_imp,
-    KJB_image                 **result_ip
+    IVI_image                 **result_ip
 );
 
 int draw_keypoint_matches_1
 (
-    const KJB_image           *img1_ip,
-    const KJB_image           *img2_ip,
+    const IVI_image           *img1_ip,
+    const IVI_image           *img2_ip,
     const Keypoint_vector     *img1_kvp,
     const Keypoint_vector     *img2_kvp,
     const Int_vector          *match_ivp,
-    KJB_image                 **result_ip
+    IVI_image                 **result_ip
 );
 /*
 int set_keypoint_color

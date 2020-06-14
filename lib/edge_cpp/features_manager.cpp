@@ -24,7 +24,7 @@
 #include <sstream>
 #include <string>
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  *  Constructs a features manager. All options are set to default values.
@@ -41,7 +41,7 @@ using namespace kjb;
  *  */
 Features_manager::Features_manager
 (
-    const kjb::Image & img,
+    const ivi::Image & img,
     bool idetect_edges,
     bool ifit_edge_segments,
     bool icreate_manhattan_world
@@ -142,7 +142,7 @@ Features_manager::Features_manager
  */
 Features_manager::Features_manager
 (
-    const kjb::Image & img,
+    const ivi::Image & img,
     float iblurring_sigma,
     float ibegin_threshold,
     float iend_threshold,
@@ -187,7 +187,7 @@ Features_manager::Features_manager
  */
 Features_manager::Features_manager
 (
-    kjb::Edge_set * iedges,
+    ivi::Edge_set * iedges,
     Edge_segment_set * iedge_segments,
     Manhattan_world * imanhattan_world
 )
@@ -222,7 +222,7 @@ Features_manager::Features_manager
     {
         if(!_edges_available)
         {
-            KJB_THROW_2(KJB_error, "Features manager, cannot have edge segments without edges");
+            IVI_THROW_2(IVI_error, "Features manager, cannot have edge segments without edges");
         }
         _edge_segments_available = true;
         edge_segments = iedge_segments;
@@ -237,7 +237,7 @@ Features_manager::Features_manager
     {
         if(!_edges_available)
         {
-            KJB_THROW_2(KJB_error, "Features manager, cannot have Manhattan world without edge segments");
+            IVI_THROW_2(IVI_error, "Features manager, cannot have Manhattan world without edge segments");
         }
         _manhattan_world_available = true;
         manhattan_world = imanhattan_world;
@@ -270,98 +270,98 @@ void Features_manager::read(std::istream& in)
     /** Read the options */
     if (!(field_value = read_field_value(in, "blurring_sigma")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge set");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge set");
     }
     istringstream ist(field_value);
     ist >> blurring_sigma;
     if (ist.fail() )
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, invalid blurring sigma");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, invalid blurring sigma");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "begin_threshold")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge set");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge set");
     }
     ist.str(field_value);
     ist >> begin_threshold;
     if (ist.fail() )
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, invalid begin threshold");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, invalid begin threshold");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "end_threshold")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read end threshold");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read end threshold");
     }
     ist.str(field_value);
     ist >> end_threshold;
     if (ist.fail() )
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, invalid end threshold");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, invalid end threshold");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "padding")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read padding");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read padding");
     }
     ist.str(field_value);
     ist >> padding;
     if (ist.fail() )
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, invalid padding");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, invalid padding");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "use_fourier")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read use fourier");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read use fourier");
     }
     ist.str(field_value);
     ist >> use_fourier;
     if (ist.fail() )
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, invalid use fourier");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, invalid use fourier");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "Vpd_success")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read vanishing points detection success probability");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read vanishing points detection success probability");
     }
     ist.str(field_value);
     ist >> vanishing_point_detection_success_probability;
     if (ist.fail() )
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, invalid vanishing points detection success probability");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, invalid vanishing points detection success probability");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "Vpd_outlier_threshold")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read vanishing points detection outlier threshold");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read vanishing points detection outlier threshold");
     }
     ist.str(field_value);
     ist >> outlier_threshold_for_vanishing_points_assignment;
     if (ist.fail() )
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, invalid vanishing points detection outlier threshold");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, invalid vanishing points detection outlier threshold");
     }
     ist.clear(std::ios_base::goodbit);
 
     /** Now read the features */
     if (!(field_value = read_field_value(in, "edge_set")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge set");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge set");
     }
     ist.str(field_value);
     ist >> _edges_available;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
     }
     ist.clear(std::ios_base::goodbit);
     if(_edges_available)
@@ -369,13 +369,13 @@ void Features_manager::read(std::istream& in)
         bool read_from_file = false;
         if (!(field_value = read_field_value(in, "read_from_other_file")))
         {
-            KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
+            IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
         }
         ist.str(field_value);
         ist >> read_from_file;
         if (ist.fail())
         {
-            KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
+            IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
         }
         ist.clear(std::ios_base::goodbit);
 
@@ -384,13 +384,13 @@ void Features_manager::read(std::istream& in)
             std::string filename;
             if (!(field_value = read_field_value(in, "filename")))
             {
-                KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
+                IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
             }
             ist.str(field_value);
             ist >> filename;
             if (ist.fail())
             {
-                KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
+                IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
             }
             ist.clear(std::ios_base::goodbit);
             edges = new Edge_set(filename.c_str());
@@ -400,24 +400,24 @@ void Features_manager::read(std::istream& in)
             size_t length;
             if (!(field_value = read_field_value(in, "size")))
             {
-                KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge set size");
+                IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge set size");
             }
             ist.str(field_value);
             ist >> length;
             if (ist.fail())
             {
-                KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
+                IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
             }
             ist.clear(std::ios_base::goodbit);
 
             char * buffer = new char[length];
             in.read(buffer, length);
 
-            kjb_c::Edge_set * edgeset = 0;
-            if(kjb_c::unserialize_edge_set(&edgeset, buffer) != kjb_c::NO_ERROR )
+            ivi_c::Edge_set * edgeset = 0;
+            if(ivi_c::unserialize_edge_set(&edgeset, buffer) != ivi_c::NO_ERROR )
             {
                 delete[] buffer;
-                KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
+                IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
             }
 
             edges = new Edge_set(edgeset);
@@ -427,13 +427,13 @@ void Features_manager::read(std::istream& in)
 
     if (!(field_value = read_field_value(in, "edge_segments")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
     }
     ist.str(field_value);
     ist >> _edge_segments_available;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge segments information");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge segments information");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -442,13 +442,13 @@ void Features_manager::read(std::istream& in)
         bool read_from_file = false;
         if (!(field_value = read_field_value(in, "read_from_other_file")))
         {
-            KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
+            IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
         }
         ist.str(field_value);
         ist >> read_from_file;
         if (ist.fail())
         {
-            KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
+            IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
         }
         ist.clear(std::ios_base::goodbit);
 
@@ -457,13 +457,13 @@ void Features_manager::read(std::istream& in)
             std::string filename;
             if (!(field_value = read_field_value(in, "filename")))
             {
-                KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
+                IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
             }
             ist.str(field_value);
             ist >> filename;
             if (ist.fail())
             {
-                KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
+                IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing edge information");
             }
             ist.clear(std::ios_base::goodbit);
 
@@ -480,13 +480,13 @@ void Features_manager::read(std::istream& in)
 
     if (!(field_value = read_field_value(in, "manhattan_world")))
     {
-        KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
+        IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
     }
     ist.str(field_value);
     ist >> _manhattan_world_available;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing Manhattan world information");
+        IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing Manhattan world information");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -494,20 +494,20 @@ void Features_manager::read(std::istream& in)
     {
         if(!_edge_segments_available)
         {
-            KJB_THROW_2(Illegal_argument, "Invalid features manager file format, cannot create"
+            IVI_THROW_2(Illegal_argument, "Invalid features manager file format, cannot create"
                     "Manhattan world without edge_segments");
         }
 
         bool read_from_file = false;
         if (!(field_value = read_field_value(in, "read_from_other_file")))
         {
-            KJB_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
+            IVI_THROW_2(Illegal_argument, "Features manager set, could not read edge segments");
         }
         ist.str(field_value);
         ist >> read_from_file;
         if (ist.fail())
         {
-            KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing manhattan world file information");
+            IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing manhattan world file information");
         }
         ist.clear(std::ios_base::goodbit);
         if(read_from_file)
@@ -515,13 +515,13 @@ void Features_manager::read(std::istream& in)
             std::string filename;
             if (!(field_value = read_field_value(in, "filename")))
             {
-                KJB_THROW_2(Illegal_argument, "Features manager set, could not read Manhattan world");
+                IVI_THROW_2(Illegal_argument, "Features manager set, could not read Manhattan world");
             }
             ist.str(field_value);
             ist >> filename;
             if (ist.fail())
             {
-                KJB_THROW_2(Illegal_argument, "Invalid features manager file format, missing Manhattan world information");
+                IVI_THROW_2(Illegal_argument, "Invalid features manager file format, missing Manhattan world information");
             }
             ist.clear(std::ios_base::goodbit);
             
@@ -560,13 +560,13 @@ void Features_manager::write(std::ostream& out) const
         char * _buffer = 0;
         size_t length;
         out << "read_from_other_file: " << false << "\n";
-        if( kjb_c::serialize_edge_set(edges->c_ptr(), &_buffer, &length) != kjb_c::NO_ERROR)
+        if( ivi_c::serialize_edge_set(edges->c_ptr(), &_buffer, &length) != ivi_c::NO_ERROR)
         {
-            KJB_THROW_2(Serialization_error, "Could not serialize edge set");
+            IVI_THROW_2(Serialization_error, "Could not serialize edge set");
         }
         out << "size:  " << length << "\n";
         out.write(_buffer, length);
-        kjb_c::kjb_free(_buffer);
+        ivi_c::ivi_free(_buffer);
     }
 
     out << "edge_segments: " << _edge_segments_available << "\n";
@@ -609,23 +609,23 @@ void Features_manager::set_edge_detection_parameters
 {
     if(iblurring_sigma < DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument, "Negative or too small blurring sigma for edge detection");
+        IVI_THROW_2(Illegal_argument, "Negative or too small blurring sigma for edge detection");
     }
     blurring_sigma = iblurring_sigma;
 
     if(ibegin_threshold < 0)
     {
-        KJB_THROW_2(Illegal_argument, "Negative begin threshold for Canny edge detection");
+        IVI_THROW_2(Illegal_argument, "Negative begin threshold for Canny edge detection");
     }
     begin_threshold = ibegin_threshold;
 
     if(iend_threshold < 0)
     {
-        KJB_THROW_2(Illegal_argument, "Negative end threshold for Canny edge detection");
+        IVI_THROW_2(Illegal_argument, "Negative end threshold for Canny edge detection");
     }
     if(ibegin_threshold < iend_threshold)
     {
-        KJB_THROW_2(Illegal_argument, "Begin threshold for Canny edge detection must be bigger than end threshold");
+        IVI_THROW_2(Illegal_argument, "Begin threshold for Canny edge detection must be bigger than end threshold");
     }
     end_threshold = iend_threshold;
 
@@ -653,7 +653,7 @@ void Features_manager::set_manhattan_world_parameters
 {
     if(ivanishing_point_detection_success_probability <= 0 || ivanishing_point_detection_success_probability >= 1)
     {
-        KJB_THROW_2(Illegal_argument, "RANSAC probability of finding vanishing points must be between 0 and 1");
+        IVI_THROW_2(Illegal_argument, "RANSAC probability of finding vanishing points must be between 0 and 1");
     }
     vanishing_point_detection_success_probability = ivanishing_point_detection_success_probability;
     outlier_threshold_for_vanishing_points_assignment = ioutlier_threshold_for_vanishing_points_assignment;
@@ -667,7 +667,7 @@ void Features_manager::set_manhattan_world_parameters
  *
  * @param img The image to detect edges from
  */
-void Features_manager::detect_edges(const kjb::Image & img)
+void Features_manager::detect_edges(const ivi::Image & img)
 {
     Canny_edge_detector edge_detector(blurring_sigma, begin_threshold, end_threshold, padding, use_fourier);
     edges = edge_detector.detect_edges(img);
@@ -686,7 +686,7 @@ void Features_manager::fit_edge_segments_to_edges()
 {
     if(!_edges_available)
     {
-        KJB_THROW_2(KJB_error, "Features manager, cannot fit edge segments if edges are not available");
+        IVI_THROW_2(IVI_error, "Features manager, cannot fit edge segments if edges are not available");
     }
     edge_segments = new Edge_segment_set(edges);
     _edge_segments_available = true;
@@ -700,7 +700,7 @@ void Features_manager::fit_edge_segments_to_edges()
  *
  * @param img The image to detect Manhattan features from
  */
-bool Features_manager::create_manhattan_world(const kjb::Image & img)
+bool Features_manager::create_manhattan_world(const ivi::Image & img)
 {
     std::vector<Vanishing_point> vpts;
     double focal_length;
@@ -763,7 +763,7 @@ bool Features_manager::detect_features
     bool idetect_edges,
     bool ifit_edge_segments,
     bool icreate_manhattan_world,
-    const kjb::Image & img
+    const ivi::Image & img
 )
 {
     using namespace std;
@@ -832,7 +832,7 @@ void Features_manager::set_manhattan_focal_length(double ifocal)
 {
     if(!_manhattan_world_available)
     {
-        KJB_THROW_2(KJB_error,"Manhattan world is not available, cannot set focal length");
+        IVI_THROW_2(IVI_error,"Manhattan world is not available, cannot set focal length");
     }
     manhattan_world->set_focal_length(ifocal);
 }
@@ -860,37 +860,37 @@ void Features_manager::remove_frame_segments()
     }
 }
 
-kjb::Features_manager * kjb::detect_hoiem_features_manager
+ivi::Features_manager * ivi::detect_hoiem_features_manager
 (
     const std::string & img_path
 )
 {
     std::vector<Vanishing_point> vpts;
     double focal_length;
-	if(!kjb::detect_vanishing_points(vpts, focal_length, img_path))
+	if(!ivi::detect_vanishing_points(vpts, focal_length, img_path))
 	{
-		KJB_THROW_2(KJB_error, "Could not detect vanishing points");
+		IVI_THROW_2(IVI_error, "Could not detect vanishing points");
 	}
 	Line_segment_set segments;
     Edge_segment_set ess;
     detect_long_connected_segments(segments, img_path, 10);
     Image img(img_path);
-    kjb::Edge_set * hes =  segments.convert_to_edge_set(img.get_num_rows(), img.get_num_cols());
+    ivi::Edge_set * hes =  segments.convert_to_edge_set(img.get_num_rows(), img.get_num_cols());
     Edge_segment_set * ees = new Edge_segment_set;
 	if(segments.size() != hes->num_edges())
 	{
-		KJB_THROW_2(kjb::KJB_error, "Edge_set and edges do not agree!!!");
+		IVI_THROW_2(ivi::IVI_error, "Edge_set and edges do not agree!!!");
 	}
 	for(unsigned int i = 0; i < segments.size(); i++)
 	{
 		ees->add_segment( Edge_segment(hes->get_edge(i), segments.get_segment(i)) );
 	}
 	ees->remove_overlapping_segments(*hes, 0.05, 5);
-	kjb::Edge_set * hes2 =  ees->convert_to_edge_set(img.get_num_rows(), img.get_num_cols());
+	ivi::Edge_set * hes2 =  ees->convert_to_edge_set(img.get_num_rows(), img.get_num_cols());
 	Edge_segment_set * ees2 = new Edge_segment_set();
 	if(ees->size() != hes2->num_edges())
 	{
-		KJB_THROW_2(kjb::KJB_error, "Edge_set and edges do not agree!!!");
+		IVI_THROW_2(ivi::IVI_error, "Edge_set and edges do not agree!!!");
 	}
 	for(unsigned int i = 0; i < ees->size(); i++)
 	{

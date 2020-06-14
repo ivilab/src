@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: mcmcda_growing.cpp 18808 2015-04-08 17:04:54Z jguan1 $ */
+/* $Id: mcmcda_growing.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_association.h>
 #include <mcmcda_cpp/mcmcda_proposer.h>
@@ -25,7 +25,7 @@
 #include <people_tracking_cpp/pt_data.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <l_cpp/l_filesystem.h>
@@ -42,10 +42,10 @@
 #include <boost/bimap/multiset_of.hpp>
 #include <boost/lexical_cast.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
+using namespace ivi::mcmcda;
 using namespace std;
 using namespace boost;
 
@@ -53,7 +53,7 @@ typedef bimap<multiset_of<double, greater<double> >,
               set_of<const Detection_box*> > Score_map;
 
 // pointers to stuff
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 const Glut_window* wnd_p;
 #endif
 const Box_data* data_p;
@@ -127,7 +127,7 @@ int main(int argc, char** argv)
             tg);
 
         // create GL environment
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         Glut_window wnd(img_width, img_height, "MCMCDA growth");
         wnd.set_reshape_callback(reshape_window);
         wnd.set_display_callback(display_scene);
@@ -136,7 +136,7 @@ int main(int argc, char** argv)
         glEnable(GL_LINE_STIPPLE);
 
         // global pointers
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         wnd_p = &wnd;
 #endif
         data_p = &data;
@@ -149,9 +149,9 @@ int main(int argc, char** argv)
         cur_box_p = data[cur_frame - 1].begin();
 
         // screen shot counter 
-        kjb_c::kjb_mkdir(img_out_dp.c_str());
+        ivi_c::ivi_mkdir(img_out_dp.c_str());
         N = 1; 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutMainLoop();
 #endif 
     }
@@ -388,7 +388,7 @@ void display_scene()
 
     info_str << "box prob: " << cur_p_det;
     bitmap_string(info_str.str(), info_x, info_y);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutSwapBuffers();
 #endif
 }
@@ -502,7 +502,7 @@ void process_key(unsigned char key, int /*x*/, int /*y*/)
         }
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     wnd_p->redisplay();
 #endif
 }

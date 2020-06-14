@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: coupled_oscillator.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: coupled_oscillator.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l_cpp/l_util.h>
 #include <l/l_sys_def.h>
@@ -28,10 +28,10 @@
 #include <boost/foreach.hpp>
 #include "dbn_cpp/coupled_oscillator.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
-Double_v kjb::ties::coupled_oscillator_params
+Double_v ivi::ties::coupled_oscillator_params
 (
     size_t num_oscillators,
     double period,
@@ -95,7 +95,7 @@ Double_v kjb::ties::coupled_oscillator_params
     {
         for(size_t i = 0; i < params.size(); i++)
         {
-            params[i] += kjb_c::kjb_rand() * 0.1 * params[i];
+            params[i] += ivi_c::ivi_rand() * 0.1 * params[i];
         }
     }
     return params;
@@ -112,7 +112,7 @@ void Coupled_oscillator::operator()
 {
     IFT(!params_.empty(), Runtime_error, 
             "The parameters of coupled oscillator is not set.");
-    KJB(ASSERT(x.size() == 2 * n_));
+    IVI(ASSERT(x.size() == 2 * n_));
     const size_t param_per_ddx = n_ + 1; // == 2 + n_ - 1; 
     size_t start_index = 0;
     for(size_t i = 0; i < n_; i++) 
@@ -135,7 +135,7 @@ void Coupled_oscillator::operator()
         {
             dxdt[n_ + i] += params_[start_index++] * (x[j] - x[i]);
         }
-        KJB(ASSERT((start_index) % param_per_ddx == 0));
+        IVI(ASSERT((start_index) % param_per_ddx == 0));
     }
 }
 
@@ -399,7 +399,7 @@ void Coupled_oscillator::set_param(size_t index, double new_val)
         }
         catch(Exception& e)
         {
-            std::cerr << e.get_msg() << " kjb error failed to set param\n";
+            std::cerr << e.get_msg() << " ivi error failed to set param\n";
         }
     }
 }
@@ -495,9 +495,9 @@ State_type Coupled_oscillator::get_state
  * -----------------------------------------------------------------------------
  */
 
-void kjb::ties::integrate_states_matrix_exp
+void ivi::ties::integrate_states_matrix_exp
 (
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
     std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> >& clos,
 #else
@@ -582,9 +582,9 @@ void kjb::ties::integrate_states_matrix_exp
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::integrate_states_modal
+void ivi::ties::integrate_states_modal
 (
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
     std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> >& clos,
 #else
@@ -633,7 +633,7 @@ void kjb::ties::integrate_states_modal
     }
     catch (Exception& e)
     {
-        std::cerr << e.get_msg() << " kjb error failed compute states\n";
+        std::cerr << e.get_msg() << " ivi error failed compute states\n";
     }
     // transferm the real physics coordinate to modal coordinate 
     // "false" represent from real physics coordinate to modal coordinate
@@ -668,7 +668,7 @@ void kjb::ties::integrate_states_modal
             }
             catch (Exception& e)
             {
-                std::cerr << e.get_msg() << " kjb error compute states\n";
+                std::cerr << e.get_msg() << " ivi error compute states\n";
             }
 
         }
@@ -677,9 +677,9 @@ void kjb::ties::integrate_states_modal
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::integrate_states
+void ivi::ties::integrate_states
 (
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
     std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> >& clos,
 #else

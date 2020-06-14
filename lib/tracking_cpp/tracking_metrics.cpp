@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Jinyan Guan, Ernesto Brau
  * =========================================================================== */
 
-/* $Id: tracking_metrics.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: tracking_metrics.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
 #include "graph/hungarian.h"
@@ -27,10 +27,10 @@
 
 #include <numeric>
 
-using namespace kjb;
-using namespace kjb::tracking;
+using namespace ivi;
+using namespace ivi::tracking;
 
-std::vector<Correspondence> kjb::tracking::get_correspondence
+std::vector<Correspondence> ivi::tracking::get_correspondence
 (
     const Canonical_trajectory_map& gt_trajs,
     const Canonical_trajectory_map& hypo_trajs,
@@ -57,10 +57,10 @@ std::vector<Correspondence> kjb::tracking::get_correspondence
     // We need to be able to refer to tracks by integer index.  
     // Below will let us map from index back to Entity_id.
     
-    std::vector<const kjb::Vector*> gt_points, hypo_points;
+    std::vector<const ivi::Vector*> gt_points, hypo_points;
 
     std::vector<Entity_id> gt_ids, hypo_ids;
-    kjb::Matrix pw_distance;
+    ivi::Matrix pw_distance;
 
     for(size_t cur_frame = 0; cur_frame < gt_trajs.duration(); cur_frame++)
     {
@@ -84,9 +84,9 @@ std::vector<Correspondence> kjb::tracking::get_correspondence
                 if(gt_elem && hypo_elem)
                 {
                     // check if still within threshold
-                    const kjb::Vector& gt_pt = gt_elem->value;
-                    const kjb::Vector& hp_pt = hypo_elem->value;
-                    if(kjb::vector_distance_squared(gt_pt, hp_pt) < sq_threshold)
+                    const ivi::Vector& gt_pt = gt_elem->value;
+                    const ivi::Vector& hp_pt = hypo_elem->value;
+                    if(ivi::vector_distance_squared(gt_pt, hp_pt) < sq_threshold)
                     {
                         corrs[cur_frame].left.insert(pair);
                     }
@@ -136,7 +136,7 @@ std::vector<Correspondence> kjb::tracking::get_correspondence
 
 
 
-void kjb::tracking::get_mt_ml_fragment_and_id_switch
+void ivi::tracking::get_mt_ml_fragment_and_id_switch
 (
     const std::vector<Correspondence>& corrs,
     const Canonical_trajectory_map& gt_trajs,
@@ -233,7 +233,7 @@ void kjb::tracking::get_mt_ml_fragment_and_id_switch
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::tracking::get_mota_and_motp
+void ivi::tracking::get_mota_and_motp
 (
     const std::vector<size_t>& mme_ct,
     const std::vector<size_t>& fp_ct,
@@ -257,7 +257,7 @@ void kjb::tracking::get_mota_and_motp
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::tracking::get_recall_precision
+void ivi::tracking::get_recall_precision
 (
     const std::vector<size_t>& fp_ct,
     const std::vector<size_t>& miss_ct,
@@ -277,10 +277,10 @@ void kjb::tracking::get_recall_precision
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::tracking::init_ids_and_points
+void ivi::tracking::init_ids_and_points
 (
     std::vector<Entity_id>& ids,
-    std::vector<const kjb::Vector*>& points,
+    std::vector<const ivi::Vector*>& points,
     const Canonical_trajectory_map& trajs,
     size_t cur_frame,
     const Correspondence& existing_corr,
@@ -321,7 +321,7 @@ void kjb::tracking::init_ids_and_points
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::tracking::get_pw_distance
+void ivi::tracking::get_pw_distance
 (
     const std::vector<const Vector*>& pts1,
     const std::vector<const Vector*>& pts2,
@@ -349,16 +349,16 @@ void kjb::tracking::get_pw_distance
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::tracking::get_best_matching
+void ivi::tracking::get_best_matching
 (
-    const kjb::Matrix& pw_distance, 
+    const ivi::Matrix& pw_distance, 
     double threshold, 
     std::vector<std::pair<int, int> >& matching
 )
 {
-    kjb_c::Int_vector* row_vp = NULL;
+    ivi_c::Int_vector* row_vp = NULL;
     double cost = 0.0;
-    ETX(kjb_c::hungarian(pw_distance.get_c_matrix(), &row_vp, &cost));
+    ETX(ivi_c::hungarian(pw_distance.get_c_matrix(), &row_vp, &cost));
     matching.clear();
     for(int i = 0; i < row_vp->length; i++)
     {
@@ -372,12 +372,12 @@ void kjb::tracking::get_best_matching
         }
     }
 
-    kjb_c::free_int_vector(row_vp);
+    ivi_c::free_int_vector(row_vp);
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::tracking::get_counts_and_distances
+void ivi::tracking::get_counts_and_distances
 (
     const std::vector<Correspondence>& corrs,
     const Canonical_trajectory_map& gt_trajs,
@@ -455,7 +455,7 @@ void kjb::tracking::get_counts_and_distances
             ASSERT(gt_elem);
             ASSERT(hyp_elem);
 
-            double dist = kjb::vector_distance(gt_elem->value, hyp_elem->value);
+            double dist = ivi::vector_distance(gt_elem->value, hyp_elem->value);
 
             //ASSERT(distance <= threshold);
             dists[frame] += dist;

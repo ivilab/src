@@ -1,5 +1,5 @@
 
-/* $Id: complex_mat_mult.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: complex_mat_mult.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -22,9 +22,9 @@ int main(int argc, char **argv)
     int     test_factor  = 1;
     int     num_loops_for_mult_test = 10;
 
-    kjb_init(); 
+    ivi_init(); 
 
-    kjb_set_debug_level(2); 
+    ivi_set_debug_level(2); 
 
     if (argc > 1)
     {
@@ -34,11 +34,11 @@ int main(int argc, char **argv)
 
     if (is_interactive())
     {
-        kjb_set_verbose_level(2);
+        ivi_set_verbose_level(2);
     }
     else 
     {
-        kjb_set_verbose_level(0); 
+        ivi_set_verbose_level(0); 
         num_loops_for_mult_test = 50;
     }
 
@@ -62,33 +62,33 @@ int main(int argc, char **argv)
                     set_bug("Dimension check passed when it shouldn't.\n");
                     return EXIT_BUG;
                 }
-                else if (kjb_get_verbose_level() > 0)
+                else if (ivi_get_verbose_level() > 0)
                 {
-                    kjb_print_error(); 
+                    ivi_print_error(); 
                 }
 
                 EPETE(get_random_matrix(&second_re_mp, num_cols, num_rows));
                 EPETE(get_random_matrix(&second_im_mp, num_cols, num_rows));
                 
-                if (kjb_rand() < 0.5)
+                if (ivi_rand() < 0.5)
                 {
-                    if (kjb_rand() < 0.66)
+                    if (ivi_rand() < 0.66)
                     {
                         free_matrix(first_re_mp);
                         first_re_mp = NULL; 
                     }
-                    else if (kjb_rand() < 0.5)
+                    else if (ivi_rand() < 0.5)
                     {
                         free_matrix(first_im_mp);
                         first_im_mp = NULL; 
                     }
 
-                    if (kjb_rand() < 0.66)
+                    if (ivi_rand() < 0.66)
                     {
                         free_matrix(second_re_mp);
                         second_re_mp = NULL; 
                     }
-                    else if (kjb_rand() < 0.5)
+                    else if (ivi_rand() < 0.5)
                     {
                         free_matrix(second_im_mp);
                         second_im_mp = NULL; 

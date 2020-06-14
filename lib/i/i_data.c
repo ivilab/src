@@ -1,5 +1,5 @@
 
-/* $Id: i_data.c 5831 2010-05-02 21:52:24Z ksimek $ */
+/* $Id: i_data.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -46,7 +46,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int get_image_pixels(const KJB_image* ip, Matrix** mpp)
+int get_image_pixels(const IVI_image* ip, Matrix** mpp)
 {
     int i, j;
     int count;
@@ -121,8 +121,8 @@ int get_image_pixels(const KJB_image* ip, Matrix** mpp)
 
 int get_registered_image_pixels
 (
-    const KJB_image* ip1,
-    const KJB_image* ip2,
+    const IVI_image* ip1,
+    const IVI_image* ip2,
     Matrix**         mp1_ptr,
     Matrix**         mp2_ptr,
     int**            invalid_registered_ptr

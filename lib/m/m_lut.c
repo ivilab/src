@@ -1,5 +1,5 @@
 
-/* $Id: m_lut.c 20918 2016-10-31 22:08:27Z kobus $ */
+/* $Id: m_lut.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -81,7 +81,7 @@ Lut* debug_create_lut(int lut_len, double offset, double step,
 
     if (lut_ptr->lut_vp == NULL)
     {
-        kjb_free(lut_ptr);
+        ivi_free(lut_ptr);
         lut_ptr = NULL;
     }
     else
@@ -110,7 +110,7 @@ Lut* create_lut(int lut_len, double offset, double step)
 
     if (lut_ptr->lut_vp == NULL)
     {
-        kjb_free(lut_ptr);
+        ivi_free(lut_ptr);
         lut_ptr = NULL;
     }
     else
@@ -149,7 +149,7 @@ void free_lut(Lut* lut_ptr)
     if (lut_ptr != NULL)
     {
         free_vector(lut_ptr->lut_vp);
-        kjb_free(lut_ptr);
+        ivi_free(lut_ptr);
     }
 }
 
@@ -160,7 +160,7 @@ void free_lut(Lut* lut_ptr)
  *
  * Gets target lut for "building block" routines
  *
- * This routine implements the creation/over-writing symantics used in the KJB
+ * This routine implements the creation/over-writing symantics used in the IVI
  * library. If *target_lp_ptr is NULL, then this routine creates the lut. If
  * it is not null, and it is the right size, then this routine does nothing. If
  * it is the wrong size, then it is resized.
@@ -556,7 +556,7 @@ int read_lut_from_config_file
     // guaranteed that the error should be set if "read_lut", fails, we
     // are better off not taking changes.
     */
-    kjb_clear_error();
+    ivi_clear_error();
 
     if (read_lut(result_lp_ptr, temp_config_file_name) == ERROR)
     {
@@ -566,7 +566,7 @@ int read_lut_from_config_file
     }
     else if (config_file_name != NULL)
     {
-        kjb_strncpy(config_file_name, temp_config_file_name,
+        ivi_strncpy(config_file_name, temp_config_file_name,
                     config_file_name_size);
     }
 
@@ -589,7 +589,7 @@ int read_lut(Lut** lut_ptr_ptr, char* file_name)
     Error_action save_error_action = get_error_action();
 
 
-    NRE(fp = kjb_fopen(file_name, "r"));
+    NRE(fp = ivi_fopen(file_name, "r"));
 
     result = fp_read_lut(lut_ptr_ptr, fp);
 
@@ -598,7 +598,7 @@ int read_lut(Lut** lut_ptr_ptr, char* file_name)
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
     }
 
-    if (kjb_fclose(fp) == ERROR)
+    if (ivi_fclose(fp) == ERROR)
     {
         result = ERROR;
     }
@@ -643,8 +643,8 @@ int fp_read_lut(Lut** lut_ptr_ptr, FILE* fp)
 static int fp_read_lut_file_header(FILE* fp, int* lut_len_ptr,
                                    double* offset_ptr, double* step_ptr)
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int    i;
     int    num_options;
     char** option_list;
@@ -663,7 +663,7 @@ static int fp_read_lut_file_header(FILE* fp, int* lut_len_ptr,
 
 
 
-    ERE(save_file_pos = kjb_ftell(fp));
+    ERE(save_file_pos = ivi_ftell(fp));
 
     /*CONSTCOND*/
     while ( TRUE )
@@ -686,13 +686,13 @@ static int fp_read_lut_file_header(FILE* fp, int* lut_len_ptr,
             /*EMPTY*/
             ;  /* Do nothing. */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
 
             trim_beg(&line_pos);
 
-            if (*line_pos == kjb_header_char)
+            if (*line_pos == ivi_header_char)
             {
                 line_pos++;
 
@@ -782,7 +782,7 @@ static int fp_read_lut_file_header(FILE* fp, int* lut_len_ptr,
         }
     }
 
-    ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+    ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
 
     return result;
 }
@@ -809,7 +809,7 @@ int write_lut(const Lut* lp, const char* file_name)
     Error_action save_error_action = get_error_action();
 
 
-    NRE(fp = kjb_fopen(file_name, "w"));
+    NRE(fp = ivi_fopen(file_name, "w"));
 
     result = fp_write_lut(lp, fp);
 
@@ -818,7 +818,7 @@ int write_lut(const Lut* lp, const char* file_name)
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
     }
 
-    if (kjb_fclose(fp) == ERROR)
+    if (ivi_fclose(fp) == ERROR)
     {
         result = ERROR;
     }
@@ -866,15 +866,15 @@ static int fp_write_lut_file_header(FILE* output_fp, int lut_len, double offset,
 {
 
 
-    ERE(kjb_fprintf(output_fp, "\n#!"));
+    ERE(ivi_fprintf(output_fp, "\n#!"));
 
 
-    ERE(kjb_fprintf(output_fp, " n=%d", lut_len));
-    ERE(kjb_fprintf(output_fp, " o=%.4f", offset));
-    ERE(kjb_fprintf(output_fp, " s=%.6f", step));
+    ERE(ivi_fprintf(output_fp, " n=%d", lut_len));
+    ERE(ivi_fprintf(output_fp, " o=%.4f", offset));
+    ERE(ivi_fprintf(output_fp, " s=%.6f", step));
 
 
-    ERE(kjb_fprintf(output_fp, "\n\n"));
+    ERE(ivi_fprintf(output_fp, "\n\n"));
 
     return NO_ERROR;
 }
@@ -916,8 +916,8 @@ int apply_lut_2(const Lut* lut_ptr, double x, double* y_ptr)
 {
 
     double d_index = SUB_DBL_EPSILON((x - lut_ptr->offset) / lut_ptr->step);
-    int    lb      = kjb_floor(d_index);
-    int    ub      = kjb_floor(d_index) + 1;
+    int    lb      = ivi_floor(d_index);
+    int    ub      = ivi_floor(d_index) + 1;
 
     ASSERT_IS_NUMBER_DBL(x);
 

@@ -7,7 +7,7 @@
  */
 
 /*
- * $Id: gsl_rng.cpp 9821 2011-06-27 00:52:55Z predoehl $
+ * $Id: gsl_rng.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_lib.h>
@@ -26,16 +26,16 @@ FILE* make_ephemeral_file()
 {
     // Make a temporary file.
     char fname[ 512 ];
-    KJB( ETX( BUFF_GET_TEMP_FILE_NAME( fname ) ) );
-    FILE* fp = kjb_c::kjb_fopen( fname, "w+" );
+    IVI( ETX( BUFF_GET_TEMP_FILE_NAME( fname ) ) );
+    FILE* fp = ivi_c::ivi_fopen( fname, "w+" );
     ETX( 00 == fp );
 
     // This is the ol' unix trick, "unlink filename while file is still open."
-    int rc1 = kjb_c::kjb_unlink( fname );
-    if ( kjb_c::ERROR == rc1 )
+    int rc1 = ivi_c::ivi_unlink( fname );
+    if ( ivi_c::ERROR == rc1 )
     {
-        ETX( kjb_c::kjb_fclose( fp ) );
-        KJB_THROW_2( kjb::IO_error,
+        ETX( ivi_c::ivi_fclose( fp ) );
+        IVI_THROW_2( ivi::IO_error,
                                 "Failed to unlink serialization temp file" );
     }
 
@@ -47,9 +47,9 @@ FILE* make_ephemeral_file()
 
 
 
-namespace kjb {
+namespace ivi {
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 std::string gsl_rng_serialize_implementation( const gsl_rng* rng )
 {
     FILE* fp = make_ephemeral_file();
@@ -62,20 +62,20 @@ std::string gsl_rng_serialize_implementation( const gsl_rng* rng )
     {
         std::string state;
         rewind( fp );
-        for( int ccc; ( ccc = kjb_c::kjb_fgetc( fp ) ) != EOF; )
+        for( int ccc; ( ccc = ivi_c::ivi_fgetc( fp ) ) != EOF; )
         {
             state.push_back( char( ccc ) );
         }
-        ETX( kjb_c::kjb_fclose( fp ) );
+        ETX( ivi_c::ivi_fclose( fp ) );
         return state;
     }
 
     // Write has failed us.
-    ETX( kjb_c::kjb_fclose( fp ) );
+    ETX( ivi_c::ivi_fclose( fp ) );
     GSL_ETX( rc2 );
 
     /* NOTREACHED */
-    KJB_THROW_2( KJB_error, "gsl_rng_fwrite() returned malformed error code" );
+    IVI_THROW_2( IVI_error, "gsl_rng_fwrite() returned malformed error code" );
 }
 
 
@@ -89,18 +89,18 @@ void gsl_rng_deserialize_implementation(
     // write state into temporary file
     for( size_t iii = 0; iii < state.size(); ++iii )
     {
-        int rc1 = kjb_c::kjb_fputc( fp, state[ iii ] );
+        int rc1 = ivi_c::ivi_fputc( fp, state[ iii ] );
         if ( EOF == rc1 )
         {
-            ETX( kjb_c::kjb_fclose( fp ) );
-            KJB_THROW_2( KJB_error, "write failure deserializing GSL RNG" );
+            ETX( ivi_c::ivi_fclose( fp ) );
+            IVI_THROW_2( IVI_error, "write failure deserializing GSL RNG" );
         }
     }
 
     // read state from temporary file
     rewind( fp );
     int rc2 = gsl_rng_fread( fp, rng );
-    ETX( kjb_c::kjb_fclose( fp ) );
+    ETX( ivi_c::ivi_fclose( fp ) );
     GSL_ETX( rc2 );
 }
 #endif

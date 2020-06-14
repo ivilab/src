@@ -1,25 +1,25 @@
 /**
  * @file
- * @brief wrapper for kjb_c function to make a collage
+ * @brief wrapper for ivi_c function to make a collage
  */
 /*
- * $Id: i_collage.h 18278 2014-11-25 01:42:10Z ksimek $
+ * $Id: i_collage.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef I_CPP_I_COLLAGE_H_IVI_LAB_LIBRARY
 #define I_CPP_I_COLLAGE_H_IVI_LAB_LIBRARY
 
 #include <i/i_collage.h>
-namespace kjb {
+namespace ivi {
 
 class Image;
 
 /**
- * @addtogroup kjbImageProc
+ * @addtogroup iviImageProc
  * @{
  */
 
-/// @brief wrapper for kjb_c::make_image_collage
+/// @brief wrapper for ivi_c::make_image_collage
 Image make_collage(
     Image const* const* input_images,
     int num_horizontal,

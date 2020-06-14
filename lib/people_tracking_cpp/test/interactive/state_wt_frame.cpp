@@ -30,7 +30,7 @@
 #include <st_cpp/st_perspective_camera.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_sprite.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <gr_cpp/gr_primitive.h>
@@ -38,9 +38,9 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
 
 const double win_width = 500;
 const double win_height = 500;
@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 
 
         // GL stuff
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 
         size_t w = frame_img.get_num_cols();
         size_t h = frame_img.get_num_rows();
@@ -130,7 +130,7 @@ int main(int argc, char** argv)
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;
@@ -322,7 +322,7 @@ void display()
         render_arrow(bbox.get_center(),
                      bbox.get_center() + 20*body.model_dir);
     }
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutSwapBuffers();
 #endif
 }
@@ -513,7 +513,7 @@ void handle_key(unsigned char key, int, int)
             exit(EXIT_SUCCESS);
         }
     }
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

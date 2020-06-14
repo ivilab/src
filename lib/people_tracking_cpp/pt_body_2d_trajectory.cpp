@@ -26,10 +26,10 @@
 
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
-Body_2d_trajectory kjb::pt::get_body_2d_trajectory
+Body_2d_trajectory ivi::pt::get_body_2d_trajectory
 (
     const Trajectory& traj,
     const Perspective_camera& cam

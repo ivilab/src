@@ -25,7 +25,7 @@
 #include <edge_cpp/line_segment.h>
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Collinear_segment_chain
@@ -193,7 +193,7 @@ std::vector<Collinear_segment_chain> find_collinear_segment_chains
     return chains;
 }
 
-} //namespace kjb
+} //namespace ivi
                              
 #endif /*COLLINEAR_SEGMENT_CHAIN */
 

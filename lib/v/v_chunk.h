@@ -1,5 +1,5 @@
 
-/* $Id: v_chunk.h 8124 2010-12-27 06:32:18Z kobus $ */
+/* $Id: v_chunk.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -17,7 +17,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -28,7 +28,7 @@ namespace kjb_c {
  *
  * Type for chunking results
  *
- * This type was introduced to be part of the Image_chunk_info type. The KJB
+ * This type was introduced to be part of the Image_chunk_info type. The IVI
  * library uses the term "chunk" to refer to an image piece surounded by boundry
  * pixels, but the type could be used for similar purposes.
  *
@@ -77,7 +77,7 @@ int set_chunk_options(const char* option, const char* value);
 
 int segment_from_background
 (
-    const KJB_image*   in_ip,
+    const IVI_image*   in_ip,
     int                (*is_background_pixel_fn) (Pixel),
     Image_chunk_info** image_chunk_info_ptr_ptr
 );

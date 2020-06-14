@@ -1,5 +1,5 @@
 
-/* $Id: lsm_cluster.c 8780 2011-02-27 23:42:02Z predoehl $ */
+/* $Id: lsm_cluster.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef DONT_LINT_SHARED
 
@@ -520,7 +520,7 @@ int get_kmeans_clusters
 
 #ifdef PROGRAMMER_IS_colour
 #ifdef TEST
-        if (KMEANS_DEBUG_VERBOSE_LEVEL > kjb_get_verbose_level())
+        if (KMEANS_DEBUG_VERBOSE_LEVEL > ivi_get_verbose_level())
         {
             verbose_pso(KMEANS_DEBUG_VERBOSE_LEVEL,
                         "-------------------------------------------------------------\n");
@@ -556,7 +556,7 @@ int get_kmeans_clusters
 
 #ifdef PROGRAMMER_IS_colour
 #ifdef TEST
-        if (KMEANS_DEBUG_VERBOSE_LEVEL > kjb_get_verbose_level())
+        if (KMEANS_DEBUG_VERBOSE_LEVEL > ivi_get_verbose_level())
         {
             verbose_pso(KMEANS_DEBUG_VERBOSE_LEVEL,
                         "Updated clusters (i=%d):\n", i);
@@ -568,7 +568,7 @@ int get_kmeans_clusters
 
 #ifdef PROGRAMMER_IS_colour
 #ifdef TEST
-    if (KMEANS_DEBUG_VERBOSE_LEVEL > kjb_get_verbose_level())
+    if (KMEANS_DEBUG_VERBOSE_LEVEL > ivi_get_verbose_level())
     {
         verbose_pso(KMEANS_DEBUG_VERBOSE_LEVEL, "Final cluster centres:\n");
         db_mat(kmeans_cluster_mp);
@@ -719,7 +719,7 @@ static int init_kmeans_static_data
 
 #ifdef PROGRAMMER_IS_colour
 #ifdef TEST
-    if (KMEANS_DEBUG_VERBOSE_LEVEL > kjb_get_verbose_level())
+    if (KMEANS_DEBUG_VERBOSE_LEVEL > ivi_get_verbose_level())
     {
         verbose_pso(KMEANS_DEBUG_VERBOSE_LEVEL, "Initial clusters:\n");
         db_mat(kmeans_cluster_mp);
@@ -765,7 +765,7 @@ static int get_initial_kmeans_clusters(const Matrix* data_mp)
         {
 
             /* Randomly select one of the input data points as an initial cluster */
-            index = (double)floor( (double)(data_mp->num_rows - 1) * kjb_rand() );
+            index = (double)floor( (double)(data_mp->num_rows - 1) * ivi_rand() );
             index_is_duplicate = FALSE;
 
             /* Make sure that the random point has not already been chosen */
@@ -956,7 +956,7 @@ static int classify_data_by_kmeans_cluster
 
 #ifdef PROGRAMMER_IS_colour
 #ifdef DONT_TEST
-            if (KMEANS_DEBUG_VERBOSE_LEVEL > kjb_get_verbose_level())
+            if (KMEANS_DEBUG_VERBOSE_LEVEL > ivi_get_verbose_level())
             {
 
                 verbose_pso(KMEANS_DEBUG_VERBOSE_LEVEL,
@@ -986,7 +986,7 @@ static int classify_data_by_kmeans_cluster
 
 #ifdef PROGRAMMER_IS_colour
 #ifdef DONT_TEST
-        if (KMEANS_DEBUG_VERBOSE_LEVEL > kjb_get_verbose_level())
+        if (KMEANS_DEBUG_VERBOSE_LEVEL > ivi_get_verbose_level())
         {
 
             verbose_pso(KMEANS_DEBUG_VERBOSE_LEVEL,
@@ -1291,8 +1291,8 @@ int get_3D_histogram_clusters
 )
 {
     /*
-    // The code for this function was shamelessly stolen from the KJB library
-    // file "lib/KJB/m/m_mat_stat.c" "get_fixed_clustering_of_3D_data()" contained in
+    // The code for this function was shamelessly stolen from the IVI library
+    // file "lib/IVI/m/m_mat_stat.c" "get_fixed_clustering_of_3D_data()" contained in
     // .
     // The code was modified to return the weight associated with each resulting
     // cluster (totaling to 1.0), and the
@@ -1374,11 +1374,11 @@ int get_3D_histogram_clusters
     total_counts = 0;
     for (cluster = 0; cluster < num_rows; cluster++)
     {
-        i = kjb_rint((input_data_mp->elements[ cluster ][ 0 ] - offset_vp->elements[ 0 ]) /
+        i = ivi_rint((input_data_mp->elements[ cluster ][ 0 ] - offset_vp->elements[ 0 ]) /
                                                         step_vp->elements[ 0 ]);
-        j = kjb_rint((input_data_mp->elements[ cluster ][ 1 ] - offset_vp->elements[ 1 ]) /
+        j = ivi_rint((input_data_mp->elements[ cluster ][ 1 ] - offset_vp->elements[ 1 ]) /
                                                         step_vp->elements[ 1 ]);
-        k = kjb_rint((input_data_mp->elements[ cluster ][ 2 ] - offset_vp->elements[ 2 ]) /
+        k = ivi_rint((input_data_mp->elements[ cluster ][ 2 ] - offset_vp->elements[ 2 ]) /
                                                         step_vp->elements[ 2 ]);
 
         x_scores[ i ][ j ][ k ] += input_data_mp->elements[ cluster ][ 0 ];

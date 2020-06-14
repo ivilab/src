@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_object.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_opengl_object.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,10 +19,10 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_GR_OPENGL_OBJECT
-#define KJB_GR_OPENGL_OBJECT
+#ifndef IVI_GR_OPENGL_OBJECT
+#define IVI_GR_OPENGL_OBJECT
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include "gr_cpp/gr_opengl_headers.h"
 
 #include <l_cpp/l_exception.h>
@@ -40,7 +40,7 @@
  * A set of object-oriented wrappers for opengl objects (fbo's vbo's, textures, etc.)
  * Most of these objects are opengl extensions, so they require GLEW to compile.  
  * If Glew is not installed, most of these classes will be missing at compile time.
- * Users of these classes should wrap their usage inside KJB_HAVE_OPENGL and KJB_HAVE_GLEW guard statemenets.
+ * Users of these classes should wrap their usage inside IVI_HAVE_OPENGL and IVI_HAVE_GLEW guard statemenets.
  *
  * @author Kyle Simek
  *
@@ -48,7 +48,7 @@
  * */
 
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
@@ -62,7 +62,7 @@ namespace opengl
  *
  * @note Renderbuffer objects are an opengl extension, so this class will not exist if GLEW is not installed.
  */
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 class Renderbuffer
 {
 public:
@@ -121,7 +121,7 @@ private:
  * @author Kyle Simek
  *
  */
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 class Framebuffer_object
 {
 public:
@@ -183,7 +183,7 @@ public:
 private:
     GLuint handle_;
 };
-#endif /* KJB_HAVE_GLEW */
+#endif /* IVI_HAVE_GLEW */
 
 /**
  * A thin wrapper for opengl buffer object (for vertex buffers (vbo's) and pixel buffers (pbo's)).
@@ -193,7 +193,7 @@ private:
  *
  * @note Buffer objects are an opengl extension, so this class will not exist if GLEW is not installed.
  */
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 class Buffer
 {
     // copying not allowed,  shared pointers are a possible alternative
@@ -269,14 +269,14 @@ public:
 };
 
 
-void allocate_grayscale_color_buffer(::kjb::opengl::Renderbuffer& color, int width, int height);
+void allocate_grayscale_color_buffer(::ivi::opengl::Renderbuffer& color, int width, int height);
 
 #endif /* HAVE_GLEW */
 
 
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
 #endif /* HAVE_OPENGL */
 #endif

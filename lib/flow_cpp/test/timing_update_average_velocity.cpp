@@ -4,14 +4,14 @@
 #include <l_cpp/l_test.h>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 typedef Axis_aligned_rectangle_2d Bbox;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     // Create sytheticc features
     Flow_feature_set of_set;
@@ -25,8 +25,8 @@ int main(int argc, char** argv)
     {
         for(size_t col = min_x; col < max_x; col++)
         {
-            dx = 100.0 * kjb_c::kjb_rand();
-            dy = 100.0 * kjb_c::kjb_rand();
+            dx = 100.0 * ivi_c::ivi_rand();
+            dy = 100.0 * ivi_c::ivi_rand();
             Feature_pair pair(Vector((double)col, (double)row),
                               Vector((double)(col + dx), (double)(row + dy)));
             of_set.insert(pair);
@@ -36,8 +36,8 @@ int main(int argc, char** argv)
     const double threshold = FLT_EPSILON;
 
     // Box parameters
-    //const double center_x = 100.0 + 1000.0 * kjb_c::kjb_rand();
-    //const double center_y = 100.0 + 1000.0 * kjb_c::kjb_rand();
+    //const double center_x = 100.0 + 1000.0 * ivi_c::ivi_rand();
+    //const double center_y = 100.0 + 1000.0 * ivi_c::ivi_rand();
     const double center_x = 600.0;
     const double center_y = 600.0;
     const double width = 400.0;
@@ -51,53 +51,53 @@ int main(int argc, char** argv)
     const int unit = 2.0;
     // move right
     Bbox new_box(Vector(center_x + unit, center_y), width, height);
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     Vector new_flow = total_flow(of_set, new_box);
-    long cur_time = kjb_c::get_cpu_time();
+    long cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0;
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     Vector new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 
     // move left
     new_box.set_center(Vector(center_x - unit, center_y));
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow = total_flow(of_set, new_box);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0; 
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     //TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 
     // move UP
     new_box.set_center(Vector(center_x, center_y + unit));
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow = total_flow(of_set, new_box);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0;
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     //TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 
     // MOVE DOWN
     new_box.set_center(Vector(center_x, center_y - unit));
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow = total_flow(of_set, new_box);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0;
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     //TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 
@@ -108,28 +108,28 @@ int main(int argc, char** argv)
 
     // move a bit more
     new_box.set_center(Vector(center_x + 4.0, center_y - 3.0));
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow = total_flow(of_set, new_box);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0;
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     //cout << vector_distance(new_flow, new_flow_est) << endl;
     //TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 
     // move a lot
     new_box.set_center(Vector(70.0, 70.0));
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow = total_flow(of_set, new_box);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0;
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     //TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 
@@ -137,28 +137,28 @@ int main(int argc, char** argv)
     new_box.set_center(Vector(center_x, center_y));
     new_box.set_height(new_box.get_height() * 0.8);
     new_box.set_width(new_box.get_width() * 1.2);
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow = total_flow(of_set, new_box);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0;
     area = new_box.get_height() * new_box.get_width();
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     //TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 
     // change center (with width and height changed)
     new_box.set_center(Vector(center_x + 3.0, center_y + 7.0));
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow = total_flow(of_set, new_box);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << cur_time/1000.0;
     new_flow /= area;
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     new_flow_est = update_average_velocity(of_set, box, new_box, old_flow);
-    cur_time = kjb_c::get_cpu_time();
+    cur_time = ivi_c::get_cpu_time();
     cout << " vs. " << cur_time/1000.0 << endl;
     //TEST_TRUE(vector_distance(new_flow, new_flow_est) < threshold);
 

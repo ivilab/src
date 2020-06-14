@@ -1,4 +1,4 @@
-/* $Id: options.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: options.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -18,16 +18,16 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef KJB_EDGE2_OPTIONS_H
-#define KJB_EDGE2_OPTIONS_H
+#ifndef IVI_EDGE2_OPTIONS_H
+#define IVI_EDGE2_OPTIONS_H
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 
 #include <boost/program_options.hpp>
 #include <boost/assign/list_of.hpp>
 #include <edge_cpp/edge.h>
 
-namespace kjb
+namespace ivi
 {
 
 boost::program_options::options_description
@@ -38,7 +38,7 @@ Canny_edge_detector make_canny_edge_detector(const boost::program_options::varia
  
 }
 
-#endif /* KJB_HAVE_BST_POPTIONS */
+#endif /* IVI_HAVE_BST_POPTIONS */
 
 #endif
 

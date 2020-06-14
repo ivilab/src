@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <functional>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Maximizes a function by evaluating at all points in a grid.
@@ -44,7 +44,7 @@ namespace kjb {
  * @param   nbins       Number of bins in grid.
  * @param   adapter     Allows us to treat our model as a vector. Must have
  *                      A::get, A::set, and A::size implemented. See
- *                      kjb::Vector_adapter for an example.
+ *                      ivi::Vector_adapter for an example.
  * @param   def_model   An initialized model. Must be ready for getting and
  *                      setting.
  *
@@ -66,7 +66,7 @@ double grid_maximize
 
     if(D > 8)
     {
-        kjb_c::warn_pso("The dimensionality of this function is %d; this "
+        ivi_c::warn_pso("The dimensionality of this function is %d; this "
                         "approximation might take a really long time.", D);
     }
 
@@ -95,7 +95,7 @@ double grid_maximize
 /**
  * @brief   Maximizes a function by evaluating at all points in a grid.
  *
- * @param   fcn     Function of interest. Must receive a kjb::Vector
+ * @param   fcn     Function of interest. Must receive a ivi::Vector
  *                  and return a double. Its type can be anything that
  *                  is callablle with the correct signature.
  * @param   bounds  Bounds (one pair of upper and lower bounds per
@@ -137,11 +137,11 @@ double grid_maximize
  * @param   steps   Step sizes in each dimension.
  *
  * @param   grad    Gradient operator. Takes a const Model& and returns
- *                  a kjb::Vector.
+ *                  a ivi::Vector.
  *
  * @param   adapter Allows us to treat our model as a vector. Must have
  *                  A::get, A::set, and A::size implemented. See
- *                  kjb::Vector_adapter for an example.
+ *                  ivi::Vector_adapter for an example.
  */
 template<class F, class M, class G, class A>
 void gradient_ascent
@@ -194,14 +194,14 @@ void gradient_ascent
  *
  * @param   x       Current value of variable.
  *
- * @param   fcn     Function of interest. Must receive a const kjb::Vector&
+ * @param   fcn     Function of interest. Must receive a const ivi::Vector&
  *                  and return a double. Its type can be anything that
  *                  is callablle with the correct signature.
  *
  * @param   steps   Step sizes in each dimension.
  *
- * @param   grad    Gradient operator. Takes a const kjb::Vector& and returns
- *                  a kjb::Vector.
+ * @param   grad    Gradient operator. Takes a const ivi::Vector& and returns
+ *                  a ivi::Vector.
  */
 template<class F, class V, class G>
 inline
@@ -229,7 +229,7 @@ void gradient_ascent
  *
  * @param   adapter Allows us to treat our model as a vector. Must have
  *                  A::get, A::set, and A::size implemented. See
- *                  kjb::Vector_adapter for an example.
+ *                  ivi::Vector_adapter for an example.
  */
 template<class F, class M, class A>
 void refine_max
@@ -276,7 +276,7 @@ void refine_max
 }
 
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_OPTIM_H */
 

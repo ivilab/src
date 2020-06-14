@@ -11,9 +11,9 @@
 class Gaussian_scale_space
 {
 private:
-    typedef std::vector<kjb::Image> Octave;
+    typedef std::vector<ivi::Image> Octave;
 
-    std::vector<kjb::Image> gss;
+    std::vector<ivi::Image> gss;
     const int O;
     const int o_min;
     const int S;
@@ -39,7 +39,7 @@ private:
     );
 
 public:
-    const std::vector<kjb::Image>& as_vector() const;
+    const std::vector<ivi::Image>& as_vector() const;
 
     std::pair<Octave::const_iterator, Octave::const_iterator> get_octave(int o) const;
 
@@ -105,7 +105,7 @@ GSS::Gaussian_scale_space
 //----------------------------------------------------------------------------------------
 
 inline
-const std::vector<kjb::Image>& GSS::as_vector() const
+const std::vector<ivi::Image>& GSS::as_vector() const
 {
     return gss;
 }
@@ -117,7 +117,7 @@ std::pair<GSS::Octave::const_iterator, GSS::Octave::const_iterator> GSS::get_oct
 {
     if(o - o_min < 0 || static_cast<size_t>(o - o_min) >= octaves.size())
     {
-        KJB_THROW_2(kjb::Index_out_of_bounds, "That octave does not exist");
+        IVI_THROW_2(ivi::Index_out_of_bounds, "That octave does not exist");
     }
 
     return std::make_pair(octaves[o - o_min], octaves[o - o_min] + S);
@@ -130,7 +130,7 @@ std::pair<GSS::Octave::const_iterator, GSS::Octave::const_iterator> GSS::get_x_o
 {
     if(o - o_min < 0 || static_cast<size_t>(o - o_min) >= octaves.size())
     {
-        KJB_THROW_2(kjb::Index_out_of_bounds, "That octave does not exist");
+        IVI_THROW_2(ivi::Index_out_of_bounds, "That octave does not exist");
     }
 
     return std::make_pair(x_octaves[o - o_min], x_octaves[o - o_min] + (s_max - s_min) + 1);
@@ -215,7 +215,7 @@ int GSS::get_octave_name(int idx) const
 {
     if(idx < 0 || idx >= O)
     {
-        KJB_THROW_2(kjb::Index_out_of_bounds, "That octave index does not exist.");
+        IVI_THROW_2(ivi::Index_out_of_bounds, "That octave index does not exist.");
     }
 
     return idx + o_min;
@@ -228,7 +228,7 @@ int GSS::get_scale_name(int idx) const
 {
     if(idx < 0 || idx >= s_max - s_min + 1)
     {
-        KJB_THROW_2(kjb::Index_out_of_bounds, "That scale index does not exist.");
+        IVI_THROW_2(ivi::Index_out_of_bounds, "That scale index does not exist.");
     }
 
     return idx + s_min;
@@ -286,7 +286,7 @@ public:
 
     ~Gaussian_scale_space_generator();
 
-    GSS operator()(const kjb::Image& image);
+    GSS operator()(const ivi::Image& image);
 
     void set_num_octaves(int num_octaves);
 
@@ -500,27 +500,27 @@ void GSS_generator::check_params() const
 {
     if(O < 1)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "The number of octaves must be positive.");
+        IVI_THROW_2(ivi::Illegal_argument, "The number of octaves must be positive.");
     }
 
     if(S < 1)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "The number of levels must be positive.");
+        IVI_THROW_2(ivi::Illegal_argument, "The number of levels must be positive.");
     }
 
     if(s_min >= s_max || s_min >= S)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "The minimum level must be smaller than the maximum level.");
+        IVI_THROW_2(ivi::Illegal_argument, "The minimum level must be smaller than the maximum level.");
     }
 
     if(sigma_0 < 0.0 || sigma_n < 0.0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "The initial and nominal sigmas must be non-negative.");
+        IVI_THROW_2(ivi::Illegal_argument, "The initial and nominal sigmas must be non-negative.");
     }
 
     if(sigma_n >= sigma_0 * std::pow(2, o_min + static_cast<double>(s_min) / S))
     {
-        KJB_THROW_2(kjb::Illegal_argument, "The nominal smoothing sigma exceeds that of the minimum scale smoothing.");
+        IVI_THROW_2(ivi::Illegal_argument, "The nominal smoothing sigma exceeds that of the minimum scale smoothing.");
     }
 }
 

@@ -77,7 +77,7 @@ void CTextureScale::ComputeScaleImg(CImg<BYTE> &Img, CImg<float> &ScaleImg,
         triangulate("QBPNEIze", &in, &out, NULL);
 
         if (errno != 0) {
-        	KJB_THROW_2(kjb::KJB_error, "error in triangle.c:triangulate()");
+        	IVI_THROW_2(ivi::IVI_error, "error in triangle.c:triangulate()");
         }
         
         vector<vector<float>*> vecDists;

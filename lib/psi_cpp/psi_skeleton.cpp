@@ -1,4 +1,4 @@
-/* $Id: psi_skeleton.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_skeleton.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -28,7 +28,7 @@
 
 #include <string>
 
-namespace kjb {
+namespace ivi {
 namespace psi {
 
 typedef boost::bimap<Body_part_entity, std::string> Body_part_map;
@@ -130,4 +130,4 @@ std::vector<Psi_skeleton> parse_skeleton(std::istream& ist)
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

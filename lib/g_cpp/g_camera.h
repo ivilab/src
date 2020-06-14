@@ -1,4 +1,4 @@
-/* $Id: g_camera.h 12639 2012-07-06 17:19:26Z ernesto $ */
+/* $Id: g_camera.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -18,8 +18,8 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef KJB_CPP_G_CAMERA_H
-#define KJB_CPP_G_CAMERA_H
+#ifndef IVI_CPP_G_CAMERA_H
+#define IVI_CPP_G_CAMERA_H
 
 #include <l_cpp/l_algorithm.h>
 #include <m_cpp/m_matrix.h>
@@ -29,7 +29,7 @@
 #include <vector>
 #include <limits>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * Receives a point in homogeneous screen coordinates and back-projects it
@@ -125,7 +125,7 @@ Matrix lerp_extrinsic_camera_matrix(
         double t,
         bool use_slerp = false);
 
-} // namespace kjb
+} // namespace ivi
 
 #endif
 

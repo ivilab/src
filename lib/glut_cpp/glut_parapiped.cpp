@@ -54,14 +54,14 @@
 #include <glut_cpp/glut_parapiped.h>
 #include <gr_cpp/gr_opengl.h>
 
-using namespace kjb;
+using namespace ivi;
 
 bool Glut_parapiped::parapiped_enabled;
 unsigned int Glut_parapiped::selected_parameter;
 Parametric_parapiped * Glut_parapiped::parapiped;
 unsigned char Glut_parapiped::increment_character;
 unsigned char Glut_parapiped::decrement_character;
-kjb::Vector Glut_parapiped::increment_steps;
+ivi::Vector Glut_parapiped::increment_steps;
 
 /*
  * @param iparapiped_submenu_callback The user defined callback that will be executed
@@ -82,7 +82,7 @@ int Glut_parapiped::create_glut_parapiped_submenu(void (*iparapiped_submenu_call
         bool enable_height, bool enable_length, unsigned char iincrement_char,
         unsigned char idecrement_char)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     int parapiped_menu = glutCreateMenu(Glut_parapiped::parapiped_submenu_glut);
     if(enable_translation)
     {
@@ -128,7 +128,7 @@ int Glut_parapiped::create_glut_parapiped_submenu(void (*iparapiped_submenu_call
     return parapiped_menu;
 
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 

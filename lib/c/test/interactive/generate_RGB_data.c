@@ -1,5 +1,5 @@
 
-/* $Id: generate_RGB_data.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: generate_RGB_data.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     
     while (    (result == NO_ERROR)
             &&
-               ((option = kjb_getopts(argc, argv, "-r:i:", NULL, buff, 
+               ((option = ivi_getopts(argc, argv, "-r:i:", NULL, buff, 
                                       sizeof(buff))) 
                != EOF)
           )
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
                )
             {
                 p_stderr("Difference found.\n");
-                kjb_exit(EXIT_BUG);
+                ivi_exit(EXIT_BUG);
             }
 
 
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
                )
             {
                 p_stderr("Difference found (all).\n");
-                kjb_exit(EXIT_BUG);
+                ivi_exit(EXIT_BUG);
             }
 
         }

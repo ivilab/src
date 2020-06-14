@@ -11,7 +11,7 @@
 #include "l_cpp/l_int_matrix.h"
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 #define WALL_TO_DIFFERENT_WALL_WEIGHT 1.0
 #define WALL_TO_SAME_WALL_WEIGHT 1.0
@@ -35,7 +35,7 @@ Feature_histogram::Feature_histogram
 {
     if( (dart_window_size == 0) || ((dart_window_size%2) == 0) )
     {
-        KJB_THROW_2(Illegal_argument, "Dart window size must be an odd integer larger than 0");
+        IVI_THROW_2(Illegal_argument, "Dart window size must be an odd integer larger than 0");
     }
     _num_rows = num_rows;
     _num_cols = num_cols;
@@ -55,7 +55,7 @@ Feature_histogram::Feature_histogram
     prepare_diff_matrix(histo);
 }
 
-void Feature_histogram::draw_darts(kjb::Image & img)
+void Feature_histogram::draw_darts(ivi::Image & img)
 {
     img = Image::create_initialized_image(_num_rows, _num_cols, 0.0, 0.0, 0.0);
     for(unsigned int i = 0; i < darts.size(); i++)
@@ -84,7 +84,7 @@ void Feature_histogram::prepare_diff_matrix(DTLib::CImg<DTLib::FloatCHistogramPt
 
 double Feature_histogram::compute_differential
 (
-    const kjb::Matrix & assignment_matrix
+    const ivi::Matrix & assignment_matrix
 ) const
 {
     double the_differential = all_different;
@@ -105,7 +105,7 @@ double Feature_histogram::compute_differential
 
 double Feature_histogram::compute_score
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & previous_darts,
     std::vector<Fh_type> & new_darts,
     std::vector<bool> changed_darts,
@@ -162,7 +162,7 @@ double Feature_histogram::compute_score
 
 double Feature_histogram::compute_score
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts
 )
 {
@@ -425,7 +425,7 @@ bool Feature_histogram::find_probability3(const Fh_type & dart1, const Fh_type &
 
 double Feature_histogram::compute_score2
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & previous_darts,
     std::vector<Fh_type> & new_darts,
     std::vector<bool> changed_darts,
@@ -485,7 +485,7 @@ double Feature_histogram::compute_score2
 
 double Feature_histogram::compute_score2
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts
 )
 {
@@ -518,7 +518,7 @@ double Feature_histogram::compute_score2
 
 double Feature_histogram::compute_score3
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts
 )
 {
@@ -558,7 +558,7 @@ double Feature_histogram::compute_score3
 
 double Feature_histogram::compute_score4
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts
 )
 {
@@ -598,9 +598,9 @@ double Feature_histogram::compute_score4
 
 void Feature_histogram::draw_room
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts,
-    kjb::Image & img
+    ivi::Image & img
 )
 {
     unsigned int i = 0;
@@ -640,10 +640,10 @@ void Feature_histogram::draw_room
 
 void Feature_histogram::draw_object
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts,
     unsigned int obj_index,
-    kjb::Image & img
+    ivi::Image & img
 )
 {
     unsigned int i = 0;
@@ -683,11 +683,11 @@ void Feature_histogram::draw_object
 
 void Feature_histogram::draw_object_polymesh
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts,
     unsigned int obj_index,
     unsigned int polymesh_index,
-    kjb::Image & img
+    ivi::Image & img
 ) const
 {
     unsigned int i = 0;
@@ -726,9 +726,9 @@ void Feature_histogram::draw_object_polymesh
 
 void Feature_histogram::draw_room_floor
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts,
-    kjb::Image & img
+    ivi::Image & img
 )
 {
     unsigned int i = 0;
@@ -768,9 +768,9 @@ void Feature_histogram::draw_room_floor
 
 void Feature_histogram::draw_room_ceiling
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts,
-    kjb::Image & img
+    ivi::Image & img
 )
 {
     unsigned int i = 0;
@@ -810,9 +810,9 @@ void Feature_histogram::draw_room_ceiling
 
 void Feature_histogram::draw_room_walls
 (
-    const kjb::Int_matrix & map,
+    const ivi::Int_matrix & map,
     std::vector<Fh_type> & new_darts,
-    kjb::Image & img
+    ivi::Image & img
 )
 {
     unsigned int i = 0;

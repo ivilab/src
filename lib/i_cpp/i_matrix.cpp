@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: i_matrix.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: i_matrix.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l_cpp/l_exception.h"
@@ -14,20 +14,20 @@
 
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief convert a matrix to a black-and-white image, with enhanced contrast.
  * @param m input matrix to visualize
  * @returns Image with all pixels adjusted for enhanced contrast
  *
- * This wraps the C function kjb_c::matrix_to_max_contrast_8bit_bw_image().
+ * This wraps the C function ivi_c::matrix_to_max_contrast_8bit_bw_image().
  */
-Image matrix_to_max_contrast_8bit_bw_image(const kjb::Matrix& m)
+Image matrix_to_max_contrast_8bit_bw_image(const ivi::Matrix& m)
 {
-    kjb_c::KJB_image *i = 0;
+    ivi_c::IVI_image *i = 0;
     // this does not leak, presuming an error return means no allocation.
-    ETX(kjb_c::matrix_to_max_contrast_8bit_bw_image(m.get_c_matrix(), &i));
+    ETX(ivi_c::matrix_to_max_contrast_8bit_bw_image(m.get_c_matrix(), &i));
     return Image(i);
 }
 
@@ -45,15 +45,15 @@ Image matrix_to_max_contrast_8bit_bw_image(const kjb::Matrix& m)
  *
  * Using "gray" should give similar results to matrix_to_max_contast_8bit_bw_image()
  *
- * Custom colormaps may also by used by passing a kjb::Colormap object instead of 
+ * Custom colormaps may also by used by passing a ivi::Colormap object instead of 
  * as string.
  */
-Image matrix_to_color_image(const kjb::Matrix& m, const kjb::Colormap& map)
+Image matrix_to_color_image(const ivi::Matrix& m, const ivi::Colormap& map)
 {
-    double max = kjb::max(m);
-    double min = kjb::min(m);
+    double max = ivi::max(m);
+    double min = ivi::min(m);
 
-    kjb::Matrix scaled_data(m);
+    ivi::Matrix scaled_data(m);
     scaled_data.ow_add_scalar(-min);
     scaled_data /= (max - min);
     Image out(scaled_data.get_num_rows(), scaled_data.get_num_cols());

@@ -1,4 +1,4 @@
-/* $Id: test_window.cpp 11267 2011-12-03 01:47:55Z ksimek $ */
+/* $Id: test_window.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,7 +19,7 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_HAVE_GLUT
+#ifndef IVI_HAVE_GLUT
 #include <iostream>
 using namespace std;
 int main()
@@ -34,18 +34,18 @@ int main()
 #include <l_cpp/l_algorithm.h>
 #include <vector>
 
-using namespace kjb;
-using namespace kjb::gui;
+using namespace ivi;
+using namespace ivi::gui;
 
 int main()
 {
     try {
-        kjb::gui::Viewer viewer(800,600);
+        ivi::gui::Viewer viewer(800,600);
 
         std::vector<double> x(50);
         std::vector<double> y(50);
 
-        kjb::linspace(0, 2 * M_PI, 50, x.begin());
+        ivi::linspace(0, 2 * M_PI, 50, x.begin());
 
         for(size_t i = 0; i < x.size(); i++)
         {

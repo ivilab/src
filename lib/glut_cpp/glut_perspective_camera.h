@@ -68,7 +68,7 @@
 
 #include <gr_cpp/gr_opengl.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -87,7 +87,7 @@ enum { GLUT_PC_CENTRE_X, GLUT_PC_CENTRE_Y, GLUT_PC_CENTRE_Z, GLUT_PC_PITCH, GLUT
 #include <m_cpp/m_vector.h>
 #include <camera_cpp/perspective_camera.h>
 
-namespace kjb{
+namespace ivi{
 
     /** @class Glut_perspective_camera This class provides an easy way to add a glut
      * submenu that handles a full perspective camera to your application.
@@ -106,7 +106,7 @@ namespace kjb{
     class Glut_perspective_camera
     {
     public:
-        static int create_glut_perspective_camera_submenu(void (*icamera_submenu_callback)(int i), kjb::Perspective_camera * pc,
+        static int create_glut_perspective_camera_submenu(void (*icamera_submenu_callback)(int i), ivi::Perspective_camera * pc,
                 bool enable_translation = true, bool enable_pitch = true, bool enable_yaw = true, bool enable_roll = true,
                 bool enable_focal_length = true, bool enable_principal_point = true, bool enable_skew = true,
                 bool enable_aspect_ratio = true, bool enable_world_scale = true, bool enable_clipping = true,
@@ -208,10 +208,10 @@ namespace kjb{
         static bool camera_enabled;
         static unsigned int selected_parameter;
         /** Pointer to the perspective camera associated to this submenu*/
-        static kjb::Perspective_camera * camera;
+        static ivi::Perspective_camera * camera;
         static unsigned char increment_character;
         static unsigned char decrement_character;
-        static kjb::Vector increment_steps;
+        static ivi::Vector increment_steps;
 
         /** This parameter determines whether the vieport should be centred while scaling,
          * or kept in the same position. Default is true.

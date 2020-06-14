@@ -1,5 +1,5 @@
 
-/* $Id: g_geometry.c 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: g_geometry.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -609,7 +609,7 @@ int order_planer_points
 
             for (i=0; i<num_points; i++)
             {
-                EPE(kjb_sprintf(buff, sizeof(buff), "%d", i + 1));
+                EPE(ivi_sprintf(buff, sizeof(buff), "%d", i + 1));
                 EPE(plot_add_label(plot_id, buff,
                                  (*ordered_points_mpp)->elements[ i ][ 0 ],
                                  (*ordered_points_mpp)->elements[ i ][ 1 ]));

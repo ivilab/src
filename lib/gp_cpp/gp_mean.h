@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: gp_mean.h 20741 2016-07-04 18:43:54Z jguan1 $ */
+/* $Id: gp_mean.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef GP_MEAN_H_INCLUDED
 #define GP_MEAN_H_INCLUDED
@@ -31,7 +31,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 /**
@@ -133,7 +133,7 @@ struct Real_function_adapter
     Real_func func_;
 };
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_MEAN_H_INCLUDED */
 

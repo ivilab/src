@@ -7,7 +7,7 @@
  * in production mode.  In development mode it is much slower.
  */
 /*
- * $Id: monotone_3.cpp 20166 2015-12-09 21:50:27Z predoehl $
+ * $Id: monotone_3.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l_cpp/l_test.h>
@@ -24,31 +24,31 @@
 namespace
 {
 
-using kjb::qd::PixPoint;
-using kjb::qd::RatPoint;
-using kjb::qd::RatPoint_line_segment;
-using kjb::qd::Doubly_connected_edge_list;
+using ivi::qd::PixPoint;
+using ivi::qd::RatPoint;
+using ivi::qd::RatPoint_line_segment;
+using ivi::qd::Doubly_connected_edge_list;
 
 const int VISUALIZATION = 0; // meaningful values: 0=none, 1=some, 2=more.
 
 const long GRANULARITY = 128;
 
 
-RatPoint quasirandom_pt(kjb::Gsl_Qrng_Sobol& qrng)
+RatPoint quasirandom_pt(ivi::Gsl_Qrng_Sobol& qrng)
 {
-    kjb::Vector v( 2 );
+    ivi::Vector v( 2 );
     v = qrng.read();
     return RatPoint(RatPoint::Rat(long(v[0] * GRANULARITY), GRANULARITY),
                     RatPoint::Rat(long(v[1] * GRANULARITY), GRANULARITY));
 }
 
 
-// kjb_rand is repeatable, which is what I want.
+// ivi_rand is repeatable, which is what I want.
 int shuffler(int i)
 {
     const int BIG = 65536, dbli = 2*i;
-    KJB(ASSERT(i <= BIG));
-    int u = kjb_c::kjb_rand() * BIG;
+    IVI(ASSERT(i <= BIG));
+    int u = ivi_c::ivi_rand() * BIG;
     // shift right u until m is within an octave of the size of i
     for (int m = BIG; m >= dbli; m >>= 1)
     {
@@ -60,10 +60,10 @@ int shuffler(int i)
 Doubly_connected_edge_list complicated()
 {
     Doubly_connected_edge_list d;
-    kjb::Gsl_Qrng_Sobol qq( 2 );
+    ivi::Gsl_Qrng_Sobol qq( 2 );
 
     d = d.merge(
-        kjb::qd::get_axis_aligned_rectangle(PixPoint(0,0), PixPoint(1,1)));
+        ivi::qd::get_axis_aligned_rectangle(PixPoint(0,0), PixPoint(1,1)));
     std::vector< RatPoint > vertices;
 
     for (int i = 0; i < 24; ++i)
@@ -101,8 +101,8 @@ Doubly_connected_edge_list complicated()
             o1 = o1.merge(RatPoint_line_segment(c, octo[i]));
         }
         const size_t vix = o1.lookup_vertex(c);
-        KJB(ASSERT(1+starsize == o1.get_vertex_table().size()));
-        KJB(ASSERT(vix < 1+starsize));
+        IVI(ASSERT(1+starsize == o1.get_vertex_table().size()));
+        IVI(ASSERT(vix < 1+starsize));
         o1.translate(RatPoint(-c.x, -c.y));
 
         // inner core
@@ -116,13 +116,13 @@ Doubly_connected_edge_list complicated()
         for (size_t i = 0; i < starsize; ++i)
         {
             RatPoint_line_segment s(get_edge(o1, ej));
-            KJB(ASSERT(s.a == RatPoint(0,0)));
+            IVI(ASSERT(s.a == RatPoint(0,0)));
             ej = o1.get_edge_table().at(ej).next;
             const size_t vj = o1.get_edge_table().at(ej).origin;
             s.a = o2.get_vertex_table().at(vj).location;
             ej = o1.get_edge_table().at(ej).next;
             RatPoint_line_segment t(get_edge(o1, ej));
-            KJB(ASSERT(t.a == RatPoint(0,0)));
+            IVI(ASSERT(t.a == RatPoint(0,0)));
             t.a = s.a;
             Doubly_connected_edge_list o4(s);
             o4 = o4.merge(t);
@@ -148,19 +148,19 @@ Doubly_connected_edge_list complicated()
 int test1()
 {
     const Doubly_connected_edge_list d = complicated(),
-                                     e = kjb::qd::make_faces_ymonotone(d);
+                                     e = ivi::qd::make_faces_ymonotone(d);
 
     /*
     const size_t ct = sd.rfind("</svg>");
-    KJB(ASSERT( ct < sd.size() ));
+    IVI(ASSERT( ct < sd.size() ));
     sd.resize(ct);
     sd += db_fence_labels(d, 1, 0.05) + "</svg>\n";
     */
 
     if (VISUALIZATION > 0)
     {
-        std::string sd = kjb::qd::draw_dcel_as_svg(d),
-                    se = kjb::qd::draw_dcel_as_svg(e);
+        std::string sd = ivi::qd::draw_dcel_as_svg(d),
+                    se = ivi::qd::draw_dcel_as_svg(e);
 
         std::ofstream ff("monotone_3_i.svg");
         ff << sd;
@@ -182,7 +182,7 @@ int test2()
 {
     typedef RatPoint::Rat Rat;
 
-    kjb::qd::PixPath p(kjb::qd::PixPath::reserve(4)), q(p), r(p);
+    ivi::qd::PixPath p(ivi::qd::PixPath::reserve(4)), q(p), r(p);
     p.push_back(PixPoint(0,0));
     p.push_back(PixPoint(1,0));
     p.push_back(PixPoint(1,1));
@@ -218,15 +218,15 @@ int test2()
     if (VISUALIZATION > 1)
     {
         std::ofstream s5("m3t2s5.svg");
-        s5 << kjb::qd::draw_dcel_as_svg(j);
+        s5 << ivi::qd::draw_dcel_as_svg(j);
     }
 
-    Doubly_connected_edge_list k = kjb::qd::make_faces_ymonotone(j);
+    Doubly_connected_edge_list k = ivi::qd::make_faces_ymonotone(j);
 
     if (VISUALIZATION > 1)
     {
         std::ofstream s6("m3t2s6.svg");
-        s6 << kjb::qd::draw_dcel_as_svg(k);
+        s6 << ivi::qd::draw_dcel_as_svg(k);
     }
 
     // Skip face zero, of course.
@@ -245,7 +245,7 @@ int test3()
         d = RatPoint_line_segment(RatPoint(0,0), RatPoint(0,0));
 
     TEST_TRUE(is_empty(d));
-    TEST_TRUE(kjb_c::NO_ERROR == kjb::qd::is_valid(d));
+    TEST_TRUE(ivi_c::NO_ERROR == ivi::qd::is_valid(d));
 
     return EXIT_SUCCESS;
 }
@@ -254,7 +254,7 @@ int test3()
 int test4()
 {
     // select and stir quasirandom points
-    kjb::Gsl_Qrng_Sobol qq( 2 );
+    ivi::Gsl_Qrng_Sobol qq( 2 );
     std::vector< RatPoint > vertices;
     for (int i = 0; i < 10; ++i)
     {
@@ -290,7 +290,7 @@ int test4()
     if (VISUALIZATION > 1)
     {
         std::ofstream f("m3t4s1.svg");
-        f << kjb::qd::draw_dcel_as_svg(d);
+        f << ivi::qd::draw_dcel_as_svg(d);
     }
 
     std::vector< RatPoint_line_segment > m;
@@ -305,7 +305,7 @@ int test4()
     if (VISUALIZATION > 1)
     {
         std::ofstream f("m3t4s2.svg");
-        f << kjb::qd::draw_dcel_as_svg(d);
+        f << ivi::qd::draw_dcel_as_svg(d);
     }
 
     std::vector< RatPoint_line_segment > t;
@@ -320,7 +320,7 @@ int test4()
     if (VISUALIZATION > 1)
     {
         std::ofstream f("m3t4s3.svg");
-        f << kjb::qd::draw_dcel_as_svg(d);
+        f << ivi::qd::draw_dcel_as_svg(d);
     }
 
     return EXIT_SUCCESS;
@@ -332,7 +332,7 @@ int test4()
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
 
     try
     {
@@ -341,12 +341,12 @@ int main(int argc, char** argv)
         /*if (EXIT_SUCCESS != test1()) return EXIT_FAILURE;*/
         if (EXIT_SUCCESS != test4()) return EXIT_FAILURE;
     }
-    catch(const kjb::Exception& e)
+    catch(const ivi::Exception& e)
     {
         e.print_details_exit(std::cout, true);
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

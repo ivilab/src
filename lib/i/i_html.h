@@ -1,5 +1,5 @@
 
-/* $Id: i_html.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_html.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -37,7 +37,7 @@ int set_image_html_options(const char* option, const char* value);
 
 int output_image_for_html
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     FILE*            index_fp,
     const char*      dir,
     const char*      file_name
@@ -45,7 +45,7 @@ int output_image_for_html
 
 int output_image_for_html_2
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     FILE*            index_fp,
     const char*      dir,
     const char*      file_name,

@@ -1,4 +1,4 @@
-/* $Id: edge_chamfer.cpp 10669 2011-09-29 19:52:08Z predoehl $ */
+/* $Id: edge_chamfer.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,7 +19,7 @@
 
 #include <edge_cpp/edge_chamfer.h>
 
-namespace kjb {
+namespace ivi {
 Chamfer_transform::Chamfer_transform(const Self& other) :
     m_size(other.m_size),
     m_edges(other.m_edges),
@@ -29,4 +29,4 @@ Chamfer_transform::Chamfer_transform(const Self& other) :
     m_edge_map(other.m_edge_map)
 {
 }
-} // namespace kjb
+} // namespace ivi

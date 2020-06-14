@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_vector.cpp 20314 2016-02-02 06:20:49Z predoehl $
+ * $Id: test_vector.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l_cpp/l_stdio_wrap.h>
@@ -29,9 +29,9 @@ int fail( const std::string& msg )
 
 int test_io()
 {
-    kjb::Temporary_File tf;
+    ivi::Temporary_File tf;
 
-    kjb::Gsl_Vector pi( 10 );
+    ivi::Gsl_Vector pi( 10 );
     pi.at( 0 ) = 3.0;
     pi.at( 1 ) = 0.1;
     pi.at( 2 ) = 0.04;
@@ -57,7 +57,7 @@ int test_io()
     } while( 0 );
     fflush(tf);
 
-    kjb::Gsl_Vector icecream( 10 );
+    ivi::Gsl_Vector icecream( 10 );
     do {
         std::ifstream fi( tf.get_filename().c_str() );
         if ( ! fi )
@@ -71,9 +71,9 @@ int test_io()
         }
     } while( 0 );
 
-    kjb::Gsl_Vector diff = pi - icecream;
+    ivi::Gsl_Vector diff = pi - icecream;
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         std::cout   << "start: " << pi
                     << "end:  " << icecream
@@ -91,7 +91,7 @@ const double pie_d[] = { 3.0, 0.1, 0.04, 0.001, 0.0006 };
 const size_t pie_size = 5;
 
 
-bool is_5_digits_of_pi( kjb::Gsl_Vector& testvec )
+bool is_5_digits_of_pi( ivi::Gsl_Vector& testvec )
 {
     const double EPS( 1e-12 );
 
@@ -107,18 +107,18 @@ bool is_5_digits_of_pi( kjb::Gsl_Vector& testvec )
 
 int test_iterator_ctor()
 {
-    kjb::Gsl_Vector pi1( pie_d, pie_d + pie_size );
+    ivi::Gsl_Vector pi1( pie_d, pie_d + pie_size );
     we_expect_that( is_5_digits_of_pi( pi1 ) );
 
-    kjb::Vector pi2( pie_size, pie_d );
-    kjb::Gsl_Vector pi3( pi2 );
+    ivi::Vector pi2( pie_size, pie_d );
+    ivi::Gsl_Vector pi3( pi2 );
     we_expect_that( is_5_digits_of_pi( pi3 ) );
 
-    kjb::Gsl_Vector pi4( pi2.begin(), pi2.end() );
+    ivi::Gsl_Vector pi4( pi2.begin(), pi2.end() );
     we_expect_that( is_5_digits_of_pi( pi4 ) );
 
     std::vector< double > pi5( pie_d, pie_d + pie_size );
-    kjb::Gsl_Vector pi6( pi5.begin(), pi5.end() );
+    ivi::Gsl_Vector pi6( pi5.begin(), pi5.end() );
     we_expect_that( is_5_digits_of_pi( pi6 ) );
 
     return EXIT_SUCCESS;
@@ -128,7 +128,7 @@ int test_iterator_ctor()
 // this is a unit test on the GSL vectors themselves -- that they behave sanely
 int test_vector()
 {
-    using kjb::Gsl_Vector;
+    using ivi::Gsl_Vector;
 
     Gsl_Vector v1( 5 ), v2( 5 ), w1( 6 );
     w1.at( 0 ) = 17;
@@ -248,8 +248,8 @@ int test_vector()
     we_expect_approx_equality( v4.min(), 6-40 );
     we_expect_approx_equality( v6.max(), 40-6 );
 
-    // Test conversion to KJB Vector (the C++ kind)
-    kjb::Vector k5( v5.vec() );
+    // Test conversion to IVI Vector (the C++ kind)
+    ivi::Vector k5( v5.vec() );
     Gsl_Vector vee_five( k5 );
     we_expect_approx_equality( (v5 - vee_five).l2_norm(), 0 );
 

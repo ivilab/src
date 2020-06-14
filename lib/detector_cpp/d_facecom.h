@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_facecom.h 18724 2015-03-28 21:22:30Z jguan1 $ */
+/* $Id: d_facecom.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef D_FACECOM_H
 #define D_FACECOM_H
@@ -27,7 +27,7 @@
 #include <vector>
 #include <string>
 
-namespace kjb {
+namespace ivi {
 
 class Perspective_camera;
 /**
@@ -143,7 +143,7 @@ std::vector<std::vector<Face_detection> > read_face_files
     const std::vector<std::string>& face_fps
 );
 
-} // namespace kjb
+} // namespace ivi
 
 #endif /*D_FACECOM_H */
 

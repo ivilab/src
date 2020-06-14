@@ -5,7 +5,7 @@
  *
  */
 /*
- * $Id: sweep.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: sweep.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -17,7 +17,7 @@
 #include <algorithm>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -75,8 +75,8 @@ std::set<Event_p> fill_queue_get_bumpers(
 {
     NTX(lbump);
     NTX(rbump);
-    KJB(ASSERT(lbump != rbump));
-    KJB(ASSERT(! csl.empty()));
+    IVI(ASSERT(lbump != rbump));
+    IVI(ASSERT(! csl.empty()));
 
     // Initialize slash, a diagonal across a tight axis-aligned bounding box.
     RatPoint_line_segment slash(csl.front());
@@ -90,7 +90,7 @@ std::set<Event_p> fill_queue_get_bumpers(
         const size_t exit = blank_exit ? SWEEP_BLANK : i;
 #if 1
         const RatPoint_line_segment s(rectify(csl[i]));
-        KJB(ASSERT(s.a <= s.b));
+        IVI(ASSERT(s.a <= s.b));
         eq.insert(boost::make_shared< Event_point >(s.a, i));
         eq.insert(boost::make_shared< Event_point >(s.b, exit));
 #else
@@ -114,7 +114,7 @@ std::set<Event_p> fill_queue_get_bumpers(
     // If you didn't visualize and you were in a hurry, you could set it to 1.
     const RatPoint::Rat dx = slash.b.x - slash.a.x, dy = slash.b.y - slash.a.y,
                         margin = std::max(dx, dy) / 32;
-    KJB(ASSERT(margin > 0));
+    IVI(ASSERT(margin > 0));
     slash.a.x -= margin;
     slash.a.y -= margin;
     slash.b.x += margin;
@@ -125,10 +125,10 @@ std::set<Event_p> fill_queue_get_bumpers(
     lbump -> b.x = slash.a.x;
     rbump -> a.x = slash.b.x;
 
-    KJB(ASSERT(lbump -> a < rbump -> a));
-    KJB(ASSERT(lbump -> b < rbump -> b));
-    KJB(ASSERT(lbump -> a < lbump -> b));
-    KJB(ASSERT(rbump -> a < lbump -> b));
+    IVI(ASSERT(lbump -> a < rbump -> a));
+    IVI(ASSERT(lbump -> b < rbump -> b));
+    IVI(ASSERT(lbump -> a < lbump -> b));
+    IVI(ASSERT(rbump -> a < lbump -> b));
 
     return eq;
 }
@@ -142,13 +142,13 @@ void classify_segment(
     const RatPoint sweep_location
 )
 {
-    KJB(ASSERT(ulma));
+    IVI(ASSERT(ulma));
     // Store index in the "all" set.
     ulma[3].insert(index);
 
     std::set<size_t> &upper(ulma[0]), &lower(ulma[1]), &middle(ulma[2]);
 
-    KJB(ASSERT(s.a <= s.b)); // Did rectify() do its job?
+    IVI(ASSERT(s.a <= s.b)); // Did rectify() do its job?
     if (s.a == s.b)
     {
         upper.insert(index);
@@ -156,18 +156,18 @@ void classify_segment(
     }
     else if (sweep_location == s.a)
     {
-        KJB(ASSERT(sweep_location < s.b));
+        IVI(ASSERT(sweep_location < s.b));
         upper.insert(index);
     }
     else if (sweep_location == s.b)
     {
-        KJB(ASSERT(s.a < sweep_location));
+        IVI(ASSERT(s.a < sweep_location));
         lower.insert(index);
     }
     else
     {
 if (!(s.a < sweep_location && sweep_location < s.b)) { std::cout << "trouble:  index=" << index << ", s.a=" << s.a << '=' << dbl_ratio(s.a.x) << ',' << dbl_ratio(s.a.y) << ", s.b=" << s.b << '=' << dbl_ratio(s.b.x) << ',' << dbl_ratio(s.b.y) << "\nulma[3] so far: "; std::copy(ulma[3].begin(), ulma[3].end(), std::ostream_iterator<size_t>(std::cout, ", ")); std::cout << std::endl; }
-        KJB(ASSERT(s.a < sweep_location && sweep_location < s.b));
+        IVI(ASSERT(s.a < sweep_location && sweep_location < s.b));
         middle.insert(index);
     }
 }

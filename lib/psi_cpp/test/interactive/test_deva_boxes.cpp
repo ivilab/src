@@ -16,9 +16,9 @@
 
 #include <psi_cpp/psi_human_box.h>
 
-using namespace kjb::psi;
+using namespace ivi::psi;
 
-void draw_boxes(kjb::Image& img, const std::vector<kjb::Bounding_Box2D>& boxes)
+void draw_boxes(ivi::Image& img, const std::vector<ivi::Bounding_Box2D>& boxes)
 {
     for(size_t i = 0; i < boxes.size(); i++)
     {
@@ -34,7 +34,7 @@ void print_usage(const char* cmd_name)
 int main(int argc, char* argv[])
 {
     using std::string;
-    using kjb::Image;
+    using ivi::Image;
     using std::vector;
     // image filename, boxes filename
     // output image with boxes
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     string box_fname(argv[2]);
     string out_fname(argv[3]);
 
-    vector<kjb::Bounding_Box2D> boxes;
+    vector<ivi::Bounding_Box2D> boxes;
 
     Image img_in(img_fname);
     std::ifstream ifs(box_fname.c_str());

@@ -31,7 +31,7 @@
 #include "gp_cpp/gp_mean.h"
 #include "m_cpp/m_vector.h"
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 class Likelihood
@@ -89,7 +89,7 @@ private:
 /** @brief  Sample data from likelihood, given a description. */
 Data sample(const Likelihood& likelihood, const Description& desc);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_LIKELIHOOD_H */
 

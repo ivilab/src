@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     Matrix *candidate_pos_mp = NULL;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (! is_interactive()) 
     {

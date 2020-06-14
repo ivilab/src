@@ -49,7 +49,7 @@
 #ifndef __CLFFT_INTERNAL_H
 #define __CLFFT_INTERNAL_H
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
 #include "wrap_clfft/clFFT.h"
 #include <string>
 #include <sstream>
@@ -162,5 +162,5 @@ typedef struct
 void FFT1D(cl_fft_plan *plan, cl_fft_kernel_dir dir);
 
 
-#endif /* KJB_HAVE_OPENCL */
+#endif /* IVI_HAVE_OPENCL */
 #endif  

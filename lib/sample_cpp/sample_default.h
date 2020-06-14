@@ -1,4 +1,4 @@
-/* $Id: sample_default.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: sample_default.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -67,7 +67,7 @@ struct Move_model_parameter_as_plus
 template<class Model>
 struct Constant_parameter_evaluator
 {
-    Constant_parameter_evaluator(const kjb::Vector& evaluations) :
+    Constant_parameter_evaluator(const ivi::Vector& evaluations) :
         evals(evaluations)
     {}
 
@@ -75,12 +75,12 @@ struct Constant_parameter_evaluator
         evals(static_cast<int>(size), evaluation)
     {}
 
-    const kjb::Vector& operator()(const Model& /*m*/) const
+    const ivi::Vector& operator()(const Model& /*m*/) const
     {
         return evals;
     }
 
-    kjb::Vector evals;
+    ivi::Vector evals;
 };
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -133,26 +133,26 @@ public:
     /**
      * @brief   Evaluates gradient at q.
      */
-    kjb::Vector operator()(const Model& q) const
+    ivi::Vector operator()(const Model& q) const
     {
         return gradient(q);
     }
 
-    kjb::Vector curvature(const Model& q) const
+    ivi::Vector curvature(const Model& q) const
     {
-        kjb::Vector result;
+        ivi::Vector result;
         gradient_curvature_dispatch_(q, boost::none, result);
         return result;
     }
 
-    kjb::Vector gradient (const Model& q) const
+    ivi::Vector gradient (const Model& q) const
     {
-        kjb::Vector result;
+        ivi::Vector result;
         gradient_curvature_dispatch_(q, result, boost::none);
         return result;
     }
 
-    void gradient_and_curvature(const Model& q, kjb::Vector& gradient, kjb::Vector& curvature) const
+    void gradient_and_curvature(const Model& q, ivi::Vector& gradient, ivi::Vector& curvature) const
     {
         gradient_curvature_dispatch_(q, gradient, curvature);
     }
@@ -165,8 +165,8 @@ private:
      */
     void gradient_curvature_dispatch_(
             const Model& q,
-            boost::optional<kjb::Vector&> gradient,
-            boost::optional<kjb::Vector&> curvature) const;
+            boost::optional<ivi::Vector&> gradient,
+            boost::optional<ivi::Vector&> curvature) const;
 
 private:
     Target_distribution l_target;
@@ -178,14 +178,14 @@ private:
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
 template<typename Model>
-void Numerical_gradient<Model>::gradient_curvature_dispatch_(const Model& q, boost::optional<kjb::Vector&> gradient, boost::optional<kjb::Vector&> curvature) const
+void Numerical_gradient<Model>::gradient_curvature_dispatch_(const Model& q, boost::optional<ivi::Vector&> gradient, boost::optional<ivi::Vector&> curvature) const
 {
     // if neither curvature or gradient is requested, do nothing
     if(!gradient && !curvature) return;
 
     Model q2 = q;
     size_t dim = get_dimension(q2);
-    kjb::Vector etas = get_neighborhood(q2);
+    ivi::Vector etas = get_neighborhood(q2);
 
     if(gradient)
         (*gradient).resize(dim);
@@ -280,7 +280,7 @@ public:
     /**
      * @brief   Return the vector of upper bounds for a given model.
      */
-    kjb::Vector get_upper_bounds(const Model& m) const
+    ivi::Vector get_upper_bounds(const Model& m) const
     {
         return m_get_upper_bounds(m);
     }
@@ -288,7 +288,7 @@ public:
     /**
      * @brief   Return the vector of lower bounds for a given model.
      */
-    kjb::Vector get_lower_bounds(const Model& m) const
+    ivi::Vector get_lower_bounds(const Model& m) const
     {
         return m_get_lower_bounds(m);
     }

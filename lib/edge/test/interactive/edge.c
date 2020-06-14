@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     const char* fname_in;
     const char* fname_out;
 
-    KJB_image*  img = NULL;
+    IVI_image*  img = NULL;
     Matrix*     m   = NULL;
     Edge_set*   edges = NULL;
     Edge*       edge_p = NULL;
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
     Line_segment_s* line = NULL;
     double start_x, start_y, end_x, end_y;
 
-    kjb_init();
+    ivi_init();
 
     /* Not ready to do anything in batch mode.  */
     if (! is_interactive()) 
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
     end_mag_thresh   = 0.008 * 255;
     dp_thresh        = 0.95 * 255;
 
-    EPETE(kjb_read_image_2(&img, fname_in));
+    EPETE(ivi_read_image_2(&img, fname_in));
 
    /* EPETE(image_to_matrix_2(img, 1.0, 1.0, 1.0, &m)); */
     EPETE(image_to_matrix_2(img, 0.3, 0.59, 0.11, &m));
@@ -118,18 +118,18 @@ int main(int argc, char** argv)
             
     /*    printf("%d's error = %f\n", i, fit_error);*/
         edge_p++;
-        kjb_free(line);
+        ivi_free(line);
     }
     pxl.r = 255.0;
    /* EPETE(color_edge_set(&img, img, edges, &pxl));*/
 
-    EPETE(kjb_write_image(img, fname_out));
+    EPETE(ivi_write_image(img, fname_out));
 
     free_matrix(m);
-    kjb_free_image(img);
+    ivi_free_image(img);
     free_edge_set(edges);
 
-    kjb_cleanup();
+    ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

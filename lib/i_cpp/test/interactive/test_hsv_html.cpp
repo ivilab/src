@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_hsv_html.cpp 11667 2012-02-10 00:16:20Z predoehl $
+ * $Id: test_hsv_html.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <i_cpp/i_cpp_incl.h>
@@ -23,8 +23,8 @@ std::string body()
             output += "<tr>";
             for( int hue = 0; hue <= MAX; ++hue ) {
                 float hue01 = hue / float(MAX), sat01 = sat / float(MAX);
-                kjb::PixelHSVA pix1( hue01, sat01, 1.0f );
-                kjb::PixelRGBA pix2( pix1 );
+                ivi::PixelHSVA pix1( hue01, sat01, 1.0f );
+                ivi::PixelRGBA pix2( pix1 );
                 output += Td1 + pix2.as_hex_triplet() + Td2;
             }
             output += "</tr>\n";

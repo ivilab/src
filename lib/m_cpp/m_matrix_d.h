@@ -1,4 +1,4 @@
-/* $Id: m_matrix_d.h 21776 2017-09-17 16:44:49Z clayton $ */
+/* $Id: m_matrix_d.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_MATRIX_D_H
-#define KJB_M_MATRIX_D_H
+#ifndef IVI_M_MATRIX_D_H
+#define IVI_M_MATRIX_D_H
 
 
 #include "l_cpp/l_exception.h"
@@ -35,12 +35,12 @@
 
 #include <algorithm>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/array.hpp>
 #endif
 
-namespace kjb
+namespace ivi
 {
 
 
@@ -48,12 +48,12 @@ class Vector;
 class Matrix;
 
 /**
- * @ingroup kjbLinearAlgebra
+ * @ingroup iviLinearAlgebra
  * @{
  */
 
 /**
- * Statically-allocated matrix.  More limited in functionality than kjb::Matrix,
+ * Statically-allocated matrix.  More limited in functionality than ivi::Matrix,
  * but can offer significantly better performance, because no operations
  * require heap allocation.  Transposes are also handle statically, so a
  * matrix can be transposed and used in operators without a copy and zero 
@@ -130,7 +130,7 @@ public:
 #ifdef TEST
         typedef typename std::iterator_traits<Iterator>::value_type RowVector;
 
-        BOOST_CONCEPT_ASSERT((kjb::SimpleVector<RowVector>));
+        BOOST_CONCEPT_ASSERT((ivi::SimpleVector<RowVector>));
 #endif /*TEST */
 
         Iterator it = begin;
@@ -138,7 +138,7 @@ public:
         for (size_t i = 0; i < NROWS; ++i, ++it, ++oit)
         {
             if (it->size() != NCOLS)
-                KJB_THROW(Dimension_mismatch);
+                IVI_THROW(Dimension_mismatch);
             std::copy(it->begin(), it->end(), oit->begin());
             
         }
@@ -156,10 +156,10 @@ public:
 //    Matrix_d(const VectorType& row) :
 //        Base()
 //    {
-//        KJB_STATIC_ASSERT(NROWS == 1, "Constructor invalid for NROWS!=1");
+//        IVI_STATIC_ASSERT(NROWS == 1, "Constructor invalid for NROWS!=1");
 //
 //#ifdef TEST
-//        BOOST_CONCEPT_ASSERT((kjb::SimpleVector<VectorType>));
+//        BOOST_CONCEPT_ASSERT((ivi::SimpleVector<VectorType>));
 //#endif //TEST
 //
 //        assert(row.size() == NCOLS);
@@ -179,10 +179,10 @@ public:
 //    Matrix_d( const VectorType& r1, const VectorType& r2) :
 //        Base()
 //    {
-//        KJB_STATIC_ASSERT(NROWS == 2, "Constructor invalid for NROWS!=2");
+//        IVI_STATIC_ASSERT(NROWS == 2, "Constructor invalid for NROWS!=2");
 //
 //#ifdef TEST
-//        BOOST_CONCEPT_ASSERT((kjb::SimpleVector<VectorType>));
+//        BOOST_CONCEPT_ASSERT((ivi::SimpleVector<VectorType>));
 //#endif // TEST
 //
 //        assert(r1.size() == NCOLS);
@@ -206,9 +206,9 @@ public:
 //            const VectorType& r3) :
 //        Base()
 //    {
-//        KJB_STATIC_ASSERT(NROWS == 3, "Constructor invalid for NROWS!=3");
+//        IVI_STATIC_ASSERT(NROWS == 3, "Constructor invalid for NROWS!=3");
 //#ifdef TEST
-//        BOOST_CONCEPT_ASSERT((kjb::SimpleVector<VectorType>));
+//        BOOST_CONCEPT_ASSERT((ivi::SimpleVector<VectorType>));
 //#endif // TEST
 //
 //        assert(r1.size() == NCOLS);
@@ -236,9 +236,9 @@ public:
 //            const VectorType& r4) :
 //        Base()
 //    {
-//        KJB_STATIC_ASSERT(NROWS == 4, "Constructor invalid for NROWS!=4");
+//        IVI_STATIC_ASSERT(NROWS == 4, "Constructor invalid for NROWS!=4");
 //#ifdef TEST
-//        BOOST_CONCEPT_ASSERT((kjb::SimpleVector<VectorType>));
+//        BOOST_CONCEPT_ASSERT((ivi::SimpleVector<VectorType>));
 //#endif // TEST
 //
 //        assert(r1.size() == NCOLS);
@@ -412,7 +412,7 @@ public:
     template <std::size_t IN_ROWS, bool IN_TRANSPOSED>
     Matrix_d& operator*=(const Matrix_d<IN_ROWS, IN_ROWS, IN_TRANSPOSED>& other)
     {
-        KJB_STATIC_ASSERT(IN_ROWS == NROWS && IN_ROWS == NCOLS, "Dimension mismatch");
+        IVI_STATIC_ASSERT(IN_ROWS == NROWS && IN_ROWS == NCOLS, "Dimension mismatch");
         return *this = *this * other;
 
     }
@@ -552,7 +552,7 @@ private:
     // DISPATCH METHODS
     //
     // These should work the same for normal and transposed
-    // static matrices and for dynamic kjb::Matrix's.
+    // static matrices and for dynamic ivi::Matrix's.
     //
     // The all assume that dimension checking has already occurred by
     // the caller.
@@ -572,7 +572,7 @@ private:
     bool matrix_equality_dispatch_(const Matrix2& m2) const;
 
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /* version */)
     {
@@ -611,7 +611,7 @@ template<std::size_t NROWS, std::size_t NCOLS, bool TRANSPOSED>
 inline Matrix operator*(const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op1, const Matrix& op2);
 
 template<std::size_t NROWS, std::size_t NCOLS, bool TRANSPOSED>
-inline Matrix operator*(const kjb::Matrix& op1, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op2);
+inline Matrix operator*(const ivi::Matrix& op1, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op2);
 
 
 template <std::size_t NROWS, std::size_t NCOLS, bool TRANSPOSED>
@@ -660,7 +660,7 @@ Matrix_d<2,2> matrix_inverse(const Matrix_d<2,2>& m);
 Matrix_d<3,3> matrix_inverse(const Matrix_d<3,3>& m);
 
 /** @brief get eigenvalues of symmetric matrix A in ascending order */
-void symmetric_eigs(const kjb::Matrix3& A, double& eig1, double& eig2, double& eig3);
+void symmetric_eigs(const ivi::Matrix3& A, double& eig1, double& eig2, double& eig3);
 
 /**
  * Add elements of a matrix
@@ -715,7 +715,7 @@ double min(const Matrix_d<R,C, T>& mat);
 
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 
 //#include <m_cpp/m_matrix_d.impl.h>
 #endif

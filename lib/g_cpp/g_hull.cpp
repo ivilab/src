@@ -1,4 +1,4 @@
-/* $Id: g_hull.cpp 21755 2017-09-07 21:54:51Z kobus $ */
+/* $Id: g_hull.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,17 +22,17 @@
 #include <h/h_intersect.h>
 #include <iostream>
 
-namespace kjb
+namespace ivi
 {
 /** /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 int get_convex_hull
 (
-    const kjb::Matrix& points,
+    const ivi::Matrix& points,
     Matrix& hull_vertices,
     std::vector<Matrix>& hull_facets
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     Hull* hp = NULL;
     int result = get_convex_hull(&hp, points.get_c_matrix(), DEFAULT_HULL_OPTIONS);
     if(result == ERROR)
@@ -41,12 +41,12 @@ int get_convex_hull
         return ERROR;
     }
 
-    hull_vertices = kjb::Matrix(*(hp->vertex_mp));
+    hull_vertices = ivi::Matrix(*(hp->vertex_mp));
     hull_facets.clear();
     hull_facets.resize(hp->facets->length);
     for(int i = 0; i < hp->facets->length; i++)
     {
-        hull_facets[i] = kjb::Matrix(*(hp->facets->elements[i]));
+        hull_facets[i] = ivi::Matrix(*(hp->facets->elements[i]));
     }
 
     free_hull(hp);
@@ -61,7 +61,7 @@ bool intersect_hulls
     std::vector<Matrix>& hull_facets
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     Hull* result_hp = NULL;
     Queue_element* hull_list_head = NULL;
     Queue_element* hull_list_end = NULL;
@@ -82,7 +82,7 @@ bool intersect_hulls
     EPE(intersect = intersect_hulls(hull_list_head, DEFAULT_HULL_OPTIONS, &result_hp));
     if (intersect == ERROR)
     {
-        kjb_print_error();
+        ivi_print_error();
         free_queue(&hull_list_head, (Queue_element**)NULL, 
                   (void(*)(void*))free_hull); 
         return false;
@@ -103,12 +103,12 @@ bool intersect_hulls
     }
 
     // create a matrix that contains the points and facets in the resulting hull
-    hull_vertices = kjb::Matrix(*(result_hp->vertex_mp));
+    hull_vertices = ivi::Matrix(*(result_hp->vertex_mp));
     hull_facets.clear();
     hull_facets.resize(result_hp->facets->length);
     for(int i = 0; i < result_hp->facets->length; i++)
     {
-        hull_facets.push_back(kjb::Matrix(*(result_hp->facets->elements[i])));
+        hull_facets.push_back(ivi::Matrix(*(result_hp->facets->elements[i])));
     }
 
     // clean  up
@@ -117,4 +117,4 @@ bool intersect_hulls
     free_hull(result_hp);
     return true;
 }
-} //namespace kjb
+} //namespace ivi

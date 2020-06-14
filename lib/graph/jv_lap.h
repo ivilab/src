@@ -1,5 +1,5 @@
 
-/* $Id: jv_lap.h 13646 2013-01-24 04:56:05Z predoehl $ */
+/* $Id: jv_lap.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /************************************************************************
 *
@@ -20,7 +20,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

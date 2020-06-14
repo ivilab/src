@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: integral_flow_io.cpp 14083 2013-03-12 18:41:07Z jguan1 $ */
+/* $Id: integral_flow_io.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <flow_cpp/flow_integral_flow.h>
 #include <m_cpp/m_vector.h>
@@ -26,12 +26,12 @@
 #include <ostream>
 #include <fstream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     string x_file = "output/x_int_flow.txt";
     string y_file = "output/y_int_flow.txt";

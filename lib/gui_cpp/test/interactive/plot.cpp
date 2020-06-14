@@ -1,4 +1,4 @@
-/* $Id: plot.cpp 11530 2012-01-25 17:39:14Z ksimek $ */
+/* $Id: plot.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -25,7 +25,7 @@
 #include <gui_cpp/gui_graph.h>
 #include <gui_cpp/gui_viewer.h>
 using namespace std;
-using namespace kjb::gui;
+using namespace ivi::gui;
 
 /**
  * A simple command-line utility that that recieves file of data columns in stdin and plots them.

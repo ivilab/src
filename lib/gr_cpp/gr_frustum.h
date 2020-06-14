@@ -1,4 +1,4 @@
-/* $Id: gr_frustum.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_frustum.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -19,9 +19,9 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
-#ifndef KJB_GR_CPP_GR_FRUSTUM
-#define KJB_GR_CPP_GR_FRUSTUM
+#ifdef IVI_HAVE_OPENGL
+#ifndef IVI_GR_CPP_GR_FRUSTUM
+#define IVI_GR_CPP_GR_FRUSTUM
 
 #include "l/l_sys_debug.h"  /* For ASSERT */`
 #include "m_cpp/m_matrix.h"
@@ -32,7 +32,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace kjb 
+namespace ivi 
 {
 namespace opengl
 {
@@ -49,7 +49,7 @@ namespace opengl
  * If an image is provided, the image is displayed on the near plane so that
  * if it is viewed from the camera itself, it appears exactly undistorted.
  */
-class Frustum_display : public kjb::Renderable
+class Frustum_display : public ivi::Renderable
 {
 public:
 
@@ -62,8 +62,8 @@ public:
      * @param far distance to far plane (positive values for front of camera)
      */
     Frustum_display(
-            const kjb::Vector& center,
-            const kjb::Matrix& cam,
+            const ivi::Vector& center,
+            const ivi::Matrix& cam,
             double image_width,
             double image_height,
             double near,
@@ -91,21 +91,21 @@ public:
         image_alpha_ = alpha;
     }
 
-    void set_camera(const kjb::Vector& center, const kjb::Matrix& cam)
+    void set_camera(const ivi::Vector& center, const ivi::Matrix& cam)
     {
         ASSERT(center.size() >= 3 && center.size() <= 4);
         std::copy(center.begin(), center.begin() + 3, center_.begin());
 
         m_inv_ = cam;
-        m_inv_ = kjb::matrix_inverse(m_inv_.resize(3,3));
+        m_inv_ = ivi::matrix_inverse(m_inv_.resize(3,3));
         m_inv_.resize(4,4,0.0);
         m_inv_(3,3) = 1.0;
 
     }
 
-    void set_image(const kjb::Image& img)
+    void set_image(const ivi::Image& img)
     {
-        image_.reset(new kjb::opengl::Texture());
+        image_.reset(new ivi::opengl::Texture());
         image_->set(img);
     }
 
@@ -117,12 +117,12 @@ public:
     void render() const;
 
 private:
-    kjb::Vector3 center_;
+    ivi::Vector3 center_;
     double z_near_;
     double z_far_;
-    boost::shared_ptr<kjb::opengl::Texture> image_;
+    boost::shared_ptr<ivi::opengl::Texture> image_;
 
-    kjb::Matrix m_inv_;
+    ivi::Matrix m_inv_;
     double width_;
     double height_;
     bool show_frame_;
@@ -132,4 +132,4 @@ private:
 }
 }
 #endif
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */

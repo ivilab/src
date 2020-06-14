@@ -1,4 +1,4 @@
-/* $Id: gsl_multifit.h 20312 2016-02-02 05:20:31Z predoehl $ */
+/* $Id: gsl_multifit.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GSL_MULTIFIT_H
-#define KJB_CPP_GSL_MULTIFIT_H
+#ifndef IVI_CPP_GSL_MULTIFIT_H
+#define IVI_CPP_GSL_MULTIFIT_H
 
 /**
  * @file
@@ -41,7 +41,7 @@
 #include <gsl_cpp/gsl_matrix.h>
 #include <boost/function/function1.hpp>
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #include <gsl/gsl_multifit_nlin.h>
 #else
 #warning "Gnu Scientific Library is absent, yet essential to this program."
@@ -76,7 +76,7 @@ typedef void gsl_multifit_fsolver;
 #endif
 
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -91,7 +91,7 @@ namespace kjb
 class Gsl_multifit_fdf
 {
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     /**
      * See Gsl_Multimin_fdf for rationale for this class. Basically, it avoids
      * memory leaks.
@@ -153,7 +153,7 @@ public:
         size_t data_count,
         bool verbosity = true
     )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_fit( type, data_count, x0 ? x0 -> size : 0 ),
         m_verbose( verbosity ),
         m_initialized(false),
@@ -161,14 +161,14 @@ public:
     {
         if(x0->size != f->p)
         {
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         initialize(f, x0);
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -176,7 +176,7 @@ public:
             size_t data_count,
             size_t size,
             const gsl_multifit_fdfsolver_type* type = gsl_multifit_fdfsolver_lmsder)
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_fit( type, data_count, size),
         m_verbose( false ),
         m_initialized(false),
@@ -184,7 +184,7 @@ public:
     {}
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -198,7 +198,7 @@ public:
         const gsl_vector* x0
     )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         GSL_ETX( gsl_multifit_fdfsolver_set( m_fit.p, f, x0 ) );
         m_initialized = true;
 #endif
@@ -206,14 +206,14 @@ public:
 
     size_t dim() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return m_fit.dim;
 #endif
     }
 
     size_t num_observations() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return m_fit.num_obs;
 #endif
     }
@@ -228,10 +228,10 @@ public:
      */
     int iterate()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if(!m_initialized)
         {
-            KJB_THROW_2(Runtime_error, "Solver not initialized");
+            IVI_THROW_2(Runtime_error, "Solver not initialized");
         }
 
         int rc = gsl_multifit_fdfsolver_iterate( m_fit.p );
@@ -243,14 +243,14 @@ public:
     /// @brief query the current best argfit of the solver
     gsl_vector* position() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multifit_fdfsolver_position( m_fit.p );
 #endif
     }
 
     gsl_matrix* jacobian() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return m_fit.p->J;
 #endif
     }
@@ -259,7 +259,7 @@ public:
     /// @brief query the current best min value of the function to be minimized
     const gsl_vector* min() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return m_fit.p->f;
 #endif
     }
@@ -270,7 +270,7 @@ public:
      */
     int test_delta( double epsabs, double epsrel) const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         
         return gsl_multifit_test_delta( m_fit.p->dx, m_fit.p->x, epsabs, epsrel );
 #endif
@@ -282,7 +282,7 @@ public:
      */
     int test_gradient( double epsabs = 1e-6) const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if(m_gradient == NULL)
             m_gradient = new Gsl_Vector(dim());
 
@@ -300,7 +300,7 @@ public:
      */
     void swap( Gsl_multifit_fdf& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( this == &that )
         {
             return;
@@ -336,6 +336,6 @@ public:
 };
 #endif /* HOW_IT_WAS_JANUARY_2016 */
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: local_likelihood.cpp 19228 2015-05-30 04:53:36Z jguan1 $ */
+/* $Id: local_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_target.h>
@@ -40,16 +40,16 @@
 const bool VERBOSE = true;
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Main -- all the magic happens here. */
 int main(int argc, char** argv)
 {
 //#ifdef TEST
-//    kjb_c::kjb_init();
-//    kjb_c::kjb_l_set("heap-checking", "off");
-//    kjb_c::kjb_l_set("initialization-checking", "off");
+//    ivi_c::ivi_init();
+//    ivi_c::ivi_l_set("heap-checking", "off");
+//    ivi_c::ivi_l_set("initialization-checking", "off");
 //#endif
 
     const double eps = 1e-6;
@@ -266,7 +266,7 @@ int main(int argc, char** argv)
             }
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

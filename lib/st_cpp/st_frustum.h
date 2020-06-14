@@ -73,7 +73,7 @@
 #define ST_FRUSTUM_TOP_RADIUS CAMERA_FRUSTUM_TOP_RADIUS
 #define ST_FRUSTUM_HEIGHT CAMERA_FRUSTUM_HEIGHT
 
-namespace kjb
+namespace ivi
 {
 
 class Manhattan_corner;

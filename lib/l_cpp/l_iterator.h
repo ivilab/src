@@ -1,4 +1,4 @@
-/* $Id: l_iterator.h 15196 2013-08-15 23:05:59Z ernesto $ */
+/* $Id: l_iterator.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_L_ITERATOR
-#define KJB_L_ITERATOR
+#ifndef IVI_L_ITERATOR
+#define IVI_L_ITERATOR
 
 /**
  * @file    A collection of general-purpose iterators
@@ -28,7 +28,7 @@
 
 #include <boost/concept_check.hpp>
 #include <iterator>
-namespace kjb
+namespace ivi
 {
 
 /**

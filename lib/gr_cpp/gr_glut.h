@@ -1,4 +1,4 @@
-/* $Id: gr_glut.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_glut.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,16 +17,16 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_GR_CPP_GLUT_H
-#define KJB_GR_CPP_GLUT_H
+#ifndef IVI_GR_CPP_GLUT_H
+#define IVI_GR_CPP_GLUT_H
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 
 #include "l_cpp/l_exception.h"
 #include <string>
 #include <vector>
 
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
 #include <boost/thread.hpp>
 #endif
 
@@ -55,7 +55,7 @@ class function4;
  * @example test/interactive/test_glut.cpp
  */
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
@@ -149,7 +149,7 @@ class Glut
     static void push_task_t(boost::function0<void> task);
 
 
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     /**
      * Mutex for accessing glut/opengl functionality.  If your application
      * makes opengl/glut calls from more than one thread, you MUST acquire
@@ -237,7 +237,7 @@ private:
 
     static int cur_wnd_stack_;
 
-#ifdef KJB_HAVE_BST_THREAD
+#ifdef IVI_HAVE_BST_THREAD
     static boost::thread::id* thread_id_;
 #endif
 
@@ -557,7 +557,7 @@ private:
 
 
 } // opengl
-} // kjb
-#endif /* KJB_HAVE_GLUT */
+} // ivi
+#endif /* IVI_HAVE_GLUT */
 
 #endif

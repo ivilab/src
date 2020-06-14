@@ -7,7 +7,7 @@
 #include <l_cpp/l_exception.h>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 #define EPSI 0.00001
 
@@ -87,7 +87,7 @@ void test_mv_gaussian()
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     int result = test_mv_conditional_gaussian();
     if(result != 0) return result;

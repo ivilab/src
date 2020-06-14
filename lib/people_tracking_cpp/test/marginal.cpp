@@ -46,8 +46,8 @@
 const bool VERBOSE = true;
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Compute log|H|. */
 double log_det_hess(const Scene& scene);
@@ -87,13 +87,13 @@ int main(int argc, char** argv)
         string fmdatafmt = fmdatadir + "/%05d.txt";
 
         // write boxes
-        kjb_c::kjb_mkdir(boxdatadir.c_str());
+        ivi_c::ivi_mkdir(boxdatadir.c_str());
         vector<string> fnames = strings_from_format(boxdatafmt, num_frames);
         data.write(fnames);
 
         // write OF features
-        kjb_c::kjb_mkdir(ofxdatadir.c_str());
-        kjb_c::kjb_mkdir(ofydatadir.c_str());
+        ivi_c::ivi_mkdir(ofxdatadir.c_str());
+        ivi_c::ivi_mkdir(ofydatadir.c_str());
         vector<string> fnames_x = strings_from_format(ofxdatafmt, num_frames - 1);
         vector<string> fnames_y = strings_from_format(ofydatafmt, num_frames - 1);
         for(size_t i = 0; i < num_frames - 1; i++)
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
         }
 
         // write FM data
-        kjb_c::kjb_mkdir(fmdatadir.c_str());
+        ivi_c::ivi_mkdir(fmdatadir.c_str());
         fnames = strings_from_format(fmdatafmt, num_frames);
         write_deva_facemarks(fm_data, fnames, img_width, img_height);
 
@@ -161,8 +161,8 @@ int main(int argc, char** argv)
         update_facemarks(scene2.association, fm_data);
 
         // WRITE ORIGINAL SCENES
-        kjb_c::kjb_mkdir((outdir + "/1/orig").c_str());
-        kjb_c::kjb_mkdir((outdir + "/2/orig").c_str());
+        ivi_c::ivi_mkdir((outdir + "/1/orig").c_str());
+        ivi_c::ivi_mkdir((outdir + "/2/orig").c_str());
         write_scene(scene1, outdir + "/1/orig/");
         write_scene(scene2, outdir + "/2/orig/");
 
@@ -279,7 +279,7 @@ int main(int argc, char** argv)
         TEST_TRUE(mlh1 + nlh1 + fmnlh1 < mlh2 + nlh2 + fmnlh2);
         //TEST_TRUE(mlh1 + nlh1 + fmnlh1 < mlh3 + nlh3 + fmnlh3);
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

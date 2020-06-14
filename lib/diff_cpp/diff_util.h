@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace kjb {
+namespace ivi {
 
 /** @brief  Default adapter for the hessian function.
  *
@@ -195,7 +195,7 @@ bool next_point
     return true;
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_ADAPTER_H */
 

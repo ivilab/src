@@ -51,9 +51,9 @@
 |
 * =========================================================================== */
 
-#include <wrap_wordnet/kjb_wn.h>
+#include <wrap_wordnet/ivi_wn.h>
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 #include "wn.h"
 
 int main(int argc, char **argv)

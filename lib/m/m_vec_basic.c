@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_basic.c 21522 2017-07-22 15:14:27Z kobus $ */
+/* $Id: m_vec_basic.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -34,7 +34,7 @@ extern "C" {
  * Splits a target vector vector vector vector
  *
  * This routine splits a vector vector vector vector with the
- * creation/over-writing semantics used in the KJB library in the case of vector
+ * creation/over-writing semantics used in the IVI library in the case of vector
  * vector vectors according to a list provided in index_list_vp.  If
  * *target_1_vvvvpp or *target_2_vvvvpp is NULL, then this routine creates the
  * vector vector. If they are not null, and are the right size, then the storage
@@ -114,7 +114,7 @@ int split_v4
  * Splits a vector vector into two target vector vectors
  *
  * This routine splits a vector vector with the creation/over-writing semantics
- * used in the KJB library in the case of vector arrays. If *target_1_vvpp or
+ * used in the IVI library in the case of vector arrays. If *target_1_vvpp or
  * *target_2_vvpp is NULL, then this routine creates the vector vector.
  * If they  not null, and are the right size, then the storage is recycled.
  * If the wrong size, then they are resized.
@@ -283,7 +283,7 @@ int split_vector
  * Copies a target vector vector vector vector
  *
  * This routine copies a vector vector vector vector with the
- * creation/over-writing semantics used in the KJB library in the case of
+ * creation/over-writing semantics used in the IVI library in the case of
  * vector vector vectors. If *target_vvvvpp is NULL, then this routine creates
  * the vector vector. If it is not null, and it is the right size, then the
  * storage is recycled. If it is the wrong size, then it is resized.
@@ -334,7 +334,7 @@ int copy_v4(V_v_v_v** target_vvvvpp, const V_v_v_v* source_vvvvp)
  * Copies a target vector vector vector
  *
  * This routine copies a vector vector vector with the creation/over-writing
- * semantics used in the KJB library in the case of vector vector vectors. If
+ * semantics used in the IVI library in the case of vector vector vectors. If
  * *target_vvvpp is NULL, then this routine creates the vector vector. If it is
  * not null, and it is the right size, then the storage is recycled. If it is
  * the wrong size, then it is resized.
@@ -472,7 +472,7 @@ Vector* create_vector_copy(const Vector* source_vp)
  * Copies a selected vectors from a vector vector
  *
  * This routine copies selected vectors from a  vector vector with the
- * creation/over-writing semantics used in the KJB library in the case of vector
+ * creation/over-writing semantics used in the IVI library in the case of vector
  * arrays. If *target_vvpp is NULL, then this routine creates the vector vector.
  * If it is not null, and it is the right size, then the storage is recycled. If
  * it is the wrong size, then it is resized.
@@ -557,7 +557,7 @@ int select_from_vector_vector
  * Copies a target vector vector
  *
  * This routine copies a vector vector with the creation/over-writing semantics
- * used in the KJB library in the case of vector arrays. If *target_vvpp is
+ * used in the IVI library in the case of vector arrays. If *target_vvpp is
  * NULL, then this routine creates the vector vector. If it is not null, and it
  * is the right size, then the storage is recycled. If it is the wrong size,
  * then it is resized.
@@ -736,7 +736,7 @@ int debug_copy_vector
     int           line_number
 )
 {
-    IMPORT int kjb_use_memcpy;
+    IMPORT int ivi_use_memcpy;
     int   i;
     int   length;
     double* target_pos;
@@ -757,7 +757,7 @@ int debug_copy_vector
     source_pos = source_vp->elements;
     target_pos = (*target_vpp)->elements;
 
-    if (kjb_use_memcpy)
+    if (ivi_use_memcpy)
     {
         (void)memcpy(target_pos,  source_pos,
                      ((size_t)length) * sizeof(double));
@@ -781,7 +781,7 @@ int debug_copy_vector
 
 int copy_vector(Vector** target_vpp, const Vector* source_vp)
 {
-    IMPORT int kjb_use_memcpy;
+    IMPORT int ivi_use_memcpy;
     int   i;
     int   length;
     double* target_pos;
@@ -802,7 +802,7 @@ int copy_vector(Vector** target_vpp, const Vector* source_vp)
     source_pos = source_vp->elements;
     target_pos = (*target_vpp)->elements;
 
-    if (kjb_use_memcpy)
+    if (ivi_use_memcpy)
     {
         (void)memcpy(target_pos,  source_pos,
                      ((size_t)length) * sizeof(double));

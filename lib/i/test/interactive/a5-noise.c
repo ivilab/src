@@ -1,5 +1,5 @@
 
-/* $Id: a5-noise.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: a5-noise.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -27,21 +27,21 @@ int main(int argc, char** argv)
     Matrix* noise_mp = NULL;
     Matrix* noise_freq_mp = NULL;
     Matrix* freq_mp = NULL;
-    KJB_image* ip = NULL;
-    KJB_image* noise_ip = NULL;
-    KJB_image* noise_freq_ip = NULL;
-    KJB_image* freq_ip = NULL;
+    IVI_image* ip = NULL;
+    IVI_image* noise_ip = NULL;
+    IVI_image* noise_freq_ip = NULL;
+    IVI_image* freq_ip = NULL;
     Matrix* re_mp = NULL;
     Matrix* im_mp = NULL;
     Matrix* input_with_noise_mp = NULL; 
-    KJB_image* input_with_noise_ip = NULL; 
+    IVI_image* input_with_noise_ip = NULL; 
     Matrix* denoised_mp = NULL; 
-    KJB_image* denoised_ip = NULL; 
+    IVI_image* denoised_ip = NULL; 
     int i,j;
     int max_d;
 
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -74,15 +74,15 @@ int main(int argc, char** argv)
 
     set_fftw_style(FFTW_NORMALIZE_STYLE);
 
-    EPETE(kjb_read_image(&ip, "input.tiff"));
-    EPETE(kjb_display_image(ip, "in"));
+    EPETE(ivi_read_image(&ip, "input.tiff"));
+    EPETE(ivi_display_image(ip, "in"));
     EPETE(ow_make_black_and_white_image(ip));
     EPETE(bw_image_to_matrix(ip, &mp));
 
     EPETE(get_matrix_dft(&re_mp, &im_mp, mp, NULL));
     EPETE(complex_get_magnitude_matrix_ew(&freq_mp, re_mp, im_mp));
     EPETE(matrix_to_bw_image(freq_mp, &freq_ip));
-    EPETE(kjb_display_image(freq_ip, "image freq"));
+    EPETE(ivi_display_image(freq_ip, "image freq"));
 
     num_rows = mp->num_rows;
     num_cols = mp->num_cols;
@@ -90,30 +90,30 @@ int main(int argc, char** argv)
     EPETE(get_random_matrix(&noise_mp, num_rows, num_cols));
     EPETE(ow_multiply_matrix_by_scalar(noise_mp, 255.0));
     EPETE(matrix_to_bw_image(noise_mp, &noise_ip));
-    EPETE(kjb_display_image(noise_ip, "noise"));
-    EPETE(kjb_write_image(noise_ip, "noise.tiff")); 
+    EPETE(ivi_display_image(noise_ip, "noise"));
+    EPETE(ivi_write_image(noise_ip, "noise.tiff")); 
 
     EPETE(get_matrix_dft(&re_mp, &im_mp, noise_mp, NULL));
     EPETE(complex_get_magnitude_matrix_ew(&noise_freq_mp, re_mp, im_mp));
     EPETE(matrix_to_bw_image(noise_freq_mp, &noise_freq_ip));
 
-    EPETE(kjb_display_image(noise_freq_ip, "noise freq"));
+    EPETE(ivi_display_image(noise_freq_ip, "noise freq"));
 
     EPETE(ow_multiply_matrix_by_scalar(mp, 0.75));
     EPETE(ow_multiply_matrix_by_scalar(noise_mp, 0.25));
     EPETE(add_matrices(&input_with_noise_mp, mp, noise_mp));
     EPETE(matrix_to_bw_image(input_with_noise_mp, &input_with_noise_ip));
 
-    EPETE(kjb_display_image(input_with_noise_ip, "input with noise"));
+    EPETE(ivi_display_image(input_with_noise_ip, "input with noise"));
 
-    EPETE(kjb_write_image(input_with_noise_ip, "input_with_noise.tiff"));
+    EPETE(ivi_write_image(input_with_noise_ip, "input_with_noise.tiff"));
 
 
     /*
      * Pretend we are a new program, so read what we wrote, rather than access
      * the version in memory.
      */
-    EPETE(kjb_read_image(&input_with_noise_ip, "input_with_noise.tiff"));
+    EPETE(ivi_read_image(&input_with_noise_ip, "input_with_noise.tiff"));
     EPETE(bw_image_to_matrix(input_with_noise_ip, &input_with_noise_mp)); 
 
     EPETE(get_matrix_dft(&re_mp, &im_mp, input_with_noise_mp, NULL));
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 
     EPETE(get_matrix_inverse_dft(&denoised_mp, NULL, re_mp, im_mp)); 
     EPETE(matrix_to_bw_image(denoised_mp, &denoised_ip));
-    EPETE(kjb_display_image(denoised_ip, "without noise"));
+    EPETE(ivi_display_image(denoised_ip, "without noise"));
 
 
     prompt_to_continue();
@@ -154,14 +154,14 @@ int main(int argc, char** argv)
     free_matrix(input_with_noise_mp);
     free_matrix(denoised_mp);
 
-    kjb_free_image(ip);
-    kjb_free_image(freq_ip);
-    kjb_free_image(noise_freq_ip);
-    kjb_free_image(noise_ip);
-    kjb_free_image(input_with_noise_ip);
-    kjb_free_image(denoised_ip);
+    ivi_free_image(ip);
+    ivi_free_image(freq_ip);
+    ivi_free_image(noise_freq_ip);
+    ivi_free_image(noise_ip);
+    ivi_free_image(input_with_noise_ip);
+    ivi_free_image(denoised_ip);
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

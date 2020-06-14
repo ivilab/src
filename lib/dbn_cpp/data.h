@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: data.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: data.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_DATA_H
-#define KJB_TIES_DATA_H
+#ifndef IVI_TIES_DATA_H
+#define IVI_TIES_DATA_H
 
 #include <m_cpp/m_vector.h>
 #include <l_cpp/l_filesystem.h>
@@ -44,7 +44,7 @@
 
 #include "dbn_cpp/typedefs.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 // Double_v indexed by [oscillator_index]
@@ -193,7 +193,7 @@ inline void write_data
 )
 {
     boost::format out_fmt(out_dir + "/%04d.txt");
-    ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
     for(size_t i = 0; i < all_data.size(); i++)
     {
         size_t dyid = all_data[i].dyid;
@@ -258,10 +258,10 @@ inline std::vector<std::string> get_data_group_dirs
     const std::string& data_dp
 )
 {
-    IFTD(kjb_c::is_directory(data_dp.c_str()), Illegal_argument, 
+    IFTD(ivi_c::is_directory(data_dp.c_str()), Illegal_argument, 
             "Data directory %s does not exit.", (data_dp.c_str()));
     std::string group_info_fp(data_dp + "/group_info.txt");
-    if(!kjb_c::is_file(group_info_fp.c_str()))
+    if(!ivi_c::is_file(group_info_fp.c_str()))
     {
         return std::vector<std::string>();
     }

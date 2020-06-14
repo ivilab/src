@@ -35,7 +35,7 @@
 #include <utility>
 #include <boost/function.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 /**
@@ -149,7 +149,7 @@ boost::optional<double> Gibbs_proposer<Track, Lhood>::operator()
     Association<Track> w(tr_data);
     swap(w, w_p);
 
-    /*KJB(ASSERT(w.is_valid(m_prior.get_v_bar(), m_prior.get_d_bar(),
+    /*IVI(ASSERT(w.is_valid(m_prior.get_v_bar(), m_prior.get_d_bar(),
                           m_likelihood.get_convert())));*/
 
     Location_pair tap = get_time_and_place(var, tr_data);
@@ -452,7 +452,7 @@ typename Gibbs_proposer<Track, Lhood>::Location_pair
     return std::make_pair(t, point_p);
 }
 
-}} //namespace kjb::psi
+}} //namespace ivi::psi
 
 #endif /*MCMCDA_GIBBS_PROPOSER_H_INCLUDED */
 

@@ -1,4 +1,4 @@
-/* $Id: model_edge.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: model_edge.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 #include <sstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 Model_edge::Model_edge(double x1, double y1, double x2, double y2, bool isilhouette, bool isvisible, bool iflagged)
 {
     _degenerate = false;
@@ -55,26 +55,26 @@ void Model_edge::read(std::istream& in)
     // Model segment silhouette indicator
     if (!(field_value = read_field_value(in, "silhouette")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Line segment Silhouette indicator");
+        IVI_THROW_2(Illegal_argument, "Missing Line segment Silhouette indicator");
     }
     istringstream ist(field_value);
     ist >> _silhouette;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line segment Silhouette indicator");
+        IVI_THROW_2(Illegal_argument, "Invalid line segment Silhouette indicator");
     }
     ist.clear(std::ios_base::goodbit);
 
     // Model segment visibility indicator
     if (!(field_value = read_field_value(in, "visible")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Line segment Visibility indicator");
+        IVI_THROW_2(Illegal_argument, "Missing Line segment Visibility indicator");
     }
     ist.str(field_value);
     ist >> _visible;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line segment Visibility indicator");
+        IVI_THROW_2(Illegal_argument, "Invalid line segment Visibility indicator");
     }
     ist.clear(std::ios_base::goodbit);
 }

@@ -1,5 +1,5 @@
 
-/* $Id: plot_matrix_values.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: plot_matrix_values.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     int i, j; 
 
 
-    EPETE(kjb_l_set("verbose", "1000"));
+    EPETE(ivi_l_set("verbose", "1000"));
 
     EPETE(get_random_matrix(&mp, 10, 10));
 

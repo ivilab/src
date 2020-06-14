@@ -1,5 +1,5 @@
 
-/* $Id: r_cluster_lib.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: r_cluster_lib.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -214,7 +214,7 @@ int get_cluster_random_matrix_2(Matrix** mpp, int num_rows, int num_cols)
 
 int get_cluster_random_matrix(Matrix** mpp, int num_rows, int num_cols)
 {
-    double   factor = kjb_rand();
+    double   factor = ivi_rand();
 
     ERE(get_random_matrix(mpp, num_rows, num_cols));
     ERE(ow_multiply_matrix_by_scalar(*mpp, 1.0 / ABS_OF(factor - 0.5)));
@@ -267,7 +267,7 @@ int ow_perturb_composite_cluster_data
     {
         if (composite_feature_mvp->elements[ i ] != NULL)
         {
-            if (KJB_IS_SET(num_features))
+            if (IVI_IS_SET(num_features))
             {
                 if (num_features != composite_feature_mvp->elements[ i ]->num_cols)
                 {
@@ -437,7 +437,7 @@ static int ow_perturb_composite_cluster_data_by_range
                     }
                     else
                     {
-                        feature_mp->elements[ j ][ k ] += f * (kjb_rand() - 0.5);
+                        feature_mp->elements[ j ][ k ] += f * (ivi_rand() - 0.5);
                     }
                 }
             }
@@ -498,7 +498,7 @@ static int ow_perturb_composite_cluster_data_by_value
                         f *= perturbation;
                         f *= 2.0;    /* We use random factors in [ -0.5, 0.5 ] */
 
-                        feature_mp->elements[ j ][ k ] += f * (kjb_rand() - 0.5);
+                        feature_mp->elements[ j ][ k ] += f * (ivi_rand() - 0.5);
                     }
                 }
             }
@@ -789,7 +789,7 @@ int ow_normalize_composite_cluster_data
     {
         if (composite_feature_mvp->elements[ i ] != NULL)
         {
-            if (KJB_IS_SET(num_features))
+            if (IVI_IS_SET(num_features))
             {
                 if (num_features != composite_feature_mvp->elements[ i ]->num_cols)
                 {
@@ -808,7 +808,7 @@ int ow_normalize_composite_cluster_data
     {
         if (held_out_composite_feature_mvp->elements[ i ] != NULL)
         {
-            if (KJB_IS_SET(num_features))
+            if (IVI_IS_SET(num_features))
             {
                 if (num_features != held_out_composite_feature_mvp->elements[ i ]->num_cols)
                 {

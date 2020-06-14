@@ -1,4 +1,4 @@
-/* $Id: edge_chamfer_likelihood.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: edge_chamfer_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_EDGE_CHAMFER_LIKELIHOOD_H
-#define KJB_EDGE_CHAMFER_LIKELIHOOD_H
+#ifndef IVI_EDGE_CHAMFER_LIKELIHOOD_H
+#define IVI_EDGE_CHAMFER_LIKELIHOOD_H
 
 #include <l/l_incl.h>
 #include <l/l_def.h>
@@ -36,7 +36,7 @@
 
 #include "edge_cpp/edge_chamfer.h"
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 #include "GL/glew.h"
 #endif
 
@@ -46,12 +46,12 @@
 #include <gr_cpp/gr_renderable.h>
 #include <gr_cpp/gr_fbo_offscreen.h>
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 #include <cuda.h>
 #include <cudaGL.h>
 #endif
 
-#ifdef KJB_HAVE_CUDPP
+#ifdef IVI_HAVE_CUDPP
 #include <cudpp.h>
 #endif
 
@@ -65,12 +65,12 @@
 #include <gr_cpp/gr_display.h>
 #endif
 
-namespace kjb {
+namespace ivi {
 
 
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_GLEW
 class Base_chamfer_likelihood
 {
 public:
@@ -111,7 +111,7 @@ public:
     {
         if(square_values_)
         {
-            KJB_THROW_2(Runtime_error, "Attempting to get sum when square_values is set.  Use get_sq_sum() instead.");
+            IVI_THROW_2(Runtime_error, "Attempting to get sum when square_values is set.  Use get_sq_sum() instead.");
         }
         return sum_;
     }
@@ -125,7 +125,7 @@ public:
     {
         if(!square_values_)
         {
-            KJB_THROW_2(Runtime_error, "Attempting to get squared sum when square_values is not set.  Use get_sum() instead, or call square_values(true) and re-evaluate.");
+            IVI_THROW_2(Runtime_error, "Attempting to get squared sum when square_values is not set.  Use get_sum() instead, or call square_values(true) and re-evaluate.");
         }
         return sum_;
     }
@@ -146,11 +146,11 @@ protected:
 
     bool square_values_;
 
-    ::kjb::opengl::Fbo_offscreen_buffer offscreen_buffer_;
+    ::ivi::opengl::Fbo_offscreen_buffer offscreen_buffer_;
 };
 
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 
 class Base_gpu_chamfer_likelihood : public Base_chamfer_likelihood
 {
@@ -198,7 +198,7 @@ protected:
 };
 
 
-#ifdef KJB_HAVE_CUDPP
+#ifdef IVI_HAVE_CUDPP
 class Gpu_chamfer_likelihood : public Base_gpu_chamfer_likelihood
 {
 public:
@@ -228,13 +228,13 @@ public:
     void set_maps(const CUdeviceptr distance, const CUdeviceptr position, size_t num_edges, size_t N = 0);
 
     /** 
-     * Allocate and construct a distance map in Cuda from a kjb::Matrix.
+     * Allocate and construct a distance map in Cuda from a ivi::Matrix.
      * Caller is responsible for freeing using cuMemFree().
      */
     CUdeviceptr create_distance_map(const Matrix& distance_map);
 
     /** 
-     * Allocate and construct a position map in Cuda from two kjb::Int_matrices representing
+     * Allocate and construct a position map in Cuda from two ivi::Int_matrices representing
      * the row and column indices of the nearest point, respectively.
      *
      * Caller is responsible for freeing using cuMemFree().
@@ -429,7 +429,7 @@ public:
     {
         if(square_values_)
         {
-            KJB_THROW_2(Runtime_error, "Attempting to get sum when square_values is set.  Use get_sq_sum() instead.");
+            IVI_THROW_2(Runtime_error, "Attempting to get sum when square_values is set.  Use get_sq_sum() instead.");
         }
         return sum_;
     }
@@ -438,7 +438,7 @@ public:
     {
         if(!square_values_)
         {
-            KJB_THROW_2(Runtime_error, "Attempting to get squared sum when square_values is not set.  Use get_sum() instead, or call square_values(true) and re-evaluate.");
+            IVI_THROW_2(Runtime_error, "Attempting to get squared sum when square_values is not set.  Use get_sum() instead, or call square_values(true) and re-evaluate.");
         }
         
         return sum_;
@@ -532,7 +532,7 @@ public:
      * can be disabled by setting invert_y to false.
      */
     void operator()(const Renderable& r, bool invert_y = true);
-    void operator()(const kjb::Matrix& img);
+    void operator()(const ivi::Matrix& img);
 
     void evaluate_dispatch_(float* buffer, bool invert_y);
 private:
@@ -544,6 +544,6 @@ private:
 #endif /* have glew */
 #endif /* have opengl  */
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

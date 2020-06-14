@@ -1,5 +1,5 @@
 
-/* $Id: shear.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: shear.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -7,7 +7,7 @@
  * Make sure that these files are not a liability when there is no X11. If this
  * is the case, then comment out the whole thing.
 */
-#ifdef KJB_HAVE_X11 
+#ifdef IVI_HAVE_X11 
 
 /* -------------------------------------------------------------------------- */
 
@@ -1287,7 +1287,7 @@ Image *ShearImage(Image *image, double x_shear, double y_shear, ColorPacket *bac
 
 /* -------------------------------------------------------------------------- */
 
-#endif   /* #ifdef KJB_HAVE_X11  */
+#endif   /* #ifdef IVI_HAVE_X11  */
 
 #endif   /* #ifndef __C2MAN__  */
 

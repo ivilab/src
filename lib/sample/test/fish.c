@@ -1,5 +1,5 @@
 /*
- * $Id: fish.c 21491 2017-07-20 13:19:02Z kobus $
+ * $Id: fish.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_io.h>
@@ -31,12 +31,12 @@ int main(int argc, char** argv)
         ||  histo[4] < histo[5]
        )
     {
-        kjb_fprintf(stderr, "Bad Poisson histogram (for lambda=%f):", lambda);
+        ivi_fprintf(stderr, "Bad Poisson histogram (for lambda=%f):", lambda);
         for (j = 0; j < 10; ++j)
         {
-            kjb_fprintf(stderr, " %d", histo[j]);
+            ivi_fprintf(stderr, " %d", histo[j]);
         }
-        kjb_fprintf(stderr, "\n");
+        ivi_fprintf(stderr, "\n");
         return EXIT_BUG;
     }
 

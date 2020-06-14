@@ -1,5 +1,5 @@
 
-/* $Id: int_mat_basic.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: int_mat_basic.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     int result = EXIT_SUCCESS;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {

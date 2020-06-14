@@ -1,5 +1,5 @@
 
-/* $Id: l_queue.c 15908 2013-10-26 20:23:11Z kobus $ */
+/* $Id: l_queue.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -48,7 +48,7 @@ extern "C" {
  * tail pointer is optional for queues. If there is one, then it should be
  * passed to this routine; otherwise tail_ptr_ptr should be NULL. The queue
  * elements are freed using the function (*free_contents_fn). If
- * free_contents_fn is NULL, then kjb_free is used. Once the queue is freed,
+ * free_contents_fn is NULL, then ivi_free is used. Once the queue is freed,
  * *head_ptr_ptr, (and *tail_ptr_ptr if applicable) are set to NULL
  *
  * Index: queues, linked lists, stacks
@@ -64,7 +64,7 @@ void free_queue(Queue_element** head_ptr_ptr, Queue_element** tail_ptr_ptr,
 
     if (head_ptr_ptr == NULL) return;
 
-    if (free_contents_fn == NULL) free_contents_fn = kjb_free;
+    if (free_contents_fn == NULL) free_contents_fn = ivi_free;
 
     current = *head_ptr_ptr;
 
@@ -73,7 +73,7 @@ void free_queue(Queue_element** head_ptr_ptr, Queue_element** tail_ptr_ptr,
         previous = current;
         current = current->next;
         (*free_contents_fn)(previous->contents);
-        kjb_free(previous);
+        ivi_free(previous);
     }
 
     *head_ptr_ptr = NULL;
@@ -101,7 +101,7 @@ void free_queue_element(Queue_element* element_ptr,
     if (element_ptr == NULL) return;
 
     (*free_contents_fn)(element_ptr->contents);
-    kjb_free(element_ptr);
+    ivi_free(element_ptr);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -128,7 +128,7 @@ int debug_alloc_insert_into_queue(Queue_element** head_ptr_ptr,
 
     NRE(contents_ptr = DEBUG_STR_MALLOC(data_size, file_name, line_number));
 
-    kjb_memcpy(contents_ptr, data_ptr, data_size);
+    ivi_memcpy(contents_ptr, data_ptr, data_size);
     debug_insert_into_queue(head_ptr_ptr, tail_ptr_ptr, (void*)contents_ptr,
                             file_name, line_number);
 
@@ -150,7 +150,7 @@ int alloc_insert_into_queue(Queue_element** head_ptr_ptr,
 
     NRE(contents_ptr = STR_MALLOC(data_size));
 
-    kjb_memcpy(contents_ptr, data_ptr, data_size);
+    ivi_memcpy(contents_ptr, data_ptr, data_size);
     insert_into_queue(head_ptr_ptr, tail_ptr_ptr, (void*)contents_ptr);
 
     return NO_ERROR;
@@ -190,7 +190,7 @@ int debug_alloc_insert_at_end_of_queue(Queue_element** head_ptr_ptr,
     }
 
     NRE(contents_ptr = DEBUG_STR_MALLOC(data_size, file_name, line_number));
-    kjb_memcpy(contents_ptr, data_ptr, data_size);
+    ivi_memcpy(contents_ptr, data_ptr, data_size);
 
     ERE(debug_insert_at_end_of_queue(head_ptr_ptr, tail_ptr_ptr,
                                      (void*) contents_ptr, file_name,
@@ -222,7 +222,7 @@ int alloc_insert_at_end_of_queue(Queue_element** head_ptr_ptr,
     }
 
     NRE(contents_ptr = STR_MALLOC(data_size));
-    kjb_memcpy(contents_ptr, data_ptr, data_size);
+    ivi_memcpy(contents_ptr, data_ptr, data_size);
 
     ERE(insert_at_end_of_queue(head_ptr_ptr, tail_ptr_ptr,
                                (void*) contents_ptr));
@@ -722,9 +722,9 @@ int copy_queue(Queue_element** head_ptr_ptr, Queue_element** tail_ptr_ptr,
 
         while ( cur_source_elem != NULL)
         {
-            NRE(contents = (void*)KJB_MALLOC(size_of_contents));
+            NRE(contents = (void*)IVI_MALLOC(size_of_contents));
 
-            kjb_memcpy(contents, (cur_source_elem->contents),
+            ivi_memcpy(contents, (cur_source_elem->contents),
                        size_of_contents);
 
             ERE(insert_at_end_of_queue(head_ptr_ptr, tail_ptr_ptr, contents));
@@ -819,7 +819,7 @@ int copy_str_queue(Queue_element** head_ptr_ptr, Queue_element** tail_ptr_ptr,
 
         while ( cur_source_elem != NULL)
         {
-            NRE(contents=(void*)kjb_strdup(
+            NRE(contents=(void*)ivi_strdup(
                                           (char*)(cur_source_elem->contents)));
 
             ERE(insert_at_end_of_queue(head_ptr_ptr, tail_ptr_ptr,
@@ -1030,7 +1030,7 @@ Queue_element* remove_elements_less_than_key(Queue_element** head_ptr_ptr,
                                                                const void *),
                                              const void* select_key_ptr)
 {
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
     Queue_element*  removed_queue_head;
     Queue_element*  current;
     Queue_element*  previous;
@@ -1042,7 +1042,7 @@ Queue_element* remove_elements_less_than_key(Queue_element** head_ptr_ptr,
     UNTESTED_CODE();
     */
 
-    if ((kjb_debug_level > 0) && (! is_queue_ordered(*head_ptr_ptr, select_fn)))
+    if ((ivi_debug_level > 0) && (! is_queue_ordered(*head_ptr_ptr, select_fn)))
     {
         set_bug("Attempt to remove elements less than key from a queue that is not ordered.");
         return NULL;
@@ -1236,7 +1236,7 @@ int print_str_queue(Queue_element* head_ptr)
 
     while (cur_elem != NULL)
     {
-        kjb_fputs(stdout, (char*)cur_elem->contents);
+        ivi_fputs(stdout, (char*)cur_elem->contents);
         pso("\n");
         cur_elem = cur_elem->next;
     }

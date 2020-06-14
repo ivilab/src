@@ -1,5 +1,5 @@
 
-/* $Id: l_io.h 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: l_io.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -89,7 +89,7 @@ int  set_io_options    (const char* option, const char* value);
 void set_program_prompt(const char* prompt);
 void prompt_to_continue(void);
 
-long kjb_query
+long ivi_query
 (
     const char* prompt,
     char*       input,
@@ -166,8 +166,8 @@ int read_and_create_int_array
     int** array_ptr
 );
 
-int kjb_fread_4_bytes          (FILE* fp, void* buff);
-int kjb_fread_4_bytes_backwards(FILE* fp, void* buff);
+int ivi_fread_4_bytes          (FILE* fp, void* buff);
+int ivi_fread_4_bytes_backwards(FILE* fp, void* buff);
 int read_double                (double* value_ptr, const char* file_name);
 int fp_read_double             (double* value_ptr, FILE* fp);
 

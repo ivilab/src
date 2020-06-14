@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_deva_detection.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: d_deva_detection.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <l_cpp/l_exception.h>
@@ -32,7 +32,7 @@
 #include <vector>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 double Deva_detection::probability_of_noise() const
 {
@@ -73,7 +73,7 @@ double Deva_detection::probability_of_noise() const
     }
     else
     {
-        KJB_THROW_2(Not_implemented, "No probability for this entity.");
+        IVI_THROW_2(Not_implemented, "No probability for this entity.");
     }
 
     return 1.0 / (1.0 + exp(a + b*score()));
@@ -81,7 +81,7 @@ double Deva_detection::probability_of_noise() const
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Deva_detection> kjb::parse_deva_detection
+std::vector<Deva_detection> ivi::parse_deva_detection
 (
     std::istream& is, 
     const std::string& type
@@ -104,7 +104,7 @@ std::vector<Deva_detection> kjb::parse_deva_detection
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Deva_detection> kjb::parse_deva_detection
+std::vector<Deva_detection> ivi::parse_deva_detection
 (
     std::istream& is, 
     double score_thresh,
@@ -127,7 +127,7 @@ std::vector<Deva_detection> kjb::parse_deva_detection
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Deva_detection kjb::parse_deva_detection_line
+Deva_detection ivi::parse_deva_detection_line
 (
     const std::string& line,
     const std::string& type

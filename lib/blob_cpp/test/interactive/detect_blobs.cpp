@@ -7,11 +7,11 @@
 #include <boost/lexical_cast.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_l_set("page", "off");
+    ivi_c::ivi_l_set("page", "off");
     if(argc != 4)
     {
         cout << "Usage: detect_blobs image_file min_blob_size max_blob_size" << endl;

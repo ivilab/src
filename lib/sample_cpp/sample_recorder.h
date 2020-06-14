@@ -1,4 +1,4 @@
-/* $Id: sample_recorder.h 12975 2012-09-11 23:15:57Z ksimek $ */
+/* $Id: sample_recorder.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -87,7 +87,7 @@ public:
     {
         if(m_current_lt == -std::numeric_limits<double>::max())
         {
-            KJB_THROW_2(kjb::Runtime_error, "current model has not been recorded yet.");
+            IVI_THROW_2(ivi::Runtime_error, "current model has not been recorded yet.");
         }
 
         return *m_current_model;
@@ -122,7 +122,7 @@ public:
     {
         if(m_current_log.size() == 0)
         {
-            KJB_THROW_2(kjb::Runtime_error, "current log has not been recorded yet.");
+            IVI_THROW_2(ivi::Runtime_error, "current log has not been recorded yet.");
         }
 
         return m_current_log;
@@ -180,7 +180,7 @@ public:
     {
         if(m_best_lt == -std::numeric_limits<double>::max())
         {
-            KJB_THROW_2(kjb::Runtime_error, "Best model has not been recorded yet.");
+            IVI_THROW_2(ivi::Runtime_error, "Best model has not been recorded yet.");
         }
 
         return *m_best_model;
@@ -235,7 +235,7 @@ public:
     {
         if(m_best_lt == -std::numeric_limits<double>::max())
         {
-            KJB_THROW_2(kjb::Runtime_error, "Best model has not been recorded yet.");
+            IVI_THROW_2(ivi::Runtime_error, "Best model has not been recorded yet.");
         }
 
         return m_best_lt;
@@ -749,7 +749,7 @@ public:
 //
 //        if(!m_os)
 //        {
-//            KJB_THROW_2(kjb::IO_error, "Error with output stream");
+//            IVI_THROW_2(ivi::IO_error, "Error with output stream");
 //        }
 //    }
 
@@ -774,7 +774,7 @@ public:
 
         if(!m_os)
         {
-            KJB_THROW_2(kjb::IO_error, "Error with output stream");
+            IVI_THROW_2(ivi::IO_error, "Error with output stream");
         }
     }
 
@@ -788,7 +788,7 @@ public:
 
         if(!m_os)
         {
-            KJB_THROW_2(kjb::IO_error, "Error with output stream");
+            IVI_THROW_2(ivi::IO_error, "Error with output stream");
         }
     }
 
@@ -864,14 +864,14 @@ typedef typename Recorder_type::Value_type Value_type;
         tmp(fname_fmt)
     {
         BOOST_CONCEPT_ASSERT((ModelRecorder<Recorder_type>));
-        BOOST_CONCEPT_ASSERT((kjb::SerializableConcept<Value_type>));
+        BOOST_CONCEPT_ASSERT((ivi::SerializableConcept<Value_type>));
 
         try{
             std::string fname = str(boost::format(fname_fmt_) % file_counter_);
         }
         catch(...)
         {
-            KJB_THROW_2(kjb::Illegal_argument, "Invalid filename format.  Must be a printf-formatted string with one integer field.");
+            IVI_THROW_2(ivi::Illegal_argument, "Invalid filename format.  Must be a printf-formatted string with one integer field.");
         }
 
     }
@@ -908,10 +908,10 @@ private:
     {
         const Value_type& value = recorder_.get();
 
-// KJB_DEPENDENCY
+// IVI_DEPENDENCY
         // for some reason, reusing some persistent boost:format object here fails. so we reconstruct it each time.
         std::string fname = str(boost::format(fname_fmt_) % file_counter_);
-        kjb::save(value, fname);
+        ivi::save(value, fname);
 
         file_counter_++;
     }

@@ -1,5 +1,5 @@
 
-/* $Id: read_image_null.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: read_image_null.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "i/i_incl.h"
@@ -11,9 +11,9 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     /*
      * This does not do anything in batch mode. 
@@ -24,10 +24,10 @@ int main(int argc, char** argv)
     }
     
 
-    EPETE(kjb_read_image_2(&ip, ""));
+    EPETE(ivi_read_image_2(&ip, ""));
 
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

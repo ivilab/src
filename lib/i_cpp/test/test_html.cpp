@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_html.cpp 13572 2012-12-25 02:19:07Z predoehl $
+ * $Id: test_html.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_def.h>
@@ -16,22 +16,22 @@
 
 int main()
 {
-    kjb::PixelRGBA p1( 255, 0, 0 ); // red
+    ivi::PixelRGBA p1( 255, 0, 0 ); // red
     assert( 0 == strcmp( p1.as_hex_triplet().c_str(), "#ff0000" ) );
 
-    kjb::PixelRGBA p2( 0, 255, 0 ); // green
+    ivi::PixelRGBA p2( 0, 255, 0 ); // green
     assert( 0 == strcmp( p2.as_hex_triplet().c_str(), "#00ff00" ) );
 
-    kjb::PixelRGBA p3( 0, 0, 255 ); // blue
+    ivi::PixelRGBA p3( 0, 0, 255 ); // blue
     assert( 0 == strcmp( p3.as_hex_triplet().c_str(), "#0000ff" ) );
 
-    kjb::PixelRGBA p4( 0, 0, 0 );   // black
+    ivi::PixelRGBA p4( 0, 0, 0 );   // black
     assert( 0 == strcmp( p4.as_hex_triplet().c_str(), "#000000" ) );
 
-    kjb::PixelRGBA p5( 255, 255, 255 ); // white
+    ivi::PixelRGBA p5( 255, 255, 255 ); // white
     assert( 0 == strcmp( p5.as_hex_triplet().c_str(), "#ffffff" ) );
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
         std::cout << __FILE__ << ": success!\n";
     }

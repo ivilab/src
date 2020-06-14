@@ -29,7 +29,7 @@
 #include <boost/bind.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 using namespace boost;
 
 /** @brief  Helper function. */
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
         TEST_TRUE(lf - log_pdf(P, mu) <= log(1.0 + eps)
                     && lf - log_pdf(P, mu) >= log(1.0 - eps));
     }
-    catch(const kjb::Exception& kex)
+    catch(const ivi::Exception& kex)
     {
         kex.print_details();
         return EXIT_FAILURE;

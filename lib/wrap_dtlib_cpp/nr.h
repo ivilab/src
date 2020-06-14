@@ -8,13 +8,13 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
 
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
-using namespace kjb_c;
+using namespace ivi_c;
 
 namespace DTLib {
 
@@ -26,7 +26,7 @@ namespace DTLib {
     float* fvector(long nl, long nh);
     int* ivector(long nl, long nh);
     unsigned char *cvector(long nl, long nh);
-    kjb_uint32 *lvector(long nl, long nh);
+    ivi_uint32 *lvector(long nl, long nh);
     double *dvector(long nl, long nh);
     float** matrix(long nrl, long nrh, long ncl, long nch);
     double **dmatrix(long nrl, long nrh, long ncl, long nch);
@@ -38,7 +38,7 @@ namespace DTLib {
     void free_fvector(float* v, long nl, long nh);
     void free_ivector(int* v, long nl, long nh);
     void free_cvector(unsigned char *v, long nl, long nh);
-    void free_lvector(kjb_uint32 *v, long nl, long nh);
+    void free_lvector(ivi_uint32 *v, long nl, long nh);
     void free_dvector(double *v, long nl, long nh);
     void free_matrix(float** m, long nrl, long nrh, long ncl, long nch);
     void free_dmatrix(double **m, long nrl, long nrh, long ncl, long nch);

@@ -1,4 +1,4 @@
-/* $Id: gui_camera.h 18301 2014-11-26 19:17:13Z ksimek $ */
+/* $Id: gui_camera.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -19,15 +19,15 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
-#ifndef KJB_CPP_GUI_CAMERA_H
-#define KJB_CPP_GUI_CAMERA_H
+#ifdef IVI_HAVE_OPENGL
+#ifndef IVI_CPP_GUI_CAMERA_H
+#define IVI_CPP_GUI_CAMERA_H
 
 #include <camera_cpp/perspective_camera.h>
 #include <gui_cpp/gui_viewer.h>
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -37,14 +37,14 @@ namespace gui
  * number keys 
  * */
 Viewer::Keyboard_listener_iterator
-add_camera_keys(kjb::gui::Viewer& viewer, const std::vector<kjb::Perspective_camera>& cams, int msec = 500);
+add_camera_keys(ivi::gui::Viewer& viewer, const std::vector<ivi::Perspective_camera>& cams, int msec = 500);
 
 /**
  * @brief Add visualization for camera frusta
  */
 void add_camera_frusta(
-        kjb::gui::Viewer& viewer,
-        const std::vector<kjb::Perspective_camera>& cams,
+        ivi::gui::Viewer& viewer,
+        const std::vector<ivi::Perspective_camera>& cams,
         int width,
         int height,
         double scale);
@@ -53,12 +53,12 @@ void add_camera_frusta(
  * @brief Add visualization for camera frusta w/ images
  */
 void add_camera_frusta(
-        kjb::gui::Viewer& viewer,
-        const std::vector<kjb::Perspective_camera>& cams,
-        const std::vector<kjb::Image>& img,
+        ivi::gui::Viewer& viewer,
+        const std::vector<ivi::Perspective_camera>& cams,
+        const std::vector<ivi::Image>& img,
         double scale);
 
 }
 }
 #endif
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */

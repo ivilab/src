@@ -1,5 +1,5 @@
 
-/* $Id: kjb_glob.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: ivi_glob.c 4723 2009-11-16 18:57:09Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -8,8 +8,8 @@ int main(void)
 {
     char input_str[ 100 ];
    
-    kjb_set_debug_level(0); 
-    kjb_init();
+    ivi_set_debug_level(0); 
+    ivi_init();
 
     while (TRUE)
     {
@@ -22,7 +22,7 @@ int main(void)
             if (BUFF_FGET_LINE(stdin, input_str) == EOF)  break;
         }
 
-        EPE(kjb_system(input_str));
+        EPE(ivi_system(input_str));
     }
 
     return EXIT_SUCCESS; 

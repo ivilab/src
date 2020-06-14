@@ -1,4 +1,4 @@
-/* $Id: prob_histogram.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_histogram.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -18,8 +18,8 @@
  * =========================================================================== */
 
 
-#ifndef KJB_PROB_HISTOGRAM
-#define KJB_PROB_HISTOGRAM
+#ifndef IVI_PROB_HISTOGRAM
+#define IVI_PROB_HISTOGRAM
 
 /**
  * @file Histogram class.
@@ -38,7 +38,7 @@
 
 #include <boost/bind.hpp>
 
-namespace kjb 
+namespace ivi 
 {
 
 /**
@@ -211,7 +211,7 @@ public:
     std::pair<double, double>& range_2(); 
 
     /**
-     * @brief   Return the 2D histogram as a kjb::Matrix 
+     * @brief   Return the 2D histogram as a ivi::Matrix 
      *          Note: the 2D histogrma is not normalized
      */
     const Matrix& as_matrix() const;
@@ -394,7 +394,7 @@ inline Matrix Histogram_2d::densities() const
 }
 
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_PROB_HISTOGRAM */
+#endif /* IVI_PROB_HISTOGRAM */
 

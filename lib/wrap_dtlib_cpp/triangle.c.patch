@@ -2,10 +2,10 @@
 # the source of triangle.c from K&R-style function defs to ANSI-style.
 # The first half was done by hand, and the second half was done using a vim
 # macro, so the modifications in the second half are much more uniform, but
-# not quite conformant to libkjb style.
+# not quite conformant to libivi style.
 # Since this is such a huge change to a huge file, I am putting the patch here
 # on display so that it can be reviewed and corrected, if necessary.
-# $Id: triangle.c.patch 15875 2013-10-24 03:06:24Z predoehl $
+# $Id: triangle.c.patch 25499 2020-06-14 13:26:04Z kobus $
 # ===================================================================
 --- triangle.c	(revision 15829)
 +++ triangle.c	(working copy)

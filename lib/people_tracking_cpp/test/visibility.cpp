@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: visibility.cpp 18671 2015-03-19 00:19:12Z ernesto $ */
+/* $Id: visibility.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_association.h>
@@ -29,8 +29,8 @@
 #include "utils.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt; 
+using namespace ivi;
+using namespace ivi::pt; 
 
 /**
  * @brief   Helper function that compares the equality of two visibilities

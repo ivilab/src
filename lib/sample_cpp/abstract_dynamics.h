@@ -1,5 +1,5 @@
 
-/* $Id: abstract_dynamics.h 10645 2011-09-29 19:51:35Z predoehl $ */
+/* $Id: abstract_dynamics.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -26,7 +26,7 @@
 #include "prob_cpp/prob_sample.h"
 #include "prob_cpp/prob_distribution.h"
 
-namespace kjb {
+namespace ivi {
 
 /** @class Abstract_dynamics Implements stochastic dynamics sampling on a set
  *  of parameters.This implementation follows the algorithm described in
@@ -49,7 +49,7 @@ public:
     {
         if(ialpha <0 || ialpha > 1)
         {
-            throw kjb::Illegal_argument("Alpha must be between 0 and 1");
+            throw ivi::Illegal_argument("Alpha must be between 0 and 1");
         }
         alpha = ialpha;
         st_alpha = sqrt(1 - alpha*alpha);
@@ -70,19 +70,19 @@ public:
      */
     Abstract_dynamics
     (
-        kjb::Vector iparameters,
-        kjb::Vector ideltas,
+        ivi::Vector iparameters,
+        ivi::Vector ideltas,
         double ialpha = 0.99,
         unsigned int ikick = 0
     ) : mv_gauss(NULL)
     {
         if(ialpha <0 || ialpha > 1)
         {
-            throw kjb::Illegal_argument("Alpha must be between 0 and 1");
+            throw ivi::Illegal_argument("Alpha must be between 0 and 1");
         }
         if(ideltas.size() != iparameters.size())
         {
-            KJB_THROW_2(Illegal_argument, "The number of delta steps does not match the number of parameters");
+            IVI_THROW_2(Illegal_argument, "The number of delta steps does not match the number of parameters");
         }
         alpha = ialpha;
         st_alpha = sqrt(1 - alpha*alpha);
@@ -123,23 +123,23 @@ protected:
     }
 
     /** @brief The parameters to sample over */
-    kjb::Vector parameters;
+    ivi::Vector parameters;
     /** @brief The size of the step to take in the gradient direction. This step
         size is different for each parameter we are sampling over */
-    kjb::Vector deltas;
+    ivi::Vector deltas;
 
     /* @brief This vector will contain the gradient of the energy function,
      * computed at every iteration
      */
-    kjb::Vector gradients;
+    ivi::Vector gradients;
 
     /* @brief The following members are used during the sampling, and
      * are class members for efficiency reasons. */
-    kjb::Vector stochastic_momenta;
-    kjb::Vector momenta;
-    kjb::Vector temp_momenta;
-    kjb::Vector stochastic_transition;
-    kjb::MV_gaussian_distribution * mv_gauss;
+    ivi::Vector stochastic_momenta;
+    ivi::Vector momenta;
+    ivi::Vector temp_momenta;
+    ivi::Vector stochastic_transition;
+    ivi::MV_gaussian_distribution * mv_gauss;
 
     /* @brief This parameter tweaks the contribution of the stochastic transition.
      * If it is close to one, the random transition has little weight, and the dynamics

@@ -1,4 +1,4 @@
-/* $Id: image_interp.c 21596 2017-07-30 23:33:36Z kobus $
+/* $Id: image_interp.c 25499 2020-06-14 13:26:04Z kobus $
  */
 #include "l/l_sys_debug.h"   /* For ASSERT */
 #include "slic/affine.h"
@@ -23,15 +23,15 @@ typedef struct point
 
 #warning "[code police] Private (file-scope) functions should be made static."
 /* These are private functions */
-void sum_triangle1 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle1 ( const IVI_image * src, double top, double bottom, double left, double right,
              double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-void sum_triangle2 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle2 ( const IVI_image * src, double top, double bottom, double left, double right,
              double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-void sum_triangle3 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle3 ( const IVI_image * src, double top, double bottom, double left, double right,
              double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-void sum_triangle4 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle4 ( const IVI_image * src, double top, double bottom, double left, double right,
              double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-int transform ( const KJB_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp );
+int transform ( const IVI_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp );
 
 
 
@@ -60,13 +60,13 @@ int transform ( const KJB_image * src, int dest_x, int dest_y, point * p, const 
 */
 int transform_image
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix    *t_mp,
     int             width,
     int             height,
     const Matrix     *trans_rect_mp,
     int             inter_method,
-    KJB_image       **target_ipp,
+    IVI_image       **target_ipp,
     Int_matrix      **mask_impp
 )
 {
@@ -128,14 +128,14 @@ cleanup:
 /* same as transform_image, but does it only for a bounding box*/
 int transform_image_w_bounding_box
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix    *t_mp,
     int             width,
     int             height,
     int             *slide_coords,
     const Matrix     *trans_rect_mp,
     int             inter_method,
-    KJB_image       **target_ipp,
+    IVI_image       **target_ipp,
     Int_matrix      **mask_impp
 )
 {
@@ -194,7 +194,7 @@ cleanup:
 }
 
 
-int transform ( const KJB_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp )
+int transform ( const IVI_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp )
 {
     Vector *v = NULL, *v2 = NULL;
     
@@ -231,7 +231,7 @@ int transform ( const KJB_image * src, int dest_x, int dest_y, point * p, const 
 }
 /* fixme: combine triangle functions into 1 */
 
-void sum_triangle4 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle4 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -516,7 +516,7 @@ last:
     *dest_w = w;
 }
 
-void sum_triangle3 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle3 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -801,7 +801,7 @@ last:
     *dest_w = w;
 }
 
-void sum_triangle2 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle2 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -1086,7 +1086,7 @@ last:
     *dest_w = w;
 }
 
-void sum_triangle1 ( const KJB_image * src, double top, double bottom, double left, double right,
+void sum_triangle1 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -1371,7 +1371,7 @@ last:
     *dest_w = w;
 }
 
-void sum_rectangle ( const KJB_image * src, double bottom, double top, double left, double right,
+void sum_rectangle ( const IVI_image * src, double bottom, double top, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     int itop, ileft, iright, ibottom, i, j;
@@ -1641,12 +1641,12 @@ void sum_rectangle ( const KJB_image * src, double bottom, double top, double le
 
 int interp
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix     *trans_mp,
     int              width,
     int              height,
     const Matrix     *trans_rect_mp,
-    KJB_image        **target_ipp,
+    IVI_image        **target_ipp,
     Int_matrix       **mask_impp,
     const Matrix    *t_mp
 )
@@ -1654,7 +1654,7 @@ int interp
     int result = NO_ERROR;
     int i, j, k, k_next, bounds;
     int id;
-    KJB_image *target_ip = NULL;
+    IVI_image *target_ip = NULL;
     double x, y;
     double normx, normy;
     int p1x, p1y;
@@ -1891,19 +1891,19 @@ cleanup:
  */
 int bilinear_inter_image
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix     *trans_mp,
     int              width,
     int              height,
     const Matrix     *trans_rect_mp,
-    KJB_image        **target_ipp,
+    IVI_image        **target_ipp,
     Int_matrix       **mask_impp
 )
 {
     int result = NO_ERROR;
     register int i, j;
     int id;
-    KJB_image *target_ip = NULL;
+    IVI_image *target_ip = NULL;
     double x, y;
     double normx, normy;
     int p1x, p1y;
@@ -2040,20 +2040,20 @@ cleanup:
  * */
 int bilinear_inter_image_w_bounding_box
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix     *trans_mp,
     int              width,
     int              height,
     int              *slide_box_coords,
     const Matrix     *trans_rect_mp,
-    KJB_image        **target_ipp,
+    IVI_image        **target_ipp,
     Int_matrix       **mask_impp
 )
 {
     int result = NO_ERROR;
     register int i, j;
     int id;
-    KJB_image *target_ip = NULL;
+    IVI_image *target_ip = NULL;
     double x, y;
     double normx, normy;
     int p1x, p1y;
@@ -2378,11 +2378,11 @@ cleanup:
 
 int combine_image
 (
-    KJB_image *img1, 
-    KJB_image *img2,
+    IVI_image *img1, 
+    IVI_image *img2,
     Matrix *x_mp,
     Matrix *y_mp,
-    KJB_image **combined_img
+    IVI_image **combined_img
 )
 {
     int i;
@@ -2415,8 +2415,8 @@ int combine_image
 
 int ow_overlap_images
 (
-    KJB_image  *target_ip,
-    KJB_image  *src_ip,
+    IVI_image  *target_ip,
+    IVI_image  *src_ip,
     Int_matrix *mask_imp
 )
 {
@@ -2458,8 +2458,8 @@ int ow_overlap_images
  */
 int ow_merge_images
 (
-    KJB_image  *target_ip,
-    KJB_image  *src_ip,
+    IVI_image  *target_ip,
+    IVI_image  *src_ip,
     Int_matrix *mask_imp
 )
 {
@@ -2492,7 +2492,7 @@ int ow_merge_images
 
 void draw_slide_region
 (
-    KJB_image *ip,
+    IVI_image *ip,
     Matrix    *slide_pos_mp,
     int       r,
     int       g,
@@ -2538,7 +2538,7 @@ void draw_slide_region
 }
 
 
-int ow_SM_subtract_images(KJB_image* in1_ip, const KJB_image* in2_ip, const
+int ow_SM_subtract_images(IVI_image* in1_ip, const IVI_image* in2_ip, const
 Int_matrix* mask_imp)
 {
     Pixel* in1_pos;
@@ -2586,13 +2586,13 @@ Int_matrix* mask_imp)
 
 int SM_subtract_images
 (
-    KJB_image**       out_ipp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    IVI_image**       out_ipp,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     const Int_matrix *mask_imp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in1_pos;
     Pixel*     in2_pos;
     Pixel*     out_pos;
@@ -2640,8 +2640,8 @@ int SM_subtract_images
 int SM_get_images_difference
 (
     double           *diff_ptr,
-    const KJB_image  *in1_ip,
-    const KJB_image  *in2_ip,
+    const IVI_image  *in1_ip,
+    const IVI_image  *in2_ip,
     const Int_matrix *mask_imp
 )
 {
@@ -2695,8 +2695,8 @@ int SM_get_images_difference
 int SM_get_images_difference_1
 (
     double           *diff_ptr,
-    const KJB_image  *in1_ip,
-    const KJB_image  *in2_ip,
+    const IVI_image  *in1_ip,
+    const IVI_image  *in2_ip,
     const Matrix     *slide_bound_mp,
     const Int_matrix *mask_imp
 )

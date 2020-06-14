@@ -29,7 +29,7 @@
 #include <iostream>
 #include <boost/variant.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -160,7 +160,7 @@ bool same_activity(const Activity_sequence::Activity& activity, const A& piact)
 /** @brief  Push an activity sequence to an output stream. */
 std::ostream& operator<<(std::ostream& ost, const Activity_sequence& aseq);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_ACTIVITY_SEQUENCE_H */
 

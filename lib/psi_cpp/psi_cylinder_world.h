@@ -1,4 +1,4 @@
-/* $Id: psi_cylinder_world.h 18331 2014-12-02 04:30:55Z ksimek $ */
+/* $Id: psi_cylinder_world.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -43,7 +43,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -64,25 +64,25 @@ public:
     Entity_state();
 
     virtual void render() const;
-    kjb::Cylinder get_cylinder() const { 
-        return kjb::Cylinder(
+    ivi::Cylinder get_cylinder() const { 
+        return ivi::Cylinder(
                 get_position_3d(), // base
-                get_position_3d() + kjb::Vector(0.0, 1.0, 0.0) * get_height(), // top
+                get_position_3d() + ivi::Vector(0.0, 1.0, 0.0) * get_height(), // top
                 get_width()/2.0); // radius
     }
 
-    const kjb::Vector& get_position() const {return pos_; }
-    kjb::Vector get_position_3d() const {return kjb::Vector(pos_[0], 0.0, pos_[1]); }
+    const ivi::Vector& get_position() const {return pos_; }
+    ivi::Vector get_position_3d() const {return ivi::Vector(pos_[0], 0.0, pos_[1]); }
 
-    const kjb::Vector& get_direction() const { return dir_; }
-    kjb::Vector get_direction_3d() const { return kjb::Vector(dir_[0], 0.0, dir_[1]); }
+    const ivi::Vector& get_direction() const { return dir_; }
+    ivi::Vector get_direction_3d() const { return ivi::Vector(dir_[0], 0.0, dir_[1]); }
 
     double get_heading() const {return heading_; }
 
     double get_height() const {return height_; }
     double get_width() const {return width_; }
 
-    void set_position(const kjb::Vector& p) {pos_ = p; }
+    void set_position(const ivi::Vector& p) {pos_ = p; }
 
     /// @human direction in radians
     void set_heading(double heading ) 
@@ -112,10 +112,10 @@ public:
     }
 
 private:
-    kjb::Vector pos_;
+    ivi::Vector pos_;
 
     double heading_;
-    kjb::Vector dir_;
+    ivi::Vector dir_;
 
 
     double height_;
@@ -123,9 +123,9 @@ private:
 };
 
 
-inline Bbox get_bounding_box(const Entity_state& entity, const kjb::Perspective_camera& cam)
+inline Bbox get_bounding_box(const Entity_state& entity, const ivi::Perspective_camera& cam)
 {
-    kjb::Cylinder c = entity.get_cylinder();
+    ivi::Cylinder c = entity.get_cylinder();
     return get_bounding_box(c, cam);
 
 }
@@ -228,7 +228,7 @@ protected:
                 execute_null_action(time, context);
                 break;
             default:
-                KJB_THROW_2(kjb::Illegal_argument, "Unknown action type.");
+                IVI_THROW_2(ivi::Illegal_argument, "Unknown action type.");
                 break;
         }
     }
@@ -320,6 +320,6 @@ private:
 
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 
 #endif

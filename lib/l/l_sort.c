@@ -1,5 +1,5 @@
 
-/* $Id: l_sort.c 24703 2019-12-13 22:56:35Z kobus $ */
+/* $Id: l_sort.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -32,11 +32,11 @@ extern "C" {
 
 #ifdef PROGRAMMER_IS_kobus
 #ifdef TEST
-#undef KJB_HAVE_QSORT
+#undef IVI_HAVE_QSORT
 #endif 
 #endif 
  
-#ifndef KJB_HAVE_QSORT
+#ifndef IVI_HAVE_QSORT
 static int quick_sort
 (
     char*  array,
@@ -142,17 +142,17 @@ static int fs_sort_rec_comparison_count = 0;
 
 /*
  * =============================================================================
- *                                kjb_sort
+ *                                ivi_sort
  *
  * Sorts an array of arbitrary elements.
  *
  * On most systems this function simply wraps a call to qsort(3), based on
- * internal macro symbol KJB_HAVE_QSORT.  If that is not possible, then this
+ * internal macro symbol IVI_HAVE_QSORT.  If that is not possible, then this
  * calls our own implementation of quicksort, which might have a bug (see the
  * note below).
  *
  * (If during testing we discover a system lacking an implementation of qsort,
- * then KJB_HAVE_QSORT should be defined as zero in file l_sys_def.h, in the
+ * then IVI_HAVE_QSORT should be defined as zero in file l_sys_def.h, in the
  * block corresponding to that operating system.  At the time of writing of this
  * comment, all systems we support were believed to have qsort.)
  *
@@ -161,7 +161,7 @@ static int fs_sort_rec_comparison_count = 0;
  * possible sort is required, qsort should be faster (since this is what writers
  * of this sort of routine tend to optimize.).
  *
- * The main functional difference between kjb_sort and qsort is the handling of
+ * The main functional difference between ivi_sort and qsort is the handling of
  * user interupt which is specified by the last parameter. If the last
  * parameter is USE_CURRENT_ATN_HANDLING, then there is no difference.
  * However a built in handler can be specified with USE_SORT_ATN_HANDLING. With
@@ -204,18 +204,18 @@ static int fs_sort_rec_comparison_count = 0;
  * -----------------------------------------------------------------------------
  */
 
-#ifdef KJB_HAVE_QSORT
+#ifdef IVI_HAVE_QSORT
 /*ARGSUSED*/
-int kjb_sort(void* array, int num_elements, size_t element_size,
+int ivi_sort(void* array, int num_elements, size_t element_size,
              int (*cmp_fn) (const void *, const void *),
              int __attribute__((unused)) interrupt_action)
 #else
-int kjb_sort(void* array, int num_elements, size_t element_size,
+int ivi_sort(void* array, int num_elements, size_t element_size,
              int (*cmp_fn) (const void *, const void *),
              int interrupt_action)
 #endif
 {
-#ifdef KJB_HAVE_QSORT
+#ifdef IVI_HAVE_QSORT
     if ((element_size == 0) || (num_elements < 0))
     {
         SET_ARGUMENT_BUG();
@@ -225,7 +225,7 @@ int kjb_sort(void* array, int num_elements, size_t element_size,
     qsort(array, num_elements, element_size, cmp_fn);
     return NO_ERROR;
 
-#else /* KJB_HAVE_QSORT is false, so use a homebrewed sort. */
+#else /* IVI_HAVE_QSORT is false, so use a homebrewed sort. */
     IMPORT volatile Bool sort_atn_flag;
     void*               temp_record_ptr;
     int                 res;
@@ -256,7 +256,7 @@ int kjb_sort(void* array, int num_elements, size_t element_size,
         return ERROR;
     }
 
-    temp_record_ptr = (void*)KJB_MALLOC(element_size);
+    temp_record_ptr = (void*)IVI_MALLOC(element_size);
 
     if (interrupt_action == USE_SORT_ATN_HANDLING)
     {
@@ -273,7 +273,7 @@ int kjb_sort(void* array, int num_elements, size_t element_size,
     res = quick_sort((char*)array, (int)0, num_elements - 1,
                      element_size, temp_record_ptr, cmp_fn);
 
-    kjb_free( temp_record_ptr );
+    ivi_free( temp_record_ptr );
 
 #ifdef TEST
     if (! check_sort(array, num_elements, element_size, cmp_fn))
@@ -293,12 +293,12 @@ int kjb_sort(void* array, int num_elements, size_t element_size,
     }
 
     return res;
-#endif /* KJB_HAVE_QSORT */
+#endif /* IVI_HAVE_QSORT */
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifndef KJB_HAVE_QSORT
+#ifndef IVI_HAVE_QSORT
 
 /* =============================================================================
  * STATIC                      quick_sort
@@ -353,7 +353,7 @@ static int partition(char* array, int left, int right, size_t element_size,
 
     if (pivot_index < 0) return pivot_index;
 
-    kjb_memcpy(temp_record_ptr, (void*)(array + pivot_index*element_size),
+    ivi_memcpy(temp_record_ptr, (void*)(array + pivot_index*element_size),
                element_size);
 
     /* 
@@ -366,7 +366,7 @@ static int partition(char* array, int left, int right, size_t element_size,
     */
     if (pivot_index != left) 
     {
-        kjb_memcpy((void*)(array + pivot_index*element_size),
+        ivi_memcpy((void*)(array + pivot_index*element_size),
                    (void*)(array + left*element_size),
                    element_size);
     }
@@ -389,7 +389,7 @@ static int partition(char* array, int left, int right, size_t element_size,
 
         if (left < right )
         {
-            kjb_memcpy((void*)(array + left*element_size),
+            ivi_memcpy((void*)(array + left*element_size),
                        (void*)(array + right*element_size),
                        element_size);
 
@@ -412,14 +412,14 @@ static int partition(char* array, int left, int right, size_t element_size,
 
         if (left < right)
         {
-             kjb_memcpy((void*)(array + right*element_size),
+             ivi_memcpy((void*)(array + right*element_size),
                         (void*)(array + left*element_size),
                         element_size);
             --right;
         }
     }
 
-    kjb_memcpy((void*)(array + left*element_size), temp_record_ptr,
+    ivi_memcpy((void*)(array + left*element_size), temp_record_ptr,
                element_size);
 
     return left;
@@ -563,7 +563,7 @@ int check_sort(void* array, int num_elements, size_t element_size,
  *
  * Sorts an array of arbitrary elements by integer key.
  *
- * This routine is much like kjb_sort except the call backs are avoided on the
+ * This routine is much like ivi_sort except the call backs are avoided on the
  * assumption that the key is an integer at offset key_pos (see offsetof()).
  * This routine is barely legal ANSI-C and might fail on some bizzare system
  * (but not anything common). The operation in question is whether:
@@ -574,9 +574,9 @@ int check_sort(void* array, int num_elements, size_t element_size,
  * offsetof() the integer key, and element_size is sizeof(<element-type>). (I
  * don't know of any systems where this is not the case). This routine is only
  * meant to provide a faster sort in this specialized case, so if you don't
- * want to take a chance with the above then kjb_sort or qsort can be used.
+ * want to take a chance with the above then ivi_sort or qsort can be used.
  *
- * The interupt handling is the same as kjb_sort (see kjb_sort(3)).
+ * The interupt handling is the same as ivi_sort (see ivi_sort(3)).
  *
  * Returns:
  *    This function returns ERROR or NO_ERROR depending upon success. 
@@ -585,7 +585,7 @@ int check_sort(void* array, int num_elements, size_t element_size,
  *
  *    This function previously returned the number calls to the
  *    comparison required but this is probably too confusing now that we have
- *    changed kjb_sort() to not do this. If needed, the number of comparisons
+ *    changed ivi_sort() to not do this. If needed, the number of comparisons
  *    is available using the function get_last_sort_comparison_count(). 
  *
  * Index: sorting/searching
@@ -621,7 +621,7 @@ int int_sort(void* array, int num_elements, size_t element_size,
         return ERROR;
     }
 
-    NRE(temp_record_ptr = (void*)KJB_MALLOC(element_size));
+    NRE(temp_record_ptr = (void*)IVI_MALLOC(element_size));
 
     if (interrupt_action == USE_SORT_ATN_HANDLING)
     {
@@ -638,7 +638,7 @@ int int_sort(void* array, int num_elements, size_t element_size,
     res = int_quick_sort((char*)array, (int)0, (int)num_elements - 1,
                           element_size, key_pos, temp_record_ptr);
 
-    kjb_free( temp_record_ptr );
+    ivi_free( temp_record_ptr );
 
     if (interrupt_action != USE_CURRENT_ATN_HANDLING)
     {
@@ -707,7 +707,7 @@ static int int_partition(char* array, int left, int right, size_t element_size,
     char_ptr = (char*)array + pivot_index*element_size + key_pos;
     pivot_val = *((int*)((void*)char_ptr));
 
-    kjb_memcpy(temp_record_ptr, (void*)(array + pivot_index*element_size),
+    ivi_memcpy(temp_record_ptr, (void*)(array + pivot_index*element_size),
                element_size);
 
     /* 
@@ -717,7 +717,7 @@ static int int_partition(char* array, int left, int right, size_t element_size,
     */
     if (pivot_index != left) 
     {
-        kjb_memcpy((void*)(array + pivot_index*element_size),
+        ivi_memcpy((void*)(array + pivot_index*element_size),
                    (void*)(array + left*element_size),
                    element_size);
     }
@@ -745,7 +745,7 @@ static int int_partition(char* array, int left, int right, size_t element_size,
         {
             fs_sort_rec_comparison_count++;
 
-            kjb_memcpy((void*)(array + left*element_size),
+            ivi_memcpy((void*)(array + left*element_size),
                        (void*)((char*)array + right*element_size),
                        element_size);
             ++left;
@@ -771,7 +771,7 @@ static int int_partition(char* array, int left, int right, size_t element_size,
 
         if (left < right)
         {
-            kjb_memcpy((void*)(array + right*element_size),
+            ivi_memcpy((void*)(array + right*element_size),
                        (void*)(array + left*element_size),
                        element_size);
            --right;
@@ -780,7 +780,7 @@ static int int_partition(char* array, int left, int right, size_t element_size,
         if (sort_atn_flag) return INTERRUPTED;
     }
 
-    kjb_memcpy((void*)(array + left*element_size), temp_record_ptr,
+    ivi_memcpy((void*)(array + left*element_size), temp_record_ptr,
                element_size);
 
     return left;
@@ -866,10 +866,10 @@ static int int_find_pivot(char* array, int left, int right, size_t element_size,
  *
  * Sorts an array of arbitrary elements by long integer key.
  *
- * This routine is much like kjb_sort except the call backs are avoided on the
+ * This routine is much like ivi_sort except the call backs are avoided on the
  * assumption that the key is a long integer at offset key_pos (see offsetof()).
  *
- * The interupt handling is the same as kjb_sort (see kjb_sort(3)).
+ * The interupt handling is the same as ivi_sort (see ivi_sort(3)).
  *
  * Returns:
  *    On success int_sort returns the number of key comparisons required. If
@@ -910,7 +910,7 @@ long long_sort(void* array, long num_elements, size_t element_size,
         return ERROR;
     }
 
-    NRE(temp_record_ptr = (void*)KJB_MALLOC(element_size));
+    NRE(temp_record_ptr = (void*)IVI_MALLOC(element_size));
 
     if (interrupt_action == USE_SORT_ATN_HANDLING)
     {
@@ -927,7 +927,7 @@ long long_sort(void* array, long num_elements, size_t element_size,
     res = long_quick_sort((char*)array, (long)0, (long)num_elements - 1,
                           element_size, key_pos, temp_record_ptr);
 
-    kjb_free( temp_record_ptr );
+    ivi_free( temp_record_ptr );
 
     if (interrupt_action != USE_CURRENT_ATN_HANDLING)
     {
@@ -1004,12 +1004,12 @@ static long long_partition(char* array, long left, long right, size_t element_si
     char_ptr = (char*)array + pivot_index*element_size + key_pos;
     pivot_val = *((long*)((void*)char_ptr));
 
-    kjb_memcpy(temp_record_ptr, (void*)(array + pivot_index*element_size),
+    ivi_memcpy(temp_record_ptr, (void*)(array + pivot_index*element_size),
                element_size);
 
     if(pivot_index != left)
     {
-        kjb_memcpy((void*)(array + pivot_index*element_size),
+        ivi_memcpy((void*)(array + pivot_index*element_size),
                    (void*)(array + left*element_size),
                    element_size);
     }
@@ -1038,7 +1038,7 @@ static long long_partition(char* array, long left, long right, size_t element_si
         {
             fs_sort_rec_comparison_count++;
 
-            kjb_memcpy((void*)(array + left*element_size),
+            ivi_memcpy((void*)(array + left*element_size),
                        (void*)((char*)array + right*element_size),
                        element_size);
             ++left;
@@ -1064,7 +1064,7 @@ static long long_partition(char* array, long left, long right, size_t element_si
 
         if (left < right)
         {
-            kjb_memcpy((void*)(array + right*element_size),
+            ivi_memcpy((void*)(array + right*element_size),
                        (void*)(array + left*element_size),
                        element_size);
            --right;
@@ -1073,7 +1073,7 @@ static long long_partition(char* array, long left, long right, size_t element_si
         if (sort_atn_flag) return INTERRUPTED;
     }
 
-    kjb_memcpy((void*)(array + left*element_size), temp_record_ptr,
+    ivi_memcpy((void*)(array + left*element_size), temp_record_ptr,
                element_size);
 
     return left;
@@ -1782,7 +1782,7 @@ int insert_into_sorted_array(void* array,
         count--;
     }
 
-    kjb_memcpy((void*)((char*)array + i*element_size), new_element_ptr,
+    ivi_memcpy((void*)((char*)array + i*element_size), new_element_ptr,
                 element_size);
 
     (*num_elements_ptr)++;
@@ -1862,7 +1862,7 @@ static int find_insert_position(void* array, int num_elements,
 
 int get_last_sort_comparison_count(void)
 {
-#ifdef KJB_HAVE_QSORT
+#ifdef IVI_HAVE_QSORT
     set_error("Sort comparison count not available when using qsort for sorting.");
     return ERROR; 
 #else

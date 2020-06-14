@@ -1,5 +1,5 @@
 /*
- * $Id: generate_lsl_data.cpp 15736 2013-10-19 05:44:01Z predoehl $
+ * $Id: generate_lsl_data.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 #include <l/l_sys_lib.h>
 #include <l_cpp/l_exception.h>
@@ -16,7 +16,7 @@
 #include <functional>
 #include <boost/bind.hpp>
 
-using namespace kjb;
+using namespace ivi;
 
 // typedefs
 typedef std::list<Line_segment> Segment_list;
@@ -295,7 +295,7 @@ void process_key(unsigned char key, int, int)
                 delete model_segments;
                 delete data_segments;
 
-                kjb_c::kjb_exit(0);
+                ivi_c::ivi_exit(0);
             }
 
             default: return;

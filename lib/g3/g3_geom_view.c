@@ -1,5 +1,5 @@
 
-/* $Id: g3_geom_view.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: g3_geom_view.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -137,7 +137,7 @@ static Geom_view* geom_view_open_guts(int geom_view_num)
 
     if (pipe(geom_view_pipe) == EOF)
     {
-        kjb_fprintf(stderr,
+        ivi_fprintf(stderr,
                     "Creation of pipe for a geomview process failed.\n");
         return NULL;
     }
@@ -148,7 +148,7 @@ static Geom_view* geom_view_open_guts(int geom_view_num)
         first_time = FALSE;
     }
 
-    geom_view_pid = kjb_fork();
+    geom_view_pid = ivi_fork();
 
     if (geom_view_pid < 0)
     {
@@ -171,14 +171,14 @@ static Geom_view* geom_view_open_guts(int geom_view_num)
         sprintf(error_file, "/tmp/%s-%ld-%ld-geomview.error", user_id,
                 (long)MY_PID, (long)(geom_view_num+1));
 
-        NRN(kjb_freopen(error_file, "w", stderr));
+        NRN(ivi_freopen(error_file, "w", stderr));
 
         sprintf(pipe_name,"%s-%ld-%ld",user_id, (long)MY_PID,
                 (long)(geom_view_num + 1));
 
         sprintf(system_command, "togeomview -c %s" , pipe_name);
 
-        kjb_exec(system_command);
+        ivi_exec(system_command);
 
         /*NOTREACHED*/
 
@@ -188,7 +188,7 @@ static Geom_view* geom_view_open_guts(int geom_view_num)
     {
         if (signal(SIGPIPE, geom_view_sigpipe_fn) == SIG_ERR)
         {
-            kjb_fprintf(stderr,
+            ivi_fprintf(stderr,
                         "Failed to setup pipe signal to geomview process\n");
             return NULL;
         }
@@ -310,12 +310,12 @@ int geom_view_geometry
 
     if (geom_view_ptr->object_list_head != NULL)
     {
-        free_queue(&(geom_view_ptr->object_list_head), NULL, kjb_free);
+        free_queue(&(geom_view_ptr->object_list_head), NULL, ivi_free);
     }
 
     if (geom_view_ptr->label != NULL)
     {
-        kjb_free(geom_view_ptr->label);
+        ivi_free(geom_view_ptr->label);
         geom_view_ptr->label = NULL;
     }
 
@@ -352,7 +352,7 @@ int geom_view_add_geometry
 
     if (geom_view_ptr->label == NULL)
     {
-        geom_view_ptr->label = kjb_strdup(label);
+        geom_view_ptr->label = ivi_strdup(label);
     }
     else
     {
@@ -368,7 +368,7 @@ int geom_view_add_geometry
 
     result = geom_view_add_object(geom_view_ptr,new_geometry);
 
-    kjb_free(new_geometry);
+    ivi_free(new_geometry);
 
     if (result != ERROR)
     {
@@ -455,7 +455,7 @@ int geom_view_add_object(Geom_view* geom_view_ptr, const char* geometry)
         return ERROR;
     }
 
-    NRE(new_geometry = kjb_strdup(geometry));
+    NRE(new_geometry = ivi_strdup(geometry));
 
     ERE(insert_into_queue(&(geom_view_ptr->object_list_head),
                           (Queue_element**)NULL, new_geometry));
@@ -553,7 +553,7 @@ int geom_view_close(Geom_view* geom_view_ptr)
     geom_view_index = ((geom_view_ptr->id) - 1) % fs_max_num_geom_views;
     fs_geom_view_info_array[ geom_view_index ] = NULL;
 
-    kjb_free(geom_view_ptr);
+    ivi_free(geom_view_ptr);
 
     return NO_ERROR;
 }
@@ -580,7 +580,7 @@ void geom_view_close_all(void)
 
     fs_geom_view_num = 0;
 
-    kjb_free(fs_geom_view_info_array);
+    ivi_free(fs_geom_view_info_array);
     fs_geom_view_info_array = NULL;
 }
 
@@ -608,7 +608,7 @@ char* get_facet_list
     int         done;
 
 
-    kjb_sprintf(colour_str, sizeof(colour_str), "%5.3f %5.3f %5.3f 0.5", red, green, blue);
+    ivi_sprintf(colour_str, sizeof(colour_str), "%5.3f %5.3f %5.3f 0.5", red, green, blue);
 
     ERN(num_lines = string_count_real_lines(geometry));
 
@@ -702,7 +702,7 @@ int geom_view_write(const Geom_view* geom_view_ptr, const char* buff)
 
     len = strlen(buff);
 
-    if (kjb_write(geom_view_ptr->write_des, buff, len) == ERROR)
+    if (ivi_write(geom_view_ptr->write_des, buff, len) == ERROR)
     {
         insert_error("Failure writing %d bytes to geom_view pipe.", len);
         return ERROR;
@@ -718,7 +718,7 @@ TRAP_FN_RETURN_TYPE geom_view_sigpipe_fn(int __attribute__((unused)) dummy_sig)
 {
 
 
-    kjb_fprintf(stderr, "Geomview has died.\n");
+    ivi_fprintf(stderr, "Geomview has died.\n");
 
 }
 

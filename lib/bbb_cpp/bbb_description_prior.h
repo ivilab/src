@@ -31,7 +31,7 @@
 
 #include <boost/variant.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -109,7 +109,7 @@ private:
 /** @brief  Sample a description from the prior. */
 Description sample(const Description_prior& prior);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_DESCRIPTION_PRIOR_H */
 

@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_bright.c 21491 2017-07-20 13:19:02Z kobus $
+ * $Id: test_bright.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_std.h"
@@ -107,14 +107,14 @@ static int check_answers(
 
     /* sort c1test, c2test */
 
-    EGC(kjb_sort(c1test -> elements, c1ref -> length, sizeof(int), int_greater,
+    EGC(ivi_sort(c1test -> elements, c1ref -> length, sizeof(int), int_greater,
                  USE_CURRENT_ATN_HANDLING));
     
-    EGC(kjb_sort(c1ref -> elements, c1ref -> length, sizeof(int), int_greater,
+    EGC(ivi_sort(c1ref -> elements, c1ref -> length, sizeof(int), int_greater,
                  USE_CURRENT_ATN_HANDLING));
-    EGC(kjb_sort(c2test -> elements, c2ref -> length, sizeof(int), int_greater,
+    EGC(ivi_sort(c2test -> elements, c2ref -> length, sizeof(int), int_greater,
                  USE_CURRENT_ATN_HANDLING));
-    EGC(kjb_sort(c2ref -> elements, c2ref -> length, sizeof(int), int_greater,
+    EGC(ivi_sort(c2ref -> elements, c2ref -> length, sizeof(int), int_greater,
                  USE_CURRENT_ATN_HANDLING));
 
     /* compare c1test with c1ref, c2test with c2ref */
@@ -174,13 +174,13 @@ int main (void)
     Pixel w = { 100, 100, 100, { {0,0,0, VALID_PIXEL } } },
           g = { 50, 50, 50, { {0,0,0, VALID_PIXEL} } };
 
-    KJB_image *i = NULL;
+    IVI_image *i = NULL;
     Matrix *b = NULL, *t = NULL;
     Int_matrix_vector *roster = NULL;
     Vector_vector *ctrs = NULL;
     Int_vector *c1ref = NULL, *c2ref = NULL;
 
-    EPETE(kjb_init());
+    EPETE(ivi_init());
     EPETE(get_initialized_image_2(&i, SIZE,SIZE, 0,0,0));
 
     EPETE(get_target_int_vector(&c1ref, SPOT*SPOT));
@@ -220,7 +220,7 @@ int main (void)
         }
     }
 
-    if (VERBOSE) { EPETE(kjb_write_image(i, "debug_spy_1.tif")); }
+    if (VERBOSE) { EPETE(ivi_write_image(i, "debug_spy_1.tif")); }
 
     /* Prepare background, threshold matrix and call function to test. */
     EPETE(get_zero_matrix(&b, SIZE, SIZE));
@@ -255,8 +255,8 @@ int main (void)
     free_matrix(t);
     free_int_vector(c2ref);
     free_int_vector(c1ref);
-    kjb_free_image(i);
-    kjb_cleanup();
+    ivi_free_image(i);
+    ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

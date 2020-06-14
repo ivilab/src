@@ -1,5 +1,5 @@
 /*
- * $Id: test_topology.cpp 20623 2016-04-06 03:20:03Z predoehl $
+ * $Id: test_topology.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_debug.h>
@@ -10,7 +10,7 @@
 namespace
 {
 
-typedef kjb::qd::Redblack_subtree_sum<char> RBT;
+typedef ivi::qd::Redblack_subtree_sum<char> RBT;
 
 const int data[] = { 
         25686,
@@ -99,7 +99,7 @@ int main(int argc, char** argv)
     }
     if (locs.size() != sizeof data / sizeof(int))
     {
-        KJB(TEST_PSE(("Bad number of locators")));
+        IVI(TEST_PSE(("Bad number of locators")));
         return EXIT_FAILURE;
     }
     std::set<Nodus> result,
@@ -112,15 +112,15 @@ int main(int argc, char** argv)
         const bool suc = rbt.access_loc(locs[i], &k, 00);
         if (!suc)
         {
-            KJB(TEST_PSE(("Cannot accesss node\n")));
+            IVI(TEST_PSE(("Cannot accesss node\n")));
             return EXIT_FAILURE;
         }
         n.key = k;
         const int kerr = rbt.get_topology_to_node(locs[i], &n.zigzag);
-        KJB(EPE(kerr));
-        if (kjb_c::ERROR == kerr)
+        IVI(EPE(kerr));
+        if (ivi_c::ERROR == kerr)
         {
-            KJB(TEST_PSE(("Cannot obtain node topology\n")));
+            IVI(TEST_PSE(("Cannot obtain node topology\n")));
             return EXIT_FAILURE;
         }
         result.insert(n);
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 
     if (result != reference) 
     {
-        KJB(TEST_PSE(("Bad results.\n")));
+        IVI(TEST_PSE(("Bad results.\n")));
         return EXIT_FAILURE;
     }
 

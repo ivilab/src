@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan, Ernesto Brau
  * =========================================================================== */
 
-/* $Id: integral_flow.cpp 13194 2012-10-22 21:49:03Z ernesto $ */
+/* $Id: integral_flow.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <flow_cpp/flow_integral_flow.h>
 #include <flow_cpp/flow_dense.h>
@@ -31,12 +31,12 @@
 #include <string>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     const string show_times_flag = "-show-times";
     const double rho = 0.99;
@@ -149,17 +149,17 @@ int main(int argc, char** argv)
         double w = box.get_width();
         double h = box.get_height();
 
-        kjb_c::init_cpu_time();
+        ivi_c::init_cpu_time();
         real_flow = w*h*average_flow(F_x, F_y, box);
-        avg_time_real += kjb_c::get_cpu_time();
+        avg_time_real += ivi_c::get_cpu_time();
 
-        kjb_c::init_cpu_time();
+        ivi_c::init_cpu_time();
         int_flow = Vector().set(I_x.flow_sum(box), I_y.flow_sum(box));
-        avg_time_int += kjb_c::get_cpu_time();
+        avg_time_int += ivi_c::get_cpu_time();
 
-        kjb_c::init_cpu_time();
+        ivi_c::init_cpu_time();
         ssi_flow = Vector().set(S_x.flow_sum(box), S_y.flow_sum(box));
-        avg_time_ssi += kjb_c::get_cpu_time();
+        avg_time_ssi += ivi_c::get_cpu_time();
 
         //cout << "IT " << it << " (" << w << " X " << h << ")" << endl;
 

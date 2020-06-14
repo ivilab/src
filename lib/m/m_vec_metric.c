@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_metric.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vec_metric.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -107,7 +107,7 @@ double max_abs_vector_difference
  *    NO_ERROR on success, and ERROR on failure. This routine will fail if
  *    either of the vectors is too close to zero, or the vectors are of un-equal
  *    length. It should be noted that this error is currently treated as bug
- *    (see kjb_bug(3)).
+ *    (see ivi_bug(3)).
  *
  * Index: vectors
  *
@@ -150,7 +150,7 @@ int get_vector_angle_in_degrees
  *    NO_ERROR on success, and ERROR on failure. This routine will fail if
  *    either of the vectors is too close to zero, or the vectors are of un-equal
  *    length. It should be noted that this error is currently treated as bug
- *    (see kjb_bug(3)).
+ *    (see ivi_bug(3)).
  *
  * Index: vectors
  *
@@ -181,7 +181,7 @@ int get_vector_angle_in_radians
     mag2 = vector_magnitude(vp2);
     mag_product = mag1 * mag2;
 
-    /* p_stderr("KJB mag: %.20e\n", mag_product); */
+    /* p_stderr("IVI mag: %.20e\n", mag_product); */
 
 #ifdef USE_IS_ZERO_DBL_FOR_DIVIDE_BY_ZERO
     if ( ! IS_POSITIVE_DBL(mag_product) )
@@ -255,7 +255,7 @@ int get_vector_angle_in_radians
     }
 
     /*
-                p_stderr("KJB final arg to acos: %.20e\n", temp);  
+                p_stderr("IVI final arg to acos: %.20e\n", temp);  
                 */
 
     *result_ptr = acos(temp);
@@ -281,7 +281,7 @@ int get_vector_angle_in_radians
  *    set.
  *    
  * Note:
- *    Vectors of unequal lenths has been treated as a bug (see kjb_bug(3)) in
+ *    Vectors of unequal lenths has been treated as a bug (see ivi_bug(3)) in
  *    some previous versions, and it is possible that we will go back to this
  *    behaviour in the future. Currently, we do not have a good convention for
  *    this, and putting one in place may change things. However, such a change
@@ -477,7 +477,7 @@ int first_vector_is_less_2
         }
     }
 
-    if (KJB_IS_SET(index_for_biggest_difference))
+    if (IVI_IS_SET(index_for_biggest_difference))
     {
         if (biggest_difference_ptr != NULL)
         {

@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 using namespace std; 
 
 double percentile; 
@@ -78,7 +78,7 @@ int main(int argc, char** argv)
 
         glutMainLoop();
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         delete img_pre_p;
         delete img_next_p;

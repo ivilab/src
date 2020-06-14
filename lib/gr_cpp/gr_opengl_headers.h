@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_headers.h 18652 2015-03-16 16:27:26Z ksimek $ */
+/* $Id: gr_opengl_headers.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -26,40 +26,40 @@
  */
 
 #if !defined(__gl_h_) && !defined(__GL_H__)
-    #ifdef KJB_HAVE_GLEW
+    #ifdef IVI_HAVE_GLEW
         #include <GL/glew.h>
     #endif
 #endif
 
-#ifdef KJB_HAVE_OSMESA
+#ifdef IVI_HAVE_OSMESA
     #include <GL/osmesa.h>
     #include <GL/glu.h>
     #include <GL/glut.h>
 #else
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     #ifdef MAC_OSX
         #include <OpenGL/glu.h>
         #include <OpenGL/gl.h>
-        #ifdef KJB_HAVE_GLUT
+        #ifdef IVI_HAVE_GLUT
             #include <GLUT/glut.h>
         #endif
     #else
         #ifdef WIN32
         #include <GL/gl.h>
         #include <GL/glu.h>
-        #ifdef KJB_HAVE_GLUT
+        #ifdef IVI_HAVE_GLUT
             #include <glut.h>
         #endif
         #else
             #include <GL/gl.h>
             #include <GL/glu.h>
-            #ifdef KJB_HAVE_GLUT
+            #ifdef IVI_HAVE_GLUT
                 #include <GL/glut.h>
             #endif
         #endif
     #endif
-#else /* !defined(KJB_HAVE_OPENGL)  */
+#else /* !defined(IVI_HAVE_OPENGL)  */
 typedef int GLUquadricObj;
 typedef int GLuint;
 typedef int GLenum;

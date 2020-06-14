@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <iterator>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -118,7 +118,7 @@ std::ostream& operator<<(std::ostream& ost, const Intentional_activity& activity
     return ost;
 }
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_INTENTIONAL_ACTIVITY_H */
 

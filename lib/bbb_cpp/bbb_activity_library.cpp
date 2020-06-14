@@ -35,7 +35,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/foreach.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 Activity_library::Activity_library(const std::string& lib_dp)
@@ -144,7 +144,7 @@ Vector Activity_library::sample_parameters
     {
         const int d = 2;
         Mvn P(Vector(d, 0.0), Vector(d, space_sd*space_sd));
-        return kjb::sample(P);
+        return ivi::sample(P);
     }
     else if(name == "MOVE-TO")
     {
@@ -152,18 +152,18 @@ Vector Activity_library::sample_parameters
         {
             const int d = pt_params.get_length();
             Mvn P(pt_params, Vector(d, noise_sd*noise_sd));
-            return kjb::sample(P);
+            return ivi::sample(P);
         }
         else
         {
             const int d = 2;
             Mvn P(Vector(d, 0.0), Vector(d, space_sd*space_sd));
-            return kjb::sample(P);
+            return ivi::sample(P);
         }
     }
 
     //else
-    KJB_THROW_2(Runtime_error, "Sample params: activity not recognized");
+    IVI_THROW_2(Runtime_error, "Sample params: activity not recognized");
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -202,5 +202,5 @@ std::pair<Activity_library::S_vec, Activity_library::V_vec>
     return std::make_pair(strs, vecs);
 }
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 

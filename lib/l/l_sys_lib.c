@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_lib.c 24712 2019-12-14 00:58:28Z kobus $ */
+/* $Id: l_sys_lib.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -85,7 +85,7 @@ static int fs_system_command_parent_pid = NOT_SET;
 static int set_lock_enable(int new_enable_value);
 static void cleanup_lock(void);
 static void remove_lock_enable_file(void);
-static void kjb_cleanup_guts(int abort_flag);
+static void ivi_cleanup_guts(int abort_flag);
 
 #ifdef TEST
     static int debug_add_cleanup_function_guts
@@ -159,8 +159,8 @@ static int set_lock_enable(int new_enable_value)
             return ERROR;
         }
 
-        NRE(enable_fp = kjb_fopen(LOCK_ENABLE_FILE, "w"));
-        kjb_fclose(enable_fp);
+        NRE(enable_fp = ivi_fopen(LOCK_ENABLE_FILE, "w"));
+        ivi_fclose(enable_fp);
     }
     else if (fs_lock_enable && !new_enable_value)
     {
@@ -191,7 +191,7 @@ static void remove_lock_enable_file(void)
 {
 
 
-    kjb_unlink(LOCK_ENABLE_FILE);
+    ivi_unlink(LOCK_ENABLE_FILE);
 
 }
 
@@ -208,15 +208,15 @@ int check_for_freeze(void)
         FILE* wait_fp;
 
 
-        NRE(wait_fp = kjb_fopen(LOCK_GRANT_FILE, "w"));
-        EPE(kjb_fclose(wait_fp));
+        NRE(wait_fp = ivi_fopen(LOCK_GRANT_FILE, "w"));
+        EPE(ivi_fclose(wait_fp));
 
         while (get_path_type(LOCK_REQUEST_FILE) == PATH_IS_REGULAR_FILE)
         {
             nap(200);
         }
 
-        EPE(kjb_unlink(LOCK_GRANT_FILE));
+        EPE(ivi_unlink(LOCK_GRANT_FILE));
     }
 
     return NO_ERROR;
@@ -244,7 +244,7 @@ int is_interactive(void)
 
     if (interactive == NOT_SET)
     {
-        if ((kjb_isatty(fileno(stdin)) && (! is_in_background())))
+        if ((ivi_isatty(fileno(stdin)) && (! is_in_background())))
         {
             interactive = TRUE;
         }
@@ -301,7 +301,7 @@ int get_user_id(char* user_id, size_t max_len)
        return ERROR;
    }
 
-   kjb_strncpy(user_id, (user_passwd_ptr->pw_name), max_len);
+   ivi_strncpy(user_id, (user_passwd_ptr->pw_name), max_len);
 
    return NO_ERROR;
 }
@@ -364,9 +364,9 @@ int get_user_id(char* user_id, size_t max_len)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                 kjb_get_env
+ *                                 ivi_get_env
  *
- * KJB library wrapper for getenv()
+ * IVI library wrapper for getenv()
  *
  * This routine copies the value of the environment variable whose name is in
  * the string env_var, into the buffer env_val_buff, of size max_len.
@@ -386,7 +386,7 @@ int get_user_id(char* user_id, size_t max_len)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_get_env(const char* env_var, char* env_val_buff, size_t max_len)
+int ivi_get_env(const char* env_var, char* env_val_buff, size_t max_len)
 {
     char* env_val;
 
@@ -419,7 +419,7 @@ int kjb_get_env(const char* env_var, char* env_val_buff, size_t max_len)
                 set_error("Value for environment variable %s is too long.", env_var);
                 return ERROR;
             }
-            kjb_strncpy(env_val_buff, env_val, max_len);
+            ivi_strncpy(env_val_buff, env_val, max_len);
         }
         return NO_ERROR;
     }
@@ -435,7 +435,7 @@ int kjb_get_env(const char* env_var, char* env_val_buff, size_t max_len)
  * This routine starts up the system command process. It is not essential to
  * call this routine, as it is called automatically when the first system
  * command request is made, but it is recommended that programs which use
- * kjb_system() call routine at program startup (technically, before much
+ * ivi_system() call routine at program startup (technically, before much
  * memory has been allocated). This reduces the overall VM usage.
  *
  * Note:
@@ -455,7 +455,7 @@ int create_system_command_process(void)
     int system_pid;
 
 
-    if (KJB_IS_SET(fs_system_command_pid))
+    if (IVI_IS_SET(fs_system_command_pid))
     {
         return NO_ERROR;
     }
@@ -475,7 +475,7 @@ int create_system_command_process(void)
     dbi(fs_system_result_pipe[ WRITE_END ]);
     */
 
-    ERE(system_pid = kjb_fork());
+    ERE(system_pid = ivi_fork());
 
     if (IS_PARENT(system_pid))
     {
@@ -534,7 +534,7 @@ int create_system_command_process(void)
             p_stderr("Can't close write end of system command pipe.%S");
         }
 
-        EPE(kjb_signal(SIGINT, SIG_IGN));
+        EPE(ivi_signal(SIGINT, SIG_IGN));
 
         /*CONSTCOND*/
         while ( TRUE )
@@ -545,7 +545,7 @@ int create_system_command_process(void)
 
             if (result == ERROR)
             {
-                kjb_print_error();
+                ivi_print_error();
                 continue;
             }
 
@@ -558,7 +558,7 @@ int create_system_command_process(void)
             */
             if ((STRCMP_EQ(line, "quit") || (result == EOF)))
             {
-                kjb_exit( EXIT_SUCCESS);
+                ivi_exit( EXIT_SUCCESS);
                 /*NOTREACHED*/
             }
 
@@ -581,17 +581,17 @@ int create_system_command_process(void)
 
                 line_pos = save_line_pos;
 
-                result = kjb_system_2(line_pos, NULL);
+                result = ivi_system_2(line_pos, NULL);
 
-                if (kjb_sprintf(int_buff, sizeof(int_buff), "%d\n", result) == ERROR)
+                if (ivi_sprintf(int_buff, sizeof(int_buff), "%d\n", result) == ERROR)
                 {
-                    kjb_print_error();
+                    ivi_print_error();
                     continue;
                 }
 
-                if (kjb_write(fs_system_result_pipe[ WRITE_END ], int_buff, strlen(int_buff)) == ERROR)
+                if (ivi_write(fs_system_result_pipe[ WRITE_END ], int_buff, strlen(int_buff)) == ERROR)
                 {
-                    kjb_print_error();
+                    ivi_print_error();
                     continue;
                 }
 
@@ -599,7 +599,7 @@ int create_system_command_process(void)
                 {
                     int num_lines;
 
-                    kjb_get_error(error_str, sizeof(error_str));
+                    ivi_get_error(error_str, sizeof(error_str));
 
                     if (error_str[ strlen(error_str) - 1 ] != '\n')
                     {
@@ -608,21 +608,21 @@ int create_system_command_process(void)
 
                     num_lines = count_char(error_str, '\n');
 
-                    if (kjb_sprintf(int_buff, sizeof(int_buff), "%d\n", num_lines) == ERROR)
+                    if (ivi_sprintf(int_buff, sizeof(int_buff), "%d\n", num_lines) == ERROR)
                     {
-                        kjb_print_error();
+                        ivi_print_error();
                         continue;
                     }
 
-                    if (kjb_write(fs_system_result_pipe[ WRITE_END ], int_buff, strlen(int_buff)) == ERROR)
+                    if (ivi_write(fs_system_result_pipe[ WRITE_END ], int_buff, strlen(int_buff)) == ERROR)
                     {
-                        kjb_print_error();
+                        ivi_print_error();
                         continue;
                     }
 
-                    if (kjb_write(fs_system_result_pipe[ WRITE_END ], error_str, strlen(error_str)) == ERROR)
+                    if (ivi_write(fs_system_result_pipe[ WRITE_END ], error_str, strlen(error_str)) == ERROR)
                     {
-                        kjb_print_error();
+                        ivi_print_error();
                         continue;
                     }
 
@@ -679,21 +679,21 @@ void destroy_system_command_process(void)
 
     INIT_SIGNAL_INFO(new_broken_pipe_vec);
     new_broken_pipe_vec.SIGNAL_HANDLER = SIG_IGN;
-    kjb_sigvec(SIGPIPE, &new_broken_pipe_vec, &save_broken_pipe_vec);
+    ivi_sigvec(SIGPIPE, &new_broken_pipe_vec, &save_broken_pipe_vec);
 
-    write_res = kjb_write(fs_system_command_pipe[ WRITE_END ], "quit\n", 5);
+    write_res = ivi_write(fs_system_command_pipe[ WRITE_END ], "quit\n", 5);
 
-    kjb_sigvec(SIGPIPE, &save_broken_pipe_vec, (Signal_info*)NULL);
+    ivi_sigvec(SIGPIPE, &save_broken_pipe_vec, (Signal_info*)NULL);
 
     if (write_res != ERROR)
     {
 #ifdef TEST
         int waitpid_result;
 
-        waitpid_result = kjb_waitpid(fs_system_command_pid);
+        waitpid_result = ivi_waitpid(fs_system_command_pid);
         TEST_PSE(("Wait result is %d (IL4RT).\n", waitpid_result));
 #else
-        kjb_waitpid(fs_system_command_pid);
+        ivi_waitpid(fs_system_command_pid);
 #endif
     }
 #ifdef TEST
@@ -712,20 +712,20 @@ void destroy_system_command_process(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                 kjb_system
+ *                                 ivi_system
  *
- * KJB library version of system(2)
+ * IVI library version of system(2)
  *
  * On the surface, this function is similar to the unix system(2) routine except
- * that we follow the KJB error reporting conventions, we ensure that the user's
+ * that we follow the IVI error reporting conventions, we ensure that the user's
  * PATH variable is searched (it usually is anyway), the success/failure of the
  * effort is returned, and there is slightly better error reporting on failure.
  * In addition, the stderr of the executed command is added to error messages.
  * In addition, we create a process to handle the requests which are fed to it
  * via a pipe to reduce forking. This strategy has not been analyzed recently as
  * to whether there is a worthwhile performance gain. The function
- * kjb_system_2() can be used as if this is not desired. (The function
- * kjb_system() is implemented using kjb_system_2(). 
+ * ivi_system_2() can be used as if this is not desired. (The function
+ * ivi_system() is implemented using ivi_system_2(). 
  *
  * If the command succeeds, then NO_ERROR is returned, otherwise ERROR is
  * returned with an error message being set. This routine can fail if there is a
@@ -736,7 +736,7 @@ void destroy_system_command_process(void)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_system(const char* command)
+int ivi_system(const char* command)
 {
     char line[ MAX_SYSTEM_COMMAND_LINE_SIZE ];
     int  result;
@@ -765,7 +765,7 @@ int kjb_system(const char* command)
     *
     */
 
-    if (kjb_debug_level >= min_debug_level_for_standard)
+    if (ivi_debug_level >= min_debug_level_for_standard)
     {
         static int first_time = TRUE;
 
@@ -795,7 +795,7 @@ int kjb_system(const char* command)
         {
             first_time = FALSE;
 
-            TEST_PSE(("Using kjb_system() despite gcc and DEBUGGING.\n"));
+            TEST_PSE(("Using ivi_system() despite gcc and DEBUGGING.\n"));
             TEST_PSE(("As a result, gdb may not work properly.\n"));
             TEST_PSE(("(This has not been verified with recent versions of gdb).\n"));
             TEST_PSE(("Use a debug level at least %d to force the standard system().\n",
@@ -828,7 +828,7 @@ int kjb_system(const char* command)
 
     BUFF_CAT(line, "\n");
 
-    if (kjb_write(fs_system_command_pipe[ WRITE_END ], line, strlen(line)) == ERROR)
+    if (ivi_write(fs_system_command_pipe[ WRITE_END ], line, strlen(line)) == ERROR)
     {
         if (check_child(fs_system_command_pid) == PROCESS_IS_DEAD)
         {
@@ -853,7 +853,7 @@ int kjb_system(const char* command)
         return NO_ERROR;
     }
 
-    kjb_clear_error();
+    ivi_clear_error();
 
     BUFF_DGET_LINE(fs_system_result_pipe[ READ_END ], int_buff);
     ERE(ss1i(int_buff, &num_error_lines));
@@ -866,7 +866,7 @@ int kjb_system(const char* command)
 
 
     /*
-    kjb_print_error();
+    ivi_print_error();
     */
 
     UNTESTED_CODE();
@@ -876,11 +876,11 @@ int kjb_system(const char* command)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                 kjb_system_2
+ *                                 ivi_system_2
  *
- * A helper for kjb_system(), wrapper for system()
+ * A helper for ivi_system(), wrapper for system()
  *
- * This function is different than kjb_system() in that 1) it dodges the process
+ * This function is different than ivi_system() in that 1) it dodges the process
  * that sits in the background to handle incomming system call requests; and 2)
  * it provides a simple return code for the command executed (if argument
  * prog_rc_ptr is not NULL). It is different than system() in that output to
@@ -923,7 +923,7 @@ int kjb_system(const char* command)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_system_2(const char* command, int* prog_rc_ptr)
+int ivi_system_2(const char* command, int* prog_rc_ptr)
 {
     pid_t command_pid;
     char  error_file_name[ MAX_FILE_NAME_SIZE ];
@@ -967,7 +967,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
     ERE(BUFF_GET_TEMP_FILE_NAME(error_file_name));
     ERE(BUFF_GET_TEMP_FILE_NAME(cmd_error_file_name));
 
-    if ((command_pid = kjb_fork()) == ERROR)
+    if ((command_pid = ivi_fork()) == ERROR)
     {
         insert_error("Execution of %q failed.", command);
         return ERROR;
@@ -982,8 +982,8 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
     {
         int exit_status = EXIT_SUCCESS;
 
-        NRE(cmd_error_fp = kjb_fopen(cmd_error_file_name, "w"));
-        NRE(error_fp = kjb_fopen(error_file_name, "w"));
+        NRE(cmd_error_fp = ivi_fopen(cmd_error_file_name, "w"));
+        NRE(error_fp = ivi_fopen(error_file_name, "w"));
 
         /* If this succeeds, printing to stderr will then be via the temp files, so
          * debug output may not be what you expect (although it should come out
@@ -991,7 +991,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
         if (dup2(fileno(cmd_error_fp), fileno(stderr)) == EOF)
         {
             UNTESTED_CODE();
-            kjb_fclose(cmd_error_fp); 
+            ivi_fclose(cmd_error_fp); 
             set_error("Unable to set stderr error to %s.%S\n", cmd_error_file_name);
             return ERROR;
         }
@@ -1010,29 +1010,29 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
             exit_status = command_status; 
 #ifdef PLAY_WITH_THE_OLD_WAY
         }
-        else if (kjb_exec(command) == ERROR)    /* Only return is ERROR ! */
+        else if (ivi_exec(command) == ERROR)    /* Only return is ERROR ! */
         {
-            kjb_get_error(error_buff, sizeof(error_buff));
+            ivi_get_error(error_buff, sizeof(error_buff));
 
-            kjb_fputs(error_fp, error_buff);
-            kjb_fputs(error_fp, "\n");
+            ivi_fputs(error_fp, error_buff);
+            ivi_fputs(error_fp, "\n");
 
             /* Closest possible option? Shold be either 126 or 127 */
             exit_status = 127;
         }
 #endif 
-        kjb_fclose(error_fp);
-        kjb_fclose(cmd_error_fp);
+        ivi_fclose(error_fp);
+        ivi_fclose(cmd_error_fp);
 
 #ifdef HOW_IT_WAS_AUG_03_2017
-        _exit(exit_status);   /* Don't use kjb_exit, because we don't want
+        _exit(exit_status);   /* Don't use ivi_exit, because we don't want
                               // to clean up.
                               */
 #else 
         /* I am not sure why I wrote that we do not want to cleanup, so let's
          * try cleaning up for a while. 
         */
-        kjb_exit(exit_status);
+        ivi_exit(exit_status);
 #endif 
         /*NOTREACHED*/
     }
@@ -1043,7 +1043,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
         int waitpid2_result;
         int result = NO_ERROR;
 
-        waitpid2_result = kjb_waitpid2(command_pid, &exit_argument,
+        waitpid2_result = ivi_waitpid2(command_pid, &exit_argument,
                                        &termination_signal);
 
         /*
@@ -1054,19 +1054,19 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 
         if (waitpid2_result != NO_ERROR) 
         {
-            set_error("Execution of %q reported failure via kjb_waitpid2 return of (%d).", command,
+            set_error("Execution of %q reported failure via ivi_waitpid2 return of (%d).", command,
                       exit_argument);
             result = ERROR;
         }
-        else if (KJB_IS_SET(exit_argument)) 
+        else if (IVI_IS_SET(exit_argument)) 
         {
             if (get_path_type(error_file_name) == PATH_IS_REGULAR_FILE) 
             {
-                 error_fp = kjb_fopen(error_file_name, "r");
+                 error_fp = ivi_fopen(error_file_name, "r");
             }
             if (get_path_type(cmd_error_file_name) == PATH_IS_REGULAR_FILE)
             {
-                 cmd_error_fp = kjb_fopen(cmd_error_file_name, "r");
+                 cmd_error_fp = ivi_fopen(cmd_error_file_name, "r");
             }
              
             if (exit_argument != EXIT_SUCCESS)
@@ -1106,13 +1106,13 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
             }
 
             push_error_action(IGNORE_ERROR_ON_ERROR); 
-            kjb_fclose(error_fp);
-            kjb_unlink(error_file_name);
-            kjb_fclose(cmd_error_fp);
-            kjb_unlink(cmd_error_file_name);
+            ivi_fclose(error_fp);
+            ivi_unlink(error_file_name);
+            ivi_fclose(cmd_error_fp);
+            ivi_unlink(cmd_error_file_name);
             pop_error_action(); 
 
-            /* This was originally an attempt to have kjb_system_2() being able
+            /* This was originally an attempt to have ivi_system_2() being able
              * to report the difference between the success of executing the
              * program, versus the program reporting success. But this is
              * looking pretty hard to do. For now, failure of any sort is an
@@ -1129,7 +1129,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
                 result = ERROR;
             }
         }
-        else if (KJB_IS_SET(termination_signal))
+        else if (IVI_IS_SET(termination_signal))
         {
             set_error("Execution of %q terminated by signal (%d).",
                       command, termination_signal);
@@ -1158,9 +1158,9 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 #ifdef UNIX
 
 /* =============================================================================
- *                                 kjb_exec
+ *                                 ivi_exec
  *
- * KJB library version of execvp(2)
+ * IVI library version of execvp(2)
  *
  * This routine is essentially a replacement for exec(2), and is basically a
  * a wrapper for execvp(2).
@@ -1173,7 +1173,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
  * -----------------------------------------------------------------------------
 */
 
-/* UNIX */ int kjb_exec(const char* command)
+/* UNIX */ int ivi_exec(const char* command)
 /* UNIX */
 /* UNIX */ {
 /* UNIX */     int argc;
@@ -1209,7 +1209,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 /* UNIX */                                      next_program_arg))
 /* UNIX */     {
 /* UNIX */         strip_quotes(next_program_arg);
-/* UNIX */         argv[i] = kjb_strdup(next_program_arg);
+/* UNIX */         argv[i] = ivi_strdup(next_program_arg);
 /* UNIX */
 /* UNIX */         if (argv[i] == NULL)
 /* UNIX */         {
@@ -1219,9 +1219,9 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 /* UNIX */
 /* UNIX */             for (ii = 0; ii < i; ii++)
 /* UNIX */             {
-/* UNIX */                  kjb_free(argv[ii]);
+/* UNIX */                  ivi_free(argv[ii]);
 /* UNIX */             }
-/* UNIX */             kjb_free(argv);
+/* UNIX */             ivi_free(argv);
 /* UNIX */
 /* UNIX */             return ERROR;
 /* UNIX */         }
@@ -1237,9 +1237,9 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 /* UNIX */
 /* UNIX */         for (ii = 0; ii < argc; ii++)
 /* UNIX */         {
-/* UNIX */             kjb_free(argv[ii]);
+/* UNIX */             ivi_free(argv[ii]);
 /* UNIX */         }
-/* UNIX */         kjb_free(argv);
+/* UNIX */         ivi_free(argv);
 /* UNIX */
 /* UNIX */         return ERROR;
 /* UNIX */     }
@@ -1249,9 +1249,9 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 /* UNIX */
 /* UNIX */         for (ii = 0; ii < argc; ii++)
 /* UNIX */         {
-/* UNIX */             kjb_free(argv[ii]);
+/* UNIX */             ivi_free(argv[ii]);
 /* UNIX */         }
-/* UNIX */         kjb_free(argv);
+/* UNIX */         ivi_free(argv);
 /* UNIX */
 /* UNIX */         return ERROR;
 /* UNIX */     }
@@ -1267,15 +1267,15 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                 kjb_waitpid
+ *                                 ivi_waitpid
  *
- * KJB library process waiting
+ * IVI library process waiting
  *
- * The routine kjb_waitpid waits until a specified child process terminates or
+ * The routine ivi_waitpid waits until a specified child process terminates or
  * a signal is received (by the process doing the waiting). Unlike the typical
  * system waitpid(), if the process only changes state, this routine continues
  * waiting. Once the child process terminates, then NO_ERROR is returned.  If
- * the reason for termination is required, then the routine kjb_waitpid2 should
+ * the reason for termination is required, then the routine ivi_waitpid2 should
  * be used.   If the waiting process is interrupted during the wait, then
  * INTERRUPTED is returned instead.
  *
@@ -1289,7 +1289,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
  *    if there is a problem with the call.
  *
  * Related:
- *    kjb_waitpid2, check_child, check_child2, terminate_child_process
+ *    ivi_waitpid2, check_child, check_child2, terminate_child_process
  *
  * Index: signals, processes, standard library
  *
@@ -1299,14 +1299,14 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 
 #ifdef UNIX
 
-/* UNIX */ int kjb_waitpid(pid_t pid)
+/* UNIX */ int ivi_waitpid(pid_t pid)
 /* UNIX */
 /* UNIX */ {
 /* UNIX */     int dummy_exit_argument;
 /* UNIX */     int dummy_termination_signal;
 /* UNIX */
 /* UNIX */      /* FIXME --- should be able to send in NULL args. */
-/* UNIX */     return kjb_waitpid2(pid, &dummy_exit_argument,
+/* UNIX */     return ivi_waitpid2(pid, &dummy_exit_argument,
 /* UNIX */                         &dummy_termination_signal);
 /* UNIX */
 /* UNIX */ }
@@ -1317,11 +1317,11 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                 kjb_waitpid2
+ *                                 ivi_waitpid2
  *
- * KJB library process waiting
+ * IVI library process waiting
  *
- * The routine kjb_waitpid2 waits until a specified child process terminates or
+ * The routine ivi_waitpid2 waits until a specified child process terminates or
  * a signal is received (by the process doing the waiting). Unlike the typical
  * system waitpid(), if the process only changes state, this routine continues
  * waiting. Once the child process terminates, then NO_ERROR is returned, and
@@ -1342,7 +1342,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
  *    if there is a problem with the call.
  *
  * Related:
- *    kjb_waitpid, check_child, check_child2, terminate_child_process
+ *    ivi_waitpid, check_child, check_child2, terminate_child_process
  *
  * Index: signals, processes, standard library
  *
@@ -1356,7 +1356,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 
 #ifdef UNIX
 
- int kjb_waitpid2(pid_t pid,
+ int ivi_waitpid2(pid_t pid,
                   int* exit_argument_ptr,
                   int* termination_signal_ptr)
  {
@@ -1409,6 +1409,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
          }
      }
 
+     dbi(errno_copy);
      if (waitpid_res != -1)
      {
          SET_CANT_HAPPEN_BUG();
@@ -1433,8 +1434,8 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
          IMPORT int errno;
          char buff[ 1000 ];
 
-         kjb_sprintf(buff, sizeof(buff), "%s\n%s\n%s\n%s\n",
-                  "No children in kjb_waitpid2.",
+         ivi_sprintf(buff, sizeof(buff), "%s\n%s\n%s\n%s\n",
+                  "No children in ivi_waitpid2.",
                   "Likely they all have been waited on already.",
                   "Or SIGCHLD may have been disabled ",
                   "(Mike's videograb code does this).");
@@ -1447,7 +1448,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
          return ERROR;
 #else
 #ifdef REPORT_PROCESSES
-         TEST_PSE(("No children in kjb_waitpid2.\n"));
+         TEST_PSE(("No children in ivi_waitpid2.\n"));
          TEST_PSE(("Likely they all have been waited on already.\n"));
          TEST_PSE(("Or SIGCHLD may have been disabled "));
 #endif
@@ -1463,8 +1464,8 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
          char buff[ 100 ];
 
          errno = errno_copy; /* A hack, I admint */
-         kjb_sprintf(buff, sizeof(buff),
-                     "kjb_waitpid2 failed for process %ld.%S",
+         ivi_sprintf(buff, sizeof(buff),
+                     "ivi_waitpid2 failed for process %ld.%S",
                      (long)pid);
          set_bug(buff);
 #else
@@ -1472,7 +1473,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 #endif
          return ERROR;
      }
-          }
+}
 
 #endif     
 
@@ -1490,12 +1491,12 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
  * the caller. If the reason for death is required, use check_child2 instead.
  *
  * Notes:
- *    Unlike kjb_waitpid/kjb_waitpid2, this routine returns immediately in all
+ *    Unlike ivi_waitpid/ivi_waitpid2, this routine returns immediately in all
  *    circumstances. If is necessary to wait until the child changes status,
  *    then one of these functions should be used.
  *
  * Related:
- *    kjb_waitpid, kjb_waitpid2, check_child2, terminate_child_process
+ *    ivi_waitpid, ivi_waitpid2, check_child2, terminate_child_process
  *
  * Index: signals, processes, standard library
  *
@@ -1532,12 +1533,12 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
  * these two is relavent. The other is set to NOT_SET.
  *
  * Notes:
- *    Unlike kjb_waitpid/kjb_waitpid2, this routine returns immediately in all
+ *    Unlike ivi_waitpid/ivi_waitpid2, this routine returns immediately in all
  *    circumstances. If is necessary to wait until the child changes status,
  *    then one of these functions should be used.
  *
  * Related:
- *    kjb_waitpid, kjb_waitpid2, check_child, terminate_child_process
+ *    ivi_waitpid, ivi_waitpid2, check_child, terminate_child_process
  *
  * Index: signals, processes, standard library
  *
@@ -1651,7 +1652,7 @@ int kjb_system_2(const char* command, int* prog_rc_ptr)
 #ifdef TEST
 /* UNIX */             char buff[ 100 ];
 /* UNIX */
-/* UNIX */             kjb_sprintf(buff, sizeof(buff),
+/* UNIX */             ivi_sprintf(buff, sizeof(buff),
 /* UNIX */                         "check_child2 failed for process %ld.%S",
 /* UNIX */                         (long)pid);
 /* UNIX */             set_bug(buff);
@@ -1685,19 +1686,19 @@ static int fs_doing_cleanup = FALSE;
 
 void arrange_cleanup(void)
 {
-#ifdef KJB_HAVE_ATEXIT
+#ifdef IVI_HAVE_ATEXIT
 #if 0 /* was ifdef HOW_IT_WAS_08_01_21 */
     /*
      * Changed the following bit of code clarity. We need to have this called as
      * soon as possible and by any routine that relies on cleanup. But possible
      * callers are outside this file. Thus the use of the counter
      * fs_num_cleanup_functions, which can only be incremented after calling
-     * this routine, is safe in that kjb_cleanup() gets registered if needed,
+     * this routine, is safe in that ivi_cleanup() gets registered if needed,
      * but does not strictly ensure that there is only one registration. 
     */
     if (fs_num_cleanup_functions == 0)
     {
-        atexit(kjb_cleanup);
+        atexit(ivi_cleanup);
     }
 #else
     static int first_time = TRUE;
@@ -1705,7 +1706,7 @@ void arrange_cleanup(void)
     if (first_time)
     {
         first_time = FALSE;
-        atexit(kjb_cleanup);
+        atexit(ivi_cleanup);
     }
 #endif 
 #endif
@@ -1722,7 +1723,7 @@ void arrange_cleanup(void)
  * largely freeing for the purposes of not having false positives in memory
  * allocation. So, it seems safe enough just to reset the counter when we fork. 
  *
- * Currently this routine is only used by kjb_fork(), and that is probably how
+ * Currently this routine is only used by ivi_fork(), and that is probably how
  * it should be. 
  *
  * Note this routine was added relatively recently compared to the other cleanup
@@ -1774,7 +1775,7 @@ void reset_cleanup_for_fork()
         // A hack to ensure that l_sys_io.c:initialize_cache is the first
         // cleanup function added.
         */
-        flush_res = kjb_fflush((FILE*)NULL);
+        flush_res = ivi_fflush((FILE*)NULL);
 
         if (flush_res == ERROR)
         {
@@ -1809,7 +1810,7 @@ void reset_cleanup_for_fork()
 #endif
     {
 #ifdef TEST
-        extern int kjb_debug_level;
+        extern int ivi_debug_level;
 #endif
         static int  already_adding_cleanup_function = FALSE;
 
@@ -1817,8 +1818,8 @@ void reset_cleanup_for_fork()
         arrange_cleanup();
 
         /*
-        // We can't use any of the usual functions such as kjb_exit() or
-        // set_bug() since these may themselves call kjb_cleanup(), causing
+        // We can't use any of the usual functions such as ivi_exit() or
+        // set_bug() since these may themselves call ivi_cleanup(), causing
         // problems.
         */
 
@@ -1829,7 +1830,7 @@ void reset_cleanup_for_fork()
         if (fs_doing_cleanup)
         {
 #ifdef TEST
-            kjb_signal(SIGABRT, SIG_DFL);
+            ivi_signal(SIGABRT, SIG_DFL);
             fprintf(stderr,
                  "<<TEST>> Process %ld called add_cleanup_function while cleaning up!\n",
                  (long)MY_PID);
@@ -1846,7 +1847,7 @@ void reset_cleanup_for_fork()
         else if (already_adding_cleanup_function)
         {
 #ifdef TEST
-            kjb_signal(SIGABRT, SIG_DFL);
+            ivi_signal(SIGABRT, SIG_DFL);
             fprintf(stderr,
                     "<<TEST>> Process %ld called add_cleanup_function recursively.\n",
                     (long)MY_PID);
@@ -1868,7 +1869,7 @@ void reset_cleanup_for_fork()
             if (fs_num_cleanup_functions >= MAX_NUM_CLEANUP_FUNCTIONS)
             {
 #ifdef TEST
-                kjb_signal(SIGABRT, SIG_DFL);
+                ivi_signal(SIGABRT, SIG_DFL);
 
                 fprintf(stderr,
                         "Max number of cleanup functions (%d) exceeded.\n",
@@ -1885,7 +1886,7 @@ void reset_cleanup_for_fork()
             fs_cleanup_functions[ fs_num_cleanup_functions ] = cleanup_fn;
 
 #ifdef TEST
-            if (kjb_debug_level > 3)
+            if (ivi_debug_level > 3)
             {
                 fprintf(stderr, "<<TEST>> Process %ld adding cleanup[ %d ] : %s:%d (IL4RT).\n",
                        (long)MY_PID, fs_num_cleanup_functions, file_name,
@@ -1907,42 +1908,42 @@ void reset_cleanup_for_fork()
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_cleanup
+ *                                ivi_cleanup
  *
  * Calls all the cleanup functions
  *
  * This routine calls all the cleanup functions and performs a few extra cleanup
- * tasks.   This routine is normally called by other KJB library routines such
- * as kjb_exit(). Thus it is not normally necessary to call this function.
+ * tasks.   This routine is normally called by other IVI library routines such
+ * as ivi_exit(). Thus it is not normally necessary to call this function.
  * However, under some circumstances (atexit() is not available) an explicit
  * call at the very end of main() is warrented. Thus I normally include a call
- * to kjb_cleanup() as the last statement in main(). In this case, under normal
- * circumstances, kjb_cleanup() will be called twice, which is OK.
+ * to ivi_cleanup() as the last statement in main(). In this case, under normal
+ * circumstances, ivi_cleanup() will be called twice, which is OK.
  *
  * Index: standard library
  *
  * -----------------------------------------------------------------------------
 */
 
-void kjb_cleanup(void)
+void ivi_cleanup(void)
 {
 
     /* Theoretically heap check 2 should not in place in the moment. */
     DISABLE_HEAP_CHECK_2();
 
-    kjb_cleanup_guts( FALSE  /* abort_flag */ );
+    ivi_cleanup_guts( FALSE  /* abort_flag */ );
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                          kjb_cleanup_for_abort
+ *                          ivi_cleanup_for_abort
  *
  * Calls the cleanup functions appropriate with aborting
  *
- * This routine is similar to kjb_cleanup, but several steps are omitted. For
+ * This routine is similar to ivi_cleanup, but several steps are omitted. For
  * example, it does not make sense to print out allocated memory in the case of
- * an abort. This function is not likely to be used outside the KJB library
+ * an abort. This function is not likely to be used outside the IVI library
  * code.
  *
  * Index: standard library, debugging
@@ -1950,7 +1951,7 @@ void kjb_cleanup(void)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_cleanup_for_abort(void)
+void ivi_cleanup_for_abort(void)
 {
 
     /* Theoretically heap check 2 should not in place in the moment. */
@@ -1961,33 +1962,33 @@ void kjb_cleanup_for_abort(void)
     */
     (void)set_heap_options("heap-checking", "off");
 
-    kjb_cleanup_guts( TRUE  /* abort_flag */ );
+    ivi_cleanup_guts( TRUE  /* abort_flag */ );
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 #ifdef TRACK_MEMORY_ALLOCATION
-static void kjb_cleanup_guts(int abort_flag)
+static void ivi_cleanup_guts(int abort_flag)
 #else
 /*ARGSUSED*/
-static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
+static void ivi_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
 #endif
 {
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
-    IMPORT int kjb_cleanup_started; 
+    IMPORT int ivi_cleanup_started; 
     static int has_been_called = FALSE;
     int i;
 
 #ifdef TEST
-    if (kjb_debug_level > 2)
+    if (ivi_debug_level > 2)
     {
-        /* Too dangerous to use KJB IO at this point, so no
+        /* Too dangerous to use IVI IO at this point, so no
          * TEST_PSE(). */
         fprintf(stderr, "<<TEST>> Process %ld (fork depth %d) is cleaning up using %d functions (IL4RT).\n",
-                (long)MY_PID, kjb_fork_depth, fs_num_cleanup_functions);
+                (long)MY_PID, ivi_fork_depth, fs_num_cleanup_functions);
     }
 #endif 
 
@@ -2004,13 +2005,13 @@ static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
          * This global currently has the single purpose of switching the action
          * of debug print statements to NOT use the library.
         */
-        kjb_cleanup_started = TRUE;
+        ivi_cleanup_started = TRUE;
 
         fs_doing_cleanup = TRUE;
 
 
         /*
-        // Important: Practically anything using the KJB library  (especially
+        // Important: Practically anything using the IVI library  (especially
         // I\O) should be inside the execute only once part, as the first call
         // to this routine dismantles a lot of stuff, and it has to be safe to
         // call it a second time.
@@ -2024,7 +2025,7 @@ static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
             // for a core dump or an abort.
             */
 
-            kjb_safe_fflush((FILE*)NULL);
+            ivi_safe_fflush((FILE*)NULL);
 
 #ifdef TRACK_MEMORY_ALLOCATION
             if ( ! abort_flag)
@@ -2043,12 +2044,12 @@ static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
             {
                 i = fs_num_cleanup_functions - 1;
 #ifdef TEST
-                if (kjb_debug_level > 3)
+                if (ivi_debug_level > 3)
                 {
-                    /* Too dangerous to use KJB IO at this point, so no
+                    /* Too dangerous to use IVI IO at this point, so no
                      * TEST_PSE(). */
                     fprintf(stderr, "<<TEST>> Fork depth %d process %ld doing cleanup[ %d ] : %s:%d (IL4RT).\n",
-                             kjb_fork_depth, (long)MY_PID, i, fs_cleanup_call_file[ i ],
+                             ivi_fork_depth, (long)MY_PID, i, fs_cleanup_call_file[ i ],
                              fs_cleanup_call_line[ i ]);
                 }
 #endif
@@ -2095,10 +2096,10 @@ static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
             if (fs_process_generation == 0)
             {
 #ifdef TEST
-                extern int kjb_debug_level;
+                extern int ivi_debug_level;
 
 
-                if (kjb_debug_level > 3)
+                if (ivi_debug_level > 3)
                 {
                     fprintf(stderr, 
                             "<<TEST>> Process %ld is resetting initial terminal settings (IL4RT).\n", 
@@ -2127,11 +2128,11 @@ static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                  kjb_optional_abort
+ *                                  ivi_optional_abort
  *
- * Calls kjb_abort if the enviroment variable KJB_OPTIONAL_ABORT is set.
+ * Calls ivi_abort if the enviroment variable IVI_OPTIONAL_ABORT is set.
  *
- * This routine calls kjb_abort if the enviroment variable KJB_OPTIONAL_ABORT is
+ * This routine calls ivi_abort if the enviroment variable IVI_OPTIONAL_ABORT is
  * set (to any value). It is used to support aborts that are associated with
  * warnings that might be false alarms. 
  *
@@ -2140,24 +2141,24 @@ static void kjb_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_optional_abort(void)
+void ivi_optional_abort(void)
 {
     char env_buff[ 100 ];
 
-    if (BUFF_GET_ENV("KJB_OPTIONAL_ABORT", env_buff) != ERROR)
+    if (BUFF_GET_ENV("IVI_OPTIONAL_ABORT", env_buff) != ERROR)
     {
-        kjb_abort();
+        ivi_abort();
     }
     else 
     {
-        warn_pso("Optional abort skipped because the enviroment variable KJB_OPTIONAL_ABORT is NOT set.\n");
+        warn_pso("Optional abort skipped because the enviroment variable IVI_OPTIONAL_ABORT is NOT set.\n");
     }
 }
 
 /* =============================================================================
- *                                  kjb_abort
+ *                                  ivi_abort
  *
- * The KJB library wrapper for abort
+ * The IVI library wrapper for abort
  *
  * This function is basically a wrapper for abort(). However, it makes sure that
  * cleanup is done before aborting, which is quite useful for debugging when
@@ -2165,7 +2166,7 @@ void kjb_optional_abort(void)
  * the abort signal as well, and in that case, which process does the corefile
  * belong to?
  *
- * In addition, kjb_abort() does not abort() in production code. In this case, a
+ * In addition, ivi_abort() does not abort() in production code. In this case, a
  * simple error message is printed.
  *
  * Index: standard library, debugging
@@ -2181,7 +2182,7 @@ void kjb_optional_abort(void)
 #    endif
 #endif
 
-void kjb_abort(void)
+void ivi_abort(void)
 {
 #ifdef TEST_OR_DEBUGGING
     static int guard           = FALSE;
@@ -2193,10 +2194,10 @@ void kjb_abort(void)
     if (guard)
     {
         fprintf(stderr, "\n");
-        fprintf(stderr, "Reentry of kjb_abort.\n");
+        fprintf(stderr, "Reentry of ivi_abort.\n");
         fprintf(stderr, "This is likely due to a second abort while cleaning up.\n");
         fprintf(stderr, "Going for a dirty abort.\n\n");
-        KJB_SIGNAL(SIGABRT, SIG_DFL);
+        IVI_SIGNAL(SIGABRT, SIG_DFL);
         abort();
     }
     else
@@ -2214,8 +2215,8 @@ void kjb_abort(void)
          * Abort anyway, but copy the code so it is clear that we got an error
          * return from is_interactive(). 
         */
-        kjb_cleanup_for_abort();
-        kjb_signal(SIGABRT, SIG_DFL);
+        ivi_cleanup_for_abort();
+        ivi_signal(SIGABRT, SIG_DFL);
         abort();
     }
     else if (interactive_res == FALSE)
@@ -2232,8 +2233,8 @@ void kjb_abort(void)
              * Abort anyway, but copy the code so it is clear that we got an
              * error return from is_interactive(). 
             */
-            kjb_cleanup_for_abort();
-            kjb_signal(SIGABRT, SIG_DFL);
+            ivi_cleanup_for_abort();
+            ivi_signal(SIGABRT, SIG_DFL);
             abort();
         }
         else if (confirm_res == TRUE)
@@ -2244,11 +2245,11 @@ void kjb_abort(void)
 
     if (abort_confirmed)
     {
-        kjb_cleanup_for_abort();
+        ivi_cleanup_for_abort();
 
-        kjb_signal(SIGABRT, SIG_DFL);
+        ivi_signal(SIGABRT, SIG_DFL);
 
-        if (kjb_fork_depth > 0)
+        if (ivi_fork_depth > 0)
         {
             fprintf(stderr, "Child process aborting and silently dumping core.\n");
         }
@@ -2274,13 +2275,13 @@ void kjb_abort(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                   kjb_exit
+ *                                   ivi_exit
  *
- * KJB library replacement for exit()
+ * IVI library replacement for exit()
  *
  * This function is a replacement for exit, which ensures that all cleanup
  * is accomplished before exit. On ocasion, an exit without cleanup is desired,
- * and in this case, _exit() should be used. kjb_exit_2 can be used to exit with
+ * and in this case, _exit() should be used. ivi_exit_2 can be used to exit with
  * the same cleanup which is used for abort (no heap checking being the main
  * difference, which only applies to development code).
  *
@@ -2289,21 +2290,21 @@ void kjb_abort(void)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_exit(int exit_code)
+void ivi_exit(int exit_code)
 {
 
 #ifdef TEST
     /*
     // TEST_PSE(("Before cleanup\n"));
-    // kjb_fflush(stdout);
+    // ivi_fflush(stdout);
     // sleep(1);
     */
 #endif
 
-    kjb_cleanup();
+    ivi_cleanup();
 
     /*
-    // Don't use kjb library routines after this point! Cleanup has made it so
+    // Don't use ivi library routines after this point! Cleanup has made it so
     // that they can no longer be used safely.
     */
 
@@ -2323,11 +2324,11 @@ void kjb_exit(int exit_code)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                   kjb_exit_2
+ *                                   ivi_exit_2
  *
- * KJB library replacement for exit()
+ * IVI library replacement for exit()
  *
- * This function is similar to kjb_exit, except some cleanup, most notably heap
+ * This function is similar to ivi_exit, except some cleanup, most notably heap
  * cheking in the case of production code, is not done. If an exit with
  * absolutely no cleanup is needed, then _exit() should be used.
  *
@@ -2336,21 +2337,21 @@ void kjb_exit(int exit_code)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_exit_2(int exit_code)
+void ivi_exit_2(int exit_code)
 {
 
 #ifdef TEST
     /*
     // TEST_PSE(("Before cleanup\n"));
-    // kjb_fflush(stdout);
+    // ivi_fflush(stdout);
     // sleep(1);
     */
 #endif
 
-    kjb_cleanup_for_abort();
+    ivi_cleanup_for_abort();
 
     /*
-    // Don't use kjb library routines after this point! Cleanup has made it so
+    // Don't use ivi library routines after this point! Cleanup has made it so
     // that they can no longer be used safely.
     */
 
@@ -2381,7 +2382,7 @@ void kjb_exit_2(int exit_code)
  * The maximum wait is again set to 2 seconds.
  *
  * Related:
- *    kjb_waitpid2, check_child, check_child2
+ *    ivi_waitpid2, check_child, check_child2
  *
  * Index: processes, signals, standard library
  *
@@ -2482,22 +2483,22 @@ int process_is_alive(int pid)
         return ERROR;
     }
 
-    ps_pid = kjb_fork();
+    ps_pid = ivi_fork();
 
     if (IS_CHILD(ps_pid))
     {
         dup2(ps_pipe[WRITE_END], fileno(stdout));
-        kjb_exec("/bin/ps -eaf");
-        kjb_exit(EXIT_SUCCESS);
+        ivi_exec("/bin/ps -eaf");
+        ivi_exit(EXIT_SUCCESS);
     }
     else
     {
         close(ps_pipe[WRITE_END]);
 
 #ifdef DEBUG_PROCESS_IS_ALIVE
-        ERE(kjb_sprintf(debug_file, sizeof(debug_file),
+        ERE(ivi_sprintf(debug_file, sizeof(debug_file),
                         "process_is_alive_debug: %d", MY_PID));
-        NRE(debug_fp = kjb_fopen(debug_file, "w"));
+        NRE(debug_fp = ivi_fopen(debug_file, "w"));
 #endif
 
         /* Skip first line */
@@ -2519,14 +2520,14 @@ int process_is_alive(int pid)
         }
 
 #ifdef DEBUG_PROCESS_IS_ALIVE
-        kjb_fprintf(debug_fp, "Read_res is %d.\n", read_res);
+        ivi_fprintf(debug_fp, "Read_res is %d.\n", read_res);
 #endif
 
         while(read_res > 0)
         {
 #ifdef DEBUG_PROCESS_IS_ALIVE
-            kjb_fputs(debug_fp, ps_line_buff);
-            kjb_fputs(debug_fp, "\n");
+            ivi_fputs(debug_fp, ps_line_buff);
+            ivi_fputs(debug_fp, "\n");
 #endif
 
             if (read_res == ERROR)
@@ -2545,15 +2546,15 @@ int process_is_alive(int pid)
             BUFF_GET_TOKEN(&ps_line_buff_pos, user_field);
 
 #ifdef DEBUG_PROCESS_IS_ALIVE
-            kjb_fputs(debug_fp, user_field);
-            kjb_fputs(debug_fp, "\n");
+            ivi_fputs(debug_fp, user_field);
+            ivi_fputs(debug_fp, "\n");
 #endif
 
             BUFF_GET_TOKEN(&ps_line_buff_pos, process_field);
 
 #ifdef DEBUG_PROCESS_IS_ALIVE
-            kjb_fputs(debug_fp, process_field);
-            kjb_fputs(debug_fp, "\n");
+            ivi_fputs(debug_fp, process_field);
+            ivi_fputs(debug_fp, "\n");
 #endif
 
             if (ss1pi(process_field, &test_pid) == ERROR)
@@ -2568,22 +2569,22 @@ int process_is_alive(int pid)
             }
 
 #ifdef DEBUG_PROCESS_IS_ALIVE
-            kjb_fputs(debug_fp, "\n");
+            ivi_fputs(debug_fp, "\n");
 #endif
 
             read_res = dget_line(ps_pipe[READ_END], ps_line_buff,
                                  sizeof(ps_line_buff));
 
 #ifdef DEBUG_PROCESS_IS_ALIVE
-            kjb_fprintf(debug_fp, "Read_res is %d.\n", read_res);
+            ivi_fprintf(debug_fp, "Read_res is %d.\n", read_res);
 #endif
         }
 
         close(ps_pipe[READ_END]);
-        kjb_waitpid(ps_pid);
+        ivi_waitpid(ps_pid);
 
 #ifdef DEBUG_PROCESS_IS_ALIVE
-        ERE(kjb_fclose(debug_fp));
+        ERE(ivi_fclose(debug_fp));
 #endif
     }
 
@@ -2634,11 +2635,11 @@ int get_idle_time(void)
     if (first_time)
     {
         first_time = FALSE;
-        NRE(debug_fp = kjb_fopen("who_file", "w"));
+        NRE(debug_fp = ivi_fopen("who_file", "w"));
     }
     else
     {
-        NRE(debug_fp = kjb_fopen("who_file", "a"));
+        NRE(debug_fp = ivi_fopen("who_file", "a"));
     }
 #endif
 
@@ -2655,22 +2656,22 @@ int get_idle_time(void)
         return ERROR;
     }
 
-    who_pid = kjb_fork();
+    who_pid = ivi_fork();
 
     if (IS_CHILD(who_pid))
     {
         dup2(who_pipe[WRITE_END], fileno(stdout));
 
 #ifdef SUN5
-        kjb_exec("/usr/bin/who -m -T");
+        ivi_exec("/usr/bin/who -m -T");
 #else
 #ifdef LINUX_X86
-        kjb_exec("/usr/bin/who -m -u");
+        ivi_exec("/usr/bin/who -m -u");
 #else
         SET_CANT_HAPPEN_BUG();
 #endif
 #endif
-        kjb_exit(EXIT_SUCCESS);
+        ivi_exit(EXIT_SUCCESS);
     }
     else
     {
@@ -2735,15 +2736,15 @@ int get_idle_time(void)
             }
 
 #ifdef DEBUG_GET_IDLE_TIME
-            kjb_fprintf(debug_fp, "%d\n", result);
+            ivi_fprintf(debug_fp, "%d\n", result);
 #endif
         }
 
         close(who_pipe[READ_END]);
-        kjb_waitpid(who_pid);
+        ivi_waitpid(who_pid);
 
 #ifdef DEBUG_GET_IDLE_TIME
-        kjb_fclose(debug_fp);
+        ivi_fclose(debug_fp);
 #endif
 
     }
@@ -2769,7 +2770,7 @@ int get_idle_time(void)
  *
  * This routine is essentially a replacement for tmpnam(3C), but the name
  * includes the user name, which helps debugging. In addition, the error
- * messages are better and error handling is consistent with the rest of the KJB
+ * messages are better and error handling is consistent with the rest of the IVI
  * library.
  *
  * Macros:
@@ -2800,10 +2801,10 @@ int get_temp_file_name(char* temp_name, size_t max_len)
 
     ERE(BUFF_GET_USER_ID(user_name));
 
-    ERE(kjb_sprintf(temp_dir, sizeof(temp_dir), "%s%s%s", TEMP_DIR, DIR_STR,
+    ERE(ivi_sprintf(temp_dir, sizeof(temp_dir), "%s%s%s", TEMP_DIR, DIR_STR,
                     user_name));
 
-    ERE(kjb_mkdir(temp_dir));
+    ERE(ivi_mkdir(temp_dir));
 
     separator = DIR_STR;
 
@@ -2811,7 +2812,7 @@ int get_temp_file_name(char* temp_name, size_t max_len)
     {
         count++;
 
-        ERE(kjb_sprintf(temp_name, max_len, "%s%s%s%s%ld-%ld", TEMP_DIR,
+        ERE(ivi_sprintf(temp_name, max_len, "%s%s%s%s%ld-%ld", TEMP_DIR,
                         DIR_STR, user_name, separator, (long)MY_PID, count));
 
         if (get_path_type(temp_name) == PATH_DOES_NOT_EXIST)
@@ -2830,17 +2831,17 @@ int get_temp_file_name(char* temp_name, size_t max_len)
 
 /*
  * =============================================================================
- *                                  kjb_fork
+ *                                  ivi_fork
  *
- * Replace for fork() for use with KJB library.
+ * Replace for fork() for use with IVI library.
  *
  * This is a wrapper for fork(). As explained below, it is advisable that
- * kjb_fork() is used instead of fork() if KJB library IO is used. The main
+ * ivi_fork() is used instead of fork() if IVI library IO is used. The main
  * difference from the library user's point of view is that on error, ERROR is
  * retured (not -1) with an error message set. This is simply for compatability
- * with the majority of the KJB routines. A test for a negative result is
+ * with the majority of the IVI routines. A test for a negative result is
  * perhaps the best way to ensure compatability. A second, very important
- * difference between fork() and kjb_fork(), is that all file buffers are
+ * difference between fork() and ivi_fork(), is that all file buffers are
  * flushed before forking. This is very important. If a fork process inherits
  * unflushed buffers, data can be written twice.
  *
@@ -2853,7 +2854,7 @@ int get_temp_file_name(char* temp_name, size_t max_len)
  * terminal IO. Let me know if this is assumption needs to be relaxed.
  *
  * Returns:
- *    On success, kjb_fork() returns the same value as the underlying fork().
+ *    On success, ivi_fork() returns the same value as the underlying fork().
  *    IE, it returns the childs process id to the parent, and 0 to the child. On
  *    failure ERROR is returned, with an appropriate error message being set.
  *    NOTE : This is different than fork() which returns -1 on failure.
@@ -2863,13 +2864,13 @@ int get_temp_file_name(char* temp_name, size_t max_len)
  * -----------------------------------------------------------------------------
  */
 
-pid_t kjb_fork(void)
+pid_t ivi_fork(void)
 {
     pid_t fork_res;
 
 #ifdef UNIX
 
-    ERE(kjb_fflush((FILE*)NULL));
+    ERE(ivi_fflush((FILE*)NULL));
 
     fork_res = fork();
 
@@ -2881,11 +2882,11 @@ pid_t kjb_fork(void)
 
     if (IS_CHILD(fork_res))
     {
-        IMPORT int kjb_fork_depth;
+        IMPORT int ivi_fork_depth;
         Signal_info cur_atn_vec;
         Signal_info new_atn_vec;
 
-        kjb_fork_depth++;
+        ivi_fork_depth++;
 
         
         /*
@@ -2907,7 +2908,7 @@ pid_t kjb_fork(void)
 #ifdef MUST_CLEANUP
         destroy_sig_queue(); 
 #endif 
-        kjb_disable_paging();
+        ivi_disable_paging();
         term_rewind_setting_stack();
         /*
         reset_cleanup_for_fork(); 
@@ -2929,13 +2930,13 @@ pid_t kjb_fork(void)
         // (or not, as the case may be). Thus it seems that the best thing to
         // do is to ignore attentions.
         */
-        kjb_sigvec(SIGINT, (Signal_info*)NULL, &cur_atn_vec);
+        ivi_sigvec(SIGINT, (Signal_info*)NULL, &cur_atn_vec);
 
         if (cur_atn_vec.SIGNAL_HANDLER != SIG_DFL)
         {
             INIT_SIGNAL_INFO(new_atn_vec);
             new_atn_vec.SIGNAL_HANDLER = SIG_IGN;
-            kjb_sigvec(SIGINT, &new_atn_vec, (Signal_info*)NULL);
+            ivi_sigvec(SIGINT, &new_atn_vec, (Signal_info*)NULL);
 
 #ifdef TEST
             /*
@@ -2995,7 +2996,7 @@ int test_process_is_alive(void)
 
         if (ss1pi(pid_str, &pid) == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
         }
         else
         {
@@ -3009,7 +3010,7 @@ int test_process_is_alive(void)
             }
             else
             {
-                kjb_print_error();
+                ivi_print_error();
             }
         }
     }

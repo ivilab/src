@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_facemark_likelihood.h 19393 2015-06-05 16:49:17Z ernesto $ */
+/* $Id: pt_facemark_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_FACEMARK_LIKELIHOOD_H_
 #define PT_FACEMARK_LIKELIHOOD_H_
@@ -30,7 +30,7 @@
 #include <prob_cpp/prob_distribution.h>
 #include <l_cpp/l_util.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -141,7 +141,7 @@ private:
     double m_img_height;
 };
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_FACEMARK_LIKELIHOOD_H_ */
 

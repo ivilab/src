@@ -1,4 +1,4 @@
-/* $Id: gr_display.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_display.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -21,8 +21,8 @@
 
 #include "gr_cpp/gr_opengl.h"
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_GLUT
 
 #include "gr_cpp/gr_display.h"
 #include "gr_cpp/gr_glut.h"
@@ -31,7 +31,7 @@
 #include <string>
 #include <iostream>
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
@@ -117,7 +117,7 @@ void gl_display(const Matrix& mat, const std::string& title)
 //}
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
 #endif
-#endif /* KJB_HABE_OPENGL */
+#endif /* IVI_HABE_OPENGL */

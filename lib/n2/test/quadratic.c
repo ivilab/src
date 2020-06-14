@@ -1,5 +1,5 @@
 
-/* $Id: quadratic.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: quadratic.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "n/n_incl.h"
@@ -21,7 +21,7 @@ int main(void)
     int method;
  
  
-    kjb_init();
+    ivi_init();
 
     le_constraint_mp=create_matrix(3,2);
     le_constraint_col_vp=create_vector(3);
@@ -91,7 +91,7 @@ int main(void)
  
     fp_write_col_vector_with_title(result_vp,stdout,"DLSEI RESULT");
      
-#ifdef KJB_HAVE_MATLAB
+#ifdef IVI_HAVE_MATLAB
     EPETE(res = do_matlab_quadratic(&result_vp, mp, target_vp ,
                                     le_constraint_mp, le_constraint_col_vp,
                                     NULL, NULL,
@@ -100,7 +100,7 @@ int main(void)
     fp_write_col_vector_with_title(result_vp,stdout,"MATLAB RESULT");
 #endif 
 
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
 
     EPETE(res = do_loqo_quadratic(&result_vp, mp, target_vp ,
                                   le_constraint_mp, le_constraint_col_vp,
@@ -165,17 +165,17 @@ int main(void)
         else
         {
             SET_CANT_HAPPEN_BUG();
-            kjb_exit(EXIT_FAILURE);
+            ivi_exit(EXIT_FAILURE);
         }
 
-        EPETE(kjb_n_set("constrained-least-squares-method", method_str));
+        EPETE(ivi_n_set("constrained-least-squares-method", method_str));
 
         EPETE(res = constrained_least_squares(&result_vp, mp, target_vp ,
                                               NULL, NULL,
                                               NULL, NULL,
                                               NULL, NULL));
  
-        EPETE(kjb_sprintf(title_str, sizeof(title_str),
+        EPETE(ivi_sprintf(title_str, sizeof(title_str),
                           "Constrained least squares (no constraints) RESULT (%s)", 
                           method_str));
 
@@ -185,7 +185,7 @@ int main(void)
                                         NULL, NULL, NULL, NULL,
                                         lb_row_vp, ub_row_vp));
      
-        EPETE(kjb_sprintf(title_str, sizeof(title_str),
+        EPETE(ivi_sprintf(title_str, sizeof(title_str),
                           "Constrained least squares (bounds only) RESULT (%s)", 
                           method_str));
 
@@ -196,7 +196,7 @@ int main(void)
                                         NULL, NULL,
                                         lb_row_vp, ub_row_vp));
 
-        EPETE(kjb_sprintf(title_str, sizeof(title_str),
+        EPETE(ivi_sprintf(title_str, sizeof(title_str),
                           "Constrained least squares RESULT (%s)", 
                           method_str));
 

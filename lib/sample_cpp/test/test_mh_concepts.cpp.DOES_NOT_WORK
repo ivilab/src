@@ -28,14 +28,14 @@
 #include "sample_cpp/sample_concept.h"
 
 
-//using namespace kjb;
+//using namespace ivi;
 using namespace std;
 
 boost::detail::dummy_constructor dummy_cons;
 
 int main (int /*argc*/, char ** /*argv*/)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     typedef base_model_archetype Model;
     typedef model_evaluator_archetype<base_model_archetype> Likelihood;

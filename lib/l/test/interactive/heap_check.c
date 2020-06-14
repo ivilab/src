@@ -11,15 +11,15 @@ int main(int argc, char **argv)
     Int_vector* a_vp = NULL; 
     Int_vector* b_vp = NULL; 
 
-    kjb_init();
+    ivi_init();
 
     if (is_interactive())
     {
-        kjb_set_debug_level(2); 
+        ivi_set_debug_level(2); 
     }
     else 
     {
-        kjb_set_debug_level(0); 
+        ivi_set_debug_level(0); 
     }
 
     EPETE(get_initialized_int_vector(&a_vp, 2000, 0));
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 
     free_int_vector(b_vp);
 
-    kjb_cleanup();
+    ivi_cleanup();
     
     return EXIT_SUCCESS;
 }

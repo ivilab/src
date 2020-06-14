@@ -1,5 +1,5 @@
 
-/* $Id: geom2.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: geom2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -114,7 +114,7 @@ realT qh_determinant (realT **rows, int dim, boolT *nearzero) {
 
   *nearzero= False;
   if (dim < 2) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_determinate): only implemented for dimension >= 2\n");
+    ivi_fprintf (qh ferr, "qhull internal error (qh_determinate): only implemented for dimension >= 2\n");
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }else if (dim == 2) {
     det= det2_(rows[0][0], rows[0][1],
@@ -164,7 +164,7 @@ realT qh_detsimplex(pointT *apex, setT *points, int dim, boolT *nearzero) {
       *(gmcoord++)= *coordp++ - *coorda++;
   }
   if (i < dim) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_detsimplex): #points %d < dimension %d\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_detsimplex): #points %d < dimension %d\n",
                i, dim);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -286,7 +286,7 @@ realT qh_facetarea_simplex (int dim, coordT *apex, setT *vertices,
     }
   }
   if (i != dim-1) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_facetarea_simplex): #points %d != dim %d -1\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_facetarea_simplex): #points %d != dim %d -1\n",
                i, dim);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -446,7 +446,7 @@ void qh_getarea (facetT *facetlist) {
   facetT *facet;
 
   if (qh REPORTfreq)
-    kjb_fprintf (qh ferr, "computing area of each facet and volume of the convex hull\n");
+    ivi_fprintf (qh ferr, "computing area of each facet and volume of the convex hull\n");
   else
     trace1((qh ferr, "qh_getarea: computing volume and area for each facet\n"));
   qh totarea= qh totvol= 0.0;
@@ -580,7 +580,7 @@ setT *qh_maxmin(pointT *points, int numpoints, int dimension) {
   && REALmax > 0.0 && -REALmax < 0.0)
     ; /* all ok */
   else {
-    kjb_fprintf (qh ferr, "qhull error: floating point constants in user.h are wrong\n\
+    ivi_fprintf (qh ferr, "qhull error: floating point constants in user.h are wrong\n\
 REALepsilon %g REALmin %g REALmax %g -REALmax %g\n",
 	     REALepsilon, REALmin, REALmax, -REALmax);
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
@@ -706,7 +706,7 @@ REALepsilon %g REALmin %g REALmax %g -REALmax %g\n",
   qh_option ("_wide-facet", NULL, &qh WIDEfacet);
   if (qh MINvisible > qh MINoutside + 3 * REALepsilon
   && !qh BESToutside && !qh FORCEoutput)
-    kjb_fprintf (qh ferr, "qhull input warning: minimum visibility V%.2g is greater than \nminimum outside W%.2g.  Flipped facets are likely.\n",
+    ivi_fprintf (qh ferr, "qhull input warning: minimum visibility V%.2g is greater than \nminimum outside W%.2g.  Flipped facets are likely.\n",
 	     qh MINvisible, qh MINoutside);
   qh max_vertex= qh DISTround;
   qh min_vertex= -qh DISTround;
@@ -768,11 +768,11 @@ void qh_maxsimplex (int dim, setT *maxpoints, pointT *points, int numpoints, set
     sizinit= qh_setsize (*simplex);
     if (sizinit < 2) {
       if (zzval_(Zsetplane) > qh hull_dim+1) {
-	kjb_fprintf (qh ferr, "qhull precision error (qh_maxsimplex for voronoi_center):\n%d points with the same x coordinate.\n",
+	ivi_fprintf (qh ferr, "qhull precision error (qh_maxsimplex for voronoi_center):\n%d points with the same x coordinate.\n",
 		 qh_setsize(maxpoints)+numpoints);
 	qh_errexit (qh_ERRprec, (facetT*)NULL, (ridgeT*)NULL);
       }else {
-	kjb_fprintf (qh ferr, "qhull input error: input is less than %d-dimensional since it has the same x coordinate\n", qh hull_dim);
+	ivi_fprintf (qh ferr, "qhull input error: input is less than %d-dimensional since it has the same x coordinate\n", qh hull_dim);
 	qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
       }
     }
@@ -812,7 +812,7 @@ void qh_maxsimplex (int dim, setT *maxpoints, pointT *points, int numpoints, set
       }
     } /* !maxpoint */
     if (!maxpoint) {
-      kjb_fprintf (qh ferr, "qhull internal error (qh_maxsimplex): not enough points available\n");
+      ivi_fprintf (qh ferr, "qhull internal error (qh_maxsimplex): not enough points available\n");
       qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
     }
     qh_setappend(simplex, maxpoint);
@@ -905,12 +905,12 @@ void qh_printmatrix (FILE *fp, char *string, realT **rows, int numrow, int numco
   realT r; /*bug fix*/
   int i,k;
 
-  kjb_fprintf (fp, "%s\n", string);
+  ivi_fprintf (fp, "%s\n", string);
   for (i= 0; i<numrow; i++) {
     rowp= rows[i];
     for (k= 0; k<numcol; k++)
-      kjb_fprintf (fp, "%6.3g ", r=*rowp++);
-    kjb_fprintf (fp, "\n");
+      ivi_fprintf (fp, "%6.3g ", r=*rowp++);
+    ivi_fprintf (fp, "\n");
   }
 } /* printmatrix */
 
@@ -923,14 +923,14 @@ void qh_printpoints (FILE *fp, char *string, setT *points) {
   pointT *point, **pointp;
 
   if (string) {
-    kjb_fprintf (fp, "%s", string);
+    ivi_fprintf (fp, "%s", string);
     FOREACHpoint_(points)
-      kjb_fprintf (fp, " p%d", qh_pointid(point));
-    kjb_fprintf (fp, "\n");
+      ivi_fprintf (fp, " p%d", qh_pointid(point));
+    ivi_fprintf (fp, "\n");
   }else {
     FOREACHpoint_(points)
-      kjb_fprintf (fp, " %d", qh_pointid(point));
-    kjb_fprintf (fp, "\n");
+      ivi_fprintf (fp, " %d", qh_pointid(point));
+    ivi_fprintf (fp, "\n");
   }
 } /* printpoints */
 
@@ -971,19 +971,19 @@ void qh_projectinput (void) {
       newnum++;
   }
   if (newdim != qh hull_dim) {
-    kjb_fprintf(qh ferr, "qhull internal error (qh_projectinput): dimension after projection %d != hull_dim %d\n", newdim, qh hull_dim);
+    ivi_fprintf(qh ferr, "qhull internal error (qh_projectinput): dimension after projection %d != hull_dim %d\n", newdim, qh hull_dim);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-  if (!(newpoints=(coordT*)KJB_MALLOC(newnum*newdim*sizeof(coordT)))){
+#ifdef USE_IVI_MALLOC
+  if (!(newpoints=(coordT*)IVI_MALLOC(newnum*newdim*sizeof(coordT)))){
 #else
   if (!(newpoints=(coordT*)malloc(newnum*newdim*sizeof(coordT)))){
 #endif
 /* END kobus */
 
-    kjb_fprintf(qh ferr, "qhull error: insufficient memory to project %d points\n",
+    ivi_fprintf(qh ferr, "qhull error: insufficient memory to project %d points\n",
            qh num_points);
     qh_errexit (qh_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -999,8 +999,8 @@ void qh_projectinput (void) {
   if (qh POINTSmalloc)
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    kjb_free (qh first_point);
+#ifdef USE_IVI_MALLOC
+    ivi_free (qh first_point);
 #else
     free (qh first_point);
 #endif
@@ -1049,7 +1049,7 @@ void qh_projectpoints (signed char *project, int n, realT *points,
   for (k= 0; k<n; k++)
     testdim += project[k];
   if (testdim != newdim) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_projectpoints): newdim %d should be %d after projection\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_projectpoints): newdim %d should be %d after projection\n",
       newdim, testdim);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -1167,14 +1167,14 @@ void qh_rotateinput (realT **rows) {
     size= qh num_points*qh hull_dim*sizeof(pointT);
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    if (!(newpoints=(coordT*)KJB_MALLOC(size))) {
+#ifdef USE_IVI_MALLOC
+    if (!(newpoints=(coordT*)IVI_MALLOC(size))) {
 #else
     if (!(newpoints=(coordT*)malloc(size))) {
 #endif
 /* END kobus */
 
-      kjb_fprintf(qh ferr, "qhull error: insufficient memory to rotate %d points\n",
+      ivi_fprintf(qh ferr, "qhull error: insufficient memory to rotate %d points\n",
           qh num_points);
       qh_errexit (qh_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
     }
@@ -1224,14 +1224,14 @@ void qh_scaleinput (void) {
     size= qh num_points*qh hull_dim*sizeof(pointT);
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    if (!(newpoints=(coordT*)KJB_MALLOC(size))) {
+#ifdef USE_IVI_MALLOC
+    if (!(newpoints=(coordT*)IVI_MALLOC(size))) {
 #else
     if (!(newpoints=(coordT*)malloc(size))) {
 #endif
 /* END kobus */
 
-      kjb_fprintf(qh ferr, "qhull error: insufficient memory to scale %d points\n",
+      ivi_fprintf(qh ferr, "qhull error: insufficient memory to scale %d points\n",
           qh num_points);
       qh_errexit (qh_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
     }
@@ -1260,7 +1260,7 @@ void qh_scalelast (coordT *points, int numpoints, int dim, coordT low,
   scale= qh_divzero (newhigh, high - low,
                   qh MINdenom_1, &nearzero);
   if (nearzero) {
-    kjb_fprintf (qh ferr, "qhull input error: last coordinate's new bounds [0, %2.2g] too wide for\nexisting bounds [%2.2g, %2.2g]\n",
+    ivi_fprintf (qh ferr, "qhull input error: last coordinate's new bounds [0, %2.2g] too wide for\nexisting bounds [%2.2g, %2.2g]\n",
               newhigh, low, high);
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -1297,14 +1297,14 @@ void qh_scalepoints (pointT *points, int numpoints, int dim,
     if (newlow < -REALmax/2)
       newlow= low;
     if (qh DELAUNAY && k == dim-1 && newhigh < newlow) {
-      kjb_fprintf (qh ferr, "qhull input error: 'Qb%d' or 'QB%d' inverts paraboloid since high bound %.2g < low bound %.2g\n",
+      ivi_fprintf (qh ferr, "qhull input error: 'Qb%d' or 'QB%d' inverts paraboloid since high bound %.2g < low bound %.2g\n",
 	       k, k, newhigh, newlow);
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
     scale= qh_divzero (newhigh - newlow, high - low,
                   qh MINdenom_1, &nearzero);
     if (nearzero) {
-      kjb_fprintf (qh ferr, "qhull input error: %d'th dimension's new bounds [%2.2g, %2.2g] too wide for\nexisting bounds [%2.2g, %2.2g]\n",
+      ivi_fprintf (qh ferr, "qhull input error: %d'th dimension's new bounds [%2.2g, %2.2g] too wide for\nexisting bounds [%2.2g, %2.2g]\n",
               k, newlow, newhigh, low, high);
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
@@ -1363,26 +1363,26 @@ boolT qh_sethalfspace (int dim, coordT *coords, coordT **nextp,
   }
   *nextp= coordp;
   if (qh IStracing >= 4) {
-    kjb_fprintf (qh ferr, "qh_sethalfspace: halfspace at offset %6.2g to point: ", *offset);
+    ivi_fprintf (qh ferr, "qh_sethalfspace: halfspace at offset %6.2g to point: ", *offset);
     for (k= dim, coordp= coords; k--; )
-      kjb_fprintf (qh ferr, " %6.2g", r=*coordp++);
-    kjb_fprintf (qh ferr, "\n");
+      ivi_fprintf (qh ferr, " %6.2g", r=*coordp++);
+    ivi_fprintf (qh ferr, "\n");
   }
   return True;
 LABELerroroutside:
   feasiblep= feasible;
   normp= normal;
-  kjb_fprintf(qh ferr, "qhull input error: feasible point is not clearly inside halfspace\nfeasible point: ");
+  ivi_fprintf(qh ferr, "qhull input error: feasible point is not clearly inside halfspace\nfeasible point: ");
   for (k= dim; k--; )
-    kjb_fprintf (qh ferr, qh_REAL_1, r=*(feasiblep++));
-  kjb_fprintf (qh ferr, "\n     halfspace: ");
+    ivi_fprintf (qh ferr, qh_REAL_1, r=*(feasiblep++));
+  ivi_fprintf (qh ferr, "\n     halfspace: ");
   for (k= dim; k--; )
-    kjb_fprintf (qh ferr, qh_REAL_1, r=*(normp++));
-  kjb_fprintf (qh ferr, "\n     at offset: ");
-  kjb_fprintf (qh ferr, qh_REAL_1, *offset);
-  kjb_fprintf (qh ferr, " and distance: ");
-  kjb_fprintf (qh ferr, qh_REAL_1, dist);
-  kjb_fprintf (qh ferr, "\n");
+    ivi_fprintf (qh ferr, qh_REAL_1, r=*(normp++));
+  ivi_fprintf (qh ferr, "\n     at offset: ");
+  ivi_fprintf (qh ferr, qh_REAL_1, *offset);
+  ivi_fprintf (qh ferr, " and distance: ");
+  ivi_fprintf (qh ferr, qh_REAL_1, dist);
+  ivi_fprintf (qh ferr, "\n");
   return False;
 } /* sethalfspace */
 
@@ -1407,14 +1407,14 @@ coordT *qh_sethalfspace_all (int dim, int count, coordT *halfspaces, pointT *fea
   newdim= dim - 1;
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-  if (!(newpoints=(coordT*)KJB_MALLOC(count*newdim*sizeof(coordT)))){
+#ifdef USE_IVI_MALLOC
+  if (!(newpoints=(coordT*)IVI_MALLOC(count*newdim*sizeof(coordT)))){
 #else
   if (!(newpoints=(coordT*)malloc(count*newdim*sizeof(coordT)))){
 #endif
 /* END kobus */
 
-    kjb_fprintf(qh ferr, "qhull error: insufficient memory to compute dual of %d halfspaces\n",
+    ivi_fprintf(qh ferr, "qhull error: insufficient memory to compute dual of %d halfspaces\n",
           count);
     qh_errexit (qh_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -1423,7 +1423,7 @@ coordT *qh_sethalfspace_all (int dim, int count, coordT *halfspaces, pointT *fea
   for (i= 0; i < count; i++) {
     offsetp= normalp + newdim;
     if (!qh_sethalfspace (newdim, coordp, &coordp, normalp, offsetp, feasible)) {
-      kjb_fprintf (qh ferr, "The halfspace was at index %d\n", i);
+      ivi_fprintf (qh ferr, "The halfspace was at index %d\n", i);
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
     normalp= offsetp + 1;
@@ -1451,7 +1451,7 @@ pointT *qh_voronoi_center (int dim, setT *points) {
   if (size == dim+1)
     simplex= points;
   else if (size < dim+1) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_voronoi_center):\n  need at least %d points to construct a Voronoi center\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_voronoi_center):\n  need at least %d points to construct a Voronoi center\n",
 	     dim+1);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }else {
@@ -1504,14 +1504,14 @@ pointT *qh_voronoi_center (int dim, setT *points) {
     }
 #ifndef qh_NOtrace
     if (qh IStracing >= 3) {
-      kjb_fprintf (qh ferr, "qh_voronoi_center: det %2.2g factor %2.2g ", det, factor);
+      ivi_fprintf (qh ferr, "qh_voronoi_center: det %2.2g factor %2.2g ", det, factor);
       qh_printmatrix (qh ferr, "center:", &center, 1, dim);
       if (qh IStracing >= 5) {
 	qh_printpoints (qh ferr, "points", simplex);
 	FOREACHpoint_(simplex)
-	  kjb_fprintf (qh ferr, "p%d dist %.2g, ", qh_pointid (point),
+	  ivi_fprintf (qh ferr, "p%d dist %.2g, ", qh_pointid (point),
 		   qh_pointdist (point, center, dim));
-	kjb_fprintf (qh ferr, "\n");
+	ivi_fprintf (qh ferr, "\n");
       }
     }
 #endif

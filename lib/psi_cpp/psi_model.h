@@ -1,4 +1,4 @@
-/* $Id: psi_model.h 12743 2012-07-25 23:52:02Z jguan1 $ */
+/* $Id: psi_model.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -37,7 +37,7 @@
 #include <psi_cpp/psi_weighted_box.h>
 #include <people_tracking_cpp/pt_entity.h>
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 #include <Control/SimulationInterface.h>
 #include <Control/ExtendedAction.h>
 #include <Control/WrapperAction.h>
@@ -46,13 +46,13 @@
 #endif
 
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
 
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 typedef boost::shared_ptr<CartWheel::ExtendedAction> Ex_action_ptr;
 
 // this probably doesn't belong in model.h...
@@ -82,7 +82,7 @@ struct Model
 };
 
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 // extract start state in a format compatible with 
 // the Cartwheel SimulationInterface class.
 std::vector<CartWheel::StartStatePtr> to_cw_start_state(const Model& m);
@@ -111,15 +111,15 @@ double model_prior (const Model& m);
 //class Frustum_prior
 //{
 //public:
-//    Frustum_prior(const kjb::Perspective_camera& cam, double width, double height)
+//    Frustum_prior(const ivi::Perspective_camera& cam, double width, double height)
 //    {
 //        // find out horizon line
-//        kjb::Matrix M = build_camera_matrix();
+//        ivi::Matrix M = build_camera_matrix();
 //
 //        // get three vanishing points
-//        kjb::Vector p1 = M * kjb::Vector(1, 0, 0, 0);
-//        kjb::Vector p2 = M * kjb::Vector(0, 0, 1, 0);
-//        kjb::Vector p3 = M * kjb::Vector(1, 0, 1, 0);
+//        ivi::Vector p1 = M * ivi::Vector(1, 0, 0, 0);
+//        ivi::Vector p2 = M * ivi::Vector(0, 0, 1, 0);
+//        ivi::Vector p3 = M * ivi::Vector(1, 0, 1, 0);
 //
 //        // pick the two most numerically stable points
 //
@@ -132,15 +132,15 @@ double model_prior (const Model& m);
 //        // only use two points with highest 'w' parameter
 //        // (hopefully the most numerically stable)
 //        
-//        kjb::Vector dir = (p2 - p1);
+//        ivi::Vector dir = (p2 - p1);
 //        dir.normalize();
 //
 //        // find intersection with left side of screen
 //        double t_left = (-width/2 - p1[0]) / dir[0];
-//        kjb::Vector left_horizon = p1 + t_left * dir;
+//        ivi::Vector left_horizon = p1 + t_left * dir;
 //        // find intersection with right side of screen
 //        double t_right = (width/2 - p1[0]) / dir[0];
-//        kjb::Vector right_horizon = p1 + t_right * dir;
+//        ivi::Vector right_horizon = p1 + t_right * dir;
 //
 //        // TODO: Plot these points to test it
 //
@@ -149,7 +149,7 @@ double model_prior (const Model& m);
 //
 //        // find bounding area on ground plane
 //        // intersect view vector with bottom-left and bottom-right of screen
-//        kjb::Vector view_bottom_left
+//        ivi::Vector view_bottom_left
 //
 //
 //
@@ -159,5 +159,5 @@ double model_prior (const Model& m);
 //};
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 #endif

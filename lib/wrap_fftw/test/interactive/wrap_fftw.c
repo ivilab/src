@@ -1,5 +1,5 @@
 
-/* $Id: wrap_fftw.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: wrap_fftw.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -27,8 +27,8 @@ int main(int argc, char** argv)
     Matrix* b_mp = NULL;
     Matrix* out_mp = NULL;
     Matrix* out_out_mp = NULL;
-    KJB_image* ip = NULL;
-    KJB_image* out_ip = NULL;
+    IVI_image* ip = NULL;
+    IVI_image* out_ip = NULL;
     Matrix* image_dct_mp = NULL;
     Matrix* mask_dct_mp = NULL;
     Matrix* prod_dct_mp = NULL;
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     Matrix* mask_mp = NULL;
     int i, j; 
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
         
     if (! is_interactive()) 
     {
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     pso("\n");
     write_matrix(out_out_mp, NULL);
 
-    EPETE(kjb_read_image(&ip, "input.tiff"));
+    EPETE(ivi_read_image(&ip, "input.tiff"));
     num_rows = ip->num_rows; 
     num_cols = ip->num_cols; 
 
@@ -109,13 +109,13 @@ int main(int argc, char** argv)
     EPETE(rgb_matrices_to_image(inv_prod_dct_mp, inv_prod_dct_mp, inv_prod_dct_mp, 
                                 &out_ip));
 
-    EPETE(kjb_display_image(ip, NULL));
+    EPETE(ivi_display_image(ip, NULL));
 
-    EPETE(kjb_display_image(out_ip, NULL));
+    EPETE(ivi_display_image(out_ip, NULL));
 
     prompt_to_continue();
     
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

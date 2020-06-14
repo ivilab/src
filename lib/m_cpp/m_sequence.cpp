@@ -1,4 +1,4 @@
-/* $Id: m_sequence.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_sequence.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -24,14 +24,14 @@
 #include "l_cpp/l_exception.h"
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 Interval_sequence::Interval_sequence(double start, double interval, double end) :
     start_(start),
     end_(end),
     interval_(interval)
 {
     if((end - start) / interval < 0)
-        KJB_THROW_2(Illegal_argument, "Invalid range.  start + N * interval must be greater or equal than end for some N >= 0.");
+        IVI_THROW_2(Illegal_argument, "Invalid range.  start + N * interval must be greater or equal than end for some N >= 0.");
 
 }
 
@@ -41,7 +41,7 @@ double Interval_sequence::operator[](size_t index) const
 
     int sign = (interval_ < 0.0 ? -1 : 1);
     if(sign * result > sign * end_)
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
 
     return result;
 }
@@ -58,4 +58,4 @@ std::vector<double> Interval_sequence::to_vector() const
     return result;
 }
 
-} // namespace kjb
+} // namespace ivi

@@ -17,8 +17,8 @@
 |     Jinyan Guan 
 |
 * =========================================================================== */
-#ifndef KJB_ST_SPHERE_INCLUDED
-#define KJB_ST_SPHERE_INCLUDED
+#ifndef IVI_ST_SPHERE_INCLUDED
+#define IVI_ST_SPHERE_INCLUDED
 
 #include <gr_cpp/gr_sphere.h>
 #include <m_cpp/m_vector.h>
@@ -31,7 +31,7 @@
 /**
  * @class ST_SPHERE models a 3D sphere and its graphic representation 
  */
-namespace kjb
+namespace ivi
 {
 //class Perspective_camera;
 class Parametric_sphere : public Renderable_model, public Readable, public Writeable
@@ -43,35 +43,35 @@ class Parametric_sphere : public Renderable_model, public Readable, public Write
             double center_y, 
             double center_z, 
             double radius = 1.0
-        ) throw (kjb::Illegal_argument);
+        ) throw (ivi::Illegal_argument);
 
         Parametric_sphere (){}
         
         /** @brief Constructs a parametric_parapiped from an input file. */
-        Parametric_sphere (const char* fname) throw (kjb::Illegal_argument,
-                    kjb::IO_error);
+        Parametric_sphere (const char* fname) throw (ivi::Illegal_argument,
+                    ivi::IO_error);
 
-        Parametric_sphere (std::istream& in) throw (kjb::Illegal_argument, kjb::IO_error);
+        Parametric_sphere (std::istream& in) throw (ivi::Illegal_argument, ivi::IO_error);
 
         Parametric_sphere (const Parametric_sphere& src);
         
         virtual Parametric_sphere & operator = (const Parametric_sphere& src);
 
-        virtual void read(std::istream& in) throw (kjb::Illegal_argument, kjb::IO_error);
+        virtual void read(std::istream& in) throw (ivi::Illegal_argument, ivi::IO_error);
 
         virtual void read(const char * fname)
         {
             Readable::read(fname);
         }
 
-        virtual void write(std::ostream& out) const throw (kjb::IO_error);
-        virtual void write(const char* fname) const throw (kjb::IO_error)
+        virtual void write(std::ostream& out) const throw (ivi::IO_error);
+        virtual void write(const char* fname) const throw (ivi::IO_error)
         {
             Writeable::write(fname);
         }
 
         virtual Abstract_renderable& get_rendering_interface() const;
-        virtual void update_rendering_representation() const throw(kjb::KJB_error);
+        virtual void update_rendering_representation() const throw(ivi::IVI_error);
         //Geodesic_sphere& get_triangular_mesh() {return rendering_interface; }
         
         virtual Parametric_sphere * clone() const {return new Parametric_sphere(*this); }
@@ -112,16 +112,16 @@ class Parametric_sphere : public Renderable_model, public Readable, public Write
          *  axes are defined by the sphere axes */
         void get_point_in_sphere_coordinates
         (
-            const kjb::Vector & point_in_world_coordinates,
-            kjb::Vector & point_in_sphere_coordinates
+            const ivi::Vector & point_in_world_coordinates,
+            ivi::Vector & point_in_sphere_coordinates
         ) const;
 
         /** @brief Transforms a point in parapiped coordinates to
          *  world coordinates */
         void get_point_in_world_coordinates
         (
-            const kjb::Vector & point_in_sphere_coordinates,
-            kjb::Vector & point_in_world_coordinates
+            const ivi::Vector & point_in_sphere_coordinates,
+            ivi::Vector & point_in_world_coordinates
         ) const;
         
         void propose_sphere_from_curve(); 

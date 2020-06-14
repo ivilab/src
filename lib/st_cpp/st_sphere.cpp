@@ -24,7 +24,7 @@
 #include <sstream>
 #include <typeinfo>
 
-using namespace kjb;
+using namespace ivi;
 
 Parametric_sphere::Parametric_sphere
 (
@@ -32,12 +32,12 @@ Parametric_sphere::Parametric_sphere
     double center_y, 
     double center_z, 
     double radius
-) throw (kjb::Illegal_argument) : Renderable_model(), Readable(), Writeable()
+) throw (ivi::Illegal_argument) : Renderable_model(), Readable(), Writeable()
     //rendering_interface(center_x, center_y,  center_z, radius), m_center_v(4.0, 1.0)
 {
     if(radius <= 0.0)
     {
-        throw kjb::Illegal_argument("Sphere constructor, dimensions must be positive");
+        throw ivi::Illegal_argument("Sphere constructor, dimensions must be positive");
     }
     m_center_v(0) = center_x;
     m_center_v(1) = center_y;
@@ -48,7 +48,7 @@ Parametric_sphere::Parametric_sphere
 Parametric_sphere::Parametric_sphere
 (
     const char* fname
-) throw (kjb::Illegal_argument, kjb::IO_error): Renderable_model(false)
+) throw (ivi::Illegal_argument, ivi::IO_error): Renderable_model(false)
     //rendering_interface(0.0, 0.0, 0.0, 1.0), m_center_v(4.0, 1.0)
 {
     Readable::read(fname);
@@ -57,7 +57,7 @@ Parametric_sphere::Parametric_sphere
 Parametric_sphere::Parametric_sphere
 (
     std::istream& in
-) throw(kjb::Illegal_argument, kjb::IO_error): Renderable_model(true), 
+) throw(ivi::Illegal_argument, ivi::IO_error): Renderable_model(true), 
     //rendering_interface(0.0, 0.0, 0.0, 1.0),
     m_center_v(4,1.0)
 {
@@ -65,7 +65,7 @@ Parametric_sphere::Parametric_sphere
 }
 
 //read in a sphere from an istream 
-void Parametric_sphere::read(std::istream& in) throw(kjb::Illegal_argument, kjb::IO_error)
+void Parametric_sphere::read(std::istream& in) throw(ivi::Illegal_argument, ivi::IO_error)
 {
     using std::ostringstream;
     using std::istringstream;
@@ -113,7 +113,7 @@ void Parametric_sphere::read(std::istream& in) throw(kjb::Illegal_argument, kjb:
 /**
  * @brief Save the Sphere parameters into a file 
  */
-void Parametric_sphere::write(std::ostream& out) const throw (kjb::IO_error)
+void Parametric_sphere::write(std::ostream& out) const throw (ivi::IO_error)
 {
     out<< " Type: "<<typeid(*this).name() <<"\n"
         <<" center: "<< m_center_v [0] << " "

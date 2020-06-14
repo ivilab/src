@@ -39,7 +39,7 @@
 #include <ergo/mh.h>
 #include <ergo/record.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using namespace boost;
 

@@ -1,7 +1,7 @@
 #include "m_cpp/m_matrix.h"
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 double add1(double x) {

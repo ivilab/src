@@ -17,15 +17,15 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_CPP_SEGMENT_PAIR_H
-#define KJB_CPP_SEGMENT_PAIR_H
+#ifndef IVI_CPP_SEGMENT_PAIR_H
+#define IVI_CPP_SEGMENT_PAIR_H
 
 #include <l/l_incl.h>
 #include <edge/line_segment.h>
 #include <i_cpp/i_image.h>
 #include <string>
 
-namespace kjb
+namespace ivi
 {
 
 class Segment_pair
@@ -107,6 +107,6 @@ private:
 
     int lowest;
 
-}; // namespace kjb
+}; // namespace ivi
 }
 #endif

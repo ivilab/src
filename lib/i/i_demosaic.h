@@ -1,5 +1,5 @@
 
-/* $Id: i_demosaic.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_demosaic.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,14 +29,14 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int set_demosaic_options(const char* option, const char* value);
-int ow_demosaic(KJB_image* ip);
-int ow_dumb_demosaic(KJB_image* ip);
+int ow_demosaic(IVI_image* ip);
+int ow_dumb_demosaic(IVI_image* ip);
 
 
 #ifdef __cplusplus

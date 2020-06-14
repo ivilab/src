@@ -1,5 +1,5 @@
 
-/* $Id: l_parse.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_parse.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -529,7 +529,7 @@ size_t match_get_token
 
      *output_string = '\0';
 
-     kjb_free(depth);
+     ivi_free(depth);
 
      return i;  /* i == 0 == NO_MORE_TOKENS */
 #else
@@ -971,7 +971,7 @@ GEN_MATCH_QUOTE_GET_TOKEN_CODE()
 \
      *output_string = '\0'; \
 \
-     kjb_free(depth); \
+     ivi_free(depth); \
 \
      return i;  /* i == 0 == NO_MORE_TOKENS */ \
 }
@@ -1176,7 +1176,7 @@ int gen_get_last_token(char* input_line, char* output_string,
                        size_t max_len, const char* terminators)
 {
 
-    /* Careful with KJB IO in this routine as KJB IO uses it. */
+    /* Careful with IVI IO in this routine as IVI IO uses it. */
 
     return gen_get_last_token_2(input_line, output_string, 
                                 max_len, terminators, TRIM_BEFORE);
@@ -1239,7 +1239,7 @@ int gen_get_last_token_2(char* input_line, char* output_string,
      char*  end_ptr;
      size_t len = strlen(input_line); 
 
-     /* Careful with KJB IO in this routine as KJB IO uses it. */
+     /* Careful with IVI IO in this routine as IVI IO uses it. */
 
      if (trim_order_flag == TRIM_BEFORE)
      {
@@ -1271,7 +1271,7 @@ int gen_get_last_token_2(char* input_line, char* output_string,
 
      if (output_string != NULL)
      {
-         ERE(kjb_buff_cpy(output_string, end_ptr, max_len));
+         ERE(ivi_buff_cpy(output_string, end_ptr, max_len));
      }
 
      *end_ptr = '\0';
@@ -1363,20 +1363,20 @@ int gen_split_at_last_token_2(const char* input_line, char* left_str, size_t lef
     char* input_line_copy; 
     int result = NOT_SET; 
 
-    NRE(input_line_copy = kjb_strdup(input_line)); 
+    NRE(input_line_copy = ivi_strdup(input_line)); 
 
     result = gen_get_last_token_2(input_line_copy, right_str, right_str_size, 
                                   terminators, trim_order_flag);
      
     if ((result != ERROR) && (left_str != NULL))
     {
-        if (kjb_buff_cpy(left_str, input_line_copy, left_str_size) == ERROR)
+        if (ivi_buff_cpy(left_str, input_line_copy, left_str_size) == ERROR)
         {
             result = ERROR; 
         }
     }
 
-    kjb_free(input_line_copy); 
+    ivi_free(input_line_copy); 
 
     return result; 
 }
@@ -1417,7 +1417,7 @@ size_t parse_on_string
 
     ASSERT(max_len != 0);
 #if 0 /* was ifdef OBSOLETE */
-    /* This is not quite right because we use kjb_strncpy() which bumps one from
+    /* This is not quite right because we use ivi_strncpy() which bumps one from
      * max_len already.
     */
 #endif 
@@ -1435,7 +1435,7 @@ size_t parse_on_string
         str_loc--;
     }
 
-    kjb_strncpy(output_string, *input_line_ptr,
+    ivi_strncpy(output_string, *input_line_ptr,
                 MIN_OF(max_len, str_loc + 1));
 
     (*input_line_ptr) += str_loc;
@@ -1443,7 +1443,7 @@ size_t parse_on_string
     /* 
      * TODO 
      *
-     * Perhaps kjb_strncpy() should return the number of copied characters, and
+     * Perhaps ivi_strncpy() should return the number of copied characters, and
      * then we would use that.
     */
     return MIN_OF(max_len-1, str_loc); 
@@ -1568,7 +1568,7 @@ int all_n_digits(const char* string, size_t len)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 
-int kjb_parse(const char* input_string, char*** args_ptr)
+int ivi_parse(const char* input_string, char*** args_ptr)
 {
     int    i;
     int    num_args;
@@ -1705,7 +1705,7 @@ char* parse_next(char** input_string_ptr)
 
     NRN(next = STR_MALLOC(next_len + ROOM_FOR_NULL));
 
-    kjb_strncpy(next, input_copy, next_len + ROOM_FOR_NULL);
+    ivi_strncpy(next, input_copy, next_len + ROOM_FOR_NULL);
 
     next[ next_len ] = '\0';
 
@@ -1920,7 +1920,7 @@ int parse_positive_integer_list(const char* input, int min_value, int max_value,
 
         if (temp_result == ERROR)
         {
-            kjb_free(output_array);
+            ivi_free(output_array);
             return ERROR;
         }
     }
@@ -2087,10 +2087,10 @@ int parse_options(char* input, char*** option_list_ptr, char*** value_list_ptr)
          || (pre_processed_input == NULL)
        )
     {
-        kjb_free(stripped_input);
-        kjb_free(pre_processed_input);
-        kjb_free(option_list);
-        kjb_free(value_list);
+        ivi_free(stripped_input);
+        ivi_free(pre_processed_input);
+        ivi_free(option_list);
+        ivi_free(value_list);
         return ERROR;
     }
 
@@ -2100,23 +2100,23 @@ int parse_options(char* input, char*** option_list_ptr, char*** value_list_ptr)
     if (*input_pos == '=')
     {
         set_error("Expected format is <x>=<y>.");
-        kjb_free(stripped_input);
-        kjb_free(pre_processed_input);
-        kjb_free(option_list);
-        kjb_free(value_list);
+        ivi_free(stripped_input);
+        ivi_free(pre_processed_input);
+        ivi_free(option_list);
+        ivi_free(value_list);
         return ERROR;
     }
 
     while (BUFF_GEN_MQ_GET_TOKEN_OK(&input_pos, buff, "="))
     {
         trim_end(buff);
-        kjb_strncat(pre_processed_input, buff, input_size);
+        ivi_strncat(pre_processed_input, buff, input_size);
 
         trim_beg(&input_pos);
 
         if (*input_pos == '=')
         {
-            kjb_strncat(pre_processed_input, "=", input_size);
+            ivi_strncat(pre_processed_input, "=", input_size);
             input_pos++;
             trim_beg(&input_pos);
         }
@@ -2124,10 +2124,10 @@ int parse_options(char* input, char*** option_list_ptr, char*** value_list_ptr)
         if (*input_pos == '=')
         {
             set_error("Expected format is <x>=<y>.");
-            kjb_free(stripped_input);
-            kjb_free(pre_processed_input);
-            kjb_free(option_list);
-            kjb_free(value_list);
+            ivi_free(stripped_input);
+            ivi_free(pre_processed_input);
+            ivi_free(option_list);
+            ivi_free(value_list);
             return ERROR;
         }
     }
@@ -2147,7 +2147,7 @@ int parse_options(char* input, char*** option_list_ptr, char*** value_list_ptr)
             if (*buff_pos == '=')
             {
                 free_options(count, option_list, value_list);
-                kjb_free(stripped_input);
+                ivi_free(stripped_input);
                 set_error("No option before the \"=\" in %q.", buff);
                 return ERROR;
             }
@@ -2159,24 +2159,24 @@ int parse_options(char* input, char*** option_list_ptr, char*** value_list_ptr)
             {
                 set_error("No option value after the \"=\" in %q.", buff);
                 free_options(count, option_list, value_list);
-                kjb_free(stripped_input);
-                kjb_free(pre_processed_input);
+                ivi_free(stripped_input);
+                ivi_free(pre_processed_input);
                 return ERROR;
             }
 
             strip_quotes(option_buff);
             strip_quotes(value_buff);
 
-            *option_list_pos = kjb_strdup(option_buff);
-            *value_list_pos = kjb_strdup(value_buff);
+            *option_list_pos = ivi_strdup(option_buff);
+            *value_list_pos = ivi_strdup(value_buff);
 
             if ((*option_list_pos == NULL) || (*value_list_pos == NULL))
             {
                 free_options(count, option_list, value_list);
-                kjb_free(stripped_input);
-                kjb_free(pre_processed_input);
-                kjb_free(*option_list_pos);
-                kjb_free(*value_list_pos);
+                ivi_free(stripped_input);
+                ivi_free(pre_processed_input);
+                ivi_free(*option_list_pos);
+                ivi_free(*value_list_pos);
                 return ERROR;
             }
 
@@ -2215,8 +2215,8 @@ int parse_options(char* input, char*** option_list_ptr, char*** value_list_ptr)
 
      strcpy(input, stripped_input);
 
-     kjb_free(stripped_input);
-     kjb_free(pre_processed_input);
+     ivi_free(stripped_input);
+     ivi_free(pre_processed_input);
 
      return count;
 }
@@ -2258,14 +2258,14 @@ int free_options(int num_options, char** option_list, char** value_list)
 
     for (i=0; i<num_options; i++)
     {
-        kjb_free(*option_list_pos);
-        kjb_free(*value_list_pos);
+        ivi_free(*option_list_pos);
+        ivi_free(*value_list_pos);
         option_list_pos++;
         value_list_pos++;
     }
 
-    kjb_free(option_list);
-    kjb_free(value_list);
+    ivi_free(option_list);
+    ivi_free(value_list);
 
     return NO_ERROR;
 }
@@ -2341,7 +2341,7 @@ int ic_parse_key_words(char* input, int num_key_words, const char** key_words,
                     {
                         if (key_words_found_list[j] == i)
                         {
-                            kjb_printf("Ignoring duplicate %q.\n", buff);
+                            ivi_printf("Ignoring duplicate %q.\n", buff);
                             duplicate = TRUE;
                         }
                     }
@@ -2385,7 +2385,7 @@ int ic_parse_key_words(char* input, int num_key_words, const char** key_words,
 
     strcpy(input, stripped_input);
 
-    kjb_free(stripped_input);
+    ivi_free(stripped_input);
 
     return count;
 }
@@ -2558,12 +2558,12 @@ int get_base_name(const char* name, char* dir_str, size_t dir_str_size,
 
     if (base_name != NULL)
     {
-        kjb_strncpy(base_name, base_buff, base_name_size);
+        ivi_strncpy(base_name, base_buff, base_name_size);
     }
 
     if (dir_str != NULL)
     {
-        kjb_strncpy(dir_str, path_buff, dir_str_size);
+        ivi_strncpy(dir_str, path_buff, dir_str_size);
     }
 
     return result;
@@ -2653,12 +2653,12 @@ int get_base_path(const char* path, char* base_path, size_t base_path_size,
     {
         if (base_path != NULL)
         {
-            kjb_strncpy(base_path, path, base_size);
+            ivi_strncpy(base_path, path, base_size);
         }
 
         if (suffix != NULL)
         {
-            kjb_strncpy(suffix, suffix_pos, suffix_size);
+            ivi_strncpy(suffix, suffix_pos, suffix_size);
         }
     }
     else
@@ -2669,12 +2669,12 @@ int get_base_path(const char* path, char* base_path, size_t base_path_size,
             {
                 if (base_path != NULL)
                 {
-                    kjb_strncpy(base_path, path, base_size);
+                    ivi_strncpy(base_path, path, base_size);
                 }
 
                 if (suffix != NULL)
                 {
-                    kjb_strncpy(suffix, suffix_pos, suffix_size);
+                    ivi_strncpy(suffix, suffix_pos, suffix_size);
                 }
 
                 return NO_ERROR;
@@ -2691,7 +2691,7 @@ int get_base_path(const char* path, char* base_path, size_t base_path_size,
 
         if (base_path != NULL)
         {
-            kjb_strncpy(base_path, path, base_path_size);
+            ivi_strncpy(base_path, path, base_path_size);
         }
 
         if (suffix != NULL)

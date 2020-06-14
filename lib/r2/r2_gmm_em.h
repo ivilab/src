@@ -1,4 +1,4 @@
-/* $Id: r2_gmm_em.h 16540 2014-03-13 18:04:57Z ksimek $ */
+/* $Id: r2_gmm_em.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -30,11 +30,11 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-#ifdef KJB_HAVE_PTHREAD
+#ifdef IVI_HAVE_PTHREAD
 struct thread_GMM_data
 {
     int           num_clusters;
@@ -58,9 +58,9 @@ struct thread_GMM_data
     Matrix**      P_mpp;
     double*       log_likelihood_ptr;
     double*       held_out_log_likelihood_ptr;
-    kjb_pthread_mutex_t* mutexsum_p;
+    ivi_pthread_mutex_t* mutexsum_p;
 };
-#endif /* KJB_HAVE_PTHREAD*/
+#endif /* IVI_HAVE_PTHREAD*/
 
 int set_em_cluster_options(const char* option, const char* value);
 
@@ -193,7 +193,7 @@ int get_independent_GMM_3
 );
 
 
-#ifdef KJB_HAVE_PTHREAD
+#ifdef IVI_HAVE_PTHREAD
 int get_independent_GMM_3_mt
 (
     int               num_threads,
@@ -213,7 +213,7 @@ int get_independent_GMM_3_mt
 );
 
 void *create_independent_GMM_thread (void *arg);
-#endif /* KJB_HAVE_PTHREAD*/
+#endif /* IVI_HAVE_PTHREAD*/
 
 
 #ifdef __cplusplus

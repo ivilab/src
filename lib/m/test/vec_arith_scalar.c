@@ -1,5 +1,5 @@
 
-/* $Id: vec_arith_scalar.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: vec_arith_scalar.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     Vector* second_vp = NULL;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
 #ifdef VERBOSE
                 else
                 {
-                    kjb_print_error();
+                    ivi_print_error();
                 }
 #endif 
 
@@ -170,7 +170,7 @@ int main(int argc, char **argv)
 #ifdef VERBOSE
                 else
                 {
-                    kjb_print_error();
+                    ivi_print_error();
                 }
 #endif 
 
@@ -306,8 +306,8 @@ int main(int argc, char **argv)
 static void test_bug_handler(const char* mess)
 {
     /*
-    kjb_puts(mess); 
-    kjb_puts("\n"); 
+    ivi_puts(mess); 
+    ivi_puts("\n"); 
     */
     set_error(mess);
 }

@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     int result = EXIT_SUCCESS;
     int i = 0;
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (! is_interactive()) 
     {

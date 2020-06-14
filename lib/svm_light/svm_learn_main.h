@@ -1,5 +1,5 @@
 
-/* $Id: svm_learn_main.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: svm_learn_main.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef SVM_LIGHT_LEARN_MAIN_INCLUDED    /* Kobus */
 #define SVM_LIGHT_LEARN_MAIN_INCLUDED
@@ -7,7 +7,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

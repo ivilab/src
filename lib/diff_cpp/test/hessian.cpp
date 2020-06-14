@@ -30,7 +30,7 @@
 #include <boost/bind.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 using namespace boost;
 
 /** @brief  Main. */

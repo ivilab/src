@@ -1,5 +1,5 @@
 
-/* $Id: l_verbose.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_verbose.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -73,7 +73,7 @@ int set_verbose_options(const char* option, const char* value)
         else
         {
             ERE(ss1i(value, &temp_int_value));
-            result = kjb_set_verbose_level(temp_int_value);
+            result = ivi_set_verbose_level(temp_int_value);
         }
         result = NO_ERROR;
     }
@@ -139,19 +139,19 @@ int set_verbose_options(const char* option, const char* value)
 
 /*
  * =============================================================================
- *                              kjb_set_verbose_level
+ *                              ivi_set_verbose_level
  *
- * Sets the verbose level for the KJB library routines.
+ * Sets the verbose level for the IVI library routines.
  *
- * This routine sets the verbose level for the KJB library routines. This
- * affects all calls to verbose_pso(3-KJB).
+ * This routine sets the verbose level for the IVI library routines. This
+ * affects all calls to verbose_pso(3-IVI).
  *
  * Index: I/O, verbose, debugging
  *
  * -----------------------------------------------------------------------------
  */
 
-int kjb_set_verbose_level(int new_level)
+int ivi_set_verbose_level(int new_level)
 {
 
 
@@ -164,18 +164,18 @@ int kjb_set_verbose_level(int new_level)
 
 /*
  * =============================================================================
- *                              kjb_get_verbose_level
+ *                              ivi_get_verbose_level
  *
- * Returns the verbose level for the KJB library routines.
+ * Returns the verbose level for the IVI library routines.
  *
- * This routine returns the verbose level for the KJB library routines.
+ * This routine returns the verbose level for the IVI library routines.
  *
  * Index: I/O, verbose, debugging
  *
  * -----------------------------------------------------------------------------
  */
 
-int kjb_get_verbose_level(void)
+int ivi_get_verbose_level(void)
 {
 
 
@@ -191,10 +191,10 @@ int kjb_get_verbose_level(void)
  * Printing to stdout if verbose level is high enough.
  *
  * This routine writes a formatted string to stdout if the first paramter is
- * equal to or exceeds the verbose level set by kjb_set_verbose_level.   When
+ * equal to or exceeds the verbose level set by ivi_set_verbose_level.   When
  * verbose_pso prints, it prepends a string to each line which identifies that
  * the verbosity level cutoff. That string is "<< %d >> ". Otherwise it is
- * similar to pso. Specifically, it is similar to kjb_fprintf with respect to
+ * similar to pso. Specifically, it is similar to ivi_fprintf with respect to
  * extended formatting options and paging.
  *
  * Returns:
@@ -203,7 +203,7 @@ int kjb_get_verbose_level(void)
  *    there is an error.
  *
  * Related:
- *    verbose_puts, pso, kjb_fprintf
+ *    verbose_puts, pso, ivi_fprintf
  *
  * Index: I/O, verbose, debugging
  *
@@ -222,7 +222,7 @@ long verbose_pso(int cut_off, const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    sprintf_res = kjb_vsprintf(buff, sizeof(buff), format_str, ap);
+    sprintf_res = ivi_vsprintf(buff, sizeof(buff), format_str, ap);
 
     va_end(ap);
 
@@ -240,10 +240,10 @@ long verbose_pso(int cut_off, const char* format_str, ...)
  * Printing to stdout if verbose level is high enough.
  *
  * This routine writes a string to stdout if the first paramter is equal to or
- * exceeds the verbose level set by kjb_set_verbose_level.   When verbose_pso
+ * exceeds the verbose level set by ivi_set_verbose_level.   When verbose_pso
  * prints, it prepends a string to each line which identifies that the verbosity
  * level cutoff. That string is "<< %d >> ". Otherwise it is similar to
- * kjb_puts.
+ * ivi_puts.
  *
  * Returns:
  *    Returns the number of characters written, which is zero in the case of
@@ -251,7 +251,7 @@ long verbose_pso(int cut_off, const char* format_str, ...)
  *    there is an error.
  *
  * Related:
- *    verbose_pso, kjb_puts
+ *    verbose_pso, ivi_puts
  *
  * Index: I/O, verbose, debugging
  *
@@ -284,14 +284,14 @@ long verbose_puts(int cut_off, const char* buff)
         {
             if (*buff_pos == '\0') break;
 
-            kjb_putc(*buff_pos);
+            ivi_putc(*buff_pos);
             result++;
             buff_pos++;
         }
 
         if (*buff_pos == '\0') break;
 
-        kjb_putc(*buff_pos);
+        ivi_putc(*buff_pos);
         buff_pos++;
         begining_of_line = TRUE;
         result++;
@@ -299,7 +299,7 @@ long verbose_puts(int cut_off, const char* buff)
         if (*buff_pos == '\0') break;
     }
 
-    kjb_flush();
+    ivi_flush();
 
     return result;
 }
@@ -314,7 +314,7 @@ long verbose_puts(int cut_off, const char* buff)
  *
  * This routine writes a formatted string to stdout with the prefix
  * "<< Warning >> " pre-pended to each line.  Otherwise it is similar to pso.
- * Specifically, it is similar to kjb_fprintf with respect to extended
+ * Specifically, it is similar to ivi_fprintf with respect to extended
  * formatting options and paging.
  *
  * Warnings can be suppressed by the user with "set warnings = off" or by the
@@ -325,7 +325,7 @@ long verbose_puts(int cut_off, const char* buff)
  *    an error.
  *
  * Related:
- *    warn_puts, pso, kjb_fprintf
+ *    warn_puts, pso, ivi_fprintf
  *
  * Index: I/O, warning messages, debugging
  *
@@ -343,7 +343,7 @@ long warn_pso(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    sprintf_res = kjb_vsprintf(buff, sizeof(buff), format_str, ap);
+    sprintf_res = ivi_vsprintf(buff, sizeof(buff), format_str, ap);
 
     va_end(ap);
 
@@ -361,7 +361,7 @@ long warn_pso(const char* format_str, ...)
  * Printing to stdout with prefix "<< Warning >> "
  *
  * This routine writes a string to stdout with the prefix "<< Warning >> "
- * pre-pended to each line. therwise it is similar to kjb_puts.
+ * pre-pended to each line. therwise it is similar to ivi_puts.
  *
  * Warnings can be suppressed by the user with "set warnings = off" or by the
  * programmer by setting up the approprate call to the option infrastructure.
@@ -371,7 +371,7 @@ long warn_pso(const char* format_str, ...)
  *    an error.
  *
  * Related:
- *    warn_pso, kjb_puts
+ *    warn_pso, ivi_puts
  *
  * Index: I/O, warning messages, debugging
  *
@@ -398,7 +398,7 @@ long warn_puts(const char* buff)
     {
         if (begining_of_line)
         {
-            ERE(out_res = kjb_puts("<< Warning >> "));
+            ERE(out_res = ivi_puts("<< Warning >> "));
             result += out_res;
             begining_of_line = FALSE;
         }
@@ -415,21 +415,21 @@ long warn_puts(const char* buff)
         ERE(get_res = BUFF_GEN_GET_TOKEN(&buff_pos, line_buff, "\n"));
         if (get_res == NO_MORE_TOKENS) break;
 
-        ERE(out_res = kjb_puts(line_buff));
+        ERE(out_res = ivi_puts(line_buff));
         result += out_res;
 #else
         while (*buff_pos != '\n')
         {
             if (*buff_pos == '\0') break;
 
-            kjb_putc(*buff_pos);
+            ivi_putc(*buff_pos);
             result++;
             buff_pos++;
         }
 
         if (*buff_pos == '\0') break;
 
-        kjb_putc(*buff_pos);
+        ivi_putc(*buff_pos);
         buff_pos++;
         begining_of_line = TRUE;
         result++;
@@ -438,7 +438,7 @@ long warn_puts(const char* buff)
 #endif
     }
 
-    kjb_flush();
+    ivi_flush();
 
     return result;
 }
@@ -461,7 +461,7 @@ long warn_puts(const char* buff)
  *    there is an error.
  *
  * Related:
- *    interactive_puts, pso, kjb_fprintf
+ *    interactive_puts, pso, ivi_fprintf
  *
  * Index: I/O, verbose, debugging
  *
@@ -485,7 +485,7 @@ long interactive_pso(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    sprintf_res = kjb_vsprintf(buff, sizeof(buff), format_str, ap);
+    sprintf_res = ivi_vsprintf(buff, sizeof(buff), format_str, ap);
 
     va_end(ap);
 
@@ -512,7 +512,7 @@ long interactive_pso(const char* format_str, ...)
  *    there is an error.
  *
  * Related:
- *    interactive_pso, kjb_puts
+ *    interactive_pso, ivi_puts
  *
  * Index: I/O, verbose, debugging
  *
@@ -523,7 +523,7 @@ long interactive_puts(const char* buff)
 {
     if (is_interactive())
     {
-        return kjb_puts(buff);
+        return ivi_puts(buff);
     }
     else
     {

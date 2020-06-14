@@ -1,5 +1,5 @@
 
-/* $Id: i_valid.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_valid.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,22 +29,22 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int set_image_validity_options(const char* option, const char* value);
 
-int mark_clipped_pixels(KJB_image* ip);
-int mark_dark_pixels(KJB_image* ip);
-int unmark_dark_pixels(KJB_image* ip);
+int mark_clipped_pixels(IVI_image* ip);
+int mark_dark_pixels(IVI_image* ip);
+int unmark_dark_pixels(IVI_image* ip);
 
-int mark_blooming_candidates(KJB_image** out_ipp, const KJB_image* in_ip);
+int mark_blooming_candidates(IVI_image** out_ipp, const IVI_image* in_ip);
 
-int mark_pixels_above_threshold(KJB_image* ip, double max);
-int mark_pixels_below_threshold(KJB_image* ip, double min);
-int count_invalid_pixels(const KJB_image* ip);
+int mark_pixels_above_threshold(IVI_image* ip, double max);
+int mark_pixels_below_threshold(IVI_image* ip, double min);
+int count_invalid_pixels(const IVI_image* ip);
 
 
 #ifdef __cplusplus

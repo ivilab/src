@@ -7,11 +7,11 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
 
     Vector x = create_random_vector(3) - Vector(0.5, 0.5, 0.5);
     x.normalize();

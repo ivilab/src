@@ -1,4 +1,4 @@
-/* $Id: gui_viewer.cpp 12029 2012-04-04 00:04:29Z ksimek $ */
+/* $Id: gui_viewer.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,8 +23,8 @@
 #include <gui_cpp/gui_viewer.h>
 #include <vector>
 
-#ifdef KJB_HAVE_GLUT
-namespace kjb
+#ifdef IVI_HAVE_GLUT
+namespace ivi
 {
 namespace gui 
 {

@@ -1,5 +1,5 @@
 
-/* $Id: mat_arith_dot.c 21555 2017-07-23 23:48:57Z kobus $ */
+/* $Id: mat_arith_dot.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {

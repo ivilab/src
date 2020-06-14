@@ -28,7 +28,7 @@
 #include <people_tracking_cpp/pt_complete_trajectory.h>
 #include <map>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -56,7 +56,7 @@ double get_variable_at_frame
         case 3: return target.trajectory()[frame - 1]->value.face_dir[0];
         case 4: return target.trajectory()[frame - 1]->value.face_dir[1];
 
-        default: KJB_THROW_2(
+        default: IVI_THROW_2(
                     Illegal_argument,
                     "Cannot get variable: bad index");
     }
@@ -117,7 +117,7 @@ void set_variable_at_frame
                     scene, target, frame, Vector2(fd1, x), vo);
         break;
 
-        default: KJB_THROW_2(
+        default: IVI_THROW_2(
                     Illegal_argument,
                     "Cannot set variable: bad index");
     }
@@ -166,7 +166,7 @@ void move_variable_at_frame
                     scene, target, frame, Vector2(0.0, dx), vo);
         break;
 
-        default: KJB_THROW_2(
+        default: IVI_THROW_2(
                     Illegal_argument,
                     "Cannot move variable: bad index");
     }
@@ -271,7 +271,7 @@ private:
     bool m_infer_head;
 };
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_SCENE_ADAPTER_H */
 

@@ -1,5 +1,5 @@
 
-/* $Id: i_vector.c 13028 2012-09-26 00:43:03Z qtung $ */
+/* $Id: i_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -48,7 +48,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int debug_read_image_vector(KJB_image_vector **target_ivpp,
+int debug_read_image_vector(IVI_image_vector **target_ivpp,
                             const char *file_pattern,
                             int         num_rows,
                             int         num_cols,
@@ -64,20 +64,20 @@ int debug_read_image_vector(KJB_image_vector **target_ivpp,
     return ERROR;
   }
   
-  NRE(*target_ivpp = DEBUG_TYPE_MALLOC(KJB_image_vector, filename, line_number));
+  NRE(*target_ivpp = DEBUG_TYPE_MALLOC(IVI_image_vector, filename, line_number));
   
   dir_files_p = NULL;
-  ERE(kjb_glob(&dir_files_p, file_pattern, NULL));
+  ERE(ivi_glob(&dir_files_p, file_pattern, NULL));
   
   (*target_ivpp)->length = dir_files_p->num_words;
-  NRE((*target_ivpp)->images = (KJB_image**)debug_kjb_calloc(sizeof(KJB_image **),
+  NRE((*target_ivpp)->images = (IVI_image**)debug_ivi_calloc(sizeof(IVI_image **),
                                                  (dir_files_p->num_words), 
                                                  file_pattern,
                                                  line_number));
   
   for (i = 0; i < dir_files_p->num_words; i++)
   {
-    ERE(kjb_read_image_2(&(*target_ivpp)->images[i], dir_files_p->words[i]));
+    ERE(ivi_read_image_2(&(*target_ivpp)->images[i], dir_files_p->words[i]));
   }
 
   return NO_ERROR;
@@ -90,7 +90,7 @@ int debug_read_image_vector(KJB_image_vector **target_ivpp,
         /*  ==>  Production code below        ||                              */
         /*  ==>                               \/                              */
 
-int read_image_vector(KJB_image_vector **target_ivpp, const char *file_pattern,
+int read_image_vector(IVI_image_vector **target_ivpp, const char *file_pattern,
                             int num_rows, int num_cols)
 {
   int i;
@@ -102,17 +102,17 @@ int read_image_vector(KJB_image_vector **target_ivpp, const char *file_pattern,
     return ERROR;
   }
 
-  NRE((*target_ivpp) = TYPE_MALLOC(KJB_image_vector));
+  NRE((*target_ivpp) = TYPE_MALLOC(IVI_image_vector));
  
   dir_files_p = NULL;
-  ERE(kjb_glob(&dir_files_p, file_pattern, NULL));
+  ERE(ivi_glob(&dir_files_p, file_pattern, NULL));
 
   (*target_ivpp)->length = dir_files_p->num_words;
-  NRE((*target_ivpp)->images = (KJB_image **)kjb_calloc(sizeof(KJB_image **), (*target_ivpp)->length));
+  NRE((*target_ivpp)->images = (IVI_image **)ivi_calloc(sizeof(IVI_image **), (*target_ivpp)->length));
 
   for (i = 0; i < dir_files_p->num_words; i++)
   {
-    ERE(kjb_read_image_2(&(*target_ivpp)->images[i], dir_files_p->words[i]));
+    ERE(ivi_read_image_2(&(*target_ivpp)->images[i], dir_files_p->words[i]));
   }
 
   return NO_ERROR;
@@ -145,13 +145,13 @@ int read_image_vector(KJB_image_vector **target_ivpp, const char *file_pattern,
 */
 int debug_copy_image_vector
 (
-    KJB_image_vector **out_ivpp,
-    const KJB_image_vector *in_ivp,
+    IVI_image_vector **out_ivpp,
+    const IVI_image_vector *in_ivp,
     const char* filename,
     int         line_number)
 {
-  KJB_image **out_ip2;
-  KJB_image **in_ip2;
+  IVI_image **out_ip2;
+  IVI_image **in_ip2;
   int num_images;
   int i;
   
@@ -184,7 +184,7 @@ int debug_copy_image_vector
 
   for (i = 0; i < num_images; i++)
   {
-    ERE(kjb_copy_image(&(out_ip2[ i ]), in_ip2[ i ]));
+    ERE(ivi_copy_image(&(out_ip2[ i ]), in_ip2[ i ]));
   }
 
   return NO_ERROR;
@@ -197,12 +197,12 @@ int debug_copy_image_vector
         /*  ==>  Production code below        ||                              */
         /*  ==>                               \/                              */
 
-int copy_image_vector(KJB_image_vector **out_ivpp, const KJB_image_vector *in_ivp)
+int copy_image_vector(IVI_image_vector **out_ivpp, const IVI_image_vector *in_ivp)
 {
   int i;
   int num_images;
-  KJB_image **out_ip2;
-  KJB_image **in_ip2;
+  IVI_image **out_ip2;
+  IVI_image **in_ip2;
   
   if (in_ivp == NULL)
   {
@@ -229,7 +229,7 @@ int copy_image_vector(KJB_image_vector **out_ivpp, const KJB_image_vector *in_iv
 
   for (i = 0; i < num_images; i++)
   {
-    ERE(kjb_copy_image(&(out_ip2[ i ]), in_ip2[ i ]));
+    ERE(ivi_copy_image(&(out_ip2[ i ]), in_ip2[ i ]));
   }
 
   return NO_ERROR;
@@ -261,7 +261,7 @@ int copy_image_vector(KJB_image_vector **out_ivpp, const KJB_image_vector *in_iv
 */
 int debug_get_target_image_vector
 (
-   KJB_image_vector **ivpp,
+   IVI_image_vector **ivpp,
    int         num_images,
    int         num_rows,
    int         num_cols,
@@ -281,8 +281,8 @@ int debug_get_target_image_vector
 
   free_image_vector(*ivpp);
 
-  *ivpp = DEBUG_TYPE_MALLOC(KJB_image_vector, filename, line_number);
-  NRE((*ivpp)->images = (KJB_image **)debug_kjb_calloc(sizeof(KJB_image **), num_images,
+  *ivpp = DEBUG_TYPE_MALLOC(IVI_image_vector, filename, line_number);
+  NRE((*ivpp)->images = (IVI_image **)debug_ivi_calloc(sizeof(IVI_image **), num_images,
                                          filename, line_number));
   (*ivpp)->length = num_images;
 
@@ -300,7 +300,7 @@ int debug_get_target_image_vector
 #else   /* ------------------------------------------------------------------ */
         /*  ==>  Production code below        ||                              */
         /*  ==>                               \/                              */
-int get_target_image_vector(KJB_image_vector **ivpp,
+int get_target_image_vector(IVI_image_vector **ivpp,
                                   int         num_images,
                                   int         num_rows,
                                   int         num_cols)
@@ -317,8 +317,8 @@ int get_target_image_vector(KJB_image_vector **ivpp,
 
   free_image_vector(*ivpp);
 
-  *ivpp = TYPE_MALLOC(KJB_image_vector);
-  NRE((*ivpp)->images = (KJB_image **)kjb_calloc(sizeof(KJB_image **), num_images));
+  *ivpp = TYPE_MALLOC(IVI_image_vector);
+  NRE((*ivpp)->images = (IVI_image **)ivi_calloc(sizeof(IVI_image **), num_images));
                                        
   (*ivpp)->length = num_images;
 
@@ -350,10 +350,10 @@ int get_target_image_vector(KJB_image_vector **ivpp,
  *
  * -----------------------------------------------------------------------------
 */
-void free_image_vector(KJB_image_vector *ivp)
+void free_image_vector(IVI_image_vector *ivp)
 {
   int count, i;
-  KJB_image **ip_array_pos;
+  IVI_image **ip_array_pos;
 
 
   if (ivp == NULL)
@@ -366,12 +366,12 @@ void free_image_vector(KJB_image_vector *ivp)
 
   for (i = 0; i < count; i++)
   {
-    kjb_free_image(*ip_array_pos);
+    ivi_free_image(*ip_array_pos);
     ip_array_pos++;
   }
 
-  kjb_free(ivp->images);
-  kjb_free(ivp);
+  ivi_free(ivp->images);
+  ivi_free(ivp);
 }
 
 #ifdef __cplusplus

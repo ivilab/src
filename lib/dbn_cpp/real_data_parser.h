@@ -18,14 +18,14 @@
 |
 * =========================================================================== */
 
-/* $Id: real_data_parser.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: real_data_parser.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_REAL_DATA_PARSER_H 
-#define KJB_TIES_REAL_DATA_PARSER_H
+#ifndef IVI_TIES_REAL_DATA_PARSER_H 
+#define IVI_TIES_REAL_DATA_PARSER_H
 
 #include <vector>
 #include <string>
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
 #include <unordered_map>
 #else
 #include <map>
@@ -33,10 +33,10 @@
 
 #include "dbn_cpp/data.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
 typedef std::unordered_map<int, std::vector<Data> > Data_group;
 #else
 typedef std::map<int, std::vector<Data> > Data_group;
@@ -79,7 +79,7 @@ Data_group get_data_group
     const Group_map& group_map
 );
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
-#endif // KJB_TIES_REAL_DATA_PARSER_H
+#endif // IVI_TIES_REAL_DATA_PARSER_H
 

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_box_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_box_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_box_likelihood.h"
@@ -37,8 +37,8 @@
 #include <utility>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 double Box_likelihood::operator()(const Scene& scene) const
 {
@@ -180,7 +180,7 @@ void Box_likelihood::get_params
         }
         else
         {
-            KJB_THROW_3(
+            IVI_THROW_3(
                 Illegal_argument, 
                 "Likelihood distribution %s is not available.",
                 (m_dist_name.c_str()));
@@ -224,7 +224,7 @@ void Box_likelihood::get_params
        }
        else
        {
-           KJB_THROW_3(
+           IVI_THROW_3(
                Illegal_argument, 
                "Likelihood distribution %s is not available.",
                (m_dist_name.c_str()));
@@ -268,7 +268,7 @@ void Box_likelihood::get_params
         }
         else
         {
-            KJB_THROW_3(
+            IVI_THROW_3(
                 Illegal_argument, 
                 "Likelihood distribution '%s' is not available.",
                 (m_dist_name.c_str()));
@@ -312,7 +312,7 @@ void Box_likelihood::get_params
         }
         else
         {
-            KJB_THROW_3(
+            IVI_THROW_3(
                 Illegal_argument, 
                 "Likelihood distribution '%s' is not available.",
                 (m_dist_name.c_str()));
@@ -320,7 +320,7 @@ void Box_likelihood::get_params
     }
     else
     {
-        KJB_THROW_3(
+        IVI_THROW_3(
             Illegal_argument, 
             "Box type '%s' is not available.",
             (type.c_str()));

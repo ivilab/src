@@ -1,4 +1,4 @@
-/* $Id: psi_deva_skeleton.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_deva_skeleton.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -28,7 +28,7 @@
 #include <boost/assign/std/vector.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -163,4 +163,4 @@ void standardize(Deva_skeleton_boxes& boxes, double cam_width, double cam_height
     }
 }
 } //namespace psi
-} //namespace kjb
+} //namespace ivi

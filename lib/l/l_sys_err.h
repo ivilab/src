@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_err.h 21310 2017-03-19 20:58:40Z kobus $ */
+/* $Id: l_sys_err.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -578,10 +578,10 @@ void         set_error_action    (Error_action error_action);
 Error_action get_error_action    (void);
 void         set_bug_handler     (void (*bug_handler)(const char*));
 void         default_bug_handler (const char* message);
-void         kjb_print_error     (void);
-void         kjb_get_error       (char*, size_t);
-int          kjb_get_strlen_error(void);
-void         kjb_clear_error     (void);
+void         ivi_print_error     (void);
+void         ivi_get_error       (char*, size_t);
+int          ivi_get_strlen_error(void);
+void         ivi_clear_error     (void);
 
 #ifdef STANDARD_VAR_ARGS
 #ifndef SGI   /* SGI peaks, and gives spurious messages. */

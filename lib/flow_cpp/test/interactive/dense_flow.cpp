@@ -3,7 +3,7 @@
 #include <l/l_sys_io.h>
 #include <string>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char** argv)
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     mag *= 255.0/max_val; 
     Image mag_img(mag);
 
-    kjb_c::kjb_mkdir("output/");
+    ivi_c::ivi_mkdir("output/");
     mag.write("output/mag.txt");
     mag_img.write("output/mag.jpg");
 

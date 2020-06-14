@@ -1,5 +1,5 @@
 
-/* $Id: l_string.c 22170 2018-06-23 23:01:50Z kobus $ */
+/* $Id: l_string.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -668,15 +668,15 @@ int extended_toupper(int c)
  *
  * Compares the strings pointed to by s1 and s2
  *
- * The routine void_strcmp is similar to kjb_strcmp, except that the arguments
+ * The routine void_strcmp is similar to ivi_strcmp, except that the arguments
  * are pointers to void which are cast into pointers to characters. Like
- * kjb_strmcp (and unlike the system routine strmp()), the return values are
+ * ivi_strmcp (and unlike the system routine strmp()), the return values are
  * limited to EQUAL_STRINGS (0), FIRST_STRING_GREATER (1), SECOND_STRING_GREATER
  * (-1).
  *
  * Macros:
  *     STRCMP_EQ(s1, s2) evaluates to TRUE if s1 and s2 compare equal with
- *     kjb_strcmp, FALSE otherwise.
+ *     ivi_strcmp, FALSE otherwise.
  *
  * Returns:
  *     EQUAL_STRINGS (0) if the strings compare equal
@@ -684,7 +684,7 @@ int extended_toupper(int c)
  *     SECOND_STRING_GREATER (-1) if the second string is greater
  *
  * Related:
- *     kjb_memcmp, kjb_strncmp, kjb_ic_strcmp, kjb_ic_strncmp, head_cmp,
+ *     ivi_memcmp, ivi_strncmp, ivi_ic_strcmp, ivi_ic_strncmp, head_cmp,
  *     ic_head_cmp,
  *
  * Index: strings
@@ -695,23 +695,23 @@ int extended_toupper(int c)
 int void_strcmp(const void* s1, const void* s2)
 {
 
-    return kjb_strcmp((const char*)s1, (const char*)s2);
+    return ivi_strcmp((const char*)s1, (const char*)s2);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                            kjb_strcmp
+ *                            ivi_strcmp
  *
  * Compares the strings pointed to by s1 and s2
  *
- * The routine kjb_strcmp is similar to the system routine strcmp, except that
+ * The routine ivi_strcmp is similar to the system routine strcmp, except that
  * the return values are limited to EQUAL_STRINGS (0), FIRST_STRING_GREATER
  * (1), SECOND_STRING_GREATER (-1).
  *
  * Macros:
  *     STRCMP_EQ(s1, s2) evaluates to TRUE if s1 and s2 compare equal with
- *     kjb_strcmp, FALSE otherwise.
+ *     ivi_strcmp, FALSE otherwise.
  *
  * Returns:
  *     EQUAL_STRINGS (0) if the strings compare equal
@@ -719,7 +719,7 @@ int void_strcmp(const void* s1, const void* s2)
  *     SECOND_STRING_GREATER (-1) if the second string is greater
  *
  * Related:
- *     kjb_memcmp, kjb_strncmp, kjb_ic_strcmp, kjb_ic_strncmp, head_cmp,
+ *     ivi_memcmp, ivi_strncmp, ivi_ic_strcmp, ivi_ic_strncmp, head_cmp,
  *     ic_head_cmp,
  *
  * Index: strings
@@ -727,7 +727,7 @@ int void_strcmp(const void* s1, const void* s2)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_strcmp(const char* s1, const char* s2)
+int ivi_strcmp(const char* s1, const char* s2)
 {
     /*
     // We want to be consistent with they system's strcmp in the case of 8 bit
@@ -788,11 +788,11 @@ int kjb_strcmp(const char* s1, const char* s2)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                               kjb_memcmp
+ *                               ivi_memcmp
  *
  * Compares two regions of memory Byte-wise
  *
- * kjb_memcmp is similar to the system supplied routine memcmp, except that the
+ * ivi_memcmp is similar to the system supplied routine memcmp, except that the
  * return values are limited to EQUAL_STRINGS (0), FIRST_STRING_GREATER (1),
  * SECOND_STRING_GREATER (-1).
  *
@@ -807,7 +807,7 @@ int kjb_strcmp(const char* s1, const char* s2)
  *   later case, no claims to efficiency are made.
  *
  * Related:
- *     kjb_strcmp, kjb_strncmp, kjb_ic_strcmp, kjb_ic_strncmp, head_cmp,
+ *     ivi_strcmp, ivi_strncmp, ivi_ic_strcmp, ivi_ic_strncmp, head_cmp,
  *     ic_head_cmp,
  *
  * Index: strings
@@ -815,7 +815,7 @@ int kjb_strcmp(const char* s1, const char* s2)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_memcmp(const char* s1, const char* s2, size_t len)
+int ivi_memcmp(const char* s1, const char* s2, size_t len)
 {
     /*
     // We want to be consistent with they system's strncmp in the case of 8 bit
@@ -857,7 +857,7 @@ int kjb_memcmp(const char* s1, const char* s2, size_t len)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                               kjb_strncmp
+ *                               ivi_strncmp
  *
  * Compares string s1 to s2 up to a specified number of characters
  *
@@ -873,10 +873,10 @@ int kjb_memcmp(const char* s1, const char* s2, size_t len)
  *
  * Macros:
  *     STRNCMP_EQ(s1, s2, max_len) evaluates to TRUE if s1 and s2 compare equal
- *     with kjb_strncmp, FALSE otherwise.
+ *     with ivi_strncmp, FALSE otherwise.
  *
  * Related:
- *     kjb_strcmp, kjb_memcmp, kjb_ic_strcmp, kjb_ic_strncmp, head_cmp,
+ *     ivi_strcmp, ivi_memcmp, ivi_ic_strcmp, ivi_ic_strncmp, head_cmp,
  *     ic_head_cmp,
  *
  * Index: strings
@@ -884,7 +884,7 @@ int kjb_memcmp(const char* s1, const char* s2, size_t len)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_strncmp(const char* s1, const char* s2, size_t max_len)
+int ivi_strncmp(const char* s1, const char* s2, size_t max_len)
 {
     /*
     // We want to be consistent with they system's strncmp in the case of 8 bit
@@ -928,11 +928,11 @@ int kjb_strncmp(const char* s1, const char* s2, size_t max_len)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                               kjb_ic_strcmp
+ *                               ivi_ic_strcmp
  *
  * Compares string s1 to s2 ignoring case
  *
- * kjb_ic_strcmp is similar to kjb_strncmp, except that case is ignored.
+ * ivi_ic_strcmp is similar to ivi_strncmp, except that case is ignored.
  *
  * Returns:
  *     EQUAL_STRINGS (0) if the strings compare equal
@@ -941,10 +941,10 @@ int kjb_strncmp(const char* s1, const char* s2, size_t max_len)
  *
  * Macros:
  *     IC_STRCMP_EQ_EQ(s1,s2) evaluates to TRUE if s1 and s2 compare equal with
- *     kjb_ic_strcmp, FALSE otherwise.
+ *     ivi_ic_strcmp, FALSE otherwise.
  *
  * Related:
- *     kjb_strcmp, kjb_memcmp, kjb_strncmp, kjb_ic_strncmp, head_cmp,
+ *     ivi_strcmp, ivi_memcmp, ivi_strncmp, ivi_ic_strncmp, head_cmp,
  *     ic_head_cmp,
  *
  * Index: strings, case conversion
@@ -952,7 +952,7 @@ int kjb_strncmp(const char* s1, const char* s2, size_t max_len)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_ic_strcmp(const char* s1, const char* s2)
+int ivi_ic_strcmp(const char* s1, const char* s2)
 {
 
     /*
@@ -983,11 +983,11 @@ int kjb_ic_strcmp(const char* s1, const char* s2)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                               kjb_ic_strncmp
+ *                               ivi_ic_strncmp
  *
  * Compares string s1 to s2 up to a max_len characters ignoring case
  *
- * kjb_ic_strncmp is similar to kjb_strcmp, except that case is ignored.
+ * ivi_ic_strncmp is similar to ivi_strcmp, except that case is ignored.
  *
  * Returns:
  *     EQUAL_STRINGS (0) if the strings compare equal
@@ -996,10 +996,10 @@ int kjb_ic_strcmp(const char* s1, const char* s2)
  *
  * Macros:
  *     IC_STRCMP_EQ(s1,s2) evaluates to TRUE if s1 and s2 compare equal with
- *     kjb_ic_strcmp, FALSE otherwise.
+ *     ivi_ic_strcmp, FALSE otherwise.
  *
  * Related:
- *     kjb_strcmp, kjb_memcmp, kjb_strncmp, kjb_ic_strcmp, head_cmp,
+ *     ivi_strcmp, ivi_memcmp, ivi_strncmp, ivi_ic_strcmp, head_cmp,
  *     ic_head_cmp,
  *
  * Index: strings, case conversion
@@ -1007,7 +1007,7 @@ int kjb_ic_strcmp(const char* s1, const char* s2)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_ic_strncmp(const char* s1, const char* s2, size_t max_len)
+int ivi_ic_strncmp(const char* s1, const char* s2, size_t max_len)
 {
 
 
@@ -1064,7 +1064,7 @@ int kjb_ic_strncmp(const char* s1, const char* s2, size_t max_len)
  *     head_strcmp, FALSE otherwise.
  *
  * Related:
- *     kjb_strcmp, kjb_memcmp, kjb_strncmp, kjb_ic_strcmp, kjb_ic_strncmp,
+ *     ivi_strcmp, ivi_memcmp, ivi_strncmp, ivi_ic_strcmp, ivi_ic_strncmp,
  *     ic_head_cmp,
  *
  * Index: strings
@@ -1112,7 +1112,7 @@ int head_cmp(const char* input, const char* test_head)
  *     head_strcmp, FALSE otherwise.
  *
  * Related:
- *     kjb_strcmp, kjb_memcmp, kjb_strncmp, kjb_ic_strcmp, kjb_ic_strncmp,
+ *     ivi_strcmp, ivi_memcmp, ivi_strncmp, ivi_ic_strcmp, ivi_ic_strncmp,
  *     head_cmp,
  *
  * Index: strings, case conversion
@@ -1168,7 +1168,7 @@ int ptr_strcmp(const char** str_ptr1, const char** str_ptr2)
 {
 
 
-    return kjb_strcmp(*str_ptr1, *str_ptr2);
+    return ivi_strcmp(*str_ptr1, *str_ptr2);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1187,7 +1187,7 @@ int ptr_strncmp(const char** str_ptr1,  const char** str_ptr2, size_t len)
 {
 
 
-    return kjb_strncmp(*str_ptr1, *str_ptr2, len);
+    return ivi_strncmp(*str_ptr1, *str_ptr2, len);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1206,7 +1206,7 @@ int ptr_ic_strcmp(const char** str_ptr1, const char** str_ptr2)
 {
 
 
-    return kjb_ic_strcmp(*str_ptr1, *str_ptr2);
+    return ivi_ic_strcmp(*str_ptr1, *str_ptr2);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1263,7 +1263,7 @@ int ptr_strcmp(const void* str_ptr1, const void* str_ptr2)
 {
 
 
-    return kjb_strcmp(*((const char* const*)str_ptr1),
+    return ivi_strcmp(*((const char* const*)str_ptr1),
                       *((const char* const*)str_ptr2));
 }
 
@@ -1283,7 +1283,7 @@ int ptr_strncmp(const void* str_ptr1, const void* str_ptr2, size_t len)
 {
 
 
-    return kjb_strncmp(*((const char* const*)str_ptr1),
+    return ivi_strncmp(*((const char* const*)str_ptr1),
                        *((const char* const*)str_ptr2),
                        len);
 }
@@ -1304,7 +1304,7 @@ int ptr_ic_strcmp(const void* str_ptr1, const void* str_ptr2)
 {
 
 
-    return kjb_ic_strcmp(*((const char* const*)str_ptr1),
+    return ivi_ic_strcmp(*((const char* const*)str_ptr1),
                          *((const char* const*)str_ptr2));
 }
 
@@ -1414,7 +1414,7 @@ void rpad_cpy(char* target_string, const char* source_string, size_t pad_len)
 
 
 /* =============================================================================
- *                                kjb_strdup
+ *                                ivi_strdup
  *
  * Duplicates a string
  *
@@ -1422,12 +1422,12 @@ void rpad_cpy(char* target_string, const char* source_string, size_t pad_len)
  * then copies the input string. The newly allocated string is returned.
  *
  * If TEST is #defined (unix only) then this routine is #define'd to be
- * debug_kjb_str_dup, which is the version available in the
+ * debug_ivi_str_dup, which is the version available in the
  * development library. In development code memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory freed is checked
  * that it was allocated by an L library routine.
  *
- * The routine kjb_free (accessed via the macro kjb_free) should be used to
+ * The routine ivi_free (accessed via the macro ivi_free) should be used to
  * dispose of the storage once it is no longer needed.
  *
  * It is an error for the input_string pointer to equal NULL.
@@ -1437,7 +1437,7 @@ void rpad_cpy(char* target_string, const char* source_string, size_t pad_len)
  *    One success it returns a pointer to the duplicated string.
  *
  * Related:
- *    kjb_malloc, print_allocated_memory, kjb_free
+ *    ivi_malloc, print_allocated_memory, ivi_free
  *
  * Index: memory allocation, memory tracking, strings
  *
@@ -1446,7 +1446,7 @@ void rpad_cpy(char* target_string, const char* source_string, size_t pad_len)
 
 #ifdef TRACK_MEMORY_ALLOCATION
 
-char* debug_kjb_str_dup(const char* input_string,
+char* debug_ivi_str_dup(const char* input_string,
                         const char* file_name, int line_number)
 {
     size_t input_string_len;
@@ -1456,7 +1456,7 @@ char* debug_kjb_str_dup(const char* input_string,
 
     input_string_len = strlen(input_string);
 
-    NRN(string_copy = (char*)debug_kjb_malloc(input_string_len + ROOM_FOR_NULL,
+    NRN(string_copy = (char*)debug_ivi_malloc(input_string_len + ROOM_FOR_NULL,
                                               file_name, line_number));
 
     strcpy(string_copy, input_string);
@@ -1471,7 +1471,7 @@ char* debug_kjb_str_dup(const char* input_string,
 /*  ==>                               \/                              */
 
 
-char* kjb_strdup(const char* input_string)
+char* ivi_strdup(const char* input_string)
 {
     size_t input_string_len;
     char*  string_copy;
@@ -1508,7 +1508,7 @@ char* kjb_strdup(const char* input_string)
  *    and we still want to keep copying. 
  *
  * Related:
- *    kjb_strncpy, kjb_buff_cpy, str_trunc_cat, trunc_quote_cpy
+ *    ivi_strncpy, ivi_buff_cpy, str_trunc_cat, trunc_quote_cpy
  *
  * Index: strings
  *
@@ -1518,7 +1518,7 @@ char* kjb_strdup(const char* input_string)
 /*
  * FIXME  TODO
  *
- * See kjb_strncpy. 
+ * See ivi_strncpy. 
 */
 
 void str_trunc_cpy(char* output_string,
@@ -1541,12 +1541,12 @@ void str_trunc_cpy(char* output_string,
     }
     else if (cur_len < max_len)
     {
-        kjb_strncpy(output_string, input_string, cur_len + ROOM_FOR_NULL);
+        ivi_strncpy(output_string, input_string, cur_len + ROOM_FOR_NULL);
     }
     else if (max_len > 3)
     {
-        kjb_strncpy(output_string, input_string, max_len-3);
-        kjb_strncat(output_string, "...", max_len);
+        ivi_strncpy(output_string, input_string, max_len-3);
+        ivi_strncat(output_string, "...", max_len);
     }
     else
     {
@@ -1572,7 +1572,7 @@ void str_trunc_cpy(char* output_string,
  *    and we still want to keep copying. 
  *
  * Related:
- *    kjb_strncpy, kjb_buff_cpy, str_trunc_cp, trunc_quote_cpy
+ *    ivi_strncpy, ivi_buff_cpy, str_trunc_cp, trunc_quote_cpy
  *
  * Index: strings
  *
@@ -1582,7 +1582,7 @@ void str_trunc_cpy(char* output_string,
 /*
  * FIXME  TODO
  *
- * See kjb_strncpy. 
+ * See ivi_strncpy. 
 */
 
 void str_trunc_cat(char* output_string,
@@ -1614,12 +1614,12 @@ void str_trunc_cat(char* output_string,
     }
     else if (cur_len < max_len)
     {
-        kjb_strncpy(output_string, input_string, cur_len + ROOM_FOR_NULL);
+        ivi_strncpy(output_string, input_string, cur_len + ROOM_FOR_NULL);
     }
     else if (max_len > 4) /* Too big. Must truncate. */
     {
-        kjb_strncpy(output_string, input_string, max_len-3);
-        kjb_strncat(output_string, "...", max_len);
+        ivi_strncpy(output_string, input_string, max_len-3);
+        ivi_strncat(output_string, "...", max_len);
     }
     else /* No room to add the dots. */
     {
@@ -1645,7 +1645,7 @@ void str_trunc_cat(char* output_string,
 /*
  * FIXME  TODO
  *
- * See kjb_strncpy. 
+ * See ivi_strncpy. 
 */
 
 void trunc_quote_cpy(char* output_string,
@@ -1682,15 +1682,15 @@ void trunc_quote_cpy(char* output_string,
 
     if (cur_len >= max_len)
     {
-        kjb_strncpy(output_string, "\"", max_len-4);
-        kjb_strncat(output_string, input_string, max_len-4);
-        kjb_strncat(output_string, "...\"", max_len);
+        ivi_strncpy(output_string, "\"", max_len-4);
+        ivi_strncat(output_string, input_string, max_len-4);
+        ivi_strncat(output_string, "...\"", max_len);
     }
     else
     {
-        kjb_strncpy(output_string, "\"", max_len);
-        kjb_strncat(output_string, input_string, max_len);
-        kjb_strncat(output_string, "\"", max_len);
+        ivi_strncpy(output_string, "\"", max_len);
+        ivi_strncat(output_string, input_string, max_len);
+        ivi_strncat(output_string, "\"", max_len);
     }
 #endif 
 }
@@ -1698,11 +1698,11 @@ void trunc_quote_cpy(char* output_string,
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                               kjb_buff_cpy
+ *                               ivi_buff_cpy
  *
  * Copies one string to another
  *
- * This routine is similar to kjb_strncpy except that truncated copying due to
+ * This routine is similar to ivi_strncpy except that truncated copying due to
  * buffer size is considered a bug and some additional checks are made in
  * development code. Specifically, the buffer size can't be 4 which, amoung
  * other things, gaurds against buffer sizes derived from the sizeof() operator
@@ -1724,14 +1724,14 @@ void trunc_quote_cpy(char* output_string,
  *    otherwise. 
  *
  * Related:
- *     kjb_strncpy, kjb_strncat, extended_lc_strncpy, extended_uc_strncpy
+ *     ivi_strncpy, ivi_strncat, extended_lc_strncpy, extended_uc_strncpy
  *
  * Index: strings
  *
  * -----------------------------------------------------------------------------
 */
 
-int kjb_buff_cpy(char* s1, const char* s2, size_t max_len)
+int ivi_buff_cpy(char* s1, const char* s2, size_t max_len)
 { 
 #ifdef TEST
     const char* save_s2 = s2;
@@ -1749,7 +1749,7 @@ int kjb_buff_cpy(char* s1, const char* s2, size_t max_len)
     {
         warn_pso("Suspicious buffer length (%lu) at line %d of %s.\n",
                  (unsigned long)max_len, __LINE__, __FILE__);
-        kjb_optional_abort();
+        ivi_optional_abort();
     }
 #endif
 
@@ -1801,17 +1801,17 @@ int kjb_buff_cpy(char* s1, const char* s2, size_t max_len)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                               kjb_strncpy
+ *                               ivi_strncpy
  *
  * Copies one string to another
  *
- * kjb_strncpy is similar strncpy but s1 always gets null terminated - IE
+ * ivi_strncpy is similar strncpy but s1 always gets null terminated - IE
  * max_len includes the null.  Also, assuming that max_len is the size of the
  * storage for s1, this routine will not write beyond that storage, including
  * the null. 
  *
  * This routine needs to be able to stop copying based on the length. For a
- * version that returns error on truncation, see kjb_buff_cpy(). 
+ * version that returns error on truncation, see ivi_buff_cpy(). 
  *
  * Macros:
  *    BUFF_CPY(char s1[], char* s2)
@@ -1837,14 +1837,14 @@ int kjb_buff_cpy(char* s1, const char* s2, size_t max_len)
  *    and we still want to keep copying. 
  *
  * Related:
- *    kjb_buff_cpy, kjb_buff_cat, kjb_strncat, extended_lc_strncpy, extended_uc_strncpy
+ *    ivi_buff_cpy, ivi_buff_cat, ivi_strncat, extended_lc_strncpy, extended_uc_strncpy
  *
  * Index: strings
  *
  * -----------------------------------------------------------------------------
 */
 
-void kjb_strncpy(char* s1, const char* s2, size_t max_len)
+void ivi_strncpy(char* s1, const char* s2, size_t max_len)
 {
 
 
@@ -1893,14 +1893,14 @@ void kjb_strncpy(char* s1, const char* s2, size_t max_len)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifndef kjb_memcpy
+#ifndef ivi_memcpy
 
 /* =============================================================================
- *                                kjb_memcpy
+ *                                ivi_memcpy
  *
  * Copies a specifed number of bytes from one location to another
  *
- * On most systems kjb_memcpy is a macro accessing the builtin memcpy.  If
+ * On most systems ivi_memcpy is a macro accessing the builtin memcpy.  If
  * implemented in the library, it is meant to behave similarly to the standard
  * memcpy.
  *
@@ -1909,7 +1909,7 @@ void kjb_strncpy(char* s1, const char* s2, size_t max_len)
  * -----------------------------------------------------------------------------
 */
 
-void *kjb_memcpy(void* dest, const void* src, size_t max_len)
+void *ivi_memcpy(void* dest, const void* src, size_t max_len)
 {
     char* s1 = (char*)dest;
     const char* s2 = (const char*)src;
@@ -1917,7 +1917,7 @@ void *kjb_memcpy(void* dest, const void* src, size_t max_len)
 #ifdef TEST
     if ((size_t)ABS_OF(s1 - s2) < max_len)
     {
-        set_bug("Overlapping windows in kjb_memcpy.\n"); 
+        set_bug("Overlapping windows in ivi_memcpy.\n"); 
     }
 #endif 
 
@@ -1939,7 +1939,7 @@ void *kjb_memcpy(void* dest, const void* src, size_t max_len)
  *
  * Makes a lower case copy of a string
  *
- * Routine extended_lc_strncpy is like kjb_strncpy except that the copy is
+ * Routine extended_lc_strncpy is like ivi_strncpy except that the copy is
  * converted to lower case. Underscores are converted to hyphens. Only upper
  * case characters and underscores are changed.
  *
@@ -1962,7 +1962,7 @@ void *kjb_memcpy(void* dest, const void* src, size_t max_len)
  *    and we still want to keep copying. 
  *
  * Related:
- *     kjb_strncat, kjb_strncpy, extended_uc_strncpy, extended_tolower,
+ *     ivi_strncat, ivi_strncpy, extended_uc_strncpy, extended_tolower,
  *     extended_toupper
  *
  * Index: strings, case conversion
@@ -1973,7 +1973,7 @@ void *kjb_memcpy(void* dest, const void* src, size_t max_len)
 /*
  * FIXME  TODO
  *
- * See kjb_strncpy. 
+ * See ivi_strncpy. 
 */
 
 void extended_lc_strncpy(char* s1, const char* s2, size_t max_len)
@@ -1997,7 +1997,7 @@ void extended_lc_strncpy(char* s1, const char* s2, size_t max_len)
        )
     {
         SET_ARGUMENT_BUG();
-        kjb_print_error();
+        ivi_print_error();
         return;
     }
 
@@ -2023,7 +2023,7 @@ void extended_lc_strncpy(char* s1, const char* s2, size_t max_len)
  *
  * Makes an upper case copy of a string
  *
- * Routine extended_uc_strncpy is like kjb_strncpy except that the copy is
+ * Routine extended_uc_strncpy is like ivi_strncpy except that the copy is
  * converted to upper case. Hypens are translated to underscores. Only lower
  * case characters and hyphens are changed.
  *
@@ -2046,7 +2046,7 @@ void extended_lc_strncpy(char* s1, const char* s2, size_t max_len)
  *    and we still want to keep copying. 
  *
  * Related:
- *     kjb_strncat, kjb_strncpy, extended_lc_strncpy, extended_tolower,
+ *     ivi_strncat, ivi_strncpy, extended_lc_strncpy, extended_tolower,
  *     extended_toupper
  *
  * Index: strings, case conversion
@@ -2057,7 +2057,7 @@ void extended_lc_strncpy(char* s1, const char* s2, size_t max_len)
 /*
  * FIXME  TODO
  *
- * See kjb_strncpy. 
+ * See ivi_strncpy. 
 */
 
 void extended_uc_strncpy(char* s1, const char* s2, size_t max_len)
@@ -2081,7 +2081,7 @@ void extended_uc_strncpy(char* s1, const char* s2, size_t max_len)
        )
     {
         SET_ARGUMENT_BUG();
-        kjb_print_error();
+        ivi_print_error();
         return;
     }
 
@@ -2103,11 +2103,11 @@ void extended_uc_strncpy(char* s1, const char* s2, size_t max_len)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_buff_cat
+ *                              ivi_buff_cat
  *
  * Catenates one string to another
  *
- * This routine is just like kjb_strncat except that truncated copying due to
+ * This routine is just like ivi_strncat except that truncated copying due to
  * buffer size is treated as a bug and some additional checks are made in
  * development code. Specifically, the buffer size must be greater than 8 which,
  * amoung other things, gaurds against buffer sizes derived from the sizeof()
@@ -2129,7 +2129,7 @@ void extended_uc_strncpy(char* s1, const char* s2, size_t max_len)
  *    and we still want to keep copying. 
  *
  * Related:
- *     kjb_strncpy
+ *     ivi_strncpy
  *
  * Index: strings
  *
@@ -2139,10 +2139,10 @@ void extended_uc_strncpy(char* s1, const char* s2, size_t max_len)
 /*
  * FIXME  TODO
  *
- * See kjb_strncpy. 
+ * See ivi_strncpy. 
 */
 
-void kjb_buff_cat
+void ivi_buff_cat
     (
          char*       s1,
          const char* s2,
@@ -2155,7 +2155,7 @@ void kjb_buff_cat
     {
         warn_pso("Suspicious buffer length (%lu) at line %d of %s.\n",
                  (unsigned long)max_len, __LINE__, __FILE__);
-        kjb_optional_abort();
+        ivi_optional_abort();
     }
 #endif
 
@@ -2175,7 +2175,7 @@ void kjb_buff_cat
        )
     {
         SET_ARGUMENT_BUG();
-        kjb_print_error();
+        ivi_print_error();
         return;
     }
 
@@ -2189,7 +2189,7 @@ void kjb_buff_cat
 
     if (*s1 != '\0')
     {
-        set_bug("First arg to kjb_strncat longer than max_len. Missing NULL?");
+        set_bug("First arg to ivi_strncat longer than max_len. Missing NULL?");
         return;
     }
 
@@ -2211,18 +2211,18 @@ void kjb_buff_cat
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_strncat
+ *                              ivi_strncat
  *
  * Catenates one string to another
  *
- * kjb_strncat is similar to strncat but s1 always gets null terminated - IE
+ * ivi_strncat is similar to strncat but s1 always gets null terminated - IE
  * max_len includes the null.  Also, assuming that max_len is the size of the
  * storage for s1, this routine will not write beyond that storage, including
  * the null. 
  *
  * This routine needs to be able to stop copying based on max_len, even if the
  * source string has more characters. For a version that returns ERROR on
- * possible buffer overflow, see kjb_buff_cat(). 
+ * possible buffer overflow, see ivi_buff_cat(). 
  *
  * Macros:
  *    BUFF_CAT(char s1[], char* s2)
@@ -2244,7 +2244,7 @@ void kjb_buff_cat
  *    and we still want to keep copying. 
  *
  * Related:
- *     kjb_buff_cat, kjb_buff_cpy, kjb_strncpy 
+ *     ivi_buff_cat, ivi_buff_cpy, ivi_strncpy 
  *
  * Index: strings
  *
@@ -2254,10 +2254,10 @@ void kjb_buff_cat
 /*
  * FIXME  TODO
  *
- * See kjb_strncpy. 
+ * See ivi_strncpy. 
 */
 
-void kjb_strncat(char* s1, const char* s2, size_t max_len)
+void ivi_strncat(char* s1, const char* s2, size_t max_len)
 {
 
 #ifdef TEST
@@ -2271,7 +2271,7 @@ void kjb_strncat(char* s1, const char* s2, size_t max_len)
         warn_pso("This message checks against using a pointer in BUFF_CAT.\n");
         warn_pso("If your buffer is the size of a pointer, then increase it.\n");
 
-        kjb_optional_abort();
+        ivi_optional_abort();
     }
 #endif
 
@@ -2291,7 +2291,7 @@ void kjb_strncat(char* s1, const char* s2, size_t max_len)
        )
     {
         SET_ARGUMENT_BUG();
-        kjb_print_error();
+        ivi_print_error();
         return;
     }
 
@@ -2305,8 +2305,8 @@ void kjb_strncat(char* s1, const char* s2, size_t max_len)
 
     if (*s1 != '\0')
     {
-        set_bug("First arg to kjb_strncat longer than max_len. Missing NULL?");
-        kjb_print_error();
+        set_bug("First arg to ivi_strncat longer than max_len. Missing NULL?");
+        ivi_print_error();
         return;
     }
 
@@ -3257,7 +3257,7 @@ char last_char(const char* str)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                          kjb_reverse
+ *                          ivi_reverse
  *
  *
  *
@@ -3266,7 +3266,7 @@ char last_char(const char* str)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_reverse(const char* input, char* output, size_t output_buff_len)
+int ivi_reverse(const char* input, char* output, size_t output_buff_len)
 {
     size_t input_len;
 
@@ -3342,13 +3342,13 @@ int match_pattern(const char* pattern, const char* str)
     }
     else if (last_char(pattern) == '*')
     {
-        char* pattern_copy = kjb_strdup(pattern);
+        char* pattern_copy = ivi_strdup(pattern);
 
         pattern_copy[ strlen(pattern_copy) - 1 ] = '\0';
 
         result = HEAD_CMP_EQ(str, pattern_copy);
 
-        kjb_free(pattern_copy);
+        ivi_free(pattern_copy);
     }
     else
     {
@@ -3399,11 +3399,11 @@ int output_str
         return NO_ERROR;
     }
 
-    NRE(fp = kjb_fopen(out_file_name, "w"));
-    ERE(kjb_fputs(fp, value));
-    ERE(kjb_fputs(fp, "\n"));
+    NRE(fp = ivi_fopen(out_file_name, "w"));
+    ERE(ivi_fputs(fp, value));
+    ERE(ivi_fputs(fp, "\n"));
 
-    return kjb_fclose(fp);
+    return ivi_fclose(fp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

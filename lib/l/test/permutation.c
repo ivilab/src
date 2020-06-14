@@ -1,5 +1,5 @@
 /*
- * $Id: permutation.c 21491 2017-07-20 13:19:02Z kobus $
+ * $Id: permutation.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_io.h>
@@ -16,7 +16,7 @@ int main(void)
     Int_vector* p = NULL;
     char b[100];
 
-    EPETE(kjb_init());
+    EPETE(ivi_init());
     EPETE(get_target_int_vector(&p, 10));
 
     p -> elements[0] = 2;
@@ -34,14 +34,14 @@ int main(void)
     EPETE(int_vector_is_permutation(p, 0, &r));
     if (r != TRUE)
     {
-        kjb_puts("Failure 1a\n");
+        ivi_puts("Failure 1a\n");
         return EXIT_BUG;
     }
 
     EPETE(get_string_why_int_vector_is_not_permutation(p, 0, b, sizeof(b)));
     if (strlen(b) != 0)
     {
-        kjb_puts("Failure 1b\n");
+        ivi_puts("Failure 1b\n");
         return EXIT_BUG;
     }
 
@@ -50,19 +50,19 @@ int main(void)
     EPETE(int_vector_is_permutation(p, 0, &r));
     if (r != FALSE)
     {
-        kjb_puts("Failure 2\n");
+        ivi_puts("Failure 2\n");
         return EXIT_BUG;
     }
 
     EPETE(get_string_why_int_vector_is_not_permutation(p, 0, b, sizeof(b)));
     if (0 == strlen(b))
     {
-        kjb_puts("Failure 2b\n");
+        ivi_puts("Failure 2b\n");
         return EXIT_BUG;
     }
     else if (is_interactive())
     {
-        kjb_printf("Test 2 result:  something about out-of-range value 10.\n"
+        ivi_printf("Test 2 result:  something about out-of-range value 10.\n"
                    "Actual result: \"%s\"\n", b);
     }
 
@@ -70,14 +70,14 @@ int main(void)
     EPETE(int_vector_is_permutation(p, 1, &r));
     if (r != TRUE)
     {
-        kjb_puts("Failure 3a\n");
+        ivi_puts("Failure 3a\n");
         return EXIT_BUG;
     }
 
     EPETE(get_string_why_int_vector_is_not_permutation(p, 1, b, sizeof(b)));
     if (strlen(b) != 0)
     {
-        kjb_puts("Failure 3b\n");
+        ivi_puts("Failure 3b\n");
         return EXIT_BUG;
     }
 
@@ -86,19 +86,19 @@ int main(void)
     EPETE(int_vector_is_permutation(p, 1, &r));
     if (r != FALSE)
     {
-        kjb_puts("Failure 4a\n");
+        ivi_puts("Failure 4a\n");
         return EXIT_BUG;
     }
 
     EPETE(get_string_why_int_vector_is_not_permutation(p, 1, b, sizeof(b)));
     if (0 == strlen(b))
     {
-        kjb_puts("Failure 4b\n");
+        ivi_puts("Failure 4b\n");
         return EXIT_BUG;
     }
     else if (is_interactive())
     {
-        kjb_printf("Test 4 result:  something about missing value 3.\n"
+        ivi_printf("Test 4 result:  something about missing value 3.\n"
                    "Actual result: \"%s\"\n", b);
     }
 
@@ -107,44 +107,44 @@ int main(void)
     EPETE(int_vector_is_permutation(p, 1, &r));
     if (r != TRUE)
     {
-        kjb_puts("Failure 5a\n");
+        ivi_puts("Failure 5a\n");
         return EXIT_BUG;
     }
 
     EPETE(get_string_why_int_vector_is_not_permutation(p, 1, b, sizeof(b)));
     if (strlen(b) != 0)
     {
-        kjb_puts("Failure 5b\n");
+        ivi_puts("Failure 5b\n");
         return EXIT_BUG;
     }
 
     /* bad inputs should provoke ERROR -- let's check. */
     if (int_vector_is_permutation(p, 0, NULL) != ERROR)
     {
-        kjb_puts("Failure 6\n");
+        ivi_puts("Failure 6\n");
         return EXIT_BUG;
     }
     if (get_string_why_int_vector_is_not_permutation(p, 0, NULL, 17) != ERROR)
     {
-        kjb_puts("Failure 7\n");
+        ivi_puts("Failure 7\n");
         return EXIT_BUG;
     }
 
     /* empty input is accepted as a trivial permutation */
     if (int_vector_is_permutation(NULL, 0, &r) != NO_ERROR || r != TRUE) 
     {
-        kjb_puts("Failure 8\n");
+        ivi_puts("Failure 8\n");
         return EXIT_BUG;
     }
     if (get_string_why_int_vector_is_not_permutation(NULL, 0, b, 2) != NO_ERROR
         || strlen(b) != 0
        )
     {
-        kjb_puts("Failure 9\n");
+        ivi_puts("Failure 9\n");
         return EXIT_BUG;
     }
 
     free_int_vector(p);
-    kjb_cleanup();
+    ivi_cleanup();
     return EXIT_SUCCESS;
 }

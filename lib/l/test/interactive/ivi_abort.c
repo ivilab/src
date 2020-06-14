@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv)
 {
-    kjb_abort();
+    ivi_abort();
 
     return EXIT_SUCCESS; 
 }

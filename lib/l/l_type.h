@@ -1,5 +1,5 @@
 
-/* $Id: l_type.h 13428 2012-12-08 03:36:07Z predoehl $ */
+/* $Id: l_type.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

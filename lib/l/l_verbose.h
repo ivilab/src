@@ -1,5 +1,5 @@
 
-/* $Id: l_verbose.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: l_verbose.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,14 +27,14 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int set_verbose_options  (const char* option, const char* value);
-int kjb_set_verbose_level(int new_level);
-int kjb_get_verbose_level(void);
+int ivi_set_verbose_level(int new_level);
+int ivi_get_verbose_level(void);
 
 #ifndef SGI /* SGI pretends it is lint and gives spurious messages. */
 /*PRINTFLIKE2*/

@@ -1,7 +1,7 @@
 /*
  * test program for matrix convolution
  *
- * $Id: mat_convolve.c 21664 2017-08-05 17:53:40Z kobus $
+ * $Id: mat_convolve.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -101,7 +101,7 @@ static int test3(void)
 
 int main(void)
 {
-    EPETE(kjb_init());
+    EPETE(ivi_init());
 
     EPETB(test1(1.0));
     EPETB(test1(-1.0));
@@ -116,7 +116,7 @@ int main(void)
 
     EPETB(test3());
 
-    kjb_cleanup();
+    ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

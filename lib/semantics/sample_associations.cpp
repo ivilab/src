@@ -1,4 +1,4 @@
-/* $Id: sample_associations.cpp 17326 2014-08-19 01:57:36Z cdawson $ *//*!
+/* $Id: sample_associations.cpp 25499 2020-06-14 13:26:04Z kobus $ *//*!
  * @file sample_associations.cpp
  *
  * @author Colin Dawson 
@@ -54,7 +54,7 @@ namespace semantics
             Elaboration_tree::Elab_ptr_const sem_root((*it)->semantic_root());
             double forward_prob, reverse_prob, old_posterior, new_posterior;
             double log_mh_ratio;
-            kjb::Vector probs(2);
+            ivi::Vector probs(2);
             double u = log(unifdist(urng));
 
             (*it) -> release_event_counts();

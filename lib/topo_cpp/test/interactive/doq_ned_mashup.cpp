@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: doq_ned_mashup.cpp 17601 2014-09-25 22:40:22Z predoehl $
+ * $Id: doq_ned_mashup.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_term.h>
@@ -46,15 +46,15 @@ const bool VERBOSE = true;
 const bool DEM_STARS = true;
 
 
-void ow_normalize_0_to_1(kjb::Matrix* m)
+void ow_normalize_0_to_1(ivi::Matrix* m)
 {
     if (00 == m) return;
 
     const int N = m -> get_length();
     if (0 == N) return;
 
-    const double    e_max = kjb::max(*m),
-                    e_min = kjb::min(*m);
+    const double    e_max = ivi::max(*m),
+                    e_min = ivi::min(*m);
     if (e_max == e_min) return;
 
     const double D = 1.0 / (e_max - e_min);
@@ -68,22 +68,22 @@ void ow_normalize_0_to_1(kjb::Matrix* m)
 
 
 void sprinkle_stars_in(
-    kjb::Image* e,
-    const kjb::TopoFusion::pt& nw
+    ivi::Image* e,
+    const ivi::TopoFusion::pt& nw
 )
 {
-    using namespace kjb;
+    using namespace ivi;
 
     const PixelRGBA WHT(250, 250, 250);
 
-    kjb::TopoFusion::pt se(nw);
+    ivi::TopoFusion::pt se(nw);
     se.y -= e -> get_num_rows();
     se.x += e -> get_num_cols();
 
     Ned13_one_degree_grid::IntegralLL   beg(utm_to_se_ned13_ill(nw)),
                                         end(utm_to_se_ned13_ill(se));
-    KJB(ASSERT(beg.ilat > end.ilat));
-    KJB(ASSERT(beg.ilon < end.ilon));
+    IVI(ASSERT(beg.ilat > end.ilat));
+    IVI(ASSERT(beg.ilon < end.ilon));
     end.ilat += 1;
     end.ilon -= 1;
 
@@ -95,10 +95,10 @@ void sprinkle_stars_in(
             i.ilat = lat;
             i.ilon = lon;
 
-            kjb::TopoFusion::pt j(ned13_ill_to_utm(i));
+            ivi::TopoFusion::pt j(ned13_ill_to_utm(i));
             if (j.zone != nw.zone)
             {
-                j.x = kjb::TopoFusion::getNewEasting(j, nw.zone);
+                j.x = ivi::TopoFusion::getNewEasting(j, nw.zone);
                 j.zone = nw.zone;
             }
 
@@ -117,10 +117,10 @@ void sprinkle_stars_in(
 
 
 void display(
-    const kjb::Int_matrix &doq,
-    const kjb::Matrix dem,
+    const ivi::Int_matrix &doq,
+    const ivi::Matrix dem,
     const std::string& name,
-    const kjb::TopoFusion::pt* nw
+    const ivi::TopoFusion::pt* nw
 )
 {
     const int EDGE = doq.get_num_rows();
@@ -128,35 +128,35 @@ void display(
     ETX(dem.get_num_cols() != EDGE);
     ETX(dem.get_num_rows() != EDGE);
 
-    kjb::Image el_overlay(EDGE, EDGE);
+    ivi::Image el_overlay(EDGE, EDGE);
     for (int rrr = 0; rrr < EDGE; ++rrr)
     {
         for (int ccc = 0; ccc < EDGE; ++ccc)
         {
             const float h = dem(rrr, ccc),              // hue set by DEM
                         v = doq.at(rrr, ccc) / 255.0;   // val set by DOQ
-            el_overlay.at(rrr, ccc) = kjb::PixelHSVA(h, .7, v);
+            el_overlay.at(rrr, ccc) = ivi::PixelHSVA(h, .7, v);
         }
     }
 
     if (DEM_STARS && nw) sprinkle_stars_in(&el_overlay, *nw);
 
-    if (0 == kjb_c::kjb_fork())
+    if (0 == ivi_c::ivi_fork())
     {
         el_overlay.display( name );
-        while(true) kjb_c::nap(1000);
+        while(true) ivi_c::nap(1000);
     }
 }
 
 
 
 void chatter(
-    const kjb::TopoFusion::pt& p, 
-    const kjb::Ned13_one_degree_grid::IntegralLL& ic
+    const ivi::TopoFusion::pt& p, 
+    const ivi::Ned13_one_degree_grid::IntegralLL& ic
 )
 {
-    const std::pair<double, double> dne = kjb::delta_n_e_meters(ic);
-    kjb_c::pso(
+    const std::pair<double, double> dne = ivi::delta_n_e_meters(ic);
+    ivi_c::pso(
             "Center has UTM easting %.1f, northing %.1f, and zone %d.\n"
             "Center has latitude %f, longitude %f.\n"
             "At center, NED grid has east-west granularity of %f meters.\n"
@@ -169,10 +169,10 @@ void chatter(
 
 
 void direction_disp(
-    const kjb::Int_matrix& doq,
-    const kjb::Matrix& gee,
-    const kjb::Matrix& gen,
-    const kjb::Matrix& gmag // already normalized 0 to .8
+    const ivi::Int_matrix& doq,
+    const ivi::Matrix& gee,
+    const ivi::Matrix& gen,
+    const ivi::Matrix& gmag // already normalized 0 to .8
 )
 {
     const int EDGE = doq.get_num_rows();
@@ -184,7 +184,7 @@ void direction_disp(
     ETX(gmag.get_num_cols() != EDGE);
     ETX(gmag.get_num_rows() != EDGE);
 
-    kjb::Image el_overlay(EDGE, EDGE);
+    ivi::Image el_overlay(EDGE, EDGE);
     for (int rrr = 0; rrr < EDGE; ++rrr)
     {
         for (int ccc = 0; ccc < EDGE; ++ccc)
@@ -193,33 +193,33 @@ void direction_disp(
                         h = 0.5 + angle / 2.0 / M_PI,
                         s = 0.15 + gmag.at(rrr, ccc),
                         v = doq.at(rrr, ccc) / 255.0;   // val set by DOQ
-            el_overlay.at(rrr, ccc) = kjb::PixelHSVA(h, s, v);
+            el_overlay.at(rrr, ccc) = ivi::PixelHSVA(h, s, v);
         }
     }
 
-    if (0 == kjb_c::kjb_fork())
+    if (0 == ivi_c::ivi_fork())
     {
         el_overlay.display( "color-coding shows incline direction, grade" );
-        while(true) kjb_c::nap(1000);
+        while(true) ivi_c::nap(1000);
     }
 }
 
 
-void show_me(const std::string& name, const kjb::TopoFusion::pt& utm_dem)
+void show_me(const std::string& name, const ivi::TopoFusion::pt& utm_dem)
 {
-    using namespace kjb::TopoFusion;
+    using namespace ivi::TopoFusion;
 
     const int EDGE = 2000;
-    const kjb::Ned13_one_degree_grid::IntegralLL
-                                        ic(kjb::utm_to_se_ned13_ill(utm_dem));
+    const ivi::Ned13_one_degree_grid::IntegralLL
+                                        ic(ivi::utm_to_se_ned13_ill(utm_dem));
     chatter(utm_dem, ic);
     // Path to DEM data.  You can add your own path here if you like.
     std::vector< std::string > path(2);
     path[0] = "/home/predoehl/visionroot/data/trails/llgrid";
     path[1] = "/net/v04/data_3/trails/elevation/ned_13as/llgrid";
-    //kjb::Ned13_nearest_se_neighbor_reader g(path);
-    kjb::Ned13_bilinear_reader g(path);
-    //kjb::Ned13_gp_reader g(path);
+    //ivi::Ned13_nearest_se_neighbor_reader g(path);
+    ivi::Ned13_bilinear_reader g(path);
+    //ivi::Ned13_gp_reader g(path);
 
     // find corners of image, and load up elevation grid covering it
     pt nw(utm_dem);
@@ -228,21 +228,21 @@ void show_me(const std::string& name, const kjb::TopoFusion::pt& utm_dem)
 
 #if USE_GRID
     #if ALSO_INCLINE
-    kjb::Matrix el, gee, gen;
-    ETX(kjb::ned13_grid(utm_dem, &el, &gee, &gen, EDGE, EDGE, 1, &g, path));
-    kjb::Matrix gm(kjb::ew_sqrt(kjb::ew_square(gee) + kjb::ew_square(gen)));
+    ivi::Matrix el, gee, gen;
+    ETX(ivi::ned13_grid(utm_dem, &el, &gee, &gen, EDGE, EDGE, 1, &g, path));
+    ivi::Matrix gm(ivi::ew_sqrt(ivi::ew_square(gee) + ivi::ew_square(gen)));
     ow_normalize_0_to_1(&gm);
     gm *= .8;
     #else
-    kjb::Matrix el = kjb::ned13_grid(utm_dem, EDGE, EDGE, 1, &g, path);
+    ivi::Matrix el = ivi::ned13_grid(utm_dem, EDGE, EDGE, 1, &g, path);
     #endif
 
 #else
-    //kjb::set_spy_filename("/tmp/predoehl/spy_on_ned.txt");
+    //ivi::set_spy_filename("/tmp/predoehl/spy_on_ned.txt");
 
-    kjb::Matrix el(EDGE, EDGE);
+    ivi::Matrix el(EDGE, EDGE);
     pt cursor(nw);
-    kjb::Heartbeat heart("filling elevation value", EDGE, 3);
+    ivi::Heartbeat heart("filling elevation value", EDGE, 3);
     for (int rrr = 0; rrr < EDGE; ++rrr, cursor.y -= 1)
     {
         heart.beat();
@@ -264,17 +264,17 @@ void show_me(const std::string& name, const kjb::TopoFusion::pt& utm_dem)
     el *= .8;
 
     // fill image using DOQ intensity, and elevation-based hue
-    const kjb::Int_matrix mdoq(
-            get_aerial_image(kjb::dem_to_doq_displacement(nw), EDGE, EDGE));
+    const ivi::Int_matrix mdoq(
+            get_aerial_image(ivi::dem_to_doq_displacement(nw), EDGE, EDGE));
     display(mdoq, el, name, &nw);
 
 #if ALSO_INCLINE
     display(mdoq, gm, "incline magnitude", 0);
     direction_disp(mdoq, gee, gen, gm);
 
-    const kjb::Image y(
-            kjb::ned_visualize_grid(el, gee, gen, (200+EDGE)/500.0, 10));
-    if (0==kjb_c::kjb_fork()) {y.display("yet another"); while(1) sleep(10);}
+    const ivi::Image y(
+            ivi::ned_visualize_grid(el, gee, gen, (200+EDGE)/500.0, 10));
+    if (0==ivi_c::ivi_fork()) {y.display("yet another"); while(1) sleep(10);}
 #endif
 }
 
@@ -283,15 +283,15 @@ void show_me(const std::string& name, const kjb::TopoFusion::pt& utm_dem)
 
 int main()
 {
-    kjb_c::kjb_init();
-    kjb_c::kjb_disable_paging();
+    ivi_c::ivi_init();
+    ivi_c::ivi_disable_paging();
 
     try 
     {
-        using kjb::TopoFusion::make_pt;
+        using ivi::TopoFusion::make_pt;
 
         // simply instantiate one of these, that is all.
-        kjb::TopoFusion::Tile_manager t;
+        ivi::TopoFusion::Tile_manager t;
 
         show_me(
 #if 1
@@ -345,11 +345,11 @@ int main()
 #endif
         );
     }
-    catch( kjb::Exception& e )
+    catch( ivi::Exception& e )
     {
         e.print_details_exit();
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return EXIT_SUCCESS;
 }

@@ -18,23 +18,23 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_WORDNET
-#define KJB_WORDNET
+#ifndef IVI_WORDNET
+#define IVI_WORDNET
 
 #include "wrap_wordnet/wn_region_label.h"
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 
 SynsetPtr find_synset(const char * word, int pos, int query_type, int word_sense);
 

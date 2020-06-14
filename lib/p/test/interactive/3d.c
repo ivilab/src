@@ -1,5 +1,5 @@
 
-/* $Id: 3d.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: 3d.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "p/p_incl.h" 
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     }
     
     /*
-    kjb_set_verbose_level(1000);
+    ivi_set_verbose_level(1000);
     */
 
     ERE(get_random_matrix(&mp, 10, 10));

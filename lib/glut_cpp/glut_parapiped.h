@@ -68,7 +68,7 @@
 
 #include <gr_cpp/gr_opengl.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -86,7 +86,7 @@ enum { GLUT_PA_CENTRE_X, GLUT_PA_CENTRE_Y, GLUT_PA_CENTRE_Z, GLUT_PA_PITCH, GLUT
 #include <m_cpp/m_vector.h>
 #include <st_cpp/st_parapiped.h>
 
-namespace kjb{
+namespace ivi{
 
 
     /** @class Glut_parapiped This class provides an easy way to add a glut
@@ -182,7 +182,7 @@ namespace kjb{
         static Parametric_parapiped * parapiped;
         static unsigned char increment_character;
         static unsigned char decrement_character;
-        static kjb::Vector increment_steps;
+        static ivi::Vector increment_steps;
     };
 }
 

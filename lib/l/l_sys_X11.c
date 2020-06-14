@@ -20,7 +20,7 @@
 
 #include "l/l_gen.h"     /* Only safe as first include in a ".c" file. */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
      /*
       * C2man cannot handle the X11 headers. We can ignore them as long as we
@@ -60,7 +60,7 @@ extern "C" {
 
 int X11_is_ok(void)
 {
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
     static int cached_result = NOT_SET;
     Display *display;
 
@@ -91,7 +91,7 @@ int X11_is_ok(void)
 
 int ring_X11_bell(void)
 {
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
     Display *display;
 
 

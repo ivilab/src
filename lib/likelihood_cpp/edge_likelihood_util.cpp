@@ -1,4 +1,4 @@
-/* $Id: edge_likelihood_util.cpp 14948 2013-07-18 16:00:33Z delpero $ */
+/* $Id: edge_likelihood_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 #include "gr_cpp/gr_polygon.h"
 #include "i_cpp/i_image.h"
 
-using namespace kjb;
+using namespace ivi;
 
 /** @brief Prepares a model map from a polymesh. Each edge of the polymesh
  * is rendered using its id as a color. The id is obtained by assigning id = 1
@@ -32,7 +32,7 @@ using namespace kjb;
  * @param model_map Will prepare the model map from the input mesh
  * @param p         The mesh that will be rendered onto the map
  */
-void kjb::prepare_model_map(Int_matrix & model_map, const Polymesh & p)
+void ivi::prepare_model_map(Int_matrix & model_map, const Polymesh & p)
 {
     /** We render the polymesh in a way that occluded edges are not visible,
      *  and such that every edge is rendered with pixel color equal to its id.
@@ -54,7 +54,7 @@ void kjb::prepare_model_map(Int_matrix & model_map, const Polymesh & p)
  *  @param p     The input polymesh
  *  @param eye   The camera used to render this mesh
  */
-void kjb::prepare_model_edges(std::vector<Model_edge> & edges, const Polymesh & p, const Base_gl_interface & eye)
+void ivi::prepare_model_edges(std::vector<Model_edge> & edges, const Polymesh & p, const Base_gl_interface & eye)
 {
 
     unsigned int i = 0;
@@ -71,13 +71,13 @@ void kjb::prepare_model_edges(std::vector<Model_edge> & edges, const Polymesh & 
      *  so that we need to retrieve the gl matrices needed for the projection
      *  only once
      */
-    std::vector<kjb::Polygon> faces = p.get_faces();
+    std::vector<ivi::Polygon> faces = p.get_faces();
 
     for( i = 0; i < faces.size(); i++)
     {
         face_visible = eye.Polygon_visibility_test(p.get_face(i));
         faces[i].project();
-        const std::vector<kjb::Vector> & vertices = faces[i].get_vertices();
+        const std::vector<ivi::Vector> & vertices = faces[i].get_vertices();
 
         for( j = 0; j < (vertices.size() - 1); j++)
         {
@@ -125,7 +125,7 @@ void kjb::prepare_model_edges(std::vector<Model_edge> & edges, const Polymesh & 
  *  @param p     The input polymesh
  *  @param eye   The camera used to render this mesh
  */
-void kjb::prepare_model_edges
+void ivi::prepare_model_edges
 (
     std::vector<Model_edge> & edges,
     const Polymesh & p,
@@ -151,13 +151,13 @@ void kjb::prepare_model_edges
      *  so that we need to retrieve the gl matrices needed for the projection
      *  only once
      */
-    std::vector<kjb::Polygon> faces = p.get_faces();
+    std::vector<ivi::Polygon> faces = p.get_faces();
     for( i = 0; i < faces.size(); i++)
     {
         face_visible = eye.Polygon_visibility_test(p.get_face(i));
         faces[i].project(M, width, height);
 
-        const std::vector<kjb::Vector> & vertices = faces[i].get_vertices();
+        const std::vector<ivi::Vector> & vertices = faces[i].get_vertices();
 
         for( j = 0; j < (vertices.size() - 1); j++)
         {
@@ -205,7 +205,7 @@ void kjb::prepare_model_edges
  *  @param p     The input polymesh
  *  @param eye   The camera used to render this mesh
  */
-void kjb::prepare_model_edges
+void ivi::prepare_model_edges
 (
     std::vector<Model_edge> & edges,
     const Polymesh & p,
@@ -230,13 +230,13 @@ void kjb::prepare_model_edges
      *  so that we need to retrieve the gl matrices needed for the projection
      *  only once
      */
-    std::vector<kjb::Polygon> faces = p.get_faces();
+    std::vector<ivi::Polygon> faces = p.get_faces();
     for( i = 0; i < faces.size(); i++)
     {
         face_visible = eye.Polygon_visibility_test(p.get_face(i));
         faces[i].project(M, width, height);
 
-        const std::vector<kjb::Vector> & vertices = faces[i].get_vertices();
+        const std::vector<ivi::Vector> & vertices = faces[i].get_vertices();
 
         for( j = 0; j < (vertices.size() - 1); j++)
         {
@@ -272,7 +272,7 @@ void kjb::prepare_model_edges
     }
 }
 
-void kjb::prepare_model_map(Int_matrix & model_map, const std::vector<const Polymesh *> & ps)
+void ivi::prepare_model_map(Int_matrix & model_map, const std::vector<const Polymesh *> & ps)
 {
     for(unsigned int i = 0; i < ps.size(); i++)
     {
@@ -284,15 +284,15 @@ void kjb::prepare_model_map(Int_matrix & model_map, const std::vector<const Poly
         id = ps[i]->wire_render_with_sequential_ids(id + 1);
     }
     Base_gl_interface::capture_gl_view(model_map);
-    /*kjb_c::KJB_image * cap = 0;
+    /*ivi_c::IVI_image * cap = 0;
     Base_gl_interface::capture_gl_view(&cap);
-    kjb::Image img(cap);
+    ivi::Image img(cap);
     img *= 1000000;
-    img.write("~/src/kjb/room/modelmap.jpg");*/
+    img.write("~/src/ivi/room/modelmap.jpg");*/
 
 }
 
-void kjb::prepare_model_edges(std::vector<Model_edge> & edges, const std::vector<const Polymesh *> & ps, const Base_gl_interface & eye)
+void ivi::prepare_model_edges(std::vector<Model_edge> & edges, const std::vector<const Polymesh *> & ps, const Base_gl_interface & eye)
 {
     for(unsigned int i = 0; i < ps.size(); i++)
     {
@@ -300,7 +300,7 @@ void kjb::prepare_model_edges(std::vector<Model_edge> & edges, const std::vector
     }
 }
 
-void kjb::prepare_model_edges
+void ivi::prepare_model_edges
 (
     std::vector<Model_edge> & edges,
     const std::vector<const Polymesh *> & ps,
@@ -317,7 +317,7 @@ void kjb::prepare_model_edges
     }
 }
 
-void kjb::prepare_model_edges
+void ivi::prepare_model_edges
 (
     std::vector<Model_edge> & edges,
     const std::vector<const Polymesh *> & ps,
@@ -333,13 +333,13 @@ void kjb::prepare_model_edges
     }
 }
 
-void kjb::prepare_solid_model_map(Int_matrix & model_map, const Polymesh & p)
+void ivi::prepare_solid_model_map(Int_matrix & model_map, const Polymesh & p)
 {
     p.solid_render_with_sequential_ids(1);
     Base_gl_interface::capture_gl_view(model_map);
 }
 
-void kjb::prepare_solid_model_map(Int_matrix & model_map, const std::vector<const Polymesh *> & ps)
+void ivi::prepare_solid_model_map(Int_matrix & model_map, const std::vector<const Polymesh *> & ps)
 {
     unsigned int id = 0;
     for(unsigned int i = 0; i < ps.size(); i++)
@@ -350,7 +350,7 @@ void kjb::prepare_solid_model_map(Int_matrix & model_map, const std::vector<cons
     model_map /= 16777216;
 }
 
-void kjb::draw_model_edges(kjb::Image & img, const std::vector<Model_edge> & edges)
+void ivi::draw_model_edges(ivi::Image & img, const std::vector<Model_edge> & edges)
 {
     for(unsigned int i = 0; i < edges.size(); i++)
     {
@@ -363,7 +363,7 @@ void kjb::draw_model_edges(kjb::Image & img, const std::vector<Model_edge> & edg
  * TODO: here, we assume each rendered model is a silhoutte edge, which is not true. Will think a better way to determine 
  * the silhouette after CVPR. 
  */
-void kjb::prepare_rendered_model_edges(std::vector<Model_edge> & model_edges, const Int_matrix & model_map)
+void ivi::prepare_rendered_model_edges(std::vector<Model_edge> & model_edges, const Int_matrix & model_map)
 {
     model_edges.clear();
 

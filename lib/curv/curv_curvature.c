@@ -1,5 +1,5 @@
 
-/* $Id: curv_curvature.c 21448 2017-06-28 22:00:33Z kobus $ */
+/* $Id: curv_curvature.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -77,8 +77,8 @@ static int        curvature_at_point
     int         j,
     double*     weight,
     double*     point_kappa_ptr,
-    const KJB_image* in_ip,
-    KJB_image** out_ipp,
+    const IVI_image* in_ip,
+    IVI_image** out_ipp,
     const char* file
 );
 
@@ -90,8 +90,8 @@ static int curvature_coeffs_at_point
     double*           weight,
     double*           point_kappa_ptr,
     Vector*           tangent_vector,
-    const KJB_image*  in_ip,
-    KJB_image**       out_ipp,
+    const IVI_image*  in_ip,
+    IVI_image**       out_ipp,
     const char*       file
 );
 
@@ -118,10 +118,10 @@ static int        get_neighbors_in_dir
 
 double image_curvature
 (
-    const KJB_image*  in_ip,
+    const IVI_image*  in_ip,
     Matrix**    curvature_mpp,
     int         num_output_images,
-    KJB_image** out_ip_list,
+    IVI_image** out_ip_list,
     const char* file
 )
 {
@@ -129,7 +129,7 @@ double image_curvature
     int             j;
     int             num_rows            = in_ip->num_rows;
     int             num_cols            = in_ip->num_cols;
-    KJB_image*      output              = NULL;
+    IVI_image*      output              = NULL;
     double          weight              = DBL_NOT_SET;
     double          point_kappa         = DBL_NOT_SET;
     double          total_curvature     = 0.0;
@@ -242,7 +242,7 @@ double image_curvature
 
             ERE(curvature_at_point(on_mp, i, j, &weight, &point_kappa,
                                    in_ip, &(out_ip_list[ count ]), file));
-            ERE(kjb_sprintf(title, sizeof(title), "%d-%.3f", count,
+            ERE(ivi_sprintf(title, sizeof(title), "%d-%.3f", count,
                             (*curvature_mpp)->elements[ i ][ j ]));
         }
 
@@ -253,11 +253,11 @@ double image_curvature
         ERE(curvature_at_point(on_mp, i, j, &weight, &point_kappa,
                                in_ip, &(out_ip_list[ num_output_images - 1 ]), file));
 
-        ERE(kjb_sprintf(title, sizeof(title), "%d-%.3f", num_output_images,
+        ERE(ivi_sprintf(title, sizeof(title), "%d-%.3f", num_output_images,
                         (*curvature_mpp)->elements[ i ][ j ]));
     }
 
-    kjb_free_image(output);
+    ivi_free_image(output);
 
     free_indexed_vector(sorted_curvature_vp);
     free_int_matrix(coord_index_mp);
@@ -269,11 +269,11 @@ double image_curvature
 
 double image_curvature_tangent_weight
 (
-    const KJB_image*  in_ip,
+    const IVI_image*  in_ip,
     Matrix**    curvature_mpp,
     Matrix**    curvature_tangent_weight_vector_mpp,
     int         num_output_images,
-    KJB_image** out_ip_list,
+    IVI_image** out_ip_list,
     const char* file
 )
 {
@@ -281,7 +281,7 @@ double image_curvature_tangent_weight
     int             j;
     int             num_rows            = in_ip->num_rows;
     int             num_cols            = in_ip->num_cols;
-    KJB_image*      output              = NULL;
+    IVI_image*      output              = NULL;
     double          weight              = DBL_NOT_SET;
     double          point_kappa         = DBL_NOT_SET;
     double          total_curvature     = 0.0;
@@ -409,7 +409,7 @@ double image_curvature_tangent_weight
 
             ERE(curvature_at_point(on_mp, i, j, &weight, &point_kappa,
                                    in_ip, &(out_ip_list[ count ]), file));
-            ERE(kjb_sprintf(title, sizeof(title), "%d-%.3f", count,
+            ERE(ivi_sprintf(title, sizeof(title), "%d-%.3f", count,
                             (*curvature_mpp)->elements[ i ][ j ]));
         }
 
@@ -420,11 +420,11 @@ double image_curvature_tangent_weight
         ERE(curvature_at_point(on_mp, i, j, &weight, &point_kappa,
                                in_ip, &(out_ip_list[ num_output_images - 1 ]), file));
 
-        ERE(kjb_sprintf(title, sizeof(title), "%d-%.3f", num_output_images,
+        ERE(ivi_sprintf(title, sizeof(title), "%d-%.3f", num_output_images,
                         (*curvature_mpp)->elements[ i ][ j ]));
     }
 
-    kjb_free_image(output);
+    ivi_free_image(output);
 
     free_indexed_vector(sorted_curvature_vp);
     free_int_matrix(coord_index_mp);
@@ -444,8 +444,8 @@ int curvature_at_point
     int               j,
     double*           weight,
     double*           point_kappa_ptr,
-    const KJB_image*  in_ip,
-    KJB_image**       out_ipp,
+    const IVI_image*  in_ip,
+    IVI_image**       out_ipp,
     const char*       file
 )
 {
@@ -521,8 +521,8 @@ int curvature_at_point
 
     if (out_ipp != NULL)
     {
-        KJB_image* window_ip = NULL;
-        KJB_image* mag_ip = NULL;
+        IVI_image* window_ip = NULL;
+        IVI_image* mag_ip = NULL;
         int tt;
         int ii, jj;
         char buff[ 1000 ];
@@ -573,8 +573,8 @@ int curvature_at_point
             double d_i  = c_mp->elements[ 0 ][ 1 ]*ttt*ttt*ttt + c_mp->elements[ 1 ][ 1 ]*ttt*ttt + c_mp->elements[ 2 ][ 1 ]*ttt + c_mp->elements[ 3 ][ 1 ];
             int    d_ii = 13.0 * (d_i - i) + 266.0;
             int    d_jj = 13.0 * (d_j - j) + 266.0;
-            int    ii   = kjb_rint(d_ii);
-            int    jj   = kjb_rint(d_jj);
+            int    ii   = ivi_rint(d_ii);
+            int    jj   = ivi_rint(d_jj);
             int    iii;
             int    jjj;
             double sum  = 0.0;
@@ -640,12 +640,12 @@ int curvature_at_point
         EPETE(ow_invert_image(mag_ip));
 
         EPETE(image_draw_text_top_left(mag_ip, file, 5, 5, "times18"));
-        EPETE(kjb_sprintf(buff, sizeof(buff), "Curvature estimate: %.3f", *point_kappa_ptr));
+        EPETE(ivi_sprintf(buff, sizeof(buff), "Curvature estimate: %.3f", *point_kappa_ptr));
         EPETE(image_draw_text_top_left(mag_ip, buff, 30, 5, "times18"));
-        EPETE(kjb_copy_image(out_ipp, mag_ip));
+        EPETE(ivi_copy_image(out_ipp, mag_ip));
 
-        kjb_free_image(mag_ip);
-        kjb_free_image(window_ip);
+        ivi_free_image(mag_ip);
+        ivi_free_image(window_ip);
 
     }
 
@@ -668,8 +668,8 @@ static int curvature_coeffs_at_point
     double*           weight,
     double*           point_kappa_ptr,
     Vector*           tangent_vector,
-    const KJB_image*  in_ip,
-    KJB_image**       out_ipp,
+    const IVI_image*  in_ip,
+    IVI_image**       out_ipp,
     const char*       file
 )
 {
@@ -750,8 +750,8 @@ static int curvature_coeffs_at_point
 
     if (out_ipp != NULL)
     {
-        KJB_image* window_ip = NULL;
-        KJB_image* mag_ip = NULL;
+        IVI_image* window_ip = NULL;
+        IVI_image* mag_ip = NULL;
         int tt;
         int ii, jj;
         char buff[ 1000 ];
@@ -802,8 +802,8 @@ static int curvature_coeffs_at_point
             double d_i  = c_mp->elements[ 0 ][ 1 ]*ttt*ttt*ttt + c_mp->elements[ 1 ][ 1 ]*ttt*ttt + c_mp->elements[ 2 ][ 1 ]*ttt + c_mp->elements[ 3 ][ 1 ];
             int    d_ii = 13.0 * (d_i - i) + 266.0;
             int    d_jj = 13.0 * (d_j - j) + 266.0;
-            int    ii   = kjb_rint(d_ii);
-            int    jj   = kjb_rint(d_jj);
+            int    ii   = ivi_rint(d_ii);
+            int    jj   = ivi_rint(d_jj);
             int    iii;
             int    jjj;
             double sum  = 0.0;
@@ -869,12 +869,12 @@ static int curvature_coeffs_at_point
         EPETE(ow_invert_image(mag_ip));
 
         EPETE(image_draw_text_top_left(mag_ip, file, 5, 5, "times18"));
-        EPETE(kjb_sprintf(buff, sizeof(buff), "Curvature estimate: %.3f", *point_kappa_ptr));
+        EPETE(ivi_sprintf(buff, sizeof(buff), "Curvature estimate: %.3f", *point_kappa_ptr));
         EPETE(image_draw_text_top_left(mag_ip, buff, 30, 5, "times18"));
-        EPETE(kjb_copy_image(out_ipp, mag_ip));
+        EPETE(ivi_copy_image(out_ipp, mag_ip));
 
-        kjb_free_image(mag_ip);
-        kjb_free_image(window_ip);
+        ivi_free_image(mag_ip);
+        ivi_free_image(window_ip);
 
     }
 

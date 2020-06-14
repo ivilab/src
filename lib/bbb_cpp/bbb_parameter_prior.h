@@ -27,7 +27,7 @@
 
 #include <string>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -73,7 +73,7 @@ Intentional_activity::Param sample(const Parameter_prior& prior)
                                         prior.parent().parameters());
 }
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_PARAMETER_PRIOR_H */
 

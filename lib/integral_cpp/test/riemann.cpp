@@ -29,7 +29,7 @@
 #include <boost/bind.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 using namespace boost;
 
 double sdv1 = 0.4;

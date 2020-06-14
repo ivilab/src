@@ -1,5 +1,5 @@
 
-/* $Id: i_bw_byte.c 8780 2011-02-27 23:42:02Z predoehl $ */
+/* $Id: i_bw_byte.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "i/i_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "i/i_float.h"
@@ -15,12 +15,12 @@ static Bw_byte_image* create_bw_byte_image(int num_rows, int num_cols);
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             bw_byte_image_to_kjb_image
+ *                             bw_byte_image_to_ivi_image
  *
- * Converts a bw_byte_image to a KJB_image
+ * Converts a bw_byte_image to a IVI_image
  *
  * This routine implements the image creation/over-writing semantics used in
- * the KJB library in the case of Black and White Byte images. If *target_ipp 
+ * the IVI library in the case of Black and White Byte images. If *target_ipp 
  * is NULL, then
  * this routine creates the image. If it is not null, and it is the right
  * size, then this routine does nothing. If it is the wrong size, then it is
@@ -30,11 +30,11 @@ static Bw_byte_image* create_bw_byte_image(int num_rows, int num_cols);
  * fails, then the original contents of the *target_ipp will be lost.
  * However, *target_ipp will be set to NULL, so it can be safely sent to
  * free_bw_byte_image(). Note that this is in fact the convention throughout the
- * KJB library--if destruction on failure is a problem (usually when
+ * IVI library--if destruction on failure is a problem (usually when
  * *target_ipp is global)--then work on a copy!
  *
  * Related:
- *    Bw_byte_image, kjb_free_bw_byte_image
+ *    Bw_byte_image, ivi_free_bw_byte_image
  *
  * Returns:
  *     NO_ERROR on sucess and ERROR on failure with an error message being set.
@@ -73,7 +73,7 @@ int get_target_bw_byte_image(Bw_byte_image **target_ipp, int num_rows, int num_c
       if (    ((*target_ipp)->num_rows != num_rows)
           || ((*target_ipp)->num_cols != num_cols))
         {
-      kjb_free_bw_byte_image(*target_ipp);
+      ivi_free_bw_byte_image(*target_ipp);
       NRE(*target_ipp = create_bw_byte_image(num_rows, num_cols));
         }
     }
@@ -82,10 +82,10 @@ int get_target_bw_byte_image(Bw_byte_image **target_ipp, int num_rows, int num_c
 
 }
 
-void kjb_free_bw_byte_image(Bw_byte_image* ip)
+void ivi_free_bw_byte_image(Bw_byte_image* ip)
 {
   free_2D_byte_array(ip->pixels);
-  kjb_free(ip);
+  ivi_free(ip);
 }
 
 static Bw_byte_image* create_bw_byte_image(int num_rows, int num_cols)
@@ -103,7 +103,7 @@ static Bw_byte_image* create_bw_byte_image(int num_rows, int num_cols)
 
   if (ip->pixels == NULL)
     {
-      kjb_free(ip);
+      ivi_free(ip);
       return NULL;
     }
 
@@ -118,14 +118,14 @@ static Bw_byte_image* create_bw_byte_image(int num_rows, int num_cols)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             bw_byte_image_to_kjb_image
+ *                             bw_byte_image_to_ivi_image
  *
- * Converts a bw_byte_image to a KJB_image
+ * Converts a bw_byte_image to a IVI_image
  *
- * This routine converts a bw_byte_image to a KJB_image.
+ * This routine converts a bw_byte_image to a IVI_image.
  *
  * Related:
- *    Bw_byte_image, KJB_image
+ *    Bw_byte_image, IVI_image
  *
  * Returns:
  *     NO_ERROR on sucess and ERROR on failure with an error message being set.
@@ -142,19 +142,19 @@ static Bw_byte_image* create_bw_byte_image(int num_rows, int num_cols)
 */
 
 
-int bw_byte_image_to_kjb_image(KJB_image ** target_ipp, const Bw_byte_image* source_ip)
+int bw_byte_image_to_ivi_image(IVI_image ** target_ipp, const Bw_byte_image* source_ip)
 {
   int i,j;
-  KJB_image *target_ip = NULL;
+  IVI_image *target_ip = NULL;
 
   if(source_ip == NULL)
     {
-      set_error("bw_byte_image_to_kjb_image: source_ip is NULL.\n");
+      set_error("bw_byte_image_to_ivi_image: source_ip is NULL.\n");
       return ERROR;
     }
   if(* target_ipp != NULL)
     {
-      kjb_free_image(* target_ipp);
+      ivi_free_image(* target_ipp);
       * target_ipp = NULL;
     }
   ERE(get_target_image(target_ipp, source_ip->num_rows, source_ip->num_cols));
@@ -184,7 +184,7 @@ int bw_byte_image_to_kjb_image(KJB_image ** target_ipp, const Bw_byte_image* sou
  * Rotates a bw_byte_image to the right 180 degrees.
  *
  * This routine rotates an input image to the right 180 degrees. The result image
- * is created or resized as needed in conformance with KJB library semantics.
+ * is created or resized as needed in conformance with IVI library semantics.
  *
  * Returns:
  *     NO_ERROR on sucess and ERROR on failure with an error message being set.
@@ -215,7 +215,7 @@ int rotate_bw_byte_image(Bw_byte_image** target_ipp, const Bw_byte_image* ip)
         }
     }
 
-    /*kjb_free_bw_byte_image(target_ip);*/
+    /*ivi_free_bw_byte_image(target_ip);*/
     return NO_ERROR;
 }
 
@@ -223,7 +223,7 @@ int rotate_bw_byte_image(Bw_byte_image** target_ipp, const Bw_byte_image* ip)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             kjb_copy_bw_byte_image
+ *                             ivi_copy_bw_byte_image
  *
  * Copies a bw_byte image
  *
@@ -239,9 +239,9 @@ int rotate_bw_byte_image(Bw_byte_image** target_ipp, const Bw_byte_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_copy_bw_byte_image(Bw_byte_image** target_ipp, const Bw_byte_image* source_ip)
+int ivi_copy_bw_byte_image(Bw_byte_image** target_ipp, const Bw_byte_image* source_ip)
 {
-    IMPORT int kjb_use_memcpy;
+    IMPORT int ivi_use_memcpy;
     Bw_byte_image*  target_ip;
     int           num_rows;
     int           num_cols;
@@ -253,7 +253,7 @@ int kjb_copy_bw_byte_image(Bw_byte_image** target_ipp, const Bw_byte_image* sour
 
     if (source_ip == NULL)
     {
-        kjb_free_bw_byte_image(*target_ipp);
+        ivi_free_bw_byte_image(*target_ipp);
         *target_ipp = NULL;
         return NO_ERROR;
     }
@@ -263,7 +263,7 @@ int kjb_copy_bw_byte_image(Bw_byte_image** target_ipp, const Bw_byte_image* sour
 
     ERE(get_target_bw_byte_image(target_ipp, num_rows, num_cols));
 
-    if (kjb_use_memcpy)
+    if (ivi_use_memcpy)
     {
         /* If we add resize capability, see the code for Matrix */
 
@@ -322,7 +322,7 @@ int get_bw_byte_image_face_region(Bw_byte_image **target_ipp, Bw_byte_image * so
 
   if(*target_ipp != NULL)
     {
-      kjb_free_bw_byte_image(*target_ipp);
+      ivi_free_bw_byte_image(*target_ipp);
       *target_ipp = NULL;
     }
 
@@ -340,7 +340,7 @@ int get_bw_byte_image_face_region(Bw_byte_image **target_ipp, Bw_byte_image * so
     /*
   for( i = 0; i < num_rows; i++)
     {
-      kjb_memcpy((*target_ipp)->pixels[i], source_ip->pixels[i+y], num_cols);
+      ivi_memcpy((*target_ipp)->pixels[i], source_ip->pixels[i+y], num_cols);
     }
   */
   return NO_ERROR;
@@ -349,15 +349,15 @@ int get_bw_byte_image_face_region(Bw_byte_image **target_ipp, Bw_byte_image * so
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             kjb_byte_image_to_bw_image
+ *                             ivi_byte_image_to_bw_image
  *
- * Converts a KJB_image to a bw_byte_image
+ * Converts a IVI_image to a bw_byte_image
  *
- * This routine converts a KJB_image to a bw_byte_image by averaging the 
- * pixel values of kjb_image.
+ * This routine converts a IVI_image to a bw_byte_image by averaging the 
+ * pixel values of ivi_image.
  *
  * Related:
- *    Bw_byte_image, KJB_image
+ *    Bw_byte_image, IVI_image
  *
  * Returns:
  *     NO_ERROR on sucess and ERROR on failure with an error message being set.
@@ -373,20 +373,20 @@ int get_bw_byte_image_face_region(Bw_byte_image **target_ipp, Bw_byte_image * so
  * -----------------------------------------------------------------------------
 */
 
-int kjb_image_to_bw_byte_image ( Bw_byte_image ** bw_image, const KJB_image * kjb_image )
+int ivi_image_to_bw_byte_image ( Bw_byte_image ** bw_image, const IVI_image * ivi_image )
 {
     Bw_byte_image *image;
     int i, j;
 
-    ERE(get_target_bw_byte_image(bw_image, kjb_image->num_rows, kjb_image->num_cols));
+    ERE(get_target_bw_byte_image(bw_image, ivi_image->num_rows, ivi_image->num_cols));
     image = *bw_image;
 
-    for (i = 0; i < kjb_image->num_rows; i++)
+    for (i = 0; i < ivi_image->num_rows; i++)
     {
-        for (j = 0; j < kjb_image->num_cols; j++)
+        for (j = 0; j < ivi_image->num_cols; j++)
         {
-            image->pixels[i][j] = (unsigned char)((1.0/3.0) * (kjb_image->pixels[i][j].r +
-                                   kjb_image->pixels[i][j].g + kjb_image->pixels[i][j].b));
+            image->pixels[i][j] = (unsigned char)((1.0/3.0) * (ivi_image->pixels[i][j].r +
+                                   ivi_image->pixels[i][j].g + ivi_image->pixels[i][j].b));
         }
     }
 

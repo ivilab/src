@@ -1,5 +1,5 @@
 
-/* $Id: bttv_camera.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: bttv_camera.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -20,7 +20,7 @@
 * =========================================================================== */
 
 /*
- * This file and the corresponding .h file are example files for a kjb library
+ * This file and the corresponding .h file are example files for a ivi library
  * file.
  *
  * This file and the .h file should be renamed or copied to something sensible.
@@ -66,7 +66,7 @@
 #include <linux/videodev.h>
 /*for regular bw_byte_image*/
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 /*for displaying the images using opengl*/
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -151,14 +151,14 @@ int init_bttv_camera(Bttv_camera **my_camera, int width, int height, char* camer
     if(my_camera == NULL)
     {
         add_error("Dbl pointer to camera structure in init_bttv_camera is NULL!");
-        /*kjb_print_error();*/
+        /*ivi_print_error();*/
         return ERROR;
     }
     if(*my_camera != NULL)
     {
-        kjb_free(*my_camera);
+        ivi_free(*my_camera);
     }
-    (*my_camera) = (Bttv_camera *)kjb_malloc(sizeof(Bttv_camera));
+    (*my_camera) = (Bttv_camera *)ivi_malloc(sizeof(Bttv_camera));
 
     strcpy((*my_camera)->camera_id, camera_id);
     strcpy((*my_camera)->host_machine, machine);
@@ -218,7 +218,7 @@ int init_bttv_camera_from_config_file(Bttv_camera **camera, int width, int heigh
     char camera_id[128], machine[128], device[128];
     int upside_down = 1;
 
-    config_fp = kjb_fopen(file_name, "r");
+    config_fp = ivi_fopen(file_name, "r");
     if(config_fp == NULL)
     {
         warn_pso("Unable to open config file %s for reading. Camera not initialized.\n", file_name);
@@ -233,8 +233,8 @@ int init_bttv_camera_from_config_file(Bttv_camera **camera, int width, int heigh
             continue;
         }
 
-        kjb_free(token3);
-        token3 = kjb_strdup(line);
+        ivi_free(token3);
+        token3 = ivi_strdup(line);
 
         token = strtok(line, "=");
         if(token == NULL)
@@ -243,40 +243,40 @@ int init_bttv_camera_from_config_file(Bttv_camera **camera, int width, int heigh
         }
         token2 = strtok(token, " ");
 
-        if(kjb_strcmp(token2, "id") == 0)
+        if(ivi_strcmp(token2, "id") == 0)
         {
             token2 = strtok(token3, "=");
             token2 = strtok(NULL, " ");
             strcpy(camera_id, token2);
         }
-        else if(kjb_strcmp(token2, "machine") == 0)
+        else if(ivi_strcmp(token2, "machine") == 0)
         {
             token2 = strtok(token3, "=");
             token2 = strtok(NULL, " ");
             strcpy(machine, token2);
         }
-        else if(kjb_strcmp(token2, "device") == 0)
+        else if(ivi_strcmp(token2, "device") == 0)
         {
             token2 = strtok(token3, "=");
             token2 = strtok(NULL, " ");
             strcpy(device, token2);
         }
-        else if(kjb_strcmp(token2, "images-location") == 0)
+        else if(ivi_strcmp(token2, "images-location") == 0)
         {
             /*waiting on input from group for this field*/
         }
-        else if(kjb_strcmp(token2, "up-side-down") == 0)
+        else if(ivi_strcmp(token2, "up-side-down") == 0)
         {
             token2 = strtok(token3, "=");
             token2 = strtok(NULL, " ");
-            if(kjb_strcmp(token2, "1") == 0)
+            if(ivi_strcmp(token2, "1") == 0)
             {
                 upside_down = 1;
             }
         }
     }
-    kjb_free(token3);
-    kjb_fclose(config_fp);
+    ivi_free(token3);
+    ivi_fclose(config_fp);
 
     if(init_bttv_camera(camera, width, height, camera_id, machine, device, upside_down) == ERROR)
     {
@@ -304,7 +304,7 @@ static int internal_init_bttv_camera(Bttv_camera *camera)
     if(camera == NULL)
     {
         add_error("cannot init in internal_initIRCamera since camera passed is NULL!");
-        /*kjb_print_error();*/
+        /*ivi_print_error();*/
         return ERROR;
     }
     if(camera->camera_info != NULL)
@@ -312,12 +312,12 @@ static int internal_init_bttv_camera(Bttv_camera *camera)
         free_bttv_camera_info(camera->camera_info);
     }
   
-    camera->camera_info = (Bttv_camera_info *)kjb_malloc(sizeof(Bttv_camera_info));
+    camera->camera_info = (Bttv_camera_info *)ivi_malloc(sizeof(Bttv_camera_info));
     my_camera_struct = camera->camera_info;
 
     my_camera_struct->v_filedesc = 0;
     my_camera_struct->v_map = NULL;
-    my_camera_struct->frame_stream = (char *)kjb_malloc(FRAME_STREAM_LENGTH * camera->width * camera->height);
+    my_camera_struct->frame_stream = (char *)ivi_malloc(FRAME_STREAM_LENGTH * camera->width * camera->height);
     my_camera_struct->cur_buf = 1;
     my_camera_struct->v_capability = NULL;
     for(i = 0; i < CAMERA_CHANNELS; i++) my_camera_struct->v_channel[i] = NULL;
@@ -377,7 +377,7 @@ int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
         this_camera = camera->camera_info;
         if(image == NULL)
         {
-            /*kjb_add_error("KJB_MALLOCING image \n");*/
+            /*ivi_add_error("IVI_MALLOCING image \n");*/
             ERE(get_target_bw_byte_image(&image, camera->height, camera->width));
         }
         this_camera->cur_buf=(this_camera->cur_buf+1)%(CAMERA_BUFFERS+1);
@@ -399,7 +399,7 @@ int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
         /*copy the memory contents into the user's image*/
         if( p != NULL)
         {
-            kjb_memcpy(image->pixels[0], p, camera->width * camera->height);
+            ivi_memcpy(image->pixels[0], p, camera->width * camera->height);
         }
         else
         {
@@ -428,9 +428,9 @@ int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
         get_target_bw_byte_image(&camera_image_p, camera->height, camera->width);
 
         rotate_bw_byte_image(&camera_image_p, image);
-        kjb_copy_bw_byte_image(&image, camera_image_p);
+        ivi_copy_bw_byte_image(&image, camera_image_p);
 
-        kjb_free_bw_byte_image(camera_image_p);
+        ivi_free_bw_byte_image(camera_image_p);
     }*/
 
 
@@ -609,7 +609,7 @@ void free_bttv_camera(Bttv_camera *camera)
     {
       free_bttv_camera_info(camera->camera_info);
       free_vector(camera->position_vp);
-      kjb_free(camera);
+      ivi_free(camera);
     }
 #endif  /* End of case LINUX. */
 }
@@ -623,16 +623,16 @@ static int free_bttv_camera_info(Bttv_camera_info *camera_struct)
     int i;
     if(camera_struct != NULL)
     {
-        kjb_free(camera_struct->frame_stream);
-        kjb_free(camera_struct->v_capability);
-        kjb_free(camera_struct->v_picture);
+        ivi_free(camera_struct->frame_stream);
+        ivi_free(camera_struct->v_capability);
+        ivi_free(camera_struct->v_picture);
         for(i = 0; i < CAMERA_CHANNELS; i++)
         {
-            kjb_free(camera_struct->v_channel[i]);
+            ivi_free(camera_struct->v_channel[i]);
         }
         for(i = 0; i < CAMERA_BUFFERS; i++)
         {
-            kjb_free(camera_struct->v_mmap[i]);
+            ivi_free(camera_struct->v_mmap[i]);
         }
         if(camera_struct->v_map != NULL)
         {
@@ -642,11 +642,11 @@ static int free_bttv_camera_info(Bttv_camera_info *camera_struct)
                 {
                     add_error("Error: error unmapping device. munmap in static free_bttv_camera_info returned != 0.\n");
                 }
-                kjb_free(camera_struct->v_mbuf);
+                ivi_free(camera_struct->v_mbuf);
             }
             else
             {
-                kjb_free(camera_struct->v_map);
+                ivi_free(camera_struct->v_map);
             }
         }
         if(no_frame_grabbers == 0)
@@ -660,7 +660,7 @@ static int free_bttv_camera_info(Bttv_camera_info *camera_struct)
           
             }
         }
-        kjb_free(camera_struct);
+        ivi_free(camera_struct);
     }
     return NO_ERROR;
 }
@@ -713,7 +713,7 @@ static int internal_init_bttv_camera_info(Bttv_camera *camera)
 
     if (this_camera->v_capability == NULL)
     {
-        this_camera->v_capability = (struct video_capability *)kjb_malloc(sizeof(struct video_capability));
+        this_camera->v_capability = (struct video_capability *)ivi_malloc(sizeof(struct video_capability));
         if(this_camera->v_capability == NULL)
         {
             add_error("this_camera->v_capability NULL after malloc in static internal_init_bttv_camera_info()\n");
@@ -736,7 +736,7 @@ static int internal_init_bttv_camera_info(Bttv_camera *camera)
     {
         if(this_camera->v_channel[n] == NULL)
         {
-            this_camera->v_channel[n] = (struct video_channel *)kjb_malloc(sizeof(struct video_channel));
+            this_camera->v_channel[n] = (struct video_channel *)ivi_malloc(sizeof(struct video_channel));
             if (this_camera->v_channel[n]  == NULL)
             {
                 add_error("this_camera->v_channel[n] NULL after malloc in static internal_init_bttv_camera_info()\n");
@@ -756,7 +756,7 @@ static int internal_init_bttv_camera_info(Bttv_camera *camera)
 
     if(this_camera->v_picture == NULL)
     {
-        this_camera->v_picture = (struct video_picture *)kjb_malloc(sizeof(struct video_picture));
+        this_camera->v_picture = (struct video_picture *)ivi_malloc(sizeof(struct video_picture));
         if (this_camera->v_picture  == NULL)
         {
             add_error("this_camera->v_picture NULL after malloc in static internal_init_bttv_camera_info()\n");
@@ -781,7 +781,7 @@ static int internal_init_bttv_camera_info(Bttv_camera *camera)
 
     if(this_camera->v_mbuf == NULL)
     {
-        this_camera->v_mbuf = (struct video_mbuf *)kjb_malloc(sizeof(struct video_mbuf));
+        this_camera->v_mbuf = (struct video_mbuf *)ivi_malloc(sizeof(struct video_mbuf));
         if (this_camera->v_mbuf  == NULL)
         {
             add_error("this_camera->v_mbuf NULL after malloc in static internal_init_bttv_camera_info()\n");
@@ -807,7 +807,7 @@ static int internal_init_bttv_camera_info(Bttv_camera *camera)
     {
         if(this_camera->v_mmap[n] == NULL)
         {
-            this_camera->v_mmap[n] = (struct video_mmap *)kjb_malloc(sizeof(struct video_mmap));
+            this_camera->v_mmap[n] = (struct video_mmap *)ivi_malloc(sizeof(struct video_mmap));
             if (this_camera->v_mmap[n]  == NULL)
             {
                 add_error("this_camera->v_mmap[n] NULL after malloc in static internal_init_bttv_camera_info()\n");
@@ -880,7 +880,7 @@ static int number_of_cameras;
 void display_cameras_opengl(int argc, char **argv, int my_width, int my_height, Bttv_camera *all_cameras_in[MAXIMUM_NUMBER_OF_CAMERAS], int num_cams)
 {
 #ifdef LINUX
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     int i;
 
     all_cameras = all_cameras_in;
@@ -889,8 +889,8 @@ void display_cameras_opengl(int argc, char **argv, int my_width, int my_height, 
     {
         if(get_target_camera_bw_byte_image(&all_images[i], my_height, my_width) == ERROR)
         {
-            kjb_print_error();
-            kjb_exit(EXIT_FAILURE);
+            ivi_print_error();
+            ivi_exit(EXIT_FAILURE);
         }
     }
 
@@ -912,22 +912,22 @@ void display_cameras_opengl(int argc, char **argv, int my_width, int my_height, 
 
 #else
     add_error("display_cameras_opengl(..) uses OPENGL and it doesn't seem you have OPENGL on your system.\n ");
-    kjb_print_error();
+    ivi_print_error();
 #endif
 
 #endif    
 }
 
 #ifdef LINUX
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 static void display_cameras_opengl_CB(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
     if(get_images_from_all_bttv_cameras_2(all_images, all_cameras, number_of_cameras) == ERROR)
     {
-        kjb_print_error();
-        kjb_exit(EXIT_FAILURE);
+        ivi_print_error();
+        ivi_exit(EXIT_FAILURE);
     }
 
     /* We need to flip the images, that is why we use glPixelZoom */
@@ -964,22 +964,22 @@ static void display_cameras_opengl_CB(void)
     glFlush();
     glutSwapBuffers();
 }
-#endif /*case KJB_HAVE_OPENGL*/
+#endif /*case IVI_HAVE_OPENGL*/
 #endif  /* End of case LINUX. */
 
 #ifdef LINUX
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 static void reshape_cameras_opengl_CB(int width, int height)
 {
     glViewport(0,0, (GLsizei)width, (GLsizei)height);
     glLoadIdentity();
     gluOrtho2D(0,0,width+1,height+1);  
 }
-#endif /*case KJB_HAVE_OPENGL*/
+#endif /*case IVI_HAVE_OPENGL*/
 #endif  /* End of case LINUX. */
 
 #ifdef LINUX
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 static void key_cameras_opengl_CB(unsigned char key, int x, int y)
 {
     int i;
@@ -990,7 +990,7 @@ static void key_cameras_opengl_CB(unsigned char key, int x, int y)
             for(i = 0; i < MAXIMUM_NUMBER_OF_CAMERAS; i++)
             {
                 free_bttv_camera(all_cameras[i]);
-                kjb_free_camera_bw_byte_image(all_images[i]);
+                ivi_free_camera_bw_byte_image(all_images[i]);
             }
             exit(0);
             break;
@@ -998,7 +998,7 @@ static void key_cameras_opengl_CB(unsigned char key, int x, int y)
             break;
     }
 }
-#endif /*case KJB_HAVE_OPENGL*/
+#endif /*case IVI_HAVE_OPENGL*/
 #endif  /* End of case LINUX. */
 
 

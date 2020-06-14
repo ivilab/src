@@ -1,11 +1,11 @@
 
-/* $Id: gr_opengl.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_opengl.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_CPP_OPENGL_H
-#define KJB_CPP_OPENGL_H
+#ifndef IVI_CPP_OPENGL_H
+#define IVI_CPP_OPENGL_H
 
 /*******************************************************************
- *  A collection of functions and classes for using KJB c++ objects
+ *  A collection of functions and classes for using IVI c++ objects
  *  with opengl.
  *
  * In general, the functions below mimick native opengl functions,
@@ -22,7 +22,7 @@
 
 //#include <gr_cpp/gr_opengl_headers.h>
 
-namespace kjb
+namespace ivi
 {
 
 class Quaternion;
@@ -53,18 +53,18 @@ namespace opengl
  * These functions are overloaded versions of standard OpenGL functions.
  *-----------------------------------------------------------------------------*/
 
-/** @brief  glRotate for a kjb::Quaternion. */
-void glRotate(const kjb::Quaternion & q);
+/** @brief  glRotate for a ivi::Quaternion. */
+void glRotate(const ivi::Quaternion & q);
 
-/** @brief  glTranslate for a kjb::Vector. */
-void glTranslate(const kjb::Vector& p);
+/** @brief  glTranslate for a ivi::Vector. */
+void glTranslate(const ivi::Vector& p);
 
-/** @brief  glTranslate for a kjb::Vector3. */
-void glTranslate(const kjb::Vector3& p);
+/** @brief  glTranslate for a ivi::Vector3. */
+void glTranslate(const ivi::Vector3& p);
 
-void glTranslate(const kjb::Vector2& p);
+void glTranslate(const ivi::Vector2& p);
 
-/** @brief  glVertex for a kjb::Vector. */
+/** @brief  glVertex for a ivi::Vector. */
 void glVertex(const Vector& p);
 
 void glVertex(const Vector2& p);
@@ -73,31 +73,31 @@ void glVertex(const Vector3& p);
 
 void glVertex(const Vector4& p);
 
-/** @brief  glColor for a kjb::Vector. */
+/** @brief  glColor for a ivi::Vector. */
 void glColor(const Vector& color);
 
-void glColor(const kjb::PixelRGBA& color);
+void glColor(const ivi::PixelRGBA& color);
 
 void glColor(const Vector3& color);
 
 void glColor(const Vector4& color);
 
-/** @brief  glLoadMatrix for a kjb::Matrix. */
-void glLoadMatrix(const kjb::Matrix& m);
+/** @brief  glLoadMatrix for a ivi::Matrix. */
+void glLoadMatrix(const ivi::Matrix& m);
 
-/** @brief  glLoadMatrix for a kjb::Matrix4. */
-void glLoadMatrix(const kjb::Matrix4& m);
+/** @brief  glLoadMatrix for a ivi::Matrix4. */
+void glLoadMatrix(const ivi::Matrix4& m);
 
-/** @brief  glMultMatrix for a kjb::Matrix. */
-void glMultMatrix(const kjb::Matrix& m);
+/** @brief  glMultMatrix for a ivi::Matrix. */
+void glMultMatrix(const ivi::Matrix& m);
 
-/** @brief  glLoadMatrix for a kjb::Matrix4. */
-void glMultMatrix(const kjb::Matrix4& m);
+/** @brief  glLoadMatrix for a ivi::Matrix4. */
+void glMultMatrix(const ivi::Matrix4& m);
 
 /** @brief  NEEDS COMMENTING!!!. */
 void gluBuild2DMipmaps(const Image& img);
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 /**
  * @brief   Initialize array with image pixels. Also available through
  *          Texture::init(Image)
@@ -107,16 +107,16 @@ void gluBuild2DMipmaps(const Image& img);
 void glTexImage2D(unsigned int target, int level, int border, const Image& img);
 #endif
 
-/** @brief  Copy kjb::Image into an opengl texture. */
+/** @brief  Copy ivi::Image into an opengl texture. */
 void glTexImage2D(const Image& img);
 
-// Why doesn't this use kjb::Matrix's for modelview and projection? --Ernesto (2011/02/17)
+// Why doesn't this use ivi::Matrix's for modelview and projection? --Ernesto (2011/02/17)
 //
 // This is a thin wrapper for gluUnProject, which is intended to receive matrices received from
 // a call to glGetDoublev().  This is called from the higher-level unproject() function.
-// Please feel free to overload for kjb::Matrix. -- Kyle (2011/11/16)
+// Please feel free to overload for ivi::Matrix. -- Kyle (2011/11/16)
 //
-/** @brief  Wraps gluUnproject using kjb::Vertex.*/
+/** @brief  Wraps gluUnproject using ivi::Vertex.*/
 Vector gluUnProject(const Vector& vertex, double* modelview, double* projection, int* viewport);
 Vector3 gluUnProject(const Vector2& vertex, double* modelview, double* projection, int* viewport);
 Vector3 gluUnProject(const Vector3& vertex, double* modelview, double* projection, int* viewport);
@@ -344,7 +344,7 @@ void bitmap_string
 );
 
 /** @brief Translate a point so it projects to a screen point */
-void move_in_plane(kjb::Vector3& plane_pt, const kjb::Vector2& new_pt);
+void move_in_plane(ivi::Vector3& plane_pt, const ivi::Vector2& new_pt);
 
 /** @brief Get backprojection line using current opengl state */
 void get_backprojection_line(const Vector2& pt, Vector3& line_pt, Vector3& line_dir);
@@ -410,7 +410,7 @@ public:
  *  ERROR HANDLING
  * --------------------------------------------------------------------------------*/
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 /**
  * on Error Throw Exception: Opengl Version.  This version
  * takes zero arguments, because there's only one way to get an error
@@ -424,7 +424,7 @@ public:
         GLenum error = glGetError();                         \
         if((error))                                          \
         {                                                    \
-            KJB_THROW_2(::kjb::opengl::Opengl_error, error);                \
+            IVI_THROW_2(::ivi::opengl::Opengl_error, error);                \
         }                                                    \
     }
 
@@ -463,7 +463,7 @@ public:
 private:
     unsigned int code_;
 };
-#endif /* #ifdef KJB_HAVE_OPENGL */
+#endif /* #ifdef IVI_HAVE_OPENGL */
 
 
 }

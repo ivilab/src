@@ -1,4 +1,4 @@
-/* $Id: edge.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: edge.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_CPP_EDGE_BASE_H
-#define KJB_CPP_EDGE_BASE_H
+#ifndef IVI_CPP_EDGE_BASE_H
+#define IVI_CPP_EDGE_BASE_H
 
 #include <string>
 
@@ -26,7 +26,7 @@
 #include <edge/edge_base.h>
 #include <i_cpp/i_image.h>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/list.hpp>
 //#include <boost/archive/text_oarchive.hpp>
 //#include <boost/archive/text_iarchive.hpp>
@@ -35,7 +35,7 @@
 #include <boost/shared_ptr.hpp>
 #include <string>
 
-namespace kjb
+namespace ivi
 {
 
 class Edge;
@@ -48,7 +48,7 @@ class Edge_set;
 class Edge_point
 {
 public:
-    Edge_point(kjb_c::Edge_point * pt)
+    Edge_point(ivi_c::Edge_point * pt)
     {
         _c_edge_pt = pt;
     }
@@ -107,7 +107,7 @@ public:
     /** @brief Rate of change in brightness along the columns at the point. */
 
     /** @brief returns a const pointer to the c Edge_point structure */
-    const kjb_c::Edge_point * _c_ptr()
+    const ivi_c::Edge_point * _c_ptr()
     {
         return _c_edge_pt;
     }
@@ -115,12 +115,12 @@ public:
     /** @brief draws this edge point onto an image */
     void draw(Image & img, float r, float g, float b) const
     {
-        kjb_c::Pixel pixel;
+        ivi_c::Pixel pixel;
         pixel.r = r;
         pixel.g = g;
         pixel.b = b;
-        kjb_c::KJB_image * out = img.non_const_c_ptr();
-        ETX(kjb_c::color_edge_point(&out, out, _c_edge_pt, &pixel) );
+        ivi_c::IVI_image * out = img.non_const_c_ptr();
+        ETX(ivi_c::color_edge_point(&out, out, _c_edge_pt, &pixel) );
     }
 
 
@@ -130,16 +130,16 @@ private:
      *
      * @param i_edge_pt the pointer to the c edge_point
      */
-    void set_edge_pt(kjb_c::Edge_point * i_edge_pt)
+    void set_edge_pt(ivi_c::Edge_point * i_edge_pt)
     {
         _c_edge_pt = i_edge_pt;
     }
 
     // Pointer to the c Edge_point structure
-    kjb_c::Edge_point * _c_edge_pt;
+    ivi_c::Edge_point * _c_edge_pt;
 
-    friend class kjb::Edge;
-    friend class kjb::Edge_set;
+    friend class ivi::Edge;
+    friend class ivi::Edge_set;
 
 };
 
@@ -150,11 +150,11 @@ private:
 class Edge
 {
 public:
-    Edge(kjb_c::Edge *edge)
+    Edge(ivi_c::Edge *edge)
     {
         if(edge == NULL)
         {
-            throw kjb::Illegal_argument(
+            throw ivi::Illegal_argument(
                     "Null edge pointer passed to Edge class constructor");
         }
         _c_edge = edge;
@@ -185,13 +185,13 @@ public:
     {
         if(i >= get_num_points())
         {
-            throw kjb::Illegal_argument("Edge point index out of bounds");
+            throw ivi::Illegal_argument("Edge point index out of bounds");
         }
         return Edge_point(&_c_edge->points[i]);
     }
 
     /** @brief returns a const pointer to the c Edge structure */
-    const kjb_c::Edge * _c_ptr() const
+    const ivi_c::Edge * _c_ptr() const
     {
         return _c_edge;
     }
@@ -202,12 +202,12 @@ public:
      */
     void draw(Image& img, float r, float g, float b) const
     {
-        kjb_c::Pixel pixel;
+        ivi_c::Pixel pixel;
         pixel.r = r;
         pixel.g = g;
         pixel.b = b;
-        kjb_c::KJB_image * out = img.non_const_c_ptr();
-        ETX(kjb_c::color_edge_points(&out, out, _c_edge->points, _c_edge->num_points, &pixel) );
+        ivi_c::IVI_image * out = img.non_const_c_ptr();
+        ETX(ivi_c::color_edge_points(&out, out, _c_edge->points, _c_edge->num_points, &pixel) );
     }
 
     /** @brief draws the edge onto the input image,
@@ -215,15 +215,15 @@ public:
      */
     void randomly_color(Image& img) const
     {
-        kjb_c::KJB_image * out = img.non_const_c_ptr();
-        ETX(kjb_c::randomly_color_edge_points(&out, out, _c_edge->points, _c_edge->num_points) );
+        ivi_c::IVI_image * out = img.non_const_c_ptr();
+        ETX(ivi_c::randomly_color_edge_points(&out, out, _c_edge->points, _c_edge->num_points) );
     }
 
 
 private:
 
     // Pointer to the c Edge structure
-    kjb_c::Edge * _c_edge;
+    ivi_c::Edge * _c_edge;
 };
 
 /** @class Edge_set this class wraps the c structure Edge_set.
@@ -238,7 +238,7 @@ public:
     {}
 
     /** @brief Constructs an Edge_set by reading it from an input stream */
-    Edge_set(kjb_c::Edge_set* in) :
+    Edge_set(ivi_c::Edge_set* in) :
         m_edge_set(in)
     {
 
@@ -261,7 +261,7 @@ public:
     Edge_set(const Edge_set& edge_in) :
         m_edge_set(0)
     {
-        kjb_c::copy_edge_set(&m_edge_set, edge_in.m_edge_set);
+        ivi_c::copy_edge_set(&m_edge_set, edge_in.m_edge_set);
     }
 
     /**
@@ -270,25 +270,25 @@ public:
      * edge points.
      */
     Edge_set(
-        const std::vector<kjb_c::Edge_point>& edge_pts,
+        const std::vector<ivi_c::Edge_point>& edge_pts,
         int num_rows_in,
         int num_cols_in
     )
     :   m_edge_set(0)
     {
-        using kjb_c::Malloc_size;
+        using ivi_c::Malloc_size;
         // This ifdef makes it work in production mode =)
 #ifdef TRACK_MEMORY_ALLOCATION
-        using kjb_c::debug_kjb_malloc;
+        using ivi_c::debug_ivi_malloc;
 #else
-        using kjb_c::kjb_malloc;
+        using ivi_c::ivi_malloc;
 #endif
-        kjb_c::Edge_set* edge_set = static_cast<kjb_c::Edge_set*>(kjb_malloc(sizeof(kjb_c::Edge_set)));
+        ivi_c::Edge_set* edge_set = static_cast<ivi_c::Edge_set*>(ivi_malloc(sizeof(ivi_c::Edge_set)));
         edge_set->num_edges = 1;
         edge_set->total_num_pts = edge_pts.size();
-        edge_set->edges = static_cast<kjb_c::Edge*>(kjb_malloc(sizeof(kjb_c::Edge)));
+        edge_set->edges = static_cast<ivi_c::Edge*>(ivi_malloc(sizeof(ivi_c::Edge)));
         edge_set->edges[0].num_points = edge_pts.size();
-        edge_set->edges[0].points = static_cast<kjb_c::Edge_point*>(kjb_malloc(sizeof(kjb_c::Edge_point) * edge_pts.size()));
+        edge_set->edges[0].points = static_cast<ivi_c::Edge_point*>(ivi_malloc(sizeof(ivi_c::Edge_point) * edge_pts.size()));
         edge_set->num_rows = num_rows_in;
         edge_set->num_cols = num_cols_in;
 
@@ -303,7 +303,7 @@ public:
         
     ~Edge_set()
     {
-        kjb_c::free_edge_set(m_edge_set);
+        ivi_c::free_edge_set(m_edge_set);
     }
 
     Edge_set& operator=(const Edge_set& other)
@@ -314,7 +314,7 @@ public:
     }
 
     /** Access edge points by edge index */
-    kjb_c::Edge_point& operator()(size_t edge_num, size_t point_num)
+    ivi_c::Edge_point& operator()(size_t edge_num, size_t point_num)
     {
         assert(m_edge_set);
         assert(edge_num < m_edge_set->num_edges);
@@ -323,7 +323,7 @@ public:
     }
 
     /** Access edge points by edge index */
-    const kjb_c::Edge_point& operator()(size_t edge_num, size_t point_num) const
+    const ivi_c::Edge_point& operator()(size_t edge_num, size_t point_num) const
     {
         assert(m_edge_set);
         assert(edge_num < m_edge_set->num_edges);
@@ -340,7 +340,7 @@ public:
     }
 
     /** Access edge points sequentially, with index 0 being the first point of the first edge */
-    kjb_c::Edge_point& operator[](size_t i)
+    ivi_c::Edge_point& operator[](size_t i)
     {
         assert(m_edge_set);
         assert(i < m_edge_set->total_num_pts);
@@ -348,7 +348,7 @@ public:
     }
 
     /** Access edge points sequentially, with index 0 being the first point of the first edge */
-    const kjb_c::Edge_point& operator[](size_t i) const
+    const ivi_c::Edge_point& operator[](size_t i) const
     {
         assert(m_edge_set);
         assert(i < m_edge_set->total_num_pts);
@@ -377,22 +377,22 @@ public:
     }
 
     /** @brief clear the previous edge set and makes this class point to the input c edge set */
-    void set_edge_set(kjb_c::Edge_set* iedge_set)
+    void set_edge_set(ivi_c::Edge_set* iedge_set)
     {
-        kjb_c::free_edge_set(m_edge_set);
+        ivi_c::free_edge_set(m_edge_set);
         m_edge_set = iedge_set;
     }
 
     /** @brief returns the number of rows in the image the edges were detected from */
     size_t num_rows() const { return m_edge_set->num_rows; }
 
-    /** @brief alias of num_rows() to comply with other KJB dimensioned objects. */
+    /** @brief alias of num_rows() to comply with other IVI dimensioned objects. */
     inline size_t get_num_rows() const { return num_rows(); }
 
     /** @brief returns the number of columns in the image the edges were detected from */
     size_t num_cols() const { return m_edge_set->num_cols; }
 
-    /** @brief alias of num_cols() to comply with other KJB dimensioned objects. */
+    /** @brief alias of num_cols() to comply with other IVI dimensioned objects. */
     inline size_t get_num_cols() const { return num_cols(); }
 
     /** number of edge points in edge i */
@@ -414,7 +414,7 @@ public:
     /** @brief Removes from the edge set all the edges whose length is shorter than min_length*/
     void remove_short_edges(uint32_t min_length)
     {
-        kjb_c::remove_short_edges(m_edge_set, min_length);
+        ivi_c::remove_short_edges(m_edge_set, min_length);
     }
 
     /** @brief Finds the index where the Edge pointed by iedge is stored in the
@@ -423,13 +423,13 @@ public:
      *
      *  @param iedge the edge to find in the edge_set
      */
-    unsigned int find_index(const kjb::Edge & iedge) const
+    unsigned int find_index(const ivi::Edge & iedge) const
     {
         unsigned index;
-        int rc = kjb_c::find_edge_index(m_edge_set, iedge._c_ptr(), &index);
-        if (rc != kjb_c::NO_ERROR)
+        int rc = ivi_c::find_edge_index(m_edge_set, iedge._c_ptr(), &index);
+        if (rc != ivi_c::NO_ERROR)
         {
-            KJB_THROW_2(Illegal_argument, "Bad edge index");
+            IVI_THROW_2(Illegal_argument, "Bad edge index");
         }
         return index;
     }
@@ -440,9 +440,9 @@ public:
      */
     void remove_edge(unsigned int iindex)
     {
-        if( kjb_c::remove_edge(m_edge_set, iindex) != kjb_c::NO_ERROR)
+        if( ivi_c::remove_edge(m_edge_set, iindex) != ivi_c::NO_ERROR)
         {
-            KJB_THROW_2(Illegal_argument, "Bad edge index");
+            IVI_THROW_2(Illegal_argument, "Bad edge index");
         }
     }
 
@@ -459,7 +459,7 @@ public:
      */
     void break_edges_at_corners(float thresh, uint32_t num_avg)
     {
-        kjb_c::break_edges_at_corners(m_edge_set, thresh, num_avg);
+        ivi_c::break_edges_at_corners(m_edge_set, thresh, num_avg);
     }
 
 
@@ -468,10 +468,10 @@ public:
     {
         using std::swap;
 
-        kjb_c::Edge_set* c_result = NULL;
-        kjb_c::sample_edge_set(&c_result, m_edge_set, p);
+        ivi_c::Edge_set* c_result = NULL;
+        ivi_c::sample_edge_set(&c_result, m_edge_set, p);
         swap(c_result, m_edge_set);
-        kjb_c::free_edge_set(c_result);
+        ivi_c::free_edge_set(c_result);
     }
 
     /** @brief draws the edge with index edge_index onto the input image,
@@ -482,7 +482,7 @@ public:
      {
         if(edge_index >= num_edges())
         {
-            throw kjb::Illegal_argument("Edge set, color edge, edge index out of bounds");
+            throw ivi::Illegal_argument("Edge set, color edge, edge index out of bounds");
         }
         Edge(&m_edge_set->edges[edge_index]).draw(img, r, g, b);
      }
@@ -493,7 +493,7 @@ public:
     {
         if(edge_index >= num_edges())
         {
-            throw kjb::Illegal_argument("Edge set, randomly color edge, edge index out of bounds");
+            throw ivi::Illegal_argument("Edge set, randomly color edge, edge index out of bounds");
         }
         Edge(&m_edge_set->edges[edge_index]).randomly_color(img);
     }
@@ -504,14 +504,14 @@ public:
      */
     void draw(Image& img, float r, float g, float b) const
     {
-        // since we can't get a non-const pointer to the underlying KJB_image, we have to store the result in a new KJB_image, and swap it into the input image.
+        // since we can't get a non-const pointer to the underlying IVI_image, we have to store the result in a new IVI_image, and swap it into the input image.
         
-        kjb_c::Pixel pixel;
+        ivi_c::Pixel pixel;
         pixel.r = r;
         pixel.g = g;
         pixel.b = b;
-        kjb_c::KJB_image * out = img.non_const_c_ptr();
-        ETX(kjb_c::color_edge_set(&out, out, m_edge_set, & pixel));
+        ivi_c::IVI_image * out = img.non_const_c_ptr();
+        ETX(ivi_c::color_edge_set(&out, out, m_edge_set, & pixel));
 
     }
 
@@ -521,9 +521,9 @@ public:
      */
     void randomly_color(Image& img)
     {
-        kjb_c::KJB_image* out = NULL;
+        ivi_c::IVI_image* out = NULL;
 
-        ETX(kjb_c::randomly_color_edge_set(&out, img.c_ptr(), m_edge_set));
+        ETX(ivi_c::randomly_color_edge_set(&out, img.c_ptr(), m_edge_set));
         Image tmp(out); // this will handle freeing the c-style image
         img.swap(tmp);
     }
@@ -532,13 +532,13 @@ public:
     void save(const char* fname) const
     {
         assert(m_edge_set);
-        ETX(kjb_c::write_edge_set(m_edge_set, fname));
+        ETX(ivi_c::write_edge_set(m_edge_set, fname));
     }
 
     /** @brief loads this edge set from a file */
     void load(const char* fname)
     {
-        ETX(kjb_c::read_edge_set(&m_edge_set, fname));
+        ETX(ivi_c::read_edge_set(&m_edge_set, fname));
     }
 
 
@@ -562,14 +562,14 @@ public:
 
 
     /** @brief Returns a const pointer to the underlying c structure */
-    const kjb_c::Edge_set* c_ptr() const { return m_edge_set; }
+    const ivi_c::Edge_set* c_ptr() const { return m_edge_set; }
 
 private:
     //C++ Wrappers for the underlying c edge_set structure
-    kjb_c::Edge_set* m_edge_set;
+    ivi_c::Edge_set* m_edge_set;
 
 private:
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 
 
@@ -580,11 +580,11 @@ private:
         char* buffer = 0;
         size_t length;
 
-        kjb_c::serialize_edge_set(m_edge_set, &buffer, &length);
+        ivi_c::serialize_edge_set(m_edge_set, &buffer, &length);
         std::string str_tmp(buffer);
         ar & str_tmp;
 
-        kjb_c::kjb_free(buffer);
+        ivi_c::ivi_free(buffer);
     }
 
     /** boost::Serialize compatible serialization */
@@ -593,10 +593,10 @@ private:
     {
         std::string buffer;
         ar & buffer;
-        kjb_c::unserialize_edge_set(&m_edge_set, buffer.c_str());
+        ivi_c::unserialize_edge_set(&m_edge_set, buffer.c_str());
     }
     BOOST_SERIALIZATION_SPLIT_MEMBER()
-#endif /* KJB_HAVE_BST_SERIAL */
+#endif /* IVI_HAVE_BST_SERIAL */
 
 };
 
@@ -701,8 +701,8 @@ public:
         bool noiseless_data = false
     )   const
     {
-        kjb_c::Edge_set* edge_set = NULL;
-        ETX(kjb_c::detect_image_edge_set(
+        ivi_c::Edge_set* edge_set = NULL;
+        ETX(ivi_c::detect_image_edge_set(
                 &edge_set,
                 img.c_ptr(),
                 m_sigma,
@@ -727,11 +727,11 @@ public:
     *        meaning that each pixel whose intensity is bigger than
     *        zero is an edge point
     * */
-    kjb::Edge_set* detect_edges(const Image& img, bool noiseless_data = false)
+    ivi::Edge_set* detect_edges(const Image& img, bool noiseless_data = false)
     {
 
-        kjb_c::Edge_set* edge_set = NULL;
-        ETX(kjb_c::detect_image_edge_set(
+        ivi_c::Edge_set* edge_set = NULL;
+        ETX(ivi_c::detect_image_edge_set(
                 &edge_set,
                 img.c_ptr(),
                 m_sigma,
@@ -809,5 +809,5 @@ Image edges_to_image(
 Edge_set_ptr edge_image_to_edge_points(const Image& i, bool oriented = false);
 
 
-} // namespace kjb
+} // namespace ivi
 #endif

@@ -29,12 +29,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_M_CPP_M_CONVOLVE_H
-#define KJB_CPP_M_CPP_M_CONVOLVE_H
+#ifndef IVI_CPP_M_CPP_M_CONVOLVE_H
+#define IVI_CPP_M_CPP_M_CONVOLVE_H
 
 #include "m_cpp/m_matrix.h"
 
-#ifdef KJB_HAVE_FFTW /* Include the header, if we can. */
+#ifdef IVI_HAVE_FFTW /* Include the header, if we can. */
 
 /*
  * Their header has a built-in extern-C gadget, so we do not need one here.
@@ -44,14 +44,14 @@ namespace FFTW {
 #include <fftw3.h>
 }
 
-#else /* KJB_HAVE_FFTW not defined */
+#else /* IVI_HAVE_FFTW not defined */
 #warning "This code requires FFTW version 3 to work properly."
 const int FFTW_ESTIMATE = 0;
 const int FFTW_MEASURE = 0;
 const int FFTW_PATIENT = 0;
 const int FFTW_EXHAUSTIVE = 0;
 const int FFTW_DESTROY_INPUT = 0;
-#endif /* KJB_HAVE_FFTW */
+#endif /* IVI_HAVE_FFTW */
 
 
 #include <utility>
@@ -63,14 +63,14 @@ const int FFTW_DESTROY_INPUT = 0;
  * @file Convolution-related classes and functions
  */
 
-namespace kjb
+namespace ivi
 {
 
-#ifdef KJB_HAVE_FFTW /* This block defines a speciality vector for FFTW */
+#ifdef IVI_HAVE_FFTW /* This block defines a speciality vector for FFTW */
 
 
 // We don't need the end pointer currently, but future changes might demand it.
-#define KJB_FFTW_VECTOR_NEEDS_END 0
+#define IVI_FFTW_VECTOR_NEEDS_END 0
 
 
 /**
@@ -89,7 +89,7 @@ template <typename T>
 class FFTW_vector
 {
     T* m_begin;
-#if KJB_FFTW_VECTOR_NEEDS_END
+#if IVI_FFTW_VECTOR_NEEDS_END
     T* m_end;
 #endif
     FFTW_vector<T>(const FFTW_vector<T>&); // teaser
@@ -101,9 +101,9 @@ public:
     {
         if (n && 0 == (m_begin = (T*) FFTW::fftw_malloc(sizeof(T) * n)))
         {
-            KJB_THROW(Resource_exhaustion);
+            IVI_THROW(Resource_exhaustion);
         }
-#if KJB_FFTW_VECTOR_NEEDS_END
+#if IVI_FFTW_VECTOR_NEEDS_END
         m_end = m_begin + n;
 #endif
     }
@@ -123,7 +123,7 @@ public:
         return m_begin;
     }
 
-#if KJB_FFTW_VECTOR_NEEDS_END
+#if IVI_FFTW_VECTOR_NEEDS_END
     T* end()
     {
         return m_end;
@@ -139,7 +139,7 @@ public:
     {
         using std::swap;
         swap(m_begin, v.m_begin);
-#if KJB_FFTW_VECTOR_NEEDS_END
+#if IVI_FFTW_VECTOR_NEEDS_END
         swap(m_end, v.m_end);
 #endif
     }
@@ -177,7 +177,7 @@ template <class T, class U> class FFTW_Plan2d {};
 
 
 
-#ifdef KJB_HAVE_FFTW /* This block defines FFTW plan wrappers. */
+#ifdef IVI_HAVE_FFTW /* This block defines FFTW plan wrappers. */
 
 // "forward" FFT plan management
 template<>
@@ -199,7 +199,7 @@ public:
     )
     :   plan(FFTW::fftw_plan_dft_r2c_2d(n0, n1, in, out, flags))
     {
-        if (0 == plan) KJB_THROW(Resource_exhaustion);
+        if (0 == plan) IVI_THROW(Resource_exhaustion);
     }
 
     ~FFTW_Plan2d<double, FFTW::fftw_complex>()
@@ -239,7 +239,7 @@ public:
     )
     :   plan(FFTW::fftw_plan_dft_c2r_2d(n0, n1, in, out, flags))
     {
-        if (0 == plan) KJB_THROW(Resource_exhaustion);
+        if (0 == plan) IVI_THROW(Resource_exhaustion);
     }
 
     ~FFTW_Plan2d<FFTW::fftw_complex, double>()
@@ -276,7 +276,7 @@ typedef FFTW_Plan2d<FFTW::fftw_complex, double> FFTW_plan_c2r;
  * @brief A class for performing 2d convolution using the FFTW library.
  *
  * This should run faster than
- * <a href="http://vision.sista.arizona.edu/kobus/research/resources/doc/kjb/fourier_convolve_matrix.html">kjb_c::fourier_convolve_matrix()</a>
+ * <a href="http://vision.sista.arizona.edu/kobus/research/resources/doc/ivi/fourier_convolve_matrix.html">ivi_c::fourier_convolve_matrix()</a>
  * for applications that perform similar-sized convolutions many times, because
  * this class re-uses the plans constructed by FFTW, the construction of which
  * is usually the bottleneck for FFTW.  The results from the convolve() method
@@ -288,7 +288,7 @@ typedef FFTW_Plan2d<FFTW::fftw_complex, double> FFTW_plan_c2r;
  * the data and mask with zeros before operating on them.  This padding is
  * removed before a result is returned.
  * Note that
- * <a href="http://vision.sista.arizona.edu/kobus/research/resources/doc/kjb/convolve_matrix.html">kjb_c::convolve_matrix()</a>
+ * <a href="http://vision.sista.arizona.edu/kobus/research/resources/doc/ivi/convolve_matrix.html">ivi_c::convolve_matrix()</a>
  * behaves differently (it reflects the input matrix at its boundary).
  * To emulate this behavior, use the reflect_and_convolve() method.
  *
@@ -363,7 +363,7 @@ typedef FFTW_Plan2d<FFTW::fftw_complex, double> FFTW_plan_c2r;
  * success.  Also it accesses two global objects, c and mtx.
  *
  * @code
- * kjb_pthread_mutex mtx = KJB_PTHREAD_MUTEX_INITIALIZER;
+ * ivi_pthread_mutex mtx = IVI_PTHREAD_MUTEX_INITIALIZER;
  * Fftw_convolution_2d* c = NULL; // setup of c done elsewhere, e.g., in main()
  *
  * // Here is the function that the worker threads all call:
@@ -381,7 +381,7 @@ typedef FFTW_Plan2d<FFTW::fftw_complex, double> FFTW_plan_c2r;
  *     // . . .
  *
  *     if (!work_buffer_is_unique(wb)) {
- *         set_error("wb not unique in thread %d", get_kjb_pthread_number());
+ *         set_error("wb not unique in thread %d", get_ivi_pthread_number());
  *         return NULL; // cannot destroy work buffer if another copy exists
  *     }
  *
@@ -392,7 +392,7 @@ typedef FFTW_Plan2d<FFTW::fftw_complex, double> FFTW_plan_c2r;
  * }
  * @endcode
  *
- * @ingroup kjbThreads
+ * @ingroup iviThreads
  *
  * @author Kyle Simek
  * @author Prasad Gabur
@@ -480,7 +480,7 @@ public:
 
 private:
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
     Work_buffer alloc_work_buf_impl_() const;
 
     void reset_data_plan_() const;
@@ -502,7 +502,7 @@ private:
     mutable Work_buffer data_;
 
 
-#ifdef KJB_HAVE_FFTW             /* Define plan members in the real thing. */
+#ifdef IVI_HAVE_FFTW             /* Define plan members in the real thing. */
     boost::scoped_ptr<FFTW_plan_r2c> mask_plan_;
     mutable boost::scoped_ptr<FFTW_plan_r2c> data_plan_;
     mutable boost::scoped_ptr<FFTW_plan_c2r> data_inv_plan_;
@@ -517,7 +517,7 @@ private:
  * This is a utility function useful for reasons described
  * in @ref fftw_wb_dtion
  *
- * @ingroup kjbThreads
+ * @ingroup iviThreads
  */
 inline bool work_buffer_is_unique(const Fftw_convolution_2d::Work_buffer& b)
 {
@@ -535,7 +535,7 @@ int test_reflect_into_input_buf(
     const Fftw_convolution_2d::Sizes&
 );
 
-} // namespace kjb::debug
+} // namespace ivi::debug
 
 
 /// @brief convolve by sliding across columns of input matrix, via mask.
@@ -543,7 +543,7 @@ int test_reflect_into_input_buf(
 int x_convolve_matrix(Matrix*, const Matrix&, const Vector&);
 
 
-} // namespace kjb
+} // namespace ivi
 
 #endif
 

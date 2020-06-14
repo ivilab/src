@@ -6,7 +6,7 @@
  * AutoLayer is an RAII wrapper for Scott's layer structure.
  */
 /*
- * $Id: autolayer.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: autolayer.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
@@ -14,7 +14,7 @@
 #include "l_cpp/l_util.h"
 #include "topo_cpp/autolayer.h"
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -43,14 +43,14 @@ void AutoLayer::set_numTracks( int num )
     {
         ASSERT( my_layer.tracks );
         while( my_layer.numTracks )
-            kjb_c::kjb_free( my_layer.tracks[ --my_layer.numTracks ].s.points);
-        kjb_c::kjb_free( my_layer.tracks );
+            ivi_c::ivi_free( my_layer.tracks[ --my_layer.numTracks ].s.points);
+        ivi_c::ivi_free( my_layer.tracks );
     }
     ASSERT( 0 == my_layer.numTracks );
     my_layer.numTracks = num;
     if ( 0 < num )
     {
-        KJB( my_layer.tracks = N_TYPE_MALLOC( track, num ) );
+        IVI( my_layer.tracks = N_TYPE_MALLOC( track, num ) );
         for( int i = 0; i < num; ++i )
         {
             initTrack( & my_layer.tracks[ i ]  );
@@ -81,18 +81,18 @@ pt* AutoLayer::set_track0points( unsigned num, const pt* src )
     if ( 0 < my_layer.tracks[ 0 ].s.numPoints )
     {
         ASSERT( my_layer.tracks[ 0 ].s.points );
-        kjb_c::kjb_free( my_layer.tracks[ 0 ].s.points );
+        ivi_c::ivi_free( my_layer.tracks[ 0 ].s.points );
     }
     my_layer.tracks[ 0 ].s.numPoints = num;
     my_layer.tracks[ 0 ].s.points = 0;
     if ( 0 < num )
     {
-        using namespace kjb_c;
+        using namespace ivi_c;
         pt *dest;
         my_layer.tracks[ 0 ].s.points = dest = N_TYPE_MALLOC( pt, num );
         if ( 0 == dest )
         {
-            KJB_THROW_2( kjb::Runtime_error,
+            IVI_THROW_2( ivi::Runtime_error,
                                     "AutoLayer::set_track0points bad alloc" );
         }
         if ( src )
@@ -116,14 +116,14 @@ pt* AutoLayer::set_track0points( unsigned num, const pt* src )
  */
 void AutoLayer::add_waypoint( const pt& p, const char* name, int index )
 {
-    using kjb_c::Malloc_size;
+    using ivi_c::Malloc_size;
 
     waypoint*& w = my_layer.waypoints;  // easy-to-read aliases
     int& nw = my_layer.numWaypoints;
     int debug_pre = nw;
     ASSERT( 0 <= debug_pre );
 
-    w = ( waypoint* ) kjb_c:: KJB_REALLOC( w, sizeof( waypoint ) * ++nw );
+    w = ( waypoint* ) ivi_c:: IVI_REALLOC( w, sizeof( waypoint ) * ++nw );
     ASSERT( w );
     waypoint* wnew = & w[ nw - 1 ]; 
     ASSERT( wnew );
@@ -135,5 +135,5 @@ void AutoLayer::add_waypoint( const pt& p, const char* name, int index )
 }
 
 } // end ns TopoFusion
-} // end namespace kjb
+} // end namespace ivi
 

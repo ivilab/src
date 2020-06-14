@@ -1,5 +1,5 @@
 
-/* $Id: i2_collage.c 21448 2017-06-28 22:00:33Z kobus $ */
+/* $Id: i2_collage.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -40,7 +40,7 @@ int ip_output_montage
     int         num_images,
     int         num_montage_rows,
     int         num_montage_cols,
-    KJB_image** images,
+    IVI_image** images,
     char        (*labels)[ MAX_MONTAGE_IMAGE_LABEL_SIZE ],
     const char* extra
 )
@@ -54,8 +54,8 @@ int ip_output_montage
     int  result  = NO_ERROR;
     int  max_dim;
     int  count   = 0;
-    KJB_image* label_ip = NULL;
-    KJB_image* image_with_label_ip = NULL;
+    IVI_image* label_ip = NULL;
+    IVI_image* image_with_label_ip = NULL;
     int num_label_rows;
 
 
@@ -83,7 +83,7 @@ int ip_output_montage
 
     max_dim = MAX_OF(max_num_rows, max_num_cols);
 
-    ERE(kjb_sprintf(geometry_str, sizeof(geometry_str), "%dx%d",
+    ERE(ivi_sprintf(geometry_str, sizeof(geometry_str), "%dx%d",
                     max_dim, max_dim));
 
     for (i = 0; i<num_images; i++)
@@ -117,12 +117,12 @@ int ip_output_montage
                                           num_rows, 5, 1);
                 if (result == ERROR) break;
 
-                result = kjb_write_image(image_with_label_ip,
+                result = ivi_write_image(image_with_label_ip,
                                          temp_names[ num_images_written ]);
             }
             else
             {
-                result = kjb_write_image(images[ i ],
+                result = ivi_write_image(images[ i ],
                                          temp_names[ num_images_written ]);
             }
 
@@ -146,11 +146,11 @@ int ip_output_montage
 
     for (i = 0; i<num_images_written; i++)
     {
-        EPE(kjb_unlink(temp_names[ i ]));
+        EPE(ivi_unlink(temp_names[ i ]));
     }
 
-    kjb_free_image(label_ip);
-    kjb_free_image(image_with_label_ip);
+    ivi_free_image(label_ip);
+    ivi_free_image(image_with_label_ip);
 
     return result;
 }
@@ -159,10 +159,10 @@ int ip_output_montage
 
 int make_image_collage_with_labels
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_horizontal,
     int         num_vertical,
-    KJB_image** ip_list,
+    IVI_image** ip_list,
     char**      labels
 )
 {
@@ -170,11 +170,11 @@ int make_image_collage_with_labels
     int i, num_rows, num_cols;
     char temp_name[ MAX_FILE_NAME_SIZE ];
     int  result  = NO_ERROR;
-    KJB_image* label_ip = NULL;
+    IVI_image* label_ip = NULL;
     int num_label_rows;
-    KJB_image** labeled_ip_list;
+    IVI_image** labeled_ip_list;
 
-    NRE(labeled_ip_list = N_TYPE_MALLOC(KJB_image*, num_images));
+    NRE(labeled_ip_list = N_TYPE_MALLOC(IVI_image*, num_images));
 
     for (i = 0; i < num_images; i++)
     {
@@ -213,7 +213,7 @@ int make_image_collage_with_labels
             }
             else
             {
-                result = kjb_copy_image(&(labeled_ip_list[ i ]), ip_list[ i ]);
+                result = ivi_copy_image(&(labeled_ip_list[ i ]), ip_list[ i ]);
             }
 
             if (result == ERROR) break;
@@ -223,17 +223,17 @@ int make_image_collage_with_labels
     if (result != ERROR)
     {
         result = make_image_collage(out_ipp, num_horizontal, num_vertical,
-                                    (const KJB_image* const*) labeled_ip_list);
+                                    (const IVI_image* const*) labeled_ip_list);
     }
 
-    kjb_free_image(label_ip);
+    ivi_free_image(label_ip);
 
     for (i = 0; i < num_images; i++)
     {
-        kjb_free_image(labeled_ip_list[ i ]);
+        ivi_free_image(labeled_ip_list[ i ]);
     }
 
-    kjb_free(labeled_ip_list);
+    ivi_free(labeled_ip_list);
 
     return result;
 }

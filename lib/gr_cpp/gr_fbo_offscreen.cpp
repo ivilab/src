@@ -1,4 +1,4 @@
-/* $Id: gr_fbo_offscreen.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_fbo_offscreen.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -21,9 +21,9 @@
 #include <gr_cpp/gr_fbo_offscreen.h>
 #include <gr_cpp/gr_opengl.h>
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_GLEW
-namespace kjb
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_GLEW
+namespace ivi
 {
 namespace opengl
 {
@@ -38,7 +38,7 @@ Fbo_offscreen_buffer::Fbo_offscreen_buffer(int width_in, int height_in, bool gra
     viewport_(),
     viewport_saved_(false)
 {
-    using namespace kjb::opengl;
+    using namespace ivi::opengl;
     using boost::scoped_ptr;
 
 
@@ -119,7 +119,7 @@ void Fbo_offscreen_buffer::init_grayscale_fbo()
 {
     grayscale_ = true;
     depth_->allocate(GL_DEPTH_COMPONENT, width_, height_);
-    ::kjb::opengl::allocate_grayscale_color_buffer(*color_, width_, height_);
+    ::ivi::opengl::allocate_grayscale_color_buffer(*color_, width_, height_);
 
     fbo_->attach_depth(*depth_);
     fbo_->attach_color(*color_);
@@ -128,6 +128,6 @@ void Fbo_offscreen_buffer::init_grayscale_fbo()
 
  
 } // namespace opengl
-} // namespace kjb
-#endif /* KJB_HAVE_GLEW */
-#endif /* KJB_HAVE_OPENGL */
+} // namespace ivi
+#endif /* IVI_HAVE_GLEW */
+#endif /* IVI_HAVE_OPENGL */

@@ -1,5 +1,5 @@
 
-/* $Id: p_plot.h 7576 2010-11-21 06:05:51Z kobus $ */
+/* $Id: p_plot.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

@@ -5,7 +5,7 @@
 #include <ostream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace DTLib; 
 using namespace std;
 int main(int argc, char** argv)

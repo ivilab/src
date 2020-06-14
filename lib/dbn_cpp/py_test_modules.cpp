@@ -38,8 +38,8 @@
 #include "dbn_cpp/util.h"
 #include "dbn_cpp/time_util.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 /* int test_ode_solver(int argc, const char** argv) */
@@ -65,7 +65,7 @@ int test_ode_solver(void)
         out_fp = argv[1];
     }
     */
-    ETX(kjb_c::kjb_mkdir(out_fp.c_str()));
+    ETX(ivi_c::ivi_mkdir(out_fp.c_str()));
 
     size_t time_length = 50;
     Double_v times(time_length);
@@ -148,40 +148,40 @@ int test_ode_solver(void)
                            obs_sigma, 
                            poly_degree);
     Coupled_oscillator_v& clos_1 = lss.coupled_oscillators();
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     const State_vec_vec& states_1 = lss.get_states();
     const State_vec_vec& states_3 = lss.get_states(time_indices);
-    long time = kjb_c::get_real_time(); 
+    long time = ivi_c::get_real_time(); 
     State_vec states_2; 
     State_vec states_4; 
     states_2.push_back(init_state);
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     //struct timespec start, finish;
     //current_utc_time(&start);
     
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     for(size_t i = 0; i < 1000; i++)
     {
         integrate_states_matrix_exp(clos_1, 0.0, lss.get_times(), init_state, states_2);
     }
-    time = kjb_c::get_real_time(); 
+    time = ivi_c::get_real_time(); 
     std::cout << "me takes: " << time/1000.0 << "s\n";
 
     if(use_modal)
     {
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         for(size_t i = 0; i < 1000; i++)
         {
             integrate_states_modal(clos_1, 0.0, lss.get_times(), init_state, states_4);
         }
-        time = kjb_c::get_real_time(); 
+        time = ivi_c::get_real_time(); 
         std::cout << "me takes: " << time/1000.0 << "s\n";
     }
 
     //current_utc_time(&finish);
     //double time_1 = finish.tv_sec - start.tv_sec;
     //time_1 += (finish.tv_nsec - start.tv_nsec) / 1000000000.0; 
-    time = kjb_c::get_real_time(); 
+    time = ivi_c::get_real_time(); 
     std::cout << "me takes: " << time/1000.0 << "s\n";
 
     TEST_TRUE(states_1.size() == states_2.size()); 

@@ -1,12 +1,12 @@
 
-/* $Id: invert_matrix.c 21660 2017-08-05 16:02:48Z kobus $ */
+/* $Id: invert_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* Suspicious code --- calling XXX multiple times on the mac (yet to
  * study on linux) with the same input leads to slightly different answers?
  *
  * This might be due to multi-threated stochastic optimization? 
  *
- * We cannot even reproduce when the failure occurs. We need to study kjb_rand
+ * We cannot even reproduce when the failure occurs. We need to study ivi_rand
  * and see if the underlying routine is being screwed with. 
  *
  * Study with NUM_IDENTICAL_COMPUTATIONS greater than 1. Currently we call small
@@ -64,7 +64,7 @@ int main(int argc, char* argv[ ])
     int  again;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -80,8 +80,8 @@ int main(int argc, char* argv[ ])
     {   
         double factor_for_linear = pow((double)test_factor, 1.0/4.0);
 
-        num_tries = kjb_rint(factor_for_linear * (double)BASE_NUM_TRIES);
-        max_size = kjb_rint(factor_for_linear * (double)BASE_MAX_SIZE);
+        num_tries = ivi_rint(factor_for_linear * (double)BASE_NUM_TRIES);
+        max_size = ivi_rint(factor_for_linear * (double)BASE_MAX_SIZE);
     } 
 
     if (is_interactive())
@@ -89,10 +89,10 @@ int main(int argc, char* argv[ ])
         EPETE(set_verbose_options("verbose", "1")); 
     }
 
-    EPETE(kjb_l_set("debug", "2")); 
+    EPETE(ivi_l_set("debug", "2")); 
 
 #ifndef VERBOSE_VERBOSE
-    EPETE(kjb_l_set("page", "off")); 
+    EPETE(ivi_l_set("page", "off")); 
 #endif 
 
     if (is_interactive())
@@ -135,7 +135,7 @@ int main(int argc, char* argv[ ])
 
                 if (invert_result == ERROR)
                 {
-                    kjb_print_error();
+                    ivi_print_error();
                 }
                 else 
                 {
@@ -159,7 +159,7 @@ int main(int argc, char* argv[ ])
                         p_stderr("Problem found! ===>  ");
                         p_stderr("(%d %d)  %e != 0.0.\n", size, size, diff); 
 
-                        kjb_exit(EXIT_BUG);
+                        ivi_exit(EXIT_BUG);
                     }
                 }
             }
@@ -168,7 +168,7 @@ int main(int argc, char* argv[ ])
 
         if (argc > 1) 
         {
-            kjb_exit(EXIT_SUCCESS); 
+            ivi_exit(EXIT_SUCCESS); 
         }
     }
 
@@ -186,7 +186,7 @@ int main(int argc, char* argv[ ])
 #ifdef VERBOSE_VERBOSE
     if (is_interactive())
     {
-        EPETE(kjb_l_set("abort-interactive-math-errors", "f")); 
+        EPETE(ivi_l_set("abort-interactive-math-errors", "f")); 
 
         for (size=1; size<max_size; size++)
         {
@@ -214,11 +214,11 @@ int main(int argc, char* argv[ ])
 
                 if (invert_result == ERROR)
                 {
-                    kjb_print_error();
+                    ivi_print_error();
                 }
                 else 
                 {
-                    kjb_exit(EXIT_BUG);
+                    ivi_exit(EXIT_BUG);
                 }
             }
         }
@@ -329,7 +329,7 @@ int main(int argc, char* argv[ ])
 
                     if (invert_result == ERROR)
                     {
-                        kjb_print_error();
+                        ivi_print_error();
                     }
                     else 
                     {

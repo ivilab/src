@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_box_trajectory.h 18329 2014-12-02 04:29:44Z ksimek $ */
+/* $Id: pt_box_trajectory.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_BOX_TRAJECTORY_H
 #define PT_BOX_TRAJECTORY_H
@@ -36,7 +36,7 @@
 
 /** @file   Classes and functions for dealing with trajectory files. */
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -74,15 +74,15 @@ Box_trajectory_map get_face_box_trajectory_map
 );
 
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
-namespace kjb {
+namespace ivi {
 namespace tracking {
 
 /** @brief  Specialize this parse for Bbox. */
 template <>
 inline
-bool kjb::pt::Box_trajectory_element::parse(const std::string& line)
+bool ivi::pt::Box_trajectory_element::parse(const std::string& line)
 {
     using namespace std;
     istringstream istr(line);
@@ -109,7 +109,7 @@ bool kjb::pt::Box_trajectory_element::parse(const std::string& line)
 /** @brief  Specialize this write for Bbox. */
 template <>
 inline
-void kjb::pt::Box_trajectory_element::write(std::ofstream& ofs) const
+void ivi::pt::Box_trajectory_element::write(std::ofstream& ofs) const
 {
     ofs << value << " 1.0" << std::endl;
 }
@@ -117,7 +117,7 @@ void kjb::pt::Box_trajectory_element::write(std::ofstream& ofs) const
 /** @brief  Specialize this write_invalid for Bbox. */
 template <>
 inline
-void kjb::pt::Box_trajectory_element::write_invalid(std::ofstream& ofs)
+void ivi::pt::Box_trajectory_element::write_invalid(std::ofstream& ofs)
 {
     ofs << "-1.0 -1.0 0.0 0.0 0.0" << std::endl;
 }

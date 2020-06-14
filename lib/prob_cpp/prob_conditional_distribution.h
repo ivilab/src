@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_conditional_distribution.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: prob_conditional_distribution.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PROB_CONDITIONAL_DISTRIBUTION_H_INCLUDED
 #define PROB_CONDITIONAL_DISTRIBUTION_H_INCLUDED
@@ -31,7 +31,7 @@
 #include "prob_cpp/prob_pdf.h"
 #include "prob_cpp/prob_sample.h"
 
-namespace kjb {
+namespace ivi {
 
 /*==================================================================================================
   Declaration of conditional distribution classes. There could
@@ -49,10 +49,10 @@ namespace kjb {
  * of y and how x depends on y. 
  *
  * @tparam  TargetVariable  The target random variable type; must comply
- *                          with the KJB's Distribution concept.
+ *                          with the IVI's Distribution concept.
  *
  * @tparam  GivenVariable   The given random variable type; must comply
- *                          with the KJB's Distribution concept.
+ *                          with the IVI's Distribution concept.
  *
  * @tparam  DependenceFunc  This says how the target depends on the given.
  *                          Must be applicable (operator()-wise) to a
@@ -262,7 +262,7 @@ public:
     {
         if(cov_XY.get_num_rows() != X.get_dimension() || cov_XY.get_num_cols() != Y.get_dimension())
         {
-            KJB_THROW_2(Dimension_mismatch, "Dimension of covariance matrix between X and Y is wrong.");
+            IVI_THROW_2(Dimension_mismatch, "Dimension of covariance matrix between X and Y is wrong.");
         }
     }
 
@@ -323,7 +323,7 @@ typedef Conditional_distribution<MV_normal_distribution, MV_normal_distribution,
 typedef MV_normal_conditional_distribution MV_gaussian_conditional_distribution;
 
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*PROB_CONDITIONAL_DISTRIBUTION_H_INCLUDED */
 

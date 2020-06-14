@@ -1,5 +1,5 @@
 
-/* $Id: s_spectra.h 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: s_spectra.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -53,7 +53,7 @@ Spectra_origin;
  *
  * Spectra type
  *
- * This type is the spectra type for the KJB library and is used by many
+ * This type is the spectra type for the IVI library and is used by many
  * routines. It stores spectra in the rows of the matrix pointed to by the field
  * spectra_mp.
  *

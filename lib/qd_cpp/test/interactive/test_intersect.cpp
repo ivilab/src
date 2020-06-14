@@ -11,7 +11,7 @@
  * qd_cpp/test/test_intersection.cpp,
  */
 /*
- * $Id: test_intersect.cpp 18035 2014-11-03 05:58:09Z predoehl $
+ * $Id: test_intersect.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l_cpp/l_test.h>
@@ -23,8 +23,8 @@
 namespace
 {
 
-using kjb::qd::PixPath;
-using kjb::qd::PixPoint;
+using ivi::qd::PixPath;
+using ivi::qd::PixPoint;
 
 std::vector< std::pair<size_t, size_t> > naive_intersections(const PixPath& p)
 {
@@ -34,7 +34,7 @@ std::vector< std::pair<size_t, size_t> > naive_intersections(const PixPath& p)
     for (size_t i=2; i < p.size(); ++i)
     {
         // consecutive segments can intersect under certain conditions
-        const kjb::qd::PixPoint_line_segment a(p[i-2],p[i-1]), b(p[i-1],p[i]);
+        const ivi::qd::PixPoint_line_segment a(p[i-2],p[i-1]), b(p[i-1],p[i]);
         if  ( true // just mark all intersections, including shared endpoints
             /*   is_degenerate(a)
             ||  is_degenerate(b)
@@ -69,9 +69,9 @@ std::vector< std::pair<size_t, size_t> > naive_intersections(const PixPath& p)
 
 int test_a_path(const PixPath& p)
 {
-    kjb::qd::SvgWrap sempty(PixPath::reserve());
+    ivi::qd::SvgWrap sempty(PixPath::reserve());
     sempty.set_svg(1,0);
-    kjb::qd::SvgWrap s(p);
+    ivi::qd::SvgWrap s(p);
     s.set_xml(0).set_svg(0,1);
 
     std::cout << sempty()
@@ -81,9 +81,9 @@ int test_a_path(const PixPath& p)
 
     const std::vector< std::pair<size_t, size_t> >
         naive(naive_intersections(p)),
-        smart(kjb::qd::get_intersections(p, false));
+        smart(ivi::qd::get_intersections(p, false));
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         std::cout << "\n=============\nNaive:\n";
         for (size_t i=0; i < naive.size(); ++i)
@@ -108,7 +108,7 @@ int test_a_path(const PixPath& p)
         TEST_TRUE(naive.at(i).second == smart.at(i).second);
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -154,11 +154,11 @@ PixPath mirror_ud(const PixPath& p)
 
 int test_framework(const PixPath& p)
 {
-    KJB(ERE(test_a_path(p)));
-    KJB(ERE(test_a_path(mirror_lr(p))));
-    KJB(ERE(test_a_path(mirror_ud(p))));
-    KJB(ERE(test_a_path(mirror_ud(mirror_lr(p)))));
-    return kjb_c::NO_ERROR;
+    IVI(ERE(test_a_path(p)));
+    IVI(ERE(test_a_path(mirror_lr(p))));
+    IVI(ERE(test_a_path(mirror_ud(p))));
+    IVI(ERE(test_a_path(mirror_ud(mirror_lr(p)))));
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -251,13 +251,13 @@ int main(int argc, char** argv)
 {
     try
     {
-        KJB(EPETE(test1()));
-        KJB(EPETE(test2()));
-        KJB(EPETE(test3()));
-        KJB(EPETE(test4()));
-        KJB(EPETE(test5()));
+        IVI(EPETE(test1()));
+        IVI(EPETE(test2()));
+        IVI(EPETE(test3()));
+        IVI(EPETE(test4()));
+        IVI(EPETE(test5()));
     }
-    catch (kjb::Exception& e)
+    catch (ivi::Exception& e)
     {
         e.print_details_exit();
     }

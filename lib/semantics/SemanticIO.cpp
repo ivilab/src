@@ -2,7 +2,7 @@
  * @file SemanticIO.cpp
  *
  * @author Colin Dawson 
- * $Id: SemanticIO.cpp 17350 2014-08-21 20:30:43Z cdawson $ 
+ * $Id: SemanticIO.cpp 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "semantics/SemanticIO.h"
@@ -44,7 +44,7 @@ namespace semantics
 // 	else if(str.compare("NULL") == 0) return NULL_ATTRIBUTE;
 // 	else
 // 	{
-// 	    kjb_c::set_error("Unknown string encountered");
+// 	    ivi_c::set_error("Unknown string encountered");
 // 	    return NULL_ATTRIBUTE;
 // 	}
 //     }

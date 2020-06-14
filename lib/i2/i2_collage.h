@@ -1,5 +1,5 @@
 
-/* $Id: i2_collage.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i2_collage.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,7 +30,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -47,17 +47,17 @@ int ip_output_montage
     int         num_images,
     int         num_montage_rows,
     int         num_montage_cols,
-    KJB_image** images,
+    IVI_image** images,
     char        (*labels)[ MAX_MONTAGE_IMAGE_LABEL_SIZE ],
     const char* extra
 );
 
 int make_image_collage_with_labels
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_horizontal,
     int         num_vertical,
-    KJB_image** ip_list,
+    IVI_image** ip_list,
     char**      labels
 );
 

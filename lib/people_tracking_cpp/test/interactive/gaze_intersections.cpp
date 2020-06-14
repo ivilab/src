@@ -29,8 +29,8 @@
 #include <algorithm>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Main -- all the magic happens here. */
 int main(int argc, char** argv)
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
             std::cout << pts[i] << " " << look_ct[i] << std::endl;
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

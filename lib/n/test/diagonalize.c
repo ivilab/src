@@ -1,5 +1,5 @@
 
-/* $Id: diagonalize.c 21662 2017-08-05 17:00:07Z kobus $ */
+/* $Id: diagonalize.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* Suspicious code --- calling diagonalize() multiple times on the mac (yet to
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     int  again;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -96,14 +96,14 @@ int main(int argc, char* argv[])
 
     for (count=0; count<num_tries; count++)
     {
-        num_rows = 1 + kjb_rint(MAX_SIZE * kjb_rand());
-        num_cols = num_rows + kjb_rint(MAX_SIZE * kjb_rand());
+        num_rows = 1 + ivi_rint(MAX_SIZE * ivi_rand());
+        num_cols = num_rows + ivi_rint(MAX_SIZE * ivi_rand());
 
         verbose_pso(1, "Try %d with num_rows = %d and num_cols = %d.\n",
                     count + 1, num_rows, num_cols);
 
 
-        if (kjb_rand() < 0.5)
+        if (ivi_rand() < 0.5)
         {
             EPETE(get_random_matrix(&first_mp, num_rows, num_cols)); 
             EPETE(ow_subtract_scalar_from_matrix(first_mp, 0.5)); 
@@ -156,8 +156,8 @@ int main(int argc, char* argv[])
             if (! is_symmetric_matrix(sym_mp))
             {
                 set_error("Presumed symmetric matrix is not symmetric"); 
-                kjb_print_error();
-                kjb_exit(EXIT_BUG); 
+                ivi_print_error();
+                ivi_exit(EXIT_BUG); 
             }
 
             if (again > 0) 

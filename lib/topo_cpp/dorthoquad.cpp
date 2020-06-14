@@ -70,16 +70,16 @@ const bool TILE_MANAGER_CTOR_IS_VERBOSE = false; // good for debug
 bool decompressJpegBuffer(
     const char *buf,
     int buflen,
-    kjb::Image* tile
+    ivi::Image* tile
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     ASSERT( tile );
 
     int pos = 0;
     const char SEEK4[] = "JFIF"; // formal name of the JPEG compression format
     const int POSMAX = buflen - sizeof(SEEK4);
-    while (pos < POSMAX && kjb_strncmp(SEEK4, buf + pos, sizeof(SEEK4)-1) != 0)
+    while (pos < POSMAX && ivi_strncmp(SEEK4, buf + pos, sizeof(SEEK4)-1) != 0)
     {
         ++pos;
     }
@@ -88,26 +88,26 @@ bool decompressJpegBuffer(
 
     pos -= 6;   // A properly formatted file has 6 bytes before its "JFIF"
 
-    // Write this data out to a temporary file, so class kjb::Image can read it
+    // Write this data out to a temporary file, so class ivi::Image can read it
     // back in.  That really is the easiest way, despite its clunkiness.
-    kjb::Temporary_File tf;
-    long ct = kjb_fwrite( tf, buf + pos, buflen - pos );
+    ivi::Temporary_File tf;
+    long ct = ivi_fwrite( tf, buf + pos, buflen - pos );
     if ( ct != buflen - pos )
     {
         TEST_PSE(("Bad or short write of tile to /tmp.\n"));
         return false;
     }
     rewind( tf );
-    if ( ERROR == kjb_fflush( tf ) )
+    if ( ERROR == ivi_fflush( tf ) )
     {
         TEST_PSE(("Unable to flush tile to /tmp.\n"));
         return false;
     }
 
-    // use the KJB library loader to perform JFIF decompression
+    // use the IVI library loader to perform JFIF decompression
     try
     {
-        kjb::Image jpeg( tf.get_filename() );
+        ivi::Image jpeg( tf.get_filename() );
         if  (       jpeg.get_num_rows() == tile -> get_num_rows()
                 &&  jpeg.get_num_cols() == tile -> get_num_cols()
             )
@@ -116,7 +116,7 @@ bool decompressJpegBuffer(
             return true; // successful exit is from here
         }
     }
-    catch ( kjb::KJB_error& e )
+    catch ( ivi::IVI_error& e )
     {
         e.print_details();
         TEST_PSE(("Download buffer is not JPEG format.\n"));
@@ -146,7 +146,7 @@ bool decompressJpegBuffer(
 bool decompress_gif_buffer(
     const char *buf,
     int buflen,
-    kjb::Image* tile
+    ivi::Image* tile
 )
 {
     if (0 == tile) return false;
@@ -185,27 +185,27 @@ bool decompress_gif_buffer(
     const std::vector<char> payload(raw.begin()+eoh+EOHPAT.size(), raw.end());
     if (payload.size() != gif_size) return false;
 
-    // Write this data out to a temporary file, so class kjb::Image can read it
+    // Write this data out to a temporary file, so class ivi::Image can read it
     // back in.  That really is the easiest way, despite its clunkiness.
-    kjb::Temporary_Recursively_Removing_Directory td;
+    ivi::Temporary_Recursively_Removing_Directory td;
     const std::string fn(td.get_pathname() + DIR_STR + "topo_tile.gif");
-    kjb::File_Ptr_Write tf(fn);
-    const long ct = kjb_c::kjb_fwrite(tf, & payload.front(), payload.size());
+    ivi::File_Ptr_Write tf(fn);
+    const long ct = ivi_c::ivi_fwrite(tf, & payload.front(), payload.size());
     if (ct != long(payload.size()))
     {
-        KJB(TEST_PSE(("Bad or short write of tile to /tmp.\n")));
+        IVI(TEST_PSE(("Bad or short write of tile to /tmp.\n")));
         return false;
     }
-    if ( kjb_c::ERROR == tf.close() )
+    if ( ivi_c::ERROR == tf.close() )
     {
-        KJB(TEST_PSE(("Unable to close temporary GIF file")));
+        IVI(TEST_PSE(("Unable to close temporary GIF file")));
         return false;
     }
 
-    // use the KJB library loader to read the file
+    // use the IVI library loader to read the file
     try
     {
-        kjb::Image i( fn );
+        ivi::Image i( fn );
         if  (       i.get_num_rows() == tile -> get_num_rows()
                 &&  i.get_num_cols() == tile -> get_num_cols()
             )
@@ -214,45 +214,45 @@ bool decompress_gif_buffer(
             return true; // successful exit is from here
         }
     }
-    catch ( kjb::KJB_error& e )
+    catch ( ivi::IVI_error& e )
     {
         e.print_details();
-        KJB(TEST_PSE(("Download buffer is not GIF format.\n")));
+        IVI(TEST_PSE(("Download buffer is not GIF format.\n")));
         return false;
     }
 
-    KJB(TEST_PSE(("Download buffer dimensions are incorrect.\n")));
+    IVI(TEST_PSE(("Download buffer dimensions are incorrect.\n")));
     return false;
 }
 
 
 
 inline int getTileFromDisk(
-    const kjb::TopoFusion::tile_entry& e,
+    const ivi::TopoFusion::tile_entry& e,
     char* buf,
     size_t bufsz
 )
 {
-    using kjb_c::TopoFusion::getTileFromDisk;
+    using ivi_c::TopoFusion::getTileFromDisk;
     return getTileFromDisk( e.x, e.y, e.tileset, e.zone, buf, bufsz );
 }
 
 
 inline
 int addIndexEntry(
-    const kjb::TopoFusion::tile_entry& e,
+    const ivi::TopoFusion::tile_entry& e,
     const char* buf,
     int bufln
 )
 {
-    using kjb_c::TopoFusion::addIndexEntry;
+    using ivi_c::TopoFusion::addIndexEntry;
     return addIndexEntry( e.x, e.y, e.tileset, e.zone, buf, bufln );
 }
 
 
-inline int invalidateEntry( const kjb::TopoFusion::tile_entry& e )
+inline int invalidateEntry( const ivi::TopoFusion::tile_entry& e )
 {
-    return kjb_c::TopoFusion::invalidateEntry( e.x, e.y, e.tileset, e.zone );
+    return ivi_c::TopoFusion::invalidateEntry( e.x, e.y, e.tileset, e.zone );
 }
 
 
@@ -261,30 +261,30 @@ int retry_test( int retry_ct )
 {
     if ( MAX_RETRY <= retry_ct )
     {
-        kjb_c::set_error( "Unable to download tile" );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Unable to download tile" );
+        return ivi_c::ERROR;
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
-kjb::TopoFusion::DOrthoQuad::Pixel grayscale_average(const kjb_c::Pixel& p)
+ivi::TopoFusion::DOrthoQuad::Pixel grayscale_average(const ivi_c::Pixel& p)
 {
-    return static_cast<kjb::TopoFusion::DOrthoQuad::Pixel>(
+    return static_cast<ivi::TopoFusion::DOrthoQuad::Pixel>(
                                                0.5 + (p.r + p.g + p.b) / 3.0f);
 }
 
 
 int plus_margin(int edge_size_px)
 {
-    return edge_size_px + 3 * kjb_c::TopoFusion::TILE_SIZE;
+    return edge_size_px + 3 * ivi_c::TopoFusion::TILE_SIZE;
 }
 
 
 } // end anonymous namespace
 
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -303,33 +303,33 @@ Tile_manager::Tile_manager(const char* dir) // common case: dir eq. to default
 {
     if (m_instantiated)
     {
-        KJB_THROW_2(Runtime_error, "class Tile_manager permits only "
+        IVI_THROW_2(Runtime_error, "class Tile_manager permits only "
           "singleton instantiation (i.e., do not try to create two of them).");
     }
 
     std::string master_path(dir);
-    if (! kjb_c::is_directory(dir))
+    if (! ivi_c::is_directory(dir))
     {
         td.reset(new Temporary_Recursively_Removing_Directory());
         m_temp_cache = true;
         master_path = td -> get_pathname();
-        KJB(ETX(kjb_mkdir((master_path + DIR_STR + "maps.dat").c_str())));
+        IVI(ETX(ivi_mkdir((master_path + DIR_STR + "maps.dat").c_str())));
         if (TILE_MANAGER_CTOR_IS_VERBOSE)
         {
-            KJB(TEST_PSE(("class Tile_manager ctor: open temp cache %s\n",
+            IVI(TEST_PSE(("class Tile_manager ctor: open temp cache %s\n",
                                                         master_path.c_str())));
         }
     }
     else if (TILE_MANAGER_CTOR_IS_VERBOSE)
     {
-        using namespace kjb_c;
+        using namespace ivi_c;
         TEST_PSE(("class Tile_manager ctor: using default cache %s\n", dir));
     }
 
-    ETX(kjb_c::TopoFusion::init_master(master_path.c_str()));
+    ETX(ivi_c::TopoFusion::init_master(master_path.c_str()));
 
-    // To avoid nuisance warnings, we let libkjb close the file if it wants to.
-    ETX(kjb_c::add_cleanup_function( & kjb_c::TopoFusion::closeIndexFile ));
+    // To avoid nuisance warnings, we let libivi close the file if it wants to.
+    ETX(ivi_c::add_cleanup_function( & ivi_c::TopoFusion::closeIndexFile ));
 
     m_instantiated = true;
 }
@@ -338,13 +338,13 @@ Tile_manager::Tile_manager(const char* dir) // common case: dir eq. to default
 Tile_manager::~Tile_manager()
 {
     /*
-     * Possibly by this time, libkjb might have closed the file already; or
+     * Possibly by this time, libivi might have closed the file already; or
      * maybe not.  We do not know the order.  Fortunately, the closing function
      * here is "idempotent," meaning that it is safe to call a second or third
      * time or whatever.  That is good -- it's essential -- because both the
-     * dtor and libkjb (via "add_cleanup_function") are bound to call it.
+     * dtor and libivi (via "add_cleanup_function") are bound to call it.
      */
-    kjb_c::TopoFusion::closeIndexFile();
+    ivi_c::TopoFusion::closeIndexFile();
 
     m_instantiated = false;
 }
@@ -353,7 +353,7 @@ Tile_manager::~Tile_manager()
 
 /// @brief Construct a digital orthoquad image buffer; must be square.
 DOrthoQuad::DOrthoQuad( unsigned edge_length_pix )
-:   m_tileset_code(kjb_c::TopoFusion::AIR_1M),
+:   m_tileset_code(ivi_c::TopoFusion::AIR_1M),
     m_doq(plus_margin(edge_length_pix), plus_margin(edge_length_pix), 0, 0, 0)
 {}
 
@@ -361,11 +361,11 @@ DOrthoQuad::DOrthoQuad( unsigned edge_length_pix )
 
 char DOrthoQuad::select_tileset( char tileset )
 {
-    if (    tileset < kjb_c::TopoFusion::TILESET_ID_MIN
-        ||  tileset >= kjb_c::TopoFusion::NO_MAP
+    if (    tileset < ivi_c::TopoFusion::TILESET_ID_MIN
+        ||  tileset >= ivi_c::TopoFusion::NO_MAP
        )
     {
-        KJB_THROW_2(Illegal_argument,
+        IVI_THROW_2(Illegal_argument,
                             "argument to select_tileset() is out of bounds");
     }
 
@@ -399,7 +399,7 @@ void DOrthoQuad::clearCache(
     {
         for( long y = nw_request.top; y > nw_request.top - tile_ct; --y )
         {
-            KJB(EPE(invalidateEntry(tile_entry(
+            IVI(EPE(invalidateEntry(tile_entry(
                     static_cast< int >( x ),
                     static_cast< int >( y ),
                     m_tileset_code,
@@ -441,14 +441,14 @@ void DOrthoQuad::clearCache(
                             square of side length 2 x numtilebuf + 1 tiles.
                             (Each tile is 200x200 pixels.)
 
-    @return kjb_c::ERROR or kjb_c::NO_ERROR indicating outcome.
+    @return ivi_c::ERROR or ivi_c::NO_ERROR indicating outcome.
 */
 int DOrthoQuad::fillDoq(
     const Loc& nw_request,
     int numtilebuf
 )
 {
-    using kjb_c::TopoFusion::TILE_SIZE; // tile size in pixels
+    using ivi_c::TopoFusion::TILE_SIZE; // tile size in pixels
     ASSERT( ! nw_request.is_unused() );
 
     /*
@@ -471,7 +471,7 @@ int DOrthoQuad::fillDoq(
     // See if the doq buffer already contains the desired tile; if so, exit.
     if ( m_current == nw_request )
     {
-        return kjb_c::NO_ERROR;  // doq is already filled with correct pixels
+        return ivi_c::NO_ERROR;  // doq is already filled with correct pixels
     }
 
     m_current = nw_request;
@@ -507,10 +507,10 @@ int DOrthoQuad::fillDoq(
                     //download the tile
                     while ((buflen=download_tile(&entry, buf, vbuf.size()))<0)
                     {
-                        KJB(TEST_PSE(("Download fail!  Sleep, then retry\n")));
-                        kjb_c::nap(10000); // ten seconds
+                        IVI(TEST_PSE(("Download fail!  Sleep, then retry\n")));
+                        ivi_c::nap(10000); // ten seconds
                         ++retry_ct;
-                        KJB( ERE( retry_test( retry_ct ) ) );
+                        IVI( ERE( retry_test( retry_ct ) ) );
                     }
                     ASSERT( buflen > 0 );
                     int rc = addIndexEntry( entry, buf, buflen );
@@ -524,11 +524,11 @@ int DOrthoQuad::fillDoq(
                 // Try more image formats here, and break if successful.
 
                 // Backtrack if the last step failed (uncommon case)
-                KJB(ERE( invalidateEntry( entry )));
-                KJB(TEST_PSE(( "Bad image buffer!  Sleep, then retry\n" )));
-                kjb_c::nap(10000); // ten seconds
+                IVI(ERE( invalidateEntry( entry )));
+                IVI(TEST_PSE(( "Bad image buffer!  Sleep, then retry\n" )));
+                ivi_c::nap(10000); // ten seconds
             }
-            KJB( ERE( retry_test( retry_ct ) ) );
+            IVI( ERE( retry_test( retry_ct ) ) );
 
 #if 0
             // Fill the array, clipping perhaps.  Units of i,j below are pixels
@@ -558,7 +558,7 @@ int DOrthoQuad::fillDoq(
         }
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -575,9 +575,9 @@ int DOrthoQuad::fillDoq(
 int DOrthoQuad::num_tiles_to_cover( int meters ) const
 {
     const long TILE_SIZE_METERS
-               = kjb_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
+               = ivi_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
 
-    if (meters < 0) KJB_THROW_2(Illegal_argument, "negative cover distance");
+    if (meters < 0) IVI_THROW_2(Illegal_argument, "negative cover distance");
     ASSERT( 0 < TILE_SIZE_METERS );
 
     int tiles_2_cover = meters / TILE_SIZE_METERS; // want "ceil" of this
@@ -597,10 +597,10 @@ int DOrthoQuad::num_tile_buf() const
 }
 
 
-int DOrthoQuad::fill( const kjb::TopoFusion::pt& center )
+int DOrthoQuad::fill( const ivi::TopoFusion::pt& center )
 {
     const long TILE_SIZE_METERS
-               = kjb_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
+               = ivi_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
     const int n = num_tile_buf();
 
     ASSERT( long(width()) <= TILE_SIZE_METERS * (1 + 2 * n) );
@@ -618,18 +618,18 @@ int DOrthoQuad::fill( const kjb::TopoFusion::pt& center )
      * TILE_SIZE pixels, or TILE_SIZE_METERS meters, on a side.
      * Also, we move from request center to northwest corner of whole image
      */
-    kjb_c::kjb_disable_paging();
+    ivi_c::ivi_disable_paging();
     const Loc l = Loc::tile_nw_from_utm_center(center, TILE_SIZE_METERS, n);
     const int rc = fillDoq(l, n);
-    kjb_c::kjb_restore_paging();
+    ivi_c::ivi_restore_paging();
     return rc;
 }
 
 
-int DOrthoQuad::refill( const kjb::TopoFusion::pt& center )
+int DOrthoQuad::refill( const ivi::TopoFusion::pt& center )
 {
     const long TILE_SIZE_METERS
-               = kjb_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
+               = ivi_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
     const int n = num_tile_buf();
     clearCache(Loc::tile_nw_from_utm_center(center, TILE_SIZE_METERS, n), n);
     return fill( center );
@@ -639,18 +639,18 @@ int DOrthoQuad::refill( const kjb::TopoFusion::pt& center )
 /// @brief Return the "easting" coordinate of the left edge of the DOQ.
 long DOrthoQuad::left() const
 {
-    if ( ! isReady() ) KJB_THROW_2(Runtime_error, "DOQ not filled");
+    if ( ! isReady() ) IVI_THROW_2(Runtime_error, "DOQ not filled");
     const long TILE_SIZE_METERS
-               = kjb_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
+               = ivi_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
     return TILE_SIZE_METERS * m_current.left;
 }
 
 /// @brief Return the "northing" coordinate of the top edge of the DOQ.
 long DOrthoQuad::top() const
 {
-    if ( ! isReady() ) KJB_THROW_2(Runtime_error, "DOQ not filled");
+    if ( ! isReady() ) IVI_THROW_2(Runtime_error, "DOQ not filled");
     const long TILE_SIZE_METERS
-               = kjb_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
+               = ivi_c::TopoFusion::TileSource[ int(m_tileset_code) ].UTM_Size;
     return TILE_SIZE_METERS * m_current.top;
 }
 
@@ -669,23 +669,23 @@ size_t DOrthoQuad::height() const
 
 /**
  * @brief represent DOQ as a matrix of integers: row 0, col 0 is northwest
- * @return kjb_c::ERROR if DOQ is not yet filled, otherwise kjb_c::NO_ERROR.
+ * @return ivi_c::ERROR if DOQ is not yet filled, otherwise ivi_c::NO_ERROR.
  * @warning Remember the DOQ is not centered at the point given to the ctor.
  * @see read_abs() to get precise centering control over the DOQ imagery.
  */
 int DOrthoQuad::as_matrix( Int_matrix *doq ) const
 {
-    KJB( NRE( doq ) );
+    IVI( NRE( doq ) );
 
     if ( ! isReady() )
     {
-        kjb_c::set_error( "DOQ has not yet been pointed to a location." );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "DOQ has not yet been pointed to a location." );
+        return ivi_c::ERROR;
     }
 
     Int_matrix m = m_doq.to_grayscale_matrix().floor();
     doq -> swap(m);
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -697,9 +697,9 @@ DOrthoQuad::Pixel DOrthoQuad::read( unsigned xcoord, unsigned ycoord ) const
 
 
 /// @brief Read pixel RELATIVE TO current left,top settings (meters offset)
-kjb_c::Pixel DOrthoQuad::read_color(unsigned xcoord_m, unsigned ycoord_m) const
+ivi_c::Pixel DOrthoQuad::read_color(unsigned xcoord_m, unsigned ycoord_m) const
 {
-    if ( ! isReady() ) KJB_THROW_2(Runtime_error, "DOQ not filled");
+    if ( ! isReady() ) IVI_THROW_2(Runtime_error, "DOQ not filled");
 
     const float PPM = 1.0f / meters_per_pixel();
     return m_doq.at( ycoord_m * PPM, xcoord_m * PPM );
@@ -734,14 +734,14 @@ DOrthoQuad::Pixel DOrthoQuad::read_abs(long abs_xcoord, long abs_ycoord) const
  * but if you aren't sure what that was, just use the zone() method.
  * If you go out of bounds it will throw.
  */
-kjb_c::Pixel DOrthoQuad::read_abs_color(long abs_xcoord, long abs_ycoord) const
+ivi_c::Pixel DOrthoQuad::read_abs_color(long abs_xcoord, long abs_ycoord) const
 {
     if ( abs_xcoord < left() || top() < abs_ycoord )
     {
         std::ostringstream oob;
         oob << "query x,y = " << abs_xcoord << ',' << abs_ycoord
             << "; left,top = " << left() << ',' << top();
-        KJB_THROW_2(Index_out_of_bounds, oob.str());
+        IVI_THROW_2(Index_out_of_bounds, oob.str());
     }
     return read_color( static_cast< unsigned >( abs_xcoord - left() ),
                        static_cast< unsigned >( top() - abs_ycoord  ) );
@@ -750,7 +750,7 @@ kjb_c::Pixel DOrthoQuad::read_abs_color(long abs_xcoord, long abs_ycoord) const
 
 float DOrthoQuad::meters_per_pixel() const
 {
-    return kjb_c::TopoFusion::TileSource[ int(m_tileset_code) ].metersPerPixel;
+    return ivi_c::TopoFusion::TileSource[ int(m_tileset_code) ].metersPerPixel;
 }
 
 
@@ -768,7 +768,7 @@ DOrthoQuad::Pixel DOrthoQuad::read_abs(const pt& p) const
 {
     if (p.zone != zone())
     {
-        KJB_THROW_2(Index_out_of_bounds, "zone mismatch");
+        IVI_THROW_2(Index_out_of_bounds, "zone mismatch");
     }
     return read_abs(long(std::floor(p.x+0.5)), long(std::floor(p.y+0.5)));
 }
@@ -835,7 +835,7 @@ Image get_topographic_map_detail(
 
     // Set up orthoquad data structure of proper size.
     DOrthoQuad d(std::max(width, height)); // units are pixels
-    d.select_tileset(kjb_c::TopoFusion::TOPO_2M);
+    d.select_tileset(ivi_c::TopoFusion::TOPO_2M);
 
     // Compute the center location.
     const size_t    METERS_PER_PIXEL = d.meters_per_pixel(),
@@ -911,11 +911,11 @@ Image get_topographic_map_detail(
     }
     out.draw_aa_rectangle_outline(target_top_row, target_left_col,
             target_bottom_row, target_right_col,
-            kjb::PixelRGBA(180, 0, 180) /* purple */ );
+            ivi::PixelRGBA(180, 0, 180) /* purple */ );
 #endif
     return out;
 }
 
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi

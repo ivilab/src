@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_metric.h 20840 2016-09-04 18:27:14Z kobus $ */
+/* $Id: m_vec_metric.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

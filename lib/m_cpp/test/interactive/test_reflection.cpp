@@ -6,7 +6,7 @@
  * There is a fully-automatic version of this in the test directory.
  */
 /*
- * $Id: test_reflection.cpp 16063 2013-11-21 00:52:52Z predoehl $
+ * $Id: test_reflection.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <m_cpp/m_convolve.h>
@@ -15,17 +15,17 @@
 namespace
 {
 
-int test(const kjb::Matrix& x, const kjb::Matrix& y)
+int test(const ivi::Matrix& x, const ivi::Matrix& y)
 {
-    kjb::Fftw_convolution_2d::Sizes s(
+    ivi::Fftw_convolution_2d::Sizes s(
             x.get_num_rows(), x.get_num_cols(),
             y.get_num_rows(), y.get_num_cols());
 
-    kjb::Matrix z;
+    ivi::Matrix z;
 
-    KJB(ERE(kjb::debug::test_reflect_into_input_buf(x, &z, s)));
+    IVI(ERE(ivi::debug::test_reflect_into_input_buf(x, &z, s)));
     std::cout << "Input:\n" << x << "\nOutput:\n" << z << '\n';
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 }
@@ -33,12 +33,12 @@ int test(const kjb::Matrix& x, const kjb::Matrix& y)
 int main(int argc, char** argv)
 {
     const double d[] = {-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7};
-    kjb::Matrix x(4, 4, d); 
+    ivi::Matrix x(4, 4, d); 
 
-    KJB(EPETE(test(x, kjb::Matrix(1, 1))));
+    IVI(EPETE(test(x, ivi::Matrix(1, 1))));
     // output: same as input
 
-    KJB(EPETE(test(x, kjb::Matrix(3, 3))));
+    IVI(EPETE(test(x, ivi::Matrix(3, 3))));
     /* output:
         -8.0 -7.0 -6.0 -5.0 -5.0 -8.0
         -4.0 -3.0 -2.0 -1.0 -1.0 -4.0
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
      */
 
     // ridiculously large:  quadruple size of x (exactly)
-    KJB(EPETE(test(x, kjb::Matrix(5, 5))));
+    IVI(EPETE(test(x, ivi::Matrix(5, 5))));
     /* output:
         -8.0 -7.0 -6.0 -5.0 -5.0 -6.0 -7.0 -8.0
         -4.0 -3.0 -2.0 -1.0 -1.0 -2.0 -3.0 -4.0
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
         -8.0 -7.0 -6.0 -5.0 -5.0 -6.0 -7.0 -8.0
      */
 
-    KJB(EPETE(test(x, kjb::Matrix(1, 4))));
+    IVI(EPETE(test(x, ivi::Matrix(1, 4))));
     /* output:
         -8.0 -7.0 -6.0 -5.0 -5.0 -6.0 -8.0
         -4.0 -3.0 -2.0 -1.0 -1.0 -2.0 -4.0
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
          4.0  5.0  6.0  7.0  7.0  6.0  4.0
      */
 
-    KJB(EPETE(test(x, kjb::Matrix(4, 1))));
+    IVI(EPETE(test(x, ivi::Matrix(4, 1))));
     /* output:
         -8.0 -7.0 -6.0 -5.0
         -4.0 -3.0 -2.0 -1.0
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
         -8.0 -7.0 -6.0 -5.0
      */
 
-    KJB(EPETE(test(x, kjb::Matrix(1, 2))));
+    IVI(EPETE(test(x, ivi::Matrix(1, 2))));
     /* output:
         -8.0 -7.0 -6.0 -5.0 -5.0
         -4.0 -3.0 -2.0 -1.0 -1.0
@@ -88,7 +88,7 @@ int main(int argc, char** argv)
          4.0  5.0  6.0  7.0  7.0
      */
 
-    KJB(EPETE(test(x, kjb::Matrix(2, 1))));
+    IVI(EPETE(test(x, ivi::Matrix(2, 1))));
     /* output:
         -8.0 -7.0 -6.0 -5.0
         -4.0 -3.0 -2.0 -1.0

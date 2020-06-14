@@ -15,7 +15,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_color_likelihood.h 18657 2015-03-18 14:43:48Z ernesto $ */
+/* $Id: pt_color_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_COLOR_LIKELIHOOD_H_
 #define PT_COLOR_LIKELIHOOD_H_
@@ -31,7 +31,7 @@
 #include <utility>
 #include <boost/shared_array.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -117,7 +117,7 @@ private:
 
 };
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /* PT_COLOR_LIKELIHOOD_H_ */
 

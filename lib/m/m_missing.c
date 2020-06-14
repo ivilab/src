@@ -1,5 +1,5 @@
 
-/* $Id: m_missing.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_missing.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -70,9 +70,9 @@ static Queue_element* fs_respect_missing_values_stack_head = NULL;
 #ifdef __C2MAN__
 int respect_missing_values(void)
 {
-    IMPORT int kjb_respect_missing_values;
+    IMPORT int ivi_respect_missing_values;
 
-    return kjb_respect_missing_values;
+    return ivi_respect_missing_values;
 }
 #else
 /* It is a macro! */
@@ -111,7 +111,7 @@ int respect_missing_values(void)
 
 int enable_respect_missing_values(void)
 {
-    IMPORT int kjb_respect_missing_values;
+    IMPORT int ivi_respect_missing_values;
     int*       save_respect_missing_values_ptr;
     int        result;
 
@@ -120,7 +120,7 @@ int enable_respect_missing_values(void)
     save_respect_missing_values_ptr = INT_MALLOC(1);
     CONTINUE_HEAP_CHECK_2();
     NRE(save_respect_missing_values_ptr);
-    *save_respect_missing_values_ptr = kjb_respect_missing_values;
+    *save_respect_missing_values_ptr = ivi_respect_missing_values;
 
 #ifdef TRACK_MEMORY_ALLOCATION
     if (fs_first_respect_missing_values_stack_use)
@@ -137,7 +137,7 @@ int enable_respect_missing_values(void)
     CONTINUE_HEAP_CHECK_2();
     ERE(result);
 
-    kjb_respect_missing_values = TRUE;
+    ivi_respect_missing_values = TRUE;
 
     return NO_ERROR;
 }
@@ -175,7 +175,7 @@ int enable_respect_missing_values(void)
 
 int disable_respect_missing_values(void)
 {
-    IMPORT int kjb_respect_missing_values;
+    IMPORT int ivi_respect_missing_values;
     int*       save_respect_missing_values_ptr;
     int        result;
 
@@ -184,7 +184,7 @@ int disable_respect_missing_values(void)
     save_respect_missing_values_ptr = INT_MALLOC(1);
     CONTINUE_HEAP_CHECK_2();
     NRE(save_respect_missing_values_ptr);
-    *save_respect_missing_values_ptr = kjb_respect_missing_values;
+    *save_respect_missing_values_ptr = ivi_respect_missing_values;
 
 #ifdef TRACK_MEMORY_ALLOCATION
     if (fs_first_respect_missing_values_stack_use)
@@ -201,7 +201,7 @@ int disable_respect_missing_values(void)
     CONTINUE_HEAP_CHECK_2();
     ERE(result);
 
-    kjb_respect_missing_values = FALSE;
+    ivi_respect_missing_values = FALSE;
 
     return NO_ERROR;
 }
@@ -244,10 +244,10 @@ int restore_respect_missing_values(void)
     NRE(cur_elem = remove_first_element(&fs_respect_missing_values_stack_head,
                                         (Queue_element**)NULL));
 
-    kjb_respect_missing_values = *((int*)(cur_elem->contents));
+    ivi_respect_missing_values = *((int*)(cur_elem->contents));
 
     SKIP_HEAP_CHECK_2();
-    free_queue_element(cur_elem, kjb_free);
+    free_queue_element(cur_elem, ivi_free);
     CONTINUE_HEAP_CHECK_2();
 
     return NO_ERROR;
@@ -334,7 +334,7 @@ int index_matrix_rows_with_missing
 static void free_respect_missing_values_stack(void)
 {
     free_queue(&fs_respect_missing_values_stack_head, (Queue_element**)NULL,
-               kjb_free);
+               ivi_free);
 }
 
 #endif

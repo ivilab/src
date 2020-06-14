@@ -1,4 +1,4 @@
-/* $Id: test_edge_lines_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: test_edge_lines_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -34,18 +34,18 @@
 #include "gr_cpp/gr_opengl.h"
 
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
-using kjb_c::kjb_rand;
+using ivi_c::ivi_rand;
 
 float width = 400;
 float height = 300;
 const float NEAR = 10;
 const float FAR = 10000;
 
-#ifdef KJB_HAVE_OPENGL
-static kjb::Offscreen_buffer* offscreen = 0;
-namespace kjb
+#ifdef IVI_HAVE_OPENGL
+static ivi::Offscreen_buffer* offscreen = 0;
+namespace ivi
 {
 
 /** Template specialization for computing the likelihood from
@@ -89,16 +89,16 @@ double Edge_lines_likelihood::compute_likelihood
 
 void init_opengl(int argc, char* argv[])
 {
-    using namespace kjb;
+    using namespace ivi;
 
-    offscreen = kjb::create_and_initialize_offscreen_buffer((GLsizei)width,
+    offscreen = ivi::create_and_initialize_offscreen_buffer((GLsizei)width,
             (GLsizei)height);
 }
 
 int main(int argc, char* argv[])
 {
 
-    //kjb_c::kjb_init();
+    //ivi_c::ivi_init();
     init_opengl(argc, argv);
     glColor3f(1.0,0.0,0.0);
 
@@ -116,30 +116,30 @@ int main(int argc, char* argv[])
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
     
-    kjb_c::KJB_image * img = 0;
+    ivi_c::IVI_image * img = 0;
     pp.wire_occlude_render();
     pp.wire_render();
     Base_gl_interface::capture_gl_view(&img);
-    kjb::Image im(img);
+    ivi::Image im(img);
     im.write("data_edges.tiff");
 
     const Polymesh & polymesh = pp.get_polymesh();
     Int_matrix model_map(im.get_num_rows(), im.get_num_cols(), 0);
 
-    kjb::Image img1 = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
-    kjb::Image img2 = img1;        
-    kjb::Image img3 = img1;        
-    kjb::Image img4 = img1;        
-    kjb::Image img5 = img1;        
-    kjb::Image img6 = img1;        
-    kjb::Image img7 = img1; 
+    ivi::Image img1 = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::Image img2 = img1;        
+    ivi::Image img3 = img1;        
+    ivi::Image img4 = img1;        
+    ivi::Image img5 = img1;        
+    ivi::Image img6 = img1;        
+    ivi::Image img7 = img1; 
     
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
+    ivi::prepare_model_map(model_map,polymesh);
         
     std::vector<Model_edge> rendered_model_edges;
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
     
     for (unsigned int i = 0; i < rendered_model_edges.size(); i++)
     {
@@ -149,12 +149,12 @@ int main(int argc, char* argv[])
     img6.write("rendered_model_edges.jpg");
    
 
-//    kjb::Image testimg(img6);    
+//    ivi::Image testimg(img6);    
     
-    kjb::Image testimg("001.jpg");    
+    ivi::Image testimg("001.jpg");    
     
     Canny_edge_detector canny(1.0, 0.01*255, 0.008*255, 10, true);
-    kjb::Edge_set * data_edges = canny.detect_edges(testimg, true);
+    ivi::Edge_set * data_edges = canny.detect_edges(testimg, true);
 
     data_edges->remove_short_edges(5);
     data_edges->break_edges_at_corners(0.8, 3);
@@ -200,12 +200,12 @@ int main(int argc, char* argv[])
     img5.write("data_edges_edges.jpg");
     model_map.write("model_map.txt");
     model_map = model_map*1000; 
-    kjb::Image model_image(model_map);
+    ivi::Image model_image(model_map);
     model_image.write("model_map.jpg");
     std::cout.precision(17);
 
     double ll; 
-    kjb::Image img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::Image img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
@@ -217,9 +217,9 @@ int main(int argc, char* argv[])
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     img_corr.write("corr_2.jpg");
     std::cout<< "2's Likelihood: "<<ll<<std::endl;
@@ -231,10 +231,10 @@ int main(int argc, char* argv[])
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
     
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     img_corr.write("corr_3.jpg");
     std::cout<< "3' Likelihood: "<<ll<<std::endl;
@@ -244,9 +244,9 @@ int main(int argc, char* argv[])
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     img_corr.write("corr_4.jpg");
     std::cout<< "4' Likelihood: "<<ll<<std::endl;
@@ -256,9 +256,9 @@ int main(int argc, char* argv[])
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     img_corr.write("corr_5.jpg");
     std::cout<< "5's Likelihood: "<<ll<<std::endl;
@@ -269,9 +269,9 @@ int main(int argc, char* argv[])
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     std::cout<< "6's Likelihood: "<<ll<<std::endl;
     img_corr.write("corr_6.jpg");
@@ -282,9 +282,9 @@ int main(int argc, char* argv[])
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     img_corr.write("corr_7.jpg");
     std::cout<< "7's Likelihood: "<<ll<<std::endl;
@@ -298,9 +298,9 @@ int main(int argc, char* argv[])
     camera.set_camera_centre_z(300);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     img_corr.write("corr_8.jpg");
     std::cout<< "8's Likelihood: "<<ll<<std::endl;
@@ -309,9 +309,9 @@ int main(int argc, char* argv[])
     ll = likelihood.compute_likelihood<Parametric_parapiped, Perspective_camera>(pp, camera);
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb::prepare_model_map(model_map,polymesh);
-    kjb::prepare_rendered_model_edges(rendered_model_edges, model_map);
-    img_corr = kjb::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
+    ivi::prepare_model_map(model_map,polymesh);
+    ivi::prepare_rendered_model_edges(rendered_model_edges, model_map);
+    img_corr = ivi::Image::create_initialized_image(im.get_num_rows(), im.get_num_cols(), 255,255,255);        
     likelihood.draw_correspondence(img_corr, img_corr, rendered_model_edges, 1.0);
     img_corr.write("corr_9.jpg");
     std::cout<< "9's Likelihood: "<<ll<<std::endl;

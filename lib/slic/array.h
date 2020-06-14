@@ -1,4 +1,4 @@
-/* $Id: array.h 22174 2018-07-01 21:49:18Z kobus $
+/* $Id: array.h 25499 2020-06-14 13:26:04Z kobus $
  */
 #ifndef SLIC_INCLUDED_ARRAY_H_
 #define SLIC_INCLUDED_ARRAY_H_
@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

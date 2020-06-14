@@ -1,5 +1,5 @@
 
-/* $Id: copy_int_matrix.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: copy_int_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -37,28 +37,28 @@ int main(int argc, char **argv)
         num_tries *= test_factor;
     } 
 
-    kjb_l_set("debug", "2");
-    kjb_l_set("page", "off");
+    ivi_l_set("debug", "2");
+    ivi_l_set("page", "off");
 
     for (i = 0; i < num_tries; i++)
     {
         int    r;
         int    c;
         int    diff;
-        int    num_rows = 1 + MAX_NUM_ROWS * kjb_rand();
-        int    num_cols = 1 + MAX_NUM_COLS * kjb_rand();
+        int    num_rows = 1 + MAX_NUM_ROWS * ivi_rand();
+        int    num_cols = 1 + MAX_NUM_COLS * ivi_rand();
 
-        kjb_l_set("use-memcpy", "f");
+        ivi_l_set("use-memcpy", "f");
 
         EPETE(get_random_matrix(&source_mp, num_rows, num_cols));
         EPETE(ow_subtract_scalar_from_matrix(source_mp, 0.5));
         EPETE(ow_multiply_matrix_by_scalar(source_mp, 10000.0));
         EPETE(copy_matrix_to_int_matrix(&mp, source_mp));
 
-        r = kjb_rint((double)num_rows * kjb_rand());
+        r = ivi_rint((double)num_rows * ivi_rand());
         r = MIN_OF(r, num_rows - 1);
 
-        c = kjb_rint((double)num_cols * kjb_rand());
+        c = ivi_rint((double)num_cols * ivi_rand());
         c = MIN_OF(c , num_cols - 1);
 
         ASSERT_IS_LESS_INT(r, num_rows);
@@ -78,12 +78,12 @@ int main(int argc, char **argv)
             return EXIT_BUG;
         }
 
-        kjb_l_set("use-memcpy", "t");
+        ivi_l_set("use-memcpy", "t");
 
-        r = kjb_rint((double)num_rows * kjb_rand());
+        r = ivi_rint((double)num_rows * ivi_rand());
         r = MIN_OF(r, num_rows - 1);
 
-        c = kjb_rint((double)num_cols * kjb_rand());
+        c = ivi_rint((double)num_cols * ivi_rand());
         c = MIN_OF(c , num_cols - 1);
 
         ASSERT_IS_LESS_INT(r, num_rows);

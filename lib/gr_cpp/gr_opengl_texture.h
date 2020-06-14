@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_texture.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_opengl_texture.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -18,8 +18,8 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef KJB_CPP_OPENGL_TEXTURE
-#define KJB_CPP_OPENGL_TEXTURE
+#ifndef IVI_CPP_OPENGL_TEXTURE
+#define IVI_CPP_OPENGL_TEXTURE
 
 // this must be before opengl.h
 #include "gr_cpp/gr_opengl_headers.h"
@@ -28,7 +28,7 @@
 #include <gr_cpp/gr_glut.h>
 #endif
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <map>
 #include <m_cpp/m_matrix.h>
@@ -36,7 +36,7 @@
 #include <l_cpp/l_util.h>
 
 typedef unsigned int GLunum;
-namespace kjb 
+namespace ivi 
 {
 namespace opengl
 {
@@ -247,7 +247,7 @@ public:
      *   RED = 0; If matrix value == 0.
      *   RED = 255 ; otherwise
      */
-    Self& set_mask_1f(const kjb::Matrix& mat, GLenum target = GL_TEXTURE_2D);
+    Self& set_mask_1f(const ivi::Matrix& mat, GLenum target = GL_TEXTURE_2D);
 
 
     /**
@@ -255,7 +255,7 @@ public:
      *   RED = 0; If matrix value == 0.
      *   RED = 255 ; otherwise
      */
-    Self& set_mask_1f(const kjb::Int_matrix& mat, GLenum target = GL_TEXTURE_2D);
+    Self& set_mask_1f(const ivi::Int_matrix& mat, GLenum target = GL_TEXTURE_2D);
     
 
 
@@ -348,7 +348,7 @@ private:
 void draw_fullscreen_textured_quad(const Texture& texture);
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_HAVE_OPENGL */
-#endif /* KJB_OPENGL_TEXTURE */
+#endif /* IVI_HAVE_OPENGL */
+#endif /* IVI_OPENGL_TEXTURE */

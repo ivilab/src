@@ -20,7 +20,7 @@
 #include <iostream> 
 #include <sstream>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -53,7 +53,7 @@ std::vector<Person_flow_blob> parse_person_blobs(const std::string& fname)
     std::ifstream ifs(fname.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_3(IO_error, "can't open file %s ", (fname.c_str())); 
+        IVI_THROW_3(IO_error, "can't open file %s ", (fname.c_str())); 
     }
     std::string line; 
 

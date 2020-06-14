@@ -17,7 +17,7 @@
 #include <functional>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 typedef MV_normal_distribution Mvn;
 typedef gp::Predictive_nl<gp::Constant, gp::Sqex> Pred_nl;

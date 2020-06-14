@@ -37,8 +37,8 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 void Scene_hessian::set_diagonals(const Scene& scene) const
 {
@@ -142,7 +142,7 @@ void Scene_hessian::set_diagonals(const Scene& scene) const
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::pt::lm_marginal_likelihood(const Scene& scene, double pt, bool ih)
+double ivi::pt::lm_marginal_likelihood(const Scene& scene, double pt, bool ih)
 {
     double log_det_H = 0.0;
     BOOST_FOREACH(const Target& target, scene.association)
@@ -166,7 +166,7 @@ double kjb::pt::lm_marginal_likelihood(const Scene& scene, double pt, bool ih)
         double p = 0.5*log_det_H - (D/2.0)*std::log(2*M_PI);
         dl = pt - p;
     }
-    catch(const KJB_error& kerr)
+    catch(const IVI_error& kerr)
     {
         std::cerr << "WARNING: Hessian matrix not positive definite.\n";
         dl = pt - (D/-2.0)*std::log(2*M_PI);
@@ -177,7 +177,7 @@ double kjb::pt::lm_marginal_likelihood(const Scene& scene, double pt, bool ih)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<double> kjb::pt::trajectory_gradient_step_sizes
+std::vector<double> ivi::pt::trajectory_gradient_step_sizes
 (
     const Scene& scene,
     bool infer_head
@@ -245,7 +245,7 @@ std::vector<double> kjb::pt::trajectory_gradient_step_sizes
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-size_t kjb::pt::make_max
+size_t ivi::pt::make_max
 (
     const Scene& scene,
     const Scene_posterior& pt,

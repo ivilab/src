@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: prior.cpp 20582 2016-03-23 02:21:31Z ernesto $ */
+/* $Id: prior.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
@@ -37,7 +37,7 @@
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using boost::bind;
 

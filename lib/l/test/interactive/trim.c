@@ -1,5 +1,5 @@
 
-/* $Id: trim.c 21654 2017-08-05 14:10:14Z kobus $ */
+/* $Id: trim.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -44,9 +44,9 @@ int main(void)
 #endif 
 
     /* The trim routines are used by the bug reporting routines. */
-    kjb_set_debug_level(1);
+    ivi_set_debug_level(1);
 
-    kjb_init();
+    ivi_init();
 
     while ((res=BUFF_STDIN_GET_LINE("str> ",line)) != EOF) 
     {
@@ -82,6 +82,6 @@ int main(void)
         dbi(trim_count);
     }
 
-    kjb_exit(EXIT_SUCCESS); 
+    ivi_exit(EXIT_SUCCESS); 
 }
 

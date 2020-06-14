@@ -1,5 +1,5 @@
 
-/* $Id: m2_spline.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m2_spline.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "l_cpp/l_exception.h"
@@ -15,7 +15,7 @@
 using std::bad_alloc;
 using std::vector;
 
-namespace kjb
+namespace ivi
 {
 
 Nurbs_curve::Nurbs_curve() :
@@ -36,14 +36,14 @@ Nurbs_curve::Nurbs_curve(uint num_knots, const float* knots,
 {
     if(_num_knots <= _order)
     {
-        KJB_THROW_2(Illegal_argument, "Invalid knot count; must be at least (order + 1).");
+        IVI_THROW_2(Illegal_argument, "Invalid knot count; must be at least (order + 1).");
     }
 
     unsigned int num_ctl_points = _num_knots - _order;
 
     if(num_ctl_points != ctl_points.size())
     {
-        KJB_THROW_2(Illegal_argument, 
+        IVI_THROW_2(Illegal_argument, 
             // Kyle, I just didn't understand this msg:
                 // "Invalid control point count; Must be |knots| - order."
             // Rephrasing: 
@@ -85,7 +85,7 @@ Nurbs_curve::~Nurbs_curve()
 void Nurbs_curve::insert_at(int /*index*/, const Vector& /*pt*/)
 {
     // TODO implement
-    KJB_THROW(Not_implemented);
+    IVI_THROW(Not_implemented);
 }
 
 Nurbs_curve& Nurbs_curve::operator=(const Nurbs_curve& src)
@@ -121,7 +121,7 @@ size_t Polybezier_curve::encode_control_point(size_t curve_i, Point_type point_t
 {
     // first handle point isn't a control point
     if(curve_i == 0 && point_type == HANDLE_1_POINT)
-        KJB_THROW(kjb::Index_out_of_bounds);
+        IVI_THROW(ivi::Index_out_of_bounds);
 
     size_t index = curve_i * 3 + point_type;
     if(point_type == HANDLE_1_POINT)
@@ -141,11 +141,11 @@ Vector Nurbs_curve::evaluate(double u) const
     const int DIMENSION = _ctl_points[0].get_length();
 
     if(this->_ctl_points.size() == 0)
-        KJB_THROW_2(kjb::Runtime_error, "Cannot evaluate empty curve.");
+        IVI_THROW_2(ivi::Runtime_error, "Cannot evaluate empty curve.");
 
     Vector result(DIMENSION, 0.0);
 
-    if(u < 0 || u > 1) KJB_THROW_2(Illegal_argument, "Nurbs_curve::evaluate(): u must be in [0, 1]");
+    if(u < 0 || u > 1) IVI_THROW_2(Illegal_argument, "Nurbs_curve::evaluate(): u must be in [0, 1]");
 
     for(unsigned int i = 0; i < _ctl_points.size(); i++)
     {
@@ -168,7 +168,7 @@ Vector Nurbs_curve::gradient(double u) const
 
     Vector grad(DIMENSION, 0.0);
 
-    if(u < 0 || u > 1) KJB_THROW_2(Illegal_argument, "Nurbs_curve::evaluate(): u must be in [0, 1]");
+    if(u < 0 || u > 1) IVI_THROW_2(Illegal_argument, "Nurbs_curve::evaluate(): u must be in [0, 1]");
 
     // TODO: handle end-points for real.  
     // this is a HACK
@@ -284,17 +284,17 @@ double Nurbs_curve::_N(int k, int d, double u) const
 #ifndef NDEBUG
     if(k < 0 || k >= (int) _num_knots)
     {
-        KJB_THROW_2(Illegal_argument, "_N: knot index out of bounds.");
+        IVI_THROW_2(Illegal_argument, "_N: knot index out of bounds.");
     }
 
     if(d < 0)
     {
-        KJB_THROW_2(Illegal_argument, "_N: degree must be >= 0.");
+        IVI_THROW_2(Illegal_argument, "_N: degree must be >= 0.");
     }
 
     if(u < 0 || u > 1)
     {
-        KJB_THROW_2(Illegal_argument, "_N: t must be in [0,1].");
+        IVI_THROW_2(Illegal_argument, "_N: t must be in [0,1].");
     }
 #endif
 
@@ -351,7 +351,7 @@ Nurbs_surface::Nurbs_surface(
 {
     if(_num_knots_s <= _order_s || _num_knots_t <= _order_t)
     {
-        KJB_THROW_2(Illegal_argument, "Invalid knot count; must be at least (order + 1).");
+        IVI_THROW_2(Illegal_argument, "Invalid knot count; must be at least (order + 1).");
     }
 
     unsigned int num_ctl_points_s = _num_knots_s - _order_s;
@@ -360,7 +360,7 @@ Nurbs_surface::Nurbs_surface(
     if(num_ctl_points_s != ctl_points.size() ||
         num_ctl_points_t != ctl_points[0].size() )
     {
-        KJB_THROW_2(Illegal_argument, 
+        IVI_THROW_2(Illegal_argument, 
                 "Vector of control points is the wrong length:  "
                 "(length + degree + 1) must equal the number of knots.");
     }
@@ -445,7 +445,7 @@ Vector Nurbs_surface::gradient_s(double s, double t) const
     // TODO:  Merge shared code with gradient_t
     if(s < 0.0 || t < 0.0 || s > 1.0 || t > 1.0)
     {
-        KJB_THROW_2(Illegal_argument, "Surface parameters must be in [0,1].");
+        IVI_THROW_2(Illegal_argument, "Surface parameters must be in [0,1].");
     }
 
 
@@ -494,7 +494,7 @@ Vector Nurbs_surface::gradient_t(double s, double t) const
     // TODO:  Merge shared code with gradient_s
     if(s < 0.0 || t < 0.0 || s > 1.0 || t > 1.0)
     {
-        KJB_THROW_2(Illegal_argument, "Surface parameters must be in [0,1].");
+        IVI_THROW_2(Illegal_argument, "Surface parameters must be in [0,1].");
     }
 
 
@@ -514,7 +514,7 @@ Vector Nurbs_surface::gradient_t(double s, double t) const
     {
         // build vector of control points for an "s" curve
         int num_s = _ctl_points.size();
-        vector<kjb::Vector> s_ctl_points(num_s);
+        vector<ivi::Vector> s_ctl_points(num_s);
         for(int j = 0; j < num_s; j++)
         {
             s_ctl_points[j] = _ctl_points[j][i];
@@ -645,12 +645,12 @@ void Bezier_curve::set_control_point(int index, const Vector& pt)
 {
     if(index < 0 || index >= 4)
     {
-        KJB_THROW_2(Illegal_argument, "Cubic_bezier_curve::set_control_point(): index must be in [0,3]");
+        IVI_THROW_2(Illegal_argument, "Cubic_bezier_curve::set_control_point(): index must be in [0,3]");
     }
 
     if(pt.get_length() != _ctl_points[0].get_length())
     {
-        KJB_THROW_2(Illegal_argument, "Cubic_bezier_curve::set_control_point(): control point dimension doesn't match spline's dimension.");
+        IVI_THROW_2(Illegal_argument, "Cubic_bezier_curve::set_control_point(): control point dimension doesn't match spline's dimension.");
     }
 
     _ctl_points[index] = pt;
@@ -689,7 +689,7 @@ Polybezier_curve::Polybezier_curve(int dimension) :
     _dimension(dimension)
 { }
 
-Polybezier_curve::Polybezier_curve(const std::vector<kjb::Vector>& control_points) :
+Polybezier_curve::Polybezier_curve(const std::vector<ivi::Vector>& control_points) :
     Spline_curve(),
     _curve_points(),
     _handle_1_points(),
@@ -700,7 +700,7 @@ Polybezier_curve::Polybezier_curve(const std::vector<kjb::Vector>& control_point
         return;
     if(control_points.size() == 1)
     {
-        const kjb::Vector& p = control_points[0];
+        const ivi::Vector& p = control_points[0];
         _dimension = p.size();
         _curve_points.resize(1, p);
         _handle_1_points.resize(1, p);
@@ -709,7 +709,7 @@ Polybezier_curve::Polybezier_curve(const std::vector<kjb::Vector>& control_point
     }
 
     if((control_points.size()+2) % 3 != 0)
-        KJB_THROW_2(kjb::Illegal_argument, "Polybezier_curve: invalid number of control points");
+        IVI_THROW_2(ivi::Illegal_argument, "Polybezier_curve: invalid number of control points");
 
     size_t num_curve_pts = (control_points.size() + 2)/3;
     _dimension = control_points[0].size();
@@ -754,10 +754,10 @@ Vector Polybezier_curve::evaluate(double u) const
 
     static const size_t DEGREE = 3;
     if(u < 0.0 || u > 1.0)
-        KJB_THROW(kjb::Index_out_of_bounds);
+        IVI_THROW(ivi::Index_out_of_bounds);
 
     size_t d = c.dimension();
-    std::vector<kjb::Vector> pts(DEGREE+1, kjb::Vector(d));
+    std::vector<ivi::Vector> pts(DEGREE+1, ivi::Vector(d));
 
     // which segment are we in?
     if(u == 1.0)
@@ -777,7 +777,7 @@ Vector Polybezier_curve::evaluate(double u) const
     pts[3] = c.get_curve_point(i+1);
     // END assume DEGREE = 3
 
-    std::vector<kjb::Vector> tmp_pts(DEGREE, kjb::Vector(d));
+    std::vector<ivi::Vector> tmp_pts(DEGREE, ivi::Vector(d));
 
     // use de Casteljau's Algorithm; take the first and last point of each sub-curve
     // (this is a general implementation, for any DEGREE,
@@ -806,7 +806,7 @@ void Polybezier_curve::insert_curve_point(int index, const Vector& pt)
 {
     if(index < 0 || index > (int) _curve_points.size())
     {
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
     }
     
     _curve_points.insert(_curve_points.begin() + index, pt);
@@ -818,7 +818,7 @@ void Polybezier_curve::insert(int index, const Vector& curve_pt, const Vector& h
 {
     if(index < 0 || index > (int) _curve_points.size())
     {
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
     }
     
     _curve_points.insert(_curve_points.begin() + index, curve_pt);
@@ -903,7 +903,7 @@ void Polybezier_curve::set_handle_point_1(int index, const Vector& pt)
 {
     if((int) pt.get_length() != _dimension)
     {
-        KJB_THROW_2(Illegal_argument, "Wrong dimension in new spline point.");
+        IVI_THROW_2(Illegal_argument, "Wrong dimension in new spline point.");
     }
 
     _handle_1_points.at(index) = pt;
@@ -913,7 +913,7 @@ void Polybezier_curve::set_handle_point_2(int index, const Vector& pt)
 {
     if((int) pt.get_length() != _dimension)
     {
-        KJB_THROW_2(Illegal_argument, "Wrong dimension in new spline point.");
+        IVI_THROW_2(Illegal_argument, "Wrong dimension in new spline point.");
     }
 
     _handle_2_points.at(index) = pt;
@@ -945,7 +945,7 @@ void Polybezier_curve::symmetrize_handle_1(int index)
 {
     if(index < 0 || index > (int) _curve_points.size() )
     {
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
     }
 
     Vector& pt = _curve_points[index];
@@ -965,7 +965,7 @@ void Polybezier_curve::symmetrize_handle_2(int index)
 {
     if(index < 0 || index > (int) _curve_points.size() )
     {
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
     }
 
     Vector& pt = _curve_points[index];
@@ -1114,11 +1114,11 @@ Polybezier_curve subdivide(const Polybezier_curve& c, double u)
 {
     static const size_t DEGREE = 3;
     if(u < 0.0 || u > 1.0)
-        KJB_THROW(kjb::Index_out_of_bounds);
+        IVI_THROW(ivi::Index_out_of_bounds);
 
     size_t d = c.dimension();
-    std::vector<kjb::Vector> pts(DEGREE+1, kjb::Vector(d));
-    std::vector<kjb::Vector> new_pts(2*DEGREE+1, kjb::Vector(d));
+    std::vector<ivi::Vector> pts(DEGREE+1, ivi::Vector(d));
+    std::vector<ivi::Vector> new_pts(2*DEGREE+1, ivi::Vector(d));
 
     // BEGIN assume DEGREE = 3
     new_pts[3] = c.evaluate(u);
@@ -1144,7 +1144,7 @@ Polybezier_curve subdivide(const Polybezier_curve& c, double u)
     new_pts[6] = pts[3];
     // END assume DEGREE = 3
 
-    std::vector<kjb::Vector> tmp_pts(DEGREE, kjb::Vector(d));
+    std::vector<ivi::Vector> tmp_pts(DEGREE, ivi::Vector(d));
 
     // use de Casteljau's Algorithm; take the first and last point of each sub-curve
     // (this is a general implementation, for any DEGREE,
@@ -1176,4 +1176,4 @@ Polybezier_curve subdivide(const Polybezier_curve& c, double u)
     return new_curve;
 }
 
-} // namespace kjb
+} // namespace ivi

@@ -104,8 +104,8 @@ int main(int argc, char** argv)
     line3aFile = strcpy(line3aFile,TEST_DIR); line3aFile = strcat(line3aFile,L3DA_FILE);
     line3bFile = strcpy(line3bFile,TEST_DIR); line3bFile = strcat(line3bFile,L3DB_FILE);
 
-    kjb_seed_rand_2(TEST_CORR_RANDOM_SEED);
-    kjb_seed_rand(TEST_CORR_RANDOM_SEED,TEST_CORR_RANDOM_SEED);
+    ivi_seed_rand_2(TEST_CORR_RANDOM_SEED);
+    ivi_seed_rand(TEST_CORR_RANDOM_SEED,TEST_CORR_RANDOM_SEED);
 
     get_target_vector_vector(&p2d,8);
     get_target_vector_vector(&p3d,8);

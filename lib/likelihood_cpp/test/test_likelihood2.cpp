@@ -1,4 +1,4 @@
-/* $Id: test_likelihood2.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: test_likelihood2.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "likelihood_cpp/model_edge.h"
@@ -9,26 +9,26 @@
 
 int main(int argc, char **argv)
 {
-    using namespace kjb;
-    using namespace kjb_c;
+    using namespace ivi;
+    using namespace ivi_c;
 
     std::vector<Model_edge> model_edges;
     model_edges.push_back( Model_edge(10.0, 10.0, 11.0, 10.0, false) );
     model_edges.push_back( Model_edge(9.0, 11.0, 9.0, 12.0, false) );
 
-    kjb::Int_matrix model_map(20,20,0);
+    ivi::Int_matrix model_map(20,20,0);
     model_map(9,10) = 1;
     model_map(9,11) = 1;
     model_map(12, 10) = 2;
     model_map(11, 10) = 2;
 
-    kjb_c::Edge_set*   edge_set = 0;
-    ASSERT(edge_set = (kjb_c::Edge_set *)kjb_malloc(sizeof(kjb_c::Edge_set)));
+    ivi_c::Edge_set*   edge_set = 0;
+    ASSERT(edge_set = (ivi_c::Edge_set *)ivi_malloc(sizeof(ivi_c::Edge_set)));
     edge_set->edges = NULL;
 
-    ASSERT(edge_set->edges = (kjb_c::Edge *)kjb_malloc(2 * sizeof(kjb_c::Edge)));
+    ASSERT(edge_set->edges = (ivi_c::Edge *)ivi_malloc(2 * sizeof(ivi_c::Edge)));
     edge_set->num_edges = 2; //2
-    ASSERT(edge_set->edges[0].points = (kjb_c::Edge_point *) kjb_malloc(4 * sizeof(kjb_c::Edge_point)));
+    ASSERT(edge_set->edges[0].points = (ivi_c::Edge_point *) ivi_malloc(4 * sizeof(ivi_c::Edge_point)));
     edge_set->edges[1].points = edge_set->edges[0].points + 2;
     edge_set->total_num_pts = 4; //4
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     edge_set->edges[1].points[1].drow = 0.0;
     edge_set->edges[1].points[1].mag = 1.0;
 
-    kjb::Edge_set data_edges(edge_set);
+    ivi::Edge_set data_edges(edge_set);
 
 #warning "[Code police] Something wrong here"
 #if 0
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
     model_edges2.push_back( Model_edge(10.0, 10.0, 11.0, 10.0, false) );
     model_edges2.push_back( Model_edge(10.0, 12.0, 10.0, 11.0, false) );
 
-    kjb::Int_matrix model_map2(20,20,0);
+    ivi::Int_matrix model_map2(20,20,0);
     model_map2(10,10) = 1;
     model_map2(10,11) = 1;
     model_map2(12, 10) = 2;

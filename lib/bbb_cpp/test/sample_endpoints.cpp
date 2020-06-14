@@ -32,7 +32,7 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 const bool VERBOSE = true;

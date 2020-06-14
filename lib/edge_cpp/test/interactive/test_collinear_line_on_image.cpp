@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     const char* edge_file = argv[4];
     const char* edge_seg_file = argv[5];
 
-    using namespace kjb;
+    using namespace ivi;
     Image img(image_file);
 
     Image col_seg_img(img.get_num_rows(), img.get_num_cols(), 255, 255, 255);
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     Image col_seg_segs_img(img.get_num_rows(), img.get_num_cols(), 255, 255, 255);
 
     Canny_edge_detector edge_detector(1.0, 0.01*255, 0.08*255, 10, true);
-    kjb::Edge_set *edges = edge_detector.detect_edges(img);
+    ivi::Edge_set *edges = edge_detector.detect_edges(img);
     edges->remove_short_edges(5);
     edges->break_edges_at_corners(0.89, 3);
     edges->remove_short_edges(20);

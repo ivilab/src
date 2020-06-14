@@ -26,7 +26,7 @@
 #include <l_cpp/l_exception.h>
 #include <cmath>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Computes the Lapace-Metropolis approximation of the marginal
@@ -86,7 +86,7 @@ double lm_marginal_log_likelihood
     return log_prior(mx) + log_likelihood(mx) - laplace_max_log_density(H);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*INTEGRAL_MARGINAL_H */
 

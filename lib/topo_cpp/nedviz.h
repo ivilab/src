@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: nedviz.h 17606 2014-09-26 01:09:51Z predoehl $
+ * $Id: nedviz.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef NEDVIZ_H_UOFARIZONA_VISION
@@ -13,7 +13,7 @@
 #include <m_cpp/m_matrix.h>
 #include <i_cpp/i_image.h>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -24,7 +24,7 @@ namespace kjb
  * @param decimation    Optional decimation factor, to shrink output size
  * @param bar_length    Optional length of key color bars in top left
  * @return Image showing elevation, which looks sort of like a relief map.
- * @throws KJB_error if the input matrices are not all the same size
+ * @throws IVI_error if the input matrices are not all the same size
  *
  * The first 3 parameters must all be the same size and are expected to be the
  * outputs of an elevation grid such as a ned13_grid.  The decimation factor

@@ -1,5 +1,5 @@
 
-/* $Id: r_cluster.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: r_cluster.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -1255,7 +1255,7 @@ static int select_GMM_helper
 
             if (result == ERROR) { NOTE_ERROR(); break; }
 
-            num_clusters = kjb_rint(d_num_clusters);
+            num_clusters = ivi_rint(d_num_clusters);
 
             if (num_clusters > max_num_clusters - 1)
             {
@@ -1789,7 +1789,7 @@ static int get_full_GMM_2
                 }
             }
 
-            if (KJB_IS_SET(back_off))
+            if (IVI_IS_SET(back_off))
             {
                 int bad_cluster = back_off; 
 
@@ -2481,14 +2481,14 @@ int get_independent_GMM_2
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_vp->elements[ cluster ] += 0.5; 
                     }
@@ -2506,7 +2506,7 @@ int get_independent_GMM_2
                 result = ow_divide_vector_by_scalar(I_vp, 20.0 * (double)num_points);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                cluster = (int)(((double)num_clusters) * kjb_rand());
+                cluster = (int)(((double)num_clusters) * ivi_rand());
                 if (cluster == num_clusters) cluster--; 
                 I_vp->elements[ cluster ] = 1.0; 
                 
@@ -2515,7 +2515,7 @@ int get_independent_GMM_2
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -2952,7 +2952,7 @@ int select_multinomial_mixture_model
 
             if (result == ERROR) { NOTE_ERROR(); break; }
 
-            num_clusters = kjb_rint(d_num_clusters);
+            num_clusters = ivi_rint(d_num_clusters);
 
             if (num_clusters > max_num_clusters - 1)
             {
@@ -3764,7 +3764,7 @@ int select_GMM_helper_2
 
         while (1)
         {
-            int random_index = ((int) (num_points * kjb_rand())) - 1;
+            int random_index = ((int) (num_points * ivi_rand())) - 1;
 
             if (random_index < 0)
             {
@@ -3807,7 +3807,7 @@ int select_GMM_helper_2
         {
             if (result == ERROR) { NOTE_ERROR(); break; }
 
-            num_clusters = kjb_rint(d_num_clusters);
+            num_clusters = ivi_rint(d_num_clusters);
 
             if (num_clusters > max_num_clusters - 1)
             {
@@ -4463,9 +4463,9 @@ int get_independent_GMM_3
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
@@ -4509,14 +4509,14 @@ int get_independent_GMM_3
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_vp->elements[ cluster ] += 0.5; 
                     }
@@ -4525,7 +4525,7 @@ int get_independent_GMM_3
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -5621,7 +5621,7 @@ int get_independent_GMM_using_CEM
         {
             
             /* Operation sampling. */
-            random_number = kjb_rand();
+            random_number = ivi_rand();
             for (k = 0; k < num_possible_split_merge_operations; k++)
             {
                 if ( random_number <= split_merge_cumulative_distribution_vp->elements[k] )
@@ -5871,7 +5871,7 @@ int get_independent_GMM_using_CEM
 
             acceptance_prob = exp((adjusted_new_log_likelihood - adjusted_log_likelihood)/gamma);
 
-            if (kjb_rand() < acceptance_prob)
+            if (ivi_rand() < acceptance_prob)
             {
                 break;
             }
@@ -5892,7 +5892,7 @@ int get_independent_GMM_using_CEM
         }
         
         /*
-        if (kjb_rand() < acceptance_prob)
+        if (ivi_rand() < acceptance_prob)
         */
         {
             pso("Accepting %s operation with probability %10e.\n",\
@@ -7193,9 +7193,9 @@ static int get_independent_GMM_with_shift_3
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
@@ -7256,14 +7256,14 @@ static int get_independent_GMM_with_shift_3
                 
                 for (shift = 0; shift < num_shifts; shift++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_shift_vp->elements[ shift ] = p;
 
-                    if (kjb_rand() < 1.0 / num_shifts) 
+                    if (ivi_rand() < 1.0 / num_shifts) 
                     {
                         I_shift_vp->elements[ shift ] += 0.5; 
                     }
@@ -7272,7 +7272,7 @@ static int get_independent_GMM_with_shift_3
                 result = ow_scale_vector_by_sum(I_shift_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_shift_vp, 0.2 * kjb_rand() / num_shifts); 
+                result = ow_add_scalar_to_vector(I_shift_vp, 0.2 * ivi_rand() / num_shifts); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
  
 
@@ -7281,14 +7281,14 @@ static int get_independent_GMM_with_shift_3
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_cluster_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_cluster_vp->elements[ cluster ] += 0.5; 
                     }
@@ -7297,7 +7297,7 @@ static int get_independent_GMM_with_shift_3
                 result = ow_scale_vector_by_sum(I_cluster_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_cluster_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_cluster_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -8025,9 +8025,9 @@ static int get_independent_GMM_with_shift_4
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
@@ -8088,14 +8088,14 @@ static int get_independent_GMM_with_shift_4
                 
                 for (shift = 0; shift < num_shifts; shift++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_shift_vp->elements[ shift ] = p;
 
-                    if (kjb_rand() < 1.0 / num_shifts) 
+                    if (ivi_rand() < 1.0 / num_shifts) 
                     {
                         I_shift_vp->elements[ shift ] += 0.5; 
                     }
@@ -8104,7 +8104,7 @@ static int get_independent_GMM_with_shift_4
                 result = ow_scale_vector_by_sum(I_shift_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_shift_vp, 0.2 * kjb_rand() / num_shifts); 
+                result = ow_add_scalar_to_vector(I_shift_vp, 0.2 * ivi_rand() / num_shifts); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
  
 
@@ -8113,14 +8113,14 @@ static int get_independent_GMM_with_shift_4
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_cluster_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_cluster_vp->elements[ cluster ] += 0.5; 
                     }
@@ -8129,7 +8129,7 @@ static int get_independent_GMM_with_shift_4
                 result = ow_scale_vector_by_sum(I_cluster_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_cluster_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_cluster_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -8643,7 +8643,7 @@ int shift_point_cyclic
          * This does not make sense because fmod() works on doubles, not
          * integers. Please check the fix! 
          *
-           j = kjb_rint(fmod(i-shift, num_features));
+           j = ivi_rint(fmod(i-shift, num_features));
         */
         j = (i-shift) % num_features; 
         
@@ -9015,9 +9015,9 @@ int get_GMM_blk_compound_sym_cov
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
@@ -9066,14 +9066,14 @@ int get_GMM_blk_compound_sym_cov
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_vp->elements[ cluster ] += 0.5; 
                     }
@@ -9082,7 +9082,7 @@ int get_GMM_blk_compound_sym_cov
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -9697,9 +9697,9 @@ int get_GMM_blk_compound_sym_cov_1
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
@@ -9749,14 +9749,14 @@ int get_GMM_blk_compound_sym_cov_1
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_vp->elements[ cluster ] += 0.5; 
                     }
@@ -9765,7 +9765,7 @@ int get_GMM_blk_compound_sym_cov_1
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 

@@ -3,18 +3,18 @@
  * @author Andrew Predoehl
  * @brief Wrapper for message digest (hash) interface provided by OpenSSL
  *
- * Please see class kjb::OpenSSL_EVP and class kjb::MD5.
+ * Please see class ivi::OpenSSL_EVP and class ivi::MD5.
  */
 /*
- * $Id: wrap_openssl_evp.h 24606 2019-12-07 22:02:46Z kobus $
+ * $Id: wrap_openssl_evp.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
 // The OpenSSL include files from mac ports seem to have known issues, and it is
 // not clear when this will get resolved. 
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
 #ifdef MAC_OSX
-#undef KJB_HAVE_OPENSSL
+#undef IVI_HAVE_OPENSSL
 #endif 
 #endif 
 
@@ -23,7 +23,7 @@
 
 #include <l_cpp/l_exception.h>
 
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
 #include <openssl/evp.h>
 #else
 #warning "OpenSSL is required for class OpenSSL_EVP to function properly"
@@ -32,13 +32,13 @@
 #include <vector>
 
 
-namespace kjb
+namespace ivi
 {
 
 /**
  * @brief Generic OpenSSL hasher class, the base class for specific derivations
  *
- * @throws kjb::Missing_dependency if OpenSSL library was missing when compiled
+ * @throws ivi::Missing_dependency if OpenSSL library was missing when compiled
  */
 class OpenSSL_EVP
 {
@@ -52,7 +52,7 @@ public:
 
 private:
 
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
     EVP_MD_CTX m_context;
 #endif
 
@@ -73,7 +73,7 @@ private:
         }
     }
 
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
     void update( const void* data, unsigned long len )
     {
         ETX_2( m_finalized, "Cannot write to an already-finalized digest");
@@ -88,7 +88,7 @@ private:
      */
     void update( const void*, unsigned long )
     {
-        using namespace kjb_c;
+        using namespace ivi_c;
         SET_CANT_HAPPEN_BUG();
     }
 #endif
@@ -109,7 +109,7 @@ public:
      * The end user is encouraged to create a derived class for a specific
      * algorithm:  see class MD5 for an example.
      */
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
     OpenSSL_EVP( const EVP_MD* algorithm )
     :   m_digest( EVP_MAX_MD_SIZE ), // strategy:  allocate extra, shrink later
         m_finalized( false )
@@ -123,15 +123,15 @@ public:
     OpenSSL_EVP()
     :   m_finalized( true )
     {
-        KJB_THROW_2(Missing_dependency,
-                "Missing OpenSSL -- cannot instantiate kjb::OpenSSL_EVP");
+        IVI_THROW_2(Missing_dependency,
+                "Missing OpenSSL -- cannot instantiate ivi::OpenSSL_EVP");
     }
 #endif
 
     /// @brief this thing needs a dtor or it leaks
     ~OpenSSL_EVP()
     {
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
         EVP_MD_CTX_cleanup( &m_context );
 #endif
     }
@@ -208,7 +208,7 @@ public:
 };
 
 
-} // end namespace kjb
+} // end namespace ivi
 
 #endif
 

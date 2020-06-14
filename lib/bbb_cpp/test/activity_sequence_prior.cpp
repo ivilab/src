@@ -30,7 +30,7 @@
 #include <vector>
 #include <algorithm>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 const bool VERBOSE = false;

@@ -24,11 +24,11 @@
 #include <boost/variant.hpp>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 using namespace std;
 
-ostream& kjb::bbb::operator<<(ostream& ost, const Activity_sequence& aseq)
+ostream& ivi::bbb::operator<<(ostream& ost, const Activity_sequence& aseq)
 {
     // output name and times
     ost << "ROLE: " << aseq.role() << endl;

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-using namespace kjb; 
+using namespace ivi; 
 using namespace std;
 
 int main(int argc, char** argv)
@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
     draw_features(img, fv, avf);
 
-    kjb_c::kjb_mkdir("output/");
+    ivi_c::ivi_mkdir("output/");
     img.write("output/01_flow.jpg");
     
 

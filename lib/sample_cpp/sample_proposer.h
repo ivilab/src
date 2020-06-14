@@ -1,4 +1,4 @@
-/* $Id: sample_proposer.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: sample_proposer.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -105,7 +105,7 @@ public:
 
 private:
     Proposer_vector m_proposers;
-    kjb::Categorical_distribution<int> m_dist;
+    ivi::Categorical_distribution<int> m_dist;
 
 public:
     /**
@@ -121,13 +121,13 @@ public:
      * @brief Constructs a Multi_proposer_proposer with the
      * given proposers and their distribution.
      */
-    Multi_proposer_proposer(const Proposer_vector& proposers, const kjb::Categorical_distribution<int>& dist) :
+    Multi_proposer_proposer(const Proposer_vector& proposers, const ivi::Categorical_distribution<int>& dist) :
         m_proposers(proposers),
         m_dist(dist)
     {
         if(m_proposers.size() != m_dist.size())
         {
-            KJB_THROW_2(kjb::Illegal_argument, "Multi_proposer_proposer:"
+            IVI_THROW_2(ivi::Illegal_argument, "Multi_proposer_proposer:"
                                                "distribution and proposer vector must have same size.");
         }
     }
@@ -146,13 +146,13 @@ public:
 
         while(keep_going)
         {
-            int j = kjb::sample(m_dist);
+            int j = ivi::sample(m_dist);
 
             Mh_proposal_result res = m_proposers[j](m, m_p);
             if(res.no_change)
             {
-                fwd = res.fwd_prob + kjb::log_pdf(m_dist, j);
-                rev = res.rev_prob + kjb::log_pdf(m_dist, j);
+                fwd = res.fwd_prob + ivi::log_pdf(m_dist, j);
+                rev = res.rev_prob + ivi::log_pdf(m_dist, j);
                 keep_going = false;
             }
         }
@@ -199,7 +199,7 @@ public:
 
 private:
     Proposer_vector m_proposers;
-    kjb::Categorical_distribution<int> m_dist;
+    ivi::Categorical_distribution<int> m_dist;
     Get_param get_p;
     Set_param set_p;
     Dimension m_dim;
@@ -232,7 +232,7 @@ public:
     Single_dimension_proposer
     (
         const Proposer_vector& proposers,
-        const kjb::Categorical_distribution<int>& dist,
+        const ivi::Categorical_distribution<int>& dist,
         const Get_param& get_param = get_vector_model_parameter<Model>,
         const Set_param& set_param = set_vector_model_parameter<Model>,
         const Dimension& model_dimension = get_vector_model_dimension<Model>
@@ -246,7 +246,7 @@ public:
     {
         if(m_proposers.size() != 1 && m_proposers.size() != m_dist.size())
         {
-            KJB_THROW_2(kjb::Illegal_argument, 
+            IVI_THROW_2(ivi::Illegal_argument, 
                 "Single_dimension_proposer: distribution and proposer vector "
                 "must have same size.");
         }
@@ -266,7 +266,7 @@ public:
         {
             if(D != num_prop)
             {
-                KJB_THROW_2(kjb::Illegal_argument,
+                IVI_THROW_2(ivi::Illegal_argument,
                     "Single_dimension_proposer: model dimension must be "
                     "equal to number of proposers.");
             }
@@ -275,14 +275,14 @@ public:
         {
             if(D != m_dist.size())
             {
-                KJB_THROW_2(kjb::Illegal_argument,
+                IVI_THROW_2(ivi::Illegal_argument,
                     "Single_dimension_proposer: model dimension and "
                     "distribution size must be equal.");
             }
         }
 
         m_p = m;
-        int j = kjb::sample(m_dist);
+        int j = ivi::sample(m_dist);
         int k = (D == num_prop) ? j : 0;
 
         //Mh_proposal_result res = m_proposers[k](m[j], m_p[j]);
@@ -291,8 +291,8 @@ public:
         Mh_proposal_result res = m_proposers[k](m_j, m_p_j);
         set_p(m_p, j, m_p_j);
 
-        double fwd = res.fwd_prob + kjb::log_pdf(m_dist, j);
-        double rev = res.rev_prob + kjb::log_pdf(m_dist, j);
+        double fwd = res.fwd_prob + ivi::log_pdf(m_dist, j);
+        double rev = res.rev_prob + ivi::log_pdf(m_dist, j);
 
         last_modified_dim = j;
 
@@ -302,7 +302,7 @@ public:
     /** @brief  Returns the most recently changed dimension of the model. */
     int get_last_modified_dimension() const
     {
-        IFT(last_modified_dim != -1, kjb::KJB_error,
+        IFT(last_modified_dim != -1, ivi::IVI_error,
             "Single dimension proposer: cannot get latest modified dimension; "
             "proposer has not been called yet.");
 
@@ -329,9 +329,9 @@ public:
     /** @brief  Propose a new value. */
     Mh_proposal_result operator()(const double& m, double& mp) const
     {
-        kjb::Normal_distribution N(m, sqrt(sigma));
-        mp = kjb::sample(N);
-        double p = kjb::pdf(N, mp);
+        ivi::Normal_distribution N(m, sqrt(sigma));
+        mp = ivi::sample(N);
+        double p = ivi::pdf(N, mp);
 
         return Mh_proposal_result(p, p);
     }

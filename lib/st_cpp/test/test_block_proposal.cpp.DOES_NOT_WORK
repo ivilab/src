@@ -31,7 +31,7 @@
 
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 
 
@@ -68,11 +68,11 @@ int main(int argc, char **argv)
 
     Features_manager fm(features_file.c_str());
     Perspective_camera camera;
-    kjb::Parametric_parapiped pp;
+    ivi::Parametric_parapiped pp;
     unsigned int corner_index = 0;
 
-    static kjb::Offscreen_buffer* offscreen = 0;
-    offscreen = kjb::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
+    static ivi::Offscreen_buffer* offscreen = 0;
+    offscreen = ivi::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
 
     std::cout << "The focal length is: " << fm.get_manhattan_world().get_focal_length() << std::endl;
     //fm.set_manhattan_focal_length(700);
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
             {
                 std::cout << "THE CORNER:" << corner << std::endl;
             }
-            kjb::robustly_propose_parapiped_and_camera_from_orthogonal_corner(pp, camera, corner,
+            ivi::robustly_propose_parapiped_and_camera_from_orthogonal_corner(pp, camera, corner,
                 fm.get_manhattan_world().get_focal_length(), img.get_num_rows(), img.get_num_cols(), 1000);
             if(!found)
             {
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
             glColor3f(255.0, 0.0, 0.0);
             Base_gl_interface::set_gl_view(img);
             pp.wire_render();
-            kjb_c::KJB_image * capture4 = NULL;
+            ivi_c::IVI_image * capture4 = NULL;
             Base_gl_interface::capture_gl_view(&capture4);
             Image img2(capture4);
 
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
             std::cout << "It worked for " << temp_name << std::endl;
             //break;
         }
-        catch(KJB_error e)
+        catch(IVI_error e)
         {
             continue;
         }
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
     if(!found)
     {
         std::cout << "Could not do it!" << std::endl;
-        KJB_THROW_2(KJB_error,"Could not do it");
+        IVI_THROW_2(IVI_error,"Could not do it");
     }
 
     camera.prepare_for_rendering(true);
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     glColor3f(255.0, 0.0, 0.0);
     Base_gl_interface::set_gl_view(img);
     pp.wire_render();
-    kjb_c::KJB_image * capture4 = NULL;
+    ivi_c::IVI_image * capture4 = NULL;
     Base_gl_interface::capture_gl_view(&capture4);
     Image img2(capture4);
 
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
     //pp.stretch_along_axis(2,20.0,true, true);
     //pp.stretch_along_axis(1, 430.0, false, false);
     pp.wire_render();
-    kjb_c::KJB_image * capture5 = NULL;
+    ivi_c::IVI_image * capture5 = NULL;
     Base_gl_interface::capture_gl_view(&capture5);
     Image img3(capture5);
 

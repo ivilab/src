@@ -4,7 +4,7 @@
  * @author Ernesto Brau
  */
 /*
- * $Id: blob_spot_detector.cpp 17797 2014-10-21 04:41:57Z predoehl $
+ * $Id: blob_spot_detector.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_int_matrix.h>
@@ -18,22 +18,22 @@ namespace
 // RAII object automatically releases Vector_vector
 struct VecVec
 {
-    kjb_c::Vector_vector* m_vvp;
-    VecVec(kjb_c::Vector_vector* p) : m_vvp(p) {}
-    ~VecVec() { kjb_c::free_vector_vector(m_vvp); }
+    ivi_c::Vector_vector* m_vvp;
+    VecVec(ivi_c::Vector_vector* p) : m_vvp(p) {}
+    ~VecVec() { ivi_c::free_vector_vector(m_vvp); }
 };
 
 // RAII object automatically releases Int_matrix_vector
 struct IntMatVec
 {
-    kjb_c::Int_matrix_vector* m_imvp;
-    IntMatVec(kjb_c::Int_matrix_vector* p) : m_imvp(p) {}
-    ~IntMatVec() { kjb_c::free_int_matrix_vector(m_imvp); }
+    ivi_c::Int_matrix_vector* m_imvp;
+    IntMatVec(ivi_c::Int_matrix_vector* p) : m_imvp(p) {}
+    ~IntMatVec() { ivi_c::free_int_matrix_vector(m_imvp); }
 };
 
 }
 
-namespace kjb
+namespace ivi
 {
 
 const Spot_detector::Centroid_set& Spot_detector::operator()
@@ -42,11 +42,11 @@ const Spot_detector::Centroid_set& Spot_detector::operator()
 )   const
 {
     // temporary containers for spot 
-    kjb_c::Vector_vector* centroids = NULL;
-    kjb_c::Int_matrix_vector* spots = NULL;
+    ivi_c::Vector_vector* centroids = NULL;
+    ivi_c::Int_matrix_vector* spots = NULL;
 
     // The key functionality is in this C function in lib/seg
-    ETX(kjb_c::find_bright_spots_in_image(
+    ETX(ivi_c::find_bright_spots_in_image(
                 img.c_ptr(),
                 m_background.get_c_matrix(),
                 m_thresholds.get_c_matrix(),
@@ -82,5 +82,5 @@ const Spot_detector::Centroid_set& Spot_detector::operator()
     return spot_centroids;
 }
 
-} //namespace kjb
+} //namespace ivi
 

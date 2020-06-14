@@ -1,4 +1,4 @@
-/* $Id: psi_visualize.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_visualize.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,11 +22,11 @@
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "psi_cpp/psi_visualize.h"
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
-using namespace kjb::pt; 
+using namespace ivi::pt; 
 
 void render_ground_plane()
 {
@@ -47,7 +47,7 @@ void render_ground_plane()
     glEnd();
 }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 void Track_visualizer::set_trajectories(const Trajectory_map& trajectories)
 {
     trajectories_ = trajectories;
@@ -65,8 +65,8 @@ void Track_visualizer::set_trajectories(const Trajectory_map& trajectories)
 
 void Track_visualizer::render(const Trajectory_map& trajectories, const std::map<Entity_id, std::vector<Vector3> >& colors) const
 {
-    using namespace kjb;
-    using namespace kjb::opengl;
+    using namespace ivi;
+    using namespace ivi::opengl;
     for(int pass = 0; pass <= 1; pass++)
     {
         if(pass == 0)
@@ -102,7 +102,7 @@ void Track_visualizer::render(
         int radius,
         const std::vector<Vector3>& colors) const
 {
-    using namespace kjb::opengl;
+    using namespace ivi::opengl;
 
     size_t begin = std::max(0, center - radius);
     size_t end = std::min((int) traj.size()-1, center + radius);
@@ -161,7 +161,7 @@ void Ground_truth_track_visualizer::set_trajectories(const Trajectory_map& groun
 {
     if(ground_truth.duration() != hypothesis.duration())
     {
-        KJB_THROW_2(Illegal_argument, "ground truth and hypothesis trajectories must have same duration");
+        IVI_THROW_2(Illegal_argument, "ground truth and hypothesis trajectories must have same duration");
     }
 
     Base::set_trajectories(ground_truth);
@@ -211,7 +211,7 @@ void Ground_truth_track_visualizer::set_trajectories(const Trajectory_map& groun
 
 void Ground_truth_track_visualizer::render_correspondence_lines() const
 {
-    using namespace kjb::opengl;
+    using namespace ivi::opengl;
 
     const boost::bimap<Entity_id, Entity_id>& corr = correspondences_[cur_frame_];
 
@@ -285,7 +285,7 @@ void Cylinder_world_visualizer::display()
 ////            glBegin(GL_POINTS);
 ////            for(size_t c = 0; c < corners.size(); c++)
 ////            {
-////                ::kjb::opengl::glVertex(corners[c]);
+////                ::ivi::opengl::glVertex(corners[c]);
 ////            }
 ////            glEnd();
 //#endif
@@ -396,7 +396,7 @@ void Cylinder_world_visualizer::set_entities(const std::vector<std::vector<std::
 
     if(num_frames_ == 0)
     {
-        KJB_THROW_2(Illegal_argument, "Entity set is empty.");
+        IVI_THROW_2(Illegal_argument, "Entity set is empty.");
     }
 }
 
@@ -421,4 +421,4 @@ void Cylinder_world_visualizer::draw_xz_plane()
 #endif
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

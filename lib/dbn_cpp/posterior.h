@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: posterior.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: posterior.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_POSTERIOR_H
-#define KJB_TIES_POSTERIOR_H
+#ifndef IVI_TIES_POSTERIOR_H
+#define IVI_TIES_POSTERIOR_H
 
 #include <prob_cpp/prob_distribution.h>
 #include <diff_cpp/diff_gradient_mt.h>
@@ -39,7 +39,7 @@
 #include <boost/foreach.hpp>
 #include <boost/random/mersenne_twister.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /**
@@ -617,7 +617,7 @@ private:
     size_t num_lss_threads_;
     const std::vector<std::string>* out_dirs_;
 };
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
-#endif // KJB_TIES_POSTERIOR_H
+#endif // IVI_TIES_POSTERIOR_H
 

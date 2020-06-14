@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_histogram.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: cv_histogram.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l_cpp/l_exception.h>
 #include <m_cpp/m_vector.h>
@@ -26,8 +26,8 @@
 #include <fstream>
 
 
-using namespace kjb;
-using namespace kjb::opencv;
+using namespace ivi;
+using namespace ivi::opencv;
 
 Matrix calculate_histogram
 (
@@ -37,7 +37,7 @@ Matrix calculate_histogram
     float upper_bound
 )
 {
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
     using namespace cv;
     Mat cv_src = to_opencv(src);
     
@@ -62,21 +62,21 @@ Matrix calculate_histogram
     }
 
     return histogram;
-#else //KJB_HAVE_OPENCV
-    KJB_THROW_2(kjb::Missing_dependency, "opencv");
+#else //IVI_HAVE_OPENCV
+    IVI_THROW_2(ivi::Missing_dependency, "opencv");
 #endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::opencv::compare_histograms
+double ivi::opencv::compare_histograms
 (
     const Matrix& h1, 
     const Matrix& h2, 
     int method
 )
 {
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
     using namespace cv;
     int cv_method; 
     switch(method)
@@ -89,20 +89,20 @@ double kjb::opencv::compare_histograms
             break;
         case BHATTACHARYYA: cv_method = CV_COMP_BHATTACHARYYA;
             break;
-        default: KJB_THROW(Not_implemented);
+        default: IVI_THROW(Not_implemented);
     }
 
     Mat cv_h1 = to_opencv(h1);
     Mat cv_h2 = to_opencv(h2);
     return compareHist(cv_h1, cv_h2, cv_method);
-#else //KJB_HAVE_OPENCV
-    KJB_THROW_2(kjb::Missing_dependency, "opencv");
+#else //IVI_HAVE_OPENCV
+    IVI_THROW_2(ivi::Missing_dependency, "opencv");
 #endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix kjb::opencv::calculate_rg_histogram
+Matrix ivi::opencv::calculate_rg_histogram
 (
      const Image& img, 
      const Axis_aligned_rectangle_2d& box,
@@ -110,7 +110,7 @@ Matrix kjb::opencv::calculate_rg_histogram
      int green_bins
 )
 {
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
     using namespace cv;
 
     // convert to cv::Mat
@@ -175,7 +175,7 @@ Matrix kjb::opencv::calculate_rg_histogram
     int hist_size[] = { red_bins, green_bins};
     int channels[] = { 0, 1};
 
-    const kjb::Vector& center = box.get_center();
+    const ivi::Vector& center = box.get_center();
     double width = box.get_width();
     double height = box.get_height();
     size_t min_c = std::max(0, (int)std::floor(center[0] - width/2.0));
@@ -219,15 +219,15 @@ Matrix kjb::opencv::calculate_rg_histogram
         }
     }
 
-    return opencv_to_kjb(hist);
-#else //KJB_HAVE_OPENCV
-    KJB_THROW_2(kjb::Missing_dependency, "opencv");
+    return opencv_to_ivi(hist);
+#else //IVI_HAVE_OPENCV
+    IVI_THROW_2(ivi::Missing_dependency, "opencv");
 #endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix kjb::opencv::calculate_hs_histogram
+Matrix ivi::opencv::calculate_hs_histogram
 (
      const Image& img, 
      const Axis_aligned_rectangle_2d& box,
@@ -235,7 +235,7 @@ Matrix kjb::opencv::calculate_hs_histogram
      int saturation_bins
 )
 {
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
     using namespace cv;
 
     // convert to cv::Mat
@@ -249,7 +249,7 @@ Matrix kjb::opencv::calculate_hs_histogram
     int hist_size[] = { hue_bins, saturation_bins};
     int channels[] = { 0, 1};
 
-    const kjb::Vector& center = box.get_center();
+    const ivi::Vector& center = box.get_center();
     double width = box.get_width();
     double height = box.get_height();
     size_t min_c = std::max(0, (int)std::floor(center[0] - width/2.0));
@@ -295,20 +295,20 @@ Matrix kjb::opencv::calculate_hs_histogram
         }
     }
     
-    // Convert to kjb::Matrix 
+    // Convert to ivi::Matrix 
     std::ofstream ofs("hist.txt");
     ofs << hist;
-    std::ofstream ofsk("hist_kjb.txt");
-    ofsk << opencv_to_kjb(hist);
-    return opencv_to_kjb(hist);
-#else //KJB_HAVE_OPENCV
-    KJB_THROW_2(kjb::Missing_dependency, "opencv");
+    std::ofstream ofsk("hist_ivi.txt");
+    ofsk << opencv_to_ivi(hist);
+    return opencv_to_ivi(hist);
+#else //IVI_HAVE_OPENCV
+    IVI_THROW_2(ivi::Missing_dependency, "opencv");
 #endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Matrix> kjb::opencv::calculate_rg_histograms
+std::vector<Matrix> ivi::opencv::calculate_rg_histograms
 (
      const Image& img, 
      const std::vector<Axis_aligned_rectangle_2d> & boxes,
@@ -316,7 +316,7 @@ std::vector<Matrix> kjb::opencv::calculate_rg_histograms
      int green_bins
 )
 {
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
     using namespace cv;
     std::vector<Matrix> histos; 
 
@@ -365,7 +365,7 @@ std::vector<Matrix> kjb::opencv::calculate_rg_histograms
 
     for(size_t i = 0; i < boxes.size(); i++)
     {
-        const kjb::Vector& center = boxes[i].get_center();
+        const ivi::Vector& center = boxes[i].get_center();
         double width = boxes[i].get_width();
         double height = boxes[i].get_height();
         size_t min_c = std::max(0, (int)std::floor(center[0] - width/2.0));
@@ -411,15 +411,15 @@ std::vector<Matrix> kjb::opencv::calculate_rg_histograms
             }
         }
 
-        histos.push_back(opencv_to_kjb(hist));
+        histos.push_back(opencv_to_ivi(hist));
     }
     return histos;
-#else //KJB_HAVE_OPENCV
-    KJB_THROW_2(kjb::Missing_dependency, "opencv");
+#else //IVI_HAVE_OPENCV
+    IVI_THROW_2(ivi::Missing_dependency, "opencv");
 #endif
 }
 
-std::vector<Matrix> kjb::opencv::calculate_hs_histograms
+std::vector<Matrix> ivi::opencv::calculate_hs_histograms
 (
      const Image& img, 
      const std::vector<Axis_aligned_rectangle_2d> & boxes,
@@ -427,7 +427,7 @@ std::vector<Matrix> kjb::opencv::calculate_hs_histograms
      int saturation_bins
 )
 {
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
     using namespace cv;
     std::vector<Matrix> histos; 
 
@@ -444,7 +444,7 @@ std::vector<Matrix> kjb::opencv::calculate_hs_histograms
 
     for(size_t i = 0; i < boxes.size(); i++)
     {
-        const kjb::Vector& center = boxes[i].get_center();
+        const ivi::Vector& center = boxes[i].get_center();
         double width = boxes[i].get_width();
         double height = boxes[i].get_height();
         size_t min_c = std::max(0, (int)std::floor(center[0] - width/2.0));
@@ -490,15 +490,15 @@ std::vector<Matrix> kjb::opencv::calculate_hs_histograms
             }
         }
         
-        // Convert to kjb::Matrix 
+        // Convert to ivi::Matrix 
         std::ofstream ofs("hist.txt");
         ofs << hist;
-        std::ofstream ofsk("hist_kjb.txt");
-        ofsk << opencv_to_kjb(hist);
-        histos.push_back(opencv_to_kjb(hist));
+        std::ofstream ofsk("hist_ivi.txt");
+        ofsk << opencv_to_ivi(hist);
+        histos.push_back(opencv_to_ivi(hist));
     }
     return histos;
-#else //KJB_HAVE_OPENCV
-    KJB_THROW_2(kjb::Missing_dependency, "opencv");
+#else //IVI_HAVE_OPENCV
+    IVI_THROW_2(ivi::Missing_dependency, "opencv");
 #endif
 }

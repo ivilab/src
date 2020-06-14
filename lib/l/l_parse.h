@@ -1,5 +1,5 @@
 
-/* $Id: l_parse.h 21310 2017-03-19 20:58:40Z kobus $ */
+/* $Id: l_parse.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -79,9 +79,9 @@ Trim_order_t;
  * |
  * |    while (BUFF_GET_TOKEN_OK(&line_pos, token))
  * |    {
- * |        kjb_fprintf(stdout,"Token: %s\n",token);
+ * |        ivi_fprintf(stdout,"Token: %s\n",token);
  * |    }
- * |    kjb_puts(stdout,"All done.\n");
+ * |    ivi_puts(stdout,"All done.\n");
  * |
  * |    // Here, if the line was set to "A B C" by the CODE TO GET
  * |    // "line", then this example would output:
@@ -981,7 +981,7 @@ int all_white_space(const char* input_string);
 int all_digits(const char* string);
 int all_n_digits(const char* string, size_t len);
 
-int kjb_parse(const char* input_string, char*** args_ptr);
+int ivi_parse(const char* input_string, char*** args_ptr);
 
 size_t count_tokens(const char* input_string);
 

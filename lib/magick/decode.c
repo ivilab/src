@@ -1,5 +1,5 @@
 
-/* $Id: decode.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: decode.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -7,7 +7,7 @@
  * Make sure that these files are not a liability when there is no X11. If this
  * is the case, then comment out the whole thing.
 */
-#ifdef KJB_HAVE_X11 
+#ifdef IVI_HAVE_X11 
 
 /* -------------------------------------------------------------------------- */
 
@@ -3038,7 +3038,7 @@ static Image *ReadJPEGImage(ImageInfo *image_info)
       return((Image *) NULL);
     }
   jpeg_create_decompress(&jpeg_info);
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 #warning "Commenting out code just so we can compile with c++"
 #else 
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,CommentHandler);
@@ -4547,7 +4547,7 @@ static Image *OverviewImage(ImageInfo *image_info, Image *image, unsigned int nu
 
 static Image *ReadPCDImage(ImageInfo *image_info)
 {
-  extern int kjb_pcd_size;
+  extern int ivi_pcd_size;
 
   Image
     *image;
@@ -13261,7 +13261,7 @@ static Image *ReadHIPSImage(ImageInfo *image_info)
 
 /* -------------------------------------------------------------------------- */
 
-#endif   /* #ifdef KJB_HAVE_X11  */
+#endif   /* #ifdef IVI_HAVE_X11  */
 
 #endif   /* #ifndef __C2MAN__  */
 

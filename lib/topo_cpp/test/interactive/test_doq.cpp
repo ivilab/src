@@ -10,7 +10,7 @@
  */
 
 /*
- * $Id: test_doq.cpp 16002 2013-11-14 00:52:59Z predoehl $
+ * $Id: test_doq.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_incl.h>
@@ -25,11 +25,11 @@
 
 namespace {
 
-const int NOEL = kjb::TopoFusion::NO_ELEV;
+const int NOEL = ivi::TopoFusion::NO_ELEV;
 
 struct Places {
     const char* name;
-    kjb::TopoFusion::pt utm;
+    ivi::TopoFusion::pt utm;
 } places[] = {
     { "DM Boneyard, Tucson AZ",             { 513286, 3556544, 12, NOEL } },
     { "U of Arizona campus",                { 504800, 3566200, 12, NOEL } },
@@ -59,25 +59,25 @@ struct Places {
  */
 int test1()
 {
-    kjb::TopoFusion::DOrthoQuad doq( 2000 );
+    ivi::TopoFusion::DOrthoQuad doq( 2000 );
 
-    kjb::Int_matrix mmm;
+    ivi::Int_matrix mmm;
 
     for( const Places* p = places; p -> name; ++p ) {
         doq.fill( p -> utm );
-        KJB( ERE( doq.as_matrix( &mmm ) ) ); // alignment is unpredictable!
+        IVI( ERE( doq.as_matrix( &mmm ) ) ); // alignment is unpredictable!
 
-        kjb::Image imago( mmm );
+        ivi::Image imago( mmm );
 
-        pid_t pid = kjb_c::kjb_fork();
+        pid_t pid = ivi_c::ivi_fork();
         if (0 == pid)
         {
             imago.display( p -> name );
-            while(true) { kjb_c::nap(1000); }
+            while(true) { ivi_c::nap(1000); }
         }
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -87,22 +87,22 @@ int test2()
     const int SIZE = 2000; // length of square edge, in pixels
 
     for( const Places* p = places; p -> name; ++p ) {
-        kjb::TopoFusion::pt northwest = p -> utm;
+        ivi::TopoFusion::pt northwest = p -> utm;
         northwest.x -= SIZE/2;
         northwest.y += SIZE/2;
 
-        kjb::Int_matrix mmm(
-                kjb::TopoFusion::get_aerial_image(northwest, SIZE, SIZE));
-        kjb::Image imago( mmm );
+        ivi::Int_matrix mmm(
+                ivi::TopoFusion::get_aerial_image(northwest, SIZE, SIZE));
+        ivi::Image imago( mmm );
 
-        if (0 == kjb_c::kjb_fork())
+        if (0 == ivi_c::ivi_fork())
         {
             imago.display( p -> name );
-            while(true) { kjb_c::nap(1000); }
+            while(true) { ivi_c::nap(1000); }
         }
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -113,56 +113,56 @@ int test3()
     const int SIZE_METERS = SIZE * 2; // length of square edge, in meters
 
     for( const Places* p = places; p -> name; ++p ) {
-        kjb::TopoFusion::pt northwest = p -> utm;
+        ivi::TopoFusion::pt northwest = p -> utm;
         northwest.x -= SIZE_METERS/2;
         northwest.y += SIZE_METERS/2;
 
-        const kjb::Image imago( 
-           kjb::TopoFusion::get_topographic_map_detail(northwest, SIZE, SIZE));
+        const ivi::Image imago( 
+           ivi::TopoFusion::get_topographic_map_detail(northwest, SIZE, SIZE));
 
-        if (0 == kjb_c::kjb_fork())
+        if (0 == ivi_c::ivi_fork())
         {
             imago.display( p -> name );
-            while(true) { kjb_c::nap(1000); }
+            while(true) { ivi_c::nap(1000); }
         }
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 } // anonymous namespace
 
 int main()
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     try
     {
-        KJB(EPETE(kjb::TopoFusion::validate_ellipsoid_table()));
+        IVI(EPETE(ivi::TopoFusion::validate_ellipsoid_table()));
 
         /* The "force" string here is tested to see if it is the name of a
          * local directory.  Since it almost certainly is not, the tile master
          * object will almost certainly use a temporary cache for its local
          * tile storage.
          */
-        kjb::TopoFusion::Tile_manager tm("/force it to use a temporary cache");
-        KJB(ASSERT( tm.is_using_a_temporary_cache() ));
+        ivi::TopoFusion::Tile_manager tm("/force it to use a temporary cache");
+        IVI(ASSERT( tm.is_using_a_temporary_cache() ));
 
         /*
          * We do the same test twice, on purpose.  The first time is to test
          * downloading the images from MSR Maps.  The images are cached
          * locally.  The second time is to test reloading from the cache.
          */
-        KJB( EPETE( test2() ) );
-        //KJB( EPETE( test2() ) );
-        KJB( EPETE( test3() ) );
-        //KJB( EPETE( test3() ) );
+        IVI( EPETE( test2() ) );
+        //IVI( EPETE( test2() ) );
+        IVI( EPETE( test3() ) );
+        //IVI( EPETE( test3() ) );
     }
-    catch( kjb::Exception& e )
+    catch( ivi::Exception& e )
     {
         e.print_details_exit();
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return EXIT_SUCCESS;
 }

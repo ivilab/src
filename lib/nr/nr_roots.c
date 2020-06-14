@@ -1,5 +1,5 @@
 
-/* $Id: nr_roots.c 4725 2009-11-16 19:50:08Z kobus $ */
+/* $Id: nr_roots.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "nr/nr_gen.h"      /*  Only safe if first #include in a ".c" file  */
@@ -13,8 +13,8 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-static int zroots(KJB_complex*, int, KJB_complex*, int);
-static int laguer(KJB_complex*, int, KJB_complex*, double, int);
+static int zroots(IVI_complex*, int, IVI_complex*, int);
+static int laguer(IVI_complex*, int, IVI_complex*, double, int);
 
 /* -------------------------------------------------------------------------- */
 
@@ -25,8 +25,8 @@ int nr_real_roots_of_real_polynomial
     double* roots
 )
 {
-    KJB_complex* complex_polynomial;
-    KJB_complex* complex_roots;
+    IVI_complex* complex_polynomial;
+    IVI_complex* complex_roots;
     int      i;
     int      root_count = 0;
     int      save_degree = degree;
@@ -60,8 +60,8 @@ int nr_real_roots_of_real_polynomial
         return ERROR;
     }
 
-    NRE(complex_polynomial = N_TYPE_MALLOC(KJB_complex, degree + 1));
-    NRE(complex_roots = N_TYPE_MALLOC(KJB_complex, degree + 1));
+    NRE(complex_polynomial = N_TYPE_MALLOC(IVI_complex, degree + 1));
+    NRE(complex_roots = N_TYPE_MALLOC(IVI_complex, degree + 1));
 
     for (i=0; i<=degree; i++)
     {
@@ -107,7 +107,7 @@ int nr_real_roots_of_real_polynomial
         verbose_pso(5, "Dropping degree from %d to %d in real_roots.\n",
                     save_degree, degree);
 #ifdef TEST
-        if (kjb_get_verbose_level() >= 5)
+        if (ivi_get_verbose_level() >= 5)
         {
             dbe(polynomial[ save_degree ]);
             dbe(complex_polynomial[ save_degree ].r);
@@ -117,8 +117,8 @@ int nr_real_roots_of_real_polynomial
 
     if (zroots(complex_polynomial, degree, complex_roots, TRUE) == ERROR)
     {
-        kjb_free(complex_polynomial);
-        kjb_free(complex_roots);
+        ivi_free(complex_polynomial);
+        ivi_free(complex_roots);
         return ERROR;
     }
 
@@ -164,8 +164,8 @@ int nr_real_roots_of_real_polynomial
         }
     }
 
-    kjb_free(complex_polynomial);
-    kjb_free(complex_roots);
+    ivi_free(complex_polynomial);
+    ivi_free(complex_roots);
 
     return root_count;
 }
@@ -179,9 +179,9 @@ int nr_real_roots_of_real_polynomial
 */
 
 
-static KJB_complex sqrt_complex(KJB_complex z)
+static IVI_complex sqrt_complex(IVI_complex z)
 {
-    KJB_complex c;
+    IVI_complex c;
     double   x, y, w, r;
 
 
@@ -235,15 +235,15 @@ static KJB_complex sqrt_complex(KJB_complex z)
 #define EPS 2.0e-6
 #define MAXM 1000
 
-static int zroots(KJB_complex* a, int m, KJB_complex* roots, int polish)
+static int zroots(IVI_complex* a, int m, IVI_complex* roots, int polish)
 {
     int     jj;
     int     j;
     int     i;
-    KJB_complex x;
-    KJB_complex b;
-    KJB_complex c;
-    KJB_complex ad[MAXM];
+    IVI_complex x;
+    IVI_complex b;
+    IVI_complex c;
+    IVI_complex ad[MAXM];
 
     for (j = 0;j<=m;j++) ad[j]=a[j];
 
@@ -307,16 +307,16 @@ static int zroots(KJB_complex* a, int m, KJB_complex* roots, int polish)
 
 static int laguer
 (
-    KJB_complex* a,
+    IVI_complex* a,
     int       m,
-    KJB_complex* x,
+    IVI_complex* x,
     double    eps,
     int       polish
 )
 {
     int     j, iter;
     double  err, dxold, cdx, abx;
-    KJB_complex sq, h, gp, gm, g2, g, b, d, dx, f, x1;
+    IVI_complex sq, h, gp, gm, g2, g, b, d, dx, f, x1;
 
     dxold = magnitude_of_complex(*x);
 

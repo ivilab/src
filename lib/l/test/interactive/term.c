@@ -1,5 +1,5 @@
 
-/* $Id: term.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: term.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -17,12 +17,12 @@ int main(int argc, char **argv)
     term_set_raw_mode_with_no_echo();
 
     set_atn_trap(raw_mode_with_no_echo_sig_fn, DONT_RESTART_AFTER_SIGNAL); 
-    kjb_signal(SIGTERM, reset_term_before_default_sig_fn);
-    kjb_signal(SIGQUIT, reset_term_before_default_sig_fn);
-    kjb_signal(SIGTTIN, reset_term_before_default_sig_fn);
-    kjb_signal(SIGTTOU, reset_term_before_default_sig_fn);
-    kjb_signal(SIGXCPU, reset_term_before_default_sig_fn);
-    kjb_signal(SIGXFSZ, reset_term_before_default_sig_fn);
+    ivi_signal(SIGTERM, reset_term_before_default_sig_fn);
+    ivi_signal(SIGQUIT, reset_term_before_default_sig_fn);
+    ivi_signal(SIGTTIN, reset_term_before_default_sig_fn);
+    ivi_signal(SIGTTOU, reset_term_before_default_sig_fn);
+    ivi_signal(SIGXCPU, reset_term_before_default_sig_fn);
+    ivi_signal(SIGXFSZ, reset_term_before_default_sig_fn);
 
     while ((res=BUFF_STDIN_GET_LINE("abc>",line)) != EOF)
     {

@@ -1,5 +1,5 @@
 
-/* $Id: i_collage.h 21448 2017-06-28 22:00:33Z kobus $ */
+/* $Id: i_collage.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -31,7 +31,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -48,18 +48,18 @@ int set_collage_options(const char* option, const char* value);
 
 int make_image_collage
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_vertical,
     int         num_horizontal,
-    const KJB_image* const* ip_list
+    const IVI_image* const* ip_list
 );
 
 int make_image_collage_2
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_vertical,
     int         num_horizontal,
-    const KJB_image* const* ip_list,
+    const IVI_image* const* ip_list,
     Pixel*      background_colour_ptr,
     Pixel*      border_colour_ptr,
     int         outside_border_width,
@@ -71,18 +71,18 @@ int make_image_collage_2
 
 int make_compact_image_collage
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_vertical,
     int         num_horizontal,
-    KJB_image** ip_list
+    IVI_image** ip_list
 );
 
 int make_compact_image_collage_2
 (
-    KJB_image**  out_ipp,
+    IVI_image**  out_ipp,
     int          num_vertical,
     int          num_horizontal,
-    KJB_image**  ip_list,
+    IVI_image**  ip_list,
     Int_matrix** image_coords_mpp
 );
 
@@ -94,7 +94,7 @@ int ip_output_montage
     int         num_images,
     int         num_montage_rows,
     int         num_montage_cols,
-    KJB_image** images,
+    IVI_image** images,
     char        labels[][ XXX_MAX_MONTAGE_IMAGE_LABEL_SIZE ],
     const char* extra
 );

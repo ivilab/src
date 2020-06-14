@@ -1,5 +1,5 @@
 
-/* $Id: l_int_vector.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_int_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -33,9 +33,9 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#define KJB_DATA_HEAD_SIZE  64
-#define KJB_RAW_INT_VECTOR_STRING  "kjb raw int vector\n\n\f\n"
-#define KJB_RAW_INT_VECTOR_VECTOR_STRING  "kjb raw int vector vector\n\n\f\n"
+#define IVI_DATA_HEAD_SIZE  64
+#define IVI_RAW_INT_VECTOR_STRING  "ivi raw int vector\n\n\f\n"
+#define IVI_RAW_INT_VECTOR_VECTOR_STRING  "ivi raw int vector vector\n\n\f\n"
 
 /* -------------------------------------------------------------------------- */
 
@@ -166,7 +166,7 @@ int get_initialized_int_vector(Int_vector** vpp, int len, int initial_value)
  *
  * Gets target integer list
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of integer list.. If *target_vpp is NULL, then this
  * routine creates the integer list. If it is not null, and it is the right
  * size, then this routine does nothing. If it is the wrong size, then it is
@@ -189,7 +189,7 @@ int get_initialized_int_vector(Int_vector** vpp, int len, int initial_value)
  *
  * Gets a target integer vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of integer list.. If *target_vpp is NULL, then this
  * routine creates the integer list. If it is not null, and it is the right
  * size, then this routine does nothing. If it is the wrong size, then it is
@@ -243,7 +243,7 @@ int debug_get_target_int_vector(Int_vector** target_vpp, int length,
     }
     else
     {
-        kjb_free(vp->elements);
+        ivi_free(vp->elements);
 
         if (length > 0)
         {
@@ -290,7 +290,7 @@ int get_target_int_vector(Int_vector** target_vpp, int length)
     }
     else
     {
-        kjb_free(vp->elements);
+        ivi_free(vp->elements);
 
         if (length > 0)
         {
@@ -318,7 +318,7 @@ int get_target_int_vector(Int_vector** target_vpp, int length)
  * Gets a target integer vector
  *
  * This routine is similar to get_target_int_vector(), except that reallocation
- * is used when appropriate, via kjb_realloc(). This means that an existing
+ * is used when appropriate, via ivi_realloc(). This means that an existing
  * vector argument size is increased without disturbing existing elements. Also
  * different than get_target_int_vector(), if the vector size is being
  * decreased, then the amount of storage is decreased. By contrast,
@@ -455,7 +455,7 @@ Int_vector* debug_create_int_vector(int len,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     NRN(vp = DEBUG_TYPE_MALLOC(Int_vector, file_name, line_number));
@@ -463,14 +463,14 @@ Int_vector* debug_create_int_vector(int len,
     if (len > 0)
     {
         /*
-        //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+        //  Use debug_ivi_malloc as opposed to macros to pass down file_name
         //  and line_number.
         */
         vp->elements = DEBUG_INT_MALLOC(len, file_name, line_number);
 
         if (vp->elements == NULL)
         {
-            kjb_free(vp);
+            ivi_free(vp);
             return NULL;
         }
     }
@@ -510,7 +510,7 @@ Int_vector* create_int_vector(int len)
     {
         if (vp->elements == NULL)
         {
-           kjb_free(vp);
+           ivi_free(vp);
            return NULL;
         }
     }
@@ -556,11 +556,11 @@ void free_int_vector(Int_vector* vp)
             check_initialization(vp->elements, vp->length, sizeof(int));
 #endif
 #endif
-            kjb_free(vp->elements);
+            ivi_free(vp->elements);
         }
     }
 
-    kjb_free(vp);
+    ivi_free(vp);
 
 }
 
@@ -644,7 +644,7 @@ int ascend_sort_indexed_int_vector(Indexed_int_vector *vp)
 
     UNTESTED_CODE();
 
-    ERE(kjb_sort(vp->elements, vp->length, sizeof(Indexed_int_vector_element),
+    ERE(ivi_sort(vp->elements, vp->length, sizeof(Indexed_int_vector_element),
                  ascend_compare_indexed_int_vector_elements,
                  USE_CURRENT_ATN_HANDLING));
 
@@ -682,7 +682,7 @@ int descend_sort_indexed_int_vector(Indexed_int_vector *vp)
 
     UNTESTED_CODE();
 
-    ERE(kjb_sort(vp->elements, vp->length, sizeof(Indexed_int_vector_element),
+    ERE(ivi_sort(vp->elements, vp->length, sizeof(Indexed_int_vector_element),
                  descend_compare_indexed_int_vector_elements,
                  USE_CURRENT_ATN_HANDLING));
 
@@ -846,7 +846,7 @@ int get_target_indexed_int_vector(Indexed_int_vector** vpp, int length)
     }
     else
     {
-        kjb_free(vp->elements);
+        ivi_free(vp->elements);
 
         if (length > 0)
         {
@@ -890,7 +890,7 @@ Indexed_int_vector* vp_create_indexed_int_vector(const Int_vector* vp)
 
     if (result_ptr->elements == NULL)
     {
-        kjb_free(result_ptr);
+        ivi_free(result_ptr);
         return NULL;
     }
 
@@ -918,7 +918,7 @@ Indexed_int_vector* create_indexed_int_vector(int len)
 
     if (result_ptr->elements == NULL)
     {
-        kjb_free(result_ptr);
+        ivi_free(result_ptr);
         return NULL;
     }
 
@@ -939,8 +939,8 @@ void free_indexed_int_vector(Indexed_int_vector *vp)
 
     if (vp != NULL)
     {
-        kjb_free(vp->elements);
-        kjb_free(vp);
+        ivi_free(vp->elements);
+        ivi_free(vp);
     }
 }
 
@@ -1274,7 +1274,7 @@ int get_random_index_vector
 
     for (i=0; i<length; i++)
     {
-        if (kjb_rand() < fraction)
+        if (ivi_rand() < fraction)
         {
             (*target_vpp)->elements[ i ] = 1;
         }
@@ -1289,7 +1289,7 @@ int get_random_index_vector
  * Splits an integer vector vector into two target vector vectors
  *
  * This routine splits an integer vector vector with the creation/over-writing
- * semantics used in the KJB library in the case of integer vector arrays. If
+ * semantics used in the IVI library in the case of integer vector arrays. If
  * *target_1_vvpp or *target_2_vvpp is NULL, then this routine creates the
  * integer vector vector.  If they  are not null, and are the right size, then
  * the storage is recycled.  If the wrong size, then they are resized.
@@ -1694,7 +1694,7 @@ int read_int_vector(Int_vector** vpp, const char* file_name)
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_int_vector(vpp, fp);
@@ -1712,7 +1712,7 @@ int read_int_vector(Int_vector** vpp, const char* file_name)
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
     }
 
     return result;
@@ -1762,7 +1762,7 @@ int fp_read_int_vector(Int_vector** result_vpp, FILE* fp)
         result = ERROR;
     }
 
-    ERE(save_file_pos = kjb_ftell(fp));
+    ERE(save_file_pos = ivi_ftell(fp));
 
     if (result == NOT_FOUND)
     {
@@ -1770,7 +1770,7 @@ int fp_read_int_vector(Int_vector** result_vpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -1780,7 +1780,7 @@ int fp_read_int_vector(Int_vector** result_vpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -1808,7 +1808,7 @@ int fp_read_int_vector(Int_vector** result_vpp, FILE* fp)
  *
  * Returns:
  *     NO_ERROR on success, NOT_FOUND if the file does not appear to contain a
- *     valid KJB library format raw integer vector, and ERROR on failure, with
+ *     valid IVI library format raw integer vector, and ERROR on failure, with
  *     an error message being set.
  *
  * Index: I/O,  integer vectors,  integer vector I/O
@@ -1821,22 +1821,22 @@ int fp_read_raw_int_vector(Int_vector** result_vpp, FILE* fp)
     int   length;
     long  bytes_used_so_far;
     int   byte_order;
-    char  head_str[ KJB_DATA_HEAD_SIZE ];
+    char  head_str[ IVI_DATA_HEAD_SIZE ];
     int   pad;
     off_t num_bytes;
 
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
-    if (num_bytes < KJB_DATA_HEAD_SIZE) return NOT_FOUND;
+    if (num_bytes < IVI_DATA_HEAD_SIZE) return NOT_FOUND;
 
-    ERE(kjb_fread_exact(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fread_exact(fp, head_str, sizeof(head_str)));
     head_str[ sizeof(head_str) - 1 ] = '\0';
 
-    if ( ! STRCMP_EQ(head_str, KJB_RAW_INT_VECTOR_STRING))
+    if ( ! STRCMP_EQ(head_str, IVI_RAW_INT_VECTOR_STRING))
     {
         return NOT_FOUND;
     }
@@ -1847,7 +1847,7 @@ int fp_read_raw_int_vector(Int_vector** result_vpp, FILE* fp)
     ERE(FIELD_READ(fp, pad));
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
@@ -1876,7 +1876,7 @@ int fp_read_raw_int_vector(Int_vector** result_vpp, FILE* fp)
 
         if (length > 0)
         {
-            ERE(kjb_fread_exact(fp, (*result_vpp)->elements,
+            ERE(ivi_fread_exact(fp, (*result_vpp)->elements,
                                 length * sizeof(int)));
         }
     }
@@ -2093,7 +2093,7 @@ static int fp_read_ascii_int_vector_2(Int_vector** vpp, FILE* fp, int length)
 
 int fp_read_vector_length_header(FILE* fp, int* length_ptr)
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     int            i;
     int            num_options;
     char**         option_list;
@@ -2107,7 +2107,7 @@ int fp_read_vector_length_header(FILE* fp, int* length_ptr)
     int            result   = NO_ERROR;
 
 
-    ERE(start_file_pos = kjb_ftell(fp));
+    ERE(start_file_pos = ivi_ftell(fp));
 
     while (length == NOT_SET)
     {
@@ -2128,7 +2128,7 @@ int fp_read_vector_length_header(FILE* fp, int* length_ptr)
             /*EMPTY*/
             ;  /* Do nothing. */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
 
@@ -2170,7 +2170,7 @@ int fp_read_vector_length_header(FILE* fp, int* length_ptr)
                     break;
                 }
             } /* if (*line_pos == '!') */
-        } /* else if (*line_pos == kjb_comment_char) */
+        } /* else if (*line_pos == ivi_comment_char) */
         else
         {
             result = NO_ERROR;
@@ -2181,13 +2181,13 @@ int fp_read_vector_length_header(FILE* fp, int* length_ptr)
     if (result == ERROR)
     {
         /* Rewind file to starting position */
-        (void)kjb_fseek(fp, start_file_pos, SEEK_SET);
+        (void)ivi_fseek(fp, start_file_pos, SEEK_SET);
         return ERROR;
     }
     else if (length == NOT_SET)
     {
         /* Rewind file to starting position */
-        ERE(kjb_fseek(fp, start_file_pos, SEEK_SET));
+        ERE(ivi_fseek(fp, start_file_pos, SEEK_SET));
         return NOT_FOUND;
     }
     else
@@ -2242,7 +2242,7 @@ int write_col_int_vector(const Int_vector* vp, const char* file_name)
             return NO_ERROR;
         }
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     result = fp_write_col_int_vector(vp, fp);
@@ -2256,7 +2256,7 @@ int write_col_int_vector(const Int_vector* vp, const char* file_name)
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        if (kjb_fclose(fp) == ERROR)
+        if (ivi_fclose(fp) == ERROR)
         {
             result = ERROR;
         }
@@ -2301,7 +2301,7 @@ int fp_write_col_int_vector(const Int_vector* vp, FILE* fp)
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp, "%d\n", vp->elements[i]));
+        ERE(ivi_fprintf(fp, "%d\n", vp->elements[i]));
     }
 
     return NO_ERROR;
@@ -2346,26 +2346,26 @@ int fp_write_col_int_vector_with_title(const Int_vector* vp, FILE* fp,
     {
         if (title != NULL)
         {
-            ERE(kjb_fprintf(fp, title));
-            ERE(kjb_fprintf(fp, ": "));
+            ERE(ivi_fprintf(fp, title));
+            ERE(ivi_fprintf(fp, ": "));
         }
-        ERE(kjb_fprintf(fp, "NULL\n"));
+        ERE(ivi_fprintf(fp, "NULL\n"));
 
         return NO_ERROR;
      }
 
     if (title != NULL)
     {
-        ERE(kjb_fprintf(fp, title));
-        ERE(kjb_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, title));
+        ERE(ivi_fprintf(fp, "\n"));
     }
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp, "%d\n", vp->elements[i]));
+        ERE(ivi_fprintf(fp, "%d\n", vp->elements[i]));
     }
 
-    ERE(kjb_fprintf(fp, "\n"));
+    ERE(ivi_fprintf(fp, "\n"));
 
     return NO_ERROR;
 }
@@ -2421,7 +2421,7 @@ int write_col_int_vector_with_header(const Int_vector* vp, const char* file_name
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_col_int_vector_with_header(vp, fp);
@@ -2433,7 +2433,7 @@ int write_col_int_vector_with_header(const Int_vector* vp, const char* file_name
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -2535,7 +2535,7 @@ int write_row_int_vector(const Int_vector* vp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     result = fp_write_row_int_vector(vp, fp);
@@ -2549,7 +2549,7 @@ int write_row_int_vector(const Int_vector* vp, const char* file_name)
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        if (kjb_fclose(fp) == ERROR)
+        if (ivi_fclose(fp) == ERROR)
         {
             result = ERROR;
         }
@@ -2596,10 +2596,10 @@ int fp_write_row_int_vector(const Int_vector* vp, FILE* fp)
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp, "%d ", vp->elements[i]));
+        ERE(ivi_fprintf(fp, "%d ", vp->elements[i]));
     }
 
-    ERE(kjb_fprintf(fp, "\n"));
+    ERE(ivi_fprintf(fp, "\n"));
 
     return NO_ERROR;
 }
@@ -2643,31 +2643,31 @@ int fp_write_row_int_vector_with_title(const Int_vector* vp, FILE* fp,
     {
         if (title != NULL)
         {
-            ERE(kjb_fprintf(fp, title));
-            ERE(kjb_fprintf(fp, ": "));
+            ERE(ivi_fprintf(fp, title));
+            ERE(ivi_fprintf(fp, ": "));
         }
-        ERE(kjb_fprintf(fp, "NULL\n"));
+        ERE(ivi_fprintf(fp, "NULL\n"));
 
         return NO_ERROR;
      }
 
     if (title != NULL)
     {
-        ERE(kjb_fprintf(fp, title));
-        ERE(kjb_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, title));
+        ERE(ivi_fprintf(fp, "\n"));
     }
 
     for (i=0; i<vp->length; i++)
     {
         if (i != 0)
         {
-            ERE(kjb_fputs(fp, "  "));
+            ERE(ivi_fputs(fp, "  "));
         }
 
-        ERE(kjb_fprintf(fp, "%d", vp->elements[i]));
+        ERE(ivi_fprintf(fp, "%d", vp->elements[i]));
     }
 
-    ERE(kjb_fprintf(fp, "\n"));
+    ERE(ivi_fprintf(fp, "\n"));
 
     return NO_ERROR;
 }
@@ -2700,8 +2700,8 @@ int fp_write_row_int_vector_with_title(const Int_vector* vp, FILE* fp,
 int fp_write_vector_length_header(FILE* fp, int length)
 {
 
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int        result;
 
 
@@ -2715,8 +2715,8 @@ int fp_write_vector_length_header(FILE* fp, int length)
     }
     else
     {
-        result = kjb_fprintf(fp, "\n%c%c length=%d\n\n",
-                             kjb_comment_char, kjb_header_char,
+        result = ivi_fprintf(fp, "\n%c%c length=%d\n\n",
+                             ivi_comment_char, ivi_header_char,
                              length);
         if (result > 0)
         {
@@ -2776,7 +2776,7 @@ int write_raw_int_vector(const Int_vector* vp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     result = fp_write_raw_int_vector(vp, fp);
@@ -2790,7 +2790,7 @@ int write_raw_int_vector(const Int_vector* vp, const char* file_name)
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        if (kjb_fclose(fp) == ERROR)
+        if (ivi_fclose(fp) == ERROR)
         {
             result = ERROR;
         }
@@ -2826,7 +2826,7 @@ int fp_write_raw_int_vector(const Int_vector* vp, FILE* fp)
 {
     int i;
     int         byte_order = 1;
-    char        head_str[ KJB_DATA_HEAD_SIZE ];
+    char        head_str[ IVI_DATA_HEAD_SIZE ];
     int         pad = 0;
     int         length = 0;
 
@@ -2838,14 +2838,14 @@ int fp_write_raw_int_vector(const Int_vector* vp, FILE* fp)
         length = vp->length;
     }
 
-    for (i = 0; i < KJB_DATA_HEAD_SIZE; i++)
+    for (i = 0; i < IVI_DATA_HEAD_SIZE; i++)
     {
         head_str[ i ] = '\0';
     }
 
-    BUFF_CPY(head_str, KJB_RAW_INT_VECTOR_STRING);
+    BUFF_CPY(head_str, IVI_RAW_INT_VECTOR_STRING);
 
-    ERE(kjb_fwrite(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fwrite(fp, head_str, sizeof(head_str)));
 
     ERE(FIELD_WRITE(fp, byte_order));
     ERE(FIELD_WRITE(fp, pad));
@@ -2854,7 +2854,7 @@ int fp_write_raw_int_vector(const Int_vector* vp, FILE* fp)
 
     if (length > 0)
     {
-        ERE(kjb_fwrite_2(fp, vp->elements, sizeof(int) * length, NULL));
+        ERE(ivi_fwrite_2(fp, vp->elements, sizeof(int) * length, NULL));
     }
 
     return NO_ERROR;
@@ -2867,7 +2867,7 @@ int fp_write_raw_int_vector(const Int_vector* vp, FILE* fp)
  *
  * Gets a target integer vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of integer vector arrays. If *target_vvpp is NULL, then
  * this routine creates the vector vector. If it is not null, and it is the
  * right size, then this routine does nothing. If it is the wrong size, then it
@@ -2961,8 +2961,8 @@ void free_int_vector_vector(Int_vector_vector *vvp)
         vp_pos++;
     }
 
-    kjb_free(vvp->elements);
-    kjb_free(vvp);
+    ivi_free(vvp->elements);
+    ivi_free(vvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -2972,7 +2972,7 @@ void free_int_vector_vector(Int_vector_vector *vvp)
  *
  * Gets a target integer vector vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of integer vector vector vectors. If *target_vvvpp is
  * NULL, then this routine creates the vector vector vector. If it is not null,
  * and it is the right size, then this routine does nothing. If it is the wrong
@@ -3055,8 +3055,8 @@ void free_int_v3(Int_v_v_v* vvvp)
         vvp_pos++;
     }
 
-    kjb_free(vvvp->elements);
-    kjb_free(vvvp);
+    ivi_free(vvvp->elements);
+    ivi_free(vvvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -3261,14 +3261,14 @@ int read_int_vector_vector
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_int_vector_vector(result_vvpp, fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return: Only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return: Only reading. */
     }
 
     return result;
@@ -3325,7 +3325,7 @@ int fp_read_int_vector_vector(Int_vector_vector** result_vvpp, FILE* fp)
         result = ERROR;
     }
 
-    ERE(save_file_pos = kjb_ftell(fp));
+    ERE(save_file_pos = ivi_ftell(fp));
 
     if (result == NOT_FOUND)
     {
@@ -3333,7 +3333,7 @@ int fp_read_int_vector_vector(Int_vector_vector** result_vvpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -3372,23 +3372,23 @@ int fp_read_raw_int_vector_vector(Int_vector_vector** vvpp, FILE* fp)
     int     i;
     long    bytes_used_so_far;
     int     byte_order;
-    char    head_str[ KJB_DATA_HEAD_SIZE ];
+    char    head_str[ IVI_DATA_HEAD_SIZE ];
     int     pad;
     off_t   num_bytes;
     int     result = NO_ERROR;
 
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
-    if (num_bytes < KJB_DATA_HEAD_SIZE) return NOT_FOUND;
+    if (num_bytes < IVI_DATA_HEAD_SIZE) return NOT_FOUND;
 
-    ERE(kjb_fread_exact(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fread_exact(fp, head_str, sizeof(head_str)));
     head_str[ sizeof(head_str) - 1 ] = '\0';
 
-    if ( ! STRCMP_EQ(head_str, KJB_RAW_INT_VECTOR_VECTOR_STRING))
+    if ( ! STRCMP_EQ(head_str, IVI_RAW_INT_VECTOR_VECTOR_STRING))
     {
         return NOT_FOUND;
     }
@@ -3602,12 +3602,12 @@ int write_int_vector_vector
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_int_vector_vector(vvp, fp);
 
-    kjb_fflush(fp);
+    ivi_fflush(fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
@@ -3617,7 +3617,7 @@ int write_int_vector_vector
         {
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         set_error_action(save_error_action);
     }
@@ -3639,7 +3639,7 @@ int write_int_vector_vector
  * This routine outputs a Int_vector_vector to a file specified by a pointer to a
  * FILE.
  *
- * "fp" is a pointer to a FILE as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "vvp" is a pointer to the Int_vector_vector object to output. The pointer is
@@ -3667,7 +3667,7 @@ int fp_write_int_vector_vector(const Int_vector_vector* vvp, FILE* fp)
 
         if (vp == NULL)
         {
-            ERE(kjb_fprintf(fp, "NULL\n"));
+            ERE(ivi_fprintf(fp, "NULL\n"));
         }
         else
         {
@@ -3730,12 +3730,12 @@ int write_raw_int_vector_vector
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_raw_result = fp_write_raw_int_vector_vector(vvp, fp);
 
-    kjb_fflush(fp);
+    ivi_fflush(fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
@@ -3745,7 +3745,7 @@ int write_raw_int_vector_vector
         {
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         set_error_action(save_error_action);
     }
@@ -3767,7 +3767,7 @@ int write_raw_int_vector_vector
  * This routine outputs an integer vector vector to a file specified by a
  * pointer to FILE as raw data.
  *
- * "fp" is a pointer to a FILE as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "vvp" is a pointer to the integer vector vector to be written. The pointer is
@@ -3824,21 +3824,21 @@ int fp_write_raw_int_vector_vector(const Int_vector_vector* vvp, FILE* fp)
 int fp_write_raw_int_vector_vector_header(int num_vectors, FILE* fp)
 {
     int byte_order = 1;
-    char head_str[ KJB_DATA_HEAD_SIZE ];
+    char head_str[ IVI_DATA_HEAD_SIZE ];
     int  pad = 0;
     int  i;
 
 
     UNTESTED_CODE();
 
-    for (i = 0; i < KJB_DATA_HEAD_SIZE; i++)
+    for (i = 0; i < IVI_DATA_HEAD_SIZE; i++)
     {
         head_str[ i ] = '\0';
     }
 
-    BUFF_CPY(head_str, KJB_RAW_INT_VECTOR_VECTOR_STRING);
+    BUFF_CPY(head_str, IVI_RAW_INT_VECTOR_VECTOR_STRING);
 
-    ERE(kjb_fwrite(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fwrite(fp, head_str, sizeof(head_str)));
 
     ERE(FIELD_WRITE(fp, byte_order));
     ERE(FIELD_WRITE(fp, pad));
@@ -4771,7 +4771,7 @@ int is_element_in_int_vector(int* index, const Int_vector* vp, int elem)
  *    set.
  *
  * Note:
- *    Vectors of unequal lenths has been treated as a bug (see kjb_bug(3)) in
+ *    Vectors of unequal lenths has been treated as a bug (see ivi_bug(3)) in
  *    some previous versions, and it is possible that we will go back to this
  *    behaviour in the future. Currently, we do not have a good convention for
  *    this, and putting one in place may change things. However, such a change
@@ -5066,7 +5066,7 @@ static int int_vec_is_perm_impl(
         {
             if (out_buf)
             {
-                kjb_sprintf(out_buf, buf_size, "Input vector contains "
+                ivi_sprintf(out_buf, buf_size, "Input vector contains "
                             "out-of-range value %d.", vp -> elements[i]);
             }
             free_int_vector(aux);
@@ -5081,7 +5081,7 @@ static int int_vec_is_perm_impl(
         {
             if (out_buf)
             {
-                kjb_sprintf(out_buf, buf_size, "Input vector lacks value %d.",
+                ivi_sprintf(out_buf, buf_size, "Input vector lacks value %d.",
                             i + start_value);
             }
             free_int_vector(aux);

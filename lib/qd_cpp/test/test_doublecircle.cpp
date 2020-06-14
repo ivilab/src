@@ -9,7 +9,7 @@
  */
 
 /*
- * $Id: test_doublecircle.cpp 22174 2018-07-01 21:49:18Z kobus $
+ * $Id: test_doublecircle.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
@@ -41,14 +41,14 @@
 namespace
 {
 
-using kjb::Vector2;
-using kjb::qd::DoubleCircle;
+using ivi::Vector2;
+using ivi::qd::DoubleCircle;
 
 #if SHOW_PRETTY_PICTURES
 
 const int EDGE_SZ = 500;
 
-const kjb::PixelRGBA    red     ( 100,   0,   0 ),
+const ivi::PixelRGBA    red     ( 100,   0,   0 ),
                         green   (   0, 100,   0 ),
                         blue    (   0,   0, 100 ),
                         gray    ( 100, 100, 100 ),
@@ -66,9 +66,9 @@ const kjb::PixelRGBA    red     ( 100,   0,   0 ),
  */
 int test12()
 {
-    using kjb_c::kjb_rand;
+    using ivi_c::ivi_rand;
 
-    const bool VERBOSE = false; //kjb_c::is_interactive();
+    const bool VERBOSE = false; //ivi_c::is_interactive();
 
     // floating-point equality here is dangerous but seems to be working
     const Vector2 a( 1, 0 ), b( 0, 1 );
@@ -80,25 +80,25 @@ int test12()
     TEST_TRUE( 1 == circle2.radius );
     TEST_TRUE( circle2.center == Vector2( 1, 1 ) );
 
-    kjb_rand();
-    kjb_rand();
-    kjb_rand();
-    kjb_rand();
-    kjb_rand();
+    ivi_rand();
+    ivi_rand();
+    ivi_rand();
+    ivi_rand();
+    ivi_rand();
 
     for( int iii = 0; iii < 1000; ++iii ) {
         const size_t POPSZ = 20;
         std::vector< Vector2 > vdp;
         Vector2 center(0,0);
-        center.x() = 20.0 * kjb_rand() - 10;
-        center.y() = 20.0 * kjb_rand() - 10;
-        double radius = 10.0 * kjb_rand();
+        center.x() = 20.0 * ivi_rand() - 10;
+        center.y() = 20.0 * ivi_rand() - 10;
+        double radius = 10.0 * ivi_rand();
         for( size_t jjj = 0; jjj < POPSZ; ++jjj ) {
             Vector2 ppp(0,0);
             do
             {
-                ppp.x() = center.x() + ( 2 * kjb_rand() - 1 ) * radius;
-                ppp.y() = center.y() + ( 2 * kjb_rand() - 1 ) * radius;
+                ppp.x() = center.x() + ( 2 * ivi_rand() - 1 ) * radius;
+                ppp.y() = center.y() + ( 2 * ivi_rand() - 1 ) * radius;
             }
             while( radius < ( ppp - center ).magnitude() );
             vdp.push_back( ppp );
@@ -140,37 +140,37 @@ int test12()
  */
 int test14()
 {
-    if ( ! kjb_c::is_interactive() )
+    if ( ! ivi_c::is_interactive() )
     {
         return EXIT_SUCCESS;
     }
 
 #if SHOW_PRETTY_PICTURES
-    pid_t p = kjb_c::kjb_fork();
+    pid_t p = ivi_c::ivi_fork();
     if (p) return EXIT_SUCCESS;
 
     // Child creates display, starts an infinite loop.
-    kjb::Image img = kjb::Image::create_zero_image( EDGE_SZ, EDGE_SZ );
+    ivi::Image img = ivi::Image::create_zero_image( EDGE_SZ, EDGE_SZ );
     std::vector< Vector2 > vp;
     const Vector2   c1( 125, 125 ),
                     c2( c1 + Vector2( 250, 0 ) ),
                     c3( c1 + Vector2( 0, 250 ) ),
                     c4( c1 + Vector2( 250, 250 ) );
     const Vector2* cc[] = { &c1, &c2, &c3, &c4, 00 };
-    const kjb::PixelRGBA* pal[] = { &red, &green, &blue, &white, 00 };
+    const ivi::PixelRGBA* pal[] = { &red, &green, &blue, &white, 00 };
     for( const Vector2* const* qq = cc; *qq; ++qq )
     {
         const Vector2& center = **qq;
         const int NCT = 100;
         vp.assign( NCT, Vector2( 0, 0 ) );
-        const double    rsx( kjb_c::gauss_rand() * 2 ),
-                        rsy( kjb_c::gauss_rand() * 2 ),
+        const double    rsx( ivi_c::gauss_rand() * 2 ),
+                        rsy( ivi_c::gauss_rand() * 2 ),
                         radiusx( rsx * rsx + 12 ),
                         radiusy( rsy * rsy + 12 );
         for( int iii = 0; iii < NCT; ++iii )
         {
-            vp[ iii ].x() = center.x() + kjb_c::gauss_rand() * radiusx;
-            vp[ iii ].y() = center.y() + kjb_c::gauss_rand() * radiusy;
+            vp[ iii ].x() = center.x() + ivi_c::gauss_rand() * radiusx;
+            vp[ iii ].y() = center.y() + ivi_c::gauss_rand() * radiusy;
         }
         DoubleCircle circle( vp );
         img.draw_circle( circle.center.x(), circle.center.y(), circle.radius, 1,
@@ -179,12 +179,12 @@ int test14()
             int xxx = vp[ iii ].x(), yyy = vp[ iii ].y();
             TEST_TRUE( 0 <= xxx && xxx < EDGE_SZ );
             TEST_TRUE( 0 <= yyy && yyy < EDGE_SZ );
-            kjb_c::Pixel pix = * pal[ qq - cc ];
+            ivi_c::Pixel pix = * pal[ qq - cc ];
             img.at( vp[ iii ].x(), vp[ iii ].y() ) = pix;
         }
     }
     img.display( "fit a smallest enclosing disc" );
-    while(1) kjb_c::nap(1000);
+    while(1) ivi_c::nap(1000);
 #endif
 
     return EXIT_SUCCESS;
@@ -209,14 +209,14 @@ int main2( int, const char* const* )
         int rc = (*p)();
         if ( rc != EXIT_SUCCESS )
         {
-            kjb_c::p_stderr( "Failure in test index %d.\n", p - suite );
+            ivi_c::p_stderr( "Failure in test index %d.\n", p - suite );
             return rc;
         }
     }
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::pso( "Success!\n" );
+        ivi_c::pso( "Success!\n" );
     }
 
     RETURN_VICTORIOUSLY();
@@ -226,9 +226,9 @@ int main2( int, const char* const* )
 
 int main( int argc, const char* const* argv )
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
     int rc = main2( argc, argv );
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return rc;
 }
 

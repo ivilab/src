@@ -1,5 +1,5 @@
 
-/* $Id: n_svd.c 10388 2011-09-18 08:48:20Z kobus $ */
+/* $Id: n_svd.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,7 +22,7 @@
 #include "wrap_lapack/wrap_lapack.h"
 #include "n/n_svd.h"
 
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
 #include "nr/nr_svd.h"
 #endif
 
@@ -39,7 +39,7 @@ static int initialize_svd_method(void);
 
 static Method_option fs_svd_methods[ ] =
 {
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
     { "numerical-recipes", "nr",  (int(*)())do_numerical_recipes_svd},
 #endif
     { "lapack",            "lp",  (int(*)())do_lapack_svd}
@@ -170,7 +170,7 @@ static int initialize_svd_method(void)
 {
     if (fs_svd_method == NEVER_SET)
     {
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
         const char* default_method =
                                 have_lapack() ? "lapack" : "numerical-recipes";
 #else

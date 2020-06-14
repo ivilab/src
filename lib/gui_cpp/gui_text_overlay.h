@@ -1,4 +1,4 @@
-/* $Id: gui_text_overlay.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_text_overlay.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,14 +22,14 @@
 #ifndef GUI_CPP_GUI_TEXT_OVERLAY_H
 #define GUI_CPP_GUI_TEXT_OVERLAY_H
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 
 #include <string>
 #include <gui_cpp/gui_overlay.h>
 #include <boost/optional.hpp>
 #include <m_cpp/m_vector_d.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -105,8 +105,8 @@ private:
     std::string text_;
     Horizontal_alignment alignment_;
     Vertical_alignment v_alignment_;
-    kjb::Vector4 color_;
-    boost::optional<kjb::Vector4> bg_color_;
+    ivi::Vector4 color_;
+    boost::optional<ivi::Vector4> bg_color_;
 
     static void* FONT;
     static const int CHAR_WIDTH = 8;
@@ -202,8 +202,8 @@ private:
     std::string text_;
     Horizontal_alignment alignment_;
     Vertical_alignment v_alignment_;
-    kjb::Vector4 color_;
-    boost::optional<kjb::Vector4> bg_color_;
+    ivi::Vector4 color_;
+    boost::optional<ivi::Vector4> bg_color_;
 
     static void* FONT;
     static const int CHAR_WIDTH = 8;
@@ -213,7 +213,7 @@ private:
 
 };
 } // namespace gui
-} // namespace kjb
+} // namespace ivi
 
 #endif /* have_glut */
 #endif

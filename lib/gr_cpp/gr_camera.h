@@ -63,18 +63,18 @@
  */
 
 
-#ifndef KJB_CAMERA_H
-#define KJB_CAMERA_H
+#ifndef IVI_CAMERA_H
+#define IVI_CAMERA_H
 
 #include "m_cpp/m_matrix.h"
 #include "gr_cpp/gr_rigid_object.h"
 
 
-namespace kjb_c {
-    struct KJB_image;
+namespace ivi_c {
+    struct IVI_image;
 }
 
-namespace kjb {
+namespace ivi {
 
 class Image;
 class Vector;
@@ -187,8 +187,8 @@ public:
     /** @brief sets all the gl viewport parameters (x,y,width,length) */
     static void set_gl_viewport(double x, double y, double w, double h);
 
-    /** @brief captures the gl view and stores it into a KJB_image */
-    static void capture_gl_view(kjb_c::KJB_image** img_out);
+    /** @brief captures the gl view and stores it into a IVI_image */
+    static void capture_gl_view(ivi_c::IVI_image** img_out);
     /** @brief captures the gl view and saves into a file */
     static void capture_gl_view(const char* fname);
     /** @brief  captures the gl view and saves into a file, by appending N to the filename */
@@ -196,22 +196,22 @@ public:
     /** @brief captures the gl view and stores it into a Int_matrix.
      * The four bytes used by GL to represent the four channels (R,G,B,A)
      * are packaged into a single integer.  */
-    static void capture_gl_view(kjb::Int_matrix & matrix);
+    static void capture_gl_view(ivi::Int_matrix & matrix);
     /** @brief captures the gl view and stores it into a c++ image */
     static void capture_gl_view(Image & img_out);
 
     /** Puts the content of the input image in the GL frame buffer */
-    static void set_gl_view(const kjb::Image & img_in);
+    static void set_gl_view(const ivi::Image & img_in);
 
-    void project_point(double & x, double & y,double &z, const kjb::Vector & point3D, double img_height) const;
+    void project_point(double & x, double & y,double &z, const ivi::Vector & point3D, double img_height) const;
 
     /** Constructs an image from an int matrix. Each integer consists of four bytes, and
      *  each of them is interpreted as one of the GL channels (RGBA, or ABGR if the architecture
      *  is little endian). This is MOSTLY (if not only) used for DEBUGGING */
-    static void construct_image_from_int_matrix(kjb::Image & im, kjb::Int_matrix & m);
+    static void construct_image_from_int_matrix(ivi::Image & im, ivi::Int_matrix & m);
 
     /** @brief  checks whether a given polygon is visible under the given camera parameters*/
-    virtual bool Polygon_visibility_test(const kjb::Polygon & p, double epsilon = 0) const;
+    virtual bool Polygon_visibility_test(const ivi::Polygon & p, double epsilon = 0) const;
 
     /** @brief sets an entry of the modelview matrix */
     inline void set_modelview_entry(unsigned int row, unsigned int col, double value)
@@ -341,10 +341,10 @@ public:
     //Extrinsic parameters
 
     /** @brief Sets the position of the camera center */
-    void set_camera_center(const kjb::Vector & center);
+    void set_camera_center(const ivi::Vector & center);
 
     /** @brief Sets the world origin in camera coordinates (the "t" vector in Forsyth) */
-    void set_world_origin(const kjb::Vector & center);
+    void set_world_origin(const ivi::Vector & center);
 
     /** @brief Sets the world scale along the three major axes using glScaled
      * @note you must call this after calling prepare_for_rendering or set_gl_modelview.*/
@@ -357,24 +357,24 @@ public:
     void set_rotation_angles(double pitch, double yaw, double roll);
 
     /** @brief Transform a point from the world coordinate system to the camera coordinate system */
-    void transform_point_to_camera_frame(kjb::Vector & point) const;
+    void transform_point_to_camera_frame(ivi::Vector & point) const;
 
     /** @brief Rotates a point from the world coordinate system to the camera coordinate system */
-    void rotate_point_to_camera_frame(kjb::Vector & point) const;
+    void rotate_point_to_camera_frame(ivi::Vector & point) const;
 
     /** @brief Transforms a point in camera coordinates to world coordinates */
     void get_point_in_world_coordinates
     (
-        const kjb::Vector & point_in_camera_coordinates,
-        kjb::Vector & point_in_world_coordinates
+        const ivi::Vector & point_in_camera_coordinates,
+        ivi::Vector & point_in_world_coordinates
     ) const;
 
-    bool Polygon_visibility_test(const kjb::Polygon & p, double epsilon = 0) const;
+    bool Polygon_visibility_test(const ivi::Polygon & p, double epsilon = 0) const;
 
     /** @brief Given a point in world coordinates, it returns true if the point is in the viewing frustum, false otherwise */
     bool is_point_in_camera_frustum
     (
-            const kjb::Vector & point_in_world_coordinates,
+            const ivi::Vector & point_in_world_coordinates,
             double & ox,
             double & oy,
             unsigned int num_rows,
@@ -386,7 +386,7 @@ private:
     /** @brief Sets the angles from a rotation matrix. The use of this function
      * should be limited to this class scope
      */
-    void set_rotation_matrix(const kjb::Matrix & rotation_matrix);
+    void set_rotation_matrix(const ivi::Matrix & rotation_matrix);
 
     /** @brief Translates the current camera center */
     void translate(double dx, double dy, double dz);
@@ -395,7 +395,7 @@ private:
     void set_rotations_and_translate(double pitch, double yaw, double roll, double dx, double dy, double dz);
 
     /** @brief Transforms the current camera center and frame using the input 4X4 transformation matrix */
-    void transform(const kjb::Matrix & M);
+    void transform(const ivi::Matrix & M);
 
     // Stores the camera center in world coordinates
     Vector camera_center_in_world_coordinates;

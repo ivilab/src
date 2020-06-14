@@ -15,7 +15,7 @@
  * Part I and II. Washington, DC: Defense Mapping Agency
  */
 /*
- * $Id: LatLong-UTMconversion.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: LatLong-UTMconversion.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
@@ -39,14 +39,14 @@ const double rad2deg = 180.0 / M_PI;    ///< Number of degrees in 1 radian
 typedef std::valarray<double> VDub;
 
 struct get_easting {
-    double operator()(const kjb::TopoFusion::pt& p) const { return p.x; }
+    double operator()(const ivi::TopoFusion::pt& p) const { return p.x; }
 };
 struct get_northing {
-    double operator()(const kjb::TopoFusion::pt& p) const { return p.y; }
+    double operator()(const ivi::TopoFusion::pt& p) const { return p.y; }
 };
 
 void get_easting_northing(
-    const std::vector<kjb::TopoFusion::pt>& utm,
+    const std::vector<ivi::TopoFusion::pt>& utm,
     VDub* e, 
     VDub* n
 )
@@ -61,7 +61,7 @@ void get_easting_northing(
 
 struct z_center_to_lon {
     // return longitude of the center of the given zone, in degrees
-    double operator()(const kjb::TopoFusion::pt& p) const
+    double operator()(const ivi::TopoFusion::pt& p) const
     {
         // +3 puts origin in middle of zone
         return (p.zone - 1)*6 - 180 + 3;
@@ -69,7 +69,7 @@ struct z_center_to_lon {
 };
 
 void zone_center_to_longitude(
-    const std::vector<kjb::TopoFusion::pt>& utm,
+    const std::vector<ivi::TopoFusion::pt>& utm,
     std::valarray<double>* lon_o
 )
 {
@@ -78,19 +78,19 @@ void zone_center_to_longitude(
 }
 
 
-inline enum kjb::TopoFusion::ELLIPSOID_ID operator++(
-    enum kjb::TopoFusion::ELLIPSOID_ID& e
+inline enum ivi::TopoFusion::ELLIPSOID_ID operator++(
+    enum ivi::TopoFusion::ELLIPSOID_ID& e
 )
 {
     int i = static_cast<int>(e);
-    return e = static_cast<enum kjb::TopoFusion::ELLIPSOID_ID>(i+1);
+    return e = static_cast<enum ivi::TopoFusion::ELLIPSOID_ID>(i+1);
 }
 
 
 }
 
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -165,7 +165,7 @@ int validate_ellipsoid_table()
     {
         if (e > 0 && ellipsoid[e].id != e)
         {
-            using namespace kjb_c;
+            using namespace ivi_c;
             const Ellipsoid &el = ellipsoid[e];
             add_error("Ellipsoid table is corrupt: entry %d contains\n"
                     "{ %d, \"%s\", %e,"
@@ -177,7 +177,7 @@ int validate_ellipsoid_table()
             return ERROR;
         }
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -592,11 +592,11 @@ void utm_to_lat_long(
 #else
     if (Long.min() <= -180)
     {
-        KJB_THROW_2(Runtime_error, "Invalid Longitude (too negative)");
+        IVI_THROW_2(Runtime_error, "Invalid Longitude (too negative)");
     }
     if (Long.max() > 180)
     {
-        KJB_THROW_2(Runtime_error, "Invalid Longitude (too positive)");
+        IVI_THROW_2(Runtime_error, "Invalid Longitude (too positive)");
     }
 #endif
 
@@ -771,4 +771,4 @@ char zone_of(int ReferenceEllipsoid, const pt& p)
 
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi

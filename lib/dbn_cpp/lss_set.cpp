@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: lss_set.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l_cpp/l_util.h>
 #include <l_cpp/l_exception.h>
@@ -37,9 +37,11 @@
 #include "dbn_cpp/linear_state_space.h"
 #include "dbn_cpp/lss_set.h"
 #include "dbn_cpp/util.h"
+#include <boost/bind/placeholders.hpp>
 
-using namespace kjb;
-using namespace kjb::ties;
+namespace bph = boost::placeholders;
+using namespace ivi;
+using namespace ivi::ties;
 
 Lss_set::Lss_set
 (
@@ -163,7 +165,7 @@ Lss_set::Lss_set
     }
 
     // parse in the group info if the grouping info file exists
-    if(kjb_c::is_file(grouping_info_fp.c_str()))
+    if(ivi_c::is_file(grouping_info_fp.c_str()))
     {
         std::ifstream ifs(grouping_info_fp.c_str());
         ifs >> group_map_;
@@ -268,7 +270,7 @@ void Lss_set::init_lss
                 //BOOST_FOREACH(double& param, clo.params())
                 for(size_t jjj = 0; jjj < clo.num_params(); jjj++)
                 {
-                    double val = clo.get_param(jjj) + kjb_c::kjb_rand() * 1e-4;
+                    double val = clo.get_param(jjj) + ivi_c::ivi_rand() * 1e-4;
                     clo.set_param(jjj, val);
                 }
             }
@@ -328,7 +330,7 @@ void Lss_set::read
                 std::string group_name = group_map.left.find(g)->second;
                 boost::format cur_out_fmt(indir + "/" + group_name + "/%04d/");
                 couple_fp = (cur_out_fmt % ids_[i]).str();
-                if(kjb_c::is_directory(couple_fp.c_str()))
+                if(ivi_c::is_directory(couple_fp.c_str()))
                 {
                     break;
                 }
@@ -338,7 +340,7 @@ void Lss_set::read
         lss_vec_[i].init_predictors(data_all[i].moderators, mod_names_);
         // read in the samples if the sample dir exit 
         std::string sample_dir(couple_fp + "/samples/");
-        if(kjb_c::is_directory(sample_dir.c_str()))
+        if(ivi_c::is_directory(sample_dir.c_str()))
         {
             samples_all_[i] = read_lss_samples(sample_dir, start_time);
         }
@@ -349,7 +351,7 @@ void Lss_set::read
     update_variances();
 
     string group_fp(indir + "/group_params.txt");
-    if(!kjb_c::is_file(group_fp.c_str()))
+    if(!ivi_c::is_file(group_fp.c_str()))
     {
         update_means();
         update_variances();
@@ -615,7 +617,7 @@ void Lss_set::write
     const std::string& out_dir
 ) const
 {
-    ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
 
     // output ids 
     std::string id_fp(out_dir + "/ids.txt");
@@ -708,9 +710,9 @@ void Lss_set::write
             group_ofs << std::endl;
         }
         //std::for_each(group_means_.begin(), group_means_.end(), 
-                //boost::bind(stream_write_vector, boost::ref(group_ofs), _1));
+                //boost::bind(stream_write_vector, boost::ref(group_ofs), bph::_1));
         std::for_each(group_covariances_.begin(), group_covariances_.end(), 
-                boost::bind(stream_write_matrix, boost::ref(group_ofs), _1));
+                boost::bind(stream_write_matrix, boost::ref(group_ofs), bph::_1));
         group_ofs.close();
 
         // write couple ids in groups (For Debug purposes)
@@ -939,7 +941,7 @@ std::vector<std::vector<Vector> > Lss_set::get_lss_params() const
 void Lss_set::parse_obs_coef(const std::string& obs_fname) const
 {
     std::for_each(lss_vec_.begin(), lss_vec_.end(), 
-            boost::bind(&Linear_state_space::parse_obs_coef, _1, obs_fname));
+            boost::bind(&Linear_state_space::parse_obs_coef, bph::_1, obs_fname));
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -1120,7 +1122,7 @@ void Lss_set::check_predictors_dimension()
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::ostream& kjb::ties::operator <<
+std::ostream& ivi::ties::operator <<
 (
     std::ostream& ost, 
     const Lss_set& lsss

@@ -4,7 +4,7 @@
 #include <m_cpp/m_matrix.h>
 #include <m_cpp/m_int_matrix.h>
 
-namespace kjb {
+namespace ivi {
 
 #if 0
 template< typename MAT >

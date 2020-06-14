@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_detection_box.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_detection_box.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "people_tracking_cpp/pt_detection_box.h"
 #include "l_cpp/l_exception.h"
@@ -26,10 +26,10 @@
 #include <string>
 #include <fstream>
 
-using namespace kjb;
-using namespace kjb::pt; 
+using namespace ivi;
+using namespace ivi::pt; 
 
-std::vector<Detection_box> kjb::pt::parse_detection_file
+std::vector<Detection_box> ivi::pt::parse_detection_file
 (
     const std::string& filename
 )
@@ -37,7 +37,7 @@ std::vector<Detection_box> kjb::pt::parse_detection_file
     std::ifstream ifs(filename.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
+        IVI_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
     }
     std::vector<Detection_box> dboxes; 
     std::string line;
@@ -51,7 +51,7 @@ std::vector<Detection_box> kjb::pt::parse_detection_file
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::pt::similar_boxes
+bool ivi::pt::similar_boxes
 (
     const Bbox& model_box,
     const Bbox& data_box,

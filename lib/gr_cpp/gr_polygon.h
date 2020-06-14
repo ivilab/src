@@ -1,5 +1,5 @@
 
-/* $Id: gr_polygon.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_polygon.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,9 +29,9 @@
 #include "l_cpp/l_readable.h"
 #include "l_cpp/l_writeable.h"
 
-namespace kjb {
+namespace ivi {
 
-typedef std::pair<kjb::Vector, kjb::Vector> Line3d;
+typedef std::pair<ivi::Vector, ivi::Vector> Line3d;
 
 class Polygon : public Abstract_renderable, public Readable, public Writeable
 {
@@ -104,7 +104,7 @@ public:
     {
         if(i >= pts.size())
         {
-            KJB_THROW(Index_out_of_bounds);
+            IVI_THROW(Index_out_of_bounds);
         }
 
         return pts[i];

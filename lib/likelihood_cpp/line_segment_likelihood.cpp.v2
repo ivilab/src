@@ -27,7 +27,7 @@
 #include <functional>
 #include <utility>
 
-namespace kjb {
+namespace ivi {
 
 const double Line_segment_likelihood::precision_epsilon = 1e-6;
 const double Line_segment_likelihood::beta_epsilon = 1e-2;
@@ -138,7 +138,7 @@ double Line_segment_likelihood::operator()
         }
     }
 
-    ll += kjb::log_pdf(m_num_noise_chains_dist, num_noise);
+    ll += ivi::log_pdf(m_num_noise_chains_dist, num_noise);
 
     return ll;
 }
@@ -150,7 +150,7 @@ Chain_vector Line_segment_likelihood::sample
     const Chain_vector& model_chains
 ) const
 {
-    using kjb::sample;
+    using ivi::sample;
 
     Chain_vector data_chains;
     for(size_t i = 0; i < model_chains.size(); i++)
@@ -221,7 +221,7 @@ Chain_vector Line_segment_likelihood::sample
 
         data_chains.push_back(Chain(data_segs));
 
-        using namespace kjb::geometry;
+        using namespace ivi::geometry;
         double distance = sample(m_distance_dist);
         double angle = sample(m_angle_dist);
         double final_angle = angle + chain.get_orientation();
@@ -250,8 +250,8 @@ double Line_segment_likelihood::pairwise
                                                   model_chain,
                                                   distance,
                                                   angle_magnitude);
-    double distance_ll = kjb::log_pdf(m_distance_dist, distance);
-    double angle_ll = kjb::log_pdf(m_angle_dist, angle_magnitude);
+    double distance_ll = ivi::log_pdf(m_distance_dist, distance);
+    double angle_ll = ivi::log_pdf(m_angle_dist, angle_magnitude);
 
     const Chain& ad_chain = chs.first;
     const Chain& am_chain = chs.second;
@@ -261,12 +261,12 @@ double Line_segment_likelihood::pairwise
 
     double rel_lgrowth = lgrowth / am_chain.get_length();
     double rel_rgrowth = rgrowth / am_chain.get_length();
-    double growth_ll = kjb::log_pdf(m_growth_dist, rel_lgrowth)
-                        + kjb::log_pdf(m_growth_dist, rel_rgrowth);
+    double growth_ll = ivi::log_pdf(m_growth_dist, rel_lgrowth)
+                        + ivi::log_pdf(m_growth_dist, rel_rgrowth);
 
     const Segment_vector& data_segments = ad_chain.get_segments();
     size_t num_segs = data_segments.size();
-    double num_segs_ll = kjb::log_pdf(m_num_segments_dist, num_segs);
+    double num_segs_ll = ivi::log_pdf(m_num_segments_dist, num_segs);
     std::vector<double> borders(num_segs* 2);
     for(size_t i = 0; i < data_segments.size(); i++)
     {
@@ -314,23 +314,23 @@ double Line_segment_likelihood::spurious
 {
     const Segment_vector& data_segments = data_chain.get_segments();
     size_t num_segs = data_segments.size();
-    double num_segs_ll = kjb::log_pdf(m_num_noise_segments_dist, num_segs);
+    double num_segs_ll = ivi::log_pdf(m_num_noise_segments_dist, num_segs);
 
     double length = data_chain.get_length();
-    double length_ll = kjb::log_pdf(m_noise_length_dist, length);
+    double length_ll = ivi::log_pdf(m_noise_length_dist, length);
 
     const Vector& center = data_chain.get_centre();
-    double location_ll = kjb::log_pdf(m_noise_location_x_dist, center[0])
-                            + kjb::log_pdf(m_noise_location_y_dist, center[1]);
+    double location_ll = ivi::log_pdf(m_noise_location_x_dist, center[0])
+                            + ivi::log_pdf(m_noise_location_y_dist, center[1]);
 
     double angle = data_chain.get_orientation();
-    double angle_ll = kjb::log_pdf(m_noise_angle_dist, angle);
+    double angle_ll = ivi::log_pdf(m_noise_angle_dist, angle);
 
     double parts_ll = 0.0;
     for(size_t i = 0; i < num_segs; i++)
     {
         bool seg_on = (i + 1) % 2;
-        parts_ll += kjb::log_pdf(m_noise_segment_dist, seg_on);
+        parts_ll += ivi::log_pdf(m_noise_segment_dist, seg_on);
     }
 
     return length_ll + location_ll + angle_ll + parts_ll + num_segs_ll;
@@ -415,5 +415,5 @@ std::pair<Chain, Chain> align_to_x_axis
     return std::make_pair(aligned_data_chain, aligned_model_chain);
 }
 
-} //namespace  kjb
+} //namespace  ivi
 

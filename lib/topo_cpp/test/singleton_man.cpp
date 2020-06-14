@@ -11,7 +11,7 @@
  * with this program.
  */
 /*
- * $Id: singleton_man.cpp 14848 2013-07-04 06:38:17Z predoehl $
+ * $Id: singleton_man.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 #include <l/l_init.h>
 #include <l/l_sys_io.h>
@@ -23,20 +23,20 @@
 int test1()
 {
     // instantiate it once:  shame on you.
-    kjb::TopoFusion::Tile_manager t1;
+    ivi::TopoFusion::Tile_manager t1;
 
     // instantiate it twice:  shame on me.
-    TEST_FAIL( kjb::TopoFusion::Tile_manager t2 );
-    TEST_FAIL( kjb::TopoFusion::Tile_manager t2("foo") );
+    TEST_FAIL( ivi::TopoFusion::Tile_manager t2 );
+    TEST_FAIL( ivi::TopoFusion::Tile_manager t2("foo") );
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 int main()
 {
-    KJB(EPETE(kjb_init()));
-    KJB(EPETE(test1()));
-    kjb_c::kjb_cleanup();
+    IVI(EPETE(ivi_init()));
+    IVI(EPETE(test1()));
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

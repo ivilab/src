@@ -44,8 +44,8 @@
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace std;
 
 const double lambda_N = 0.5;
@@ -264,7 +264,7 @@ vector<string> create_or_read_scene
         usg += " [ data-dir facemark-dir flow-dir";
         usg += " [ scene-dir | gt-btraj-dir cam-dir ] ]";
 
-        KJB_THROW_2(Exception, usg);
+        IVI_THROW_2(Exception, usg);
     }
 
     return frame_fps;

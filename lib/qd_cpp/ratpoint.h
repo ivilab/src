@@ -4,7 +4,7 @@
  * @brief Support for points and line segments with rational coordinates
  */
 /*
- * $Id: ratpoint.h 22174 2018-07-01 21:49:18Z kobus $
+ * $Id: ratpoint.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef QD_CPP_RATPOINT_INCLUDED_IVILAB_UARIZONAVISION
@@ -39,7 +39,7 @@
 #include <boost/rational.hpp>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -411,7 +411,7 @@ RatPoint line_intersection(
  * If the segments do not intersect this returns false, and *intersection
  * is not touched.
  *
- * @throws KJB_error if intersection is equal to NULL.
+ * @throws IVI_error if intersection is equal to NULL.
  */
 inline bool segment_intersection(
     const RatPoint_line_segment& s,
@@ -441,7 +441,7 @@ inline bool segment_intersection(
             }
             else
             {
-                KJB(ASSERT(s.b == t.a || s.b == t.b));
+                IVI(ASSERT(s.b == t.a || s.b == t.b));
                 intersection -> a = intersection -> b = s.b;
             }
         }
@@ -470,7 +470,7 @@ inline bool line_intersection(
     const RatPoint& p
 )
 {
-    if (is_degenerate(s)) KJB_THROW(Illegal_argument);
+    if (is_degenerate(s)) IVI_THROW(Illegal_argument);
     return 0 == triangle_area(s, p);
 }
 #endif
@@ -499,6 +499,6 @@ bool is_vertical(const RatPoint_line_segment& s)
 
 
 } // end ns qd
-} // end ns kjb
+} // end ns ivi
 
 #endif /* QD_CPP_RATPOINT_INCLUDED_IVILAB_UARIZONAVISION */

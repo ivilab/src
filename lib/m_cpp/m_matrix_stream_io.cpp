@@ -1,4 +1,4 @@
-/* $Id: m_matrix_stream_io.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_matrix_stream_io.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 
 
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * Writes an integer matrix to an ostream using binary format.
@@ -41,12 +41,12 @@ void Matrix_stream_io::write_int_matrix(
     const Int_matrix & imat
 )
 {
-     using namespace kjb_c;
+     using namespace ivi_c;
 
      int num_rows   = imat.get_num_rows();
      int num_cols   = imat.get_num_cols();
 
-     if(! kjb_is_bigendian() )
+     if(! ivi_is_bigendian() )
      {
          bswap_u32((uint32_t*)&(num_rows));
          bswap_u32((uint32_t*)&(num_cols));
@@ -65,7 +65,7 @@ void Matrix_stream_io::write_int_matrix(
          for(int j = 0; j < imat.get_num_cols(); j++)
          {
              int value = imat(i,j);
-             if(! kjb_is_bigendian() )
+             if(! ivi_is_bigendian() )
              {
                  bswap_u32((uint32_t*)&(value));
              }
@@ -87,7 +87,7 @@ void Matrix_stream_io::write_int_matrix(
  */
 void Matrix_stream_io::read_int_matrix(std::istream& in, Int_matrix & imat)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     int num_rows;
     int num_cols;
@@ -101,7 +101,7 @@ void Matrix_stream_io::read_int_matrix(std::istream& in, Int_matrix & imat)
         throw IO_error("Could not read int matrix dimensions");
     }
 
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32((uint32_t*)&(num_rows));
         bswap_u32((uint32_t*)&(num_cols));
@@ -123,7 +123,7 @@ void Matrix_stream_io::read_int_matrix(std::istream& in, Int_matrix & imat)
                 throw IO_error("Could not read matrix elements");
             }
 
-            if(! kjb_is_bigendian() )
+            if(! ivi_is_bigendian() )
             {
                 bswap_u32((uint32_t*)&(value));
             }
@@ -142,12 +142,12 @@ void Matrix_stream_io::read_int_matrix(std::istream& in, Int_matrix & imat)
  */
 void Matrix_stream_io::write_matrix(std::ostream& out, const Matrix & imat)
 {
-     using namespace kjb_c;
+     using namespace ivi_c;
 
      int num_rows   = imat.get_num_rows();
      int num_cols   = imat.get_num_cols();
 
-     if(! kjb_is_bigendian() )
+     if(! ivi_is_bigendian() )
      {
          bswap_u32((uint32_t*)&(num_rows));
          bswap_u32((uint32_t*)&(num_cols));
@@ -166,7 +166,7 @@ void Matrix_stream_io::write_matrix(std::ostream& out, const Matrix & imat)
          for(int j = 0; j < imat.get_num_cols(); j++)
          {
              double value = imat(i,j);
-             if(! kjb_is_bigendian() )
+             if(! ivi_is_bigendian() )
              {
                  bswap_u64((uint64_t*)&(value));
              }
@@ -188,7 +188,7 @@ void Matrix_stream_io::write_matrix(std::ostream& out, const Matrix & imat)
  */
 void Matrix_stream_io::read_matrix(std::istream& in, Matrix & imat)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     int num_rows;
     int num_cols;
@@ -202,7 +202,7 @@ void Matrix_stream_io::read_matrix(std::istream& in, Matrix & imat)
         throw IO_error("Could not read int matrix dimensions");
     }
 
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32((uint32_t*)&(num_rows));
         bswap_u32((uint32_t*)&(num_cols));
@@ -224,7 +224,7 @@ void Matrix_stream_io::read_matrix(std::istream& in, Matrix & imat)
                 throw IO_error("Could not read matrix elements");
             }
 
-            if(! kjb_is_bigendian() )
+            if(! ivi_is_bigendian() )
             {
                 bswap_u64((uint64_t*)&(value));
             }

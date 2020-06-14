@@ -28,7 +28,7 @@
 #include <string>
 #include <iostream>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /** @brief  Data structure that represents the breakdown of a posterior. */
@@ -71,7 +71,7 @@ std::istream& operator>>(std::istream& ist, Scene_info& info);
 /** @brief  Print scene info in a table layout. */
 void scene_info_table(const Scene_info& info, std::ostream& ost);
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_SCENE_INFO_H */
 

@@ -1,5 +1,5 @@
 
-/* $Id: i_convolve.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: i_convolve.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -65,9 +65,9 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int ow_gauss_convolve_image(KJB_image* ip, double sigma)
+int ow_gauss_convolve_image(IVI_image* ip, double sigma)
 {
-    KJB_image* out_ip = NULL;
+    IVI_image* out_ip = NULL;
     int          num_rows = ip->num_rows;
     int          num_cols = ip->num_cols;
     int i, j;
@@ -82,7 +82,7 @@ int ow_gauss_convolve_image(KJB_image* ip, double sigma)
         }
     }
 
-    kjb_free_image(out_ip);
+    ivi_free_image(out_ip);
 
     return NO_ERROR;
 }
@@ -109,8 +109,8 @@ int ow_gauss_convolve_image(KJB_image* ip, double sigma)
 
 int gauss_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           sigma
 )
 {
@@ -118,7 +118,7 @@ int gauss_convolve_image
     int        mask_size;
     int        status_code;
     Vector*    mask_vp = NULL;
-    KJB_image* x_convolve_ip = NULL;
+    IVI_image* x_convolve_ip = NULL;
 
 
 #if 0
@@ -138,7 +138,7 @@ int gauss_convolve_image
     }
 
     status_code = y_convolve_image(out_ipp, x_convolve_ip, mask_vp);
-    kjb_free_image(x_convolve_ip);
+    ivi_free_image(x_convolve_ip);
     free_vector(mask_vp);
     return status_code;
 }
@@ -164,12 +164,12 @@ int gauss_convolve_image
 
 int convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Matrix*    mask_mp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j, mi, mj, m, n;
     int     mask_rows  = mask_mp->num_rows;
     int     mask_cols  = mask_mp->num_cols;
@@ -248,12 +248,12 @@ int convolve_image
 
 int x_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    mask_vp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j, mj, n;
     int     mask_cols = mask_vp->length;
     int     mask_col_offset = mask_cols / 2;
@@ -320,12 +320,12 @@ int x_convolve_image
 
 int y_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    mask_vp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j, mi, m;
     int     mask_rows  = mask_vp->length;
     int     mask_row_offset = mask_rows / 2;
@@ -398,13 +398,13 @@ int y_convolve_image
 
 int gauss_sample_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              resolution,
     double           sigma
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, oi, oj, i, j, mi, mj, m, n;
     int        num_out_rows;
     int        num_out_cols;

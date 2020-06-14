@@ -1,4 +1,4 @@
-/* $Id: psi_sample_util.h 10707 2011-09-29 20:05:56Z predoehl $ */
+/* $Id: psi_sample_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -25,7 +25,7 @@
 #include <sample_cpp/sample_recorder.h>
 #include <limits>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -74,21 +74,21 @@ inline double get_model_parameter(const Model& m, size_t i)
     return m.get(i);
 }
 
-inline kjb::Vector get_model_upper_bounds(const Model& m)
+inline ivi::Vector get_model_upper_bounds(const Model& m)
 {
     const size_t size = m.size();
     const double inf = std::numeric_limits<double>::infinity();
 
-    return kjb::Vector((int) size, inf);
+    return ivi::Vector((int) size, inf);
 }
 
-inline kjb::Vector get_model_lower_bounds(const Model& m)
+inline ivi::Vector get_model_lower_bounds(const Model& m)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     static const double inf = std::numeric_limits<double>::infinity();
     const size_t size = m.size();
 
-    return kjb::Vector((int) size, -inf);
+    return ivi::Vector((int) size, -inf);
 
 #if 0
     for(int i = 0; i < size(); i++)
@@ -139,9 +139,9 @@ public:
         mass_step_size_(mass_step * scale)
     {}
 
-    kjb::Vector operator()(const Model& m) const
+    ivi::Vector operator()(const Model& m) const
     {
-        kjb::Vector result(m.size());
+        ivi::Vector result(m.size());
         for(size_t i = 0; i < m.size(); i++)
         {
             Unit_type unit = m.get_units(i);
@@ -173,7 +173,7 @@ public:
                 case ASPACIAL_UNIT: 
                 case AANGLE_UNIT: 
                 default:
-                    KJB_THROW_2(kjb::Runtime_error, "Unknown parameter type");
+                    IVI_THROW_2(ivi::Runtime_error, "Unknown parameter type");
             }
             
         }
@@ -195,5 +195,5 @@ private:
 
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 #endif

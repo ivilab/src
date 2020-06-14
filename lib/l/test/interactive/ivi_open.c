@@ -1,5 +1,5 @@
 
-/* $Id: kjb_open.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: ivi_open.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -17,19 +17,19 @@ int main(int argc, char **argv)
     FILE* fp;
 
 
-    kjb_l_set("debug_level", "1"); 
+    ivi_l_set("debug_level", "1"); 
 
     BUFF_GET_FD_NAME(fileno(stdin), name);
-    p_stderr("Name of stdin is %s (kjb_isatty==>%d).\n", name,
-             kjb_isatty(fileno(stdin))); 
+    p_stderr("Name of stdin is %s (ivi_isatty==>%d).\n", name,
+             ivi_isatty(fileno(stdin))); 
 
     BUFF_GET_FD_NAME(fileno(stdout), name);
-    p_stderr("Name of stdout is %s (kjb_isatty==>%d).\n", name,
-             kjb_isatty(fileno(stdout))); 
+    p_stderr("Name of stdout is %s (ivi_isatty==>%d).\n", name,
+             ivi_isatty(fileno(stdout))); 
 
     BUFF_GET_FD_NAME(fileno(stderr), name);
-    p_stderr("Name of stderr is %s (kjb_isatty==>%d).\n", name,
-             kjb_isatty(fileno(stderr))); 
+    p_stderr("Name of stderr is %s (ivi_isatty==>%d).\n", name,
+             ivi_isatty(fileno(stderr))); 
 
     p_stderr("\n");
 
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 
         if (do_it) 
         {
-            NPE(fp = kjb_fopen(line, mode));
+            NPE(fp = ivi_fopen(line, mode));
         }
         else 
         {
@@ -74,20 +74,20 @@ int main(int argc, char **argv)
         if (fp != NULL) 
         {
             EPE(BUFF_GET_FD_NAME(fileno(fp), name));
-            p_stderr("REAL Name is: %s (kjb_isatty==>%d)\n", name,
-                     kjb_isatty(fileno(fp))); 
+            p_stderr("REAL Name is: %s (ivi_isatty==>%d)\n", name,
+                     ivi_isatty(fileno(fp))); 
 
             EPE(BUFF_GET_USER_FD_NAME(fileno(fp), name));
-            p_stderr("USER Name is: %s (kjb_isatty==>%d)\n", name, 
-                     kjb_isatty(fileno(fp))); 
+            p_stderr("USER Name is: %s (ivi_isatty==>%d)\n", name, 
+                     ivi_isatty(fileno(fp))); 
         }
 
         p_stderr("\n");
     }
 
-    term_reset();  /* Not really needed because kjb_cleanup below. */
+    term_reset();  /* Not really needed because ivi_cleanup below. */
 
-    kjb_cleanup();
+    ivi_cleanup();
 
     return EXIT_SUCCESS; 
 }

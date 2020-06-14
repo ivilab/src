@@ -1,4 +1,4 @@
-/* $Id: test_fbo_offscreen.cpp 11017 2011-11-05 16:13:29Z ksimek $ */
+/* $Id: test_fbo_offscreen.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 #include <gr_cpp/gr_glut.h>
 #include <gr_cpp/gr_fbo_offscreen.h>
 
-using namespace kjb::opengl;
+using namespace ivi::opengl;
 int main(int argc, char** argv)
 {
     Glut_window wnd;

@@ -58,8 +58,8 @@
  *
  */
 
-#ifndef KJB_RIGID_OBJECT_H
-#define KJB_RIGID_OBJECT_H
+#ifndef IVI_RIGID_OBJECT_H
+#define IVI_RIGID_OBJECT_H
 
 #include <m_cpp/m_vector.h>
 
@@ -74,7 +74,7 @@
 
 #define RO_ANGLE_EPSILON 1e-120
 
-namespace kjb
+namespace ivi
 {
     /* @class Rigid object: Implements basic transformation for rigid objects,
      * such translations and rotations. The object can be translated and rotated
@@ -89,7 +89,7 @@ namespace kjb
     typedef Rigid_object Self;
     public:
         Rigid_object() : Transformable(), Cloneable(),
-        q(0.0, 0.0, 0.0, kjb::Quaternion::XYZR),temp_matrix(4,4)
+        q(0.0, 0.0, 0.0, ivi::Quaternion::XYZR),temp_matrix(4,4)
         {
 
         }
@@ -126,7 +126,7 @@ namespace kjb
          * the object's current position). The state of this rigid
          * object is not changed
          */
-        virtual void compute_new_euler_angles_on_rotations(double dpitch, double dyaw, double droll, kjb::Vector & angles) const;
+        virtual void compute_new_euler_angles_on_rotations(double dpitch, double dyaw, double droll, ivi::Vector & angles) const;
 
         /** @brief rotate this object so that its pitch, yaw and roll
          *  match the input values
@@ -144,7 +144,7 @@ namespace kjb
         /** @ brief Transforms this rigid object by using the input
          *  3D transformation matrix, in homogeneous coordinates
          */
-        virtual void transform(const kjb::Matrix & M) = 0;
+        virtual void transform(const ivi::Matrix & M) = 0;
 
         /** @brief Returns the current transformation matrix, that is used
          * to store the rotation to be applied to the object*/
@@ -165,13 +165,13 @@ namespace kjb
          * ar supported. For further details see @class Quaternion.
          * This class was adequately tested only in the case
          * of mode = XYZR*/
-        inline void set_rotation_mode(kjb::Quaternion::Euler_mode imode)
+        inline void set_rotation_mode(ivi::Quaternion::Euler_mode imode)
         {
             q.set_euler_mode(imode);
         }
 
         /** @brief returns the quaternion defining this object's orientation */
-        inline const kjb::Quaternion & get_orientation() const
+        inline const ivi::Quaternion & get_orientation() const
         {
             return q;
         }

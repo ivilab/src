@@ -1,5 +1,5 @@
 
-/* $Id: s_io.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: s_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -129,7 +129,7 @@ int read_spectra_from_config_file
     // guaranteed that the error should be set if "read_spectra", fails, we
     // are better off not taking changes.
     */
-    kjb_clear_error();
+    ivi_clear_error();
 
     result = read_spectra(result_sp_ptr, temp_config_file_name);
 
@@ -141,7 +141,7 @@ int read_spectra_from_config_file
     }
     else if (config_file_name != NULL)
     {
-        kjb_strncpy(config_file_name, temp_config_file_name,
+        ivi_strncpy(config_file_name, temp_config_file_name,
                     config_file_name_size);
     }
 
@@ -272,7 +272,7 @@ int read_spectra(Spectra** result_sp_ptr, const char* file_name)
     int          result;
 
 
-    NRE(fp = kjb_fopen(file_name, "r"));
+    NRE(fp = ivi_fopen(file_name, "r"));
 
     result = fp_read_spectra(result_sp_ptr, fp);
 
@@ -281,7 +281,7 @@ int read_spectra(Spectra** result_sp_ptr, const char* file_name)
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
     }
 
-    (void)kjb_fclose(fp);
+    (void)ivi_fclose(fp);
 
     set_error_action(save_error_action);
 
@@ -387,7 +387,7 @@ int read_spectra_file_header
     Error_action save_error_action = get_error_action();
 
 
-    NRE(fp = kjb_fopen(file_name, "r"));
+    NRE(fp = ivi_fopen(file_name, "r"));
 
     result = fp_read_spectra_file_header(fp, num_freq_intervals_ptr,
                                          offset_ptr, step_ptr, type_ptr);
@@ -397,7 +397,7 @@ int read_spectra_file_header
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
     }
 
-    if (kjb_fclose(fp) == ERROR)
+    if (ivi_fclose(fp) == ERROR)
     {
         result = ERROR;
     }
@@ -453,8 +453,8 @@ int fp_read_spectra_file_header
     Spectra_origin* type_ptr
 )
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     static const char *suffixes[ ] =
     {
         "spect", "spectra", "illum", "reflect", "sensor", "sensors", NULL
@@ -481,7 +481,7 @@ int fp_read_spectra_file_header
 
     BUFF_GET_FD_NAME(fileno(fp), file_name);
 
-    ERE(save_file_pos = kjb_ftell(fp));
+    ERE(save_file_pos = ivi_ftell(fp));
 
     ERE(get_base_path(file_name, base_name, sizeof(base_name), suffix,
                       sizeof(suffix), suffixes));
@@ -528,13 +528,13 @@ int fp_read_spectra_file_header
             /*EMPTY*/
             ;  /* Do nothing. */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
 
             trim_beg(&line_pos);
 
-            if (*line_pos == kjb_header_char)
+            if (*line_pos == ivi_header_char)
             {
                 line_pos++;
 
@@ -651,16 +651,16 @@ int fp_read_spectra_file_header
             *type_ptr = suffix_type;
         }
 
-        if (KJB_IS_SET(num_freq_intervals))
+        if (IVI_IS_SET(num_freq_intervals))
         {
             *num_freq_intervals_ptr = num_freq_intervals;
         }
 
-        if (KJB_IS_SET(offset)) *offset_ptr = offset;
-        if (KJB_IS_SET(step))   *step_ptr   = step;
+        if (IVI_IS_SET(offset)) *offset_ptr = offset;
+        if (IVI_IS_SET(step))   *step_ptr   = step;
     }
 
-    ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+    ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
 
     return result;
 }
@@ -697,7 +697,7 @@ int write_spectra_full_precision
     ERE(get_spectra_output_name(sp, file_name, modified_file_name,
                                 sizeof(modified_file_name)));
 
-    NRE(fp = kjb_fopen(modified_file_name, "w"));
+    NRE(fp = ivi_fopen(modified_file_name, "w"));
 
     result = fp_write_spectra(sp, fp);
 
@@ -706,7 +706,7 @@ int write_spectra_full_precision
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
     }
 
-    if (kjb_fclose(fp) == ERROR)
+    if (ivi_fclose(fp) == ERROR)
     {
         result = ERROR;
     }
@@ -774,7 +774,7 @@ int write_spectra(const Spectra* sp, const char* file_name)
     ERE(get_spectra_output_name(sp, file_name, modified_file_name,
                                 sizeof(modified_file_name)));
 
-    NRE(fp = kjb_fopen(modified_file_name, "w"));
+    NRE(fp = ivi_fopen(modified_file_name, "w"));
 
     result = fp_write_spectra(sp, fp);
 
@@ -783,7 +783,7 @@ int write_spectra(const Spectra* sp, const char* file_name)
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
     }
 
-    if (kjb_fclose(fp) == ERROR)
+    if (ivi_fclose(fp) == ERROR)
     {
         result = ERROR;
     }
@@ -898,9 +898,9 @@ static int get_spectra_output_name
         BUFF_CPY(suffix, "spectra");
     }
 
-    kjb_strncpy(modified_file_name, base_name, modified_file_name_max_size);
-    kjb_strncat(modified_file_name, ".", modified_file_name_max_size);
-    kjb_strncat(modified_file_name, suffix, modified_file_name_max_size);
+    ivi_strncpy(modified_file_name, base_name, modified_file_name_max_size);
+    ivi_strncat(modified_file_name, ".", modified_file_name_max_size);
+    ivi_strncat(modified_file_name, suffix, modified_file_name_max_size);
 
     return NO_ERROR;
 }
@@ -938,12 +938,12 @@ int fp_write_spectra_file_header
     Spectra_origin type
 )
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int        type_char;
 
 
-    ERE(kjb_fprintf(output_fp, "\n%c%c", kjb_comment_char, kjb_header_char));
+    ERE(ivi_fprintf(output_fp, "\n%c%c", ivi_comment_char, ivi_header_char));
 
     if      (type == REFLECTANCE_SPECTRA)     type_char = 'r';
     else if (type == ILLUMINANT_SPECTRA)      type_char = 'i';
@@ -953,26 +953,26 @@ int fp_write_spectra_file_header
 
     if (type_char != '\0')
     {
-        ERE(kjb_fprintf(output_fp, " t=%c", type_char));
+        ERE(ivi_fprintf(output_fp, " t=%c", type_char));
     }
 
     if (num_freq_intervals > 0)
     {
-        ERE(kjb_fprintf(output_fp, " n=%d", num_freq_intervals));
+        ERE(ivi_fprintf(output_fp, " n=%d", num_freq_intervals));
     }
 
     if (offset > 0.0)
     {
-        ERE(kjb_fprintf(output_fp, " o=%.1f", offset));
+        ERE(ivi_fprintf(output_fp, " o=%.1f", offset));
     }
 
     if (step > 0.0)
     {
-        ERE(kjb_fprintf(output_fp, " s=%.1f", step));
+        ERE(ivi_fprintf(output_fp, " s=%.1f", step));
     }
 
 
-    ERE(kjb_fprintf(output_fp, "\n\n"));
+    ERE(ivi_fprintf(output_fp, "\n\n"));
 
     return NO_ERROR;
 }
@@ -1025,7 +1025,7 @@ int put_spectra_type_into_str
     else                                          type_str = "<unknown>";
 
 
-    kjb_strncpy(buff, type_str, buff_size);
+    ivi_strncpy(buff, type_str, buff_size);
 
     return NO_ERROR;
 }

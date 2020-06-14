@@ -5,17 +5,17 @@
 #include <m/m_vector.h>
 
 using namespace std;
-using namespace kjb_c;
+using namespace ivi_c;
 
 
-KJB_image *fake_ip1;
-KJB_image *fake_ip2;
-KJB_image *invalid_ip;
+IVI_image *fake_ip1;
+IVI_image *fake_ip2;
+IVI_image *invalid_ip;
 
 
-KJB_image *construct_fake_img1(void)
+IVI_image *construct_fake_img1(void)
 {
-    KJB_image *img = new KJB_image;
+    IVI_image *img = new IVI_image;
 
     img->num_rows = 2;
     img->num_cols = 2;
@@ -42,9 +42,9 @@ KJB_image *construct_fake_img1(void)
 }
 
 
-KJB_image *construct_fake_img2(void)
+IVI_image *construct_fake_img2(void)
 {
-    KJB_image *img = new KJB_image;
+    IVI_image *img = new IVI_image;
     
         img->num_rows = 2;
         img->num_cols = 2;
@@ -71,9 +71,9 @@ KJB_image *construct_fake_img2(void)
 }
 
 
-KJB_image *construct_invalid_img()
+IVI_image *construct_invalid_img()
 {
-    KJB_image *img = new KJB_image;
+    IVI_image *img = new IVI_image;
     img->num_rows = 1;
     img->num_cols = 1;
     img->read_only = 0;
@@ -91,7 +91,7 @@ KJB_image *construct_invalid_img()
 
 
 int test_get_ave_rgb(
-    const KJB_image *in_ip = construct_fake_img1(), 
+    const IVI_image *in_ip = construct_fake_img1(), 
     double ave_r = 2.0/3.0,
     double ave_g = 2.0/3.0,
     double ave_b = 1.0
@@ -108,7 +108,7 @@ int test_get_ave_rgb(
         cerr << __func__ 
             << " reported unexpected ERROR or got a system/user failure" 
             << endl;
-        kjb_exit(EXIT_BUG);
+        ivi_exit(EXIT_BUG);
     }
 
     
@@ -124,7 +124,7 @@ int test_get_ave_rgb(
 }
 
 // test error reporting in get_ave_rgb()
-int test_error_get_ave_rgb(const KJB_image *in_ip = construct_invalid_img()) 
+int test_error_get_ave_rgb(const IVI_image *in_ip = construct_invalid_img()) 
 {
     Vector *out_rgb_vp = NULL;
     int rc;
@@ -141,7 +141,7 @@ int test_error_get_ave_rgb(const KJB_image *in_ip = construct_invalid_img())
 
 
 int test_get_max_rgb(
-    const KJB_image *in_ip = construct_fake_img1(), 
+    const IVI_image *in_ip = construct_fake_img1(), 
     double max_r = FLT_MAX,
     double max_g = FLT_MAX,
     double max_b = FLT_MAX
@@ -156,7 +156,7 @@ int test_get_max_rgb(
         cerr << __func__ 
             << " reported unexpected ERROR or got a system/user failure" 
             << endl;
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
 
     ASSERT_IS_EQUAL_DBL(out_rgb_vp->elements[ 0 ], max_r)
@@ -172,7 +172,7 @@ int test_get_max_rgb(
 
 
 // test error reporting in get_ave_rgb()
-int test_error_get_max_rgb(const KJB_image *in_ip = construct_invalid_img())
+int test_error_get_max_rgb(const IVI_image *in_ip = construct_invalid_img())
 {
     Vector *out_rgb_vp = NULL;
     int rc;
@@ -240,7 +240,7 @@ int test_error_get_image_window_stats()
 
 //
 int test_get_image_window_stats(
-    const   KJB_image * source_ip = fake_ip1,
+    const   IVI_image * source_ip = fake_ip1,
     int     row_offset = 0,
     int     col_offset = 0,
     int     num_target_rows = 2,
@@ -279,7 +279,7 @@ int test_get_image_window_stats(
         cerr << __func__ 
             << " reported unexpected ERROR or got a system/user failure" 
             << endl;
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
 
 
@@ -305,8 +305,8 @@ int test_get_image_window_stats(
 
 
 int test_get_ave_ratio_without_invalid(
-    const   KJB_image *in1_ip = construct_fake_img1(),
-    const   KJB_image *in2_ip = construct_fake_img2(),
+    const   IVI_image *in1_ip = construct_fake_img1(),
+    const   IVI_image *in2_ip = construct_fake_img2(),
     double  threshold = -1,
     int     min_num_good_point = -1,
     double  ave_ratio_r = 1.0,
@@ -324,7 +324,7 @@ int test_get_ave_ratio_without_invalid(
         cerr << __func__ 
         << " reported unexpected ERROR or got a system/user failure" 
         << endl;
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }    
 
     ASSERT_IS_EQUAL_DBL(results_vp->elements[ 0 ], ave_ratio_r)
@@ -339,8 +339,8 @@ int test_get_ave_ratio_without_invalid(
 
 
 int test_error_get_ave_ratio_without_invalid(
-    const   KJB_image *in1_ip = construct_fake_img1(),
-    const   KJB_image *in2_ip = construct_fake_img2()
+    const   IVI_image *in1_ip = construct_fake_img1(),
+    const   IVI_image *in2_ip = construct_fake_img2()
 )
 {
     Vector *results_vp = NULL;
@@ -373,8 +373,8 @@ int test_error_get_ave_ratio_without_invalid(
 
 
 int test_get_ave_sum_ratio_without_invalid(
-    const   KJB_image *in1_ip = construct_fake_img1(),
-    const   KJB_image *in2_ip = construct_fake_img2(),
+    const   IVI_image *in1_ip = construct_fake_img1(),
+    const   IVI_image *in2_ip = construct_fake_img2(),
     double  threshold = -1,
     int     min_num_good_point = -1,
     double  theRatio = 1
@@ -390,7 +390,7 @@ int test_get_ave_sum_ratio_without_invalid(
         cerr << __func__ 
         << " reported unexpected ERROR or got a system/user failure" 
         << endl;
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }    
 
     ASSERT_IS_EQUAL_DBL(result,theRatio)
@@ -401,8 +401,8 @@ int test_get_ave_sum_ratio_without_invalid(
 
 
 int test_error_get_ave_sum_ratio_without_invalid(
-    const   KJB_image *in1_ip = construct_fake_img1(),
-    const   KJB_image *in2_ip = construct_fake_img2()
+    const   IVI_image *in1_ip = construct_fake_img1(),
+    const   IVI_image *in2_ip = construct_fake_img2()
 )
 {
     double result;
@@ -464,6 +464,6 @@ int main(int argc, char const *argv[])
 
 
 
-    kjb_exit(EXIT_SUCCESS);
+    ivi_exit(EXIT_SUCCESS);
     
 }

@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: doublecircle.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: doublecircle.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
@@ -24,8 +24,8 @@
 namespace
 {
 
-using kjb::qd::DoubleCircle;
-using kjb::Vector2;
+using ivi::qd::DoubleCircle;
+using ivi::Vector2;
 
 bool are_all_inside(
     const DoubleCircle* circ,
@@ -48,7 +48,7 @@ bool are_all_inside(
 
 void status( const DoubleCircle* circ, const Vector2& pt )
 {
-    KJB( ASSERT( circ ) );
+    IVI( ASSERT( circ ) );
     std::ostringstream stat;
 #if 0
     stat << "Circle center (" << circ -> center.str() << "), "
@@ -56,14 +56,14 @@ void status( const DoubleCircle* circ, const Vector2& pt )
             "Point (" << pt.str() << ")  "
             "dist " << ( circ -> center - pt ).mag()
          << " from circle center\n";
-    kjb_c::pso( "%s", stat.str().c_str() );
+    ivi_c::pso( "%s", stat.str().c_str() );
 #else
     stat << "Circle center (" << circ -> center << "), "
             "R=" << circ -> radius << "; "
             "Point (" << pt << ")  "
             "dist " << ( circ -> center - pt ).magnitude()
          << " from circle center\n";
-    kjb_c::pso( "%s", stat.str().c_str() );
+    ivi_c::pso( "%s", stat.str().c_str() );
 #endif
 }
 
@@ -73,7 +73,7 @@ DoubleCircle minidisc_with_2_points(
     const Vector2& pboundary2
 )
 {
-    KJB( ASSERT( 0 < iend - ibegin ) );
+    IVI( ASSERT( 0 < iend - ibegin ) );
     const Vector2 pboundary1 = *--iend;
     DoubleCircle result( pboundary1, pboundary2 );
 
@@ -96,7 +96,7 @@ DoubleCircle minidisc_with_point(
     std::vector< Vector2 >::const_iterator iend
 )
 {
-    KJB( ASSERT( 2 <= iend - ibegin ) );
+    IVI( ASSERT( 2 <= iend - ibegin ) );
     const Vector2 pboundary = *--iend;
     std::vector< Vector2 > pts( ibegin, iend );
     std::random_shuffle( pts.begin(), pts.end() );
@@ -119,7 +119,7 @@ DoubleCircle minidisc_with_point(
 } // end anonymous ns
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -199,5 +199,5 @@ DoubleCircle::DoubleCircle( const std::vector< Vector2 >& pts )
 
 
 } // end namespace qd
-} // end namespace kjb
+} // end namespace ivi
 

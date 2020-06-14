@@ -59,7 +59,7 @@
 #include <sstream>
 #include <typeinfo>
 
-using namespace kjb;
+using namespace ivi;
 
 /*
  * @param ix The x coordinate of the centre
@@ -75,13 +75,13 @@ using namespace kjb;
  * @param iroll The roll of this frustum (rotation angle around its z axis)
  */
 Parametric_frustum::Parametric_frustum(unsigned int inv, double ix, double iy,
-double iz, double iw, double il, double iratio_top_bottom, double ih, double ipitch, double iyaw, double iroll) throw(kjb::Illegal_argument)
+double iz, double iw, double il, double iratio_top_bottom, double ih, double ipitch, double iyaw, double iroll) throw(ivi::Illegal_argument)
 : Renderable_model(false), Readable(), Writeable(), centre(4, 1.0), rotation_angles(3, 0.0),
   rendering_interface(inv, ix, iy, iz, iw, il, iratio_top_bottom, ih, ipitch, iyaw, iroll)
 {
     if( (iw <= 0.0) || (il <= 0.0) || (iratio_top_bottom <= 0.0) || (ih <= 0.0) )
     {
-        throw kjb::Illegal_argument("Frustum constructor, dimensions must be positive");
+        throw ivi::Illegal_argument("Frustum constructor, dimensions must be positive");
     }
 
 	num_vertices = inv;
@@ -118,20 +118,20 @@ Parametric_frustum::Parametric_frustum(const Parametric_frustum & src)
 /*
  * @param fname The name of the file to read this parametric_frustum from
  */
-Parametric_frustum::Parametric_frustum(const char* fname) throw (kjb::Illegal_argument,
-        kjb::IO_error)
+Parametric_frustum::Parametric_frustum(const char* fname) throw (ivi::Illegal_argument,
+        ivi::IO_error)
 :  Renderable_model(false),
    centre(4, 1.0),  rotation_angles(3, 0.0),
    rendering_interface(6, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0)
 {
-    kjb::Readable::read(fname);
+    ivi::Readable::read(fname);
 }
 
 /*
  * @param in The input stream to read this parametric_frustum from
  */
-Parametric_frustum::Parametric_frustum(std::istream& in) throw (kjb::Illegal_argument,
-        kjb::IO_error)
+Parametric_frustum::Parametric_frustum(std::istream& in) throw (ivi::Illegal_argument,
+        ivi::IO_error)
 :  Renderable_model(true),
    centre(4, 1.0), rotation_angles(3, 0.0),
    rendering_interface(6, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0)
@@ -172,11 +172,11 @@ Parametric_frustum * Parametric_frustum::clone() const
 /*
  * @param iwidth The new diameter of the bottom of the frustum along x axis
  */
-void Parametric_frustum::set_width(double iwidth) throw(kjb::Illegal_argument)
+void Parametric_frustum::set_width(double iwidth) throw(ivi::Illegal_argument)
 {
 	if(iwidth <= 0)
     {
-        throw kjb::Illegal_argument("Frustum bottom width must be positive");
+        throw ivi::Illegal_argument("Frustum bottom width must be positive");
     }
 
 	width = iwidth;
@@ -187,11 +187,11 @@ void Parametric_frustum::set_width(double iwidth) throw(kjb::Illegal_argument)
 /*
  * @param iheight The new height of this frustum (along its y axis)
  */
-void Parametric_frustum::set_height(double iheight) throw(kjb::Illegal_argument)
+void Parametric_frustum::set_height(double iheight) throw(ivi::Illegal_argument)
 {
     if(iheight <= 0)
     {
-        throw kjb::Illegal_argument("Cone height must be positive");
+        throw ivi::Illegal_argument("Cone height must be positive");
     }
 
     height = iheight;
@@ -201,11 +201,11 @@ void Parametric_frustum::set_height(double iheight) throw(kjb::Illegal_argument)
 /*
  * @param iheight The new ratio between top and bottom of this frustum
  */
-void Parametric_frustum::set_ratio_top_bottom(double iratio_top_bottom) throw(kjb::Illegal_argument)
+void Parametric_frustum::set_ratio_top_bottom(double iratio_top_bottom) throw(ivi::Illegal_argument)
 {
     if(iratio_top_bottom <= 0)
     {
-        throw kjb::Illegal_argument("Top bottom ratio must be positive");
+        throw ivi::Illegal_argument("Top bottom ratio must be positive");
     }
 
     ratio_top_bottom = iratio_top_bottom;
@@ -215,11 +215,11 @@ void Parametric_frustum::set_ratio_top_bottom(double iratio_top_bottom) throw(kj
 /*
  * @param ilength The new diameter of the bottom of the frustum along z axis
  */
-void Parametric_frustum::set_length(double ilength)throw(kjb::Illegal_argument)
+void Parametric_frustum::set_length(double ilength)throw(ivi::Illegal_argument)
 {
     if(ilength <= 0)
     {
-        throw kjb::Illegal_argument("Frustum bottom length must be positive");
+        throw ivi::Illegal_argument("Frustum bottom length must be positive");
     }
 
 	length = ilength;
@@ -312,7 +312,7 @@ void Parametric_frustum::rotate_around_frustum_axes(double thetax, double thetay
 /*
  * @param icentre The new centre of this frustum
  */
-void Parametric_frustum::set_centre(const kjb::Vector & icentre) throw(kjb::Illegal_argument)
+void Parametric_frustum::set_centre(const ivi::Vector & icentre) throw(ivi::Illegal_argument)
 {
     if(icentre.size() == 3)
     {
@@ -325,13 +325,13 @@ void Parametric_frustum::set_centre(const kjb::Vector & icentre) throw(kjb::Ille
     {
         if(fabs(icentre(3)) < 1e-126 )
         {
-            throw kjb::Illegal_argument("Frustum, set centre, input centre vector, homogeneous coordinate = 0.0");
+            throw ivi::Illegal_argument("Frustum, set centre, input centre vector, homogeneous coordinate = 0.0");
         }
         centre = icentre/icentre(3);
     }
     else
     {
-        throw kjb::Illegal_argument("Frustum, set centre, input centre vector has wrong dimensions");
+        throw ivi::Illegal_argument("Frustum, set centre, input centre vector has wrong dimensions");
     }
     set_rendering_representation_dirty();
 }
@@ -339,7 +339,7 @@ void Parametric_frustum::set_centre(const kjb::Vector & icentre) throw(kjb::Ille
 /*
  * @param ix The new x coordinate of the centre of this frustum
  */
-void Parametric_frustum::set_centre_x(double ix) throw(kjb::Illegal_argument)
+void Parametric_frustum::set_centre_x(double ix) throw(ivi::Illegal_argument)
 {
     centre(0) = ix;
     set_rendering_representation_dirty();
@@ -348,7 +348,7 @@ void Parametric_frustum::set_centre_x(double ix) throw(kjb::Illegal_argument)
 /*
  * @param iy The new y coordinate of the centre of this frustum
  */
-void Parametric_frustum::set_centre_y(double iy) throw(kjb::Illegal_argument)
+void Parametric_frustum::set_centre_y(double iy) throw(ivi::Illegal_argument)
 {
     centre(1) = iy;
     set_rendering_representation_dirty();
@@ -357,7 +357,7 @@ void Parametric_frustum::set_centre_y(double iy) throw(kjb::Illegal_argument)
 /*
  * @param iz The new z coordinate of the centre of this frustum
  */
-void Parametric_frustum::set_centre_z(double iz) throw(kjb::Illegal_argument)
+void Parametric_frustum::set_centre_z(double iz) throw(ivi::Illegal_argument)
 {
     centre(2) = iz;
     set_rendering_representation_dirty();
@@ -368,9 +368,9 @@ void Parametric_frustum::set_centre_z(double iz) throw(kjb::Illegal_argument)
  *
  * @param q the input quaternion
  */
-void Parametric_frustum::set_angles_from_quaternion(const kjb::Quaternion & q)
+void Parametric_frustum::set_angles_from_quaternion(const ivi::Quaternion & q)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     rendering_interface.set_orientation(q);
     rotation_angles = rendering_interface.get_euler_angles();
 }
@@ -382,7 +382,7 @@ void Parametric_frustum::set_angles_from_quaternion(const kjb::Quaternion & q)
  * Then it rotates it according to pitch, yaw and roll, and translates
  * it to the position specified by its centre
  */
-void Parametric_frustum::update_rendering_representation() const throw(kjb::KJB_error)
+void Parametric_frustum::update_rendering_representation() const throw(ivi::IVI_error)
 {
     rendering_interface.set_points(num_vertices, 0, 0, 0, width, length,
     ratio_top_bottom, height);
@@ -402,8 +402,8 @@ Abstract_renderable & Parametric_frustum::get_rendering_interface() const
 /*
  * @param in The input stream to read this frustum from
  */
-void Parametric_frustum::read(std::istream& in) throw (kjb::Illegal_argument,
-        kjb::IO_error)
+void Parametric_frustum::read(std::istream& in) throw (ivi::Illegal_argument,
+        ivi::IO_error)
 {
     using std::ostringstream;
     using std::istringstream;
@@ -544,7 +544,7 @@ void Parametric_frustum::read(std::istream& in) throw (kjb::Illegal_argument,
  * @param out The output stream to write this frustum to
  */
 void Parametric_frustum::write(std::ostream& out) const
-   throw (kjb::IO_error)
+   throw (ivi::IO_error)
 {
 
     out << "     Type: " << typeid(*this).name() << '\n'
@@ -570,7 +570,7 @@ void Parametric_frustum::stretch_along_axis(
 {
     if(axis > 2)
     {
-        KJB_THROW_2(Illegal_argument, "Stretch along axis, axis index out of bounds");
+        IVI_THROW_2(Illegal_argument, "Stretch along axis, axis index out of bounds");
     }
 
     Vector translation(2,0.0);
@@ -639,17 +639,17 @@ void Parametric_frustum::draw_geometric_context_map() const
  *  */
 void Parametric_frustum::get_point_in_parapiped_coordinates
 (
-    const kjb::Vector & point_in_world_coordinates,
-    kjb::Vector & point_in_parapiped_coordinates
+    const ivi::Vector & point_in_world_coordinates,
+    ivi::Vector & point_in_parapiped_coordinates
 ) const
 {
     if(point_in_world_coordinates.size() != 4)
     {
-        KJB_THROW_2(Illegal_argument,"Point in world coordinates must be in homogeneous coordinates");
+        IVI_THROW_2(Illegal_argument,"Point in world coordinates must be in homogeneous coordinates");
     }
     if( fabs(point_in_world_coordinates(3)) < DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Point in world coordinates has homogeneous coordinate = 0");
+        IVI_THROW_2(Illegal_argument,"Point in world coordinates has homogeneous coordinate = 0");
     }
     point_in_parapiped_coordinates = point_in_world_coordinates/point_in_world_coordinates(3) - centre;
     point_in_parapiped_coordinates(3) = 1.0;
@@ -661,17 +661,17 @@ void Parametric_frustum::get_point_in_parapiped_coordinates
  *  world coordinates */
 void Parametric_frustum::get_point_in_world_coordinates
 (
-    const kjb::Vector & point_in_parapiped_coordinates,
-    kjb::Vector & point_in_world_coordinates
+    const ivi::Vector & point_in_parapiped_coordinates,
+    ivi::Vector & point_in_world_coordinates
 ) const
 {
     if(point_in_parapiped_coordinates.size() != 4)
     {
-        KJB_THROW_2(Illegal_argument,"Point in parapiped coordinates must be in homogeneous coordinates");
+        IVI_THROW_2(Illegal_argument,"Point in parapiped coordinates must be in homogeneous coordinates");
     }
     if( fabs(point_in_parapiped_coordinates(3)) < DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Point in parapiped coordinates has homogeneous coordinate = 0");
+        IVI_THROW_2(Illegal_argument,"Point in parapiped coordinates has homogeneous coordinate = 0");
     }
 
     point_in_world_coordinates = point_in_parapiped_coordinates/point_in_parapiped_coordinates(3);

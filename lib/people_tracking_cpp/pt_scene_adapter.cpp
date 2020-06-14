@@ -30,8 +30,8 @@
 #include <iostream>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 void Scene_adapter::set(Scene* s, const Vector& x) const
 {

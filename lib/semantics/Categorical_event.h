@@ -5,7 +5,7 @@
  * @file Categorical_event.h
  *
  * @author Colin Dawson 
- * $Id: Categorical_event.h 17097 2014-07-05 00:13:22Z cdawson $ 
+ * $Id: Categorical_event.h 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "l_cpp/l_exception.h"
@@ -179,8 +179,8 @@ private:
 	{
 	    std::cerr << "Data has size: " << data_.size() << ","
 		      << "Size required is " << size_ << std::endl;
-	    KJB_THROW_2(
-		kjb::Illegal_argument,
+	    IVI_THROW_2(
+		ivi::Illegal_argument,
 		"Categorical_event constructed with incorrect length.");
 	}
     }
@@ -200,7 +200,7 @@ Categorical_event<N>::Categorical_event(Data_type data, size_t size)
     {
 	check_size();
     }
-    catch(kjb::Illegal_argument& e)
+    catch(ivi::Illegal_argument& e)
     {
 	std::cout << e.get_msg() << std::endl;
     }
@@ -221,7 +221,7 @@ Categorical_event<N>::Categorical_event(
     {
 	check_size();
     }
-    catch(kjb::Illegal_argument& e)
+    catch(ivi::Illegal_argument& e)
     {
 	std::cout << e.get_msg() << std::endl;
     }
@@ -268,8 +268,8 @@ Categorical_event<N-1> smooth(
 {
     if(steps > event.size())
     {
-	KJB_THROW_2(
-	    kjb::Illegal_argument,
+	IVI_THROW_2(
+	    ivi::Illegal_argument,
 	    "steps argument of smooth() too large for event");
     }
     return Categorical_event<N-1>(

@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: prior.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: prior.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_PRIOR_H
-#define KJB_TIES_PRIOR_H
+#ifndef IVI_TIES_PRIOR_H
+#define IVI_TIES_PRIOR_H
 
 #include <l/l_sys_debug.h>
 #include <l/l_sys_def.h>
@@ -46,7 +46,7 @@
 #include "dbn_cpp/likelihood.h"
 #include "dbn_cpp/lss_set.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 enum Variance_type {INVERSE_GAMMA, INVERSE_CHI_SQUARED, INVALID_TYPE};
@@ -550,7 +550,7 @@ public:
     double operator()(const Linear_state_space& lss) const
     {
         const State_type& init_state = lss.init_state();
-        KJB(ASSERT(init_state.size() == Ps_.size()));
+        IVI(ASSERT(init_state.size() == Ps_.size()));
         double pr = 0.0;
         for(size_t i = 0; i < Ps_.size(); i++)
         {
@@ -571,11 +571,11 @@ public:
         State_type state(4);
         /*for(size_t i = 0; i < state.size(); i++)
         {
-            state[i] = kjb::sample(Ps_[i]);
+            state[i] = ivi::sample(Ps_[i]);
         }*/
         std::transform(Ps_.begin(), Ps_.end(), state.begin(),
                        static_cast<double(*)(const Gaussian_distribution&)>(
-                                                                kjb::sample)); 
+                                                                ivi::sample)); 
         return state;
     }
 
@@ -584,6 +584,6 @@ private:
 
 }; // Init_prior
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 #endif
 

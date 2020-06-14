@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_vector.c 21712 2017-08-20 18:21:41Z kobus $ */
+/* $Id: m_mat_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -33,7 +33,7 @@ extern "C" {
  *
  * Gets a target matrix vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of matrix vectors. If *target_mvpp is
  * NULL, then this routine creates the matrix vector. If it is not null, and it
  * is the right size, then this routine does nothing. If it is the wrong size,
@@ -148,8 +148,8 @@ void free_matrix_vector(Matrix_vector* mvp)
         mp_array_pos++;
     }
 
-    kjb_free(mvp->elements);
-    kjb_free(mvp);
+    ivi_free(mvp->elements);
+    ivi_free(mvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -444,7 +444,7 @@ int std_dev_matrices
  *
  * Gets a target matrix vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of matrix vector vectors. If *target_mvvpp is
  * NULL, then this routine creates the object. If it is not null, and it
  * is the right size, then this routine does nothing. If it is the wrong size,
@@ -557,8 +557,8 @@ void free_matrix_vector_vector(Matrix_vector_vector* mvvp)
         mvpp++;
     }
 
-    kjb_free(mvvp->elements);
-    kjb_free(mvvp);
+    ivi_free(mvvp->elements);
+    ivi_free(mvvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -597,7 +597,7 @@ void free_matrix_vector_list
         free_matrix_vector(matrix_vector_list[ i ]);
     }
 
-    kjb_free(matrix_vector_list);
+    ivi_free(matrix_vector_list);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1403,7 +1403,7 @@ int get_matrix_vector_from_matrix_2
  * debug_allocate_2D_mp_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_mp_array should be used to dispose of the storage once
@@ -1452,18 +1452,18 @@ Matrix*** debug_allocate_2D_mp_array(int num_rows, int num_cols,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(Matrix**);
-    NRN(array = (Matrix ***)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (Matrix ***)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     num_bytes = num_rows * num_cols * sizeof(Matrix*);
-    col_ptr = (Matrix**)debug_kjb_malloc(num_bytes, file_name, line_number);
+    col_ptr = (Matrix**)debug_ivi_malloc(num_bytes, file_name, line_number);
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -1512,7 +1512,7 @@ Matrix*** allocate_2D_mp_array(int num_rows, int num_cols)
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -1559,8 +1559,8 @@ void free_2D_mp_array(Matrix*** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1599,8 +1599,8 @@ void free_2D_mp_array_and_matrices
         }
     }
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

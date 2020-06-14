@@ -1,4 +1,4 @@
-/* $Id: test_matrix_indexing.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: test_matrix_indexing.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -29,7 +29,7 @@
 
 #include <boost/assign/std/vector.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using namespace boost::assign;
 

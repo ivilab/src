@@ -34,7 +34,7 @@
 #include <boost/ref.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 using namespace boost;
 
 const bool VERBOSE = false;
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     const double dx = 0.0001;
     const double eps = 1e-5;
 
-    kjb_c::kjb_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("heap-checking", "off");
 
     // declarations
     Vector x;
@@ -126,18 +126,18 @@ int main(int argc, char** argv)
     // force cache
     log_pdf(P, mu);
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     G = gradient_ffd_mt(
             bind(negative_log_pdf, cref(P), _1), x, vector<double>(D, dx));
-    long t = kjb_c::get_real_time();
+    long t = ivi_c::get_real_time();
 
     double pgt = t / 1000.0;
     er = vector_distance(G, matrix_inverse(S)*(x - mu));
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     M = gradient_ffd(
             bind(negative_log_pdf, cref(P), _1), x, vector<double>(D, dx));
-    t = kjb_c::get_real_time();
+    t = ivi_c::get_real_time();
 
     double sgt = t / 1000.0;
     er = vector_distance(G, M);

@@ -1,5 +1,5 @@
 
-/* $Id: m2_ncc.h 24322 2019-07-30 23:42:11Z ivilab $ */
+/* $Id: m2_ncc.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *|
 |  Copyright (c) 1994-2008 by Kobus Barnard & Quanfu Fan(author).
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -48,8 +48,8 @@ int fourier_convolve_matrix
 
 int fourier_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Matrix* mask_mp
 );
 

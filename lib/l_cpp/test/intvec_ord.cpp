@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: intvec_ord.cpp 21356 2017-03-30 05:34:45Z kobus $
+ * $Id: intvec_ord.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 #include <l_cpp/l_int_vector.h>
 
@@ -13,7 +13,7 @@
 
 int bad( int line )
 {
-    kjb_c::p_stderr( "Failure on line %d.\n", line );
+    ivi_c::p_stderr( "Failure on line %d.\n", line );
     return EXIT_FAILURE;
 }
 
@@ -23,7 +23,7 @@ int main()
                 v2[] = { 56, 99 },
                 v3[] = { 56, 67, 78 };
 
-    const kjb::Int_vector   w1( 4, v1 ),
+    const ivi::Int_vector   w1( 4, v1 ),
                             w2( 2, v2 ),
                             w3( 3, v3 );
 

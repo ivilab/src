@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: sample_lss.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: sample_lss.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 
@@ -38,12 +38,12 @@
 #include "dbn_cpp/sample_lss.h"
 #include "dbn_cpp/drift_sampler.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Linear_state_space> kjb::ties::generate_lss_samples
+std::vector<Linear_state_space> ivi::ties::generate_lss_samples
 (
     const Linear_state_space& lss,
     const Posterior& posterior,
@@ -152,7 +152,7 @@ std::vector<Linear_state_space> kjb::ties::generate_lss_samples
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::ties::sample_lss
+bool ivi::ties::sample_lss
 (
     Linear_state_space& lss, 
     double max_val, 
@@ -180,12 +180,12 @@ bool kjb::ties::sample_lss
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::ties::sample_lss(Lss_set& lss_set, double max_val, double min_val)
+bool ivi::ties::sample_lss(Lss_set& lss_set, double max_val, double min_val)
 {
     std::vector<Linear_state_space>& lss_vec = lss_set.lss_vec();
     size_t num_lss = lss_vec.size();
-    KJB(ASSERT(!lss_set.variances().empty()));
-    KJB(ASSERT(!lss_set.fixed_clo()));
+    IVI(ASSERT(!lss_set.variances().empty()));
+    IVI(ASSERT(!lss_set.fixed_clo()));
     if(num_lss == 0) return true;
 
     // make sure the mean is update to date
@@ -204,7 +204,7 @@ bool kjb::ties::sample_lss(Lss_set& lss_set, double max_val, double min_val)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::ties::predictive_prob
+double ivi::ties::predictive_prob
 (
     const Posterior& posterior, 
     const Linear_state_space& lss,
@@ -236,7 +236,7 @@ double kjb::ties::predictive_prob
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::ties::predictive_prob
+double ivi::ties::predictive_prob
 (
     const Posterior& posterior, 
     const std::vector<Linear_state_space>& samples
@@ -263,7 +263,7 @@ double kjb::ties::predictive_prob
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::ties::sample_noise_data
+bool ivi::ties::sample_noise_data
 (
     const Linear_state_space& lss, 
     Data& data, 

@@ -25,7 +25,7 @@
 #include <diff_cpp/diff_util.h>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Computes the gradient of a function, evaluated at a point, using
@@ -37,10 +37,10 @@ namespace kjb {
  * @param   dx      The step sizes in each of the dimensions of x.
  * @param   adapter Adapts a model type to behave as a vector. If the model
  *                  type has operator[] and size() implemented, then use
- *                  the default kjb::Vector_adapter. Otherwise, provide
+ *                  the default ivi::Vector_adapter. Otherwise, provide
  *                  a class which implements
  *                  get(), set(), and size() for your model type. See
- *                  kjb::Vector_adapater for more information.
+ *                  ivi::Vector_adapater for more information.
  */
 template<class Func, class Model, class Adapter>
 Vector gradient_cfd
@@ -107,10 +107,10 @@ Vector gradient_cfd
  * @param   dx      The step sizes in each of the dimensions of x.
  * @param   adapter Adapts a model type to behave as a vector. If the model
  *                  type has operator[] and size() implemented, then use
- *                  the default kjb::Vector_adapter. Otherwise, provide
+ *                  the default ivi::Vector_adapter. Otherwise, provide
  *                  a class which implements
  *                  get(), set(), and size() for your model type. See
- *                  kjb::Vector_adapater for more information.
+ *                  ivi::Vector_adapater for more information.
  */
 template<class Func, class Model, class Adapter>
 Vector gradient_ffd
@@ -188,10 +188,10 @@ Vector gradient_ffd
  * @param   dx      The step sizes in each of the dimensions of x.
  * @param   adapter Adapts a model type to behave as a vector. If the model
  *                  type has operator[] and size() implemented, then use
- *                  the default kjb::Vector_adapter. Otherwise, provide
+ *                  the default ivi::Vector_adapter. Otherwise, provide
  *                  a class which implements
  *                  get(), set(), and size() for your model type. See
- *                  kjb::Vector_adapater for more information.
+ *                  ivi::Vector_adapater for more information.
  */
 template<class Func, class Model, class Adapter>
 Vector gradient_ind_cfd
@@ -250,7 +250,7 @@ Vector gradient_ind_cfd
     return gradient_ind_cfd(f, x, dx, Vector_adapter<Vec>());
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_GRADIENT_H */
 

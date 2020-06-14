@@ -1,4 +1,4 @@
-/* $Id: edge_base.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: edge_base.c 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -72,7 +72,7 @@
 #include "edge/edge_base.h"
 
 
-#define KJB_EDGE_MAX_RGB_VALUE 255
+#define IVI_EDGE_MAX_RGB_VALUE 255
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -109,8 +109,8 @@ static void free_edge_list(Edge_list* edges)
 
     next = edges->next;
 
-    kjb_free(edges->pt);
-    kjb_free(edges);
+    ivi_free(edges->pt);
+    ivi_free(edges);
 
     if (next)
     {
@@ -139,7 +139,7 @@ static void copy_edge_list_into_set(Edge_set* set, Edge_list* list)
 
     set->num_edges++;
 
-/*    assert(set->total_num_pts = kjb_realloc(set->total_num_pts, */
+/*    assert(set->total_num_pts = ivi_realloc(set->total_num_pts, */
 /*                set->num_edges * sizeof(uint32_t))); */
 
     num_pts = 0;
@@ -153,17 +153,17 @@ static void copy_edge_list_into_set(Edge_set* set, Edge_list* list)
 
     if (set->num_edges == 1)
     {
-        set->edges = (Edge*) kjb_malloc(set->num_edges * sizeof(Edge));
+        set->edges = (Edge*) ivi_malloc(set->num_edges * sizeof(Edge));
         assert(set->edges);
-        set->edges[0].points = (Edge_point*) kjb_malloc(set->total_num_pts * sizeof(Edge_point));
+        set->edges[0].points = (Edge_point*) ivi_malloc(set->total_num_pts * sizeof(Edge_point));
         assert(set->edges[0].points);
     }
     else
     {
-        set->edges = (Edge*) kjb_realloc(set->edges, set->num_edges * sizeof(Edge));
+        set->edges = (Edge*) ivi_realloc(set->edges, set->num_edges * sizeof(Edge));
         assert(set->edges);
 
-        set->edges[0].points = (Edge_point*) kjb_realloc(set->edges[0].points, 
+        set->edges[0].points = (Edge_point*) ivi_realloc(set->edges[0].points, 
                     set->total_num_pts * sizeof(Edge_point));
         assert(set->edges[0].points);
 
@@ -310,7 +310,7 @@ static int create_gradient_map
 
     assert(*map_out == NULL);
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
     if(use_fourier)
     {
     ERE(get_2D_gaussian_dx_mask(
@@ -343,10 +343,10 @@ static int create_gradient_map
 
     free_matrix(gauss);
 
-    map_elts = (Gradient*) kjb_malloc(num_rows*num_cols*sizeof(Gradient));
+    map_elts = (Gradient*) ivi_malloc(num_rows*num_cols*sizeof(Gradient));
     assert(map_elts);
 
-    *map_out = (Gradient**) kjb_malloc(num_rows*sizeof(Gradient*));
+    *map_out = (Gradient**) ivi_malloc(num_rows*sizeof(Gradient*));
     assert(*map_out);
 
     map = *map_out;
@@ -597,10 +597,10 @@ static Edge_list* follow_edge_right
     {
         grad_next->marked = 1;
 
-        node = (Edge_list*) kjb_malloc(sizeof(Edge_list));
+        node = (Edge_list*) ivi_malloc(sizeof(Edge_list));
         assert(node);
 
-        node->pt = (Edge_point*) kjb_malloc(sizeof(Edge_point));
+        node->pt = (Edge_point*) ivi_malloc(sizeof(Edge_point));
         assert(node);
 
         node->pt->row  = grad_row - padding;
@@ -660,10 +660,10 @@ static Edge_list* follow_edge_left
     {
         grad_next->marked = 1;
 
-        node = (Edge_list*) kjb_malloc(sizeof(Edge_list));
+        node = (Edge_list*) ivi_malloc(sizeof(Edge_list));
         assert(node);
 
-        node->pt = (Edge_point*) kjb_malloc(sizeof(Edge_point));
+        node->pt = (Edge_point*) ivi_malloc(sizeof(Edge_point));
         assert(node->pt);
 
         node->pt->row  = grad_row - padding;
@@ -695,7 +695,7 @@ Edge_set * create_edge_set
     Edge_set * edge_set = NULL;
     assert(lengths);
     assert( (unsigned int) lengths->length == num_edges);
-    edge_set = (Edge_set*) kjb_malloc(sizeof(Edge_set));
+    edge_set = (Edge_set*) ivi_malloc(sizeof(Edge_set));
     assert(edge_set);
     edge_set->num_edges = num_edges;
     edge_set->total_num_pts = num_points;
@@ -704,8 +704,8 @@ Edge_set * create_edge_set
     {
         return edge_set;
     }
-    edge_set->edges = (Edge*) kjb_malloc(num_edges * sizeof(Edge));
-    edge_set->edges[0].points = (Edge_point*) kjb_malloc(edge_set->total_num_pts * sizeof(Edge_point));
+    edge_set->edges = (Edge*) ivi_malloc(num_edges * sizeof(Edge));
+    edge_set->edges[0].points = (Edge_point*) ivi_malloc(edge_set->total_num_pts * sizeof(Edge_point));
     assert(edge_set->edges[0].points);
     edge_set->edges[0].num_points = lengths->elements[0];
     edge_set->num_cols = num_cols;
@@ -754,7 +754,7 @@ static Edge_set* get_edge_set_from_gradient_map
     Edge_list*  edge_list;
     Edge_set*   edge_set;
 
-    edge_set = (Edge_set*) kjb_malloc(sizeof(Edge_set));
+    edge_set = (Edge_set*) ivi_malloc(sizeof(Edge_set));
     assert(edge_set);
 
     edge_set->num_edges = 0;
@@ -781,11 +781,11 @@ static Edge_set* get_edge_set_from_gradient_map
                 {
                     max_grad->marked = 1;
 
-                    node = (Edge_list*) kjb_malloc(sizeof(Edge_list));
+                    node = (Edge_list*) ivi_malloc(sizeof(Edge_list));
                     assert(node);
                     node->next = NULL;
 
-                    node->pt = (Edge_point*) kjb_malloc(sizeof(Edge_point));
+                    node->pt = (Edge_point*) ivi_malloc(sizeof(Edge_point));
                     assert(node->pt);
 
                     node->pt->row   = grad_row - padding;
@@ -867,7 +867,7 @@ static Edge_set* get_edge_set_from_gradient_map
 int detect_image_edge_set
 (
     Edge_set**   edges_out,
-    const KJB_image* img,
+    const IVI_image* img,
     float          sigma, 
     float          begin_thresh, 
     float          end_thresh,
@@ -1006,8 +1006,8 @@ int detect_matrix_edge_set
     (*edges_out)->num_cols = m->num_cols;
 
     free_matrix(padded_m);
-    kjb_free(*map);
-    kjb_free(map);
+    ivi_free(*map);
+    ivi_free(map);
 
     return NO_ERROR;
 }
@@ -1032,10 +1032,10 @@ void free_edge_set(Edge_set* edge_set)
 
     if (edge_set->total_num_pts > 0)
     {
-        kjb_free(edge_set->edges[0].points);
+        ivi_free(edge_set->edges[0].points);
     }
-    kjb_free(edge_set->edges);
-    kjb_free(edge_set);
+    ivi_free(edge_set->edges);
+    ivi_free(edge_set);
 }
 
 /*@}*/
@@ -1090,10 +1090,10 @@ void remove_short_edges(Edge_set* edges, uint32_t min_len)
     edges->num_edges -= num_edges_to_remove;
     edges->total_num_pts -= num_pts_to_remove;
 
-    edges->edges = (Edge*) kjb_malloc(edges->num_edges * sizeof(Edge));
+    edges->edges = (Edge*) ivi_malloc(edges->num_edges * sizeof(Edge));
     assert(edges->edges);
 
-    edges->edges[0].points = (Edge_point*) kjb_malloc(edges->total_num_pts * sizeof(Edge_point));
+    edges->edges[0].points = (Edge_point*) ivi_malloc(edges->total_num_pts * sizeof(Edge_point));
     assert(edges->edges[0].points);
 
     i = 0;
@@ -1117,8 +1117,8 @@ void remove_short_edges(Edge_set* edges, uint32_t min_len)
         }
     }
 
-    kjb_free(old_edges[0].points);
-    kjb_free(old_edges);
+    ivi_free(old_edges[0].points);
+    ivi_free(old_edges);
 }
 
 /*@}*/
@@ -1196,7 +1196,7 @@ static void recursively_break_edges_at_corners
     {
         edges->num_edges++;
 
-        edges->edges = (Edge*) kjb_realloc(edges->edges,
+        edges->edges = (Edge*) ivi_realloc(edges->edges,
                 edges->num_edges * sizeof(Edge));
         assert(edges->edges);
 
@@ -1296,13 +1296,13 @@ void sample_edge_set
 
     if (*edges_out == NULL || *edges_out == edges_in)
     {
-        edges = (Edge_set*) kjb_malloc(sizeof(Edge_set));
+        edges = (Edge_set*) ivi_malloc(sizeof(Edge_set));
         assert(edges);
 
-        edges->edges = (Edge*) kjb_malloc(edges_in->num_edges * sizeof(Edge));
+        edges->edges = (Edge*) ivi_malloc(edges_in->num_edges * sizeof(Edge));
         assert(edges->edges);
 
-        edges->edges[0].points = (Edge_point*) kjb_malloc(edges_in->total_num_pts * 
+        edges->edges[0].points = (Edge_point*) ivi_malloc(edges_in->total_num_pts * 
                 sizeof(Edge_point));
         assert(edges->edges[0].points);
     }
@@ -1310,11 +1310,11 @@ void sample_edge_set
     {
         edges = *edges_out;
 
-        edges->edges = (Edge*) kjb_realloc(edges->edges, 
+        edges->edges = (Edge*) ivi_realloc(edges->edges, 
                 edges_in->num_edges * sizeof(Edge));
         if (edges_in->num_edges > 0) assert(edges->edges);
 
-        edges->edges[0].points = (Edge_point*) kjb_realloc(edges->edges[0].points, 
+        edges->edges[0].points = (Edge_point*) ivi_realloc(edges->edges[0].points, 
                 edges_in->total_num_pts * sizeof(Edge_point));
         if (edges_in->total_num_pts > 0) assert(edges->edges[0].points);
     }
@@ -1334,7 +1334,7 @@ void sample_edge_set
 
         for (pt = 0; pt < edges_in->edges[e].num_points; pt++)
         {
-            if ((kjb_rand() < p))
+            if ((ivi_rand() < p))
             {
                 pts->row  = edges_in->edges[ e ].points[ pt ].row;
                 pts->col  = edges_in->edges[ e ].points[ pt ].col;
@@ -1359,11 +1359,11 @@ void sample_edge_set
     }
 
     /* compact unused allocated space */
-    edges->edges = (Edge*) kjb_realloc(edges->edges, 
+    edges->edges = (Edge*) ivi_realloc(edges->edges, 
             edges->num_edges * sizeof(Edge));
     if (edges->num_edges > 0) assert(edges->edges);
 
-    edges->edges[0].points = (Edge_point*) kjb_realloc(edges->edges[0].points, 
+    edges->edges[0].points = (Edge_point*) ivi_realloc(edges->edges[0].points, 
             edges->total_num_pts * sizeof(Edge_point));
     if (edges->total_num_pts > 0) assert(edges->edges[0].points);
 
@@ -1411,8 +1411,8 @@ void sample_edge_set
  */
 int color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges, 
     const Pixel*    pxl
 )
@@ -1422,7 +1422,7 @@ int color_edge_set
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
 
     if(img_in == NULL)
@@ -1460,8 +1460,8 @@ int color_edge_set
  */
 int randomly_color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges
 )
 {
@@ -1470,7 +1470,7 @@ int randomly_color_edge_set
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
 
     if(edges == NULL)
@@ -1515,8 +1515,8 @@ int randomly_color_edge_set
  */
 int color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts, 
     uint32_t            num_pts,
     const Pixel*      pxl
@@ -1524,11 +1524,11 @@ int color_edge_points
 {
     uint32_t pt;
     int row, col;
-    KJB_image* img;
+    IVI_image* img;
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
     img = *img_out;
 
@@ -1541,7 +1541,7 @@ int color_edge_points
         {
             if (*img_out != img_in)
             {
-                kjb_free_image(*img_out);
+                ivi_free_image(*img_out);
                 *img_out = 0;
             }
 
@@ -1577,18 +1577,18 @@ int color_edge_points
  */
 int color_edge_point
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pt,
     const Pixel*      pxl
 )
 {
     int row, col;
-    KJB_image* img;
+    IVI_image* img;
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
     img = *img_out;
 
@@ -1599,7 +1599,7 @@ int color_edge_point
     {
         if (*img_out != img_in)
         {
-            kjb_free_image(*img_out);
+            ivi_free_image(*img_out);
             *img_out = 0;
         }
 
@@ -1636,17 +1636,17 @@ int color_edge_point
  */
 int randomly_color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts, 
     uint32_t            num_pts
 )
 {
     Pixel pxl;
 
-    pxl.r = (float)kjb_rand()*KJB_EDGE_MAX_RGB_VALUE;
-    pxl.g = (float)kjb_rand()*KJB_EDGE_MAX_RGB_VALUE;
-    pxl.b = (float)kjb_rand()*KJB_EDGE_MAX_RGB_VALUE;
+    pxl.r = (float)ivi_rand()*IVI_EDGE_MAX_RGB_VALUE;
+    pxl.g = (float)ivi_rand()*IVI_EDGE_MAX_RGB_VALUE;
+    pxl.b = (float)ivi_rand()*IVI_EDGE_MAX_RGB_VALUE;
 
     return color_edge_points(img_out, img_in, pts, num_pts, &pxl);
 }
@@ -1717,7 +1717,7 @@ int read_edge_set
     buffer_size = ftell(fp);
     rewind(fp);
 
-    buffer = (char*) kjb_malloc(sizeof(char) * buffer_size+1);
+    buffer = (char*) ivi_malloc(sizeof(char) * buffer_size+1);
 
     if(buffer == NULL)
     {
@@ -1735,7 +1735,7 @@ int read_edge_set
 
     if(ferror(fp))
     {
-        kjb_free(buffer);
+        ivi_free(buffer);
         set_error("%s:%d %s - %s",
                 __FILE__,
                 __LINE__,
@@ -1751,7 +1751,7 @@ cleanup:
     if (fp && fclose(fp) != 0)
     {
         free_edge_set(*edges_out); *edges_out = NULL;
-        kjb_free(buffer);
+        ivi_free(buffer);
 
         set_error(
                 "%s:%d %s - %s",
@@ -1762,7 +1762,7 @@ cleanup:
         err = ERROR;
     }
 
-    kjb_free(buffer);
+    ivi_free(buffer);
     return err;
 }
 
@@ -1794,7 +1794,7 @@ int unserialize_edge_set
         free_edge_set(*edges_out);
     }
 
-    *edges_out = (Edge_set*) kjb_malloc(sizeof(Edge_set));
+    *edges_out = (Edge_set*) ivi_malloc(sizeof(Edge_set));
     assert(*edges_out);
 
     edges = *edges_out;
@@ -1832,11 +1832,11 @@ int unserialize_edge_set
 
     buffer = strchr(buffer, '\n') + 1;
 
-    edges->edges = (Edge*) kjb_malloc(edges->num_edges * sizeof(Edge));
+    edges->edges = (Edge*) ivi_malloc(edges->num_edges * sizeof(Edge));
     assert(edges->edges);
 
     assert(edges->num_edges > 0);
-    edges->edges[0].points = (Edge_point*) kjb_malloc(edges->total_num_pts * sizeof(Edge_point));
+    edges->edges[0].points = (Edge_point*) ivi_malloc(edges->total_num_pts * sizeof(Edge_point));
     assert(edges->edges[0].points);
 
     pt = edges->edges[0].points;
@@ -1951,7 +1951,7 @@ int write_edge_set
 
     if (fclose(fp) != 0)
     {
-        kjb_free(_buffer);
+        ivi_free(_buffer);
         set_error(
                 "%s:%d %s - %s",
                 __FILE__,
@@ -1963,7 +1963,7 @@ int write_edge_set
     }
 
 cleanup:
-    kjb_free(_buffer);
+    ivi_free(_buffer);
     return err;
 }
 
@@ -1973,7 +1973,7 @@ cleanup:
     { \
         buflen *= 2; \
     } \
-    NRE(buf = (char*) kjb_realloc(buf, sizeof(char) * buflen)); \
+    NRE(buf = (char*) ivi_realloc(buf, sizeof(char) * buflen)); \
 \
     } \
     /* will #undef at end of function */
@@ -2011,7 +2011,7 @@ int serialize_edge_set
         edges->total_num_pts * POINT_HEADER_SIZE + 
         + CUSHION;
 
-    NRE(*out_buffer = (char*) kjb_malloc(sizeof(char) * buffer_size));
+    NRE(*out_buffer = (char*) ivi_malloc(sizeof(char) * buffer_size));
 
 
     ENSURE_CAPACITY(*out_buffer, buffer_size, cur_length, 4 * CUSHION);
@@ -2037,7 +2037,7 @@ int serialize_edge_set
     }
 
     /* shrink to size */
-    *out_buffer = (char*) kjb_realloc(*out_buffer, sizeof(char) * cur_length);
+    *out_buffer = (char*) ivi_realloc(*out_buffer, sizeof(char) * cur_length);
     *length = cur_length;
 
     return NO_ERROR;
@@ -2072,7 +2072,7 @@ int copy_edge_set(Edge_set** edges_out, const Edge_set* edges_in)
         return NO_ERROR;
     }
 
-    *edges_out = (Edge_set*) kjb_malloc(sizeof(Edge_set));
+    *edges_out = (Edge_set*) ivi_malloc(sizeof(Edge_set));
     out = *edges_out;
 
     *out = *edges_in;
@@ -2081,15 +2081,15 @@ int copy_edge_set(Edge_set** edges_out, const Edge_set* edges_in)
     if(edges_in->num_edges == 0)
         return NO_ERROR;
 
-    out->edges = (Edge*) kjb_malloc(sizeof(Edge) * edges_in->num_edges);
+    out->edges = (Edge*) ivi_malloc(sizeof(Edge) * edges_in->num_edges);
 
-    kjb_memcpy(out->edges,
+    ivi_memcpy(out->edges,
             edges_in->edges,
             sizeof(Edge) * edges_in->num_edges);
 
-    out->edges[0].points = (Edge_point*) kjb_malloc(sizeof(Edge_point) * edges_in->total_num_pts);
+    out->edges[0].points = (Edge_point*) ivi_malloc(sizeof(Edge_point) * edges_in->total_num_pts);
 
-    kjb_memcpy(out->edges[0].points,
+    ivi_memcpy(out->edges[0].points,
             edges_in->edges[0].points,
             sizeof(Edge_point) * edges_in->total_num_pts);
 
@@ -2140,10 +2140,10 @@ int remove_edge(Edge_set* edges, unsigned int edge_id)
     edges->num_edges -= num_edges_to_remove;
     edges->total_num_pts -= num_pts_to_remove;
 
-    edges->edges = (Edge*) kjb_malloc(edges->num_edges * sizeof(Edge));
+    edges->edges = (Edge*) ivi_malloc(edges->num_edges * sizeof(Edge));
     assert(edges->edges);
 
-    edges->edges[0].points = (Edge_point*) kjb_malloc(edges->total_num_pts * sizeof(Edge_point));
+    edges->edges[0].points = (Edge_point*) ivi_malloc(edges->total_num_pts * sizeof(Edge_point));
     assert(edges->edges[0].points);
 
     i = 0;
@@ -2167,8 +2167,8 @@ int remove_edge(Edge_set* edges, unsigned int edge_id)
         }
     }
 
-    kjb_free(old_edges[0].points);
-    kjb_free(old_edges);
+    ivi_free(old_edges[0].points);
+    ivi_free(old_edges);
     return NO_ERROR;
 }
 
@@ -2247,8 +2247,8 @@ void find_edge_length_from_end_points
          y_0 = y_1;
          y_1 = temp;
      }
-     delta_x = kjb_rint(x_1 - x_0);
-     delta_y = kjb_rint(fabs(y_1 - y_0));
+     delta_x = ivi_rint(x_1 - x_0);
+     delta_y = ivi_rint(fabs(y_1 - y_0));
      error = delta_x / 2;
      y = y_0;
      if(y_0 < y_1)
@@ -2313,8 +2313,8 @@ void create_edge_from_end_points
          y_0 = y_1;
          y_1 = temp;
      }
-     delta_x = kjb_rint(x_1 - x_0);
-     delta_y = kjb_rint(fabs(y_1 - y_0));
+     delta_x = ivi_rint(x_1 - x_0);
+     delta_y = ivi_rint(fabs(y_1 - y_0));
      error = delta_x / 2;
      y = y_0;
      if(y_0 < y_1)

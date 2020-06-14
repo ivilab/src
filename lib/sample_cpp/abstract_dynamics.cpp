@@ -1,5 +1,5 @@
 
-/* $Id: abstract_dynamics.cpp 13172 2012-10-18 22:39:32Z predoehl $ */
+/* $Id: abstract_dynamics.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,7 +21,7 @@
 
 #include "sample_cpp/abstract_dynamics.h"
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * @param src The Abstract_dynamics to copy into this one
@@ -41,7 +41,7 @@ Abstract_dynamics::Abstract_dynamics(const Abstract_dynamics & src) :
     mv_gauss = NULL;
     if(src.mv_gauss != NULL)
     {
-        mv_gauss = new kjb::MV_gaussian_distribution(*(src.mv_gauss));
+        mv_gauss = new ivi::MV_gaussian_distribution(*(src.mv_gauss));
     }
 }
 
@@ -63,7 +63,7 @@ Abstract_dynamics & Abstract_dynamics::operator=(const Abstract_dynamics & src)
     mv_gauss = NULL;
     if(src.mv_gauss != NULL)
     {
-        mv_gauss = new kjb::MV_gaussian_distribution(*(src.mv_gauss));
+        mv_gauss = new ivi::MV_gaussian_distribution(*(src.mv_gauss));
     }
 
     return (*this);
@@ -102,12 +102,12 @@ void Abstract_dynamics::set_num_parameters(unsigned int num_params)
     {
         if((size_t) mv_gauss->get_dimension() != num_params)
         {
-            mv_gauss = new kjb::MV_gaussian_distribution(num_params);
+            mv_gauss = new ivi::MV_gaussian_distribution(num_params);
         }
     }
     else
     {
-        mv_gauss = new kjb::MV_gaussian_distribution(num_params);
+        mv_gauss = new ivi::MV_gaussian_distribution(num_params);
     }
 
 }
@@ -124,7 +124,7 @@ void Abstract_dynamics::run
     unsigned int         iterations
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     unsigned int i, num_params;
     num_params = parameters.get_length();
@@ -137,12 +137,12 @@ void Abstract_dynamics::run
 
     if(!mv_gauss)
     {
-        mv_gauss = new  kjb::MV_gaussian_distribution(num_params);
+        mv_gauss = new  ivi::MV_gaussian_distribution(num_params);
     }
 
     //double st_alpha = sqrt(1 - alpha*alpha);
 
-    stochastic_momenta = kjb::sample(*mv_gauss);
+    stochastic_momenta = ivi::sample(*mv_gauss);
     stochastic_momenta.resize(num_params);
     for(unsigned int kk = 0; kk < num_params; kk++)
     {
@@ -153,7 +153,7 @@ void Abstract_dynamics::run
     try
     {
         compute_energy_gradient();
-    } catch (KJB_error e)
+    } catch (IVI_error e)
     {
         //TODO what do we do here?
     }
@@ -189,7 +189,7 @@ void Abstract_dynamics::run
         try
         {
             log_sample();
-        } catch(KJB_error e)
+        } catch(IVI_error e)
         {
             //TODO What do we do here?
         }
@@ -197,7 +197,7 @@ void Abstract_dynamics::run
         try
         {
             compute_energy_gradient();
-        } catch (KJB_error e)
+        } catch (IVI_error e)
         {
             //TODO What do we do here?
         }
@@ -214,7 +214,7 @@ void Abstract_dynamics::run
          * from Neal's paper
          */
         stochastic_momenta *= alpha;
-        stochastic_transition =  kjb::sample(*mv_gauss);
+        stochastic_transition =  ivi::sample(*mv_gauss);
         stochastic_transition *= st_alpha;
         stochastic_momenta = stochastic_momenta + stochastic_transition;
 

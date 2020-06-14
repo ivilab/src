@@ -11,13 +11,13 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
 
 using namespace DTLib;
-using namespace kjb_c;
+using namespace ivi_c;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ using namespace kjb_c;
 // Numerical Recipes standard error handler
 void DTLib::nrerror(char error_text[])
 {
-    KJB_THROW_2(kjb::KJB_error, "nr.cpp:nrerror()");
+    IVI_THROW_2(ivi::IVI_error, "nr.cpp:nrerror()");
 }
 
 // allocate a float vector with subscript range v[nl..nh]
@@ -57,9 +57,9 @@ unsigned char *DTLib::cvector(long nl, long nh)
 }
 
 // allocate an unsigned long vector with subscript range v[nl..nh]
-kjb_uint32 *DTLib::lvector(long nl, long nh)
+ivi_uint32 *DTLib::lvector(long nl, long nh)
 {
-    kjb_uint32 *v = new kjb_uint32[nh-nl+1+NR_END];
+    ivi_uint32 *v = new ivi_uint32[nh-nl+1+NR_END];
     if (!v) nrerror("allocation failure in lvector()");
     return v-nl+NR_END;
 }
@@ -222,7 +222,7 @@ void DTLib::free_cvector(unsigned char *v, long nl, long nh)
 }
 
 // free an unsigned long vector allocated with lvector()
-void DTLib::free_lvector(kjb_uint32 *v, long nl, long nh)
+void DTLib::free_lvector(ivi_uint32 *v, long nl, long nh)
 {
     delete [](v+nl-NR_END);
 }

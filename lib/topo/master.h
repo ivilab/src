@@ -8,7 +8,7 @@
  * Originally from TopoFusion code.
  */
 /*
- * $Id: master.h 22174 2018-07-01 21:49:18Z kobus $
+ * $Id: master.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef MASTER_H_INCLUDED_UOFARIZONAVISION
@@ -20,7 +20,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 namespace TopoFusion {
 #endif
 #endif
@@ -142,7 +142,7 @@ extern char gTheFileName[2048];
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE
 } /* namespace TopoFusion */
-} /* namespace kjb_c */
+} /* namespace ivi_c */
 #endif
 } /* extern "C" */
 #endif

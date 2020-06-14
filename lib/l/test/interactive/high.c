@@ -1,5 +1,5 @@
 
-/* $Id: high.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: high.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -10,24 +10,24 @@
 main(int argc, char **argv)
 {
 
-    kjb_l_set("debug_level", "1"); 
+    ivi_l_set("debug_level", "1"); 
 
-    kjb_fputs(stdout,"not high-lighted.\n");
-    kjb_fputs(stdout,"[1mhigh-lighted.[m\n");
+    ivi_fputs(stdout,"not high-lighted.\n");
+    ivi_fputs(stdout,"[1mhigh-lighted.[m\n");
 
-    kjb_fputs(stdout,"not high-lighted.\n");
+    ivi_fputs(stdout,"not high-lighted.\n");
     toggle_high_light(stdout); 
-    kjb_fputs(stdout,"high-lighted.\n");
-    toggle_high_light(stdout); 
-
-    kjb_fputs(stdout,"not high-lighted.\n");
-    toggle_high_light(stdout); 
-    kjb_fputs(stdout,"high-lighted.\n");
+    ivi_fputs(stdout,"high-lighted.\n");
     toggle_high_light(stdout); 
 
-    kjb_fputs(stdout,"not high-lighted.\n");
+    ivi_fputs(stdout,"not high-lighted.\n");
     toggle_high_light(stdout); 
-    kjb_fputs(stdout,"high-lighted.\n");
+    ivi_fputs(stdout,"high-lighted.\n");
+    toggle_high_light(stdout); 
+
+    ivi_fputs(stdout,"not high-lighted.\n");
+    toggle_high_light(stdout); 
+    ivi_fputs(stdout,"high-lighted.\n");
     toggle_high_light(stdout); 
 
     return EXIT_SUCCESS; 

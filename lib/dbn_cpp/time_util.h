@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: time_util.h 22543 2019-06-08 19:42:37Z kobus $ */
+/* $Id: time_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef TIES_TIME_UTIL_H
 #define TIES_TIME_UTIL_H
@@ -34,7 +34,7 @@
 #include <mach/mach.h>
 #endif
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 inline void get_current_time(struct timespec *ts) 
 {

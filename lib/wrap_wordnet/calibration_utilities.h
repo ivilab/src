@@ -1,5 +1,5 @@
-#ifndef KJB_CALIBRATION_UTILITIES
-#define KJB_CALIBRATION_UTILITIES
+#ifndef IVI_CALIBRATION_UTILITIES
+#define IVI_CALIBRATION_UTILITIES
 
 #include <l/l_incl.h>
 #include <m/m_vector.h>
@@ -9,7 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -102,4 +102,4 @@ ssize_t getline(char **linep, size_t *np, FILE *stream);
 }
 #endif
 
-#endif/* KJB_CALIBRATION_UTILITIES */
+#endif/* IVI_CALIBRATION_UTILITIES */

@@ -32,7 +32,7 @@
 
 #include <time.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -44,7 +44,7 @@
 #define CAMERA_SELECTED 1
 #define POLYMESH_SELECTED 2
 
-using namespace kjb;
+using namespace ivi;
 
 //Perspective_camera * camera = NULL;
 Perspective_camera camera;
@@ -81,7 +81,7 @@ static void display_glut()
 
     if(isCylSection)
     {
-        kjb::draw_cylinder_section(camera, myQuadric, cyl);
+        ivi::draw_cylinder_section(camera, myQuadric, cyl);
     }
     else
     {
@@ -90,7 +90,7 @@ static void display_glut()
         {
             cyl2.push_back(cyl[i]);
         }
-        kjb::draw_cylinder(camera, myQuadric, cyl2);
+        ivi::draw_cylinder(camera, myQuadric, cyl2);
     }
 
     glColor3f(1.0, 0.0, 0.0);
@@ -121,7 +121,7 @@ static void camera_callback(int i)
 
 static void main_menu_glut(int id)
 {
-    using namespace kjb;
+    using namespace ivi;
     /*_current_action = id;
     if(id == EXIT_ID)
     {
@@ -144,7 +144,7 @@ static void keyboard_glut(unsigned char key, int a, int b)
 
     if(key == 'w')
     {
-        kjb_c::KJB_image * cimg = NULL;
+        ivi_c::IVI_image * cimg = NULL;
         Base_gl_interface::capture_gl_view(&cimg);
         Image img(cimg);
         img.write("screenshot.jpg");
@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
   try{
       tm = new Triangular_mesh(argv[1]);
       fileName = argv[1];
-  } catch(KJB_error e)
+  } catch(IVI_error e)
   {
       e.print(std::cout);
   }
@@ -226,7 +226,7 @@ int main(int argc, char* argv[])
               temp_faces.push_back(temp_face);
           }
           Vector plane_params;
-          planes.push_back(kjb::Polymesh_Plane(tpm, plane_params, temp_faces));
+          planes.push_back(ivi::Polymesh_Plane(tpm, plane_params, temp_faces));
       }
       // Construct cyl and planes from files.
       in_cyl.close();
@@ -255,7 +255,7 @@ int main(int argc, char* argv[])
   glutDisplayFunc(display_glut);
   glutTimerFunc(10, timer_glut, 0);
   glutKeyboardFunc(keyboard_glut);
-  kjb::opengl::default_init_opengl(gwidth, gheight);
+  ivi::opengl::default_init_opengl(gwidth, gheight);
 
   int camera_menu = Glut_perspective_camera::create_glut_perspective_camera_submenu(camera_callback, &camera);
   Glut_perspective_camera::update_width_increment(29);

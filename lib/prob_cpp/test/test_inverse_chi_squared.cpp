@@ -18,14 +18,14 @@
 |
 * =========================================================================== */
 
-/* $Id: test_inverse_chi_squared.cpp 20404 2016-02-20 18:55:48Z jguan1 $ */
+/* $Id: test_inverse_chi_squared.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_pdf.h>
 #include <prob_cpp/prob_sample.h>
 #include <l_cpp/l_test.h>
 
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {

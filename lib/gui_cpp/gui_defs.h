@@ -1,4 +1,4 @@
-/* $Id: gui_defs.h 11210 2011-11-22 06:09:53Z ksimek $ */
+/* $Id: gui_defs.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,9 +19,9 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_DEFS_H
-#define KJB_CPP_GUI_DEFS_H
-namespace kjb
+#ifndef IVI_CPP_GUI_DEFS_H
+#define IVI_CPP_GUI_DEFS_H
+namespace ivi
 {
 namespace gui
 {

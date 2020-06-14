@@ -1,4 +1,4 @@
-/* $Id: gr_display.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_display.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,15 +19,15 @@
 
 #include "gr_cpp/gr_opengl_texture.h"
 
-#ifndef KJB_CPP_GR_DISPLAY
-#define KJB_CPP_GR_DISPLAY
+#ifndef IVI_CPP_GR_DISPLAY
+#define IVI_CPP_GR_DISPLAY
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 #include <m_cpp/m_matrix.h>
 #include <i_cpp/i_image.h>
 
-#ifdef KJB_HAVE_GLUT
-namespace kjb
+#ifdef IVI_HAVE_GLUT
+namespace ivi
 {
 namespace opengl
 {
@@ -40,7 +40,7 @@ void gl_display(const Matrix& mat, const std::string& title = "");
 //
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
 #endif
-#endif /* KJB_CPP_GR_DISPLAY */
+#endif /* IVI_CPP_GR_DISPLAY */

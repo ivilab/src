@@ -18,7 +18,7 @@
  * =========================================================================== */
 
 #include <gr_cpp/gr_opengl.h>
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #ifdef MAC_OSX
 #    include <OpenGL/glu.h>
 #    include <GLUT/glut.h>
@@ -31,7 +31,7 @@
     #    include <GL/glut.h>       
     #endif
 #endif 
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
 
 
 #include <m_cpp/m_cpp_incl.h>
@@ -41,8 +41,8 @@
 #include <iostream>
 #include <cstdlib>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 using namespace std;
 
 vector<Gl_sprite> sprites(36);
@@ -86,7 +86,7 @@ int load()
                 cal);
 
         sprintf(buffer, "input/cal_%d.tiff", i);
-        sprites[i] = Sprite(kjb::Image(string(buffer)));
+        sprites[i] = Sprite(ivi::Image(string(buffer)));
 
     }
 
@@ -150,14 +150,14 @@ void initial_tests()
 
 int main (int argc, char *argv[])
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
     // create a camera from a calibrated camera matrix
     // display image in window
     Image img("input/cal_0.tiff");
     size_t width = img.get_num_cols();
     size_t height = img.get_num_rows();
 
-    kjb_c::kjb_l_set("page", "off");
+    ivi_c::ivi_l_set("page", "off");
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -187,7 +187,7 @@ int main (int argc, char *argv[])
     load();
     initial_tests();
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
         glutMainLoop();
     }

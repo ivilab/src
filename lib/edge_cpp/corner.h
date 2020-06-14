@@ -23,7 +23,7 @@
 #include "edge_cpp/line_segment.h"
 #include <limits>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Corner
@@ -42,7 +42,7 @@ class Corner : public Readable, public Writeable
         Corner() : Readable(), Writeable(), position(3,0.0) {}
 
         /** @brief Constructor without initializations */
-        Corner(const kjb::Vector & iposition) : Readable(), Writeable(), position(3,0.0)
+        Corner(const ivi::Vector & iposition) : Readable(), Writeable(), position(3,0.0)
         {
             set_position(iposition);
         }
@@ -69,17 +69,17 @@ class Corner : public Readable, public Writeable
             return (*this);
         }
 
-        inline const kjb::Vector & get_position() const
+        inline const ivi::Vector & get_position() const
         {
             return position;
         }
 
-        inline const std::vector<kjb::Line_segment> & get_segments() const
+        inline const std::vector<ivi::Line_segment> & get_segments() const
         {
             return segments;
         }
 
-        inline void set_position(const kjb::Vector & iposition)
+        inline void set_position(const ivi::Vector & iposition)
         {
             if(iposition.size() == 2)
             {
@@ -92,30 +92,30 @@ class Corner : public Readable, public Writeable
             }
             else
             {
-                KJB_THROW_2(Illegal_argument, "Invalid size of vector containing corner position");
+                IVI_THROW_2(Illegal_argument, "Invalid size of vector containing corner position");
             }
         }
 
-        inline void add_segment(const kjb::Line_segment & isegment)
+        inline void add_segment(const ivi::Line_segment & isegment)
         {
             segments.push_back(isegment);
         }
 
-        inline const kjb::Line_segment & get_segment(unsigned int i) const
+        inline const ivi::Line_segment & get_segment(unsigned int i) const
         {
             if(i >= segments.size())
             {
-                KJB_THROW_2(Illegal_argument, "Corner: requested segment index out of bounds");
+                IVI_THROW_2(Illegal_argument, "Corner: requested segment index out of bounds");
             }
             return segments[i];
         }
 
 
-        inline void set_segment(unsigned int i,  const kjb::Line_segment isegment)
+        inline void set_segment(unsigned int i,  const ivi::Line_segment isegment)
         {
             if(i >= segments.size())
             {
-                KJB_THROW_2(Illegal_argument, "Corner: requested segment index out of bounds");
+                IVI_THROW_2(Illegal_argument, "Corner: requested segment index out of bounds");
             }
             segments[i] = isegment;
         }
@@ -132,18 +132,18 @@ class Corner : public Readable, public Writeable
         void write(std::ostream& out) const;
        
         /** @brief Draws this line segment */
-        virtual void draw( kjb::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
+        virtual void draw( ivi::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
 
         /** @brief Randomly colors this line segment on an image */
-        virtual void randomly_color(kjb::Image & img, double width = 1.0)  const;
+        virtual void randomly_color(ivi::Image & img, double width = 1.0)  const;
 
     protected:
 
         /** @brief position of this 2D corner */
-        kjb::Vector position;
+        ivi::Vector position;
 
         /** The segments forming this corner */
-        std::vector<kjb::Line_segment> segments;
+        std::vector<ivi::Line_segment> segments;
 
 };
 

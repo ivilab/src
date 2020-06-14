@@ -1,5 +1,5 @@
 
-/* $Id: wrap_fftw.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: wrap_fftw.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -43,7 +43,7 @@ extern "C" {
  * withtout FFTW.
 */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 
 /* -----------------------------------------------------------------------------
 |                                 FFTW
@@ -122,7 +122,7 @@ void set_fftw_style(Wrap_fftw_style fftw_style)
  * Note:
  *     This routine simply wraps the appropriate fftw library functions for
  *     convenient use with our our data structures. The fftw library can also be
- *     used directly in conjunction with the kjb_library by including fftw3.h
+ *     used directly in conjunction with the ivi_library by including fftw3.h
  *     (the makefile builder should know where to find everthing).  This can be
  *     preferable in some cases where one wants to exploit the tuning mechanism
  *     from that library, and cut down on overhead. However, for ocasional use,
@@ -203,7 +203,7 @@ int get_matrix_dct
  * Note:
  *     This routine simply wraps the appropriate fftw library functions for
  *     convenient use with our our data structures. The fftw library can also be
- *     used directly in conjunction with the kjb_library by including fftw3.h
+ *     used directly in conjunction with the ivi_library by including fftw3.h
  *     (the makefile builder should know where to find everthing).  This can be
  *     preferable in some cases where one wants to exploit the tuning mechanism
  *     from that library, and cut down on overhead. However, for ocasional use,
@@ -286,7 +286,7 @@ int get_matrix_inverse_dct
  * Note:
  *     This routine simply wraps the appropriate fftw library functions for
  *     convenient use with our our data structures. The fftw library can also be
- *     used directly in conjunction with the kjb_library by including fftw3.h
+ *     used directly in conjunction with the ivi_library by including fftw3.h
  *     (the makefile builder should know where to find everthing).  This can be
  *     preferable in some cases where one wants to exploit the tuning mechanism
  *     from that library, and cut down on overhead. However, for ocasional use,
@@ -345,7 +345,7 @@ int get_matrix_dft
  * Note:
  *     This routine simply wraps the appropriate fftw library functions for
  *     convenient use with our our data structures. The fftw library can also
- *     be used directly in conjunction with the kjb_library by including
+ *     be used directly in conjunction with the ivi_library by including
  *     fftw3.h (the makefile builder should know where to find everthing).
  *     This can be preferable in some cases where one wants to exploit the
  *     tuning mechanism from that library, and cut down on overhead. However,
@@ -500,8 +500,8 @@ static int get_matrix_dft_helper
         }
     }
 
-    kjb_free(out);
-    kjb_free(in);
+    ivi_free(out);
+    ivi_free(in);
 
     return NO_ERROR;
 }
@@ -526,7 +526,7 @@ static int get_matrix_dft_helper
  * Note:
  *     This routine simply wraps the appropriate fftw library functions for
  *     convenient use with our our data structures. The fftw library can also
- *     be used directly in conjunction with the kjb_library by including
+ *     be used directly in conjunction with the ivi_library by including
  *     fftw3.h (the makefile builder should know where to find everthing).
  *     This can be preferable in some cases where one wants to exploit the
  *     tuning mechanism from that library, and cut down on overhead. However,
@@ -645,8 +645,8 @@ static int get_vector_dft_helper
         }
     }
 
-    kjb_free(out);
-    kjb_free(in);
+    ivi_free(out);
+    ivi_free(in);
 
     return NO_ERROR;
 }

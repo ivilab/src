@@ -1,5 +1,5 @@
 
-/* $Id: seg_spots.h 17796 2014-10-21 04:17:21Z predoehl $ */
+/* $Id: seg_spots.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -31,7 +31,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -39,7 +39,7 @@ namespace kjb_c {
 
 int find_bright_spots_in_image
 (
-    const KJB_image*    img,
+    const IVI_image*    img,
     const Matrix*       background,
     const Matrix*       thresholds,
     int                 min_brightness,
@@ -56,7 +56,7 @@ int find_bright_spots_in_image_sequence
 (
     V_v_v**                    points,
     Int_matrix_vector_vector** blobs,
-    const KJB_image_sequence*  images,
+    const IVI_image_sequence*  images,
     int                        min_brightness,
     int                        min_blob_size,
     int                        max_blob_size,

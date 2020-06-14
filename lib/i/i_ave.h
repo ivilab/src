@@ -1,5 +1,5 @@
 
-/* $Id: i_ave.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_ave.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,24 +38,24 @@ int set_image_average_options(const char* option, const char* value);
 
 int magnify_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count
 );
 
 int ave_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count
 );
 
 int ave_image_without_invalid
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count,
     int              min_good_pixels
@@ -63,8 +63,8 @@ int ave_image_without_invalid
 
 int ave_image_where_uniform
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count,
     int              min_good_pixels,
@@ -73,16 +73,16 @@ int ave_image_where_uniform
 
 int sample_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count
 );
 
 int median_filter_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              block_size
 );
 

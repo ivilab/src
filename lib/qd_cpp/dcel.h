@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: dcel.h 20165 2015-12-09 21:32:07Z predoehl $
+ * $Id: dcel.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef QD_CPP_DCEL_H_INCLUDED_IVILAB
@@ -21,7 +21,7 @@
 #include <iosfwd>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -374,7 +374,7 @@ public:
         {
             return brute_force_merge(d);
         }
-        catch (const KJB_error& e)
+        catch (const IVI_error& e)
         {
             e.print_details();
             throw;
@@ -404,7 +404,7 @@ public:
     /// transform using a row-major 3x3 homogeneous matrix on each vertex
     Doubly_connected_edge_list& transform(const std::vector<RatPoint::Rat>& x)
     {
-        if (x.size() != 9) KJB_THROW_2(Illegal_argument, "Need 3x3 RM matrix");
+        if (x.size() != 9) IVI_THROW_2(Illegal_argument, "Need 3x3 RM matrix");
         return transform(& x.front());
     }
 
@@ -412,7 +412,7 @@ public:
     /// Query with an edge index, return value is a cycle number
     int get_cycle(size_t ei) const
     {
-        if (ei >= get_edge_table().size()) KJB_THROW(Index_out_of_bounds);
+        if (ei >= get_edge_table().size()) IVI_THROW(Index_out_of_bounds);
         if (!m_cycle_table_valid) build_cycle_table();
         return m_cycles.at(ei);
     }
@@ -421,9 +421,9 @@ public:
     /// Query with a cycle number, return the index of some edge on it.
     size_t get_edge_of_cycle(int cn) const
     {
-        if (cn < 0) KJB_THROW(Index_out_of_bounds);
+        if (cn < 0) IVI_THROW(Index_out_of_bounds);
         if (!m_cycle_table_valid) build_cycle_table();
-        if (int(m_edge_of_cyc.size()) <= cn) KJB_THROW(Index_out_of_bounds);
+        if (int(m_edge_of_cyc.size()) <= cn) IVI_THROW(Index_out_of_bounds);
         return m_edge_of_cyc.at(cn);
     }
 

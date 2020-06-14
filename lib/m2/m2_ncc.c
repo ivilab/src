@@ -1,5 +1,5 @@
 
-/* $Id: m2_ncc.c 9835 2011-06-29 22:11:53Z kobus $ */
+/* $Id: m2_ncc.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,7 +22,7 @@
 
 #include "i/i_float.h"
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 #    include "fftw3.h"
 #endif
 
@@ -39,7 +39,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 static int padding_matrix_to_fttw_vector
 (
     fftw_complex** fftw_out,
@@ -51,7 +51,7 @@ static int padding_matrix_to_fttw_vector
 static int padding_image_channel_to_fttw_vector
 (
     fftw_complex** fftw_out,
-    const KJB_image*   mp,
+    const IVI_image*   mp,
     int            channel,
     int            pad_num_rows,
     int            pad_num_cols
@@ -111,7 +111,7 @@ static int fourier_convolve_mat
 
 static int fourier_convolve_img_channel
 (
-    KJB_image* in_mp,
+    IVI_image* in_mp,
     const Matrix* mask_mp,
     int           cpos
 );
@@ -126,7 +126,7 @@ static int fftw_convolve(
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 static int fourier_convolve_mat
 (
     Matrix**      out_mpp,
@@ -209,10 +209,10 @@ cleanup:
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 static int fourier_convolve_img_channel
 (
-    KJB_image* img_ip,
+    IVI_image* img_ip,
     const Matrix* mask_mp,
     int           cpos
 )
@@ -312,7 +312,7 @@ cleanup:
 }
 #endif
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 static int fftw_convolve(
         fftw_complex** out_complex,
         fftw_complex* in_complex,
@@ -389,7 +389,7 @@ static int fftw_convolve(
  * -----------------------------------------------------------------------------
  */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 int fourier_convolve_matrix
 (
     Matrix**      out_mpp,
@@ -439,17 +439,17 @@ int fourier_convolve_matrix
  * -----------------------------------------------------------------------------
  */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 int fourier_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Matrix* mask_mp
 )
 {
     int channel;
 
-    ERE(kjb_copy_image(out_ipp, in_ip));
+    ERE(ivi_copy_image(out_ipp, in_ip));
 
     /* convolve with each channel */
     /* TODO: do this loop inside of fourier_convolve_img, to avoid extra malloc/frees */
@@ -461,8 +461,8 @@ int fourier_convolve_image
 #else
 int fourier_convolve_image
 (
-    KJB_image**      __attribute__((unused)) dummy_out_mpp,
-    const KJB_image* __attribute__((unused)) dummy_in_mp,
+    IVI_image**      __attribute__((unused)) dummy_out_mpp,
+    const IVI_image* __attribute__((unused)) dummy_in_mp,
     const Matrix* __attribute__((unused)) dummy_mask_mp
 )
 {
@@ -473,7 +473,7 @@ int fourier_convolve_image
 #endif
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 static int multiply_fftw
 (
     fftw_complex** outp,
@@ -652,7 +652,7 @@ static int padding_matrix_to_fttw_vector
 static int padding_image_channel_to_fttw_vector
 (
     fftw_complex** fftw_out,
-    const KJB_image*   mp,
+    const IVI_image*   mp,
     int            channel,
     int            pad_num_rows,
     int            pad_num_cols
@@ -768,7 +768,7 @@ static int fourier_correlation_matrix(Matrix **out_mpp, const Matrix *in_mp,
  * -----------------------------------------------------------------------------
  */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 int fourier_ncc_template_matrix
 (
     Matrix**      out_mpp,
@@ -888,7 +888,7 @@ int fourier_ncc_template_matrix
  * -----------------------------------------------------------------------------
  */
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 int fourier_ncc_template_mvector
 (
     Matrix**             out_mpp,

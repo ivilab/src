@@ -55,7 +55,7 @@
 
 #include "gr_cpp/gr_right_triangle_pair.h"
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * @param p  the polymesh

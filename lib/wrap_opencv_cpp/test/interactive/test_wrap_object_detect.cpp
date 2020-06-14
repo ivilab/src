@@ -9,15 +9,15 @@
 #include <stdio.h>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::opencv;
+using namespace ivi;
+using namespace ivi::opencv;
 
 /** Function Headers */
 //void detectAndDisplay( Mat frame );
 
 /** Global variables */
 //String face_cascade_name = "/opt/local/share/opencv/haarcascades/haarcascade_frontalface_default.xml";
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 CV_cascade_classifier face_cascade;
 /**
  * @function main

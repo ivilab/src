@@ -1,5 +1,5 @@
 
-/* $Id: i_hdrc.c 5831 2010-05-02 21:52:24Z ksimek $ */
+/* $Id: i_hdrc.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -80,7 +80,7 @@ static int fp_read_bad_pixel_list
 
 static int get_hdrc_sensor(int i, int j);
 
-static int is_pixel_in_bounds(int i, int j, const KJB_image* ip);
+static int is_pixel_in_bounds(int i, int j, const IVI_image* ip);
 
 static int get_pixel_data
 (
@@ -88,7 +88,7 @@ static int get_pixel_data
     int              channel,
     int              i,
     int              j,
-    const KJB_image* ip
+    const IVI_image* ip
 );
 
 static int get_hdrc_neighbours
@@ -97,7 +97,7 @@ static int get_hdrc_neighbours
     Hdrc_neighbour_type     neighbour_type,
     int                     i,
     int                     j,
-    const KJB_image*        ip
+    const IVI_image*        ip
 );
 
 static int get_neighbour_channel_average
@@ -330,7 +330,7 @@ int set_hdrc_options(const char* option, const char* value)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int ow_correct_hdrc_fixed_pixels(KJB_image* ip)
+int ow_correct_hdrc_fixed_pixels(IVI_image* ip)
 {
     int                    i, j, c;
     int                    result = NO_ERROR;
@@ -547,7 +547,7 @@ int set_hdrc_fixed_pixel_correction_file(const char* file_name)
         return NO_ERROR;
     }
 
-    NRE(bad_pixels_fp = kjb_fopen(file_name, "r"));
+    NRE(bad_pixels_fp = ivi_fopen(file_name, "r"));
 
     result = set_bad_pixel_list(bad_pixels_fp);
 
@@ -556,7 +556,7 @@ int set_hdrc_fixed_pixel_correction_file(const char* file_name)
         fs_enable_fixed_pixel_correction = TRUE;
     }
 
-    (void)kjb_fclose(bad_pixels_fp);  /* Ignore return--only reading. */
+    (void)ivi_fclose(bad_pixels_fp);  /* Ignore return--only reading. */
 
     return result;
 }
@@ -584,9 +584,9 @@ int set_hdrc_fixed_pixel_correction_file(const char* file_name)
  * -----------------------------------------------------------------------------
 */
 
-int ow_hdrc_demosaic(KJB_image* ip)
+int ow_hdrc_demosaic(IVI_image* ip)
 {
-    KJB_image*             tmp_ip     = NULL;
+    IVI_image*             tmp_ip     = NULL;
     Hdrc_neighbour_vector* nv         = NULL;
     Vector*                average_vp = NULL;
     int                    i, j;
@@ -707,10 +707,10 @@ int ow_hdrc_demosaic(KJB_image* ip)
 
     if (result == NO_ERROR)
     {
-        result = kjb_copy_image(&ip, tmp_ip);
+        result = ivi_copy_image(&ip, tmp_ip);
     }
 
-    kjb_free_image(tmp_ip);
+    ivi_free_image(tmp_ip);
     free_hdrc_neighbour_vector(nv);
     free_vector(average_vp);
 
@@ -762,7 +762,7 @@ static int get_pixel_data
     int              channel,
     int              i,
     int              j,
-    const KJB_image* ip
+    const IVI_image* ip
 )
 {
     int result = NO_ERROR;
@@ -804,7 +804,7 @@ static int get_pixel_data
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int is_pixel_in_bounds(int i, int j, const KJB_image* ip)
+static int is_pixel_in_bounds(int i, int j, const IVI_image* ip)
 {
     int result;
 
@@ -854,7 +854,7 @@ static int is_pixel_in_bounds(int i, int j, const KJB_image* ip)
  *|  typedef struct Hdrc_neighbour_info
  *|  {
  *|     int         sensor;    Colour channel of the neighbouring pixel.
- *|     Pixel_info  coords;    KJB_image coordinates of neighbouring pixel.
+ *|     Pixel_info  coords;    IVI_image coordinates of neighbouring pixel.
  *|     Pixel data;      Neighbouring pixel validity and colour data.
  *|  } Hdrc_neighbour_info;
  *
@@ -878,7 +878,7 @@ static int get_hdrc_neighbours
     Hdrc_neighbour_type     neighbour_type,
     int                     i,
     int                     j,
-    const KJB_image*        ip
+    const IVI_image*        ip
 )
 {
     int n, row, col;
@@ -1233,7 +1233,7 @@ static int get_target_hdrc_neighbour_vector
     }
     else
     {
-        kjb_free(nv->elements);
+        ivi_free(nv->elements);
         NRE(nv->elements = N_TYPE_MALLOC(Hdrc_neighbour_info, length));
         nv->length = length;
     }
@@ -1255,11 +1255,11 @@ static void free_hdrc_neighbour_vector(Hdrc_neighbour_vector* nv)
                                  sizeof(Hdrc_neighbour_vector));
 #endif
 #endif
-            kjb_free(nv->elements);
+            ivi_free(nv->elements);
         }
     }
 
-    kjb_free(nv);
+    ivi_free(nv);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
@@ -1309,7 +1309,7 @@ static int initialize_bad_pixel_list(void)
         result = set_bad_pixel_list(bad_pixels_fp);
     }
 
-    (void)kjb_fclose(bad_pixels_fp);  /* Ignore return--only reading. */
+    (void)ivi_fclose(bad_pixels_fp);  /* Ignore return--only reading. */
 
     return result;
 }
@@ -1337,7 +1337,7 @@ static int set_bad_pixel_list(FILE* bad_pixels_fp)
         if (result != ERROR)
         {
             if (fs_bad_pixels_ptr != NULL)
-                kjb_free(fs_bad_pixels_ptr);
+                ivi_free(fs_bad_pixels_ptr);
 
             fs_bad_pixels_ptr = temp_pixels_ptr;
             fs_num_bad_pixels = temp_num_bad;
@@ -1367,7 +1367,7 @@ static int set_bad_pixel_list(FILE* bad_pixels_fp)
  *
  * Reads a list of known bad pixel coordinates from an HDRC configuration
  * file and converts the pixel coordinates to the (i, j) format (row, col)
- * used in the KJB "Image" structure.
+ * used in the IVI "Image" structure.
  *
  * Places the pixel coordinates into the array of Pixel_info structures
  * referenced by "bad_pixels_ptr_ptr". The length of this array is placed
@@ -1438,7 +1438,7 @@ static int fp_read_bad_pixel_list
 
     if (*bad_pixels_ptr_ptr != NULL)
     {
-        kjb_free(*bad_pixels_ptr_ptr);
+        ivi_free(*bad_pixels_ptr_ptr);
         *num_bad_pixels_ptr = NOT_SET;
     }
 
@@ -1489,7 +1489,7 @@ static void free_allocated_static_data(void)
 {
     if (fs_bad_pixels_ptr != NULL)
     {
-        kjb_free(fs_bad_pixels_ptr);
+        ivi_free(fs_bad_pixels_ptr);
     }
 }
 #endif

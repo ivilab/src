@@ -1,5 +1,5 @@
 
-/* $Id: i_lib.c 20918 2016-10-31 22:08:27Z kobus $ */
+/* $Id: i_lib.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -121,7 +121,7 @@ int get_image_files
             BUFF_CAT(dot_suffix, suffix); 
         }
 
-        return kjb_simple_glob(paths_ptr_ptr, 
+        return ivi_simple_glob(paths_ptr_ptr, 
                                base_names_ptr_ptr,
                                dir, dot_suffix,
                                (int (*)(const char*))NULL);
@@ -141,7 +141,7 @@ int get_image_files
             BUFF_CAT(dot_suffix, suffixes[ i ]); 
         }
 
-        result = kjb_simple_glob(&(paths_ptr_list[ i ]), 
+        result = ivi_simple_glob(&(paths_ptr_list[ i ]), 
                                  &(base_names_ptr_list[ i ]),
                                  dir, dot_suffix,
                                  (int (*)(const char*))NULL);

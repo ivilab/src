@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_estimation.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_estimation.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PROB_ESTIMATION_H_INCLUDED
 #define PROB_ESTIMATION_H_INCLUDED
@@ -39,7 +39,7 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-namespace kjb {
+namespace ivi {
 
 /* @brief   Returns the MLE of the parameters of a normal. */
 template<class InIter>
@@ -118,7 +118,7 @@ Von_mises_fisher_distribution<D> mle_vmf(InIter first, InIter last)
     return Von_mises_fisher_distribution<D>(mu, kappa);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 
 #endif /* PROB_ESTIMATION_H_INCLUDED */

@@ -1,5 +1,5 @@
 
-/* $Id: curv_curvature.h 16712 2014-04-23 19:50:40Z qtung $ */
+/* $Id: curv_curvature.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -22,22 +22,22 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-double image_curvature(const KJB_image *image, 
+double image_curvature(const IVI_image *image, 
                        Matrix** curvature_mpp,
                        int num_output_images, 
-                       KJB_image** out_ip_list,
+                       IVI_image** out_ip_list,
                        const char* file);
 
-double image_curvature_tangent_weight(const KJB_image *image, 
+double image_curvature_tangent_weight(const IVI_image *image, 
                                       Matrix** curvature_mpp,
                                       Matrix** curvature_tangent_weight_vector_mpp,
                                       int num_output_images, 
-                                      KJB_image** out_ip_list,
+                                      IVI_image** out_ip_list,
                                       const char* file);
 
 

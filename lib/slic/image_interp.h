@@ -1,4 +1,4 @@
-/* $Id: image_interp.h 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: image_interp.h 25499 2020-06-14 13:26:04Z kobus $
  */
 #ifndef SLIC_IMAGE_INTERP_DEFINED_H_
 #define SLIC_IMAGE_INTERP_DEFINED_H_
@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -16,60 +16,60 @@ namespace kjb_c {
 
 int transform_image
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix    *t_mp,
     int             width,
     int             height,
     const Matrix     *trans_rect_mp,
     int             inter_method,
-    KJB_image       **target_ipp,
+    IVI_image       **target_ipp,
     Int_matrix      **map_impp
 );
 int transform_image_w_bounding_box
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix    *t_mp,
     int             width,
     int             height,
     int             *slide_coords,
     const Matrix     *trans_rect_mp,
     int             inter_method,
-    KJB_image       **target_ipp,
+    IVI_image       **target_ipp,
     Int_matrix      **mask_impp
 );
 
 
 int bilinear_inter_image
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix     *trans_mp,
     int             width,
     int             height,
     const Matrix     *trans_rect_mp,
-    KJB_image        **target_ipp,
+    IVI_image        **target_ipp,
     Int_matrix      **map_impp
 );
 
 int bilinear_inter_image_w_bounding_box
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix     *trans_mp,
     int              width,
     int              height,
     int              *slide_coords,
     const Matrix     *trans_rect_mp,
-    KJB_image        **target_ipp,
+    IVI_image        **target_ipp,
     Int_matrix       **mask_impp
 );
 
 int interp
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix     *trans_mp,
     int             width,
     int             height,
     const Matrix     *trans_rect_mp,
-    KJB_image        **target_ipp,
+    IVI_image        **target_ipp,
     Int_matrix      **map_impp,
     const Matrix    *t_mp
 );
@@ -124,30 +124,30 @@ int get_transformation_from_bound
 
 int combine_image
 (
-    KJB_image *img1, 
-    KJB_image *img2,
+    IVI_image *img1, 
+    IVI_image *img2,
     Matrix *x_mp,
     Matrix *y_mp,
-    KJB_image **combined_img
+    IVI_image **combined_img
 );
 
 int ow_merge_images
 (
-    KJB_image  *target_ip,
-    KJB_image  *src_ip,
+    IVI_image  *target_ip,
+    IVI_image  *src_ip,
     Int_matrix *mask_imp
   );
  
 int ow_overlap_images
 (
-    KJB_image       *target_ip,
-    KJB_image       *src_ip,
+    IVI_image       *target_ip,
+    IVI_image       *src_ip,
     Int_matrix      *mask_imp
 );
 
 void draw_slide_region
 (
-    KJB_image *ip,
+    IVI_image *ip,
     Matrix    *slide_pos_mp,
     int r,
     int g,
@@ -156,31 +156,31 @@ void draw_slide_region
 
 int SM_subtract_images
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     const Int_matrix *mask_imp
 );
 int ow_SM_subtract_images
 (
-    KJB_image*        in1_ip, 
-    const KJB_image*  in2_ip, 
+    IVI_image*        in1_ip, 
+    const IVI_image*  in2_ip, 
     const Int_matrix* mask_imp
 );
 
 int SM_get_images_difference
 (
     double           *diff_ptr,
-    const KJB_image  *in1_ip,
-    const KJB_image  *in2_ip,
+    const IVI_image  *in1_ip,
+    const IVI_image  *in2_ip,
     const Int_matrix *mask_imp
 );
 
 int SM_get_images_difference_1
 (
     double           *diff_ptr,
-    const KJB_image  *in1_ip,
-    const KJB_image  *in2_ip,
+    const IVI_image  *in1_ip,
+    const IVI_image  *in2_ip,
     const Matrix     *slide_pos_mp,
     const Int_matrix *mask_imp
 );

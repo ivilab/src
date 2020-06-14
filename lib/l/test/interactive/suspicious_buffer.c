@@ -1,5 +1,5 @@
 
-/* $Id: suspicious_buffer.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: suspicious_buffer.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -12,8 +12,8 @@ int main(int argc, char **argv)
     b4[0]='\0';
     b4[0]='\0';
 
-    EPE(kjb_sprintf(b4, sizeof(b4), "HELLO")); 
-    EPE(kjb_sprintf(b8, sizeof(b8), "HELLO")); 
+    EPE(ivi_sprintf(b4, sizeof(b4), "HELLO")); 
+    EPE(ivi_sprintf(b8, sizeof(b8), "HELLO")); 
 
     dbb(b4);
     dbb(b8); 
@@ -34,8 +34,8 @@ int main(int argc, char **argv)
     dbb(b4);
     dbb(b8); 
 
-    kjb_strncat(b4, "-HELLO", sizeof(b4)); 
-    kjb_strncat(b8, "-HELLO", sizeof(b8)); 
+    ivi_strncat(b4, "-HELLO", sizeof(b4)); 
+    ivi_strncat(b8, "-HELLO", sizeof(b8)); 
 
     dbb(b4);
     dbb(b8); 

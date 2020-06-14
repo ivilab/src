@@ -70,12 +70,12 @@
 #include "edge/edge_base.h"
 
 
-#define KJB_EDGE_MAX_RGB_VALUE 255
+#define IVI_EDGE_MAX_RGB_VALUE 255
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -124,8 +124,8 @@ static void free_edge_list(Edge_list* edges)
 
     next = edges->next;
 
-    kjb_free(edges->pt);
-    kjb_free(edges);
+    ivi_free(edges->pt);
+    ivi_free(edges);
 
     if (next)
     {
@@ -184,8 +184,8 @@ static int clear_edge_set( Edge_set *edge_set )
     if ( 0 < edge_set -> num_edges )
     {
         ASSERT( edge_set -> edges );
-        kjb_free( edge_set -> edges -> points );
-        kjb_free( edge_set -> edges );
+        ivi_free( edge_set -> edges -> points );
+        ivi_free( edge_set -> edges );
         edge_set -> edges = NULL;
         edge_set -> num_edges = 0;
         edge_set -> total_num_pts = 0;
@@ -282,7 +282,7 @@ int get_target_edge_set(
         out_point = N_TYPE_MALLOC( Edge_point, num_points );
         if ( NULL == out_point && out_edge != out_set -> edges )
         {
-            kjb_free( out_edge );
+            ivi_free( out_edge );
             return ERROR;
         }
     }
@@ -290,11 +290,11 @@ int get_target_edge_set(
     /* Release obsolete memory, if any. */
     if ( out_point != out_set -> edges -> points )
     {
-        kjb_free( out_set -> edges -> points );
+        ivi_free( out_set -> edges -> points );
     }
     if ( out_edge != out_set -> edges )
     {
-        kjb_free( out_set -> edges );
+        ivi_free( out_set -> edges );
     }
     /* Install new memory. */
     out_edge -> points = out_point;
@@ -326,7 +326,7 @@ int get_target_edge_set(
  * objects, and p->edges->points holds the address of another block of memory
  * big enough to store the specified number of Edge_points.  All other
  * memory locations are left uninitialized.  Of course, both of those blocks
- * of memory must be released using kjb_free() -- as free_edge_set() does.
+ * of memory must be released using ivi_free() -- as free_edge_set() does.
  *
  * If memory allocation fails, this returns a NULL value.
  * =============================================================================
@@ -355,15 +355,15 @@ static Edge_set* create_blank_edge_set(
     edge_set -> edges = N_TYPE_MALLOC( Edge, num_edges );
     if ( NULL == edge_set -> edges )
     {
-        kjb_free( edge_set );
+        ivi_free( edge_set );
         return NULL;
     }
 
     edge_set -> edges -> points = N_TYPE_MALLOC( Edge_point, num_points );
     if ( NULL == edge_set -> edges -> points )
     {
-        kjb_free( edge_set -> edges );
-        kjb_free( edge_set );
+        ivi_free( edge_set -> edges );
+        ivi_free( edge_set );
         return NULL;
     }
 
@@ -769,7 +769,7 @@ static int create_gradient_map
 
     ASSERT(*map_out == NULL);
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
     if(use_fourier)
     {
         ERE(get_2D_gaussian_dx_mask(
@@ -1322,7 +1322,7 @@ static Edge_set* get_edge_set_from_gradient_map
 int detect_image_edge_set
 (
     Edge_set**   edges_out,
-    const KJB_image* img,
+    const IVI_image* img,
     float          sigma,
     float          begin_thresh,
     float          end_thresh,
@@ -1474,8 +1474,8 @@ int detect_matrix_edge_set
     (*edges_out)->num_cols = m->num_cols;
 
     free_matrix(padded_m);
-    kjb_free(*map);
-    kjb_free(map);
+    ivi_free(*map);
+    ivi_free(map);
 
     return NO_ERROR;
 }
@@ -1501,7 +1501,7 @@ void free_edge_set(Edge_set* edge_set)
     }
     rc = clear_edge_set( edge_set );
     ASSERT( NO_ERROR == rc );
-    kjb_free(edge_set);
+    ivi_free(edge_set);
 }
 
 /*@}*/
@@ -1603,8 +1603,8 @@ int remove_short_edges(Edge_set* edges, uint32_t min_len)
         }
     }
 
-    kjb_free( old_edge -> points );
-    kjb_free( old_edge );
+    ivi_free( old_edge -> points );
+    ivi_free( old_edge );
     return NO_ERROR;
 }
 
@@ -1720,7 +1720,7 @@ static void recursively_break_edges_at_corners
  */
 void break_edges_at_corners(Edge_set* edges, float thresh, uint32_t num_avg)
 {
-#warning "[Code police] This function does not follow libkjb ERROR convention."
+#warning "[Code police] This function does not follow libivi ERROR convention."
     uint32_t i;
 
     if(edges == NULL)
@@ -1803,7 +1803,7 @@ int sample_edge_set
 
         for (pt = 0; pt < edges_in->edges[e].num_points; ++pt)
         {
-            if ( kjb_rand() < p )
+            if ( ivi_rand() < p )
             {
                 *pts++ = edges_in->edges[ e ].points[ pt ];
                 cur_edge->num_points++;
@@ -1860,8 +1860,8 @@ int sample_edge_set
  */
 int color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges,
     const Pixel*    pxl
 )
@@ -1872,7 +1872,7 @@ int color_edge_set
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
 
     if(img_in == NULL)
@@ -1912,8 +1912,8 @@ int color_edge_set
  */
 int randomly_color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges
 )
 {
@@ -1924,7 +1924,7 @@ int randomly_color_edge_set
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
 
     if(edges == NULL)
@@ -1971,8 +1971,8 @@ int randomly_color_edge_set
  */
 int color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts,
     uint32_t            num_pts,
     const Pixel*      pxl
@@ -1980,13 +1980,13 @@ int color_edge_points
 {
     uint32_t pt;
     int row, col;
-    KJB_image* img;
+    IVI_image* img;
 
     NRE( pts );
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
     img = *img_out;
 
@@ -1999,7 +1999,7 @@ int color_edge_points
         {
             if (*img_out != img_in)
             {
-                kjb_free_image(*img_out);
+                ivi_free_image(*img_out);
                 *img_out = 0;
             }
 
@@ -2035,21 +2035,21 @@ int color_edge_points
  */
 int color_edge_point
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pt,
     const Pixel*      pxl
 )
 {
     int row, col;
-    KJB_image* img;
+    IVI_image* img;
 
     NRE( pt );
     NRE( pxl );
 
     if (*img_out != img_in)
     {
-        kjb_copy_image(img_out, img_in);
+        ivi_copy_image(img_out, img_in);
     }
     img = *img_out;
 
@@ -2060,7 +2060,7 @@ int color_edge_point
     {
         if (*img_out != img_in)
         {
-            kjb_free_image(*img_out);
+            ivi_free_image(*img_out);
             *img_out = 0;
         }
 
@@ -2097,8 +2097,8 @@ int color_edge_point
  */
 int randomly_color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts,
     uint32_t            num_pts
 )
@@ -2106,9 +2106,9 @@ int randomly_color_edge_points
     Pixel pxl;
     pxl.extra.alpha = 1.0f; /* Not needed; we initialize only for safety. */
 
-    pxl.r = (float)kjb_rand()*KJB_EDGE_MAX_RGB_VALUE;
-    pxl.g = (float)kjb_rand()*KJB_EDGE_MAX_RGB_VALUE;
-    pxl.b = (float)kjb_rand()*KJB_EDGE_MAX_RGB_VALUE;
+    pxl.r = (float)ivi_rand()*IVI_EDGE_MAX_RGB_VALUE;
+    pxl.g = (float)ivi_rand()*IVI_EDGE_MAX_RGB_VALUE;
+    pxl.b = (float)ivi_rand()*IVI_EDGE_MAX_RGB_VALUE;
 
     return color_edge_points(img_out, img_in, pts, num_pts, &pxl);
 }
@@ -2197,7 +2197,7 @@ int read_edge_set
 
     if(ferror(fp))
     {
-        kjb_free(buffer);
+        ivi_free(buffer);
         set_error("%s:%d %s - %s",
                 __FILE__,
                 __LINE__,
@@ -2213,7 +2213,7 @@ cleanup:
     if (fp && fclose(fp) != 0)
     {
         free_edge_set(*edges_out); *edges_out = NULL;
-        kjb_free(buffer);
+        ivi_free(buffer);
 
         set_error(
                 "%s:%d %s - %s",
@@ -2224,7 +2224,7 @@ cleanup:
         err = ERROR;
     }
 
-    kjb_free(buffer);
+    ivi_free(buffer);
     return err;
 }
 
@@ -2385,16 +2385,16 @@ int write_edge_set
     FILE* fp = NULL;
 
     EGC( serialize_edge_set( edges, &buffer, NULL ) );
-    EGC( NULL == (fp = kjb_fopen( fname, "w" )) ? ERROR : NO_ERROR );
+    EGC( NULL == (fp = ivi_fopen( fname, "w" )) ? ERROR : NO_ERROR );
     EGC( NULL == buffer ? ERROR : NO_ERROR ); /* harmless paranoia */
-    EGC( kjb_fwrite( fp, buffer, strlen( buffer ) + 1 ) );
-    EGC( kjb_fclose( fp ) );
+    EGC( ivi_fwrite( fp, buffer, strlen( buffer ) + 1 ) );
+    EGC( ivi_fclose( fp ) );
     return NO_ERROR;
 
 cleanup:
     add_error("Failure in %s:%d (write_edge_set)", __FILE__, __LINE__ );
-    kjb_fclose(fp);
-    kjb_free(buffer);
+    ivi_fclose(fp);
+    ivi_free(buffer);
     return ERROR;
 }
 
@@ -2421,7 +2421,7 @@ cleanup:
         if ( NULL == (newbuf = STR_REALLOC((buffer), (bufsize))) )          \
         {                                                                   \
             add_error("%s:%d serialization bad alloc", __FILE__, __LINE__); \
-            kjb_free(buffer);                                               \
+            ivi_free(buffer);                                               \
             return ERROR;                                                   \
         }                                                                   \
         (buffer) = newbuf;                                                  \
@@ -2469,7 +2469,7 @@ static int serialize_edge_array(
 
         NRE( pt );
         ENSURE_CAPACITY(buffer, buffer_size, cur_length + CUSHION);
-        cur_length += kjb_sprintf(
+        cur_length += ivi_sprintf(
                         buffer + cur_length,
                         buffer_size - cur_length,
                         "num_pts=%u\n", edge_array[ i ].num_points
@@ -2481,7 +2481,7 @@ static int serialize_edge_array(
             ENSURE_CAPACITY(buffer, buffer_size, cur_length + 3*CUSHION);
 
             /* TODO: what about the silhouette field?? */
-            cur_length += kjb_sprintf(
+            cur_length += ivi_sprintf(
                     buffer + cur_length,
                     buffer_size - cur_length,
                     "col=%u row=%u dcol=%f drow=%f mag=%f\n",
@@ -2506,7 +2506,7 @@ static int serialize_edge_array(
  *
  * Serializes an edge_set.  out_buffer points to a pointer (contents to be
  * clobbered) that will, at successful completion, indicate the output string
- * in memory that must be released using kjb_free().  If length does not equal
+ * in memory that must be released using ivi_free().  If length does not equal
  * NULL, then *length will be set to the output string's length.  You may save
  * an insignificant crumb of execution time by calling with length==NULL.
  * =============================================================================
@@ -2544,7 +2544,7 @@ int serialize_edge_set
 
     /* Write fields in Edge_set. */
     ENSURE_CAPACITY(buffer, buffer_size, cur_length + 4 * CUSHION);
-    cur_length += kjb_sprintf(
+    cur_length += ivi_sprintf(
                     buffer + cur_length,
                     buffer_size - cur_length,
                     "num_rows=%u\n"
@@ -2614,8 +2614,8 @@ int copy_edge_set(Edge_set** edges_out, const Edge_set* edges_in)
     {
         Edge_point *pt_ptr = out -> edges -> points;
 
-        kjb_memcpy( out -> edges, edges_in -> edges, e*sizeof(Edge) );
-        kjb_memcpy( pt_ptr, edges_in -> edges -> points, p*sizeof(Edge_point));
+        ivi_memcpy( out -> edges, edges_in -> edges, e*sizeof(Edge) );
+        ivi_memcpy( pt_ptr, edges_in -> edges -> points, p*sizeof(Edge_point));
 
         /* Fix up dangling pointers in edges array. */
         out -> edges -> points = pt_ptr; /* fix first pointer manually */
@@ -2732,7 +2732,7 @@ void find_edge_length_from_end_points
     unsigned int * count
 )
 {
-#warning "[Code police] This function does not follow libkjb ERROR convention."
+#warning "[Code police] This function does not follow libivi ERROR convention."
 
      int steep = 0;
      int y;
@@ -2794,7 +2794,7 @@ void create_edge_from_end_points
     int index
 )
 {
-#warning "[Code police] This function does not follow libkjb conventions."
+#warning "[Code police] This function does not follow libivi conventions."
 
      int steep = 0;
      int y;

@@ -21,14 +21,14 @@
 
 #include <gr_cpp/gr_parapiped.h>
 
-using namespace kjb;
+using namespace ivi;
 
 int main()
 {
 
   Parapiped pp(0,1,0,1,1,0,1,1,1,1,0,1);
 
-  const std::vector<kjb::Polygon>& faces = pp.get_faces();
+  const std::vector<ivi::Polygon>& faces = pp.get_faces();
 
     return 0;
 }

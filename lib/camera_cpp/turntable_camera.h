@@ -1,4 +1,4 @@
-/* $Id: turntable_camera.h 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: turntable_camera.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_ST_TURNTABLE_CAMERA_H
-#define KJB_ST_TURNTABLE_CAMERA_H
+#ifndef IVI_ST_TURNTABLE_CAMERA_H
+#define IVI_ST_TURNTABLE_CAMERA_H
 
 #include <vector>
 #include <string>
@@ -26,7 +26,7 @@
 #include <camera_cpp/perspective_camera.h>
 
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #else
@@ -34,7 +34,7 @@
 #define assert(X) ASSERT(X)
 #endif
 
-namespace kjb
+namespace ivi
 {
     class Calibrated_camera;
 /**
@@ -53,7 +53,7 @@ namespace kjb
  */
 class Turntable_camera
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
 
@@ -295,7 +295,7 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
         if(version == 0)
         {
             // no saving to old formats!
@@ -333,7 +333,7 @@ private:
             ar & indices_;
         }
 #else
-        KJB_THROW_2(Missing_dependency, "boost::serialization");
+        IVI_THROW_2(Missing_dependency, "boost::serialization");
 #endif
     }
 };
@@ -347,14 +347,14 @@ private:
 Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camera>& cameras);
 
 
-} // namespace kjb
+} // namespace ivi
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 // set serializaztion version
 namespace boost {
 namespace serialization {
     template <>
-    struct version<kjb::Turntable_camera >
+    struct version<ivi::Turntable_camera >
     {
         typedef mpl::int_<1> type;
         typedef mpl::integral_c_tag tag;

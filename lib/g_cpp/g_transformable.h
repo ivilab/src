@@ -61,15 +61,15 @@
  */
 
 
-#ifndef KJB_TRANSFORMABLE_H
-#define KJB_TRANSFORMABLE_H
+#ifndef IVI_TRANSFORMABLE_H
+#define IVI_TRANSFORMABLE_H
 
 #include <m_cpp/m_matrix.h>
 
 #include <l_cpp/l_exception.h>
 
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Transformable
@@ -85,8 +85,8 @@ class Transformable
 
 
         /** @brief Transforms this object with a linear operator. */
-        virtual void transform(const kjb::Matrix & M)
-            throw (kjb::Illegal_argument) = 0;
+        virtual void transform(const ivi::Matrix & M)
+            throw (ivi::Illegal_argument) = 0;
 };
 
 

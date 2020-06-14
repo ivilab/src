@@ -1,5 +1,5 @@
 
-/* $Id: curv_cut.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: curv_cut.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -75,7 +75,7 @@ static int fs_commit_size = MAX_CUT_PATH_LENGTH / 2;
 
 static int cut_it_up
 (
-    const KJB_image*   debug_ip,
+    const IVI_image*   debug_ip,
     int                max_num_paths,
     int                min_len_for_stopping_at_junctions,
     int                max_path_len,
@@ -112,19 +112,19 @@ static int pixel_on_path
 
 int cut_neuron
 (
-    KJB_image**  cut_ipp,
-    const KJB_image*  ip
+    IVI_image**  cut_ipp,
+    const IVI_image*  ip
 )
 {
     int             dir;
     int             i;
     int             j;
-    KJB_image*      save_debug_ip     = NULL;
-    KJB_image*      debug_ip          = NULL;
-    KJB_image*      debug_2_ip        = NULL;
-    KJB_image*      big_debug_ip      = NULL;
-    KJB_image*      big_debug_2_ip      = NULL;
-    KJB_image*      middle_debug_ip   = NULL;
+    IVI_image*      save_debug_ip     = NULL;
+    IVI_image*      debug_ip          = NULL;
+    IVI_image*      debug_2_ip        = NULL;
+    IVI_image*      big_debug_ip      = NULL;
+    IVI_image*      big_debug_2_ip      = NULL;
+    IVI_image*      middle_debug_ip   = NULL;
     Int_matrix*     cut_ij_dir_mp     = NULL;
     int             dir_1 = NOT_SET;
     int             dir_2 = NOT_SET;
@@ -156,7 +156,7 @@ int cut_neuron
     int max_path_subset_len;
 
 
-    EPETE(kjb_copy_image(cut_ipp, ip));
+    EPETE(ivi_copy_image(cut_ipp, ip));
 
     START_HEAP_CHECK_2(); 
 
@@ -179,7 +179,7 @@ int cut_neuron
     }
 
 
-    EPETE(kjb_copy_image(&debug_ip, ip));
+    EPETE(ivi_copy_image(&debug_ip, ip));
 
     EPETE(ow_invert_image(debug_ip));
 
@@ -224,7 +224,7 @@ int cut_neuron
         EPETE(get_target_int_vector_vector(&len_vvp, CURV_NUM_DIRECTIONS));
     }
 
-    EPETE(kjb_copy_image(&save_debug_ip, debug_ip));
+    EPETE(ivi_copy_image(&save_debug_ip, debug_ip));
 
     dbi(scale);
     max_path_length = (MAX_CUT_PATH_LENGTH * scale) / 2;
@@ -486,7 +486,7 @@ int cut_neuron
                     }
                 }
 
-                ERE(kjb_copy_image(&debug_2_ip, debug_ip));
+                ERE(ivi_copy_image(&debug_2_ip, debug_ip));
 
                 for (count = 0; count < cut_count; count++)
                 {
@@ -519,9 +519,9 @@ int cut_neuron
             if (is_interactive())
             {
                 /*
-                kjb_display_image(big_debug_2_ip, NULL);
+                ivi_display_image(big_debug_2_ip, NULL);
                 */
-                kjb_display_image(debug_2_ip, NULL);
+                ivi_display_image(debug_2_ip, NULL);
                 prompt_to_continue();
             }
 #endif 
@@ -572,12 +572,12 @@ int cut_neuron
 
     free_indexed_vector(sorted_quality_vp); 
 
-    kjb_free_image(save_debug_ip);
-    kjb_free_image(debug_ip);
-    kjb_free_image(debug_2_ip);
-    kjb_free_image(big_debug_ip);
-    kjb_free_image(big_debug_2_ip);
-    kjb_free_image(middle_debug_ip);
+    ivi_free_image(save_debug_ip);
+    ivi_free_image(debug_ip);
+    ivi_free_image(debug_2_ip);
+    ivi_free_image(big_debug_ip);
+    ivi_free_image(big_debug_2_ip);
+    ivi_free_image(middle_debug_ip);
 
     FINISH_HEAP_CHECK_2();
 
@@ -601,7 +601,7 @@ int cut_neuron
 
 static int cut_it_up
 (
-    const KJB_image*   __attribute__((unused)) debug_ip,
+    const IVI_image*   __attribute__((unused)) debug_ip,
     int                max_num_paths,
     int                min_len_for_stopping_at_junctions,
     int                max_path_len,
@@ -622,9 +622,9 @@ static int cut_it_up
 )
 {
     int dir, dir_2, dir_3;
-    KJB_image* window_ip = NULL;
-    KJB_image* mag_ip = NULL;
-    KJB_image* mag_2_ip = NULL;
+    IVI_image* window_ip = NULL;
+    IVI_image* mag_ip = NULL;
+    IVI_image* mag_2_ip = NULL;
     double selected_weight = DBL_MOST_POSITIVE;
     int k, kk, kkk;
     double t;
@@ -668,7 +668,7 @@ static int cut_it_up
 
 #ifdef DEBUG_CHOOSE
     static int p_count = 0;
-    fs_choose_it = ((kjb_rand() < 0.02) && (i > debug_ip->num_rows / 3) && (j > debug_ip->num_cols / 3) && (i < 2 * debug_ip->num_rows / 3) && (j < 2 * debug_ip->num_cols / 3));
+    fs_choose_it = ((ivi_rand() < 0.02) && (i > debug_ip->num_rows / 3) && (j > debug_ip->num_cols / 3) && (i < 2 * debug_ip->num_rows / 3) && (j < 2 * debug_ip->num_cols / 3));
     fs_choose_it = TRUE;
     fs_choose_it = ((ABS_OF(i - 326) < 5) && (ABS_OF(j - 471) < 5)) || ((ABS_OF(i - 306) < 5) && (ABS_OF(j - 355) < 5)) || ((ABS_OF(i - 407) < 5) && (ABS_OF(j - 458) < 5));
     fs_choose_it = ((ABS_OF(i - 326) < 5) && (ABS_OF(j - 471) < 5));
@@ -1129,7 +1129,7 @@ static int cut_it_up
 
                                 ERE(clear_data_stats());
 
-                                EPETE(kjb_copy_image(&mag_2_ip, mag_ip));
+                                EPETE(ivi_copy_image(&mag_2_ip, mag_ip));
 
                                 prev_ttt = DBL_MOST_NEGATIVE;
 
@@ -1138,8 +1138,8 @@ static int cut_it_up
                                     double ttt = t_neg + (tt * (t_pos - t_neg)) / (CURVE_IMAGE_RESOLUTION - 1.0);
                                     double d_j = c_mp->elements[ 0 ][ 0 ]*ttt*ttt*ttt + c_mp->elements[ 1 ][ 0 ]*ttt*ttt + c_mp->elements[ 2 ][ 0 ]*ttt + c_mp->elements[ 3 ][ 0 ];
                                     double d_i = c_mp->elements[ 0 ][ 1 ]*ttt*ttt*ttt + c_mp->elements[ 1 ][ 1 ]*ttt*ttt + c_mp->elements[ 2 ][ 1 ]*ttt + c_mp->elements[ 3 ][ 1 ];
-                                    int ii  = kjb_rint(3.0 * (d_i - i) + 121.0);
-                                    int jj  = kjb_rint(3.0 * (d_j - j) + 121.0);
+                                    int ii  = ivi_rint(3.0 * (d_i - i) + 121.0);
+                                    int jj  = ivi_rint(3.0 * (d_j - j) + 121.0);
                                     double t2 = ttt*ttt;
                                     double xp =  3.0 * c_mp->elements[ 0 ][ 0 ] * t2 + 2.0 * c_mp->elements[ 1 ][ 0 ] * ttt + c_mp->elements[ 2 ][ 0 ];
                                     double xpp = 6.0 * c_mp->elements[ 0 ][ 0 ] * ttt  + 2.0 * c_mp->elements[ 1 ][ 0 ];
@@ -1201,23 +1201,23 @@ static int cut_it_up
                                 {
                                     char buff[ 1000 ];
 
-                                    ERE(kjb_sprintf(buff, sizeof(buff), "er: %.3f", error));
+                                    ERE(ivi_sprintf(buff, sizeof(buff), "er: %.3f", error));
                                     ERE(image_draw_text_top_left(mag_2_ip, buff, 5, 5, NULL));
-                                    ERE(kjb_sprintf(buff, sizeof(buff), "SD: %.3f", selected_kappa_stdev));
+                                    ERE(ivi_sprintf(buff, sizeof(buff), "SD: %.3f", selected_kappa_stdev));
                                     ERE(image_draw_text_top_left(mag_2_ip, buff, 20, 5, NULL));
-                                    ERE(kjb_sprintf(buff, sizeof(buff), "QU: %.3f", quality));
+                                    ERE(ivi_sprintf(buff, sizeof(buff), "QU: %.3f", quality));
                                     ERE(image_draw_text_top_left(mag_2_ip, buff, 35, 5, NULL));
-                                    ERE(kjb_sprintf(buff, sizeof(buff), "(%d, %d)", i, j));
+                                    ERE(ivi_sprintf(buff, sizeof(buff), "(%d, %d)", i, j));
                                     ERE(image_draw_text_top_left(mag_2_ip, buff, 50, 5, NULL));
-                                    ERE(kjb_sprintf(buff, sizeof(buff), "JJ: %d", jump_junction));
+                                    ERE(ivi_sprintf(buff, sizeof(buff), "JJ: %d", jump_junction));
                                     ERE(image_draw_text_top_left(mag_2_ip, buff, 65, 5, NULL));
-                                    ERE(kjb_sprintf(buff, sizeof(buff), "SD2: %.3f", kappa_stdev));
+                                    ERE(ivi_sprintf(buff, sizeof(buff), "SD2: %.3f", kappa_stdev));
                                     ERE(image_draw_text_top_left(mag_2_ip, buff, 80, 5, NULL));
                                 }
 
                                 EPETE(image_draw_rectangle(mag_2_ip, mag_2_ip->num_rows - 10, mag_2_ip->num_cols - 10, 10, 10, 200, 0, 0));
 
-                                kjb_display_image(mag_2_ip, NULL);
+                                ivi_display_image(mag_2_ip, NULL);
                                 prompt_to_continue();
 
                             }
@@ -1244,7 +1244,7 @@ static int cut_it_up
 
         EPETE(copy_matrix(&c_mp, selected_c_mp));
 
-        EPETE(kjb_copy_image(&mag_2_ip, mag_ip));
+        EPETE(ivi_copy_image(&mag_2_ip, mag_ip));
 
         prev_ttt = DBL_MOST_NEGATIVE;
 
@@ -1253,8 +1253,8 @@ static int cut_it_up
             double ttt = selected_t_neg + (tt * (selected_t_pos - selected_t_neg)) / (CURVE_IMAGE_RESOLUTION - 1.0);
             double d_j = c_mp->elements[ 0 ][ 0 ]*ttt*ttt*ttt + c_mp->elements[ 1 ][ 0 ]*ttt*ttt + c_mp->elements[ 2 ][ 0 ]*ttt + c_mp->elements[ 3 ][ 0 ];
             double d_i = c_mp->elements[ 0 ][ 1 ]*ttt*ttt*ttt + c_mp->elements[ 1 ][ 1 ]*ttt*ttt + c_mp->elements[ 2 ][ 1 ]*ttt + c_mp->elements[ 3 ][ 1 ];
-            int ii  = kjb_rint(3.0 * (d_i - i) + 121.0);
-            int jj  = kjb_rint(3.0 * (d_j - j) + 121.0);
+            int ii  = ivi_rint(3.0 * (d_i - i) + 121.0);
+            int jj  = ivi_rint(3.0 * (d_j - j) + 121.0);
 
             /*
             dbi(d_i);
@@ -1313,25 +1313,25 @@ static int cut_it_up
         {
             char buff[ 1000 ];
 
-            ERE(kjb_sprintf(buff, sizeof(buff), "er: %.3f", selected_error));
+            ERE(ivi_sprintf(buff, sizeof(buff), "er: %.3f", selected_error));
             ERE(image_draw_text_top_left(mag_2_ip, buff, 5, 5, NULL));
-            ERE(kjb_sprintf(buff, sizeof(buff), "SD: %.3f", selected_kappa_stdev));
+            ERE(ivi_sprintf(buff, sizeof(buff), "SD: %.3f", selected_kappa_stdev));
             ERE(image_draw_text_top_left(mag_2_ip, buff, 20, 5, NULL));
             /*
-            ERE(kjb_sprintf(buff, sizeof(buff), "ZE: %.3f", 100.0 * ABS_OF(selected_t_zero_kappa - selected_kappa_mean)));
+            ERE(ivi_sprintf(buff, sizeof(buff), "ZE: %.3f", 100.0 * ABS_OF(selected_t_zero_kappa - selected_kappa_mean)));
             ERE(image_draw_text_top_left(mag_2_ip, buff, 35, 5, NULL));
             */
-            ERE(kjb_sprintf(buff, sizeof(buff), "QU: %.3f", selected_quality));
+            ERE(ivi_sprintf(buff, sizeof(buff), "QU: %.3f", selected_quality));
             ERE(image_draw_text_top_left(mag_2_ip, buff, 35, 5, NULL));
-            ERE(kjb_sprintf(buff, sizeof(buff), "(%d, %d)", i, j));
+            ERE(ivi_sprintf(buff, sizeof(buff), "(%d, %d)", i, j));
             ERE(image_draw_text_top_left(mag_2_ip, buff, 50, 5, NULL));
-            ERE(kjb_sprintf(buff, sizeof(buff), "JJ: %d", selected_jump_junction));
+            ERE(ivi_sprintf(buff, sizeof(buff), "JJ: %d", selected_jump_junction));
             ERE(image_draw_text_top_left(mag_2_ip, buff, 80, 5, NULL));
         }
 
         EPETE(image_draw_rectangle(mag_2_ip, mag_2_ip->num_rows - 10, mag_2_ip->num_cols - 10, 10, 10, 0, 200, 0));
 
-        kjb_display_image(mag_2_ip, NULL);
+        ivi_display_image(mag_2_ip, NULL);
         prompt_to_continue();
 
     }
@@ -1346,9 +1346,9 @@ static int cut_it_up
         *quality_ptr = selected_quality;
     }
 
-    kjb_free_image(mag_2_ip);
-    kjb_free_image(mag_ip);
-    kjb_free_image(window_ip);
+    ivi_free_image(mag_2_ip);
+    ivi_free_image(mag_ip);
+    ivi_free_image(window_ip);
     free_vector(t_vp);
     free_vector(fit_t_vp);
     free_vector(fit_t1_vp);

@@ -19,8 +19,8 @@
  */
 using namespace std;
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_X11
 #ifdef MAC_OSX
 #include <OpenGL/OpenGL.h>
 #else
@@ -30,7 +30,7 @@ using namespace std;
 #endif
 #endif
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -44,7 +44,7 @@ string room_name;
 string camera_name;
 
 
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {
@@ -77,13 +77,13 @@ int main(int argc, char** argv)
 	Parametric_parapiped pp(room_file.c_str());
 	Perspective_camera camera(camera_file.c_str());
 
-	static kjb::Offscreen_buffer* offscreen = kjb::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
+	static ivi::Offscreen_buffer* offscreen = ivi::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
 
 	camera.prepare_for_rendering(true);
 	Base_gl_interface::set_gl_view(img);
 	glColor3f(0.0, 0.0, 0.0);
     pp.wire_render();
-    kjb_c::KJB_image * capture = NULL;
+    ivi_c::IVI_image * capture = NULL;
 	Base_gl_interface::capture_gl_view(&capture);
 	Image img2(capture);
 	img2.write("validate.jpg");

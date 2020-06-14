@@ -1,5 +1,5 @@
 
-/* $Id: kjb_fprintf-2.c 20919 2016-10-31 22:09:08Z kobus $ */
+/* $Id: ivi_fprintf-2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -30,25 +30,25 @@ int main(void)
     pso("\n"); 
 
 
-    kjb_sprintf(buf, sizeof(buf), "%q\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%q\n", longish);
     pso(buf); 
     dbw(); 
-    kjb_sprintf(buf, sizeof(buf), "%*q\n", 8, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*q\n", 8, longish);
     dbw(); 
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%*q\n", 16, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*q\n", 16, longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%*q\n", 32, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*q\n", 32, longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%*q\n", 64, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*q\n", 64, longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%8q\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%8q\n", longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%16q\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%16q\n", longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%32q\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%32q\n", longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%64q\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%64q\n", longish);
     pso(buf); 
     pso("\n"); 
     pso("\n"); 
@@ -69,23 +69,23 @@ int main(void)
     pso("\n"); 
 
 
-    kjb_sprintf(buf, sizeof(buf), "%t\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%t\n", longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%*t\n", 8, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*t\n", 8, longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%*t\n", 16, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*t\n", 16, longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%*t\n", 32, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*t\n", 32, longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%*t\n", 64, longish);
+    ivi_sprintf(buf, sizeof(buf), "%*t\n", 64, longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%8t\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%8t\n", longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%16t\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%16t\n", longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%32t\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%32t\n", longish);
     pso(buf); 
-    kjb_sprintf(buf, sizeof(buf), "%64t\n", longish);
+    ivi_sprintf(buf, sizeof(buf), "%64t\n", longish);
     pso(buf); 
     pso("\n"); 
     pso("\n"); 

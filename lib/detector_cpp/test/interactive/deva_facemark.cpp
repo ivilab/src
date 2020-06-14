@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: deva_facemark.cpp 19991 2015-10-29 19:50:11Z jguan1 $ */
+/* $Id: deva_facemark.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <i_cpp/i_image.h>
 #include <m_cpp/m_vector.h>
@@ -32,7 +32,7 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 void draw_point

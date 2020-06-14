@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_complete_trajectory.h 20021 2015-11-03 05:37:19Z jguan1 $ */
+/* $Id: pt_complete_trajectory.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_COMPLETE_TRAJECTORY_H
 #define PT_COMPLETE_TRAJECTORY_H
@@ -35,7 +35,7 @@
 
 /** @file   Classes and functions for dealing with trajectory files. */
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 typedef Generic_trajectory_element<Complete_state> Trajectory_element;
@@ -55,18 +55,18 @@ void initialize_directions(Trajectory& traj, size_t st = 0, size_t et = 0, bool 
 /** @brief  Extract visibility information from a trajectory. */
 //std::vector<Visibility> get_visibilities(const Trajectory& traj);
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
-namespace kjb {
+namespace ivi {
 namespace tracking {
 /** @brief  Specialize this parse for Complete_state. */
 template <>
-bool kjb::pt::Trajectory_element::parse(const std::string& line);
+bool ivi::pt::Trajectory_element::parse(const std::string& line);
 
 /** @brief  Specialize this write for Complete_state. */
 template <>
 inline
-void kjb::pt::Trajectory_element::write(std::ofstream& ofs) const
+void ivi::pt::Trajectory_element::write(std::ofstream& ofs) const
 {
     IFT(value.body_dir != std::numeric_limits<double>::max()
             && value.face_dir[0] != std::numeric_limits<double>::max()
@@ -84,19 +84,19 @@ void kjb::pt::Trajectory_element::write(std::ofstream& ofs) const
 /** @brief  Specialize this write_invalid for Complete_state. */
 template <>
 inline
-void kjb::pt::Trajectory_element::write_invalid(std::ofstream& ofs)
+void ivi::pt::Trajectory_element::write_invalid(std::ofstream& ofs)
 {
     ofs << Vector(6, -1.0) << "  " << 0.0 << std::endl;
 }
 
 /** @brief  Specialize this parse_header for Complete_state. */
 template <>
-bool kjb::pt::Trajectory::parse_header(const std::string& line);
+bool ivi::pt::Trajectory::parse_header(const std::string& line);
 
 /** @brief  Specialize this write_header for Complete_state. */
 template <>
 inline
-void kjb::pt::Trajectory::write_header(std::ofstream& ofs) const
+void ivi::pt::Trajectory::write_header(std::ofstream& ofs) const
 {
     ofs << height << " " << width << " " << girth << std::endl;
 }

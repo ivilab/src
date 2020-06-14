@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: util.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 #include <l_cpp/l_exception.h>
 #include <l/l_sys_debug.h>
 #include <l/l_sys_def.h>
@@ -46,17 +46,17 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
-std::vector<std::pair<size_t, size_t> > kjb::ties::parse_topics(const std::string& topics_fp)
+std::vector<std::pair<size_t, size_t> > ivi::ties::parse_topics(const std::string& topics_fp)
 {
     using namespace std;
     vector<pair<size_t, size_t> > times;
     ifstream ifs(topics_fp.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_3(IO_error, "Can't open file %s", (topics_fp.c_str()));
+        IVI_THROW_3(IO_error, "Can't open file %s", (topics_fp.c_str()));
     }
     string line;
     while(getline(ifs, line))
@@ -74,13 +74,13 @@ std::vector<std::pair<size_t, size_t> > kjb::ties::parse_topics(const std::strin
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::plot_data
+void ivi::ties::plot_data
 (
     const Data& data,
     const std::string& out_dir
 )
 { 
-#if !defined(KJB_ELGATO)
+#if !defined(IVI_ELGATO)
     Vector X(data.times.begin(), data.times.end());
 
     size_t length = data.times.size();
@@ -125,16 +125,16 @@ void kjb::ties::plot_data
         try
         {
             std::string data_str = "data-" + obs_name;
-            int id = kjb_c::plot_open();
-            KJB(ETX(set_colour_plot()));
-            KJB(ETX(plot_set_range(id, X[0], X[length - 1], min_val, max_val)));
+            int id = ivi_c::plot_open();
+            IVI(ETX(set_colour_plot()));
+            IVI(ETX(plot_set_range(id, X[0], X[length - 1], min_val, max_val)));
 
             // plot dial
             for(size_t j = 0; j < num_oscs; j++)
             {
                 std::string data_type_name = data_str +  
                                     ("-" + boost::lexical_cast<std::string>(j));
-                KJB(ETX(plot_curve(id, X.get_c_vector(), 
+                IVI(ETX(plot_curve(id, X.get_c_vector(), 
                                             Y_data[j].get_c_vector(), 
                                             data_type_name.c_str())));
             }
@@ -142,12 +142,12 @@ void kjb::ties::plot_data
             std::string type_string = obs_name;
             boost::format fname_fmt(out_dir + "/%04d_" + type_string + ".ps");
             std::string fname = (fname_fmt % data.dyid).str();
-            KJB(ETX(save_plot(id, fname.c_str())));
-            KJB(ETX(plot_close(id)));
+            IVI(ETX(save_plot(id, fname.c_str())));
+            IVI(ETX(plot_close(id)));
         }
         catch(Exception& e)
         {
-            std::cerr << "KJB PLOT error: " << e.get_msg() << std::endl;
+            std::cerr << "IVI PLOT error: " << e.get_msg() << std::endl;
         }
     }
 #endif
@@ -155,21 +155,21 @@ void kjb::ties::plot_data
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::plot_model
+void ivi::ties::plot_model
 (
     const Linear_state_space& lss, 
     const std::string& out_dir
 )
 {
-#if !defined(KJB_ELGATO)
+#if !defined(IVI_ELGATO)
     using namespace std;
     const State_vec_vec& all_states = lss.get_states();
     const std::vector<std::string>& obs_names = lss.obs_names();
     Vector X(lss.get_times().begin(), lss.get_times().end());
     size_t length = lss.get_times().size();
-    KJB(ASSERT(length == all_states.size()));
+    IVI(ASSERT(length == all_states.size()));
 
-    ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
     size_t num_oscs = lss.num_oscillators();
     size_t coef_index = 0;
     for(size_t i = 0; i < obs_names.size(); i++)
@@ -177,8 +177,8 @@ void kjb::ties::plot_model
         std::string type_name = obs_names[i];
         string fname = out_dir + "/" + type_name + ".ps";
         // set up the plot
-        int id = kjb_c::plot_open();
-        KJB(EPETE(set_colour_plot()));
+        int id = ivi_c::plot_open();
+        IVI(EPETE(set_colour_plot()));
         double min_val = DBL_MAX;
         double max_val = -DBL_MAX;
         // <time><osc>
@@ -189,12 +189,12 @@ void kjb::ties::plot_model
             type_names[j] += ("-" + boost::lexical_cast<string>(j));
             for(size_t t = 0; t < length; t++)
             {
-                KJB(ASSERT(all_states[t][i].size() == num_oscs));
+                IVI(ASSERT(all_states[t][i].size() == num_oscs));
                 Ys[j][t] = all_states[t][i][j];
             }
 
             // Find the ranges of the data
-            KJB(ASSERT(!Ys[j].empty()));
+            IVI(ASSERT(!Ys[j].empty()));
             double cur_min_val = min(Ys[j]);
             double cur_max_val = max(Ys[j]);
             if(cur_min_val < min_val)
@@ -207,21 +207,21 @@ void kjb::ties::plot_model
             }
         }
 
-        KJB(EPETE(plot_set_range(id, X[0], X[length - 1], min_val, max_val)));
+        IVI(EPETE(plot_set_range(id, X[0], X[length - 1], min_val, max_val)));
         for(size_t j = 0; j < num_oscs; j++)
         {
-            KJB(EPETE(plot_curve(id, X.get_c_vector(), Ys[j].get_c_vector(), 
+            IVI(EPETE(plot_curve(id, X.get_c_vector(), Ys[j].get_c_vector(), 
                       type_names[j].c_str())));
         }
-        KJB(EPETE(save_plot(id, fname.c_str())));
-        KJB(EPETE(plot_close(id)));
+        IVI(EPETE(save_plot(id, fname.c_str())));
+        IVI(EPETE(plot_close(id)));
     }
 #endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Linear_state_space kjb::ties::plot_data_and_model
+Linear_state_space ivi::ties::plot_data_and_model
 (
     const Data& data,
     const Linear_state_space& lss,
@@ -272,7 +272,7 @@ Linear_state_space kjb::ties::plot_data_and_model
 
         // data 
         const Vector_v& data_obs = data_it->second;
-        KJB(ASSERT(data_obs.size() == num_oscs));
+        IVI(ASSERT(data_obs.size() == num_oscs));
 
         std::vector<Vector> Y_data(num_oscs, Vector(length, 0.0));
         for(size_t i = 0; i < num_oscs; i++)
@@ -303,7 +303,7 @@ Linear_state_space kjb::ties::plot_data_and_model
                 Y_model[j][t] = all_states[t][o][j];
             }
             // Find the ranges of the data
-            KJB(ASSERT(!Y_model[j].empty()));
+            IVI(ASSERT(!Y_model[j].empty()));
             double cur_min_val = min(Y_model[j]);
             double cur_max_val = max(Y_model[j]);
             if(cur_min_val < min_val)
@@ -323,7 +323,7 @@ Linear_state_space kjb::ties::plot_data_and_model
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::plot_exp_dir
+void ivi::ties::plot_exp_dir
 (
     const std::string& exp_dir, 
     const std::string& list_fp,
@@ -350,7 +350,7 @@ void kjb::ties::plot_exp_dir
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Linear_state_space> kjb::ties::plot_data_and_model
+std::vector<Linear_state_space> ivi::ties::plot_data_and_model
 (
     const std::vector<Data>& data,
     const Lss_set& lss_set,
@@ -364,7 +364,7 @@ std::vector<Linear_state_space> kjb::ties::plot_data_and_model
     for(size_t i = 0; i < N; i++)
     {
         std::string figure_fp = (figure_fmt % data[i].dyid).str();
-        KJB(EPETE(kjb_mkdir(figure_fp.c_str())));
+        IVI(EPETE(ivi_mkdir(figure_fp.c_str())));
         lss_all_states[i] = plot_data_and_model(data[i], lss_vec[i], figure_fp);
     }
     return lss_all_states;
@@ -372,7 +372,7 @@ std::vector<Linear_state_space> kjb::ties::plot_data_and_model
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::pair<Vector, Vector> kjb::ties::standardize
+std::pair<Vector, Vector> ivi::ties::standardize
 (
     Data& data, 
     const std::string& type,
@@ -384,13 +384,13 @@ std::pair<Vector, Vector> kjb::ties::standardize
     Obs_map::iterator it = data.observables.find(type);
     if(it == data.observables.end())
     {
-        KJB_THROW_3(Illegal_argument, 
+        IVI_THROW_3(Illegal_argument, 
                 "observable %s is invalid", (type.c_str()));
     }
 
     Vector means = stats.first;
     Vector variances = stats.second;
-    KJB(ASSERT(means.size() == variances.size()));
+    IVI(ASSERT(means.size() == variances.size()));
     Vector_v& obs = it->second; 
     for(size_t o = 0; o < variances.size(); o++)
     {
@@ -417,7 +417,7 @@ std::pair<Vector, Vector> kjb::ties::standardize
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::pair<Vector, Vector> kjb::ties::standardize
+std::pair<Vector, Vector> ivi::ties::standardize
 (
     std::vector<Data>& data_all, 
     const std::string& type,
@@ -437,7 +437,7 @@ std::pair<Vector, Vector> kjb::ties::standardize
         Obs_map::const_iterator it = data.observables.find(type);
         if(it == data.observables.end())
         {
-            KJB_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
+            IVI_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
         }
 
         const Vector_v& obs = it->second; 
@@ -466,7 +466,7 @@ std::pair<Vector, Vector> kjb::ties::standardize
         Obs_map::const_iterator it = data.observables.find(type);
         if(it == data.observables.end())
         {
-            KJB_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
+            IVI_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
         }
 
         const Vector_v& obs = it->second; 
@@ -496,7 +496,7 @@ std::pair<Vector, Vector> kjb::ties::standardize
         Obs_map::iterator it = data.observables.find(type);
         if(it == data.observables.end())
         {
-            KJB_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
+            IVI_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
         }
 
         Vector_v& obs = it->second; 
@@ -527,7 +527,7 @@ std::pair<Vector, Vector> kjb::ties::standardize
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::pair<Vector, Vector> kjb::ties::compute_mean_sem
+std::pair<Vector, Vector> ivi::ties::compute_mean_sem
 (
     const std::vector<Vector>& errors
 )
@@ -575,7 +575,7 @@ std::pair<Vector, Vector> kjb::ties::compute_mean_sem
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::ties::compute_error
+std::vector<Vector> ivi::ties::compute_error
 (
     const Linear_state_space& real_lss, 
     const Linear_state_space& lss,
@@ -632,7 +632,7 @@ std::vector<Vector> kjb::ties::compute_error
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::ties::compute_error
+std::vector<Vector> ivi::ties::compute_error
 (
     const Data& data, 
     const Linear_state_space& lss,
@@ -680,7 +680,7 @@ std::vector<Vector> kjb::ties::compute_error
                     "%s is not a valid observable", (obs_name.c_str()));
             const Vector_v& obs_vals = f_it -> second; 
 
-            KJB(ASSERT(num_oscs = obs_vals.size()));
+            IVI(ASSERT(num_oscs = obs_vals.size()));
             for(size_t j = 0; j < num_oscs; j++)
             {
                 double data_val = obs_vals[j][i];
@@ -720,7 +720,7 @@ std::vector<Vector> kjb::ties::compute_error
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::ties::compute_error
+std::vector<Vector> ivi::ties::compute_error
 (
     const std::vector<Data>& data, 
     const Lss_set& trained_lss_set,
@@ -736,7 +736,7 @@ std::vector<Vector> kjb::ties::compute_error
     {
         std::vector<Vector> errors_per_couple = 
                                 compute_error(data[d], lss_vec[d], train_percent);
-        KJB(ASSERT(errors_per_couple.size() == all_errors.size()));
+        IVI(ASSERT(errors_per_couple.size() == all_errors.size()));
         for(size_t i = 0; i < all_errors.size(); i++)
         {
             all_errors[i] += errors_per_couple[i];
@@ -753,7 +753,7 @@ std::vector<Vector> kjb::ties::compute_error
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::ties::compute_ave_error
+Vector ivi::ties::compute_ave_error
 (
     const Data& data, 
     const std::vector<Linear_state_space>& samples,
@@ -794,7 +794,7 @@ Vector kjb::ties::compute_ave_error
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::report_errors
+void ivi::ties::report_errors
 (
     const std::string& err_dp,
     const std::string& err_fp_str,
@@ -858,7 +858,7 @@ void kjb::ties::report_errors
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::report_cross_validate_errors
+void ivi::ties::report_cross_validate_errors
 (
     const std::string& err_dp,
     const std::string& obs_name,
@@ -950,7 +950,7 @@ void kjb::ties::report_cross_validate_errors
         {
             scfp = out_dp + "/testing/" + obs_name + "_err_couples_sampled.txt";
         }
-        if(kjb_c::is_file(scfp.c_str()))
+        if(ivi_c::is_file(scfp.c_str()))
         {
             std::ifstream scifs(scfp.c_str());
             IFTD(scifs.is_open(), IO_error, "can't open file %s", (scfp.c_str()));
@@ -1041,7 +1041,7 @@ void kjb::ties::report_cross_validate_errors
     for(size_t k = 0; k < fold_dirs.size(); k++)
     {
         std::string fp = fold_dirs[k] + "/testing/outcome_line_pred.txt";
-        if(!kjb_c::is_file(fp.c_str())) 
+        if(!ivi_c::is_file(fp.c_str())) 
         {
             outcome = false;
             assert(k == 0);
@@ -1073,7 +1073,7 @@ void kjb::ties::report_cross_validate_errors
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::report_outcome_errors
+void ivi::ties::report_outcome_errors
 (
     const std::vector<std::string>& couple_err_fps, 
     const std::string& out_fp,
@@ -1098,7 +1098,7 @@ void kjb::ties::report_outcome_errors
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::ties::read_couple_errors
+bool ivi::ties::read_couple_errors
 (
      const std::string& lss_dir,
      const std::string& err_fp_str,
@@ -1137,14 +1137,14 @@ bool kjb::ties::read_couple_errors
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::ties::read_multiple_pair_error
+std::vector<Vector> ivi::ties::read_multiple_pair_error
 (
     const std::string& in_fp
 )
 {
     using namespace std;
     std::vector<Vector> res;
-    if(!kjb_c::is_file(in_fp.c_str())) return res;
+    if(!ivi_c::is_file(in_fp.c_str())) return res;
     ifstream cifs(in_fp.c_str());
     IFTD(cifs.is_open(), IO_error, "can't open file %s", (in_fp.c_str()));
     string line;
@@ -1171,7 +1171,7 @@ std::vector<Vector> kjb::ties::read_multiple_pair_error
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-State_type kjb::ties::estimate_init_states
+State_type ivi::ties::estimate_init_states
 (
     const Data& data, 
     double training_percent,
@@ -1186,12 +1186,12 @@ State_type kjb::ties::estimate_init_states
     Obs_map::const_iterator it = data.observables.find(obs_name);
     if(it == data.observables.end())
     {
-        KJB_THROW_3(Illegal_argument, "observable %s is invalid", 
+        IVI_THROW_3(Illegal_argument, "observable %s is invalid", 
                                        (obs_name.c_str()));
     }
   
     const Vector_v& obs = it->second; 
-    KJB(ASSERT(!obs.empty()));
+    IVI(ASSERT(!obs.empty()));
     size_t num_oscs = obs.size();
     assert(num_oscs >= 2);
 
@@ -1230,7 +1230,7 @@ State_type kjb::ties::estimate_init_states
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::ties::is_shared_moderator
+bool ivi::ties::is_shared_moderator
 (
     const Mod_map& moderators,
     const std::string& mod_name
@@ -1258,7 +1258,7 @@ bool kjb::ties::is_shared_moderator
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-State_vec kjb::ties::estimate_init_states
+State_vec ivi::ties::estimate_init_states
 (
     const std::vector<Data>& data, 
     double training_percent,
@@ -1271,7 +1271,7 @@ State_vec kjb::ties::estimate_init_states
     for(size_t i = 0; i < N; i++)
     {
         Obs_map::const_iterator it = data[i].observables.begin();
-        KJB(ASSERT(it != data[i].observables.end()));
+        IVI(ASSERT(it != data[i].observables.end()));
         State_type mean_state;
         if(polynomial_degree >= 0)
         {
@@ -1291,7 +1291,7 @@ State_vec kjb::ties::estimate_init_states
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
 std::vector<std::vector<std::pair<double, double> > >
-kjb::ties::get_percentile_moderator
+ivi::ties::get_percentile_moderator
 (
     const std::vector<Data>& data,
     const std::vector<std::string>& moderator_strs,
@@ -1373,7 +1373,7 @@ kjb::ties::get_percentile_moderator
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::ties::get_init_state_least_square_fitting_coef
+std::vector<Vector> ivi::ties::get_init_state_least_square_fitting_coef
 (
     const std::vector<Data>& data,
     double training_percent,
@@ -1456,7 +1456,7 @@ std::vector<Vector> kjb::ties::get_init_state_least_square_fitting_coef
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<size_t> kjb::ties::get_sampled_time_indices
+std::vector<size_t> ivi::ties::get_sampled_time_indices
 (
     const Double_v& all_times, 
     size_t segment_length
@@ -1485,7 +1485,7 @@ std::vector<size_t> kjb::ties::get_sampled_time_indices
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::pair<Vector, Vector> kjb::ties::compute_and_record_errors
+std::pair<Vector, Vector> ivi::ties::compute_and_record_errors
 (
     const std::vector<Vector>& errors,
     const std::string& distinguisher,
@@ -1533,7 +1533,7 @@ std::pair<Vector, Vector> kjb::ties::compute_and_record_errors
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::pair<Vector, Vector> kjb::ties::compute_and_record_errors_latex
+std::pair<Vector, Vector> ivi::ties::compute_and_record_errors_latex
 (
     const std::vector<Vector>& errors,
     const std::string& err_fp 
@@ -1581,7 +1581,7 @@ std::pair<Vector, Vector> kjb::ties::compute_and_record_errors_latex
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix kjb::ties::construct_diagonal_matrix(const std::vector<Matrix>& Ks)
+Matrix ivi::ties::construct_diagonal_matrix(const std::vector<Matrix>& Ks)
 {
     size_t N = 0;
     BOOST_FOREACH(const Matrix& K, Ks)
@@ -1612,11 +1612,11 @@ Matrix kjb::ties::construct_diagonal_matrix(const std::vector<Matrix>& Ks)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Data kjb::ties::smooth_data(const Data data, size_t length, double sigma)
+Data ivi::ties::smooth_data(const Data data, size_t length, double sigma)
 {
     Data smooth_data(data);
     Vector mask;
-    ETX(kjb_c::get_1D_gaussian_mask(
+    ETX(ivi_c::get_1D_gaussian_mask(
                 &mask.get_underlying_representation_with_guilt(), length, sigma));
     BOOST_FOREACH(Obs_map::value_type& value_type, smooth_data.observables)
     {
@@ -1626,7 +1626,7 @@ Data kjb::ties::smooth_data(const Data data, size_t length, double sigma)
         for(size_t i = 0; i < value_type.second.size(); i++)
         {
             Vector& out = value_type.second[i];
-            ETX(kjb_c::convolve_vector(
+            ETX(ivi_c::convolve_vector(
                         &out.get_underlying_representation_with_guilt(), 
                         orig_obs[i].get_c_vector(), mask.get_c_vector()));
 
@@ -1637,7 +1637,7 @@ Data kjb::ties::smooth_data(const Data data, size_t length, double sigma)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::ties::in_range(const Linear_state_space& lss, double max, double min)
+bool ivi::ties::in_range(const Linear_state_space& lss, double max, double min)
 {
     const State_vec_vec& states = lss.get_states();
     size_t time_length = states.size();
@@ -1679,7 +1679,7 @@ bool kjb::ties::in_range(const Linear_state_space& lss, double max, double min)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::istream& kjb::ties::parse_shared_params
+std::istream& ivi::ties::parse_shared_params
 (
     std::istream& ist,
     Group_params& group_params
@@ -1738,7 +1738,7 @@ std::istream& kjb::ties::parse_shared_params
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<std::string> kjb::ties::get_list_fps
+std::vector<std::string> ivi::ties::get_list_fps
 (
     const std::string& out_dp, 
     const std::string& grouping_var,
@@ -1766,7 +1766,7 @@ std::vector<std::string> kjb::ties::get_list_fps
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::pair<Vector, Vector> kjb::ties::get_mean_variances
+std::pair<Vector, Vector> ivi::ties::get_mean_variances
 (
     const Data& data,
     const std::string& type
@@ -1776,7 +1776,7 @@ std::pair<Vector, Vector> kjb::ties::get_mean_variances
     Obs_map::const_iterator it = data.observables.find(type);
     if(it == data.observables.end())
     {
-        KJB_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
+        IVI_THROW_3(Illegal_argument, "observable %s is invalid", (type.c_str()));
     }
 
     const Vector_v& obs = it->second; 
@@ -1788,7 +1788,7 @@ std::pair<Vector, Vector> kjb::ties::get_mean_variances
     {
         double mean = 0.0;
         size_t valid_data = 0;
-        KJB(ASSERT(num_data == vals.size()));
+        IVI(ASSERT(num_data == vals.size()));
         BOOST_FOREACH(double val, vals)
         {
             if(!invalid_data(val))
@@ -1820,7 +1820,7 @@ std::pair<Vector, Vector> kjb::ties::get_mean_variances
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::randomize_starting_states
+void ivi::ties::randomize_starting_states
 (   
     std::vector<Linear_state_space>& lss_set, 
     const std::vector<Data>& data_all,
@@ -1838,7 +1838,7 @@ void kjb::ties::randomize_starting_states
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Linear_state_space> kjb::ties::read_lss_samples
+std::vector<Linear_state_space> ivi::ties::read_lss_samples
 (
      const std::string& sample_dir,
      double start_time
@@ -1859,7 +1859,7 @@ std::vector<Linear_state_space> kjb::ties::read_lss_samples
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::create_characteristic_models
+void ivi::ties::create_characteristic_models
 (
     const Ties_experiment& exp, 
     const std::vector<Data>& data,
@@ -1868,7 +1868,7 @@ void kjb::ties::create_characteristic_models
 {
     using namespace std;
     string char_out_dir(exp.out_dp + "/characteristic_models/");
-    ETX(kjb_c::kjb_mkdir(char_out_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(char_out_dir.c_str()));
 
     // get the moderator representative
     vector<vector<pair<double, double> > > mods 
@@ -1901,7 +1901,7 @@ void kjb::ties::create_characteristic_models
     for(size_t i = 0; i < mods.size(); i++)
     {
         string sub_dir = (sub_fmt % i).str();
-        ETX(kjb_c::kjb_mkdir(sub_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(sub_dir.c_str()));
         string info_fp = sub_dir + "/moderator_info.txt";
         ofstream info_ofs(info_fp.c_str());
         IFTD(info_ofs.is_open(), IO_error, "can't open file %s", 
@@ -2059,7 +2059,7 @@ void kjb::ties::create_characteristic_models
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<double> kjb::ties::get_responsibilities
+std::vector<double> ivi::ties::get_responsibilities
 (
     const std::vector<Group_params>& group_params,
     const Linear_state_space& lss,
@@ -2103,7 +2103,7 @@ std::vector<double> kjb::ties::get_responsibilities
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::ties::compute_outcome_pred_error
+std::vector<Vector> ivi::ties::compute_outcome_pred_error
 (
     const std::vector<Group_params>& group_params, 
     const Linear_state_space& lss,

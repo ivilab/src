@@ -12,7 +12,7 @@
 #include <boost/random.hpp>
 #include <boost/format.hpp>
 
-using namespace kjb;
+using namespace ivi;
 
 std::vector<size_t> parse_lists(const std::string& id_fname)
 {

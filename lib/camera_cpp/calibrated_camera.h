@@ -1,4 +1,4 @@
-/* $Id: calibrated_camera.h 18278 2014-11-25 01:42:10Z ksimek $  */
+/* $Id: calibrated_camera.h 25499 2020-06-14 13:26:04Z kobus $  */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,11 +17,11 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_CAMERA_CPP_CAMERA_CALIBRATED_CAMERA
-#define KJB_CAMERA_CPP_CAMERA_CALIBRATED_CAMERA
+#ifndef IVI_CAMERA_CPP_CAMERA_CALIBRATED_CAMERA
+#define IVI_CAMERA_CPP_CAMERA_CALIBRATED_CAMERA
 
 // this should be first:
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #endif
@@ -34,12 +34,12 @@
 
 #include <g_cpp/g_quaternion.h>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 //#include <boost/serialization/nvp.hpp>
 #include <boost/serialization/access.hpp>
 #endif
 
-namespace kjb 
+namespace ivi 
 {
 
 /**
@@ -50,7 +50,7 @@ namespace kjb
  */
 class Calibrated_camera : public Perspective_camera
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
 
@@ -110,7 +110,7 @@ public:
     }
 
     /**
-     * @pre intrinsic, rotation and translation are in "Standard" form, as defined in the documentation of kjb::standardize_camera_matrices.
+     * @pre intrinsic, rotation and translation are in "Standard" form, as defined in the documentation of ivi::standardize_camera_matrices.
      */
     void initialize(
             const Matrix& intrinsic, 
@@ -179,16 +179,16 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int /* version */)
     {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
         ar & ::boost::serialization::base_object<Base>(*this);
 #else
-        KJB_THROW_2(Missing_dependency, "boost::serialization");
+        IVI_THROW_2(Missing_dependency, "boost::serialization");
 #endif
     }
 
 };
 
-} // namespace kjb
+} // namespace ivi
 
 
 #endif 

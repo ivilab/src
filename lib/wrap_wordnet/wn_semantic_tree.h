@@ -35,14 +35,14 @@
 #include "wrap_wordnet/wn_array.h"
 #include "wrap_wordnet/wn_region_label.h"
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

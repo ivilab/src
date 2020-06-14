@@ -74,7 +74,7 @@
 
 #include "gr_cpp/gr_opengl.h"
 
-#if defined KJB_HAVE_X11 && defined KJB_HAVE_OPENGL
+#if defined IVI_HAVE_X11 && defined IVI_HAVE_OPENGL
 #ifndef MAC_OSX
 #include <X11/Xlib.h>
 #include <GL/gl.h>
@@ -88,7 +88,7 @@
 
 #include "gr_cpp/gr_offscreen.h"
 
-using namespace kjb;
+using namespace ivi;
 
 
 /**
@@ -98,15 +98,15 @@ using namespace kjb;
  *  @param _has_gl Will be true if open gl rendering is available
  *  @param _has_osmesa Will be true if libosmesa is available
  */
-void kjb::retrieve_offscreen_capabilities(bool *_has_gl, bool *_has_osmesa)
+void ivi::retrieve_offscreen_capabilities(bool *_has_gl, bool *_has_osmesa)
 {
     *_has_gl = false;
     *_has_osmesa = false;
-#if defined KJB_HAVE_X11 && defined KJB_HAVE_OPENGL
+#if defined IVI_HAVE_X11 && defined IVI_HAVE_OPENGL
     *_has_gl = true;
 #endif
 
-#if defined KJB_HAVE_OSMESA
+#if defined IVI_HAVE_OSMESA
     *_has_osmesa = true;
 #endif
 
@@ -116,17 +116,17 @@ void kjb::retrieve_offscreen_capabilities(bool *_has_gl, bool *_has_osmesa)
  *  DEPRECATED
  *  Returns true if pbuffers are available. ONLY FOR DEBUG PURPOSES
  */
-bool kjb::supports_pbuffers()
+bool ivi::supports_pbuffers()
 {
-#ifdef KJB_HAVE_OSMESA
+#ifdef IVI_HAVE_OSMESA
     return false;
 #else
-#if defined KJB_HAVE_X11 && defined KJB_HAVE_OPENGL
+#if defined IVI_HAVE_X11 && defined IVI_HAVE_OPENGL
 #ifndef MAC_OSX
     try{
-        kjb::GLX_offscreen_pbuffer _temp_buffer(100, 100, NULL);
+        ivi::GLX_offscreen_pbuffer _temp_buffer(100, 100, NULL);
     }
-    catch(kjb::Result_error e)
+    catch(ivi::Result_error e)
     {
         return false;
     }
@@ -145,17 +145,17 @@ bool kjb::supports_pbuffers()
  *  DEPRECATED
  *  Returns true if pixel maps are available. ONLY FOR DEBUG PURPOSES
  */
-bool kjb::supports_pixmaps()
+bool ivi::supports_pixmaps()
 {
-#ifdef KJB_HAVE_OSMESA
+#ifdef IVI_HAVE_OSMESA
     return false;
 #else
-#if defined KJB_HAVE_X11 && defined KJB_HAVE_OPENGL
+#if defined IVI_HAVE_X11 && defined IVI_HAVE_OPENGL
 #ifndef MAC_OSX
     try{
-        kjb::GLX_offscreen_pixmap _temp_pixmap(100, 100, NULL);
+        ivi::GLX_offscreen_pixmap _temp_pixmap(100, 100, NULL);
     }
-    catch(kjb::Result_error e)
+    catch(ivi::Result_error e)
     {
         return false;
     }
@@ -170,49 +170,49 @@ bool kjb::supports_pixmaps()
     return false;
 }
 
-#if defined KJB_HAVE_X11 && defined KJB_HAVE_OPENGL
+#if defined IVI_HAVE_X11 && defined IVI_HAVE_OPENGL
 #ifndef MAC_OSX
-#ifndef KJB_HAVE_OSMESA
+#ifndef IVI_HAVE_OSMESA
 /* -----------------------  GLX_offscreen_buffer  --------------------------- */
 
-void GLX_offscreen_buffer::activate() throw (kjb::Exception)
+void GLX_offscreen_buffer::activate() throw (ivi::Exception)
 {
     if (!active)
     {
         if (!(active = glXMakeCurrent(display, drawable, context)))
         {
-            throw kjb::Exception(
+            throw ivi::Exception(
                     "Could not make drawable context current");
         }
     }
 }
 
-void GLX_offscreen_buffer::deactivate() throw (kjb::Exception)
+void GLX_offscreen_buffer::deactivate() throw (ivi::Exception)
 {
     if (active)
     {
         if ((active = !glXMakeCurrent(display, old_drawable, old_context)))
         {
-            throw kjb::Exception(
+            throw ivi::Exception(
                     "Could not make old drawable context current");
         }
     }
 }
 
-void GLX_offscreen_buffer::reactivate() throw (kjb::Exception)
+void GLX_offscreen_buffer::reactivate() throw (ivi::Exception)
 {
     if (!active)
     {
-        throw kjb::Exception("No active context to reactivate");
+        throw ivi::Exception("No active context to reactivate");
     }
     if (glXMakeCurrent(display, drawable, context))
     {
-        throw kjb::Exception("Could not make context current");
+        throw ivi::Exception("Could not make context current");
     }
 }
 
 void GLX_offscreen_buffer::open_display(const char* disp_name)
-    throw(kjb::Result_error)
+    throw(ivi::Result_error)
 {
     display = glXGetCurrentDisplay();
 
@@ -224,13 +224,13 @@ void GLX_offscreen_buffer::open_display(const char* disp_name)
         {
             std::ostringstream ost;
             ost << "Could not open X display '" << getenv("DISPLAY") << '\'';
-            throw kjb::Result_error(ost.str());
+            throw ivi::Result_error(ost.str());
         }
         else if (!display)
         {
             std::ostringstream ost;
             ost << "Could not open X display '" << disp_name << '\'';
-            throw kjb::Result_error(ost.str());
+            throw ivi::Result_error(ost.str());
         }
 
         display_open = true;
@@ -310,12 +310,12 @@ GLX_offscreen_pixmap::GLX_offscreen_pixmap
     int  iheight,
     int* attrs
 )
-throw (kjb::Exception) : GLX_offscreen_buffer(iwidth, iheight)
+throw (ivi::Exception) : GLX_offscreen_buffer(iwidth, iheight)
 {
     open_display();
     if (!has_pixmap_extension())
     {
-        throw kjb::Result_error("Pixel maps not supported");
+        throw ivi::Result_error("Pixel maps not supported");
     }
 
     save_old_context();
@@ -339,7 +339,7 @@ GLX_offscreen_pixmap::~GLX_offscreen_pixmap()
 }
 
 void GLX_offscreen_pixmap::create_drawable_and_context(int* attrs)
-    throw (kjb::Result_error)
+    throw (ivi::Result_error)
 {
     static int default_attrs[] = { GLX_RGBA,
                                    GLX_RED_SIZE,     8,
@@ -359,26 +359,26 @@ void GLX_offscreen_pixmap::create_drawable_and_context(int* attrs)
             DefaultScreen(display), attrs);
     if (!visual)
     {
-        throw kjb::Result_error("Could not get X visual");
+        throw ivi::Result_error("Could not get X visual");
     }
 
     pixmap = XCreatePixmap(display, DefaultRootWindow(display),
                 width, height, visual->depth);
     if (!pixmap)
     {
-        throw kjb::Result_error("Could not create X11 pixmap");
+        throw ivi::Result_error("Could not create X11 pixmap");
     }
 
     drawable = glXCreateGLXPixmap(display, visual, pixmap);
     if (!drawable)
     {
-        throw kjb::Result_error("Could not create GLX pixmap");
+        throw ivi::Result_error("Could not create GLX pixmap");
     }
 
     context = glXCreateContext(display, visual, 0, GL_FALSE);
     if (!context)
     {
-        throw kjb::Result_error("Could not create GLX context");
+        throw ivi::Result_error("Could not create GLX context");
     }
 }
 
@@ -403,14 +403,14 @@ GLX_offscreen_pbuffer::GLX_offscreen_pbuffer
     int  iheight,
     int* attrs
 )
-throw (kjb::Exception)
+throw (ivi::Exception)
     : GLX_offscreen_buffer(iwidth, iheight)
 {
     open_display();
 
     if (!has_pbuffer_extension())
     {
-        throw kjb::Result_error("PBuffers not supported");
+        throw ivi::Result_error("PBuffers not supported");
     }
 
     save_old_context();
@@ -434,7 +434,7 @@ GLX_offscreen_pbuffer::~GLX_offscreen_pbuffer()
 }
     
 void GLX_offscreen_pbuffer::create_drawable_and_context(int* attrs)
-    throw(kjb::Exception)
+    throw(ivi::Exception)
 {
     static int default_attrs[] = { GLX_RED_SIZE,     8,
                                    GLX_GREEN_SIZE,   8,
@@ -459,7 +459,7 @@ void GLX_offscreen_pbuffer::create_drawable_and_context(int* attrs)
                 attrs, &nlist);
     if (!fbconfig)
     {
-        throw kjb::Result_error("Could not create pbuffer");
+        throw ivi::Result_error("Could not create pbuffer");
     }
 
     for (int i = 0; i < nlist; i++)
@@ -475,7 +475,7 @@ void GLX_offscreen_pbuffer::create_drawable_and_context(int* attrs)
 
             if(!context)
             {
-                throw kjb::Result_error("Could not create context");
+                throw ivi::Result_error("Could not create context");
             }
 
             return;
@@ -484,7 +484,7 @@ void GLX_offscreen_pbuffer::create_drawable_and_context(int* attrs)
 
     XFree(fbconfig);
 
-    throw kjb::Result_error("Could not find valid framebuffer config");
+    throw ivi::Result_error("Could not find valid framebuffer config");
 }
 
 void GLX_offscreen_pbuffer::destroy_drawable()
@@ -509,7 +509,7 @@ CGL_offscreen_pbuffer::CGL_offscreen_pbuffer
     GLenum  format,
     const CGLPixelFormatAttribute* attrs
 )
-throw (kjb::Exception) : Offscreen_buffer(iwidth, iheight)
+throw (ivi::Exception) : Offscreen_buffer(iwidth, iheight)
 {
     save_old_context();
     create_pbuffer_and_context(format, attrs);
@@ -526,41 +526,41 @@ CGL_offscreen_pbuffer::~CGL_offscreen_pbuffer()
     CGLDestroyPBuffer(pbuffer);
 }
     
-void CGL_offscreen_pbuffer::activate() throw (kjb::Exception)
+void CGL_offscreen_pbuffer::activate() throw (ivi::Exception)
 {
     if (!active)
     {
         active = !CGLSetCurrentContext(context);
         if (!active)
         {
-            throw kjb::Exception("Could not make context current");
+            throw ivi::Exception("Could not make context current");
         }
     }
 }
 
-void CGL_offscreen_pbuffer::deactivate() throw (kjb::Exception)
+void CGL_offscreen_pbuffer::deactivate() throw (ivi::Exception)
 {
     if (active)
     {
         active = CGLSetCurrentContext(old_context);
         if (active)
         {
-            throw kjb::Exception(
+            throw ivi::Exception(
                     "Could not make old context current");
         }
     }
 }
 
 
-void CGL_offscreen_pbuffer::reactivate() throw (kjb::Exception)
+void CGL_offscreen_pbuffer::reactivate() throw (ivi::Exception)
 {
     if (!active)
     {
-        throw kjb::Exception("No active context to reactivate");
+        throw ivi::Exception("No active context to reactivate");
     }
     if (CGLSetCurrentContext(context))
     {
-        throw kjb::Exception("Could not make context current");
+        throw ivi::Exception("Could not make context current");
     }
 }
 
@@ -569,7 +569,7 @@ void CGL_offscreen_pbuffer::create_pbuffer_and_context
     GLenum format,
     const CGLPixelFormatAttribute* attrs
 )
-throw(kjb::Exception)
+throw(ivi::Exception)
 {
     static const CGLPixelFormatAttribute default_attrs[] = 
                                       { kCGLPFAColorSize,   
@@ -591,7 +591,7 @@ throw(kjb::Exception)
     GLint nlist;
     if (CGLChoosePixelFormat(attrs, &pxlfmt, &nlist))
     {
-        throw kjb::Result_error("Could not choose pixel format");
+        throw ivi::Result_error("Could not choose pixel format");
     }
 
     for (int i = 0; i < nlist; i++)
@@ -606,7 +606,7 @@ throw(kjb::Exception)
                 ((nlist - i) == 1 && err == kCGLBadPixelFormat))
         {
             CGLDestroyPixelFormat(pxlfmt);
-            throw kjb::Result_error("Could not create context");
+            throw ivi::Result_error("Could not create context");
         }
     }
 
@@ -615,18 +615,18 @@ throw(kjb::Exception)
     GLint screen;
     if (CGLGetVirtualScreen(context, &screen))
     {
-        throw kjb::Result_error("Could not get virtual screen");
+        throw ivi::Result_error("Could not get virtual screen");
     }
 
     if (CGLCreatePBuffer(width, height, GL_TEXTURE_RECTANGLE_EXT, format, 0, 
                 &pbuffer))
     {
-        throw kjb::Result_error("Could not create pbuffer");
+        throw ivi::Result_error("Could not create pbuffer");
     }
 
     if (CGLSetPBuffer(context, pbuffer, 0, 0, screen))
     {
-        throw kjb::Result_error("Could not set pbuffer");
+        throw ivi::Result_error("Could not set pbuffer");
     }
 }
 
@@ -642,7 +642,7 @@ void CGL_offscreen_pbuffer::save_old_context()
 
 
 
-#if defined KJB_HAVE_OSMESA
+#if defined IVI_HAVE_OSMESA
 /* ----------------------  OSMesa32_offscreen_buffer  ------------------------*/
 
 /** 
@@ -658,7 +658,7 @@ OSMesa32_offscreen_buffer::OSMesa32_offscreen_buffer
     GLint   stencil_bits,
     GLint   accum_bits
 )
-throw (kjb::Exception) : Offscreen_buffer(iwidth, iheight)
+throw (ivi::Exception) : Offscreen_buffer(iwidth, iheight)
 {
     create_buffer_and_context(format, depth_bits, stencil_bits, accum_bits);
 }
@@ -674,19 +674,19 @@ OSMesa32_offscreen_buffer::~OSMesa32_offscreen_buffer()
     free(buffer);
 }
     
-void OSMesa32_offscreen_buffer::activate() throw (kjb::Exception)
+void OSMesa32_offscreen_buffer::activate() throw (ivi::Exception)
 {
     if (!active)
     {
         if (!(active = OSMesaMakeCurrent(context, buffer, GL_UNSIGNED_BYTE, 
                         width, height)))
         {
-            throw kjb::Exception("Could not make context current");
+            throw ivi::Exception("Could not make context current");
         }
     }
 }
 
-void OSMesa32_offscreen_buffer::deactivate() throw (kjb::Exception)
+void OSMesa32_offscreen_buffer::deactivate() throw (ivi::Exception)
 {
     if (active)
     {
@@ -694,11 +694,11 @@ void OSMesa32_offscreen_buffer::deactivate() throw (kjb::Exception)
     }
 }
 
-void OSMesa32_offscreen_buffer::reactivate() throw (kjb::Exception)
+void OSMesa32_offscreen_buffer::reactivate() throw (ivi::Exception)
 {
     if (!active)
     {
-        throw kjb::Exception("No active context to reactivate");
+        throw ivi::Exception("No active context to reactivate");
     }
     // Nothing to do.
 }
@@ -710,19 +710,19 @@ void OSMesa32_offscreen_buffer::create_buffer_and_context
     GLint  stencil_bits,
     GLint  accum_bits
 )
-throw(kjb::Exception)
+throw(ivi::Exception)
 {
     context = OSMesaCreateContextExt(format, depth_bits, stencil_bits, 
             accum_bits, 0);
     if (!context)
     {
-        throw kjb::Result_error("Could not create context");
+        throw ivi::Result_error("Could not create context");
     }
 
     buffer = malloc(width * height * 4 * sizeof(GLbyte));
     if (!buffer)
     {
-        throw kjb::Result_error("Could not create buffer");
+        throw ivi::Result_error("Could not create buffer");
     }
 }
 
@@ -743,8 +743,8 @@ throw(kjb::Exception)
  * @param use_pbuffers_when_available if set to true, pixelmaps will be
  *        preferred to pbuffers
  */
-#ifdef KJB_HAVE_OPENGL
-Offscreen_buffer * kjb::create_default_offscreen_buffer
+#ifdef IVI_HAVE_OPENGL
+Offscreen_buffer * ivi::create_default_offscreen_buffer
 (
     GLsizei iwidth,
     GLsizei iheight,
@@ -752,15 +752,15 @@ Offscreen_buffer * kjb::create_default_offscreen_buffer
 )
 {
 
-#ifdef KJB_HAVE_OSMESA
+#ifdef IVI_HAVE_OSMESA
     /** If we have found OsMesa, it means this is the only offscreen
      *  rendering tool available on this machine */
     return new OSMesa32_offscreen_buffer(iwidth, iheight, OSMESA_RGBA, 4, 4, 4);
 #else
 
-#if defined KJB_HAVE_X11 && defined KJB_HAVE_OPENGL
+#if defined IVI_HAVE_X11 && defined IVI_HAVE_OPENGL
 #ifndef MAC_OSX
-    if(kjb::supports_pbuffers() && use_pbuffers_when_available)
+    if(ivi::supports_pbuffers() && use_pbuffers_when_available)
     {
         static int attrs_pbuffer[] =
         {   GLX_RED_SIZE,      8,
@@ -775,12 +775,12 @@ Offscreen_buffer * kjb::create_default_offscreen_buffer
         {
             return new GLX_offscreen_pbuffer(iwidth, iheight, attrs_pbuffer);
         }
-        catch(KJB_error e)
+        catch(IVI_error e)
         {
-            throw KJB_error("PBUFFERS not supported");
+            throw IVI_error("PBUFFERS not supported");
         }
     }
-    else if(kjb::supports_pixmaps())
+    else if(ivi::supports_pixmaps())
     {
         static int attrs_pixmap[] =
         {   GLX_RGBA,
@@ -814,7 +814,7 @@ Offscreen_buffer * kjb::create_default_offscreen_buffer
 #endif /* End of ifdef GL and X11 */
 #endif /* End of ifdef OSMESA */
     
-    throw KJB_error("This machine does not support any kind of offscreen rendering");
+    throw IVI_error("This machine does not support any kind of offscreen rendering");
 }
 
 /** @brief This function will create an offscreen buffer using the available
@@ -832,17 +832,17 @@ Offscreen_buffer * kjb::create_default_offscreen_buffer
  * @param use_pbuffers_when_available if set to true, pixelmaps will be
  *        preferred to pbuffers
  */
-Offscreen_buffer * kjb::create_and_initialize_offscreen_buffer
+Offscreen_buffer * ivi::create_and_initialize_offscreen_buffer
 (
     unsigned int width,
     unsigned int height,
     bool use_pbuffers_when_available
 )
 {
-    using namespace kjb;
-    Offscreen_buffer * offbuff = kjb::create_default_offscreen_buffer(width, height, use_pbuffers_when_available);
+    using namespace ivi;
+    Offscreen_buffer * offbuff = ivi::create_default_offscreen_buffer(width, height, use_pbuffers_when_available);
     offbuff->activate();
-    kjb::opengl::default_init_opengl(width, height);
+    ivi::opengl::default_init_opengl(width, height);
     return offbuff;
 
 }

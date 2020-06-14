@@ -5,7 +5,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: blob_spot_detector.h 17797 2014-10-21 04:41:57Z predoehl $
+ * $Id: blob_spot_detector.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef BLOB_SPOT_DETECTOR_H_INCLUDED
@@ -16,7 +16,7 @@
 #include <i_cpp/i_image.h>
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -180,7 +180,7 @@ public:
     }
 };
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /* BLOB_SPOT_DETECTOR_H_INCLUDED */
 

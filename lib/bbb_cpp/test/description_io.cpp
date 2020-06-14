@@ -38,7 +38,7 @@
 #include <iostream>
 #include <streambuf>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 const bool VERBOSE = false;
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     bbb::Data data = bbb::sample(likelihood, desc);
 
     // write description
-    kjb_c::kjb_mkdir(out_dp1.c_str());
+    ivi_c::ivi_mkdir(out_dp1.c_str());
     TEST_SUCCESS(bbb::write(desc, out_dp1, lib, data.ibegin(), data.iend()));
 
     // read description
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
     TEST_SUCCESS(bbb::read(desc2, out_dp1, lib, data.ibegin(), data.iend()));
 
     // re-write
-    kjb_c::kjb_mkdir(out_dp2.c_str());
+    ivi_c::ivi_mkdir(out_dp2.c_str());
     TEST_SUCCESS(bbb::write(desc2, out_dp2, lib, data.ibegin(), data.iend()));
 
     // read as strings and compare

@@ -1,5 +1,5 @@
 
-/* $Id: mm_cluster_lib.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: mm_cluster_lib.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -49,15 +49,15 @@ extern "C" {
 
 typedef union Seed_union
 {
-    kjb_int32  i32;
-    kjb_uint16 u16[ 2 ];
+    ivi_int32  i32;
+    ivi_uint16 u16[ 2 ];
 }
 Seed_union;
 
 /* -------------------------------------------------------------------------- */
 
-static kjb_uint16 fs_horizontal_seed[ 3 ] = { 0, 0, 0 };
-static kjb_uint16 fs_vertical_seed[ 3 ]   = { 0, 0, 0 };
+static ivi_uint16 fs_horizontal_seed[ 3 ] = { 0, 0, 0 };
+static ivi_uint16 fs_vertical_seed[ 3 ]   = { 0, 0, 0 };
 
 static int get_hungarian_matches
 (
@@ -127,13 +127,13 @@ int set_multi_modal_cluster_lib_options(const char* option, const char* value)
             {
                 ERE(pso("hc-em-horizontal-seed = %ld:%ld\n",
                         first_value.i32, 
-                        (kjb_int32)((kjb_int16)fs_horizontal_seed[ 2 ])));
+                        (ivi_int32)((ivi_int16)fs_horizontal_seed[ 2 ])));
             }
             else
             {
                 ERE(pso("Current horizontal seed is %ld:%ld\n",
                         first_value.i32, 
-                        (kjb_int32)((kjb_int16)fs_horizontal_seed[ 2 ])));
+                        (ivi_int32)((ivi_int16)fs_horizontal_seed[ 2 ])));
             }
         }
         else
@@ -221,13 +221,13 @@ int set_multi_modal_cluster_lib_options(const char* option, const char* value)
             {
                 ERE(pso("hc-em-vertical-seed = %ld:%ld\n",
                         first_value.i32, 
-                        (kjb_int32)((kjb_int16)fs_vertical_seed[ 2 ])));
+                        (ivi_int32)((ivi_int16)fs_vertical_seed[ 2 ])));
             }
             else
             {
                 ERE(pso("Current vertical seed is %ld:%ld\n",
                         first_value.i32, 
-                        (kjb_int32)((kjb_int16)fs_vertical_seed[ 2 ])));
+                        (ivi_int32)((ivi_int16)fs_vertical_seed[ 2 ])));
             }
         }
         else
@@ -301,7 +301,7 @@ int get_initial_vertical_indicators
 )
 {
     int        result;
-    kjb_uint16 save_seed[ 3 ];
+    ivi_uint16 save_seed[ 3 ];
     int        level;
     int        cluster;
     Matrix*    V_l_c_mp;
@@ -312,7 +312,7 @@ int get_initial_vertical_indicators
 
     ERE(get_rand_seed(save_seed));
 
-    kjb_seed_rand_with_3_short(fs_vertical_seed);
+    ivi_seed_rand_with_3_short(fs_vertical_seed);
 
     result = get_random_matrix(V_l_c_mpp, num_levels, num_clusters);
     V_l_c_mp = *V_l_c_mpp;
@@ -348,7 +348,7 @@ int get_initial_vertical_indicators
 
     ERE(get_rand_seed(fs_vertical_seed));
 
-    kjb_seed_rand_with_3_short(save_seed);
+    ivi_seed_rand_with_3_short(save_seed);
 
     return result;
 }
@@ -363,18 +363,18 @@ int get_initial_horizontal_indicators
 )
 {
     int result;
-    kjb_uint16 save_seed[ 3 ];
+    ivi_uint16 save_seed[ 3 ];
 
     ERE(get_rand_seed(save_seed));
 
-    kjb_seed_rand_with_3_short(fs_horizontal_seed);
+    ivi_seed_rand_with_3_short(fs_horizontal_seed);
 
     result = get_cluster_random_matrix_1(P_c_p_mpp,
                                          num_points, num_clusters);
 
     ERE(get_rand_seed(fs_horizontal_seed));
 
-    kjb_seed_rand_with_3_short(save_seed);
+    ivi_seed_rand_with_3_short(save_seed);
 
     return result;
 }
@@ -700,8 +700,8 @@ void free_topology_vector(Topology_vector* topology_vp)
             free_topology(topology_vp->topologies[ i ]);
         }
 
-        kjb_free(topology_vp->topologies);
-        kjb_free(topology_vp);
+        ivi_free(topology_vp->topologies);
+        ivi_free(topology_vp);
 
     }
 }
@@ -873,7 +873,7 @@ void free_topology(Topology* topology_ptr)
         free_int_vector(topology_ptr->fan_out_vp);
         free_int_vector(topology_ptr->level_counts_vp);
         free_int_matrix(topology_ptr->node_mp);
-        kjb_free(topology_ptr);
+        ivi_free(topology_ptr);
     }
 }
 
@@ -1847,7 +1847,7 @@ void free_cluster_data(Cluster_data* data_ptr)
         free_int_vector(data_ptr->label_vp);
         free_matrix_vector(data_ptr->blob_word_posterior_mvp);
         free_matrix_vector(data_ptr->blob_word_prior_mvp);
-        kjb_free(data_ptr);
+        ivi_free(data_ptr);
     }
 }
 
@@ -2185,7 +2185,7 @@ void free_multi_modal_model(Multi_modal_model* model_ptr)
     free_v3(model_ptr->his_var_vvvp);
     free_cluster_data(model_ptr->data_ptr);
 
-    kjb_free(model_ptr);
+    ivi_free(model_ptr);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -2494,7 +2494,7 @@ static int sample_log_vector
     int     len    = log_sample_vp->length;
     double  sum    = 0.0;
     int     elem   = NOT_SET;
-    double  prob   = kjb_rand();
+    double  prob   = ivi_rand();
     int i;
     double max_log_prob = DBL_MOST_NEGATIVE;
 

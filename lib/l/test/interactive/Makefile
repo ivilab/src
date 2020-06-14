@@ -28,17 +28,32 @@
 .PHONY : doc_dir_made
 .PHONY : lint
 .PHONY : proto
-.PHONY : regress_clean
 .PHONY : bin
 .PHONY : work
 .PHONY : misc
+.PHONY : test
+.PHONY : test_clean
+.PHONY : test_very_clean
+.PHONY : check_clean
+.PHONY : regress
+.PHONY : regress_clean
+.PHONY : test_svn
+.PHONY : shared
+.PHONY : dynamic
+.PHONY : static
 
 # Some targets, such as confess are implemented in build-2. 
 #
-# Each target in the following list needs to be declared .PHONY above. So, if
+# Each target in the following lists needs to be declared .PHONY above. So, if
 # you add one, you need to add a .PHONY line above. 
 #
-all dir_made init_clean confess depend_very_clean depend_clean obj_clean clean code depend depend_again doc doc_dir_made lint proto regress_clean bin work misc: 
+all dir_made init_clean confess depend_very_clean depend_clean obj_clean clean code depend depend_again doc doc_dir_made lint proto bin work misc :
+	$(ECHO_MAKE_CMD)./build $@
+
+test test_clean test_very_clean check_clean regress regress_clean test_svn :
+	$(ECHO_MAKE_CMD)./build $@
+
+static dynamic shared :
 	$(ECHO_MAKE_CMD)./build $@
 
 # We cannot have the real dependency for Makefile because we do not know where
@@ -49,7 +64,7 @@ all dir_made init_clean confess depend_very_clean depend_clean obj_clean clean c
 # Makefile" will report Makefile is up to date, even if it is not. 
 #
 Makefile : 
-	@$(KJB_ECHO) "Dummy rule for Makefile." 
+	@$(IVI_ECHO) "Dummy rule for Makefile." 
 
 
 build : FORCE
@@ -84,11 +99,11 @@ build : FORCE
 
 
 .INIT : 
-	@$(KJB_ECHO) "Starting in Makefile." 
+	@$(IVI_ECHO) "Starting in Makefile." 
 
 
 .DONE :
-	@$(KJB_ECHO) "Done in Makefile." 
+	@$(IVI_ECHO) "Done in Makefile." 
 
 
 #

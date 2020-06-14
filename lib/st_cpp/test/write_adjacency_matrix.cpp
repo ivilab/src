@@ -22,12 +22,12 @@
 #include <iostream>
 #include <fstream>
 
-using namespace kjb;
+using namespace ivi;
 
 Triangular_mesh * tm = NULL;
 char* fileName = NULL;
 char mesh[80];
-char* path = "/net/v04/data/delpero/parts_project/dataset/kjb/";
+char* path = "/net/v04/data/delpero/parts_project/dataset/ivi/";
 char fullPath[100];
 
 int main(int argc, char* argv[])
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     try{
         fileName = argv[1];
     }
-    catch(KJB_error e)
+    catch(IVI_error e)
     {
         e.print(std::cout);
     }
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
             try{
                 tm = new Triangular_mesh(fullPath);
             }
-            catch(KJB_error e)
+            catch(IVI_error e)
             {
                 e.print(std::cout);
             }

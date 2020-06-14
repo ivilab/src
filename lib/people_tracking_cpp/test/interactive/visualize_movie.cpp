@@ -34,8 +34,8 @@
 #include <boost/format.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 string movie_data_dp;
 string movie_exp_dp;
@@ -76,9 +76,9 @@ void process_options(int argc, char** argv);
 int main(int argc, char** argv)
 {
 //#ifdef TEST
-//    kjb_c::kjb_init();
-//    kjb_c::kjb_l_set("heap-checking", "off");
-//    kjb_c::kjb_l_set("initialization-checking", "off");
+//    ivi_c::ivi_init();
+//    ivi_c::ivi_l_set("heap-checking", "off");
+//    ivi_c::ivi_l_set("initialization-checking", "off");
 //#endif
     try
     {
@@ -162,9 +162,9 @@ int main(int argc, char** argv)
         render_bottoms = false;
         viewer.clear_alternative_camera();
         std::cout << "frame_fps: " << frame_fps.size() << std::endl;
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         viewer.set_frame_images(frame_fps.begin(), frame_fps.end());
-        long time = kjb_c::get_real_time();
+        long time = ivi_c::get_real_time();
         std::cout << "Loading images takes: " << time / 1000.0 << "s.\n";
         viewer.draw_images(true);
         viewer.draw_ground(render_ground);
@@ -187,7 +187,7 @@ int main(int argc, char** argv)
 
         // save the images
         vector<string> out_fps(num_frames);
-        kjb_c::kjb_mkdir(out_dp.c_str());
+        ivi_c::ivi_mkdir(out_dp.c_str());
         boost::format out_fmt(out_dp + "/%05d.jpg");
         for(size_t i = 0; i < num_frames; i++)
         {
@@ -323,7 +323,7 @@ void process_options(int argc, char** argv)
     }
     catch(const bpo::error& err)
     {
-        KJB_THROW_2(Exception, err.what());
+        IVI_THROW_2(Exception, err.what());
     }    
     catch(const exception& ex)
     {

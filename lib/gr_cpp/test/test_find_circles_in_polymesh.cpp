@@ -29,7 +29,7 @@
 #include <vector>
 #include <time.h>
 
-using namespace kjb;
+using namespace ivi;
 
 Triangular_mesh * tm = NULL;
 
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     try{
         tm = new Triangular_mesh(argv[1]);
         fileName = argv[1];
-    } catch(KJB_error e)
+    } catch(IVI_error e)
     {
         e.print(std::cout);
     }
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     std::ofstream ofs("tmp_airVent_circleParams");
     if(!ofs.is_open())
     {
-        KJB_THROW_2(IO_error, "Could not open file for writing circles");
+        IVI_THROW_2(IO_error, "Could not open file for writing circles");
     }
 
     ofs << "Number of circles: " << circles.size() << "\n";

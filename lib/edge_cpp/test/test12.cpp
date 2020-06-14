@@ -31,7 +31,7 @@ using namespace std;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
 
     Image img("001.jpg");
@@ -44,9 +44,9 @@ int main()
     std::vector<Vanishing_point> vpts;
 
     double focal_length;
-    if(!kjb::relaxed_vanishing_point_estimation(vpts, focal_length, img, 0.95))
+    if(!ivi::relaxed_vanishing_point_estimation(vpts, focal_length, img, 0.95))
     {
-        //KJB_THROW_2(KJB_error,"Error, could not compute vanishing points");
+        //IVI_THROW_2(IVI_error,"Error, could not compute vanishing points");
         std::cerr<<"Error, could not compute vanishing points"<<std::endl;
     }
 
@@ -54,7 +54,7 @@ int main()
     std::cout << vpts[1].is_at_infinity() << std::endl;
     std::cout << vpts[2].is_at_infinity() << std::endl;
 
-    kjb::Edge_set * edges;
+    ivi::Edge_set * edges;
     Edge_segment_set * edge_segments;
     Canny_edge_detector edge_detector(1.2, 2.55, 2.04, 20, true);
     edges = edge_detector.detect_edges(img);

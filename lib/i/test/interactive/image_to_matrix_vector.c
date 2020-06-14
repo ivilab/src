@@ -1,5 +1,5 @@
 
-/* $Id: image_to_matrix_vector.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: image_to_matrix_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -24,11 +24,11 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image* ip = NULL;
-    KJB_image* out_ip = NULL;
+    IVI_image* ip = NULL;
+    IVI_image* out_ip = NULL;
     Matrix_vector* mvp = NULL;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -40,18 +40,18 @@ int main(int argc, char** argv)
     create_image_display();
 
     check_num_args(argc, 1, 1,  "image_draw_point [ file_name ]");
-    EPETE(kjb_read_image(&ip, argv[ 1 ]));
+    EPETE(ivi_read_image(&ip, argv[ 1 ]));
 
     EPETE(image_to_matrix_vector(ip, &mvp));
 
     EPETE(matrix_vector_to_image(mvp, &out_ip));
 
-    EPETE(kjb_display_image(out_ip, NULL));
+    EPETE(ivi_display_image(out_ip, NULL));
 
     prompt_to_continue();
 
-    kjb_free_image(ip);
-    kjb_free_image(out_ip);
+    ivi_free_image(ip);
+    ivi_free_image(out_ip);
     free_matrix_vector(mvp);
 
     return EXIT_SUCCESS; 

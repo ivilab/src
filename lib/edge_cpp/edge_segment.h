@@ -1,4 +1,4 @@
-/* $Id: edge_segment.h 18301 2014-11-26 19:17:13Z ksimek $ */
+/* $Id: edge_segment.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /**
  * @file
@@ -14,15 +14,15 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_EDGE_CPP_EDGE_SEGMENT_H
-#define KJB_EDGE_CPP_EDGE_SEGMENT_H
+#ifndef IVI_EDGE_CPP_EDGE_SEGMENT_H
+#define IVI_EDGE_CPP_EDGE_SEGMENT_H
 
 #include "edge/edge_base.h"
 #include "gr_cpp/gr_line_segment.h"
 #include "edge_cpp/edge.h"
 #include <iosfwd>
 
-namespace kjb {
+namespace ivi {
 
 /** @class Edge_segment Class to manipulate a line segment associated to an
  *  edge detected in an image. We fit a line segment to the edge points
@@ -43,7 +43,7 @@ public:
      *                                  number of edge points as the length.
      */
     Edge_segment(
-        const kjb::Edge & iedge,
+        const ivi::Edge & iedge,
         bool use_num_pts_as_length = true
     )
     :   Line_segment(),
@@ -53,8 +53,8 @@ public:
     }
 
     Edge_segment(
-        const kjb::Edge & iedge,
-        const kjb::Line_segment & ls
+        const ivi::Edge & iedge,
+        const ivi::Line_segment & ls
     )
     :   Line_segment(ls),
         edge_pts(iedge)
@@ -68,7 +68,7 @@ public:
      * @param in the input stream to read this edge_segment from
      */
     Edge_segment(
-        const kjb::Edge & iedge,
+        const ivi::Edge & iedge,
         std::istream& in
     );
 
@@ -111,13 +111,13 @@ public:
     }
 
     /** @brief returns the set of edge points this line segment was fit to */
-    inline const kjb::Edge & get_edge()
+    inline const ivi::Edge & get_edge()
     {
         return edge_pts;
     }
 
     /** @ brief returns the ith edge point forming this edge segment */
-    inline kjb::Edge_point get_edge_point(unsigned int i)
+    inline ivi::Edge_point get_edge_point(unsigned int i)
     {
         return edge_pts.get_edge_point(i);
     }
@@ -159,7 +159,7 @@ public:
      *
      * @param iedge_pts The pointer to the edge points
      */
-    void set_edge(const kjb::Edge & iedge_pts)
+    void set_edge(const ivi::Edge & iedge_pts)
     {
         edge_pts = iedge_pts;
     }
@@ -172,7 +172,7 @@ private:
      *                                  number of edge points as the length.
      */
      void fit_to_edge_points_with_least_squares(
-        const kjb::Edge & edge,
+        const ivi::Edge & edge,
         bool use_num_pts_as_length = true
     );
 
@@ -185,11 +185,11 @@ private:
     double strength;
 
     /** @brief A reference to the edge points this edge segment was fit to */
-    kjb::Edge edge_pts;
+    ivi::Edge edge_pts;
 };
 
 std::ostream& operator<<(std::ostream& out, const Edge_segment& es);
 
 
-} // namespace kjb
-#endif /* KJB_EDGE_CPP_EDGE_SEGMENT_H */
+} // namespace ivi
+#endif /* IVI_EDGE_CPP_EDGE_SEGMENT_H */

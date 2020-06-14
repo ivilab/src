@@ -1,4 +1,4 @@
-/* $Id: gr_renderable.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_renderable.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -29,27 +29,27 @@ using std::bad_alloc;
 using std::cout;
 using std::cerr;
 using std::endl;
-using kjb::Vector;
-using kjb::Illegal_argument;
-using kjb::Runtime_error;
-using kjb::Not_implemented;
-using kjb::Index_out_of_bounds;
-using kjb::Generic_renderable;
+using ivi::Vector;
+using ivi::Illegal_argument;
+using ivi::Runtime_error;
+using ivi::Not_implemented;
+using ivi::Index_out_of_bounds;
+using ivi::Generic_renderable;
 
 /**
  * The rendering framework used to render. The only one implemented
  * up to now is OpenGL
  */
-unsigned int kjb::Abstract_renderable::_rendering_framework = kjb::Abstract_renderable::RI_OPENGL;
+unsigned int ivi::Abstract_renderable::_rendering_framework = ivi::Abstract_renderable::RI_OPENGL;
 
 void Generic_renderable::wire_render() const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     solid_render();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -81,7 +81,7 @@ void Generic_renderable::wire_render() const
  */
 void Generic_renderable::_opengl_offset_edge(double offset_factor, double offset_units) const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // save state
     glPushAttrib(GL_ENABLE_BIT);
     glPushAttrib(GL_LINE_BIT);
@@ -96,7 +96,7 @@ void Generic_renderable::_opengl_offset_edge(double offset_factor, double offset
     // STEP 2: RENDER WHITE SOLID (OCCLUDES INTERNAL WIRE EDGES)
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(offset_factor, offset_units);
-    ::kjb::opengl::glColor(background_color);
+    ::ivi::opengl::glColor(background_color);
     solid_render();
 
     // STEP 1: RENDER WIREFRAME
@@ -109,7 +109,7 @@ void Generic_renderable::_opengl_offset_edge(double offset_factor, double offset
     // must be > 1 so outline is larger than solid
     // this may need to be adjustable
     glLineWidth(2.);
-    ::kjb::opengl::glColor(foreground_color);
+    ::ivi::opengl::glColor(foreground_color);
     wire_render();
     glDisable(GL_POLYGON_OFFSET_LINE);
 
@@ -120,7 +120,7 @@ void Generic_renderable::_opengl_offset_edge(double offset_factor, double offset
     glPopAttrib();
     glPopAttrib();
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -140,10 +140,10 @@ void Generic_renderable::_opengl_offset_edge(double offset_factor, double offset
  */
 void Generic_renderable::_opengl_stencil_edge(bool hollow) const
 {
-#ifdef KJB_HAVE_OPENGL
-    if(!::kjb::opengl::has_stencil_buffer())
+#ifdef IVI_HAVE_OPENGL
+    if(!::ivi::opengl::has_stencil_buffer())
     {
-        KJB_THROW_2(Runtime_error,
+        IVI_THROW_2(Runtime_error,
                     "Cannot render silhouette edges -- no stencil buffer exists.");
     }
     // Render silhouette edges using a neat opengl hack:
@@ -250,7 +250,7 @@ void Generic_renderable::_opengl_stencil_edge(bool hollow) const
 //    glPopAttrib();
 //    glPopAttrib();
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 

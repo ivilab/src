@@ -17,8 +17,8 @@
  |  Author:  Emily Hartley
  * ===========================================================================*/
 
-#ifndef KJB_CIRCLE_H
-#define KJB_CIRCLE_H
+#ifndef IVI_CIRCLE_H
+#define IVI_CIRCLE_H
 
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_matrix.h>
@@ -28,17 +28,17 @@
 #include <l_cpp/l_readable.h>
 #include <l_cpp/l_writeable.h>
 
-namespace kjb {
+namespace ivi {
 
 class Circle{
 public:
     double GetRadius();
-    const kjb::Vector & GetCenter();
-    Circle(kjb::Vector * p1, kjb::Vector* p2, kjb::Vector* p3);
+    const ivi::Vector & GetCenter();
+    Circle(ivi::Vector * p1, ivi::Vector* p2, ivi::Vector* p3);
     //Contructor for radius & center
     Circle(Matrix* points);
-    Circle(const std::vector<kjb::Vector> & ipoints);
-    Circle(kjb::Vector* center, double radius);
+    Circle(const std::vector<ivi::Vector> & ipoints);
+    Circle(ivi::Vector* center, double radius);
     Circle();
     double CalcCircle(Vector* pt1, Vector* pt2, Vector* pt3);
     bool IsPerpendicular(Vector* pt1, Vector* pt2, Vector* pt3);
@@ -46,7 +46,7 @@ public:
 
 private:    
     Circle computeCircleGivenPoints(Matrix* mp);
-    Circle computeCircleGivenPoints(const std::vector<kjb::Vector> & ipoints);
+    Circle computeCircleGivenPoints(const std::vector<ivi::Vector> & ipoints);
     double radius;
     Vector center;
 };
@@ -69,19 +69,19 @@ public:
     {
         if(circle_center.size() != 3)
         {
-            KJB_THROW_2(Illegal_argument,
+            IVI_THROW_2(Illegal_argument,
                         "The center point must be a 3d coordinate.");
         }
 
         if(circle_radius <= 0)
         {
-            KJB_THROW_2(Illegal_argument,
+            IVI_THROW_2(Illegal_argument,
                         "The radius must be a positive value.");
         }
 
         if(circle_normal.size() != 3)
         {
-            KJB_THROW_2(Illegal_argument,
+            IVI_THROW_2(Illegal_argument,
                         "The normal vector must have size 3.");
         }
     }
@@ -124,5 +124,5 @@ protected:
     Vector circle_normal;
 };
 
-} // namespace kjb
+} // namespace ivi
 #endif

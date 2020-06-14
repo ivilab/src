@@ -1,5 +1,5 @@
 
-/* $Id: h_hull.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: h_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -257,12 +257,12 @@ void free_hull(Hull* hp)
     free_vector(hp->facet_angles_vp);
     free_matrix_vector(hp->facets);
 
-    kjb_free(hp->geom_view_geometry);
+    ivi_free(hp->geom_view_geometry);
 
     free_2D_byte_array(hp->filled_2D_array);
     free_3D_byte_array(hp->filled_3D_array);
 
-    kjb_free(hp);
+    ivi_free(hp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -330,8 +330,8 @@ int copy_hull(Hull** target_hp_ptr, const Hull* hp)
     else
     {
         UNTESTED_CODE();
-        kjb_free(target_hp->geom_view_geometry);
-        NRE(target_hp->geom_view_geometry=kjb_strdup(hp->geom_view_geometry));
+        ivi_free(target_hp->geom_view_geometry);
+        NRE(target_hp->geom_view_geometry=ivi_strdup(hp->geom_view_geometry));
     }
 
     if (hp->filled_2D_array != NULL)
@@ -399,7 +399,7 @@ int copy_hull(Hull** target_hp_ptr, const Hull* hp)
  * Finds the convex hull.
  *
  * This routine is similar to find_convex_hull(), except that it implements the
- * KJB library semantics with respect to storage allocation.
+ * IVI library semantics with respect to storage allocation.
  *
  * Returns:
  *    NO_ERROR on success and ERROR on failure, with an appropriate error
@@ -735,7 +735,7 @@ Hull* find_convex_hull(const Matrix* input_point_mp, unsigned long options)
                 {
                     insert_error("Test of computed convex hull failed.");
                     add_error("Re-finding hull from vertex points.");
-                    kjb_print_error();
+                    ivi_print_error();
 
                     if (copy_matrix(&temp_point_mp, hp->vertex_mp) == ERROR)
                     {
@@ -766,7 +766,7 @@ Hull* find_convex_hull(const Matrix* input_point_mp, unsigned long options)
         {
             set_error("No Good hull found even with %d tries.", try_count);
             add_error("Contuining processing optimistically.");
-            kjb_print_error();
+            ivi_print_error();
         }
     }
 
@@ -962,7 +962,7 @@ static Hull* find_convex_hull_2(const Matrix* input_point_mp, unsigned long opti
                 {
                     insert_error("Test of computed convex hull failed.");
                     add_error("Re-finding hull from vertex points.");
-                    kjb_print_error();
+                    ivi_print_error();
 
                     if (copy_matrix(&temp_point_mp, hp->vertex_mp) == ERROR)
                     {
@@ -993,7 +993,7 @@ static Hull* find_convex_hull_2(const Matrix* input_point_mp, unsigned long opti
         {
             set_error("No Good hull found even with %d tries.", try_count);
             add_error("Contuining processing optimistically.");
-            kjb_print_error();
+            ivi_print_error();
         }
     }
 #endif
@@ -1068,7 +1068,7 @@ static Hull* compute_ordered_2D_hull(Hull* hp)
        )
     {
         free_hull(ordered_hp);
-        kjb_free(marked_facets);
+        ivi_free(marked_facets);
         return NULL;
     }
 
@@ -1185,7 +1185,7 @@ static Hull* compute_ordered_2D_hull(Hull* hp)
         }
     }
 
-    kjb_free(marked_facets);
+    ivi_free(marked_facets);
 
     for (i=0; i<num_facets; i++)
     {
@@ -1305,7 +1305,7 @@ static Hull* find_convex_hull_3
 
             for (j=0; j<input_point_mp->num_cols; j++)
             {
-                double factor = 1.0 + fraction * kjb_rand_2();
+                double factor = 1.0 + fraction * ivi_rand_2();
 
                 extended_point_mp->elements[ i ][ j ] =
                                    factor * input_point_mp->elements[ ii ][ j ];
@@ -1346,10 +1346,10 @@ static Hull* find_convex_hull_3
             return NULL;
         }
 
-        ERN(kjb_sprintf(geom_view_file_name, sizeof(geom_view_file_name),
+        ERN(ivi_sprintf(geom_view_file_name, sizeof(geom_view_file_name),
                         "/tmp/%s-%d", user_id, (int)MY_PID));
 
-        geom_view_fp = kjb_fopen(geom_view_file_name, "w+");
+        geom_view_fp = ivi_fopen(geom_view_file_name, "w+");
 
         if (geom_view_fp == NULL)
         {
@@ -1374,13 +1374,13 @@ static Hull* find_convex_hull_3
 
             push_error_action(FORCE_ADD_ERROR_ON_ERROR); 
 
-            fp = kjb_fopen(file_name, "w");
+            fp = ivi_fopen(file_name, "w");
 
             if (fp != NULL)
             {
                 fp_write_matrix_full_precision_with_title(point_mp, fp,
                                             "\n# Data which crashed qhull\n");
-                kjb_fclose(fp);
+                ivi_fclose(fp);
             }
 
             pop_error_action(); 
@@ -1399,7 +1399,7 @@ static Hull* find_convex_hull_3
         {
             char error_buff[ 1000 ];
 
-            kjb_get_error(error_buff, sizeof(error_buff)); 
+            ivi_get_error(error_buff, sizeof(error_buff)); 
 
             verbose_pso(2, "Attempt %d of finding the convext hull failed.\n",
                         attempt);
@@ -1452,7 +1452,7 @@ static Hull* find_convex_hull_3
 
     if (options & HULL_GEOM_VIEW_GEOMETRY)
     {
-        if (kjb_fflush(geom_view_fp) == ERROR)
+        if (ivi_fflush(geom_view_fp) == ERROR)
         {
             free_hull(hp);
             return NULL;
@@ -1473,7 +1473,7 @@ static Hull* find_convex_hull_3
             return NULL;
         }
 
-        read_res = kjb_fread(geom_view_fp, geom_view_geometry,
+        read_res = ivi_fread(geom_view_fp, geom_view_geometry,
                              (size_t)num_bytes);
 
         if ((read_res < 0) || ((off_t)read_res != num_bytes))
@@ -1485,8 +1485,8 @@ static Hull* find_convex_hull_3
 
         geom_view_geometry[ num_bytes ] = '\0';
         hp->geom_view_geometry = geom_view_geometry;
-        EPE(kjb_fclose(geom_view_fp));
-        EPE(kjb_unlink(geom_view_file_name));
+        EPE(ivi_fclose(geom_view_fp));
+        EPE(ivi_unlink(geom_view_file_name));
     }
 
     ERN(get_min_matrix_col_elements(&min_vp, hp->vertex_mp));
@@ -1949,8 +1949,8 @@ static int fill_3D_hull(Hull* hp, int resolution)
             */
             if (IS_NOT_GREATER_DBL(hull_min_z, hull_max_z))
             {
-                int beg_k = kjb_rint((hull_min_z - min_z) / z_step);
-                int end_k = kjb_rint((hull_max_z - min_z) / z_step);
+                int beg_k = ivi_rint((hull_min_z - min_z) / z_step);
+                int end_k = ivi_rint((hull_max_z - min_z) / z_step);
 
                 if (beg_k < 0) beg_k = 0;
                 if (end_k < 0) end_k = 0;
@@ -2106,7 +2106,7 @@ int is_point_inside_hull(const Hull* hp, const Vector* test_vp)
         if ((z < hp->min_z) || (z > hp->max_z)) return FALSE;
     }
 
-    if (KJB_IS_SET(hp->filled_resolution))
+    if (IVI_IS_SET(hp->filled_resolution))
     {
         i = (int)((x - hp->min_x) * hp->filled_scale_x);
         j = (int)((y - hp->min_y) * hp->filled_scale_y);

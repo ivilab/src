@@ -4,7 +4,7 @@
  * @brief unit test program for red-black tree iterators
  */
 /*
- * $Id: rbtree_iterators.cpp 20160 2015-12-08 23:36:20Z predoehl $
+ * $Id: rbtree_iterators.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -25,7 +25,7 @@ namespace
 {
 
 /// @brief dictionary type used for this test
-typedef kjb::qd::Redblack_subtree_sum< const char* > Tree;
+typedef ivi::qd::Redblack_subtree_sum< const char* > Tree;
 
 std::vector< Tree::Key_tp > keys;
 std::vector< const char* > strings;
@@ -106,7 +106,7 @@ int test1()
     std::sort(keys.begin(), keys.end());
     TEST_TRUE(std::equal(k.begin(), k.end(), keys.begin()));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -115,9 +115,9 @@ int test1()
 
 int main( int argc, const char* const* argv )
 {
-    KJB(EPETE(kjb_init()));
-    KJB(EPETE(test1()));
-    kjb_c::kjb_cleanup();
+    IVI(EPETE(ivi_init()));
+    IVI(EPETE(test1()));
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

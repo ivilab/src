@@ -1,5 +1,5 @@
 
-/* $Id: m_global.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: m_global.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -55,12 +55,12 @@ namespace kjb_c {
 
 #ifdef PROGRAMMER_IS_kobus
 #ifdef TEST
-GLOBAL_DEF int kjb_respect_missing_values   GLOBAL_INIT( = FALSE);
+GLOBAL_DEF int ivi_respect_missing_values   GLOBAL_INIT( = FALSE);
 #else
-GLOBAL_DEF int kjb_respect_missing_values   GLOBAL_INIT( = FALSE);
+GLOBAL_DEF int ivi_respect_missing_values   GLOBAL_INIT( = FALSE);
 #endif
 #else
-GLOBAL_DEF int kjb_respect_missing_values   GLOBAL_INIT( = FALSE);
+GLOBAL_DEF int ivi_respect_missing_values   GLOBAL_INIT( = FALSE);
 #endif
 
 

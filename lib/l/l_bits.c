@@ -80,14 +80,14 @@ extern "C" {
 
 
 /** Endian test looks at the first byte of ((int)1).
- *  We would make global variable kjb_endian_test a const int if we could, but
+ *  We would make global variable ivi_endian_test a const int if we could, but
  *  doing so confuses g++.  So, as a consolation, we use ASSERT.
  */
-int kjb_is_bigendian()
+int ivi_is_bigendian()
 {
-    IMPORT int kjb_endian_test;
-    ASSERT(1 == kjb_endian_test);
-    return 0 == (*(char*)&kjb_endian_test);
+    IMPORT int ivi_endian_test;
+    ASSERT(1 == ivi_endian_test);
+    return 0 == (*(char*)&ivi_endian_test);
 }
 
 /**
@@ -96,7 +96,7 @@ int kjb_is_bigendian()
  *
  * @param  x  Value to swap the bytes of.
  */
-void bswap_u16(kjb_uint16* x)
+void bswap_u16(ivi_uint16* x)
 {
     *x = (*x>>8) |
          (*x<<8);
@@ -109,7 +109,7 @@ void bswap_u16(kjb_uint16* x)
  *
  * @param  x  Value to swap the bytes of.
  */
-void bswap_u32(kjb_uint32* x)
+void bswap_u32(ivi_uint32* x)
 {
     *x = (*x>>24) |
          ((*x<<8) & 0x00FF0000) |
@@ -124,10 +124,10 @@ void bswap_u32(kjb_uint32* x)
  *
  * @param  x  Value to swap the bytes of.
  */
-void bswap_u64(kjb_uint64* x)
+void bswap_u64(ivi_uint64* x)
 {
-    kjb_uint64 a = 0xFFu;
-    ASSERT(8 == sizeof(kjb_uint64));
+    ivi_uint64 a = 0xFFu;
+    ASSERT(8 == sizeof(ivi_uint64));
 
     *x = (*x>>56) |
          ((*x<<40) & (a<<48)) |

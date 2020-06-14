@@ -1,5 +1,5 @@
 
-/* $Id: i_arithmetic.c 5831 2010-05-02 21:52:24Z ksimek $ */
+/* $Id: i_arithmetic.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -44,8 +44,8 @@ extern "C" {
 
 int power_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           power
 )
 {
@@ -103,7 +103,7 @@ int power_image
  * -----------------------------------------------------------------------------
 */
 
-int ow_power_image(KJB_image* in_ip, double power)
+int ow_power_image(IVI_image* in_ip, double power)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;
@@ -154,7 +154,7 @@ int ow_power_image(KJB_image* in_ip, double power)
  * -----------------------------------------------------------------------------
 */
 
-int ow_scale_image(KJB_image* in_ip, double factor)
+int ow_scale_image(IVI_image* in_ip, double factor)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;
@@ -201,12 +201,12 @@ int ow_scale_image(KJB_image* in_ip, double factor)
 
 int scale_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           factor
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in_pos;
     Pixel*     out_pos;
     int        i, j, num_rows, num_cols;
@@ -257,7 +257,7 @@ int scale_image
  * -----------------------------------------------------------------------------
 */
 
-int ow_scale_image_by_channel(KJB_image* in_ip, Vector* scale_vp)
+int ow_scale_image_by_channel(IVI_image* in_ip, Vector* scale_vp)
 {
     int    num_rows, num_cols, i, j;
     Pixel* in_pos;
@@ -312,12 +312,12 @@ int ow_scale_image_by_channel(KJB_image* in_ip, Vector* scale_vp)
 
 int scale_image_by_channel
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Vector*          scale_vp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j;
     Pixel*     in_pos;
     Pixel*     out_pos;
@@ -376,12 +376,12 @@ int scale_image_by_channel
 
 int subtract_images
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip
+    IVI_image**      out_ipp,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in1_pos;
     Pixel*     in2_pos;
     Pixel*     out_pos;
@@ -441,7 +441,7 @@ int subtract_images
  * -----------------------------------------------------------------------------
 */
 
-int ow_subtract_images(KJB_image* in1_ip, const KJB_image* in2_ip)
+int ow_subtract_images(IVI_image* in1_ip, const IVI_image* in2_ip)
 {
     Pixel* in1_pos;
     Pixel* in2_pos;
@@ -497,12 +497,12 @@ int ow_subtract_images(KJB_image* in1_ip, const KJB_image* in2_ip)
 
 int multiply_images
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip
+    IVI_image**      out_ipp,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in1_pos;
     Pixel*     in2_pos;
     Pixel*     out_pos;
@@ -564,7 +564,7 @@ int multiply_images
  * -----------------------------------------------------------------------------
 */
 
-int ow_multiply_images(KJB_image* in1_ip, const KJB_image* in2_ip)
+int ow_multiply_images(IVI_image* in1_ip, const IVI_image* in2_ip)
 {
     Pixel* in1_pos;
     Pixel* in2_pos;
@@ -622,12 +622,12 @@ int ow_multiply_images(KJB_image* in1_ip, const KJB_image* in2_ip)
 
 int divide_images
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip
+    IVI_image**      out_ipp,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in1_pos;
     Pixel*     in2_pos;
     Pixel*     out_pos;
@@ -689,7 +689,7 @@ int divide_images
  * -----------------------------------------------------------------------------
 */
 
-int ow_divide_images(KJB_image* in1_ip, const KJB_image* in2_ip)
+int ow_divide_images(IVI_image* in1_ip, const IVI_image* in2_ip)
 {
     Pixel* in1_pos;
     Pixel* in2_pos;
@@ -745,7 +745,7 @@ int ow_divide_images(KJB_image* in1_ip, const KJB_image* in2_ip)
  * -----------------------------------------------------------------------------
 */
 
-int ow_min_of_images(KJB_image* in1_ip, const KJB_image* in2_ip)
+int ow_min_of_images(IVI_image* in1_ip, const IVI_image* in2_ip)
 {
     Pixel* in1_pos;
     Pixel* in2_pos;
@@ -803,12 +803,12 @@ int ow_min_of_images(KJB_image* in1_ip, const KJB_image* in2_ip)
 
 int add_images
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip
+    IVI_image**      out_ipp,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in1_pos;
     Pixel*     in2_pos;
     Pixel*     out_pos;
@@ -868,7 +868,7 @@ int add_images
  * -----------------------------------------------------------------------------
 */
 
-int ow_add_images(KJB_image* in1_ip, const KJB_image* in2_ip)
+int ow_add_images(IVI_image* in1_ip, const IVI_image* in2_ip)
 {
     Pixel* in1_pos;
     Pixel* in2_pos;
@@ -922,7 +922,7 @@ int ow_add_images(KJB_image* in1_ip, const KJB_image* in2_ip)
  * -----------------------------------------------------------------------------
 */
 
-int ow_subtract_vector_from_image(KJB_image* ip, const Vector* vp)
+int ow_subtract_vector_from_image(IVI_image* ip, const Vector* vp)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;
@@ -971,7 +971,7 @@ int ow_subtract_vector_from_image(KJB_image* ip, const Vector* vp)
  * -----------------------------------------------------------------------------
 */
 
-int ow_add_vector_to_image(KJB_image* ip, const Vector* vp)
+int ow_add_vector_to_image(IVI_image* ip, const Vector* vp)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;
@@ -1020,7 +1020,7 @@ int ow_add_vector_to_image(KJB_image* ip, const Vector* vp)
  * -----------------------------------------------------------------------------
 */
 
-int ow_min_thresh_image(KJB_image* ip, double min)
+int ow_min_thresh_image(IVI_image* ip, double min)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;
@@ -1084,7 +1084,7 @@ int ow_min_thresh_image(KJB_image* ip, double min)
  * -----------------------------------------------------------------------------
 */
 
-int ow_max_thresh_image(KJB_image* ip, double max)
+int ow_max_thresh_image(IVI_image* ip, double max)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;
@@ -1146,9 +1146,9 @@ int ow_max_thresh_image(KJB_image* ip, double max)
  * -----------------------------------------------------------------------------
 */
 
-int log_one_plus_image(KJB_image** out_ipp, const KJB_image* in_ip)
+int log_one_plus_image(IVI_image** out_ipp, const IVI_image* in_ip)
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in_pos;
     Pixel*     out_pos;
     int        i, j, num_rows, num_cols;
@@ -1231,7 +1231,7 @@ int log_one_plus_image(KJB_image** out_ipp, const KJB_image* in_ip)
  * -----------------------------------------------------------------------------
 */
 
-int ow_log_one_plus_image(KJB_image* in_ip)
+int ow_log_one_plus_image(IVI_image* in_ip)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;
@@ -1301,7 +1301,7 @@ int ow_log_one_plus_image(KJB_image* in_ip)
 
 int ow_log_brightness_image
 (
-    KJB_image* in_ip,
+    IVI_image* in_ip,
     double     (*brightness_fn) (double, double, double),
     double     power
 )
@@ -1361,7 +1361,7 @@ int ow_log_brightness_image
  * -----------------------------------------------------------------------------
 */
 
-int ow_exponantiate_image(KJB_image* in_ip)
+int ow_exponantiate_image(IVI_image* in_ip)
 {
     Pixel* in_pos;
     int    i, j, num_rows, num_cols;

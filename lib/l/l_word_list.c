@@ -1,5 +1,5 @@
 
-/* $Id: l_word_list.c 21282 2017-03-05 07:58:08Z kobus $ */
+/* $Id: l_word_list.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -38,7 +38,7 @@ extern "C" {
  * Allocates a Word_list of the specified size
  *
  * The routine allocates a Word_list of the specified size, with the word
- * (string) pointers initialized to NULL. The standard KJB library allocation
+ * (string) pointers initialized to NULL. The standard IVI library allocation
  * semantics are followed. However, we do not do any clever storage recycling.
  * If *target_word_list_ptr_ptr is not null, we just free it and start again. 
  *
@@ -144,7 +144,7 @@ int ra_get_target_word_list
 
         for (i = num_words; i < cur_num_words; ++i)
         {
-            kjb_free(target_words[ i ]);
+            ivi_free(target_words[ i ]);
         }
 
         NRE(target_words = N_TYPE_REALLOC(target_words, char*, num_words));
@@ -168,7 +168,7 @@ int ra_get_target_word_list
  *
  * Frees a word list
  *
- * The routine frees the storage attached to a word list. As in all KJB library
+ * The routine frees the storage attached to a word list. As in all IVI library
  * free routines, it is safe to pass a NULL pointer.
  *
  * Returns:
@@ -191,11 +191,11 @@ void free_word_list(Word_list* word_list_ptr)
 
     for (i = 0; i < num_words; i++)
     {
-        kjb_free(words[ i ]);
+        ivi_free(words[ i ]);
     }
 
-    kjb_free(words);
-    kjb_free(word_list_ptr);
+    ivi_free(words);
+    ivi_free(word_list_ptr);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -334,7 +334,7 @@ int select_from_word_list
             if (enable_vp->elements[ i ])
             {
 #if 0 /* was ifdef HOW_IT_WAS_07_11_10 */
-                NRE(target_words[ num_target_words ] = kjb_strdup(source_words[ i ]));
+                NRE(target_words[ num_target_words ] = ivi_strdup(source_words[ i ]));
 #else
                 UNTESTED_CODE();
                 ERE(copy_word(&(target_words[ num_target_words ]), source_words[ i ]));
@@ -432,7 +432,7 @@ int copy_word(char** target_word_ptr_ptr, const char* source_word_ptr)
 
     if (*target_word_ptr_ptr == NULL)
     {
-        NRE(*target_word_ptr_ptr = kjb_strdup(source_word_ptr));
+        NRE(*target_word_ptr_ptr = ivi_strdup(source_word_ptr));
     }
     else if (strlen(*target_word_ptr_ptr) >= strlen(source_word_ptr))
     {
@@ -440,8 +440,8 @@ int copy_word(char** target_word_ptr_ptr, const char* source_word_ptr)
     }
     else
     {
-        kjb_free(*target_word_ptr_ptr);
-        NRE(*target_word_ptr_ptr = kjb_strdup(source_word_ptr));
+        ivi_free(*target_word_ptr_ptr);
+        NRE(*target_word_ptr_ptr = ivi_strdup(source_word_ptr));
     }
 
     return NO_ERROR;
@@ -472,7 +472,7 @@ int sort_word_list(Word_list**      target_word_list_ptr_ptr,
 
     ERE(copy_word_list(target_word_list_ptr_ptr, word_list_ptr));
 
-    ERE(kjb_sort((*target_word_list_ptr_ptr)->words,
+    ERE(ivi_sort((*target_word_list_ptr_ptr)->words,
                  (*target_word_list_ptr_ptr)->num_words,
                  sizeof(char*),
                  ptr_strcmp,
@@ -675,14 +675,14 @@ int read_word_list(Word_list** word_list_ptr_ptr, const char* file_name)
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_word_list(word_list_ptr_ptr, fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
     }
 
     return result;
@@ -746,7 +746,7 @@ int fp_read_word_list(Word_list** word_list_ptr_ptr, FILE* fp)
         }
 
 #if 0 /* was ifdef HOW_IT_WAS_07_11_10 */
-        if ((words[ count ] = kjb_strdup(buff)) == NULL)
+        if ((words[ count ] = ivi_strdup(buff)) == NULL)
         {
             result = ERROR;
             break;
@@ -833,7 +833,7 @@ int sget_word_list(Word_list** word_list_ptr_ptr,
     while (BUFF_CONST_GEN_MQ_GET_TOKEN(&line_pos, buff, delimiters))
     {
 #if 0 /* was ifdef HOW_IT_WAS_07_11_10 */
-        if ((words[ count ] = kjb_strdup(buff)) == NULL)
+        if ((words[ count ] = ivi_strdup(buff)) == NULL)
         {
             result = ERROR;
             break;
@@ -890,7 +890,7 @@ int write_word_list(const Word_list* word_list_ptr, const char* file_name)
             return NO_ERROR;
         }
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
     else
     {
@@ -905,7 +905,7 @@ int write_word_list(const Word_list* word_list_ptr, const char* file_name)
         {
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         set_error_action(save_error_action);
 

@@ -1,5 +1,5 @@
 
-/* $Id: user.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: user.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -123,7 +123,7 @@ int call_qhull (void) {
   qh_freeqhull(!qh_ALL);
   qh_memfreeshort (&curlong, &totlong);
   if (curlong || totlong)  	/* optional */
-    kjb_fprintf(stderr, "qhull internal warning (main): did not free %d bytes of long memory (%d pieces)\n",
+    ivi_fprintf(stderr, "qhull internal warning (main): did not free %d bytes of long memory (%d pieces)\n",
        totlong, curlong);
   return exitcode;
 } /* call_qhull */
@@ -138,30 +138,30 @@ int call_qhull (void) {
 void qh_errexit(int exitcode, facetT *facet, ridgeT *ridge) {
 
   if (qh ERREXITcalled) {
-    kjb_fprintf(qh ferr, "\nqhull error while processing previous error.  Exit program\n");
+    ivi_fprintf(qh ferr, "\nqhull error while processing previous error.  Exit program\n");
     exit(1);
   }
   qh ERREXITcalled= True;
   if (!qh QHULLfinished)
     qh hulltime= (unsigned)clock() - qh hulltime;
   qh_errprint("ERRONEOUS", facet, NULL, ridge, NULL);
-  kjb_fprintf(qh ferr, "\nWhile executing: %s | %s\n", qh rbox_command, qh qhull_command);
-  kjb_fprintf(qh ferr, "Options selected for %s:\n%s\n", qh_version, qh qhull_options);
+  ivi_fprintf(qh ferr, "\nWhile executing: %s | %s\n", qh rbox_command, qh qhull_command);
+  ivi_fprintf(qh ferr, "Options selected for %s:\n%s\n", qh_version, qh qhull_options);
   if (qh furthest_id >= 0) {
-    kjb_fprintf(qh ferr, "Last point added to hull was p%d.", qh furthest_id);
+    ivi_fprintf(qh ferr, "Last point added to hull was p%d.", qh furthest_id);
     if (zzval_(Ztotmerge))
-      kjb_fprintf(qh ferr, "  Last merge was #%d.", zzval_(Ztotmerge));
+      ivi_fprintf(qh ferr, "  Last merge was #%d.", zzval_(Ztotmerge));
     if (qh QHULLfinished)
-      kjb_fprintf(qh ferr, "\nQhull has finished constructing the hull.");
+      ivi_fprintf(qh ferr, "\nQhull has finished constructing the hull.");
     else if (qh POSTmerging)
-      kjb_fprintf(qh ferr, "\nQhull has started post-merging.");
-    kjb_fprintf(qh ferr, "\n");
+      ivi_fprintf(qh ferr, "\nQhull has started post-merging.");
+    ivi_fprintf(qh ferr, "\n");
   }
   if (qh FORCEoutput && (qh QHULLfinished || (!facet && !ridge)))
     qh_produce_output();
   else {
     if (exitcode != qh_ERRsingular && zzval_(Zsetplane) > qh hull_dim+1) {
-      kjb_fprintf(qh ferr, "\nAt error exit:\n");
+      ivi_fprintf(qh ferr, "\nAt error exit:\n");
       qh_printsummary (qh ferr);
       if (qh PRINTstatistics) {
 	qh_collectstatistics();
@@ -179,7 +179,7 @@ void qh_errexit(int exitcode, facetT *facet, ridgeT *ridge) {
   else if (exitcode == qh_ERRprec && !qh PREmerge)
     qh_printhelp_degenerate (qh ferr);
   if (qh NOerrexit) {
-    kjb_fprintf(qh ferr, "qhull error while ending program.  Exit program\n");
+    ivi_fprintf(qh ferr, "qhull error while ending program.  Exit program\n");
     exit(1);
   }
   qh NOerrexit= True;
@@ -195,15 +195,15 @@ void qh_errprint(char *string, facetT *atfacet, facetT *otherfacet, ridgeT *atri
   int i;
 
   if (atfacet) {
-    kjb_fprintf(qh ferr, "%s FACET:\n", string);
+    ivi_fprintf(qh ferr, "%s FACET:\n", string);
     qh_printfacet(qh ferr, atfacet);
   }
   if (otherfacet) {
-    kjb_fprintf(qh ferr, "%s OTHER FACET:\n", string);
+    ivi_fprintf(qh ferr, "%s OTHER FACET:\n", string);
     qh_printfacet(qh ferr, otherfacet);
   }
   if (atridge) {
-    kjb_fprintf(qh ferr, "%s RIDGE:\n", string);
+    ivi_fprintf(qh ferr, "%s RIDGE:\n", string);
     qh_printridge(qh ferr, atridge);
     if (atridge->top && atridge->top != atfacet && atridge->top != otherfacet)
       qh_printfacet(qh ferr, atridge->top);
@@ -216,11 +216,11 @@ void qh_errprint(char *string, facetT *atfacet, facetT *otherfacet, ridgeT *atri
       otherfacet= otherfacet_(atridge, atfacet);
   }
   if (atvertex) {
-    kjb_fprintf(qh ferr, "%s VERTEX:\n", string);
+    ivi_fprintf(qh ferr, "%s VERTEX:\n", string);
     qh_printvertex (qh ferr, atvertex);
   }
   if (qh FORCEoutput && atfacet && !qh QHULLfinished && !qh IStracing) {
-    kjb_fprintf(qh ferr, "ERRONEOUS and NEIGHBORING FACETS to output\n");
+    ivi_fprintf(qh ferr, "ERRONEOUS and NEIGHBORING FACETS to output\n");
     for (i= 0; i< qh_PRINTEND; i++)
       qh_printneighborhood (qh fout, qh PRINTout[i], atfacet, otherfacet,
 			    !qh_ALL);

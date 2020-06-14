@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: svg_dcel.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: svg_dcel.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
@@ -18,7 +18,7 @@
 
 namespace
 {
-using kjb::qd::SVG_UNCRAMP;
+using ivi::qd::SVG_UNCRAMP;
 
 // ===== Size of SVG output box, in pixels =======
 const size_t svg_width_px = 500, svg_height_px = svg_width_px;
@@ -40,14 +40,14 @@ const bool add_huge_text_dump = true;
 
 
 
-inline kjb::Vector2 dbl_pt(const kjb::qd::RatPoint& p)
+inline ivi::Vector2 dbl_pt(const ivi::qd::RatPoint& p)
 {
-    return kjb::Vector2(kjb::qd::dbl_ratio(p.x), kjb::qd::dbl_ratio(p.y));
+    return ivi::Vector2(ivi::qd::dbl_ratio(p.x), ivi::qd::dbl_ratio(p.y));
 }
 
 
 
-using kjb::qd::Doubly_connected_edge_list;
+using ivi::qd::Doubly_connected_edge_list;
 
 
 /**
@@ -72,7 +72,7 @@ using kjb::qd::Doubly_connected_edge_list;
  * vector.
  */
 std::vector<size_t> get_ocs_of_ic(
-    const kjb::qd::Doubly_connected_edge_list& dcel,
+    const ivi::qd::Doubly_connected_edge_list& dcel,
     size_t ei
 )
 {
@@ -183,12 +183,12 @@ std::string get_svg_path_of_cycle(
     int for_filling_this_face = -1
 )
 {
-    using kjb::qd::RatPoint;
+    using ivi::qd::RatPoint;
 
     std::ostringstream svg;
     const size_t vstart = dcel.get_edge_table().at(estart).origin;
     const std::string path = "<path d='", margin(path.size(), ' ');
-    const kjb::Vector2 p0(dbl_pt(dcel.get_vertex_table().at(vstart).location));
+    const ivi::Vector2 p0(dbl_pt(dcel.get_vertex_table().at(vstart).location));
     svg << path << "M " << SVG_UNCRAMP*p0.x() << ',' << SVG_UNCRAMP*p0.y();
 
     /*
@@ -197,19 +197,19 @@ std::string get_svg_path_of_cycle(
      * Or use the sentinel value -1 to indicate the path should just
      * trace the border as if for line drawing.
      */
-    KJB(ASSERT(
+    IVI(ASSERT(
            -1 == for_filling_this_face
         || dcel.get_face_table().at(for_filling_this_face).outer_component
                == estart));
     // Face 0 does not have a valid outer component, though.
-    KJB(ASSERT(for_filling_this_face != 0));
+    IVI(ASSERT(for_filling_this_face != 0));
 
     // cycle-scan idiom
     for (size_t ei = dcel.get_edge_table().at(estart).next; ei != estart;
                 ei = dcel.get_edge_table().at(ei).next)
     {
         const size_t vi = dcel.get_edge_table().at(ei).origin;
-        const kjb::Vector2 pi(dbl_pt(dcel.get_vertex_table().at(vi).location));
+        const ivi::Vector2 pi(dbl_pt(dcel.get_vertex_table().at(vi).location));
         svg << '\n' << margin
             << "L " << SVG_UNCRAMP*pi.x() <<',' << SVG_UNCRAMP*pi.y();
     }
@@ -225,7 +225,7 @@ std::string get_svg_path_of_cycle(
              ics.pop_back())
         {
             // Any inner component that covers no area is not really a hole.
-            if (kjb::qd::is_edge_of_stick_figure(dcel, ics.back())) continue;
+            if (ivi::qd::is_edge_of_stick_figure(dcel, ics.back())) continue;
             // Get hole perimeter, and trim off path-d prefix.
             std::string
                 h=get_svg_path_of_cycle(dcel,ics.back()).substr(margin.size());
@@ -247,7 +247,7 @@ std::string get_svg_text_labeling_vertex_nums(
     const size_t nv = dcel.get_vertex_table().size();
     for (size_t vi = 0; vi < nv; ++vi)
     {
-        const kjb::Vector2 pi(dbl_pt(dcel.get_vertex_table().at(vi).location));
+        const ivi::Vector2 pi(dbl_pt(dcel.get_vertex_table().at(vi).location));
         svg << "<text x='" << SVG_UNCRAMP*pi.x()
             << "' y='" << SVG_UNCRAMP*pi.y()
             << "'>" << vi << "</text>\n";
@@ -377,7 +377,7 @@ std::string draw_cycles(
 
 
 std::string svg_setup(
-    const kjb::qd::DoubleCircle& circle,
+    const ivi::qd::DoubleCircle& circle,
     const std::string& color
 )
 {
@@ -429,20 +429,20 @@ std::vector<size_t> get_toposort_of_faces(
         topo_sort(dcel, k, &facemark, &toposort);
     }
     std::reverse(toposort.begin(), toposort.end());
-    KJB(ASSERT(toposort.size() == NF));
+    IVI(ASSERT(toposort.size() == NF));
     return toposort;
 }
 
 
-kjb::qd::DoubleCircle circumscribe_dcel(const Doubly_connected_edge_list& dcel)
+ivi::qd::DoubleCircle circumscribe_dcel(const Doubly_connected_edge_list& dcel)
 {
     const size_t NV = dcel.get_vertex_table().size();
-    std::vector< kjb::Vector2 > pts(NV);
+    std::vector< ivi::Vector2 > pts(NV);
     for (size_t i = 0; i < NV; ++i)
     {
         pts.at(i) = dbl_pt(dcel.get_vertex_table().at(i).location);
     }
-    return kjb::qd::DoubleCircle(pts);
+    return ivi::qd::DoubleCircle(pts);
 }
 
 
@@ -450,7 +450,7 @@ kjb::qd::DoubleCircle circumscribe_dcel(const Doubly_connected_edge_list& dcel)
 }
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {

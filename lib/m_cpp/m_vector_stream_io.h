@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: m_vector_stream_io.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vector_stream_io.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /**
  * @file
@@ -18,7 +18,7 @@
  *
  * @brief Declares functions to read and write vector classes with streams.
  *
- * The format is compatible with kjb matrices raw
+ * The format is compatible with ivi matrices raw
  * format at c level (see l/l_int_mat_io.h).
  */
 
@@ -30,14 +30,14 @@
 #include <iosfwd>
 //#include <vector>
 
-namespace kjb {
+namespace ivi {
 
 class Vector;
 class Int_vector;
 
 /**
  * @brief functions to read and write vector classes with streams.
- * @ingroup kjbLinearAlgebra
+ * @ingroup iviLinearAlgebra
  */
 class Vector_stream_io
 {

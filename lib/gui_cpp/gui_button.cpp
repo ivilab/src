@@ -1,4 +1,4 @@
-/* $Id: gui_button.cpp 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: gui_button.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -19,13 +19,13 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <gui_cpp/gui_button.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
 
-namespace kjb {
+namespace ivi {
 namespace gui {
 
 Abstract_button::Abstract_button(int x, int y, int width, int height, const boost::function0<void>& callback) :
@@ -49,10 +49,10 @@ void Abstract_button::render() const
 
 void Abstract_button::redisplay()
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #else
-KJB_THROW_2(Missing_dependency, "glut");
+IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
@@ -80,7 +80,7 @@ bool Abstract_button::motion_event(int cursor_x, int cursor_y)
 
 bool Abstract_button::mouse_event(int button, int state, int cursor_x, int cursor_y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(button != GLUT_LEFT_BUTTON) 
         return false;
 
@@ -108,7 +108,7 @@ bool Abstract_button::mouse_event(int button, int state, int cursor_x, int curso
 
     return false;
 #else
-KJB_THROW_2(Missing_dependency, "glut");
+IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
@@ -163,7 +163,7 @@ void Simple_button::render_(bool down) const
 }
 
 
-} // namespace kjb
+} // namespace ivi
 } // namespace gui
 
-#endif // KJB_HAVE_OPENGL
+#endif // IVI_HAVE_OPENGL

@@ -48,8 +48,8 @@
 #include <boost/bind.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace boost;
 
 /** @brief  Helper function. */
@@ -138,9 +138,9 @@ int main(int argc, char** argv)
         long tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             btraj[t - 1]->value = project_cstate(cst, cam, ht, wt, gt);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Body projection: " << tot_time/1000.0 << endl;
 
@@ -148,11 +148,11 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             const Deva_facemark* fm_p = ftraj[t - 1]->value.facemark;
             ftraj[t - 1]->value = project_cstate_face(cst, cam, ht, wt, gt);
             ftraj[t - 1]->value.facemark = fm_p;
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Face projection: " << tot_time/1000.0 << endl;
 
@@ -161,9 +161,9 @@ int main(int argc, char** argv)
         Vector_vec hpts;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             Vector_vec pts = head_points(cst, ht, wt, gt);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
             hpts = pts;
         }
         cout << "  head_points(): " << tot_time/1000.0 << endl;
@@ -171,31 +171,31 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             transform(
                 hpts.begin(),
                 hpts.end(),
                 hpts.begin(),
                 bind(project_point, cref(cam), _1));
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "  project head pts: " << tot_time/1000.0 << endl;
 
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             Bbox head_box = compute_bounding_box(hpts.begin(), hpts.end());
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "  compute_bounding_box(): " << tot_time/1000.0 << endl;
 
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             Vector_vec ffts = face_features(cst, ht, wt, gt);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "  face_features(): " << tot_time/1000.0 << endl;
 
@@ -204,10 +204,10 @@ int main(int argc, char** argv)
         for(size_t i = 1; i <= num_reps; ++i)
         {
             const Complete_state& cst2 = traj[t]->value;
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             btraj[t - 1]->value.model_dir = model_direction(
                                                 cst, cst2, cam, ht, wt, gt);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Model direction: " << tot_time/1000.0 << endl;
 
@@ -216,10 +216,10 @@ int main(int argc, char** argv)
         for(size_t i = 1; i <= num_reps; ++i)
         {
             const Complete_state& cst2 = traj[t]->value;
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             ftraj[t - 1]->value.model_dir = face_model_direction(
                                                 cst, cst2, cam, ht, wt, gt);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Face model direction: " << tot_time/1000.0 << endl;
 
@@ -227,9 +227,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             update_visibilities(scene, t, true);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Update visibilites: " << tot_time/1000.0 << endl;
 
@@ -237,9 +237,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             box_likelihood.at_frame(target, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Box likelihood: " << tot_time/1000.0 << endl;
 
@@ -247,9 +247,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             fm_likelihood.at_face(ftraj[t - 1]->value);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "FM likelihood: " << tot_time/1000.0 << endl;
 
@@ -257,9 +257,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             of_likelihood.at_box(btraj[t - 1]->value, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "OF likelihood: " << tot_time/1000.0 << endl;
 
@@ -267,9 +267,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             ff_likelihood.at_face(ftraj[t - 1]->value, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "FF likelihood: " << tot_time/1000.0 << endl;
 
@@ -277,9 +277,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             pos_prior.local(target, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Position prior: " << tot_time/1000.0 << endl;
 
@@ -287,9 +287,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             dir_prior.local(target, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Direction prior: " << tot_time/1000.0 << endl;
 
@@ -297,9 +297,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             fdir_prior.local(target, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Face direction prior: " << tot_time/1000.0 << endl;
 
@@ -307,9 +307,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             pos_prior.local_space(scene, target, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Space prior: " << tot_time/1000.0 << endl;
 
@@ -317,9 +317,9 @@ int main(int argc, char** argv)
         tot_time = 0;
         for(size_t i = 1; i <= num_reps; ++i)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             pos_prior.local_endpoints(scene, target, t);
-            tot_time += kjb_c::get_real_time();
+            tot_time += ivi_c::get_real_time();
         }
         cout << "Ednpoints prior: " << tot_time/1000.0 << endl;
 
@@ -328,42 +328,42 @@ int main(int argc, char** argv)
         cout << "TIME TO COMPLETE ON A SCENE OF SIZE " << dims(scene) << endl;
 
         // full posterior
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         posterior(scene);
-        tot_time = kjb_c::get_real_time();
+        tot_time = ivi_c::get_real_time();
         cout << "Posterior evaluation: " << tot_time/1000.0 << endl;
 
         // copy scene
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         Scene scene2 = scene;
-        tot_time = kjb_c::get_real_time();
+        tot_time = ivi_c::get_real_time();
         cout << "Copy scene: " << tot_time/1000.0 << endl;
 
         // update boxes
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         for_each(
             ascn.begin(),
             ascn.end(),
             bind(&Target::update_boxes, _1, cref(cam)));
-        tot_time = kjb_c::get_real_time();
+        tot_time = ivi_c::get_real_time();
         cout << "Update boxes: " << tot_time/1000.0 << endl;
 
         // update faces
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         for_each(
             ascn.begin(),
             ascn.end(),
             bind(&Target::update_faces, _1, cref(cam)));
-        tot_time = kjb_c::get_real_time();
+        tot_time = ivi_c::get_real_time();
         cout << "Update faces: " << tot_time/1000.0 << endl;
 
         // update visibilities
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         update_visibilities(scene);
-        tot_time = kjb_c::get_real_time();
+        tot_time = ivi_c::get_real_time();
         cout << "Update visibilities: " << tot_time/1000.0 << endl;
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;
@@ -389,7 +389,7 @@ pair<const Target*, size_t> interesting_target_frame(const Scene& scene)
         }
     }
 
-    KJB_THROW_2(
+    IVI_THROW_2(
         Runtime_error,
         "Could not find a target with a box and a facemark in the same frame.");
 }

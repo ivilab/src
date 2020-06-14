@@ -1,5 +1,5 @@
 
-/* $Id: i_map.c 10922 2011-10-28 00:22:05Z kobus $ */
+/* $Id: i_map.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -40,12 +40,12 @@ extern "C" {
 
 int pre_map_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          map_mp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols;
     Pixel*     in_pos;
     Pixel*     out_pos;
@@ -140,12 +140,12 @@ int pre_map_image
 
 int post_map_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          map_mp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols;
     Pixel*     in_pos;
     Pixel*     out_pos;
@@ -247,12 +247,12 @@ int post_map_image
 
 int post_map_projected_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          map_mp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols;
     Pixel*     in_pos;
     Pixel*     out_pos;
@@ -338,14 +338,14 @@ int post_map_projected_image
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int scale_image_by_max(KJB_image** ipp, const KJB_image* ip)
+int scale_image_by_max(IVI_image** ipp, const IVI_image* ip)
 {
     int   i, j, num_rows, num_cols;
     float max_rgb  = FLT_MOST_NEGATIVE;
     float factor;
 
 
-    ERE(kjb_copy_image(ipp, ip)); 
+    ERE(ivi_copy_image(ipp, ip)); 
 
     if (ip == NULL) 
     {
@@ -395,7 +395,7 @@ int scale_image_by_max(KJB_image** ipp, const KJB_image* ip)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int ow_scale_image_by_max(KJB_image* ip)
+int ow_scale_image_by_max(IVI_image* ip)
 {
     int   i, j, num_rows, num_cols;
     float max_rgb  = FLT_MOST_NEGATIVE;
@@ -450,7 +450,7 @@ int ow_scale_image_by_max(KJB_image* ip)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int adjust_image_range(KJB_image** ipp, const KJB_image* ip)
+int adjust_image_range(IVI_image** ipp, const IVI_image* ip)
 {
     int   i, j, num_rows, num_cols;
     float max_rgb  = FLT_MOST_NEGATIVE;
@@ -459,7 +459,7 @@ int adjust_image_range(KJB_image** ipp, const KJB_image* ip)
     float factor;
 
 
-    ERE(kjb_copy_image(ipp, ip)); 
+    ERE(ivi_copy_image(ipp, ip)); 
 
     if (ip == NULL) 
     {

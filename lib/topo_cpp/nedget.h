@@ -13,7 +13,7 @@
  * /data_3/trails/ned_13as/original.
  */
 /*
- * $Id: nedget.h 17601 2014-09-25 22:40:22Z predoehl $
+ * $Id: nedget.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef NEDGET_H_UOFARIZONA_VISION
@@ -24,7 +24,7 @@
 #include <deque>
 
 
-namespace kjb
+namespace ivi
 {
 
 const float NED_MISSING = -9999.0;  ///< sentinel for missing elevation data

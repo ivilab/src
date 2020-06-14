@@ -1,4 +1,4 @@
-/* $Id: psi_metrics.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_metrics.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 #include "psi_cpp/psi_metrics.h"
 #include "people_tracking_cpp/pt_complete_trajectory.h"
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -86,7 +86,7 @@ void init_ids_and_points(
  * if-statement out of the inner-loops
  */
 template <bool transpose>
-void get_best_matching_dispatch(const kjb::Matrix& distance, double threshold, std::vector<std::pair<int, int> >& matching)
+void get_best_matching_dispatch(const ivi::Matrix& distance, double threshold, std::vector<std::pair<int, int> >& matching)
 {
     size_t num_elements, other_num_elements;
     if(transpose)
@@ -104,7 +104,7 @@ void get_best_matching_dispatch(const kjb::Matrix& distance, double threshold, s
     {
         // since we're just trying all permutations, there are N! permutations.
         // More than 6 tracks, this becomes really large
-        KJB_THROW_2(Not_implemented, "Matchings for sets larger than 8 not supported.");
+        IVI_THROW_2(Not_implemented, "Matchings for sets larger than 8 not supported.");
     }
 
     std::vector<int> indices(num_elements);
@@ -168,7 +168,7 @@ void get_best_matching_dispatch(const kjb::Matrix& distance, double threshold, s
 }
 
 
-void get_best_matching(const kjb::Matrix& pw_distance, double threshold, std::vector<std::pair<int, int> >& matching)
+void get_best_matching(const ivi::Matrix& pw_distance, double threshold, std::vector<std::pair<int, int> >& matching)
 {
     if(pw_distance.get_num_rows() < pw_distance.get_num_cols())
     {
@@ -181,7 +181,7 @@ void get_best_matching(const kjb::Matrix& pw_distance, double threshold, std::ve
 }
 
 
-void get_pw_distance(const std::vector<const Vector3*>& pts1, const std::vector<const Vector3*>& pts2, kjb::Matrix& distance)
+void get_pw_distance(const std::vector<const Vector3*>& pts1, const std::vector<const Vector3*>& pts2, ivi::Matrix& distance)
 {
     if(pts1.size() == 0 || pts2.size() == 0)
     {
@@ -213,7 +213,7 @@ void init_correspondence(
 
     if(gt_track_map.duration() != test_track_map.duration())
     {
-        KJB_THROW_2(Illegal_argument, "Ground truth and test tracks must have same duration.");
+        IVI_THROW_2(Illegal_argument, "Ground truth and test tracks must have same duration.");
     }
 
     double sq_threshold = threshold * threshold;
@@ -227,7 +227,7 @@ void init_correspondence(
     
     std::vector<const Vector3*> gt_points, test_points;
     std::vector<pt::Entity_id> gt_ids, test_ids;
-    kjb::Matrix pw_distance;
+    ivi::Matrix pw_distance;
 
     for(size_t cur_frame = 0; cur_frame < gt_track_map.duration(); cur_frame++)
     {
@@ -646,4 +646,4 @@ void Track_metrics::init_counts_(
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

@@ -1,4 +1,4 @@
-/* $Id: gr_polymesh_renderer.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_polymesh_renderer.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -26,7 +26,7 @@
 #include "gr_cpp/gr_opengl_headers.h"
 #include "l/l_bits.h"
 
-using namespace kjb;
+using namespace ivi;
 
 /** Does not set color or material effects. */
 void GL_Polymesh_Renderer::wire_render(const Polymesh &p)
@@ -118,7 +118,7 @@ unsigned int GL_Polymesh_Renderer::wire_render_with_sequential_ids_16bits
     unsigned int start_id
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     if(p.num_faces() == 0)
     {
         return start_id;
@@ -152,7 +152,7 @@ void GL_Polymesh_Renderer::solid_render_orientations_with_bases
 )
 {
     //I assume base 1 to be left unchanged
-    using namespace kjb_c;
+    using namespace ivi_c;
     if(p.num_faces() == 0)
     {
         return;
@@ -169,7 +169,7 @@ void GL_Polymesh_Renderer::solid_render_orientations_with_bases
       };*/
 
     unsigned int colour = 0;
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     double threshold = M_PI/4.0; //45 degrees
     //Yellow is left wall,  green is back wall, blue is right wall
     double flipped_norm_z = -(p._faces[0].get_normal())(2);
@@ -277,7 +277,7 @@ void GL_Polymesh_Renderer::solid_render_orientations_with_bases
     GL_Polygon_Renderer::solid_render_with_bases(p._faces[ 5 ], base1, colour);
 
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 
 }
@@ -299,12 +299,12 @@ void GL_Polymesh_Renderer::solid_render_with_bases
     unsigned int base2
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     //I assume base 1 to be left unchanged
     // We will change base2
     base2 = (base2<<3);
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     unsigned int full_base2 = 0;
     for(unsigned int i = 0; i < p.num_faces(); i++)
     {
@@ -312,13 +312,13 @@ void GL_Polymesh_Renderer::solid_render_with_bases
         GL_Polygon_Renderer::solid_render_with_bases(p.get_face(i), base1, full_base2);
     }
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 unsigned int GL_Polymesh_Renderer::solid_render_with_sequential_ids(const Polymesh & p, unsigned int start_id)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     for(unsigned int i = 0; i < p.num_faces(); i++)
     {
         unsigned int pixel_color = start_id;
@@ -328,7 +328,7 @@ unsigned int GL_Polymesh_Renderer::solid_render_with_sequential_ids(const Polyme
     }
     return (start_id - 1);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -353,7 +353,7 @@ void GL_Polymesh_Renderer::project(Polymesh  & p)
  */
 void GL_Polymesh_Renderer::draw_orientation_map(const Parapiped &p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glColor3f(0.0, 255.0, 0.0);
     GL_Polygon_Renderer::solid_render(p._faces[2]);
     GL_Polygon_Renderer::solid_render(p._faces[3]);
@@ -364,7 +364,7 @@ void GL_Polymesh_Renderer::draw_orientation_map(const Parapiped &p)
     GL_Polygon_Renderer::solid_render(p._faces[4]);
     GL_Polygon_Renderer::solid_render(p._faces[5]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -373,9 +373,9 @@ void GL_Polymesh_Renderer::draw_orientation_map(const Parapiped &p)
  * be moved somewhere else. This function assumes that the parapiped is
  * lying on a plane parallel to the x-z plane
  */
-void GL_Polymesh_Renderer::draw_left_right_orientation_map(const kjb::Parapiped & p)
+void GL_Polymesh_Renderer::draw_left_right_orientation_map(const ivi::Parapiped & p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glColor3f(0.0, 255.0, 0.0);
     //Ceiling is green
     GL_Polygon_Renderer::solid_render(p._faces[2]);
@@ -459,7 +459,7 @@ void GL_Polymesh_Renderer::draw_left_right_orientation_map(const kjb::Parapiped 
     }
     GL_Polygon_Renderer::solid_render(p._faces[5]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -475,17 +475,17 @@ void GL_Polymesh_Renderer::draw_left_right_orientation_map(const kjb::Parapiped 
  */
 void GL_Polymesh_Renderer::silhouette_render
 (
-    const kjb::Base_gl_interface &   camera,
+    const ivi::Base_gl_interface &   camera,
     const Polymesh & mesh,
     double iwidth
 )
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb_c;
-    using kjb::Polygon;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi_c;
+    using ivi::Polygon;
 
     GL_Polymesh_Renderer::solid_occlude_render(mesh);
-    const std::vector<kjb::Polygon>&  ifaces = mesh.get_faces();
+    const std::vector<ivi::Polygon>&  ifaces = mesh.get_faces();
     GLdouble lw;
     glGetDoublev(GL_LINE_WIDTH, &lw);
 
@@ -510,13 +510,13 @@ void GL_Polymesh_Renderer::silhouette_render
     glLineWidth(lw);
 
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
-void GL_Polymesh_Renderer::draw_CMU_orientation_map(const kjb::Parapiped & p)
+void GL_Polymesh_Renderer::draw_CMU_orientation_map(const ivi::Parapiped & p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     //Ceiling and floor are red
     glColor3f(255.0, 0.0, 0.0);
     GL_Polygon_Renderer::solid_render(p._faces[2]);
@@ -534,13 +534,13 @@ void GL_Polymesh_Renderer::draw_CMU_orientation_map(const kjb::Parapiped & p)
     GL_Polygon_Renderer::solid_render(p._faces[5]);
 
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
-void GL_Polymesh_Renderer::draw_geometric_context_map(const kjb::Parapiped & p)
+void GL_Polymesh_Renderer::draw_geometric_context_map(const ivi::Parapiped & p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glColor3f(0.0, 255.0, 255.0);
     //Ceiling is light blue
     GL_Polygon_Renderer::solid_render(p._faces[2]);
@@ -628,7 +628,7 @@ void GL_Polymesh_Renderer::draw_geometric_context_map(const kjb::Parapiped & p)
     GL_Polygon_Renderer::solid_render(p._faces[5]);
 
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 

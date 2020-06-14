@@ -16,15 +16,15 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flow_visualizer.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: flow_visualizer.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_FLOW_VISUALIZER_H
-#define KJB_FLOW_VISUALIZER_H
+#ifndef IVI_FLOW_VISUALIZER_H
+#define IVI_FLOW_VISUALIZER_H
 
 #include <flow_cpp/flow_feature_set.h>
 #include <i_cpp/i_image.h>
 
-namespace kjb
+namespace ivi
 {
 
 const Image::Pixel_type apix = {255.0, 0.0, 0.0};
@@ -42,6 +42,6 @@ void draw_features
     Image::Pixel_type ave_flow_pixel = apix
 );
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

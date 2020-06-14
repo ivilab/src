@@ -1,4 +1,4 @@
-/* $Id: psi_background.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_background.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 
 #include <boost/shared_array.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -241,4 +241,4 @@ void compute_median_background
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

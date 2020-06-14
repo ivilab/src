@@ -1,5 +1,5 @@
 
-/* $Id: l_init.c 24715 2019-12-14 01:02:37Z kobus $ */
+/* $Id: l_init.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -48,11 +48,11 @@ static void check_defines(void);
 
 /*
  * =============================================================================
- *                                  kjb_init
+ *                                  ivi_init
  *
- * Performs some KJB library initialization
+ * Performs some IVI library initialization
  *
- * This routine performs some KJB library initialization. As far as possible, I
+ * This routine performs some IVI library initialization. As far as possible, I
  * try to minimize the reliance of the library routines on any initialization.
  * Thus mall routines should work in some fashion if this routine is Hence this
  * routine is not actually needed.  However, it does provide a few facilities
@@ -82,65 +82,65 @@ static void check_defines(void);
  *     On success, return value is NO_ERROR.  A return value of ERROR indicates
  *     a failure performing one or more setup tasks, such as starting the new
  *     process or manipulating the signal handlers.  The cause of the error is
- *     written to the kjb_error message.
+ *     written to the ivi_error message.
  *
  * Related:
- *     kjb_cleanup, add_cleanup_function, kjb_abort, set_default_abort_trap,
+ *     ivi_cleanup, add_cleanup_function, ivi_abort, set_default_abort_trap,
  *     set_sig_trap
  *
- * Index: KJB library
+ * Index: IVI library
  *
  * -----------------------------------------------------------------------------
  */
 
-int kjb_init(void)
+int ivi_init(void)
 {
     Signal_info  cur_atn_vec;
     int          result            = NO_ERROR;
-    int save_kjb_debug_level; 
+    int save_ivi_debug_level; 
 
 
     /* 
-     * We run kjb_init() at debug level 0 or 1 because one thinks of calling
+     * We run ivi_init() at debug level 0 or 1 because one thinks of calling
      * this first, but then if we are debugging library level routines, then a
-     * call to kjb_debug_level(1) could be after. 
+     * call to ivi_debug_level(1) could be after. 
     */
-    save_kjb_debug_level = kjb_get_debug_level();
-    kjb_set_debug_level(MIN_OF(save_kjb_debug_level, 1));
+    save_ivi_debug_level = ivi_get_debug_level();
+    ivi_set_debug_level(MIN_OF(save_ivi_debug_level, 1));
 
     {
-        char kjb_verbose_str[ 100 ];
+        char ivi_verbose_str[ 100 ];
         int  temp_verbose; 
         
-        if (BUFF_GET_ENV("KJB_VERBOSE", kjb_verbose_str) != ERROR)
+        if (BUFF_GET_ENV("IVI_VERBOSE", ivi_verbose_str) != ERROR)
         {
-            if (*kjb_verbose_str != '\0') 
+            if (*ivi_verbose_str != '\0') 
             {
-                if (ss1pi(kjb_verbose_str, &temp_verbose) == ERROR)  
+                if (ss1pi(ivi_verbose_str, &temp_verbose) == ERROR)  
                 {
-                    kjb_print_error();
+                    ivi_print_error();
                 }
                 else
                 {
-                    EPE(kjb_set_verbose_level(temp_verbose));
+                    EPE(ivi_set_verbose_level(temp_verbose));
                 }
             }
         }
     }
 
     verbose_pso(2, "Verbose level at program startup is %d (IL4RT).\n", 
-                kjb_get_verbose_level());
+                ivi_get_verbose_level());
 
-    kjb_clear_error();
+    ivi_clear_error();
 
     /*
      * The routine arrange_cleanup() uses atexit() (if it is available) to
-     * ensure that kjb_cleanup() gets called, even if the program exits without
-     * going through a kjb_exit().  Not generally necessary, as
+     * ensure that ivi_cleanup() gets called, even if the program exits without
+     * going through a ivi_exit().  Not generally necessary, as
      * arrange_cleanup() should be called by any routine that creates a cleanup
      * issue, but there is an advantage to ensuring that arrange_cleanup() gets
      * called right at the start, in case a program makes other calles to
-     * atexit(). Note, however, that programs using KJB should really use
+     * atexit(). Note, however, that programs using IVI should really use
      * add_cleanup_function() instead, which removes the risk. 
     */
     arrange_cleanup(); 
@@ -213,9 +213,9 @@ int kjb_init(void)
     // If the current attention trap is not the default, then we will assume
     // that we are supposed to leave it in place. Otherwise, we will set up a
     // trap. Note that this is different than the assumption we make in
-    // kjb_fork().
+    // ivi_fork().
     */
-    if (kjb_sigvec(SIGINT, (Signal_info*)NULL, &cur_atn_vec) == ERROR)
+    if (ivi_sigvec(SIGINT, (Signal_info*)NULL, &cur_atn_vec) == ERROR)
     {
         result = ERROR;
     }
@@ -242,7 +242,7 @@ int kjb_init(void)
     warn_pso("Some file (e.g. l_sys_def.h) should likely be adjusted.\n\n");
 #endif
 
-    kjb_set_debug_level(save_kjb_debug_level);
+    ivi_set_debug_level(save_ivi_debug_level);
 
     return result;
 }
@@ -257,7 +257,7 @@ static void check_defines(void)
     typedef union 
     {
         char c[ 4 ];
-        kjb_int32 i;
+        ivi_int32 i;
     } int_union; 
 
     int_union x,y; 
@@ -290,15 +290,15 @@ static void check_defines(void)
     ASSERT(sizeof(char) == 1);
     ASSERT(sizeof(unsigned char) == 1);
 
-    ASSERT(sizeof(kjb_int16) == 2);
-    ASSERT(sizeof(kjb_uint16) == 2);
-    ASSERT(sizeof(kjb_int32) == 4);
-    ASSERT(sizeof(kjb_uint32) == 4);
+    ASSERT(sizeof(ivi_int16) == 2);
+    ASSERT(sizeof(ivi_uint16) == 2);
+    ASSERT(sizeof(ivi_int32) == 4);
+    ASSERT(sizeof(ivi_uint32) == 4);
 
 
 #ifdef HAVE_64_BIT_INT
-    ASSERT(sizeof(kjb_int64) == 8);
-    ASSERT(sizeof(kjb_uint64) == 8);
+    ASSERT(sizeof(ivi_int64) == 8);
+    ASSERT(sizeof(ivi_uint64) == 8);
 #endif 
 
 #    ifdef LONG_IS_64_BITS

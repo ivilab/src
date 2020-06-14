@@ -24,28 +24,28 @@
 
 /** @brief  Helper function. */
 inline
-double two_x(const kjb::Vector& x)
+double two_x(const ivi::Vector& x)
 {
     return 2*x[0];
 }
 
 /** @brief  Helper function. */
 inline
-double x_cubed(const kjb::Vector& x)
+double x_cubed(const ivi::Vector& x)
 {
     return x[0]*x[0]*x[0];
 }
 
 /** @brief  Helper function. */
 inline
-double x_squared(const kjb::Vector& x)
+double x_squared(const ivi::Vector& x)
 {
     return dot(x, x);
 }
 
 /** @brief  Helper function. */
 inline
-double x_squared_ind_2(const kjb::Vector& x, size_t i, size_t j)
+double x_squared_ind_2(const ivi::Vector& x, size_t i, size_t j)
 {
     if(i == j) return x[i]*x[i];
 
@@ -56,35 +56,35 @@ double x_squared_ind_2(const kjb::Vector& x, size_t i, size_t j)
 inline
 double negative_log_pdf
 (
-    const kjb::MV_normal_distribution& P,
-    const kjb::Vector& x
+    const ivi::MV_normal_distribution& P,
+    const ivi::Vector& x
 )
 {
-    return -kjb::log_pdf(P, x);
+    return -ivi::log_pdf(P, x);
 }
 
 /** @brief  Helper function. */
 inline
 double negative_log_pdf_ind
 (
-    const kjb::MV_normal_distribution& P,
-    const kjb::Vector& x,
+    const ivi::MV_normal_distribution& P,
+    const ivi::Vector& x,
     size_t i
 )
 {
     double mu = P.get_mean()[i];
     double sg = sqrt(P.get_covariance_matrix()(i, i));
 
-    kjb::Normal_distribution G(mu, sg);
-    return -kjb::log_pdf(G, x[i]);
+    ivi::Normal_distribution G(mu, sg);
+    return -ivi::log_pdf(G, x[i]);
 }
 
 /** @brief  Helper function. */
 inline
 double negative_log_pdf_ind_2
 (
-    const kjb::MV_normal_distribution& P,
-    const kjb::Vector& x,
+    const ivi::MV_normal_distribution& P,
+    const ivi::Vector& x,
     size_t i,
     size_t j
 )

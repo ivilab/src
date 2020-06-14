@@ -1,4 +1,4 @@
-/* $Id: video_io.cpp 11310 2011-12-17 04:57:52Z ksimek $ */
+/* $Id: video_io.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -24,7 +24,7 @@
 #include <gr_cpp/gr_opengl.h>
 #include <l_cpp/l_filesystem.h>
 
-namespace kjb
+namespace ivi
 {
 
 namespace opengl
@@ -59,4 +59,4 @@ void generate_video_frames(
 }
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi

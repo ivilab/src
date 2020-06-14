@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: polypath.h 17555 2014-09-18 07:36:52Z predoehl $
+ * $Id: polypath.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef POLYPATH_H_UOFARIZONAVISION
@@ -16,7 +16,7 @@
 
 #include <iosfwd>
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -64,7 +64,7 @@ public:
     {
         if (vertices.self_intersect())
         {
-            KJB_THROW_2(Illegal_argument, "input must be distinct vertices");
+            IVI_THROW_2(Illegal_argument, "input must be distinct vertices");
         }
         return PolyPath(vertices);
     }

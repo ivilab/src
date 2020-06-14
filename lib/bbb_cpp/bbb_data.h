@@ -32,7 +32,7 @@
 #include <functional>
 #include <boost/bind.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 class Data
@@ -171,7 +171,7 @@ void read(Data& data, const std::string& fname);
 /** @brief  Write to file. */
 void write(const Data& data, const std::string& fname);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_DATA_H */
 

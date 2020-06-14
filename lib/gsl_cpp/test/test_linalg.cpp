@@ -16,13 +16,13 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: test_linalg.cpp 19553 2015-07-01 05:41:06Z jguan1 $ */
+/* $Id: test_linalg.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l_cpp/l_test.h>
 #include <iostream>
 #include <cmath>
 using namespace std;
-#ifndef KJB_HAVE_GSL
+#ifndef IVI_HAVE_GSL
 int main(int argc, char** argv)
 {
     cout << "gsl not installed." << endl;
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 
 #include <gsl_cpp/gsl_linalg.h>
 
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {

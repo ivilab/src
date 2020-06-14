@@ -4,7 +4,7 @@
  * @brief Declaration for Bentley-Ottmann line intersection algorithm
  */
 /*
- * $Id: intersection.h 20084 2015-11-16 04:21:13Z predoehl $
+ * $Id: intersection.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef QD_CPP_INTERSECTION_INCLUDED_IVILAB_UARIZONAVISION
@@ -17,7 +17,7 @@
 #include <utility>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -106,6 +106,6 @@ std::vector< std::pair<size_t, size_t> > get_interior_intersections(
 
 
 } // end ns qd
-} // end ns kjb
+} // end ns ivi
 
 #endif /* QD_CPP_INTERSECTION_INCLUDED_IVILAB_UARIZONAVISION */

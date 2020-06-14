@@ -1,5 +1,5 @@
 
-/* $Id: im_score.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: im_score.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef IM_SCORE_INCLUDED
 #define IM_SCORE_INCLUDED
@@ -9,13 +9,13 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 int im_score_main(int argc, char** argv);
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 int im_score(Image*, ImageInfo*);
 #endif 
 

@@ -15,13 +15,13 @@
    |  Author:  Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: prob_histogram.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_histogram.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "prob_cpp/prob_histogram.h"
 #include "m_cpp/m_matrix.h"
 
-using namespace kjb;
+using namespace ivi;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
@@ -45,7 +45,7 @@ void Histogram_2d::compute_matrix() const
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::chi_square(const Histogram_2d& hist_1, const Histogram_2d& hist_2)
+double ivi::chi_square(const Histogram_2d& hist_1, const Histogram_2d& hist_2)
 {
     Matrix h1 = hist_1.normalized();
     Matrix h2 = hist_2.normalized();
@@ -54,7 +54,7 @@ double kjb::chi_square(const Histogram_2d& hist_1, const Histogram_2d& hist_2)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::chi_square(const Matrix& h1, const Matrix& h2)
+double ivi::chi_square(const Matrix& h1, const Matrix& h2)
 {
     ASSERT(h1.get_num_rows() == h2.get_num_rows());
     ASSERT(h1.get_num_cols() == h2.get_num_cols());

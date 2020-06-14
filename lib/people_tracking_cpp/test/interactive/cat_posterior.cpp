@@ -45,8 +45,8 @@
 const bool VERBOSE = true;
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Compute log|H|. */
 double log_det_hess(const Scene& scene);
@@ -210,7 +210,7 @@ int main(int argc, char** argv)
             }
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

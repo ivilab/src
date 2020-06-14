@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: stoprique.h 17555 2014-09-18 07:36:52Z predoehl $
+ * $Id: stoprique.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef STOPRIQUE3_H_INCLUDED_PREDOEHL_UOFARIZONAVISION
@@ -16,7 +16,7 @@
 
 #include <qd_cpp/redblack.h>
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -464,7 +464,7 @@ public:
         {
             // Pick, at random, a value in range (0,M)
             // where M = sum of tree's keys:
-            Key_tp seek_wt = m_sometimes.root_sum() * kjb_c::kjb_rand();
+            Key_tp seek_wt = m_sometimes.root_sum() * ivi_c::ivi_rand();
 
             // Now find a node n such that an inorder (by key) listing of nodes
             // from smallest-keyed to n
@@ -482,7 +482,7 @@ public:
         bool found =
 #endif
                      pq.access_loc( loc, 00, &sl );
-        KJB( ASSERT( found ) );
+        IVI( ASSERT( found ) );
         return sl.spqloc;
     }
 
@@ -506,7 +506,7 @@ public:
         const RBT& pq( alwaysland_empty ? m_sometimes : m_always );
         SatLoc sl;
         bool found = pq.access_loc( pq.loc_max(), 00, &sl );
-        KJB( ASSERT( found ) );
+        IVI( ASSERT( found ) );
         return sl.spqloc;
     }
 
@@ -518,7 +518,7 @@ public:
      * I have two lines of code below, only one of which is selected:
      * @code
         return low_energy_sample();                                       // 1
-        return kjb_c::kjb_rand() < 0.5 ? low_energy_sample() : loc_min(); // 2
+        return ivi_c::ivi_rand() < 0.5 ? low_energy_sample() : loc_min(); // 2
      * @endcode
      * Line 1 relies entirely on its probability weight function.  Line 2 takes
      * half the "mass" out of that function and grants it to the max-weight
@@ -536,7 +536,7 @@ public:
     Loc_tp Dijkstra_extraction() const
     {
         return low_energy_sample();
-        //return kjb_c::kjb_rand() < 0.5 ? low_energy_sample() : loc_min();
+        //return ivi_c::ivi_rand() < 0.5 ? low_energy_sample() : loc_min();
     }
 
 };

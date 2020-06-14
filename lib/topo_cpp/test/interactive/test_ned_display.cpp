@@ -15,7 +15,7 @@
  * values (such as in northern Montana) look, due to scaling, extra whitish.
  */
 /*
- * $Id: test_ned_display.cpp 17601 2014-09-25 22:40:22Z predoehl $
+ * $Id: test_ned_display.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <topo_cpp/nedgrid.h>
@@ -25,14 +25,14 @@ int main()
     std::vector< std::string > nopath;
     try
     {
-        //kjb::Ned13_one_degree_grid n(49, -115); // northern Montana
-        kjb::Ned13_one_degree_grid n(33, -111, nopath); // Tucson area
+        //ivi::Ned13_one_degree_grid n(49, -115); // northern Montana
+        ivi::Ned13_one_degree_grid n(33, -111, nopath); // Tucson area
 #if 0
         n.display("N 32-33 deg, W 110-111 deg (Tucson, AZ)", 400);
 #endif
         return EXIT_SUCCESS;
     }
-    catch(kjb::Exception &e)
+    catch(ivi::Exception &e)
     {
         e.print_details_exit();
     }

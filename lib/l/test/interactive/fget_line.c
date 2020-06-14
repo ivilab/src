@@ -1,5 +1,5 @@
 
-/* $Id: fget_line.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: fget_line.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     int  res;
 
 
-    kjb_l_set("debug_level", "1"); 
+    ivi_l_set("debug_level", "1"); 
 
     set_atn_trap(test_atn_fn, DONT_RESTART_AFTER_SIGNAL); 
 

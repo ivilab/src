@@ -1,5 +1,5 @@
 
-/* $Id: camera_test.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: camera_test.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_init.h"
 #include "camera/camera_bw_byte_image.h"
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     char image_save_path [40];
     mode_t file_mode = 0;
 
-    kjb_init();
+    ivi_init();
 
     /* Not ready to do anything in batch mode.  */
     if (! is_interactive()) 
@@ -56,20 +56,20 @@ int main(int argc, char **argv)
         if(init_bttv_camera_from_config_file(&all_cameras[i], /*i,*/ my_width, my_height, 
                                              curfile)== ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
             for(j = 0; j <= i; j++)
             {
                 free_bttv_camera(all_cameras[j]);
             }
-            kjb_exit(EXIT_FAILURE);
+            ivi_exit(EXIT_FAILURE);
         }
 
         /*init image structures*/
         all_images[i] = NULL;
         if(get_target_camera_bw_byte_image(&all_images[i], my_height, my_width) == ERROR)
         {
-            kjb_print_error();
-            kjb_exit(EXIT_FAILURE);
+            ivi_print_error();
+            ivi_exit(EXIT_FAILURE);
         }
     }
 
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
         for(i = 0; i < MAXIMUM_NUMBER_OF_CAMERAS; i++)
         {
             free_bttv_camera(all_cameras[i]);
-            kjb_free_camera_bw_byte_image(all_images[i]);
+            ivi_free_camera_bw_byte_image(all_images[i]);
         }
 
         return EXIT_FAILURE;
@@ -117,8 +117,8 @@ int main(int argc, char **argv)
         /* uncomment next if getting images from one camera at a time
            if(get_images_from_all_bttv_cameras_2(all_images, all_cameras) == ERROR)
            {
-           kjb_print_error();
-           kjb_exit(EXIT_FAILURE);
+           ivi_print_error();
+           ivi_exit(EXIT_FAILURE);
            }
            */
 
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
             if(mkdir(image_save_path, file_mode) == -1)
             {
                 printf("error creating directory %s. exiting \n", image_save_path);
-                kjb_exit(EXIT_FAILURE);
+                ivi_exit(EXIT_FAILURE);
             }
         }
 
@@ -146,8 +146,8 @@ int main(int argc, char **argv)
                 /* get_image_from_bttv_camera_2 gets the timestamp, too*/
                 if(get_image_from_bttv_camera_2(all_images[j], all_cameras[j]) == ERROR)
                 {
-                    kjb_print_error();
-                    kjb_exit(EXIT_FAILURE);
+                    ivi_print_error();
+                    ivi_exit(EXIT_FAILURE);
                 }
 
                 /*
@@ -158,8 +158,8 @@ int main(int argc, char **argv)
                 sprintf(temp_string, "images/test-%d%05d.jpg", j, i);
                 if(write_camera_bw_byte_image(all_images[j], temp_string) == ERROR)
                 {
-                    kjb_print_error();
-                    kjb_exit(EXIT_FAILURE);
+                    ivi_print_error();
+                    ivi_exit(EXIT_FAILURE);
                 }
             }
         }
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
     for(i = 0; i < MAXIMUM_NUMBER_OF_CAMERAS; i++)
     {
         free_bttv_camera(all_cameras[i]);
-        kjb_free_camera_bw_byte_image(all_images[i]);
+        ivi_free_camera_bw_byte_image(all_images[i]);
     }
 
 #endif  /* End disabled so Kobus can compile. */

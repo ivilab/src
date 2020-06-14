@@ -1,4 +1,4 @@
-/* $Id: m_vec_view.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vec_view.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,17 +17,17 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_M_CPP_VEC_VIEW
-#define KJB_M_CPP_VEC_VIEW
+#ifndef IVI_M_CPP_VEC_VIEW
+#define IVI_M_CPP_VEC_VIEW
 
 #include "l_cpp/l_exception.h"
 #include "l_cpp/l_index.h"
 
-namespace kjb
+namespace ivi
 {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -286,7 +286,7 @@ protected:
     {
         const int N = size();
         if(mat.size () != N)
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
 
         for(int i = 0; i < N; i++)
         {
@@ -309,7 +309,7 @@ protected:
         const int N = size();
         if(vec.size() != N)
         {
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         for(int i = 0; i < N; i++)
@@ -330,7 +330,7 @@ protected:
         const int N = size();
         if(vec.size() != N)
         {
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         for(int i = 0; i < N; i++)
@@ -352,7 +352,7 @@ protected:
         const int N = size();
         if(vec.size() != N)
         {
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         double result = 0;
@@ -374,7 +374,7 @@ protected:
         const int N = size();
         if(vec.size() != N)
         {
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         for(int i = 0; i < N; i++)
@@ -401,6 +401,6 @@ struct Generic_const_vector_view
 
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

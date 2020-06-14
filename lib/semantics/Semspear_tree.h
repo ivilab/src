@@ -5,7 +5,7 @@
  * @file Semspear_tree.h
  *
  * @author Colin Dawson 
- * $Id: Semspear_tree.h 17357 2014-08-22 00:12:57Z cdawson $ 
+ * $Id: Semspear_tree.h 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "m_cpp/m_vector.h"
@@ -318,7 +318,7 @@ namespace semantics
 	
 	friend void initialize_special_symbols();
 
-	friend boost::tuple<Self_ptr, kjb::Vector> propose_new_tree(
+	friend boost::tuple<Self_ptr, ivi::Vector> propose_new_tree(
 	    const Self_ptr source
 	    );
 
@@ -493,7 +493,7 @@ namespace semantics
 	 *         been made yet "up-tree".  Affects proposal probs.
 	 */
 	template<typename Iter>
-	static kjb::Vector propose_associations_in_child_range(
+	static ivi::Vector propose_associations_in_child_range(
 	    const Self_ptr    source,
 	    Self_ptr&         dest,
 	    Iter              source_start,
@@ -513,7 +513,7 @@ namespace semantics
 	 *  @param tree_is_altered a flag indicating whether any changes have
 	 *         been made yet "up-tree".  Affects proposal probs.
 	 */
-	static kjb::Vector propose_new_associations(
+	static ivi::Vector propose_new_associations(
 	    const Self_ptr        source,
 	    Self_ptr&             dest,
 	    const Elab_ptr_const  source_semantic_parent,
@@ -580,7 +580,7 @@ namespace semantics
      * FREE FUNCTIONS
      *------------------------------------------------------------*/
     
-    boost::tuple<Semspear_tree::Self_ptr, kjb::Vector>
+    boost::tuple<Semspear_tree::Self_ptr, ivi::Vector>
     propose_new_tree(const Semspear_tree::Self_ptr source);
 
     void resample_event_tables(Semspear_tree::Self_ptr& source);
@@ -654,7 +654,7 @@ namespace semantics
 /* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */ 
 
     template<typename Iter>
-    kjb::Vector Semspear_tree::propose_associations_in_child_range(
+    ivi::Vector Semspear_tree::propose_associations_in_child_range(
 	const Self_ptr source,
 	Self_ptr&      dest,
 	Iter           source_child_start,
@@ -664,7 +664,7 @@ namespace semantics
 	const bool     tree_is_altered
 	)
     {
-	typedef kjb::Vector Result;
+	typedef ivi::Vector Result;
 	Result result(0.0, 0.0);
 	Semspear_tree* hh = dest->head().get();
 	Iter s_it = source_child_start, d_it = dest_child_start;

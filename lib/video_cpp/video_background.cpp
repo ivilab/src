@@ -25,9 +25,9 @@
 #include <string>
 #include <cmath>
 
-using namespace kjb;
+using namespace ivi;
 
-void kjb::compute_median_background
+void ivi::compute_median_background
 (
     const std::vector<std::string>& frames_fps,
     Matrix& r_mat,

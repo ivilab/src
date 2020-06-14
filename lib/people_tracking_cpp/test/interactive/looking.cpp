@@ -29,7 +29,7 @@
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_vector_d.h>
 #include <gr_cpp/gr_opengl.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <iostream>
@@ -37,9 +37,9 @@
 #include <boost/ref.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
 using namespace boost;
 
 const_circular_iterator<Ascn::const_iterator> active_target_p;
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
         active_target_p = make_const_circular_iterator(scene.association);
         find_looking_subjects(scene);
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         // set up viewer
         Vector red(1.0, 0.0, 0.0);
         Vector blue(0.0, 0.0, 1.0);
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;
@@ -245,7 +245,7 @@ void handle_key(Scene_viewer& viewer, unsigned char key, int, int)
 
     find_looking_subjects(viewer.scene());
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

@@ -35,7 +35,7 @@
 #include "m/m_convolve.h"
 #include "m_cpp/m_int_vector.h"
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 
 #include "m_cpp/m_flip.h"
 
@@ -57,7 +57,7 @@ const char* MASK_NAG =
     "Mask not yet set.  You must call Fft_convolution_2d::set_mask()\n"
     "before first call to convolve() or reflect_and_convolve().";
 
-typedef kjb::Fftw_convolution_2d::Sizes FftSizes;
+typedef ivi::Fftw_convolution_2d::Sizes FftSizes;
 
 /**
  * FFTW likes array dimensions that factors as (2^a 3^b 5^c 7^d 11^e 13^f)
@@ -168,11 +168,11 @@ void postprocess(double* data, T* out, const FftSizes& s)
 }
 
 
-void prep(const kjb::Matrix& mat_in, kjb::Matrix& mat_out, const FftSizes& s)
+void prep(const ivi::Matrix& mat_in, ivi::Matrix& mat_out, const FftSizes& s)
 {
     if (! s.is_matrix_size_same_as_data_size(mat_in))
     {
-        KJB_THROW(kjb::Dimension_mismatch);
+        IVI_THROW(ivi::Dimension_mismatch);
     }
 
     // a no-op if size is already correct:
@@ -181,8 +181,8 @@ void prep(const kjb::Matrix& mat_in, kjb::Matrix& mat_out, const FftSizes& s)
 
 
 void ow_multiply_fftw_(
-    kjb::FFTW_complex_vector* v1,
-    const kjb::FFTW_complex_vector& v2,
+    ivi::FFTW_complex_vector* v1,
+    const ivi::FFTW_complex_vector& v2,
     const int Nc
 )
 {
@@ -200,7 +200,7 @@ void ow_multiply_fftw_(
 
 
 // special case:  output mr is almost a copy of m but has a duplicate last row
-void copy_last_row(const kjb::Matrix& m, kjb::Matrix* mr)
+void copy_last_row(const ivi::Matrix& m, ivi::Matrix* mr)
 {
     NTX(mr);
     *mr = m;
@@ -210,64 +210,64 @@ void copy_last_row(const kjb::Matrix& m, kjb::Matrix* mr)
 
 
 void add_top_and_bottom_reflection(
-    const kjb::Matrix& m,
-    kjb::Matrix* mr,
+    const ivi::Matrix& m,
+    ivi::Matrix* mr,
     int tb_size,
     int bb_size
 )
 {
-    using kjb_c::copy_matrix_with_selection_2;
+    using ivi_c::copy_matrix_with_selection_2;
 
     NTX(mr);
     if (tb_size < 0 || bb_size < tb_size || tb_size + bb_size <= 0)
     {
-        KJB_THROW(kjb::Illegal_argument);
+        IVI_THROW(ivi::Illegal_argument);
     }
 
     // special case:  zero top reflection, one row of bottom reflection
     if (0 == tb_size)
     {
-        if (bb_size != 1) KJB_THROW(kjb::Cant_happen);
+        if (bb_size != 1) IVI_THROW(ivi::Cant_happen);
         copy_last_row(m, mr);
         return;
     }
 
     // Get vertically flipped copy of input; extract top, bottom borders
-    kjb::Matrix v(m);
+    ivi::Matrix v(m);
     v.ow_vertical_flip();
-    const kjb_c::Matrix *vp = v.get_c_matrix();
+    const ivi_c::Matrix *vp = v.get_c_matrix();
 
     // Define top, bottom border selection.
-    kjb::Int_vector b_sel(m.get_num_rows(), 0), t_sel(m.get_num_rows(), 0);
+    ivi::Int_vector b_sel(m.get_num_rows(), 0), t_sel(m.get_num_rows(), 0);
     std::fill_n(&b_sel[0], bb_size, 1);
-    KJB(ASSERT(tb_size <= m.get_num_rows()));
+    IVI(ASSERT(tb_size <= m.get_num_rows()));
     std::fill_n(&t_sel[m.get_num_rows() - tb_size], tb_size, 1);
 
     // Extract the top and bottom border elements
-    kjb_c::Matrix *bb_p = 0, *tb_p = 0, *mbt_p = 0;
+    ivi_c::Matrix *bb_p = 0, *tb_p = 0, *mbt_p = 0;
     ETX(copy_matrix_with_selection_2(&bb_p, vp, b_sel.get_c_vector(), 0));
-    kjb::Matrix b_border(bb_p);
+    ivi::Matrix b_border(bb_p);
     ETX(copy_matrix_with_selection_2(&tb_p, vp, t_sel.get_c_vector(), 0));
-    kjb::Matrix t_border(tb_p);
+    ivi::Matrix t_border(tb_p);
 
     /*
      * Concatenate original matrix, bottom border, and top border, which
      * (surprisingly) works, because the DFT is naturally cyclic.
      */
-    const kjb_c::Matrix *ar[3];
+    const ivi_c::Matrix *ar[3];
     ar[0] = m.get_c_matrix();
     ar[1] = bb_p;
     ar[2] = tb_p;
-    ETX(kjb_c::concat_matrices_vertically(&mbt_p, 3, ar));
-    kjb::Matrix mbt(mbt_p);
+    ETX(ivi_c::concat_matrices_vertically(&mbt_p, 3, ar));
+    ivi::Matrix mbt(mbt_p);
     mr -> swap(mbt);
 }
 
 
-void ow_copy_last_column(kjb::Matrix* mr)
+void ow_copy_last_column(ivi::Matrix* mr)
 {
     NTX(mr);
-    const kjb::Vector lc = mr -> get_col(mr -> get_num_cols() - 1);
+    const ivi::Vector lc = mr -> get_col(mr -> get_num_cols() - 1);
     mr -> resize(mr -> get_num_rows(), 1 + mr -> get_num_cols());
     mr -> set_col(mr -> get_num_cols() - 1, lc);
 }
@@ -275,52 +275,52 @@ void ow_copy_last_column(kjb::Matrix* mr)
 
 
 void ow_add_left_and_right_reflection(
-    kjb::Matrix* mr,
+    ivi::Matrix* mr,
     int lb_size,
     int rb_size
 )
 {
-    using kjb_c::copy_matrix_with_selection_2;
+    using ivi_c::copy_matrix_with_selection_2;
 
     NTX(mr);
     if (lb_size < 0 || rb_size < lb_size || lb_size + rb_size <= 0)
     {
-        KJB_THROW(kjb::Illegal_argument);
+        IVI_THROW(ivi::Illegal_argument);
     }
 
     // special case:  zero left border, unity-width right border
     if (0 == lb_size)
     {
-        if (rb_size != 1) KJB_THROW(kjb::Cant_happen);
+        if (rb_size != 1) IVI_THROW(ivi::Cant_happen);
         ow_copy_last_column(mr);
         return;
     }
 
     // Get horizontally flipped version of mr
-    kjb::Matrix h(*mr);
+    ivi::Matrix h(*mr);
     h.ow_horizontal_flip();
-    const kjb_c::Matrix *hp = h.get_c_matrix();
+    const ivi_c::Matrix *hp = h.get_c_matrix();
 
     // Define left, right borders.
-    kjb::Int_vector l_sel(h.get_num_cols(), 0), r_sel(h.get_num_cols(), 0);
+    ivi::Int_vector l_sel(h.get_num_cols(), 0), r_sel(h.get_num_cols(), 0);
     std::fill_n(&r_sel[0], rb_size, 1);
-    KJB(ASSERT(lb_size <= h.get_num_cols()));
+    IVI(ASSERT(lb_size <= h.get_num_cols()));
     std::fill_n(&l_sel[h.get_num_cols() - lb_size], lb_size, 1);
 
     // Extract the left, right border elements
-    kjb_c::Matrix *l_border_p = 0, *r_border_p = 0, *m3_p = 0;
+    ivi_c::Matrix *l_border_p = 0, *r_border_p = 0, *m3_p = 0;
     ETX(copy_matrix_with_selection_2(&l_border_p, hp, 0,l_sel.get_c_vector()));
-    kjb::Matrix l_border(l_border_p);
+    ivi::Matrix l_border(l_border_p);
     ETX(copy_matrix_with_selection_2(&r_border_p, hp, 0,r_sel.get_c_vector()));
-    kjb::Matrix r_border(r_border_p);
+    ivi::Matrix r_border(r_border_p);
 
     // Concatenate m2 matrix, right border, and left border.  Cyclic magic.
-    const kjb_c::Matrix *ar[3];
+    const ivi_c::Matrix *ar[3];
     ar[0] = mr -> get_c_matrix();
     ar[1] = r_border_p;
     ar[2] = l_border_p;
-    ETX(kjb_c::concat_matrices_horizontally(&m3_p, 3, ar));
-    kjb::Matrix m3(m3_p);
+    ETX(ivi_c::concat_matrices_horizontally(&m3_p, 3, ar));
+    ivi::Matrix m3(m3_p);
     mr -> swap(m3);
 }
 
@@ -332,7 +332,7 @@ void ow_add_left_and_right_reflection(
  * @param[i] s aggregate structure storing sizes of relevant FFT plan
  * @pre buf is assumed to be large enough to hold the output.
  * @pre number of (rows, columns) of m agrees with (s.data_rows, s.data_cols).
- * @throws kjb::KJB_error if anything goes wrong
+ * @throws ivi::IVI_error if anything goes wrong
  *
  * In many image processing applications, we handle the boundary cases (i.e.,
  * first few rows, last few rows, first few columns, etc.) by modeling the
@@ -345,12 +345,12 @@ void ow_add_left_and_right_reflection(
  * in the output buffer with reflection.  The details are tedious.
  */
 void reflect_into_input_buf(
-    const kjb::Matrix& m,
+    const ivi::Matrix& m,
     double *buf,
     const FftSizes& s
 )
 {
-    using kjb_c::copy_matrix_with_selection_2;
+    using ivi_c::copy_matrix_with_selection_2;
 
     const int   h_excess = s.pad_cols - s.data_cols,
                 v_excess = s.pad_rows - s.data_rows,
@@ -359,10 +359,10 @@ void reflect_into_input_buf(
                 bb_size = v_excess - tb_size,   // bottom border size
                 rb_size = h_excess - lb_size;   // right border size
 
-    kjb::Matrix mr;
+    ivi::Matrix mr;
 
-    KJB(ASSERT(m.get_num_rows() == s.data_rows));
-    KJB(ASSERT(m.get_num_cols() == s.data_cols));
+    IVI(ASSERT(m.get_num_rows() == s.data_rows));
+    IVI(ASSERT(m.get_num_cols() == s.data_cols));
 
     if (v_excess > 0)
     {
@@ -378,7 +378,7 @@ void reflect_into_input_buf(
         ow_add_left_and_right_reflection(&mr, lb_size, rb_size);
     }
 
-    kjb::Matrix::Value_type* mrbegin = & mr.at(0);
+    ivi::Matrix::Value_type* mrbegin = & mr.at(0);
     std::copy(mrbegin, mrbegin + s.Nreal(), buf);
 }
 
@@ -391,7 +391,7 @@ void reflect_into_input_buf(
 
 unsigned pad_best(unsigned n)
 {
-#if KJB_HAVE_FFTW
+#if IVI_HAVE_FFTW
     return std::min(pad_to_friendly_size_(n), pad_to_binary_size(n));
 #else
     return 0;
@@ -402,7 +402,7 @@ unsigned pad_best(unsigned n)
 
 /* / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ */ 
 
-namespace kjb
+namespace ivi
 {
 
 
@@ -449,7 +449,7 @@ Fftw_convolution_2d::Fftw_convolution_2d(
 :   sizes_(data_num_rows, data_num_cols, mask_max_rows, mask_max_cols),
     fft_algorithm_type_(fft_alg_type | FFTW_DESTROY_INPUT),
     is_mask_set_(false)
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
     ,    /* Sorry for the ugly syntax here.  It is to accomodate NO_LIBS. */
     mask_(alloc_work_buf_impl_()),
     data_(alloc_work_buf_impl_()),
@@ -461,22 +461,22 @@ Fftw_convolution_2d::Fftw_convolution_2d(
         data_.second -> begin(), data_.first -> begin(), fft_algorithm_type_))
 #endif
 {
-#ifndef KJB_HAVE_FFTW
-    KJB_THROW(Missing_dependency);
+#ifndef IVI_HAVE_FFTW
+    IVI_THROW(Missing_dependency);
 #endif
 }
 
 
 
 
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
 void Fftw_convolution_2d::set_mask(const Matrix& m)
 {
     // TODO:  see if the mask must be centered (it might be small)
     is_mask_set_ = true;
     if (! sizes_.is_matrix_size_within_mask_size(m))
     {
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
     // fourier transform mask
@@ -488,8 +488,8 @@ void Fftw_convolution_2d::set_mask(const Matrix& m)
 void Fftw_convolution_2d::set_gaussian_mask(double sigma)
 {
     int mask_size = sigma * 6 + 0.5;
-    kjb_c::Matrix* cmat = NULL;
-    ETX(kjb_c::get_2D_gaussian_mask(&cmat, mask_size, sigma));
+    ivi_c::Matrix* cmat = NULL;
+    ETX(ivi_c::get_2D_gaussian_mask(&cmat, mask_size, sigma));
 
     Matrix mat(cmat);
     set_mask(mat);
@@ -516,7 +516,7 @@ void Fftw_convolution_2d::set_gaussian_mask(double sigma)
  */ 
 void Fftw_convolution_2d::reset_data_plan_() const
 {
-    KJB(TEST_PSE(("Expensive call to %s, due to mixing reentrant and"
+    IVI(TEST_PSE(("Expensive call to %s, due to mixing reentrant and"
                     " non-reentrant\nconvolutions with one Fftw_convolution_2d"
                     " object.  You will get better\nperformance if you "
                     "separate those calls by using different objects.\n",
@@ -525,7 +525,7 @@ void Fftw_convolution_2d::reset_data_plan_() const
     data_ = alloc_work_buf_impl_();
 
 #if WANT_BEST_PERFORMANCE_EVEN_IF_IT_MAKES_THE_CODE_UGLY 
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     data_plan_.reset(new FFTW_plan_r2c( sizes_.pad_rows, sizes_.pad_cols,
         data_.first -> begin(), data_.second -> begin(), fft_algorithm_type_));
     data_inv_plan_.reset(new FFTW_plan_c2r( sizes_.pad_rows, sizes_.pad_cols,
@@ -541,7 +541,7 @@ void Fftw_convolution_2d::convolution_by_dft_() const
 #if WANT_BEST_PERFORMANCE_EVEN_IF_IT_MAKES_THE_CODE_UGLY 
     if (! is_mask_set_)
     {
-        KJB_THROW_2(Runtime_error, MASK_NAG);
+        IVI_THROW_2(Runtime_error, MASK_NAG);
     }
     data_plan_ -> execute(); // possibly faster than new array execute ???
     const FFTW_complex_vector& mask_fft = * mask_.second.get();
@@ -634,7 +634,7 @@ void Fftw_convolution_2d::convolution_by_dft_(Work_buffer b) const
 {
     if (! is_mask_set_)
     {
-        KJB_THROW_2(Runtime_error, MASK_NAG);
+        IVI_THROW_2(Runtime_error, MASK_NAG);
     }
     data_plan_ -> new_array_exec(b.first -> begin(), b.second -> begin());
     const FFTW_complex_vector& mask_fft = * mask_.second.get();
@@ -702,7 +702,7 @@ void Fftw_convolution_2d::reflect_and_convolve(
 Fftw_convolution_2d::Work_buffer
 Fftw_convolution_2d::allocate_work_buffer() const
 {
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
     Work_buffer b = data_;
     if (data_.first)
     {
@@ -712,8 +712,8 @@ Fftw_convolution_2d::allocate_work_buffer() const
     {
         b = alloc_work_buf_impl_();
     }
-    KJB(ASSERT(!data_.first));
-    KJB(ASSERT(b.first));
+    IVI(ASSERT(!data_.first));
+    IVI(ASSERT(b.first));
     return b;
 #else
     return Work_buffer();
@@ -731,19 +731,19 @@ int test_reflect_into_input_buf(
     const Fftw_convolution_2d::Sizes& s
 )
 {
-#ifdef KJB_HAVE_FFTW
+#ifdef IVI_HAVE_FFTW
     NTX(out);
     out -> resize(s.pad_rows, s.pad_cols);
     reflect_into_input_buf(in, & out -> at(0), s);
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 #else
-    kjb_c::set_error("Code was built without libfftw");
-    return kjb_c::ERROR;
+    ivi_c::set_error("Code was built without libfftw");
+    return ivi_c::ERROR;
 #endif
 }
 
 
-} // namespace kjb::debug
+} // namespace ivi::debug
 
 
 
@@ -752,18 +752,18 @@ int x_convolve_matrix(
     const Matrix& input,
     const Vector& mask)
 {
-    KJB(NRE(output));
-    kjb_c::Matrix *p = 00;
-    KJB(ERE(kjb_c::x_convolve_matrix(&p,
+    IVI(NRE(output));
+    ivi_c::Matrix *p = 00;
+    IVI(ERE(ivi_c::x_convolve_matrix(&p,
                  input.get_c_matrix(), mask.get_c_vector())));
     Matrix q(p);
     output -> swap(q);
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 
-} // namespace kjb
+} // namespace ivi
 
 
 

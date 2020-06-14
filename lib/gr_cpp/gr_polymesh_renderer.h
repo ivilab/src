@@ -1,4 +1,4 @@
-/* $Id: gr_polymesh_renderer.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_polymesh_renderer.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #include "gr_cpp/gr_parapiped.h"
 #include "gr_cpp/gr_camera.h"
 
-namespace kjb {
+namespace ivi {
 
 class Parapiped;
 class GL_Polymesh_Renderer
@@ -81,20 +81,20 @@ public:
     /** @brief Renders the silhouette (contour) of this polygonal mesh. This method
      *  works only for convex meshes, and gives reasonable results for concave ones.
      */
-    static void silhouette_render(const kjb::Base_gl_interface & camera, const Polymesh & p, double iwidth = 1.0);
+    static void silhouette_render(const ivi::Base_gl_interface & camera, const Polymesh & p, double iwidth = 1.0);
 
     /** @brief Draws the orientation map given a parapiped. This function must be moved somewhere else */
-    static void draw_orientation_map(const kjb::Parapiped & p);
+    static void draw_orientation_map(const ivi::Parapiped & p);
 
     /** @brief Draws the left-right orientation map given a parapiped.
      *  This function assumes that the parapiped is
      * lying on a plane parallel to the x-z plane
      * This function must be moved somewhere else */
-    static void draw_left_right_orientation_map(const kjb::Parapiped & p);
+    static void draw_left_right_orientation_map(const ivi::Parapiped & p);
 
-    static void draw_CMU_orientation_map(const kjb::Parapiped & p);
+    static void draw_CMU_orientation_map(const ivi::Parapiped & p);
 
-    static void draw_geometric_context_map(const kjb::Parapiped & p);
+    static void draw_geometric_context_map(const ivi::Parapiped & p);
 };
 
 }

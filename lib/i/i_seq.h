@@ -1,5 +1,5 @@
 
-/* $Id: i_seq.h 10617 2011-09-29 19:50:47Z predoehl $ */
+/* $Id: i_seq.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,7 +38,7 @@ namespace kjb_c {
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                   KJB_image_sequence
+ *                                   IVI_image_sequence
  *
  * Sequence of images type
  *
@@ -49,44 +49,44 @@ namespace kjb_c {
  * -----------------------------------------------------------------------------
  */
 
-typedef struct KJB_image_sequence
+typedef struct IVI_image_sequence
 {
     int length;
-    KJB_image** elements;
+    IVI_image** elements;
 }
-KJB_image_sequence;
+IVI_image_sequence;
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int get_target_image_sequence(KJB_image_sequence** target_ispp, int length);
+int get_target_image_sequence(IVI_image_sequence** target_ispp, int length);
 
-int read_image_sequence(KJB_image_sequence** target_ispp, const Word_list* filenames);
+int read_image_sequence(IVI_image_sequence** target_ispp, const Word_list* filenames);
 
-void free_image_sequence(KJB_image_sequence* isp);
+void free_image_sequence(IVI_image_sequence* isp);
 
 int average_bw_images
 (
-    KJB_image**               avg_img,
-    const KJB_image_sequence* images
+    IVI_image**               avg_img,
+    const IVI_image_sequence* images
 );
 
 int std_dev_bw_images
 (
-    KJB_image**               std_dev_img,
-    const KJB_image_sequence* images,
-    const KJB_image*          avg_img
+    IVI_image**               std_dev_img,
+    const IVI_image_sequence* images,
+    const IVI_image*          avg_img
 );
 
 int average_bw_images_2
 (
     Matrix**                  avg_img_mat,
-    const KJB_image_sequence* images
+    const IVI_image_sequence* images
 );
 
 int std_dev_bw_images_2
 (
     Matrix**                  std_dev_img_mat,
-    const KJB_image_sequence* images,
+    const IVI_image_sequence* images,
     const Matrix*             avg_img_mat
 );
 

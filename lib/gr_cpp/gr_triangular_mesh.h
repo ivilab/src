@@ -60,8 +60,8 @@
  */
 
 
-#ifndef KJB_TRIANGULAR_MESH_H
-#define KJB_TRIANGULAR_MESH_H
+#ifndef IVI_TRIANGULAR_MESH_H
+#define IVI_TRIANGULAR_MESH_H
 
 #include <iosfwd>
 #include <vector>
@@ -74,7 +74,7 @@
 #include <gr_cpp/gr_polymesh.h>
 
 
-namespace kjb {
+namespace ivi {
 
 
 /**
@@ -82,7 +82,7 @@ namespace kjb {
  *
  * @brief Triangular_mesh: a polygonal mesh of which each face is a triangle.
  */
-class Triangular_mesh : public kjb::Polymesh
+class Triangular_mesh : public ivi::Polymesh
 {
 
 public:
@@ -95,11 +95,11 @@ public:
 
 
     /** @brief Reads a triangular mesh from an input file. */
-    Triangular_mesh(const char* fname) throw (kjb::Illegal_argument, kjb::IO_error);
+    Triangular_mesh(const char* fname) throw (ivi::Illegal_argument, ivi::IO_error);
 
 
     /** @brief Reads a triangular mesh from an input file. */
-    Triangular_mesh(std::istream& in) throw (kjb::Illegal_argument, kjb::IO_error);
+    Triangular_mesh(std::istream& in) throw (ivi::Illegal_argument, ivi::IO_error);
 
 
     /** @brief Copy constructor. */
@@ -120,12 +120,12 @@ public:
 
     /** @brief Reads this triangular mesh from an input stream. */
     void read(std::istream & in)
-    throw(kjb::IO_error,kjb::Illegal_argument);
+    throw(ivi::IO_error,ivi::Illegal_argument);
 
 
     /** @brief Writes this mesh to an output stream. */
     void write(std::ostream & ost)
-    const throw(kjb::IO_error);
+    const throw(ivi::IO_error);
 
     /** @brief Writes this mesh to an output stream. */
     void write(const char *filename) const throw (IO_error);
@@ -135,14 +135,14 @@ public:
     virtual Triangular_mesh * clone() const;
 
     /** @brief Finds the adjacency relationships between faces */
-    void create_adjacency_matrix() throw(KJB_error);
+    void create_adjacency_matrix() throw(IVI_error);
 
     /** @brief Gets the adjacency matrix from a file and saves it in the class parameter. */
-    void set_adjacency_matrix(const char* fname) throw(KJB_error);
+    void set_adjacency_matrix(const char* fname) throw(IVI_error);
 
-    //virtual void add_face(const Polygon & face, uint32_t id) throw (kjb::Illegal_argument);
+    //virtual void add_face(const Polygon & face, uint32_t id) throw (ivi::Illegal_argument);
 
-    virtual void add_face(const Polygon & face) throw (kjb::Illegal_argument);
+    virtual void add_face(const Polygon & face) throw (ivi::Illegal_argument);
 
 protected:
 
@@ -152,7 +152,7 @@ protected:
      * Major index is the face, minor is the index of the first point (in
      * increasing order) on the face forming the adjacency edge.
      */
-    kjb::Int_matrix _adjacency;
+    ivi::Int_matrix _adjacency;
 
     /**
      * This determines whether the adjacency matrix is up to date or not

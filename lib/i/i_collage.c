@@ -1,5 +1,5 @@
 
-/* $Id: i_collage.c 21712 2017-08-20 18:21:41Z kobus $ */
+/* $Id: i_collage.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -205,9 +205,9 @@ int set_collage_options(const char* option, const char* value)
         else if (value[ 0 ] == '\0')
         {
             ERE(pso("Collage border colour is (%d, %d, %d).\n",
-                    kjb_rintf(fs_collage_border_colour.r),
-                    kjb_rintf(fs_collage_border_colour.g),
-                    kjb_rintf(fs_collage_border_colour.b)));
+                    ivi_rintf(fs_collage_border_colour.r),
+                    ivi_rintf(fs_collage_border_colour.g),
+                    ivi_rintf(fs_collage_border_colour.b)));
         }
         else
         {
@@ -231,9 +231,9 @@ int set_collage_options(const char* option, const char* value)
         else if (value[ 0 ] == '\0')
         {
             ERE(pso("Collage background colour is (%d, %d, %d).\n",
-                    kjb_rintf(fs_collage_background_colour.r),
-                    kjb_rintf(fs_collage_background_colour.g),
-                    kjb_rintf(fs_collage_background_colour.b)));
+                    ivi_rintf(fs_collage_background_colour.r),
+                    ivi_rintf(fs_collage_background_colour.g),
+                    ivi_rintf(fs_collage_background_colour.b)));
         }
         else
         {
@@ -269,10 +269,10 @@ int set_collage_options(const char* option, const char* value)
 
 int make_image_collage
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_horizontal,
     int         num_vertical,
-    const KJB_image* const* ip_list
+    const IVI_image* const* ip_list
 )
 {
     return make_image_collage_2(out_ipp,
@@ -308,10 +308,10 @@ int make_image_collage
 
 int make_image_collage_2
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_horizontal,
     int         num_vertical,
-    const KJB_image* const* ip_list,
+    const IVI_image* const* ip_list,
     Pixel*      background_colour_ptr,
     Pixel*      border_colour_ptr,
     int         outside_border_width,
@@ -324,7 +324,7 @@ int make_image_collage_2
     int num_rows, num_cols, i, j, k, m, n;
     int max_num_cols = 0;
     int max_num_rows = 0;
-    KJB_image const* ip;
+    IVI_image const* ip;
     Pixel*     out_pos;
     int        num_out_cols;
     int        num_out_rows;
@@ -421,7 +421,7 @@ int make_image_collage_2
 
     if ((image_count == 0) || (max_num_rows == 0) || (max_num_cols == 0))
     {
-        kjb_free_image(*out_ipp);
+        ivi_free_image(*out_ipp);
         *out_ipp = NULL;
         return ERROR;
     }
@@ -673,10 +673,10 @@ int make_image_collage_2
 
 int make_compact_image_collage
 (
-    KJB_image** out_ipp,
+    IVI_image** out_ipp,
     int         num_horizontal,
     int         num_vertical,
-    KJB_image** ip_list
+    IVI_image** ip_list
 )
 {
     return make_compact_image_collage_2(out_ipp, num_horizontal, num_vertical,
@@ -687,16 +687,16 @@ int make_compact_image_collage
 
 int make_compact_image_collage_2
 (
-    KJB_image**  out_ipp,
+    IVI_image**  out_ipp,
     int          num_horizontal,
     int          num_vertical,
-    KJB_image**  ip_list,
+    IVI_image**  ip_list,
     Int_matrix** image_coords_mpp
 )
 {
     int num_rows, num_cols, i, j, k, m, n;
     int max_num_cols = 0;
-    KJB_image* ip;
+    IVI_image* ip;
     Pixel*     out_pos;
     int        num_out_cols;
     int        num_out_rows = 0;
@@ -739,7 +739,7 @@ int make_compact_image_collage_2
 
     if ((image_count == 0) || (num_out_rows == 0) || (max_num_cols == 0))
     {
-        kjb_free_image(*out_ipp);
+        ivi_free_image(*out_ipp);
         *out_ipp = NULL;
         return 0;
     }
@@ -914,7 +914,7 @@ int ip_output_montage(output_file, num_images,
     int         num_images;
     int         num_montage_rows;
     int         num_montage_cols;
-    KJB_image** images;
+    IVI_image** images;
     char        labels[][ XXX_MAX_MONTAGE_IMAGE_LABEL_SIZE ];
     const char* extra;
 {
@@ -953,7 +953,7 @@ int ip_output_montage(output_file, num_images,
 
     max_dim = MAX_OF(max_num_rows, max_num_cols);
 
-    ERE(kjb_sprintf(geometry_str, sizeof(geometry_str), "%dx%d",
+    ERE(ivi_sprintf(geometry_str, sizeof(geometry_str), "%dx%d",
                     max_dim, max_dim));
 
     for (i = 0; i<num_images; i++)
@@ -963,7 +963,7 @@ int ip_output_montage(output_file, num_images,
         {
             ERE(BUFF_GET_TEMP_FILE_NAME(temp_names[ num_images_written ]));
 
-            result = kjb_write_image(images[ i ],
+            result = ivi_write_image(images[ i ],
                                      temp_names[ num_images_written ]);
             if (result == ERROR) break;
 
@@ -988,7 +988,7 @@ int ip_output_montage(output_file, num_images,
 
     for (i = 0; i<num_images_written; i++)
     {
-        EPE(kjb_unlink(temp_names[ i ]));
+        EPE(ivi_unlink(temp_names[ i ]));
     }
 
     return result;
@@ -1019,13 +1019,13 @@ int output_montage
     int max_num_rows = 0;
     int max_num_cols = 0;
     char geometry_str[ 100 ];
-    KJB_image* ip     = NULL;
+    IVI_image* ip     = NULL;
     int        result = NO_ERROR;
 
 
     for (i = 0; i<num_images; i++)
     {
-        result = kjb_read_image(&ip, image_names[ i ]);
+        result = ivi_read_image(&ip, image_names[ i ]);
 
         if (result == ERROR) break;
 
@@ -1038,7 +1038,7 @@ int output_montage
 
     if (result != ERROR)
     {
-        result = kjb_sprintf(geometry_str, sizeof(geometry_str), "%dx%d",
+        result = ivi_sprintf(geometry_str, sizeof(geometry_str), "%dx%d",
                              max_num_rows, max_num_cols);
     }
 
@@ -1049,7 +1049,7 @@ int output_montage
                                   image_names, labels, extra);
     }
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
 
     return result;
 }
@@ -1088,7 +1088,7 @@ int output_montage_2
         }
     }
 
-    ERE(kjb_sprintf(tile_str, sizeof(tile_str), "%dx%d",
+    ERE(ivi_sprintf(tile_str, sizeof(tile_str), "%dx%d",
                     num_montage_cols, num_montage_rows));
 
     BUFF_CPY(montage_cmd, "montage ");
@@ -1114,7 +1114,7 @@ int output_montage_2
 
     for (count = 0; count < num_images; count++)
     {
-        ERE(kjb_sprintf(buff, sizeof(buff), "-label \"%s\" %s ",
+        ERE(ivi_sprintf(buff, sizeof(buff), "-label \"%s\" %s ",
                         (labels == NULL) ? "" : (labels[ count ] == NULL) ? "" : labels[ count ],
                         image_names[ count ]));
         BUFF_CAT(montage_cmd, buff);
@@ -1125,7 +1125,7 @@ int output_montage_2
     p_stderr(montage_cmd);
     p_stderr("\n");
 
-    return kjb_system(montage_cmd);
+    return ivi_system(montage_cmd);
 
 }
 

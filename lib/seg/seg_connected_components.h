@@ -1,5 +1,5 @@
 
-/* $Id: seg_connected_components.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: seg_connected_components.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -28,12 +28,12 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
     
-typedef struct KJB_region
+typedef struct IVI_region
 {
     long               label;
     long               root_label;
@@ -44,28 +44,28 @@ typedef struct KJB_region
     long               max_row;
     long               min_col;
     long               max_col;
-    struct KJB_region* next_region_ptr;
+    struct IVI_region* next_region_ptr;
 }
-KJB_region;
+IVI_region;
 
-typedef struct KJB_region_list
+typedef struct IVI_region_list
 {
     int         num_regions;
-    KJB_region* regions;
+    IVI_region* regions;
 }
-KJB_region_list;
+IVI_region_list;
 
-int  get_target_region_list(KJB_region_list** rlpp, int num_regions);
-void free_region_list      (KJB_region_list* rlp);
+int  get_target_region_list(IVI_region_list** rlpp, int num_regions);
+void free_region_list      (IVI_region_list* rlp);
 
 int label_four_connected_regions 
 (
     Int_matrix**      out_mpp,
-    KJB_region_list** region_list_rlpp,
+    IVI_region_list** region_list_rlpp,
     Segmentation_t3** segmentation_ptr_ptr,
     int*              num_regions_intp,
     int*              max_label_intp,
-    const KJB_image*  in_ip,
+    const IVI_image*  in_ip,
     const Int_matrix* in_mp,
     const int         merge_eqvlnt_labels 
 );
@@ -73,11 +73,11 @@ int label_four_connected_regions
 int label_eight_connected_regions
 (
     Int_matrix**      out_mpp,
-    KJB_region_list** region_list_rlpp,
+    IVI_region_list** region_list_rlpp,
     Segmentation_t3** segmentation_ptr_ptr,
     int*              num_regions_intp,
     int*              max_label_intp,
-    const KJB_image*  in_ip,
+    const IVI_image*  in_ip,
     const Int_matrix* in_mp,
     const int         merge_eqvlnt_labels 
 );

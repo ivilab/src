@@ -1,5 +1,5 @@
 
-/* $Id: floating_point.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: floating_point.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     int    failure = FALSE;
 
 
-    kjb_init();
+    ivi_init();
 
     if (argc > 1)
     {
@@ -41,11 +41,11 @@ int main(int argc, char **argv)
 
     if (is_interactive())
     {
-        kjb_set_debug_level(2);
+        ivi_set_debug_level(2);
     }
     else 
     {
-        kjb_set_debug_level(0); 
+        ivi_set_debug_level(0); 
     }
 
 #ifdef MACHINE_CONSTANT_NOT_AVAILABLE
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     }
 #endif 
 
-    kjb_cleanup();
+    ivi_cleanup();
     
     if (failure)
     {

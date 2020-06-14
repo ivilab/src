@@ -122,14 +122,14 @@ int set_default_abort_trap(void)
     // FIX ?
     //
     // Overwrite the handler "safe_default_sig_fn" in the case of SIGABRT.  We
-    // do this on the assumption that we will only abort on kjb_abort() and
-    // that kjb_abort will set the signal to SIG_DFL after cleaning up but
+    // do this on the assumption that we will only abort on ivi_abort() and
+    // that ivi_abort will set the signal to SIG_DFL after cleaning up but
     // before calling the abort. The reason for this HACK is so that only the
     // processes that called the abort will dump core. Its children will just
     // exit.
     */
 
-    ERE(kjb_signal(SIGABRT, safe_exit_fn));
+    ERE(ivi_signal(SIGABRT, safe_exit_fn));
 
     return NO_ERROR;
 #else
@@ -297,20 +297,20 @@ int set_sig_trap(int sig, void (*fun_ptr) (int), int restart_arg)
 #ifdef UNIX
     INIT_SIGNAL_INFO(new_trap);
     new_trap.SIGNAL_HANDLER = fun_ptr;
-    ERE(kjb_sigvec(sig, &new_trap, &old_trap));
+    ERE(ivi_sigvec(sig, &new_trap, &old_trap));
 
 #else     /* Not UNIX */
 
     new_trap.SIGNAL_HANDLER = fun_ptr;
-    ERE(kjb_signal(sig, fun_ptr));
+    ERE(ivi_signal(sig, fun_ptr));
 
     /*
     // FIX
     //
     // It should be possible to get the old trap from most systems. For
     // example, the signal function provided by Borland C returns it. This
-    // could be build into a version of kjb_sigvec. (In fact, perhaps the
-    // entire logic that is so messy here could be built into kjb_sigvec?).
+    // could be build into a version of ivi_sigvec. (In fact, perhaps the
+    // entire logic that is so messy here could be built into ivi_sigvec?).
     // However, until we actually need this capability on Microsoft platforms,
     // just hack it with a placeholder.
     */
@@ -411,16 +411,16 @@ int unset_sig_trap(int sig)
     cur_saved_trap_ptr = (Save_trap*)cur_trap_elem->contents;
 
     free_queue(&(cur_saved_trap_ptr->restart_stack_head),
-               (Queue_element **)NULL, kjb_free);
-    free_queue_element(cur_trap_elem, kjb_free);
+               (Queue_element **)NULL, ivi_free);
+    free_queue_element(cur_trap_elem, ivi_free);
 
     saved_trap_ptr = (Save_trap *)(fs_sig_stack_head[ sig ]->contents);
     signal_info = saved_trap_ptr->signal_info;
 
 #ifdef UNIX
-    ERE(kjb_sigvec(sig, &signal_info, (Signal_info*)NULL));
+    ERE(ivi_sigvec(sig, &signal_info, (Signal_info*)NULL));
 #else
-    ERE(kjb_signal(sig, signal_info.SIGNAL_HANDLER));
+    ERE(ivi_signal(sig, signal_info.SIGNAL_HANDLER));
 #endif
 
     cur_restart_head = saved_trap_ptr->restart_stack_head;
@@ -463,9 +463,9 @@ void destroy_sig_queue(void)
             cur_saved_trap_ptr = (Save_trap*)cur_trap_elem->contents;
 
             free_queue(&(cur_saved_trap_ptr->restart_stack_head),
-                       (Queue_element **)NULL, kjb_free);
+                       (Queue_element **)NULL, ivi_free);
 
-            free_queue_element(cur_trap_elem, kjb_free);
+            free_queue_element(cur_trap_elem, ivi_free);
         }
 
         /* Kobus, 14/09/14: This is here so that we can use this routine to give
@@ -587,12 +587,12 @@ void allow_atn(void)
 /* all */
 #ifdef UNIX
 #ifdef SYSV_SIGNALS
-/* SYSV */       ERE(kjb_sigemptyset( &mask ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGINT ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGQUIT ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGTERM ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGTSTP ));
-/* SYSV */       ERE(kjb_sigprocmask(SIG_BLOCK, &mask, &save_mask));
+/* SYSV */       ERE(ivi_sigemptyset( &mask ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGINT ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGQUIT ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGTERM ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGTSTP ));
+/* SYSV */       ERE(ivi_sigprocmask(SIG_BLOCK, &mask, &save_mask));
 #else
 /* not SYSV */   save_mask = sigblock(sigmask(SIGINT));
 /* not SYSV */   sigblock(sigmask(SIGQUIT));
@@ -621,12 +621,12 @@ void allow_atn(void)
 /* all */
 #ifdef UNIX
 #ifdef SYSV_SIGNALS
-/* SYSV */       ERE(kjb_sigemptyset( &mask ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGINT ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGQUIT ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGTERM ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, SIGTSTP ));
-/* SYSV */       ERE(kjb_sigprocmask(SIG_UNBLOCK, &mask, &save_mask));
+/* SYSV */       ERE(ivi_sigemptyset( &mask ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGINT ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGQUIT ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGTERM ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, SIGTSTP ));
+/* SYSV */       ERE(ivi_sigprocmask(SIG_UNBLOCK, &mask, &save_mask));
 #else
 /* not SYSV */   save_mask = sigblock( 0 );
 /* not SYSV */
@@ -685,7 +685,7 @@ void allow_atn(void)
 /* not SYSV */   sigsetmask(save_mask);
 /* not SYSV */
 #endif
-/* UNIX */       free_queue_element(save_elem, kjb_free);
+/* UNIX */       free_queue_element(save_elem, ivi_free);
 #endif
 /* all */        return res;
 /* all */    }
@@ -754,9 +754,9 @@ static int dont_restart_on_sig_guts(int sig)
 
 
 #ifdef UNIX
-    ERE(kjb_sigvec(sig, (Signal_info *)NULL, &cur_vec));
+    ERE(ivi_sigvec(sig, (Signal_info *)NULL, &cur_vec));
     SET_DONT_RESTART_IO_AFTER_SIGNAL(cur_vec);
-    ERE(kjb_sigvec(sig, &cur_vec, (Signal_info *)NULL));
+    ERE(ivi_sigvec(sig, &cur_vec, (Signal_info *)NULL));
 #endif
 
     restart_io_after_sig[ sig ] = FALSE;
@@ -828,9 +828,9 @@ static int restart_on_sig_guts(int sig)
 
 
 #ifdef UNIX
-    ERE(kjb_sigvec(sig, (Signal_info *)NULL, &cur_vec));
+    ERE(ivi_sigvec(sig, (Signal_info *)NULL, &cur_vec));
     SET_RESTART_IO_AFTER_SIGNAL(cur_vec);
-    ERE(kjb_sigvec(sig, &cur_vec, (Signal_info *)NULL));
+    ERE(ivi_sigvec(sig, &cur_vec, (Signal_info *)NULL));
 #endif
 
     restart_io_after_sig[ sig ] = TRUE;
@@ -886,7 +886,7 @@ int reset_restart_on_sig(int sig)
     first_elem = remove_first_element(&(saved_trap_ptr->restart_stack_head),
                                       (Queue_element**)NULL);
 
-    free_queue_element(first_elem, kjb_free);
+    free_queue_element(first_elem, ivi_free);
 
     new_restart_head = saved_trap_ptr->restart_stack_head;
 
@@ -934,13 +934,13 @@ int reset_restart_on_sig(int sig)
 /* SYSV */       sigset_t mask, old_mask, blank_mask;
 /* SYSV */
 /* SYSV */
-/* SYSV */       ERE(kjb_sigemptyset( &blank_mask ));
-/* SYSV */       ERE(kjb_sigemptyset( &mask ));
-/* SYSV */       ERE(kjb_sigaddset( &mask, sig ));
-/* SYSV */       ERE(kjb_sigprocmask(SIG_BLOCK, &mask, &old_mask));
+/* SYSV */       ERE(ivi_sigemptyset( &blank_mask ));
+/* SYSV */       ERE(ivi_sigemptyset( &mask ));
+/* SYSV */       ERE(ivi_sigaddset( &mask, sig ));
+/* SYSV */       ERE(ivi_sigprocmask(SIG_BLOCK, &mask, &old_mask));
 /* SYSV */
 #if 0 /* was ifdef OLD_WAY */
-/* SYSV */       ERE(kjb_sighold( sig ));
+/* SYSV */       ERE(ivi_sighold( sig ));
 #endif
 /* SYSV */
 /* SYSV */       res = NO_ERROR;
@@ -993,7 +993,7 @@ int reset_restart_on_sig(int sig)
 /* SYSV */            res = ERROR;
 /* SYSV */       }
 /* SYSV */
-/* SYSV */       if (kjb_sigprocmask(SIG_SETMASK,
+/* SYSV */       if (ivi_sigprocmask(SIG_SETMASK,
 /* SYSV */                           &old_mask,
 /* SYSV */                           (sigset_t *)NULL) == ERROR)
 /* SYSV */       {
@@ -1080,7 +1080,7 @@ TRAP_FN_RETURN_TYPE record_signal( TRAP_FN_ARGS )
     */
 
 #ifndef UNIX
-    KJB_SIGNAL(sig, record_signal);
+    IVI_SIGNAL(sig, record_signal);
 #endif
 }
 
@@ -1126,7 +1126,7 @@ TRAP_FN_RETURN_TYPE io_atn_fn( TRAP_FN_ARGS )
     */
 
 #ifndef UNIX
-    KJB_SIGNAL(sig, io_atn_fn);
+    IVI_SIGNAL(sig, io_atn_fn);
 #endif
 }
 
@@ -1165,7 +1165,7 @@ TRAP_FN_RETURN_TYPE iteration_atn_fn( TRAP_FN_ARGS )
     */
 
 #ifndef UNIX
-    KJB_SIGNAL(sig, io_atn_fn);
+    IVI_SIGNAL(sig, io_atn_fn);
 #endif
 }
 
@@ -1205,7 +1205,7 @@ TRAP_FN_RETURN_TYPE yes_no_query_atn_fn( TRAP_FN_ARGS )
     // place of signal().
     */
 #ifndef UNIX
-    KJB_SIGNAL(sig, yes_no_query_atn_fn);
+    IVI_SIGNAL(sig, yes_no_query_atn_fn);
 #endif
 
     recorded_signal = sig;
@@ -1230,20 +1230,20 @@ TRAP_FN_RETURN_TYPE confirm_exit_sig_fn( TRAP_FN_ARGS )
     IMPORT volatile int recorded_signal;
 
 
-    KJB_SIGNAL(sig, KJB_SIG_DFL);
+    IVI_SIGNAL(sig, IVI_SIG_DFL);
 
     allow_sig(sig);
 
     if (yes_no_query("Terminate program ? (Y for yes, N for No) "))
     {
         term_puts("Program terminated.\n");
-        kjb_exit_2(EXIT_SUCCESS);
+        ivi_exit_2(EXIT_SUCCESS);
         /*NOTREACHED*/
     }
 
     recorded_signal = sig;
 
-    KJB_SIGNAL(sig, confirm_exit_sig_fn);
+    IVI_SIGNAL(sig, confirm_exit_sig_fn);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1277,7 +1277,7 @@ TRAP_FN_RETURN_TYPE sort_atn_fn( TRAP_FN_ARGS )
     // sigset() was used in place of signal().
     */
 #ifndef UNIX
-    KJB_SIGNAL(sig, sort_atn_fn);
+    IVI_SIGNAL(sig, sort_atn_fn);
 #endif
 }
 
@@ -1310,7 +1310,7 @@ TRAP_FN_RETURN_TYPE safe_default_sig_fn(TRAP_FN_ARGS)
     TEST_PSE(("Process %ld is in safe_default_sig_fn due to signal %d.\n",
               MY_PID, sig));
 
-    kjb_cleanup_for_abort();
+    ivi_cleanup_for_abort();
 
     kill_myself(sig);
 }
@@ -1336,7 +1336,7 @@ TRAP_FN_RETURN_TYPE safe_exit_fn(TRAP_FN_DUMMY_ARGS)
 
     TEST_PSE(("Process %ld is in safe_exit_fn.\n", (long)MY_PID));
 
-    kjb_exit(EXIT_FAILURE);
+    ivi_exit(EXIT_FAILURE);
 }
 
 
@@ -1356,13 +1356,13 @@ TRAP_FN_RETURN_TYPE safe_exit_fn(TRAP_FN_DUMMY_ARGS)
 /*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE default_abort_fn(TRAP_FN_DUMMY_ARGS)
 {
-    IMPORT void (*kjb_bug_handler)(const char*);
+    IMPORT void (*ivi_bug_handler)(const char*);
 
 
-    if (kjb_bug_handler != NULL)
+    if (ivi_bug_handler != NULL)
     {
         dbw();
-        (*kjb_bug_handler)("Trapped deadly signal.");
+        (*ivi_bug_handler)("Trapped deadly signal.");
     }
 
     /* Don't use L level routines when not necessary. */
@@ -1373,7 +1373,7 @@ TRAP_FN_RETURN_TYPE default_abort_fn(TRAP_FN_DUMMY_ARGS)
     fprintf(stderr, "\n*** Fatal internal error\n");
     fprintf(stderr, "*** Error Termination\n\n");
 
-    kjb_exit(EXIT_FAILURE);
+    ivi_exit(EXIT_FAILURE);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1406,7 +1406,7 @@ TRAP_FN_RETURN_TYPE reset_terminal_size_on_sig_fn( TRAP_FN_ARGS )
     // sigset() was used in place of signal().
     */
 #ifndef UNIX
-    KJB_SIGNAL(sig, reset_terminal_size_on_sig_fn);
+    IVI_SIGNAL(sig, reset_terminal_size_on_sig_fn);
 #endif
 }
 
@@ -1481,7 +1481,7 @@ TRAP_FN_RETURN_TYPE cooked_mode_sig_fn( TRAP_FN_ARGS )
               super-section. Keep as is in case we decide to emulate UNIX
               behaviour on some system.
     */
-    KJB_SIGNAL(sig, cooked_mode_sig_fn);
+    IVI_SIGNAL(sig, cooked_mode_sig_fn);
 #endif
 }
 
@@ -1555,7 +1555,7 @@ TRAP_FN_RETURN_TYPE raw_mode_with_echo_sig_fn( TRAP_FN_ARGS )
               super-section. Keep as is in case we decide to emulate UNIX
               behaviour on some system.
     */
-    KJB_SIGNAL(sig, raw_mode_with_echo_sig_fn);
+    IVI_SIGNAL(sig, raw_mode_with_echo_sig_fn);
 #endif
 }
 
@@ -1629,7 +1629,7 @@ TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_sig_fn( TRAP_FN_ARGS )
               super-section. Keep as is in case we decide to emulate UNIX
               behaviour on some system.
     */
-    KJB_SIGNAL(sig, raw_mode_with_no_echo_sig_fn);
+    IVI_SIGNAL(sig, raw_mode_with_no_echo_sig_fn);
 #endif
 }
 #endif   /* UNIX */
@@ -1663,11 +1663,11 @@ TRAP_FN_RETURN_TYPE reset_term_before_default_sig_fn( TRAP_FN_ARGS )
 
     allow_sig(sig);
 
-    KJB_SIGNAL(sig, KJB_SIG_DFL);
+    IVI_SIGNAL(sig, IVI_SIG_DFL);
 
     kill_myself(sig);
 
-    KJB_SIGNAL(sig, reset_term_before_default_sig_fn);
+    IVI_SIGNAL(sig, reset_term_before_default_sig_fn);
 }
 
 
@@ -1716,7 +1716,7 @@ TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_default_sig_fn( TRAP_FN_ARGS )
 
     allow_sig(sig);
 
-    KJB_SIGNAL(sig, KJB_SIG_DFL);
+    IVI_SIGNAL(sig, IVI_SIG_DFL);
 
     kill_myself(sig);
 
@@ -1729,7 +1729,7 @@ TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_default_sig_fn( TRAP_FN_ARGS )
 
     term_set_raw_mode_with_no_echo();
 
-    KJB_SIGNAL(sig, reset_term_before_default_sig_fn);
+    IVI_SIGNAL(sig, reset_term_before_default_sig_fn);
 }
 
 #endif
@@ -1737,7 +1737,7 @@ TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_default_sig_fn( TRAP_FN_ARGS )
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_signal
+ *                              ivi_signal
  *
  *
  *
@@ -1747,16 +1747,16 @@ TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_default_sig_fn( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-int kjb_signal(int sig_num, void (*fn) (int))
+int ivi_signal(int sig_num, void (*fn) (int))
 {
     TRAP_FN_RETURN_TYPE (*result)(TRAP_FN_ARGS);
 
-    result = KJB_SIGNAL(sig_num, fn);
+    result = IVI_SIGNAL(sig_num, fn);
 
     if (result == SIG_ERR )
     {
 #ifdef TEST
-        set_error("Call to KJB_SIGNAL failed.%S");
+        set_error("Call to IVI_SIGNAL failed.%S");
 #else
         set_error("System call failure.");
 #endif
@@ -1773,7 +1773,7 @@ int kjb_signal(int sig_num, void (*fn) (int))
 #ifdef UNIX
 
 /* =============================================================================
- *                                  kjb_sigvec
+ *                                  ivi_sigvec
  *
  *
  * Index:
@@ -1782,18 +1782,18 @@ int kjb_signal(int sig_num, void (*fn) (int))
  * -----------------------------------------------------------------------------
 */
 
-int kjb_sigvec(int sig, struct sigaction *new_vec_ptr,
+int ivi_sigvec(int sig, struct sigaction *new_vec_ptr,
                struct sigaction *old_vec_ptr)
 {
     int result;
 
 
-    result = KJB_SIGVEC(sig, new_vec_ptr, old_vec_ptr);
+    result = IVI_SIGVEC(sig, new_vec_ptr, old_vec_ptr);
 
     if (result == -1 )
     {
 #ifdef TEST
-        set_error("Call to KJB_SIGVEC failed.%S");
+        set_error("Call to IVI_SIGVEC failed.%S");
 #else
         set_error("System call failure.");
 #endif
@@ -1809,7 +1809,7 @@ int kjb_sigvec(int sig, struct sigaction *new_vec_ptr,
 
 /*
  * =============================================================================
- *                                  kjb_sigemptyset
+ *                                  ivi_sigemptyset
  *
  *
  *
@@ -1822,7 +1822,7 @@ int kjb_sigvec(int sig, struct sigaction *new_vec_ptr,
 
 #ifdef SYSV_SIGNALS
 
-int kjb_sigemptyset(sigset_t *mask_ptr)
+int ivi_sigemptyset(sigset_t *mask_ptr)
 {
     int result;
 
@@ -1848,7 +1848,7 @@ int kjb_sigemptyset(sigset_t *mask_ptr)
 
 /*
  * =============================================================================
- *                                  kjb_sigaddset
+ *                                  ivi_sigaddset
  *
  *
  *
@@ -1861,7 +1861,7 @@ int kjb_sigemptyset(sigset_t *mask_ptr)
 
 /* Still in #ifdef SYSV */
 
-int kjb_sigaddset(sigset_t *mask_ptr, int sig)
+int ivi_sigaddset(sigset_t *mask_ptr, int sig)
 {
     int result;
 
@@ -1887,7 +1887,7 @@ int kjb_sigaddset(sigset_t *mask_ptr, int sig)
 
 /*
  * =============================================================================
- *                                  kjb_sigprocmask
+ *                                  ivi_sigprocmask
  *
  *
  *
@@ -1900,7 +1900,7 @@ int kjb_sigaddset(sigset_t *mask_ptr, int sig)
 
 /* Still in #ifdef SYSV */
 
-int kjb_sigprocmask(int sig, sigset_t *mask_ptr, sigset_t *old_mask_ptr)
+int ivi_sigprocmask(int sig, sigset_t *mask_ptr, sigset_t *old_mask_ptr)
 {
     int result;
 

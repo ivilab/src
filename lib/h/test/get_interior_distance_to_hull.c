@@ -1,5 +1,5 @@
 
-/* $Id: get_interior_distance_to_hull.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: get_interior_distance_to_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     {
         verbose_pso(1, "2D Test %d.\n", i+1);
 
-        num_points = 5 + 100.0 * kjb_rand();
+        num_points = 5 + 100.0 * ivi_rand();
         EPETE(get_random_matrix(&point_mp, num_points, 2));
         NPETE(hp = find_convex_hull(point_mp, DEFAULT_HULL_OPTIONS));
 
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
     {
         verbose_pso(1, "3D Test %d.\n", i+1);
 
-        num_points = 5 + 100.0 * kjb_rand();
+        num_points = 5 + 100.0 * ivi_rand();
         EPETE(get_random_matrix(&point_mp, num_points, 3));
         NPETE(hp = find_convex_hull(point_mp, DEFAULT_HULL_OPTIONS));
 

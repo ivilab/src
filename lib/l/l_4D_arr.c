@@ -1,5 +1,5 @@
 
-/* $Id: l_4D_arr.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: l_4D_arr.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -52,7 +52,7 @@ double**** allocate_4D_double_array(int num_blocks, int num_planes,
 
     if (plane_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -60,8 +60,8 @@ double**** allocate_4D_double_array(int num_blocks, int num_planes,
 
     if (row_ptr == NULL)
     {
-        kjb_free(array);
-        kjb_free(plane_ptr);
+        ivi_free(array);
+        ivi_free(plane_ptr);
         return NULL;
     }
 
@@ -70,9 +70,9 @@ double**** allocate_4D_double_array(int num_blocks, int num_planes,
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
-        kjb_free(plane_ptr);
-        kjb_free(row_ptr);
+        ivi_free(array);
+        ivi_free(plane_ptr);
+        ivi_free(row_ptr);
         return NULL;
     }
 
@@ -127,7 +127,7 @@ float**** allocate_4D_float_array(int num_blocks, int num_planes,
 
     if (plane_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -135,8 +135,8 @@ float**** allocate_4D_float_array(int num_blocks, int num_planes,
 
     if (row_ptr == NULL)
     {
-        kjb_free(array);
-        kjb_free(plane_ptr);
+        ivi_free(array);
+        ivi_free(plane_ptr);
         return NULL;
     }
 
@@ -145,9 +145,9 @@ float**** allocate_4D_float_array(int num_blocks, int num_planes,
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
-        kjb_free(plane_ptr);
-        kjb_free(row_ptr);
+        ivi_free(array);
+        ivi_free(plane_ptr);
+        ivi_free(row_ptr);
         return NULL;
     }
 
@@ -202,7 +202,7 @@ void***** allocate_4D_ptr_array(int num_blocks, int num_planes,
 
     if (plane_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -210,8 +210,8 @@ void***** allocate_4D_ptr_array(int num_blocks, int num_planes,
 
     if (row_ptr == NULL)
     {
-        kjb_free(array);
-        kjb_free(plane_ptr);
+        ivi_free(array);
+        ivi_free(plane_ptr);
         return NULL;
     }
 
@@ -220,9 +220,9 @@ void***** allocate_4D_ptr_array(int num_blocks, int num_planes,
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
-        kjb_free(plane_ptr);
-        kjb_free(row_ptr);
+        ivi_free(array);
+        ivi_free(plane_ptr);
+        ivi_free(row_ptr);
         return NULL;
     }
 
@@ -258,10 +258,10 @@ void free_4D_ptr_array(void***** array)
 
     if (array == NULL) return;
 
-    kjb_free(***array);
-    kjb_free(**array);
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(***array);
+    ivi_free(**array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -272,10 +272,10 @@ void free_4D_double_array(double**** array)
 
     if (array == NULL) return;
 
-    kjb_free(***array);
-    kjb_free(**array);
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(***array);
+    ivi_free(**array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -286,10 +286,10 @@ void free_4D_float_array(float**** array)
 
     if (array == NULL) return;
 
-    kjb_free(***array);
-    kjb_free(**array);
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(***array);
+    ivi_free(**array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

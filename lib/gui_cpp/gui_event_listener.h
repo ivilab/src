@@ -1,4 +1,4 @@
-/* $Id: gui_event_listener.h 11234 2011-11-28 04:44:53Z ksimek $ */
+/* $Id: gui_event_listener.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_EVENT_LISTENER
-#define KJB_CPP_GUI_EVENT_LISTENER
+#ifndef IVI_CPP_GUI_EVENT_LISTENER
+#define IVI_CPP_GUI_EVENT_LISTENER
 /**
  * Abstract interface for objects that can consume Glut interaction events
  * (click, drag, hover, and keyboard).  Method names and their signatures 

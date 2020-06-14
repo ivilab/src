@@ -1,5 +1,5 @@
 
-/* $Id: camera_bw_byte_image.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: camera_bw_byte_image.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -30,7 +30,7 @@ int get_target_camera_bw_byte_image(Camera_bw_byte_image **target_ipp, int num_r
     /*I think we need to free if the structure is not null*/
     if (*target_ipp != NULL)
     {
-        kjb_free_camera_bw_byte_image(*target_ipp);      
+        ivi_free_camera_bw_byte_image(*target_ipp);      
     }
     if (*target_ipp == NULL)
     {
@@ -69,7 +69,7 @@ int get_target_camera_bw_byte_image(Camera_bw_byte_image **target_ipp, int num_r
         if (    (( (*target_ipp)->data)->num_rows != num_rows)
                 || (( (*target_ipp)->data)->num_cols != num_cols))
         {
-            kjb_free_bw_byte_image( (*target_ipp)->data);
+            ivi_free_bw_byte_image( (*target_ipp)->data);
             get_target_bw_byte_image( &((*target_ipp)->data), num_rows, num_cols);
             /*NRE( (*target_ipp)->data = create_bw_byte_image(num_rows, num_cols));*/
         }
@@ -81,10 +81,10 @@ int get_target_camera_bw_byte_image(Camera_bw_byte_image **target_ipp, int num_r
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-void kjb_free_camera_bw_byte_image(Camera_bw_byte_image* ip)
+void ivi_free_camera_bw_byte_image(Camera_bw_byte_image* ip)
 {
-  kjb_free_bw_byte_image(ip->data);
-  kjb_free(ip);
+  ivi_free_bw_byte_image(ip->data);
+  ivi_free(ip);
 }
 
 #ifdef __cplusplus

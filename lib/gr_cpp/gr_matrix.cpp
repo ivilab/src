@@ -1,4 +1,4 @@
-/* $Id: gr_matrix.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_matrix.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,7 +20,7 @@
 #include "l/l_sys_debug.h"  /* For ASSERT. */
 #include "gr_cpp/gr_matrix.h"
 
-namespace kjb
+namespace ivi
 {
 /**
  * Apply translation v to homogeneous 3D transformation matrix m.
@@ -39,7 +39,7 @@ void rotate(Matrix& m, const Quaternion& r)
     }
     else if(m.get_num_rows() != 4)
     {
-        KJB_THROW_2(Illegal_argument, "Number of arguments must be 3 or 4.");
+        IVI_THROW_2(Illegal_argument, "Number of arguments must be 3 or 4.");
     }
 
     m *= r.get_rotation_matrix();

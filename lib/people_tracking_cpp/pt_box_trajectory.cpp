@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau
  * =========================================================================== */
 
-/*$Id: pt_box_trajectory.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/*$Id: pt_box_trajectory.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "people_tracking_cpp/pt_box_trajectory.h"
 #include "people_tracking_cpp/pt_complete_trajectory.h"
@@ -26,10 +26,10 @@
 
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
-Box_trajectory kjb::pt::get_body_box_trajectory
+Box_trajectory ivi::pt::get_body_box_trajectory
 (
     const Trajectory& traj,
     const Perspective_camera& cam
@@ -61,7 +61,7 @@ Box_trajectory kjb::pt::get_body_box_trajectory
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Box_trajectory_map kjb::pt::get_body_box_trajectory_map
+Box_trajectory_map ivi::pt::get_body_box_trajectory_map
 (
     const Trajectory_map& trajs,
     const Perspective_camera& cam
@@ -80,7 +80,7 @@ Box_trajectory_map kjb::pt::get_body_box_trajectory_map
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Box_trajectory kjb::pt::get_face_box_trajectory
+Box_trajectory ivi::pt::get_face_box_trajectory
 (
     const Trajectory& traj,
     const Perspective_camera& cam
@@ -119,7 +119,7 @@ Box_trajectory kjb::pt::get_face_box_trajectory
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Box_trajectory_map kjb::pt::get_face_box_trajectory_map
+Box_trajectory_map ivi::pt::get_face_box_trajectory_map
 (
     const Trajectory_map& trajs,
     const Perspective_camera& cam

@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: svgwrap.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: svgwrap.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
@@ -37,7 +37,7 @@ bool bad_xml_text_char( const char& ccc )
 } // end anonymous ns
 
 
-namespace kjb {
+namespace ivi {
 namespace qd {
 
 
@@ -80,9 +80,9 @@ std::string SvgWrap::generate_stroke_attr() const
 /// @brief render the path in a rectangular box using SVG 1.1
 std::string SvgWrap::operator()() const
 {
-    if (m_width <= 0) KJB_THROW_2(Illegal_argument, "m_width must be positive");
-    if (m_height <= 0) KJB_THROW_2(Illegal_argument, "m_height must be positive");
-    if (m_magnify <= 0) KJB_THROW_2(Illegal_argument, "m_magnify must be positive");
+    if (m_width <= 0) IVI_THROW_2(Illegal_argument, "m_width must be positive");
+    if (m_height <= 0) IVI_THROW_2(Illegal_argument, "m_height must be positive");
+    if (m_magnify <= 0) IVI_THROW_2(Illegal_argument, "m_magnify must be positive");
 
     std::ostringstream ss;
     if ( m_gen_xml_header )
@@ -153,7 +153,7 @@ std::string SvgWrap::operator()() const
 
 /**
  * @brief try to set the id string for the path
- * @throws kjb::Illegal_argument if the ID string contains a bad character.
+ * @throws ivi::Illegal_argument if the ID string contains a bad character.
  * @return reference to self (for easy chaining of these setters).
  *
  * Disallowed characters include nonprintable characters and the characters
@@ -166,7 +166,7 @@ SvgWrap& SvgWrap::set_id( const std::string& id )
         ||  id.find('"') < id.size()
         )
     {
-        KJB_THROW_2( kjb::Illegal_argument, "Invalid character in ID" );
+        IVI_THROW_2( ivi::Illegal_argument, "Invalid character in ID" );
     }
     m_id = id;
     return *this;
@@ -174,7 +174,7 @@ SvgWrap& SvgWrap::set_id( const std::string& id )
 
 /**
  * @brief set an extra attribute to add to each path node in SVG
- * @throws kjb::Illegal_argument if the string contains a bad character.
+ * @throws ivi::Illegal_argument if the string contains a bad character.
  *
  * The purpose is to set one or more attributes to be applied to each path node
  * to support the many SVG features that we don't want to explicitly add to the
@@ -197,7 +197,7 @@ SvgWrap& SvgWrap::set_path_extra( const std::string& e )
 {
     if ( std::find_if(e.begin(), e.end(), bad_xml_text_char) < e.end() )
     {
-        KJB_THROW_2( kjb::Illegal_argument, "Invalid character in extra" );
+        IVI_THROW_2( ivi::Illegal_argument, "Invalid character in extra" );
     }
     m_extra = e;
     return *this;
@@ -207,5 +207,5 @@ SvgWrap& SvgWrap::set_path_extra( const std::string& e )
 
 
 } // end namespace qd
-} // end namespace kjb
+} // end namespace ivi
 

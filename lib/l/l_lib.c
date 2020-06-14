@@ -1,5 +1,5 @@
 
-/* $Id: l_lib.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: l_lib.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -43,7 +43,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-static char fs_kjb_program_name[ MAX_PROGRAM_NAME_SIZE ] = "";
+static char fs_ivi_program_name[ MAX_PROGRAM_NAME_SIZE ] = "";
 
 /* -------------------------------------------------------------------------- */
 
@@ -51,7 +51,7 @@ int set_program_name(char* program_name)
 {
 
 
-    BUFF_CPY(fs_kjb_program_name, program_name);
+    BUFF_CPY(fs_ivi_program_name, program_name);
 
     return NO_ERROR;
 }
@@ -62,9 +62,9 @@ int get_program_name(char* buff, size_t buff_size)
 {
 
 
-    kjb_strncpy(buff, fs_kjb_program_name, buff_size);
+    ivi_strncpy(buff, fs_ivi_program_name, buff_size);
 
-    if (fs_kjb_program_name[ 0 ] == '\0')
+    if (fs_ivi_program_name[ 0 ] == '\0')
     {
         return ERROR;
     }

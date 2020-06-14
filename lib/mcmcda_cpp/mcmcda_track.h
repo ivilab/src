@@ -26,7 +26,7 @@
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 /**
@@ -282,12 +282,12 @@ inline Generic_track<Element> merge_tracks
     typename Generic_track<Element>::const_iterator it;
 
     it = track1.find(t_f);
-    IFTD(it != track1.end(), KJB_error,
+    IFTD(it != track1.end(), IVI_error,
          "merge_tracks: track1 has no point at %d.", (t_f));
     result.insert(track1.begin(), it);
 
     it = track2.find(t_1);
-    IFTD(it != track2.end(), KJB_error,
+    IFTD(it != track2.end(), IVI_error,
          "merge_tracks: track2 has no point at %d.", (t_1));
     result.insert(it, track2.end());
 
@@ -312,22 +312,22 @@ void swap_tracks
     typename Generic_track<Element>::iterator it;
 
     it = track1.upper_bound(t1);
-    IFTD(it != track1.end(), KJB_error,
+    IFTD(it != track1.end(), IVI_error,
          "swap_tracks: track1 has no point after time %d.", (t1));
     track1.erase(it, track1.end());
 
     it = track2.find(tq1);
-    IFTD(it != track2.end(), KJB_error,
+    IFTD(it != track2.end(), IVI_error,
          "swap_tracks: track2 has no point at time %d.", (tq1));
     track1.insert(it, track2.end());
 
     it = track2.upper_bound(t2);
-    IFTD(it != track2.end(), KJB_error,
+    IFTD(it != track2.end(), IVI_error,
          "swap_tracks: track2 has no point after time %d.", (t2));
     track2.erase(it, track2.end());
 
     it = temp_track.find(tp1);
-    IFTD(it != temp_track.end(), KJB_error,
+    IFTD(it != temp_track.end(), IVI_error,
          "swap_tracks: track1 has no point at time %d.", (tp1));
     track2.insert(it, temp_track.end());
 }
@@ -431,7 +431,7 @@ bool operator<
     return m1 < m2;
 }
 
-}} //namespace kjb::mcmcda
+}} //namespace ivi::mcmcda
 
 #endif /*MCMCDA_TRACK_H_INCLUDED */
 

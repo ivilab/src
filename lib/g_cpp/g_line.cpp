@@ -21,7 +21,7 @@
 
 #include "g_cpp/g_line.h"
 
-namespace kjb
+namespace ivi
 {
 
 
@@ -31,11 +31,11 @@ namespace kjb
  *  @param point_1 The first point
  *  @param point_2 The second point
  */
-Line::Line(const kjb::Vector & point_1, const kjb::Vector & point_2) : line_params(3, 1.0)
+Line::Line(const ivi::Vector & point_1, const ivi::Vector & point_2) : line_params(3, 1.0)
 {
     if( (point_1.size() < 2) || (point_2.size() < 2) || (point_1.size() > 3) || (point_2.size() > 3))
     {
-        KJB_THROW_2(Illegal_argument, "Build line from two points, points size is wrong");
+        IVI_THROW_2(Illegal_argument, "Build line from two points, points size is wrong");
     }
     double x1 = point_1(0);
     double y1 = point_1(1);
@@ -46,7 +46,7 @@ Line::Line(const kjb::Vector & point_1, const kjb::Vector & point_2) : line_para
     {
         if( fabs(point_1(2) ) < DBL_EPSILON )
         {
-            KJB_THROW_2(Illegal_argument, "Build line from two points, homogeneous coordinate is zero");
+            IVI_THROW_2(Illegal_argument, "Build line from two points, homogeneous coordinate is zero");
         }
         x1 /= point_1(2);
         y1 /= point_1(2);
@@ -55,7 +55,7 @@ Line::Line(const kjb::Vector & point_1, const kjb::Vector & point_2) : line_para
     {
         if( fabs(point_2(2) ) < DBL_EPSILON )
         {
-            KJB_THROW_2(Illegal_argument, "Build line from two points, homogeneous coordinate is zero");
+            IVI_THROW_2(Illegal_argument, "Build line from two points, homogeneous coordinate is zero");
         }
         x2 /= point_2(2);
         y2 /= point_2(2);
@@ -96,7 +96,7 @@ Line::Line(const kjb::Vector & point_1, const kjb::Vector & point_2) : line_para
  *
  * @return true if the lines intercept, false if thet are parallel
  */
-bool Line::find_line_intersection(const Line & l1, const Line & l2, kjb::Vector & ints)
+bool Line::find_line_intersection(const Line & l1, const Line & l2, ivi::Vector & ints)
 {
     /**
      *  Given that line 1  and line 2 are defined as
@@ -134,11 +134,11 @@ bool Line::find_line_intersection(const Line & l1, const Line & l2, kjb::Vector 
  * @param point the point to compute the distance for
  * @return the distance between the line and the point
  */
-double Line::find_distance_to_point(const kjb::Vector & point) const
+double Line::find_distance_to_point(const ivi::Vector & point) const
 {
     if(point.size() < 2)
     {
-        KJB_THROW_2(Illegal_argument, "Cannot find distance between line and point, input point vector size < 2");
+        IVI_THROW_2(Illegal_argument, "Cannot find distance between line and point, input point vector size < 2");
     }
 
     return fabs(point(0)*line_params(0) + point(1)*line_params(1) + line_params(2))/
@@ -179,16 +179,16 @@ Vector Line::project_point_onto_line(const Vector& point) const
  */
 bool intersect_3D_line_with_plane
 (
-    kjb::Vector & intersection,
+    ivi::Vector & intersection,
     double &t,
-    const kjb::Vector & point,
-    const kjb::Vector & direction,
-    const kjb::Vector & plane
+    const ivi::Vector & point,
+    const ivi::Vector & direction,
+    const ivi::Vector & plane
 )
 {
     if( (point.size() < 3) || (direction.size() < 3) || (plane.size() != 4) )
     {
-        KJB_THROW_2(Illegal_argument, "Intersect 3D line with plane, bad inputs");
+        IVI_THROW_2(Illegal_argument, "Intersect 3D line with plane, bad inputs");
     }
     double dp1 = 0.0;
     double dp2 = 0.0;
@@ -218,4 +218,4 @@ bool intersect_3D_line_with_plane
 
 
 
-} // namespace kjb
+} // namespace ivi

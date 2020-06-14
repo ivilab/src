@@ -1,5 +1,5 @@
 
-/* $Id: curv_type.h 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: curv_type.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

@@ -30,7 +30,7 @@
 #include <fstream>
 #include <boost/random.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 // a class with mixture data comes from mixture distribution A and B 

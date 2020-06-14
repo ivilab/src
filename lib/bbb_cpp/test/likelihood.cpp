@@ -35,7 +35,7 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 const bool VERBOSE = true;
@@ -91,8 +91,8 @@ int main(int argc, char** argv)
         string desc_dp = out_dp + "/description";
         string data_fp = out_dp + "/data/data.txt";
 
-        kjb_c::kjb_mkdir(desc_dp.c_str());
-        kjb_c::kjb_mkdir((out_dp + "/data").c_str());
+        ivi_c::ivi_mkdir(desc_dp.c_str());
+        ivi_c::ivi_mkdir((out_dp + "/data").c_str());
 
         bbb::write(desc, desc_dp, lib, data.ibegin(), data.iend());
         bbb::write(data, data_fp);

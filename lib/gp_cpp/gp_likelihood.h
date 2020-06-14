@@ -27,7 +27,7 @@
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_pdf.h>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 class Linear_gaussian
@@ -164,7 +164,7 @@ private:
     mutable bool cov_dirty_;
 };
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_LIKELIHOOD_H_INCLUDED */
 

@@ -1,4 +1,4 @@
-/* $Id: gr_sprite.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_sprite.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,14 +17,14 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include "gr_cpp/gr_sprite.h"
 #include <map>
 #include "gr_cpp/gr_opengl.h"
 #include <iostream>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 using namespace std;
 
 map<int, int> Sprite::m_ref_count;
@@ -189,7 +189,7 @@ void Sprite::set_filters(GLenum min_filter, GLenum mag_filter)
         case GL_LINEAR:
             break;
         default:
-            KJB_THROW(Illegal_argument);
+            IVI_THROW(Illegal_argument);
             break;
 
     }
@@ -203,10 +203,10 @@ void Sprite::set_filters(GLenum min_filter, GLenum mag_filter)
         case GL_LINEAR_MIPMAP_NEAREST:
         case GL_NEAREST_MIPMAP_LINEAR:
         case GL_LINEAR_MIPMAP_LINEAR:
-            KJB_THROW(Not_implemented);
+            IVI_THROW(Not_implemented);
             break;
         default:
-            KJB_THROW(Illegal_argument);
+            IVI_THROW(Illegal_argument);
 
     }
 
@@ -415,5 +415,5 @@ void Sprite::set(const Texture& tex)
     m_init_texture();
 }
 
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
 

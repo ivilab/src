@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_optical_flow_likelihood.h 18178 2014-11-11 18:26:57Z ernesto $ */
+/* $Id: pt_optical_flow_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_OPTICAL_FLOW_LIKELIHOOD_H
 #define PT_OPTICAL_FLOW_LIKELIHOOD_H
@@ -31,7 +31,7 @@
 #include <prob_cpp/prob_distribution.h>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -98,7 +98,7 @@ private:
     Laplace_distribution m_bg_y_dist;
 };
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_OPTICAL_FLOW_LIKELIHOOD_H */
 

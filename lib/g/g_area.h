@@ -20,13 +20,13 @@
 /* vim: tabstop=4 shiftwidth=4 foldmethod=marker */
 
 
-#ifndef KJB_G_G_AREA_H
-#define KJB_G_G_AREA_H
+#ifndef IVI_G_G_AREA_H
+#define IVI_G_G_AREA_H
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

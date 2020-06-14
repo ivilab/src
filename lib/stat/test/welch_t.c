@@ -1,5 +1,5 @@
 
-/* $Id: welch_t.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: welch_t.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -40,7 +40,7 @@ int main(void)
     int    df;
 
 
-    kjb_init();
+    ivi_init();
 
     EPETE(welch_t_test_one_sided(mean_1, mean_2, var_1, var_2, count_1, count_2, 
                                  &t_prime, &df, &effect_size, &p_val));
@@ -48,7 +48,7 @@ int main(void)
     pso("Welch t statistic is %.3e, df is %d, effect size is: %.3f, p-value is %.2e\n\n", 
         t_prime, df, effect_size, p_val);
 
-    kjb_exit(EXIT_SUCCESS); 
+    ivi_exit(EXIT_SUCCESS); 
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

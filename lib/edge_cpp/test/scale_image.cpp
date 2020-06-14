@@ -25,7 +25,7 @@
 #include "i_cpp/i_image.h"
 
 using namespace std;
-using namespace kjb_c;
+using namespace ivi_c;
 
 #define MAX_NUM_ROWS 400
 #define MAX_NUM_COLS 400
@@ -34,7 +34,7 @@ using namespace kjb_c;
 
 int main(int argc, char ** argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     if(argc != 4)
     {
@@ -55,7 +55,7 @@ int main(int argc, char ** argv)
     outname.append(".jpg");
 
     Image img(name.c_str());
-    kjb_c::KJB_image * cimg = 0;
+    ivi_c::IVI_image * cimg = 0;
 
     double scale_factor = 1.0;
 

@@ -27,12 +27,12 @@
 #define CAMERA_SELECTED 1
 #define POLYMESH_SELECTED 2
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * Test converting OpenGL camera parameters into a parametric camera.
  */
-class CameraConversionTest: public kjb::Readable, public kjb::Writeable
+class CameraConversionTest: public ivi::Readable, public ivi::Writeable
 {
 
 public:
@@ -88,8 +88,8 @@ public:
         m_parapiped.set_angles_from_quaternion(parapiped_orientation);
     }
 
-    virtual void read(std::istream&) throw (kjb::Illegal_argument,
-            kjb::IO_error)
+    virtual void read(std::istream&) throw (ivi::Illegal_argument,
+            ivi::IO_error)
     {
         using std::ostringstream;
         using std::istringstream;
@@ -97,13 +97,13 @@ public:
         // TODO: finish reading parameters from a file
     }
 
-    virtual void read(const char * fname) throw (kjb::IO_error,
-            kjb::Illegal_argument)
+    virtual void read(const char * fname) throw (ivi::IO_error,
+            ivi::Illegal_argument)
     {
         Readable::read(fname);
     }
 
-    virtual void write(std::ostream&) const throw (kjb::IO_error)
+    virtual void write(std::ostream&) const throw (ivi::IO_error)
     {
         using std::ostringstream;
         using std::istringstream;
@@ -111,7 +111,7 @@ public:
         // TODO: finish writing parameters to a file
     }
 
-    virtual void write(const char * fname) const throw (kjb::IO_error)
+    virtual void write(const char * fname) const throw (ivi::IO_error)
     {
         Writeable::write(fname);
     }
@@ -126,7 +126,7 @@ public:
         glutDisplayFunc(display_glut);
         glutTimerFunc(10, timer_glut, 0);
         glutKeyboardFunc(keyboard_glut);
-        kjb::opengl::default_init_opengl(kWidth, kHeight);
+        ivi::opengl::default_init_opengl(kWidth, kHeight);
 
         int
                 camera_menu =
@@ -181,7 +181,7 @@ public:
         glutAddSubMenu("Mesh", pp_menu);
         glutAttachMenu( GLUT_RIGHT_BUTTON);
 
-        if ( kjb_c::is_interactive() )
+        if ( ivi_c::is_interactive() )
         {
             glutMainLoop();
         }

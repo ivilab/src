@@ -1,5 +1,5 @@
 
-/* $Id: i_valid.c 7206 2010-10-27 06:49:06Z kobus $ */
+/* $Id: i_valid.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -31,7 +31,7 @@ extern "C" {
 
 /* Kobus, 09-09-11:
  *    Make it so the default is not to clip, so that all operations in
- *    kjb_read_image() are "opt in". The easiest way to do so is to set the clip
+ *    ivi_read_image() are "opt in". The easiest way to do so is to set the clip
  *    very high. 
  *
 static float fs_image_clip_point      = 254.5;
@@ -205,7 +205,7 @@ int set_image_validity_options(const char* option, const char* value)
  * -----------------------------------------------------------------------------
 */
 
-int mark_clipped_pixels(KJB_image* ip)
+int mark_clipped_pixels(IVI_image* ip)
 {
     int    i, j, num_rows, num_cols;
     Pixel* pos;
@@ -296,7 +296,7 @@ int mark_clipped_pixels(KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int mark_dark_pixels(KJB_image* ip)
+int mark_dark_pixels(IVI_image* ip)
 {
     int    i, j, num_rows, num_cols;
     Pixel* pos;
@@ -385,7 +385,7 @@ int mark_dark_pixels(KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int unmark_dark_pixels(KJB_image* ip)
+int unmark_dark_pixels(IVI_image* ip)
 {
     int    i, j, num_rows, num_cols;
     Pixel* pos;
@@ -425,16 +425,16 @@ int unmark_dark_pixels(KJB_image* ip)
 */
 
 
-int mark_blooming_candidates(KJB_image** out_ipp, const KJB_image* in_ip)
+int mark_blooming_candidates(IVI_image** out_ipp, const IVI_image* in_ip)
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel* out_pos;
     int    i, j, num_rows, num_cols;
 
 
     UNTESTED_CODE();   /* Untesed since change to validity. */
 
-    ERE(kjb_copy_image(out_ipp, in_ip));
+    ERE(ivi_copy_image(out_ipp, in_ip));
 
     num_rows = in_ip->num_rows;
     num_cols = in_ip->num_cols;
@@ -600,7 +600,7 @@ int mark_blooming_candidates(KJB_image** out_ipp, const KJB_image* in_ip)
  * -----------------------------------------------------------------------------
 */
 
-int mark_pixels_above_threshold(KJB_image* ip, double max)
+int mark_pixels_above_threshold(IVI_image* ip, double max)
 {
     int    i, j, num_rows, num_cols;
     Pixel* pos;
@@ -663,7 +663,7 @@ int mark_pixels_above_threshold(KJB_image* ip, double max)
  * -----------------------------------------------------------------------------
 */
 
-int mark_pixels_below_threshold(KJB_image* ip, double min)
+int mark_pixels_below_threshold(IVI_image* ip, double min)
 {
     int    i, j, num_rows, num_cols;
     Pixel* pos;
@@ -731,7 +731,7 @@ int mark_pixels_below_threshold(KJB_image* ip, double min)
  * -----------------------------------------------------------------------------
 */
 
-int count_invalid_pixels(const KJB_image* ip)
+int count_invalid_pixels(const IVI_image* ip)
 {
     int    i, j, num_rows, num_cols;
     Pixel* pos;

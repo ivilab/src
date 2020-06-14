@@ -1,4 +1,4 @@
-/* $Id: g_hull.h 19025 2015-05-08 15:05:48Z ernesto $                                                                       */
+/* $Id: g_hull.h 25499 2020-06-14 13:26:04Z kobus $                                                                       */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author: Jinyan Guan 
  * =========================================================================== */
 
-#ifndef KJB_G_CPP_WRAP_HULL_H
-#define KJB_G_CPP_WRAP_HULL_H
+#ifndef IVI_G_CPP_WRAP_HULL_H
+#define IVI_G_CPP_WRAP_HULL_H
 
 #include <h/h_hull.h>
 #include <h/h_ave.h>
@@ -30,7 +30,7 @@
 #include <vector>
 #include <algorithm>
 
-namespace kjb
+namespace ivi
 {
 /**
  * @brief Get the convex hull of points 
@@ -60,12 +60,12 @@ bool intersect_hulls
  * @brief Get the volume of the convex hull of points
  */
 inline 
-double get_convex_hull_volume ( const kjb::Matrix& points)
+double get_convex_hull_volume ( const ivi::Matrix& points)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     double volume = 0.0;
     Hull* hp = NULL;
-    kjb_c::Vector* ave_hull = NULL;
+    ivi_c::Vector* ave_hull = NULL;
     EPETE(get_convex_hull(&hp, points.get_c_matrix(), DEFAULT_HULL_OPTIONS));
     EPETE(get_hull_CM_and_volume(hp, &ave_hull, &volume));
 
@@ -140,7 +140,7 @@ void min_bounding_box_2d(PtIter first, PtIter last, OutIter out)
     std::copy(corners.begin(), corners.end(), out);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif
 

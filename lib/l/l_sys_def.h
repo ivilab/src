@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_def.h 24703 2019-12-13 22:56:35Z kobus $ */
+/* $Id: l_sys_def.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,14 +22,14 @@
 #define L_SYS_DEF_INCLUDED
 
 #ifdef __cplusplus
-#    ifndef KJB_CPLUSPLUS
-#        define KJB_CPLUSPLUS
+#    ifndef IVI_CPLUSPLUS
+#        define IVI_CPLUSPLUS
 #    endif
 #endif
 
 #ifdef c_plusplus
-#    ifndef KJB_CPLUSPLUS
-#        define KJB_CPLUSPLUS
+#    ifndef IVI_CPLUSPLUS
+#        define IVI_CPLUSPLUS
 #        define __cplusplus
 #    endif
 #endif
@@ -40,7 +40,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -244,11 +244,11 @@ typedef double Always_double;
 
 #    define mktemp  mkstemp
 
-#    define KJB_HAVE_NATIVE_FFLUSH_NULL
+#    define IVI_HAVE_NATIVE_FFLUSH_NULL
 
-#    define KJB_HAVE_STRERROR
+#    define IVI_HAVE_STRERROR
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* MAC_OSX */
 
@@ -313,11 +313,11 @@ typedef double Always_double;
 
 #    define mktemp  mkstemp
 
-#    define KJB_HAVE_NATIVE_FFLUSH_NULL
+#    define IVI_HAVE_NATIVE_FFLUSH_NULL
 
-#    define KJB_HAVE_STRERROR
+#    define IVI_HAVE_STRERROR
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* LINUX_X86_64 */
 
@@ -375,11 +375,11 @@ typedef double Always_double;
 
 #    define mktemp  mkstemp
 
-#    define KJB_HAVE_NATIVE_FFLUSH_NULL
+#    define IVI_HAVE_NATIVE_FFLUSH_NULL
 
-#    define KJB_HAVE_STRERROR
+#    define IVI_HAVE_STRERROR
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* LINUX_X86_32 */
 
@@ -431,11 +431,11 @@ typedef double Always_double;
 
 #    define mktemp  mkstemp
 
-#    define KJB_HAVE_NATIVE_FFLUSH_NULL
+#    define IVI_HAVE_NATIVE_FFLUSH_NULL
 
-#    define KJB_HAVE_STRERROR
+#    define IVI_HAVE_STRERROR
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* SUN5 */
 /* ------------------------------------------------------------------------- */
@@ -484,7 +484,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* SUN4 */
 /* ------------------------------------------------------------------------- */
@@ -536,9 +536,9 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_NATIVE_FFLUSH_NULL
+#    define IVI_HAVE_NATIVE_FFLUSH_NULL
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* HPUX */
 /* ------------------------------------------------------------------------- */
@@ -594,7 +594,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* SGI */
 /* ------------------------------------------------------------------------- */
@@ -659,7 +659,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif  /* NEXT */
 /* ------------------------------------------------------------------------- */
@@ -712,7 +712,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif   /* AIX */
 /* ------------------------------------------------------------------------- */
@@ -765,7 +765,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif
 /* ------------------------------------------------------------------------- */
@@ -818,7 +818,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif
 /* ------------------------------------------------------------------------- */
@@ -874,7 +874,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif
 /* ------------------------------------------------------------------------- */
@@ -926,7 +926,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif
 /* ------------------------------------------------------------------------- */
@@ -980,7 +980,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif
 /* ------------------------------------------------------------------------- */
@@ -1035,7 +1035,7 @@ typedef double Always_double;
 
 #    define SYS_ERRLIST_TYPE char*
 
-#    define KJB_HAVE_QSORT 1
+#    define IVI_HAVE_QSORT 1
 
 #endif                         /*   VMS   */
 /* ------------------------------------------------------------------------- */
@@ -1340,31 +1340,31 @@ typedef double Always_double;
 #endif 
 
 #ifdef _UINT64_T
-    typedef uint64_t kjb_uint64;
+    typedef uint64_t ivi_uint64;
     #ifndef HAVE_64_BIT_INT
         #define HAVE_64_BIT_INT
     #endif 
 #else 
 #ifdef LONG_IS_64_BITS   
-    typedef unsigned long kjb_uint64;
+    typedef unsigned long ivi_uint64;
 #else
 #ifdef INT_IS_64_BITS   /* Pretty rare. */
-    typedef unsigned int kjb_uint64;
+    typedef unsigned int ivi_uint64;
 #endif
 #endif
 #endif
 
 #ifdef _INT64_T
-    typedef int64_t kjb_int64;
+    typedef int64_t ivi_int64;
     #ifndef HAVE_64_BIT_INT
         #define HAVE_64_BIT_INT
     #endif 
 #else 
 #ifdef LONG_IS_64_BITS   
-    typedef long kjb_int64;
+    typedef long ivi_int64;
 #else
 #ifdef INT_IS_64_BITS   /* Pretty rare. */
-    typedef int kjb_int64;
+    typedef int ivi_int64;
 #endif
 #endif
 #endif
@@ -1380,32 +1380,32 @@ typedef double Always_double;
 
 
 #ifdef _UINT32_T
-    typedef uint32_t kjb_uint32;
+    typedef uint32_t ivi_uint32;
     #ifndef HAVE_32_BIT_INT
         #define HAVE_32_BIT_INT
     #endif 
 #else  
 #ifdef LONG_IS_32_BITS
-    typedef unsigned long kjb_uint32;
+    typedef unsigned long ivi_uint32;
 #else
 #ifdef INT_IS_32_BITS
-    typedef unsigned int kjb_uint32;
+    typedef unsigned int ivi_uint32;
 #endif
 #endif
 #endif
 
 
 #ifdef _INT32_T
-    typedef int32_t kjb_int32;
+    typedef int32_t ivi_int32;
     #ifndef HAVE_32_BIT_INT
         #define HAVE_32_BIT_INT
     #endif 
 #else  
 #ifdef LONG_IS_32_BITS
-    typedef long kjb_int32;
+    typedef long ivi_int32;
 #else
 #ifdef INT_IS_32_BITS
-    typedef int kjb_int32;
+    typedef int ivi_int32;
 #endif
 #endif
 #endif
@@ -1421,19 +1421,19 @@ typedef double Always_double;
 #endif
 
 #ifdef _UINT16_T
-    typedef uint16_t kjb_uint16;
+    typedef uint16_t ivi_uint16;
 #   ifndef HAVE_16_BIT_INT
 #       define HAVE_16_BIT_INT
 #    endif 
 #else  
 #ifdef LONG_IS_16_BITS   /* I doubt this ever happens. */
-    typedef unsigned long kjb_uint16;
+    typedef unsigned long ivi_uint16;
 #else
 #ifdef INT_IS_16_BITS
-    typedef unsigned int kjb_uint16;
+    typedef unsigned int ivi_uint16;
 #else 
 #ifdef SHORT_IS_16_BITS
-    typedef unsigned short kjb_uint16;
+    typedef unsigned short ivi_uint16;
 #endif
 #endif
 #endif
@@ -1441,26 +1441,26 @@ typedef double Always_double;
 
 
 #ifdef _INT16_T
-    typedef int16_t kjb_int16;
+    typedef int16_t ivi_int16;
     #ifndef HAVE_16_BIT_INT
         #define HAVE_16_BIT_INT
     #endif 
 #else  
 #ifdef LONG_IS_16_BITS   /* I doubt this ever happens. */
-    typedef long kjb_int16;
+    typedef long ivi_int16;
 #else
 #ifdef INT_IS_16_BITS
-    typedef int kjb_int16;
+    typedef int ivi_int16;
 #else 
 #ifdef SHORT_IS_16_BITS
-    typedef short kjb_int16;
+    typedef short ivi_int16;
 #endif
 #endif
 #endif
 #endif
 
-typedef signed char kjb_int8;
-typedef unsigned char kjb_uint8;
+typedef signed char ivi_int8;
+typedef unsigned char ivi_uint8;
 
 /* --------------------------------------------------- */
 

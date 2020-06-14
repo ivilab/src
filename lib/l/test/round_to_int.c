@@ -1,5 +1,5 @@
 
-/* $Id: round_to_int.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: round_to_int.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #define BASE_NUM_TRIES  3000
@@ -13,12 +13,12 @@ int main(int argc, char **argv)
     int    i, j;
     int    ri, kri, dri, dkri; 
     int    test_factor = 1; 
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
     int result = EXIT_SUCCESS;
     int num_tries = BASE_NUM_TRIES; 
 
 
-    kjb_init();
+    ivi_init();
 
     if (argc > 1)
     {
@@ -36,11 +36,11 @@ int main(int argc, char **argv)
 
     if (is_interactive())
     {
-        kjb_debug_level = 2;
+        ivi_debug_level = 2;
     }
     else 
     {
-        kjb_debug_level = 0; 
+        ivi_debug_level = 0; 
     }
 
     for (i = -num_tries; i< num_tries; i++)
@@ -49,39 +49,39 @@ int main(int argc, char **argv)
 
         dx = (double)i + 0.5;
         ri = rint(dx);
-        kri = kjb_rint(dx);
+        kri = ivi_rint(dx);
 
         if (kri != ri)
         {
             set_error("Test 1: Problem rounding double %.3e (%d != %d).", 
                       dx, kri, ri);
-            kjb_print_error();
+            ivi_print_error();
             result = EXIT_BUG;
         }
 
         dx = (double)i - 0.5;
         ri = rint(dx);
-        kri = kjb_rint(dx);
+        kri = ivi_rint(dx);
 
         if (kri != ri)
         {
             set_error("Test 2: Problem rounding double %.3e (%d != %d).", 
                       dx, kri, ri);
-            kjb_print_error();
+            ivi_print_error();
             result = EXIT_BUG;
         }
 
         for (j = 0; j < num_tries; j++)
         {
-            dx = (double)i + kjb_rand();
+            dx = (double)i + ivi_rand();
             ri = rint(dx);
-            kri = kjb_rint(dx);
+            kri = ivi_rint(dx);
 
             if (kri != ri)
             {
                 set_error("Test 3: Problem rounding double %.3e (%d != %d).", 
                           dx, kri, ri);
-                kjb_print_error();
+                ivi_print_error();
                 result = EXIT_BUG;
             }
         }
@@ -90,57 +90,57 @@ int main(int argc, char **argv)
 
         /*
          * Not all systems have rintf(). GNU systems generally have it. Test
-         * kjb_rintf() on those systems for now. 
+         * ivi_rintf() on those systems for now. 
         */
 
         fx = (float)i + 0.5f;
         ri = rintf(fx);
-        kri = kjb_rintf(fx);
+        kri = ivi_rintf(fx);
         dri = rint((double)fx);
-        dkri = kjb_rint((double)fx); 
+        dkri = ivi_rint((double)fx); 
 
         if (kri != ri)
         {
             set_error("Test 4: Problem rounding float %.3e (%d != %d)    [ Double results are %d and %d ].", 
                       (double)fx, kri, ri, dkri, dri);
-            kjb_print_error();
+            ivi_print_error();
             result = EXIT_BUG;
         }
 
         fx = (float)i - 0.5f;
         ri = rintf(fx);
-        kri = kjb_rintf(fx);
+        kri = ivi_rintf(fx);
         dri = rint((double)fx);
-        dkri = kjb_rint((double)fx); 
+        dkri = ivi_rint((double)fx); 
 
         if (kri != ri)
         {
             set_error("Test 5: Problem rounding float %.3e (%d != %d)    [ Double results are %d and %d ].", 
                       (double)fx, kri, ri, dkri, dri);
-            kjb_print_error();
+            ivi_print_error();
             result = EXIT_BUG;
         }
 
         for (j = 0; j < num_tries; j++)
         {
-            fx = (float)i + (float)kjb_rand();
+            fx = (float)i + (float)ivi_rand();
             ri = rintf(fx);
-            kri = kjb_rintf(fx);
+            kri = ivi_rintf(fx);
             dri = rint((double)fx);
-            dkri = kjb_rint((double)fx); 
+            dkri = ivi_rint((double)fx); 
 
             if (kri != ri)
             {
                 set_error("Test 6: Problem rounding float %.3e (%d != %d)    [ Double results are %d and %d ].", 
                       (double)fx, kri, ri, dkri, dri);
-                kjb_print_error();
+                ivi_print_error();
                 result = EXIT_BUG;
             }
         }
 #endif 
     }
 
-    kjb_cleanup();
+    ivi_cleanup();
     
     return result;
 }

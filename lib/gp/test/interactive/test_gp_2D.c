@@ -72,7 +72,7 @@ int main(int argc, char** argv)
     Vector_vector* f_post = NULL;
     Vector* mu = NULL;
 
-    kjb_init();
+    ivi_init();
 
     if (! is_interactive()) 
     {
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
         return EXIT_CANNOT_TEST;
     }
     
-    kjb_seed_rand_with_tod();
+    ivi_seed_rand_with_tod();
 
     /*-----------------------------------------------------*/
     /*               Generate data and indices             */

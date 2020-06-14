@@ -1,4 +1,4 @@
-/* $Id: gui_graph.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_graph.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,7 +19,7 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <iomanip>
 #include <sstream>
 
@@ -36,9 +36,9 @@
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/foreach.hpp>
 
-using namespace kjb::opengl;
+using namespace ivi::opengl;
 
-namespace kjb {
+namespace ivi {
 namespace gui {
 
 const Vector3 Plot::DEFAULT_COLOR(-1.0, -1.0, -1.0);
@@ -65,7 +65,7 @@ const float Plot::HASH_LABEL_MAX_CHARS = 8; // -1.05e-01
 const float Plot::HASH_LABEL_WIDTH = CHARACTER_WIDTH * HASH_LABEL_MAX_CHARS + TEXT_PADDING * 2;;
 const float Plot::HASH_LABEL_HEIGHT = X_AXIS_LABEL_HEIGHT;
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 //const void* Plot::CHARACTER_FONT = GLUT_BITMAP_8_BY_13;
 const void* Plot::CHARACTER_FONT = GLUT_BITMAP_HELVETICA_10;
 #endif
@@ -491,7 +491,7 @@ Plot::Data_set_iterator Plot::add_dataset(const Data_map& data, const Vector3& l
 Plot::Data_set_iterator Plot::get_dataset(size_t index)
 {
     if(index >= data_sets_.size())
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
 
     Data_sets::iterator  it = data_sets_.begin();
     std::advance(it, data_sets_.size() - index - 1);
@@ -623,7 +623,7 @@ void Plot::draw_mark_(const Data_set& data_set, double x)
     double y;
     try
     {
-        y = kjb::lerp(data_set.data, x);
+        y = ivi::lerp(data_set.data, x);
     }
     catch(Index_out_of_bounds&)
     {
@@ -741,33 +741,33 @@ void Plot::update_data_pane_geometry()
 
 void Plot::centered_text_(const std::string& str, float x, float y) 
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glRasterPos2f(x - str.size() * CHARACTER_WIDTH/2.0, y);
     for(size_t i = 0; i < str.length(); i++)
     {
             glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[i]);
     }
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
 void Plot::right_text_(const std::string& str, float x, float y) 
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glRasterPos2f(x - str.size() * CHARACTER_WIDTH, y);
     for(size_t i = 0; i < str.length(); i++)
     {
             glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[i]);
     }
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
 void Plot::centered_vertical_text_(const std::string& str, float x, float y) 
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     float cur_y = y + str.size() * CHARACTER_HEIGHT / 2.0;
     for(size_t i = 0; i < str.length(); i++)
     {
@@ -776,7 +776,7 @@ void Plot::centered_vertical_text_(const std::string& str, float x, float y)
         cur_y -= CHARACTER_HEIGHT + 1;
     }
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
@@ -910,5 +910,5 @@ void Plot::draw_axes( const Axis& axis, bool full_box) const
 
 
 } // namespace gui
-} // namespace kjb
+} // namespace ivi
 #endif /* have_opengl */

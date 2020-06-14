@@ -52,8 +52,8 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_FIND_SHAPES_H
-#define KJB_FIND_SHAPES_H
+#ifndef IVI_FIND_SHAPES_H
+#define IVI_FIND_SHAPES_H
 
 #include "gr_cpp/gr_polymesh_plane.h"
 #include "gr_cpp/gr_polygon.h"
@@ -64,7 +64,7 @@
 #include "g_cpp/g_circle.h"
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief  Finds the coefficients of the plane of the form ax + by + cz + d = 0
@@ -120,7 +120,7 @@ double get_angle_between_two_vectors
 (
     const Vector& plane1_params, 
     const Vector& plane2_params
-) throw (Illegal_argument, KJB_error);
+) throw (Illegal_argument, IVI_error);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -158,7 +158,7 @@ void find_all_circles_in_polymesh
  */
 void find_right_triangles
 (
-    const std::vector<kjb::Polygon>& faces, 
+    const std::vector<ivi::Polygon>& faces, 
     Int_vector&                      mask
 );
 
@@ -169,7 +169,7 @@ void find_right_triangles
  */
 void find_rectangles
 (
-    const std::vector<kjb::Polygon>&  faces, 
+    const std::vector<ivi::Polygon>&  faces, 
     const Int_vector&                 mask, 
     const Polymesh&                   p, 
     std::vector<Right_Triangle_Pair>& rectangles

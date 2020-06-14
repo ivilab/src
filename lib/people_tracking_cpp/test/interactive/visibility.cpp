@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: visibility.cpp 19002 2015-05-05 14:23:57Z jguan1 $ */
+/* $Id: visibility.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_association.h>
@@ -38,9 +38,9 @@
 #include "utils.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
 
 double win_width = 500;
 double win_height = 500;
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
         // start in depth mode
         depth_mode = true;
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         // GL stuff
         Glut_window win(win_width, win_height);
         win.set_display_callback(display);
@@ -89,11 +89,11 @@ int main(int argc, char** argv)
         win.set_keyboard_callback(handle_key);
 #endif
         glEnable(GL_DEPTH_TEST);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;
@@ -227,7 +227,7 @@ void display()
         tr_i++;
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutSwapBuffers();
 #endif
 }
@@ -358,7 +358,7 @@ void handle_key(unsigned char key, int, int)
     cur_target_p->update_faces(cam);
 
     update_visibilities(scene, 1, true);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

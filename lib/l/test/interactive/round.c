@@ -1,5 +1,5 @@
 
-/* $Id: round.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: round.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -24,11 +24,11 @@ int main(int argc, char **argv)
     {
         if (ss1d(line, &d) == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
         }
         else
         {
-            pso("%d == %d?\n", kjb_rint(d), (int)rint(d));
+            pso("%d == %d?\n", ivi_rint(d), (int)rint(d));
         }
     }
     

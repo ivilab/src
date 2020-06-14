@@ -1,5 +1,5 @@
 
-/* $Id: trap2.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: trap2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -20,8 +20,8 @@ static TRAP_FN_RETURN_TYPE trap_fn_8(int);
 int main(int argc, char **argv)
 {
     char line [ 100 ];
-    kjb_int32 res; 
-    kjb_int32 level = 0; 
+    ivi_int32 res; 
+    ivi_int32 level = 0; 
     TRAP_FN_RETURN_TYPE (*trap_fns[ 9 ])(); 
 
 

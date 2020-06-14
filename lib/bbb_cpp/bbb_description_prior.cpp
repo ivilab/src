@@ -36,8 +36,8 @@
 #include <boost/variant.hpp>
 #include <boost/tuple/tuple.hpp>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
 double Description_prior::operator()(const Description& desc) const
 {
@@ -80,7 +80,7 @@ void Sample_tree::operator()(const Intentional_activity& root)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Description kjb::bbb::sample(const Description_prior& prior)
+Description ivi::bbb::sample(const Description_prior& prior)
 {
     Description description(prior.root_activity());
     const Intentional_activity& root = description.root_activity();

@@ -1,4 +1,4 @@
-/* $Id: m_vector_d.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vector_d.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -38,7 +38,7 @@
  */
 
 #undef MAX_DIMENSION
-namespace kjb
+namespace ivi
 {
 
 // This is the highest value of D that we will explicitly instanciate.
@@ -51,7 +51,7 @@ template class Vector_d<n>;
 #include BOOST_PP_LOCAL_ITERATE()
 
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #define BOOST_PP_LOCAL_MACRO(nnn) \
 template \
 void Vector_d<nnn>::serialize(boost::archive::text_iarchive& ar, const unsigned int /* version */) ;  \
@@ -80,8 +80,8 @@ template bool operator<(const Vector_d<nnn>& first, const Vector_d<nnn>& second)
 template bool operator>(const Vector_d<nnn>& first, const Vector_d<nnn>& second); \
 template bool operator<=(const Vector_d<nnn>& first, const Vector_d<nnn>& second); \
 template bool operator>=(const Vector_d<nnn>& first, const Vector_d<nnn>& second); \
-template double norm1(const kjb::Vector_d<nnn>& v); \
-template double norm2(const kjb::Vector_d<nnn>& v); \
+template double norm1(const ivi::Vector_d<nnn>& v); \
+template double norm2(const ivi::Vector_d<nnn>& v); \
 template Vector_d<nnn> create_random_vector(); \
 template Vector_d<nnn> create_gauss_random_vector(); \
 template Vector_d<nnn> create_unit_vector(size_t d); \
@@ -100,7 +100,7 @@ Vector multiply_matrix_and_vector_d_dispatch_(const Matrix& m, const double* v, 
 {
     if (m.get_num_cols() != (int) size)
     {
-        KJB_THROW(kjb::Dimension_mismatch);
+        IVI_THROW(ivi::Dimension_mismatch);
     }
 
     Vector result(m.get_num_rows());
@@ -140,4 +140,4 @@ Vector4 make_vector4(const Vector& v)
     return Vector4(v[0], v[1], v[2], v[4]);
 }
 
-} // namespace kjb;
+} // namespace ivi;

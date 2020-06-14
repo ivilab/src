@@ -1,4 +1,4 @@
-/* $Id: gr_glew.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_glew.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -18,12 +18,12 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef KJB_CPP_GR_GLEW_H
-#define KJB_CPP_GR_GLEW_H
+#ifndef IVI_CPP_GR_GLEW_H
+#define IVI_CPP_GR_GLEW_H
 
 #include <string>
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
@@ -61,6 +61,6 @@ private:
 };
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
 #endif

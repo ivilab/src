@@ -5,10 +5,10 @@
 #include <iostream>
 
 using namespace DTLib;
-using namespace kjb;
+using namespace ivi;
 
-kjb::Image * img2 = NULL;
-kjb::Image * img = NULL;
+ivi::Image * img2 = NULL;
+ivi::Image * img = NULL;
 
 int selected_x = 0;
 int selected_y = 0;
@@ -135,7 +135,7 @@ int main(int argc, char ** argv)
     ochi.append("_chi");
     othi.append("_thi");
 
-    img = new kjb::Image(img_name.c_str());
+    img = new ivi::Image(img_name.c_str());
 
     CImg<FloatCHistogramPtr> * m_pTextonHistoImg = NULL;
     CImg<FloatCHistogramPtr> * ColorHist = NULL;
@@ -145,12 +145,12 @@ int main(int argc, char ** argv)
     thi = ReadTextonHistoImg(othi);
     chi = ReadColorHistoImg(ochi);
 
-    img2 = new kjb::Image(img->get_num_rows(), img->get_num_cols(), 0, 0, 0);
+    img2 = new ivi::Image(img->get_num_rows(), img->get_num_cols(), 0, 0, 0);
     //PrepareHeatMap(img2, chi, 10, 67, 67);
     //img2.write("aaa.jpg");
 
-    kjb::opengl::Glut::set_init_window_size(img->get_num_cols(), img->get_num_rows());
-    kjb::opengl::Glut::init(argc, argv);
+    ivi::opengl::Glut::set_init_window_size(img->get_num_cols(), img->get_num_rows());
+    ivi::opengl::Glut::init(argc, argv);
     glutCreateWindow("Textons");
     glutDisplayFunc(display_glut);
     glutKeyboardFunc(keyboard_glut);

@@ -18,9 +18,9 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set_sampler.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: lss_set_sampler.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 
 #include <l/l_sys_time.h>
 #include <opt_cpp/opt_pgpe.h>
@@ -49,7 +49,7 @@
 #include <algorithm>
 #include <limits>
 
-#ifdef KJB_HAVE_BOOST
+#ifdef IVI_HAVE_BOOST
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -64,8 +64,8 @@
 
 #define BURNIN_ITER 0
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 Lss_set_sampler::Lss_set_sampler
 (
@@ -191,7 +191,7 @@ Lss_set_sampler::Lss_set_sampler
     }
 
     // Read in the group_map information 
-    if(kjb_c::is_file(exp_.data.get_group_info_fp().c_str()))
+    if(ivi_c::is_file(exp_.data.get_group_info_fp().c_str()))
     {
         std::ifstream ifs(exp_.data.get_group_info_fp().c_str());
         ifs >> group_map_; 
@@ -578,7 +578,7 @@ Lss_set Lss_set_sampler::train_marginal(size_t num_iterations)
     for(size_t i = 0; i < num_lss; i++)
     {
         out_dirs[i] = (out_fmt % (ids_[i])).str();
-        ETX(kjb_c::kjb_mkdir(out_dirs[i].c_str()));
+        ETX(ivi_c::ivi_mkdir(out_dirs[i].c_str()));
     }
    
     Marginal_likelihood ml(shared_prior_, 
@@ -1548,7 +1548,7 @@ Lss_set Lss_set_sampler::learn_pred_mh(size_t num_iterations)
     for(size_t j = 0; j < ids_.size(); j++)
     {
         std::string out_dir = (log_dir_fmt % ids_[j]).str();
-        ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
         lss_out_dirs_[j] = out_dir;
     }
 
@@ -1606,7 +1606,7 @@ Lss_set Lss_set_sampler::learn_pred_mh(size_t num_iterations)
         for(size_t j = 0; j < ids_.size(); j++)
         {
             std::string out_dir = (log_dir_fmt_iter % i % ids_[j]).str();
-            ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+            ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
             lss_out_dirs_[j] = out_dir;
         }
 
@@ -1677,7 +1677,7 @@ Lss_set Lss_set_sampler::learn_gp(size_t num_iterations)
     for(size_t i = 0; i < ids_.size(); i++)
     {
         std::string out_dir = (log_dir_fmt % ids_[i]).str();
-        ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
         lss_out_dirs_[i] = out_dir;
     }
     size_t avail_cores = boost::thread::hardware_concurrency();
@@ -1756,7 +1756,7 @@ Lss_set Lss_set_sampler::test_pred(size_t num_iterations)
     for(size_t i = 0; i < ids_.size(); i++)
     {
         std::string out_dir = (log_dir_fmt % ids_[i]).str();
-        ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
         lss_out_dirs_[i] = out_dir;
     }
 
@@ -1803,7 +1803,7 @@ Lss_set Lss_set_sampler::test_pred(size_t num_iterations)
     for(size_t i = 0; i < num_iterations; i++)
     {
         // reseed random seed
-        kjb_c::kjb_seed_rand_2_with_tod();
+        ivi_c::ivi_seed_rand_2_with_tod();
         long ltime = time(NULL);
         int stime = (unsigned) ltime /2;  
         srand(stime);
@@ -2002,7 +2002,7 @@ Lss_set Lss_set_sampler::test_model(size_t num_iterations)
     for (size_t i = 0; i < num_iterations; i++)
     {
         // Reseed random seed
-        kjb_c::kjb_seed_rand_2_with_tod();
+        ivi_c::ivi_seed_rand_2_with_tod();
         long ltime = time(NULL);
         int stime = (unsigned) ltime/2;  
         srand(stime);
@@ -2130,7 +2130,7 @@ Lss_set Lss_set_sampler::test_gp(size_t num_iterations)
     for(size_t i = 0; i < ids_.size(); i++)
     {
         std::string out_dir = (log_dir_fmt % ids_[i]).str();
-        ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
         lss_out_dirs_[i] = out_dir;
     }
 
@@ -2150,7 +2150,7 @@ Lss_set Lss_set_sampler::test_gp(size_t num_iterations)
     for(size_t i = 0; i < num_iterations; i++)
     {
         // reseed random seed
-        kjb_c::kjb_seed_rand_2_with_tod();
+        ivi_c::ivi_seed_rand_2_with_tod();
         long ltime = time(NULL);
         int stime = (unsigned) ltime /2;  
         srand(stime);
@@ -2246,7 +2246,7 @@ void Lss_set_sampler::generate_output_dirs(const std::string& out_dir)
         {
             sub_out_dir = (log_dir_fmt % ids_[i]).str();
         }
-        kjb_c::kjb_mkdir(sub_out_dir.c_str());
+        ivi_c::ivi_mkdir(sub_out_dir.c_str());
         lss_out_dirs_[i] = sub_out_dir;
     }
 }

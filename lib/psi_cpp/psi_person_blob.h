@@ -24,7 +24,7 @@
 #include <vector> 
 #include <string> 
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {

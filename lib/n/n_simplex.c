@@ -1,5 +1,5 @@
 
-/* $Id: n_simplex.c 8780 2011-02-27 23:42:02Z predoehl $ */
+/* $Id: n_simplex.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
    Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -106,7 +106,7 @@ int do_simplex
 )
 {
 #ifdef DEBUG
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
 #endif
     Matrix* basis_mp;
     Matrix* non_basis_mp;
@@ -274,9 +274,9 @@ int do_simplex
 
                 if (temp > LP_AUX_FEASIBILITY_CHECK_EPSILON)
                 {
-                    kjb_fprintf(stderr,
+                    ivi_fprintf(stderr,
                                 "Proposed feasible may be infeasible. ");
-                    kjb_fprintf(stderr,
+                    ivi_fprintf(stderr,
                                 "Constraint %d off by %e\n", (i+1), temp);
                 }
 
@@ -287,7 +287,7 @@ int do_simplex
             }
 
             /*
-            kjb_fprintf(stderr, "AUX Max constraint feasibility error is %e.\n",
+            ivi_fprintf(stderr, "AUX Max constraint feasibility error is %e.\n",
                         max_feasibility_error);
             */
 
@@ -297,9 +297,9 @@ int do_simplex
 
                 if (temp > LP_AUX_FEASIBILITY_CHECK_EPSILON)
                 {
-                    kjb_fprintf(stderr,
+                    ivi_fprintf(stderr,
                                 "Proposed feasible may be infeasible. ");
-                    kjb_fprintf(stderr, "Variable %d is %e\n", (i+1),
+                    ivi_fprintf(stderr, "Variable %d is %e\n", (i+1),
                                 (result_vp->elements[i]));
                 }
                 if (temp > max_feasibility_error)
@@ -308,7 +308,7 @@ int do_simplex
                 }
             }
             /*
-            kjb_fprintf(stderr, "AUX Max overall feasibility error is %e.\n",
+            ivi_fprintf(stderr, "AUX Max overall feasibility error is %e.\n",
                         max_feasibility_error);
             */
         }
@@ -409,9 +409,9 @@ int do_simplex
 
                 if (temp > LP_FEASIBILITY_CHECK_EPSILON)
                 {
-                    kjb_fprintf(stderr,
+                    ivi_fprintf(stderr,
                                 "Proposed solution may be infeasible. ");
-                    kjb_fprintf(stderr,
+                    ivi_fprintf(stderr,
                                 "Constraint %d off by %f\n", (i+1), temp);
                 }
 
@@ -422,7 +422,7 @@ int do_simplex
             }
 
             /*
-            kjb_fprintf(stderr, "Max constraint feasibility error is %f.\n",
+            ivi_fprintf(stderr, "Max constraint feasibility error is %f.\n",
                         max_feasibility_error);
             */
 
@@ -432,9 +432,9 @@ int do_simplex
 
                 if (temp > LP_FEASIBILITY_CHECK_EPSILON)
                 {
-                    kjb_fprintf(stderr,
+                    ivi_fprintf(stderr,
                                 "Proposed feasible may be infeasible. ");
-                    kjb_fprintf(stderr, "Variable %d is %f\n", (i+1),
+                    ivi_fprintf(stderr, "Variable %d is %f\n", (i+1),
                                 (result_vp->elements[i]));
                 }
 
@@ -448,7 +448,7 @@ int do_simplex
     }
 
 #ifdef DEBUG
-    if (kjb_debug_level >= 10)
+    if (ivi_debug_level >= 10)
     {
         dbm("Grand result is:");
         db_cv(result_vp);
@@ -576,7 +576,7 @@ static int do_simplex_guts
     double t, temp, max;
     int index_temp;
 #ifdef DEBUG
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
     Vector*    db_result_vp;
     Vector*    db_temp_col_vp;
     Vector*    db_diff_vp = NULL;
@@ -593,7 +593,7 @@ static int do_simplex_guts
     NRE(db_temp_col_vp = create_vector(m));
     NRE(db_temp_mp     = create_matrix(m, 3));
 
-    if (kjb_debug_level > 20)
+    if (ivi_debug_level > 20)
     {
         dbm("In do regular simplex guts");
     }
@@ -604,7 +604,7 @@ static int do_simplex_guts
     while (num_iterations < max_num_iterations)
     {
 #ifdef DEBUG
-         if (kjb_debug_level >= 50)
+         if (ivi_debug_level >= 50)
          {
              for (i=0; i<n; i++)
              {
@@ -636,7 +636,7 @@ static int do_simplex_guts
 
             dbe(diff);
 
-            if (kjb_debug_level >= 100)
+            if (ivi_debug_level >= 100)
             {
                 db_cv(db_result_vp);
                 db_mat(db_temp_mp);
@@ -756,7 +756,7 @@ static int do_simplex_guts
 
         if (report > 0)
         {
-            if ((num_iterations % report == 0) && (kjb_isatty(fileno(stdout))))
+            if ((num_iterations % report == 0) && (ivi_isatty(fileno(stdout))))
             {
                 pso("\rIteration %d", num_iterations);
                 fflush(stdout);
@@ -917,7 +917,7 @@ static int do_aux_simplex_guts
     double t, temp, max;
     int  index_temp;
 #ifdef DEBUG
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
     Vector*    db_result_vp,   *db_aux_result_vp;
     Vector*    db_temp_col_vp;
     Vector*    db_diff_vp = NULL;
@@ -935,7 +935,7 @@ static int do_aux_simplex_guts
     NRE(db_temp_col_vp   = create_vector(m));
     NRE(db_temp_mp       = create_matrix(m, 3));
 
-    if (kjb_debug_level >= 10)
+    if (ivi_debug_level >= 10)
     {
         dbm("In do AUX simplex guts");
     }
@@ -946,7 +946,7 @@ static int do_aux_simplex_guts
     while (num_iterations < max_num_iterations)
     {
 #ifdef DEBUG
-         if (kjb_debug_level >= 50)
+         if (ivi_debug_level >= 50)
          {
              for (i=0; i<n; i++)
              {
@@ -984,7 +984,7 @@ static int do_aux_simplex_guts
             dbe(diff);
             db_cv(db_result_vp);
 
-            if (kjb_debug_level >= 100)
+            if (ivi_debug_level >= 100)
             {
                 db_mat(db_temp_mp);
             }
@@ -1132,7 +1132,7 @@ static int do_aux_simplex_guts
 
         if (report > 0)
         {
-            if ((num_iterations % report == 0) && (kjb_isatty(fileno(stdout))))
+            if ((num_iterations % report == 0) && (ivi_isatty(fileno(stdout))))
             {
                 pso("\rIteration %d", num_iterations);
                 fflush(stdout);
@@ -2176,7 +2176,7 @@ static int do_gen_simplex_guts
 
         if (report > 0)
         {
-            if ((num_iterations % report == 0) && (kjb_isatty(fileno(stdout))))
+            if ((num_iterations % report == 0) && (ivi_isatty(fileno(stdout))))
             {
                 pso("\rIteration %d", num_iterations);
                 fflush(stdout);

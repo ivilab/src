@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     const char *kpt2_filename = "data/frame_vl_key/000003.vl";
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (! is_interactive()) 
     {

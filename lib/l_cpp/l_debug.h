@@ -1,4 +1,4 @@
-/* $Id: l_debug.h 14544 2013-05-29 20:34:46Z predoehl $ */
+/* $Id: l_debug.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,12 +19,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_L_DEBUG_H
-#define KJB_CPP_L_DEBUG_H
+#ifndef IVI_CPP_L_DEBUG_H
+#define IVI_CPP_L_DEBUG_H
 
 #include <string> 
 
-namespace kjb
+namespace ivi
 {
 
 namespace debug
@@ -75,6 +75,6 @@ std::string to_bitstring(T v)
 }
 
 } // namespace debug
-} // namespace kjb
+} // namespace ivi
 
 #endif

@@ -70,7 +70,7 @@
 #include <math.h>
 #include <cmath>
 
-using namespace kjb;
+using namespace ivi;
 
 
 /*
@@ -82,10 +82,10 @@ using namespace kjb;
  * @params  point_on_plane Vector representing a point on the plane.
  * @params  plane_params   Vector to store the plane coefficients in.
  *
- * @throw  KJB_error  The normal vector has fewer than 3 values.
- * @throw  KJB_error  The point provided has fewer than 3 coordinates.
+ * @throw  IVI_error  The normal vector has fewer than 3 values.
+ * @throw  IVI_error  The point provided has fewer than 3 coordinates.
  */
-void kjb::get_plane_parameters(const Vector& normal, 
+void ivi::get_plane_parameters(const Vector& normal, 
                                const Vector& point_on_plane, 
                                Vector& plane_params)
 {
@@ -93,11 +93,11 @@ void kjb::get_plane_parameters(const Vector& normal,
     // If there is a homogeneous coordinate, it is ignored.
     if(normal.get_length() < 3)
     {
-        throw KJB_error("The normal vector has fewer than 3 values");
+        throw IVI_error("The normal vector has fewer than 3 values");
     }
     else if(point_on_plane.get_length() < 3)
     {
-        throw KJB_error("The point provided has fewer than 3 coordinates");
+        throw IVI_error("The point provided has fewer than 3 coordinates");
     }
     else
     {
@@ -141,9 +141,9 @@ void kjb::get_plane_parameters(const Vector& normal,
  * @params  pt3           Vector representing a point on the plane.
  * @params  plane_params  Vector to store the plane coefficients in.
  *
- * @throw  KJB_error  The points provided have fewer than 3 coordinates.
+ * @throw  IVI_error  The points provided have fewer than 3 coordinates.
  */
-void kjb::get_plane_parameters(const Vector& pt1, 
+void ivi::get_plane_parameters(const Vector& pt1, 
                                const Vector& pt2, 
                                const Vector& pt3, 
                                Vector& plane_params)
@@ -152,7 +152,7 @@ void kjb::get_plane_parameters(const Vector& pt1,
     // If there is a homogeneous coordinate, it is ignored.
     if(pt1.get_length() < 3 || pt2.get_length() < 3 || pt3.get_length() < 3)
     {
-        throw KJB_error("One of the points has fewer than 3 coordinates");
+        throw IVI_error("One of the points has fewer than 3 coordinates");
     }
     else
     {
@@ -192,7 +192,7 @@ void kjb::get_plane_parameters(const Vector& pt1,
  *
  * @return  true if the two faces are coplanar, false otherwise
  */
-bool kjb::check_if_faces_are_coplanar(const Vector& plane1_params, 
+bool ivi::check_if_faces_are_coplanar(const Vector& plane1_params, 
                                       const Vector& plane2_params, 
                                       double tolerance, 
                                       double distTolerance)
@@ -270,11 +270,11 @@ bool kjb::check_if_faces_are_coplanar(const Vector& plane1_params,
  *                    vectors AB, AC, and AD have to be for them to be 
  *                    considered coplanar.
  *
- * @throw  KJB_error  One of the provided points has fewer than 3 coordinates
+ * @throw  IVI_error  One of the provided points has fewer than 3 coordinates
  *
  * @return  true if the 4 points are coplanar, false otherwise.
  */
-bool kjb::check_if_4_points_are_coplanar(const Vector& p1, 
+bool ivi::check_if_4_points_are_coplanar(const Vector& p1, 
                                          const Vector& p2, 
                                          const Vector& p3, 
                                          const Vector& p4, 
@@ -284,7 +284,7 @@ bool kjb::check_if_4_points_are_coplanar(const Vector& p1,
     if(p1.get_length() < 3 || p2.get_length() < 3 || 
        p3.get_length() < 3 || p4.get_length() < 3)
     {
-        throw KJB_error("One of the points has fewer than 3 coordinates");
+        throw IVI_error("One of the points has fewer than 3 coordinates");
     }
     else
     {
@@ -334,9 +334,9 @@ bool kjb::check_if_4_points_are_coplanar(const Vector& p1,
  * @return  a double representing the angle in radians between the normal 
  *          vectors of the two faces (will be between 0 and PI) 
  */
-double kjb::get_angle_between_two_vectors(const Vector& plane1_params, 
+double ivi::get_angle_between_two_vectors(const Vector& plane1_params, 
                                           const Vector& plane2_params) 
-            throw (Illegal_argument, KJB_error)
+            throw (Illegal_argument, IVI_error)
 {
     try
     {
@@ -354,7 +354,7 @@ double kjb::get_angle_between_two_vectors(const Vector& plane1_params,
 
         if(fabs(cos_angle) > 1.0000000000000005)
         {
-            throw KJB_error("ERROR: invalid domain for acos");
+            throw IVI_error("ERROR: invalid domain for acos");
         }
 
         if(fabs(cos_angle) > 1.0)
@@ -382,7 +382,7 @@ double kjb::get_angle_between_two_vectors(const Vector& plane1_params,
  * @param plane  the vector of Polymesh_Planes in which the plane parameters
  *               and the corresponding face indices are stored.
  */
-void kjb::find_planes(const Polymesh& p, std::vector<Polymesh_Plane>& plane)
+void ivi::find_planes(const Polymesh& p, std::vector<Polymesh_Plane>& plane)
 {
     plane.clear();
     double threshold = 0.000001;    // Used to eliminate planes that consist of
@@ -469,10 +469,10 @@ void kjb::find_planes(const Polymesh& p, std::vector<Polymesh_Plane>& plane)
  * @param planes  the vector of Polymesh_Planes containing the lists of indices
  *                which lie in the same planes.
  */
-void kjb::render_planes(const Polymesh & p, 
+void ivi::render_planes(const Polymesh & p, 
                         const std::vector<Polymesh_Plane> & planes)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     std::vector<int> indices_rendered;
 
     float red = 1.0;
@@ -559,7 +559,7 @@ void kjb::render_planes(const Polymesh & p,
  *                 in the 3d space of the polymesh.
  * @param points  the vector containing lists of points (one for each circle).
  */
-void kjb::find_all_circles_in_polymesh
+void ivi::find_all_circles_in_polymesh
 (
     Polymesh&                          p, 
     std::vector<Circle_in_3d>&         circles, 
@@ -825,10 +825,10 @@ void kjb::find_all_circles_in_polymesh
  * @param  mask  the Int_vector mask representing which polygons are right 
  *               triangles
  */
-void kjb::find_right_triangles(const std::vector<kjb::Polygon> & faces, 
+void ivi::find_right_triangles(const std::vector<ivi::Polygon> & faces, 
                                Int_vector & mask)
 {
-    mask.kjb::Int_vector::resize(faces.size(), 0);      
+    mask.ivi::Int_vector::resize(faces.size(), 0);      
 
     // Set all values in mask vector to 0 or 1. 
     // Iterate through polygons and check if they are right triangles.
@@ -853,7 +853,7 @@ void kjb::find_right_triangles(const std::vector<kjb::Polygon> & faces,
  * @param  p  the polymesh that the faces are from
  * @param  triangles  the vector of triangle pairs that form rectangles
  */
-void kjb::find_rectangles(const std::vector<kjb::Polygon> & faces, 
+void ivi::find_rectangles(const std::vector<ivi::Polygon> & faces, 
                           const Int_vector & mask, 
                           const Polymesh & p, 
                           std::vector<Right_Triangle_Pair>& triangles)
@@ -1041,7 +1041,7 @@ void kjb::find_rectangles(const std::vector<kjb::Polygon> & faces,
  * @param  mask  the Int_vector mask representing which faces are part of 
  *               rectangles
  */
-void kjb::create_rectangle_mask(const Polymesh& p, 
+void ivi::create_rectangle_mask(const Polymesh& p, 
                             const std::vector<Right_Triangle_Pair>& rectangles, 
                             Int_vector& mask)
 {
@@ -1106,7 +1106,7 @@ void kjb::create_rectangle_mask(const Polymesh& p,
  *                       same side of the cylinder as either edge_pt2 or 
  *                       edge_pt1.
  */
-void kjb::find_adjacent_rectangles(const Polymesh & p, 
+void ivi::find_adjacent_rectangles(const Polymesh & p, 
                             const Int_vector& cylMask, 
                             const Int_vector& rectMask, 
                             const std::vector<Right_Triangle_Pair>& rectangles, 
@@ -1196,7 +1196,7 @@ void kjb::find_adjacent_rectangles(const Polymesh & p,
         sumAngles = 0.0;
 std::cout << "Error in adjacency matrix: one face is adjacent to another but " 
           << "not vice versa\n";
-//        throw KJB_error("Error in adjacency matrix!\n");
+//        throw IVI_error("Error in adjacency matrix!\n");
         return;
     }
 
@@ -1269,7 +1269,7 @@ std::cout << "Error in adjacency matrix: one face is adjacent to another but "
         {
 std::cout << "ERROR: sumAngles should equal 6.283 but doesn't (sumAngles = " 
           << sumAngles << ")!\n";
-//            throw KJB_error("ERROR: sumAngles doesn't equal 6.283!\n");
+//            throw IVI_error("ERROR: sumAngles doesn't equal 6.283!\n");
         }
         sumAngles = 2*M_PI;
         return;
@@ -1315,7 +1315,7 @@ std::cout << "ERROR: sumAngles should equal 6.283 but doesn't (sumAngles = "
     {
         std::cout << "Error: newFace " << newFace 
                   << " is not in rectangle newRect " << newRect << "\n";
-        throw KJB_error("Error: newFace is not in rectangle newRect\n");
+        throw IVI_error("Error: newFace is not in rectangle newRect\n");
         return;
     }
 
@@ -1332,7 +1332,7 @@ std::cout << "ERROR: sumAngles should equal 6.283 but doesn't (sumAngles = "
         std::cout << "Error: height of newRect " << newRect 
                   << " doesn't match height of otherRectFace " << otherRectFace 
                   << "\n";
-        throw KJB_error("newRect and otherRectFace heights don't match\n");
+        throw IVI_error("newRect and otherRectFace heights don't match\n");
         return;
     }
 
@@ -1397,7 +1397,7 @@ std::cout << "ERROR: sumAngles should equal 6.283 but doesn't (sumAngles = "
  *                        to the edge points, and the last two points are on the
  *                        other edge of each cylinder
  */
-void kjb::find_cylinders(const Polymesh & p, 
+void ivi::find_cylinders(const Polymesh & p, 
                          const std::vector<Right_Triangle_Pair>& rectangles, 
                          std::vector<std::vector<int> >& cyl_indices, 
                          std::vector<double>& cylSumAngles, 
@@ -2247,7 +2247,7 @@ void kjb::find_cylinders(const Polymesh & p,
  * @param  bottom_points  a vector containing the vertices that make up the 
  *                        other end of the cylinder
  */
-void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p, 
+void ivi::find_top_and_bottom_points_of_cylinder(const Polymesh& p, 
                             const Int_vector& rectMask, 
                             const std::vector<Right_Triangle_Pair>& rectangles, 
                             const std::vector<int>& cyl_indices, 
@@ -2284,7 +2284,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
 
     if(found_adj == false)
     {
-        KJB_error("ERROR: first two triangles in cylinder are not adjacent to third!\n");
+        IVI_error("ERROR: first two triangles in cylinder are not adjacent to third!\n");
     }
 
     int rectIndex = rectMask(cyl_indices[0]);
@@ -2307,7 +2307,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
     }
     else
     {
-        throw KJB_error("ERROR: the first two triangles in the cylinder do not form a rectangle!\n");
+        throw IVI_error("ERROR: the first two triangles in the cylinder do not form a rectangle!\n");
     }
 
     // Determine which set of parallel edges the third face (tri2) is adjacent 
@@ -2340,7 +2340,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
         }
         else
         {
-            throw KJB_error("ERROR: adjacent edge doesn't match\n");
+            throw IVI_error("ERROR: adjacent edge doesn't match\n");
         }
     }
     else // adj_face_to_tri2 == cyl_indices[1]
@@ -2371,7 +2371,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
         }
         else
         {
-            throw KJB_error("ERROR: adjacent edge doesn't match\n");
+            throw IVI_error("ERROR: adjacent edge doesn't match\n");
         }
     }
 
@@ -2390,7 +2390,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
         if(rectangles[rectIndex].get_triangle1() != cyl_indices[i+1] && 
            rectangles[rectIndex].get_triangle2() != cyl_indices[i+1])
         {
-            throw KJB_error("ERROR: the two consecutive face indices are not part of the same rectangle\n");
+            throw IVI_error("ERROR: the two consecutive face indices are not part of the same rectangle\n");
         }
 
         tri0 = p.get_face(cyl_indices[i]);
@@ -2415,7 +2415,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
         }
         else
         {
-            throw KJB_error("ERROR: problem with rectMask\n");
+            throw IVI_error("ERROR: problem with rectMask\n");
         }
 
         Vector tri0_edge1_vertex1 = 
@@ -2646,7 +2646,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
         }
         else
         {
-            throw KJB_error("Error: problem with logic of find_top_and_bottom_points_of_cylinder()\n");
+            throw IVI_error("Error: problem with logic of find_top_and_bottom_points_of_cylinder()\n");
         }
     }
     
@@ -2669,7 +2669,7 @@ void kjb::find_top_and_bottom_points_of_cylinder(const Polymesh& p,
  * @param  points  A vector containing a set of 3D points
  * @param  centroid  A Vector representing the center point of the set of points
  */
-void kjb::find_centroid_of_3d_points
+void ivi::find_centroid_of_3d_points
 (
     const std::vector<Vector>& points, 
     Vector& centroid
@@ -2682,7 +2682,7 @@ void kjb::find_centroid_of_3d_points
     // Check that there is at least one point.
     if(num_points <= 0)
     {
-        throw KJB_error("Error: can't find the centroid - there are no points in the vector\n");
+        throw IVI_error("Error: can't find the centroid - there are no points in the vector\n");
         return;
     }
 
@@ -2722,7 +2722,7 @@ void kjb::find_centroid_of_3d_points
  *                       plane (of the form ax + by + cz + d = 0) fitted to the
  *                       data.
  */
-void kjb::fit_plane_to_3d_points
+void ivi::fit_plane_to_3d_points
 (
     const std::vector<Vector>& points, 
     const Vector& centroid, 
@@ -2744,12 +2744,12 @@ void kjb::fit_plane_to_3d_points
 
     // Now perform svd on matrix M to get the singular vector of M
     // corresponding to its smallest singular value.
-    kjb_c::Vector* S_c = NULL;
-    kjb_c::Matrix* V_trans_c = NULL;
+    ivi_c::Vector* S_c = NULL;
+    ivi_c::Matrix* V_trans_c = NULL;
 
-    const kjb_c::Matrix* M_c = M.get_c_matrix();
+    const ivi_c::Matrix* M_c = M.get_c_matrix();
 
-    kjb_c::do_svd(M_c, NULL, &S_c, &V_trans_c, NULL);
+    ivi_c::do_svd(M_c, NULL, &S_c, &V_trans_c, NULL);
 
     Vector S(S_c);
     Matrix V_trans(V_trans_c);
@@ -2777,7 +2777,7 @@ void kjb::fit_plane_to_3d_points
  * @param  projected_points  The set of points after they have been projected 
  *                           onto the best-fit plane
  */
-void kjb::project_points_onto_plane
+void ivi::project_points_onto_plane
 (
     std::vector<Vector>& points, 
     const Vector& plane_params, 
@@ -2790,7 +2790,7 @@ void kjb::project_points_onto_plane
     // Check that plane_params has size = 4.
     if(plane_params.get_length() != 4)
     {
-        throw KJB_error("The input plane_params does not contain 4 values\n");
+        throw IVI_error("The input plane_params does not contain 4 values\n");
     }
 
     // Create unit normal vector to plane
@@ -2858,7 +2858,7 @@ void kjb::project_points_onto_plane
  * @param  transformMatrices  A vector of the matrices used to map the points 
  *                            from the 3D plane to the X-Y plane
  */
-void kjb::translate_3d_plane_to_xy_plane
+void ivi::translate_3d_plane_to_xy_plane
 (
     const std::vector<Vector>& points, 
     const Vector& plane_params, 
@@ -2872,7 +2872,7 @@ void kjb::translate_3d_plane_to_xy_plane
     // Check that plane_params has size = 4.
     if(plane_params.get_length() != 4)
     {
-        throw KJB_error("The input plane_params does not contain 4 values\n");
+        throw IVI_error("The input plane_params does not contain 4 values\n");
     }
 
     // Create normal vector with homogeneous coordinate.
@@ -2924,12 +2924,12 @@ void kjb::translate_3d_plane_to_xy_plane
                 // double-check that the z-value is zero.
                 if(pt(2) != 0)
                 {
-                    throw KJB_error("Problem with transformation: z-value didn't become 0\n");
+                    throw IVI_error("Problem with transformation: z-value didn't become 0\n");
                 }
             }
-            catch(KJB_error)
+            catch(IVI_error)
             {
-                throw KJB_error("Error in matrix multiplication: sizes not compatible");
+                throw IVI_error("Error in matrix multiplication: sizes not compatible");
             }
         }
         transformMatrices.push_back(T_p1); 
@@ -2997,12 +2997,12 @@ void kjb::translate_3d_plane_to_xy_plane
                 double tolerance = 1e-8;
                 if(fabs(pt(2)) > tolerance)
                 {
-                    throw KJB_error("Problem with transformation: z-value didn't become 0\n");
+                    throw IVI_error("Problem with transformation: z-value didn't become 0\n");
                 }
             }
-            catch(KJB_error)
+            catch(IVI_error)
             {
-                throw KJB_error("Error in matrix multiplication: sizes not compatible");
+                throw IVI_error("Error in matrix multiplication: sizes not compatible");
             }
         }
         transformMatrices.push_back(T_z);
@@ -3023,7 +3023,7 @@ void kjb::translate_3d_plane_to_xy_plane
  * @param  translated_point  A vector representing the point after it has been 
  *                           mapped to the 3D plane.
  */
-void kjb::translate_xy_point_to_3d_plane
+void ivi::translate_xy_point_to_3d_plane
 (
     const Vector& point, 
     const std::vector<Matrix>& transformMatrices, 
@@ -3051,7 +3051,7 @@ void kjb::translate_xy_point_to_3d_plane
     }
     else
     {
-        throw KJB_error("Error: no inverse matrices\n");
+        throw IVI_error("Error: no inverse matrices\n");
     }
 
     if(inverseMatrices.size() == 3)
@@ -3085,7 +3085,7 @@ void kjb::translate_xy_point_to_3d_plane
  * @param  cyl  A Cylinder containing the parameters of the cylinder formed by 
  *              the faces in cyl_indices
  */
-void kjb::fit_cylinder
+void ivi::fit_cylinder
 (
     const Polymesh& p, 
     const Int_vector& rectMask, 
@@ -3413,7 +3413,7 @@ void kjb::fit_cylinder
 
 /*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
 
-void kjb::find_cylinders_to_render_and_fit
+void ivi::find_cylinders_to_render_and_fit
 (
     char* faceFile, 
     char* cylFile, 
@@ -3448,11 +3448,11 @@ void kjb::find_cylinders_to_render_and_fit
 
     if(!ofs_cyl.is_open())
     {
-        KJB_THROW_2(IO_error, "Could not open file for writing cylinders");
+        IVI_THROW_2(IO_error, "Could not open file for writing cylinders");
     }
     if(!ofs_face.is_open())
     {
-        KJB_THROW_2(IO_error, "Could not open file for writing cylinders");
+        IVI_THROW_2(IO_error, "Could not open file for writing cylinders");
     }
     
     ofs_cyl << cyl_indices.size() << ' ';
@@ -3516,7 +3516,7 @@ void kjb::find_cylinders_to_render_and_fit
 }
 
 // Make each cylinder a different color.
-void kjb::find_cylinders_to_render
+void ivi::find_cylinders_to_render
 (
     const Polymesh& p, 
     std::vector<Polymesh_Plane>& plane
@@ -3580,7 +3580,7 @@ void kjb::find_cylinders_to_render
 
 
 // Make each rectangle a different color.
-void kjb::find_rectangles_to_render
+void ivi::find_rectangles_to_render
 (
     const Polymesh& p, 
     std::vector<Polymesh_Plane>& plane
@@ -3643,7 +3643,7 @@ void kjb::find_rectangles_to_render
 
 
 // Make each right triangle a different color.
-void kjb::find_right_triangles_to_render
+void ivi::find_right_triangles_to_render
 (
     const Polymesh& p, 
     std::vector<Polymesh_Plane>& plane
@@ -3693,7 +3693,7 @@ void kjb::find_right_triangles_to_render
 
 
 // Make each adjacent right triangle a different color.
-void kjb::find_adjacent_right_triangles_to_render
+void ivi::find_adjacent_right_triangles_to_render
 (
     const Polymesh& p, 
     std::vector<Polymesh_Plane>& plane

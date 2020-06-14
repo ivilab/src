@@ -7,7 +7,7 @@
  * Originally from TopoFusion.
  */
 /*
- * $Id: index.h 15651 2013-10-11 00:38:52Z kobus $
+ * $Id: index.h 25499 2020-06-14 13:26:04Z kobus $
  *
  * Recommended tab width:  4
  */
@@ -20,7 +20,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 namespace TopoFusion {
 #endif
 #endif
@@ -40,7 +40,7 @@ int invalidateEntry( int x, int y, int typ, char zone );
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE
 } /* namespace TopoFusion */
-} /* namespace kjb_c */
+} /* namespace ivi_c */
 #endif
 } /* extern "C" */
 #endif

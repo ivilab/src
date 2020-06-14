@@ -122,7 +122,7 @@ bool blob_center_contains(Blob b1, Blob b2)
     return d <= b1.size / 2.0;
 }
 
-typedef std::vector<kjb::Matrix> Matrix_vector;
+typedef std::vector<ivi::Matrix> Matrix_vector;
 
 /**
  * @brief   Compute the difference of Gaussians (DoG) scale space
@@ -206,7 +206,7 @@ public:
      *
      * @return  A const-ref to the blob set.
      */
-    const std::set<Blob>& operator()(const kjb::Image& I);
+    const std::set<Blob>& operator()(const ivi::Image& I);
 
     /**
      * @brief   Getter for the min blob size

@@ -30,7 +30,7 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     if(argc != 2)
     {
@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
         Line_segment_set segments;
         detect_long_connected_segments(segments, argv[1], 30);
     }
-    catch(KJB_error e)
+    catch(IVI_error e)
     {
         std::cout << "It did not work" << std::endl;
         e.print(std::cout);

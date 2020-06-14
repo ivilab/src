@@ -31,15 +31,15 @@
 
 #include <boost/format.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/mh.h>
 #else
 #error "You need libergo to use this program."
 #endif
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
@@ -192,7 +192,7 @@ ergo::mh_proposal_result Lss_mh_proposer::operator()
         }
         catch(Exception& e)
         {
-            std::cerr << e.get_msg() << " kjb error\n";
+            std::cerr << e.get_msg() << " ivi error\n";
             out = in;
         }
         catch(...)
@@ -255,8 +255,8 @@ ergo::mh_proposal_result Lss_set_mh_proposer::operator()
         size_t pred_per = pred_coefs[0].size();
         size_t index_1 = d / pred_per;
         size_t index_2 = d % pred_per; 
-        KJB(ASSERT(index_1 < pred_coefs.size()));
-        KJB(ASSERT(index_2 < pred_coefs[index_1].size()));
+        IVI(ASSERT(index_1 < pred_coefs.size()));
+        IVI(ASSERT(index_2 < pred_coefs[index_1].size()));
         pred_coefs[index_1][index_2] += sample(Q_coef);
         spec_move = (move_name + (mod_name_fmt % d).str());
         out.update_means();

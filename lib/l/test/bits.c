@@ -2,7 +2,7 @@
  * Unit test for byte-reversal functions declared in l_bits.h
  * AMP
  *
- * $Id: bits.c 24693 2019-12-13 19:47:41Z kobus $
+ * $Id: bits.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_debug.h>
@@ -16,14 +16,14 @@
 
 
 /* Parameters are big enough to hold all test sizes. */
-static int fail(int b, kjb_uint64 n_in, kjb_uint64 n_ref, kjb_uint64 n_out)
+static int fail(int b, ivi_uint64 n_in, ivi_uint64 n_ref, ivi_uint64 n_out)
 {
     /* This might not be true, but on platforms where it is false,
      * this test will have to be rewritten.
      */
-    ASSERT(sizeof(kjb_uint64) == sizeof(unsigned long));
+    ASSERT(sizeof(ivi_uint64) == sizeof(unsigned long));
 
-    kjb_fprintf(stderr, "Failure reversing %d-bit value:\nin = %x\n"
+    ivi_fprintf(stderr, "Failure reversing %d-bit value:\nin = %x\n"
                         "expected output = %x\nactual output = %x.\n",
                         b, n_in, n_ref, n_out);
     return EXIT_BUG;
@@ -33,16 +33,16 @@ static int fail(int b, kjb_uint64 n_in, kjb_uint64 n_ref, kjb_uint64 n_out)
 int main(void)
 {
     /* Test values are byte-reversed, not bit reversed or nibble-reversed. */
-    kjb_uint16 i16_fwd = 0xabcdu, i16_test = i16_fwd,
+    ivi_uint16 i16_fwd = 0xabcdu, i16_test = i16_fwd,
                i16_rvs = 0xcdabu;
 
-    kjb_uint32 i32_fwd = 0xabcdef59u, i32_test = i32_fwd,
+    ivi_uint32 i32_fwd = 0xabcdef59u, i32_test = i32_fwd,
                i32_rvs = 0x59efcdabu;
 
-    kjb_uint64 i64_fwd = 0x1234567890abcedfu, i64_test = i64_fwd,
+    ivi_uint64 i64_fwd = 0x1234567890abcedfu, i64_test = i64_fwd,
                i64_rvs = 0xdfceab9078563412u;
 
-    EPETE(kjb_init());
+    EPETE(ivi_init());
 
     ASSERT(i16_test != i16_rvs);
     bswap_u16(&i16_test);
@@ -65,7 +65,7 @@ int main(void)
         return fail(64, i64_fwd, i64_rvs, i64_test);
     }
 
-    kjb_cleanup();
+    ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

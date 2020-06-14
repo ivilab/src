@@ -26,7 +26,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 const bool VERBOSE = false;
 
@@ -40,9 +40,9 @@ int main(int argc, char** argv)
     Matrix A = T * matrix_transpose(T);
 
     // the dumb way
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     double ld1 = log(A.abs_of_determinant());
-    long t1 = kjb_c::get_cpu_time();
+    long t1 = ivi_c::get_cpu_time();
 
     if(VERBOSE)
     {
@@ -52,9 +52,9 @@ int main(int argc, char** argv)
     }
 
     // the cholesky way
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     double ld2 = log_det(A);
-    long t2 = kjb_c::get_cpu_time();
+    long t2 = ivi_c::get_cpu_time();
 
     TEST_TRUE(fabs(ld2 - ld1) <= eps);
 
@@ -66,14 +66,14 @@ int main(int argc, char** argv)
     }
 
     // the SVD way
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     Svd svd(A);
     double ld3 = 0.0;
     for(Matrix::Size_type i = 0; i < svd.d().get_length(); i++)
     {
         ld3 += log(svd.d()[i]);
     }
-    long t3 = kjb_c::get_cpu_time();
+    long t3 = ivi_c::get_cpu_time();
 
     TEST_TRUE(fabs(ld3 - ld1) <= eps);
 
@@ -84,16 +84,16 @@ int main(int argc, char** argv)
         cout << "time: " << t3 / 1000.0 << "s" << endl << endl;
     }
 
-#ifdef KJB_HAVE_BOOST
+#ifdef IVI_HAVE_BOOST
     // the eig way
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     boost::tuple<Matrix, Vector> lv = eig(A, true);
     double ld4 = 0.0;
     for(Matrix::Size_type i = 0; i < lv.get<1>().get_length(); i++)
     {
         ld4 += log(lv.get<1>()[i]);
     }
-    long t4 = kjb_c::get_cpu_time();
+    long t4 = ivi_c::get_cpu_time();
 
     TEST_TRUE(fabs(ld4 - ld1) <= eps);
 

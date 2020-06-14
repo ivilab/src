@@ -13,13 +13,13 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
 
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
-using namespace kjb_c;
+using namespace ivi_c;
 
 namespace DTLib {
 
@@ -31,10 +31,10 @@ namespace DTLib {
 
     void ComputeTextonHistogramImg(CCircleMasks* pCircleMasks,
                                    FloatCImgPtr pTextureScaleImg,
-                                   CImg<kjb_int32>* pTextonsImg,
+                                   CImg<ivi_int32>* pTextonsImg,
                                    FloatCImgPtr pPTextureImg,
                                    CImg<FloatCHistogramPtr>* pTextonHistoImg,
-                                   CImg<kjb_int32>* pPresegImg = NULL);
+                                   CImg<ivi_int32>* pPresegImg = NULL);
 
 } // namespace DTLib {
 

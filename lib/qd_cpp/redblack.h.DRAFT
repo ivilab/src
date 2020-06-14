@@ -4,7 +4,7 @@
  * @brief definition of class Redblack_subtree_sum.
  */
 /*
- * $Id: redblack.h.DRAFT 20139 2015-11-30 05:50:36Z predoehl $
+ * $Id: redblack.h.DRAFT 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef REDBLACK_H_PREDOEHL_12_DEC_2011_VISION
@@ -30,7 +30,7 @@
 #include <iterator>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -189,14 +189,14 @@ private:
         /// @brief update sum field assuming left, right are not eq to null
         void update_sum()
         {
-            KJB(ASSERT( left && right ));
+            IVI(ASSERT( left && right ));
             sum = key + left -> sum + right -> sum;
         }
 
         /// @brief link to a child node, and it back to this
         void you_are_my_child( Node* child, Node* Node::* branch )
         {
-            KJB(ASSERT( child ));
+            IVI(ASSERT( child ));
             this ->* branch = child;
             child -> parent = this;
         }
@@ -240,13 +240,13 @@ private:
     /// @brief emit a debug message
     void chatter( const char* s ) const
     {
-        if ( VERBOSE ) KJB(TEST_PSE(( "CHATTER: %s\n", s )));
+        if ( VERBOSE ) IVI(TEST_PSE(( "CHATTER: %s\n", s )));
     }
 
     /// @brief emit message intended for entering a function (use __func__)
     void enter( const char* s ) const
     {
-        if ( VERBOSE ) KJB(TEST_PSE(( "CHATTER: Entering %s\n", s )));
+        if ( VERBOSE ) IVI(TEST_PSE(( "CHATTER: Entering %s\n", s )));
     }
 
     /// @brief stub for debug function printing a message and returning false.
@@ -259,7 +259,7 @@ private:
     /// @brief stub for debug function printing a number and returning false.
     bool fail( int nnn ) const
     {
-        KJB(TEST_PSE(( "FAIL: line %d\n", nnn )));
+        IVI(TEST_PSE(( "FAIL: line %d\n", nnn )));
         return false;
     }
 
@@ -331,7 +331,7 @@ private:
      */
     int blackheight_in_linear_time( const Node* ppp ) const
     {
-        KJB(ASSERT( ppp ));
+        IVI(ASSERT( ppp ));
         if ( is_nil( ppp ) )
         {
             return 1;   // because nil is black
@@ -375,14 +375,14 @@ private:
 #endif
         Node *r[TREE_THRESH], *s = root;
         size_t j = 0;
-        KJB(ASSERT(s)); r[j++] = s; s = s -> right;
-        KJB(ASSERT(s)); r[j++] = s; s = s -> right;
-        KJB(ASSERT(s)); r[j++] = s; s = s -> right;
-        KJB(ASSERT(s)); r[j++] = s; s = s -> right;
-        KJB(ASSERT(s)); r[j++] = s; s = s -> right;
-        KJB(ASSERT(s)); r[j++] = s; s = s -> right;
-        KJB(ASSERT(s)); r[j++] = s; s = s -> right;
-        KJB(ASSERT(TREE_THRESH == j && 00 == s));
+        IVI(ASSERT(s)); r[j++] = s; s = s -> right;
+        IVI(ASSERT(s)); r[j++] = s; s = s -> right;
+        IVI(ASSERT(s)); r[j++] = s; s = s -> right;
+        IVI(ASSERT(s)); r[j++] = s; s = s -> right;
+        IVI(ASSERT(s)); r[j++] = s; s = s -> right;
+        IVI(ASSERT(s)); r[j++] = s; s = s -> right;
+        IVI(ASSERT(s)); r[j++] = s; s = s -> right;
+        IVI(ASSERT(TREE_THRESH == j && 00 == s));
         
         // set up internal nodes
         root = r[3];
@@ -399,7 +399,7 @@ private:
             = r[4].left = r[4].right = r[6].left = r[6].right = & m_nil;
 
         // update the sums -- the three calls are correct iff the assertion is
-        KJB(ASSERT( 7 == TREE_THRESH ));
+        IVI(ASSERT( 7 == TREE_THRESH ));
         root -> left -> update_sum();
         root -> right -> update_sum();
         root -> update_sum();
@@ -436,13 +436,13 @@ private:
      */
     int insert_parent( Node** toparent, bool pn_left, Node* n00b )
     {
-        KJB(ASSERT( n00b && toparent && *toparent ));
+        IVI(ASSERT( n00b && toparent && *toparent ));
         Node* parent = *toparent;
 
         Node* Node::* branch = pn_left ? & Node::left : & Node::right;
         if ( is_nil( parent ->* branch ) )
         {
-            KJB(ASSERT( n00b -> is_red() ));
+            IVI(ASSERT( n00b -> is_red() ));
             parent -> you_are_my_child( n00b, branch );
             parent -> sum += n00b -> sum;
             return 1; // red child at depth 2 in subtree rooted at gramp
@@ -456,9 +456,9 @@ private:
              * If rc is 2 or 4, we can handle it:  it means no-red-red might
              * be unsatisfied, but
              */
-            KJB(ASSERT( 0 == rc || 2 == rc || 4 == rc ));
-            KJB(ASSERT( rc != 2 || ( parent ->* branch ) -> is_red() ));
-            KJB(ASSERT( rc != 4 || parent -> is_red() ));
+            IVI(ASSERT( 0 == rc || 2 == rc || 4 == rc ));
+            IVI(ASSERT( rc != 2 || ( parent ->* branch ) -> is_red() ));
+            IVI(ASSERT( rc != 4 || parent -> is_red() ));
 
             /*
              * Shift that return value downwards, because it describes the tree
@@ -513,17 +513,17 @@ private:
      */
     int insert_gp( Node** togramp, bool gp_left, Node* n00b )
     {
-        KJB(ASSERT( n00b && togramp && *togramp ));
+        IVI(ASSERT( n00b && togramp && *togramp ));
 
         Node    *gramp = *togramp,
                 **toparent = gp_left ? & gramp -> left : & gramp -> right;
 
         gramp -> sum += n00b -> sum;
 
-        KJB(ASSERT( toparent ));
+        IVI(ASSERT( toparent ));
         Node *parent = *toparent;
 
-        KJB(ASSERT( parent ));
+        IVI(ASSERT( parent ));
         bool pn_left = *n00b < *parent;
 
         /*
@@ -543,7 +543,7 @@ private:
          * have consistent semantics.
          */
         int rc = insert_parent( toparent, pn_left, n00b );
-        KJB(ASSERT( 0 == rc || 1 == rc || 2 == rc ));
+        IVI(ASSERT( 0 == rc || 1 == rc || 2 == rc ));
 
         /*
          * The return value below is in the set {0, 2, 4}.
@@ -602,9 +602,9 @@ private:
     {
         Node* Node::* u_branch = opposite_direction( p_branch );//towards uncle
 
-        KJB(ASSERT( gramp ));
-        KJB(ASSERT( is_not_nil( gramp ->* p_branch ) ));
-        KJB(ASSERT( is_not_nil( gramp ->* p_branch ->* u_branch ) ));
+        IVI(ASSERT( gramp ));
+        IVI(ASSERT( is_not_nil( gramp ->* p_branch ) ));
+        IVI(ASSERT( is_not_nil( gramp ->* p_branch ->* u_branch ) ));
 
         Node    *oldparent = gramp ->* p_branch,
                 *oldchild = oldparent ->* u_branch,
@@ -668,18 +668,18 @@ private:
      */
     void rotate( Node** togramp, Node* Node::* p_branch )
     {
-        KJB(ASSERT( togramp && *togramp ));
+        IVI(ASSERT( togramp && *togramp ));
 
         Node* Node::* u_branch = opposite_direction( p_branch ); // to uncle
         Node* oldgramp = *togramp;
 
-        KJB(ASSERT( is_not_nil( oldgramp ) ));
-        KJB(ASSERT( is_not_nil( oldgramp ->* p_branch ) ));
+        IVI(ASSERT( is_not_nil( oldgramp ) ));
+        IVI(ASSERT( is_not_nil( oldgramp ->* p_branch ) ));
 
         Node    *oldparent = oldgramp ->* p_branch,
                 *medmed_tree = oldparent ->* u_branch;
 
-        KJB(ASSERT( oldparent -> parent == oldgramp ));
+        IVI(ASSERT( oldparent -> parent == oldgramp ));
 
         // rotate the descendant relationships
         *togramp = oldparent;
@@ -749,7 +749,7 @@ private:
             return red_child;
         }
 
-        KJB(ASSERT( togramp && *togramp ));
+        IVI(ASSERT( togramp && *togramp ));
 
         Node* Node::* gp_branch = gp_left ? & Node::left : & Node::right;
 
@@ -757,12 +757,12 @@ private:
                 *parent = gramp ->* gp_branch,
                 *uncle = gramp ->* opposite_direction( gp_branch );
 
-        KJB(ASSERT( parent ));
+        IVI(ASSERT( parent ));
         if ( parent -> is_black )
         {
             return 0;   // if parent is black then a red child is not a problem
         }
-        KJB(ASSERT( gramp -> is_black )); //parent and gramp cannot both be red
+        IVI(ASSERT( gramp -> is_black )); //parent and gramp cannot both be red
 
         if ( uncle -> is_black ) // also, uncle could be "nil" (black).
         {
@@ -773,11 +773,11 @@ private:
             }
             // rotate like alexander the great
             rotate( togramp, gp_branch );
-            KJB(ASSERT( 00 == m_nil.parent ));
+            IVI(ASSERT( 00 == m_nil.parent ));
             return 0;
         }
 
-        KJB(ASSERT( is_not_nil( uncle ) ));
+        IVI(ASSERT( is_not_nil( uncle ) ));
         uncle -> is_black = parent -> is_black = true;
         gramp -> is_black = false;
         return 1 << 2;  // now gramp is a red child 2 levels higher
@@ -865,7 +865,7 @@ private:
     /// @brief scan entire tree to see if any red node has a red child
     bool red_node_has_red_child_in_linear_time( const Node* ppp ) const
     {
-        KJB(ASSERT( ppp ));
+        IVI(ASSERT( ppp ));
         if ( is_nil( ppp ) || are_both_children_nil( ppp ) )
         {
             return false;
@@ -886,7 +886,7 @@ private:
     /// @brief scan entire tree to verify that the sums are exactly correct
     bool sums_are_correct_in_linear_time( const Node* ppp ) const
     {
-        KJB(ASSERT( ppp ));
+        IVI(ASSERT( ppp ));
         if ( is_nil( ppp ) ) return true;
         Key_tp sts = ppp -> key;
         if ( is_not_nil( ppp -> left ) ) sts += ppp -> left -> sum;
@@ -907,7 +907,7 @@ private:
     bool sums_are_close_enough_in_linear_time( const Node* ppp ) const
     {
         const Key_tp SMALL = 1e-3;
-        KJB(ASSERT( ppp ));
+        IVI(ASSERT( ppp ));
         if ( is_nil( ppp ) )
             return true;
 
@@ -963,7 +963,7 @@ private:
                 if ( sat_out ) *sat_out = root[ iii ].sat;
                 if ( loc_out ) *loc_out = root[ iii ].locator;
                 if ( ix ) *ix = iii;
-                KJB(ASSERT( location_list.is_good_here( root + iii ) ));
+                IVI(ASSERT( location_list.is_good_here( root + iii ) ));
                 return true;
             }
         }
@@ -991,7 +991,7 @@ private:
 #ifdef DEBUGGING
         enter( __func__ );
 #endif
-        KJB(ASSERT( ppp ));
+        IVI(ASSERT( ppp ));
         if ( is_nil( ppp ) )
         {
             return 00;
@@ -1016,7 +1016,7 @@ private:
      */
     std::pair< Node*, Node* > recursive_condense( Node* tree )
     {
-        KJB(ASSERT( tree ));
+        IVI(ASSERT( tree ));
         std::pair< Node*, Node* > nn( std::make_pair(tree, tree) );
 
         if ( is_nil( tree -> left ) )
@@ -1060,11 +1060,11 @@ private:
             return & root;
         }
 
-        KJB(ASSERT( ppp && is_not_nil( ppp ) ));
+        IVI(ASSERT( ppp && is_not_nil( ppp ) ));
 
         Node* parent = ppp -> parent;
-        KJB(ASSERT( parent && is_not_nil( parent ) ));
-        KJB(ASSERT( parent -> right == ppp || parent -> left == ppp ));
+        IVI(ASSERT( parent && is_not_nil( parent ) ));
+        IVI(ASSERT( parent -> right == ppp || parent -> left == ppp ));
 
         return parent -> left == ppp ? & parent -> left : & parent -> right;
     }
@@ -1073,9 +1073,9 @@ private:
     /// @brief get a Node field indicating how parent points to a non-nil node
     Node* Node::* parent_branch_to_me( Node* ppp ) const
     {
-        KJB(ASSERT( ppp && ppp != root /* && is_not_nil( ppp ) */ ));
-        KJB(ASSERT( ppp -> parent ));
-        KJB(ASSERT(     ppp -> parent -> right == ppp
+        IVI(ASSERT( ppp && ppp != root /* && is_not_nil( ppp ) */ ));
+        IVI(ASSERT( ppp -> parent ));
+        IVI(ASSERT(     ppp -> parent -> right == ppp
                     ||  ppp -> parent -> left == ppp  ));
         return ppp -> parent -> right == ppp ? & Node::right : & Node::left;
     }
@@ -1107,16 +1107,16 @@ private:
      */
     Node* splice_me( Node* ppp, Node* Node::* par_br, Node* Node::* child_br )
     {
-        KJB(ASSERT( ppp && ppp != root ));
+        IVI(ASSERT( ppp && ppp != root ));
 
         Node    *child_p = ppp ->* child_br,
                 *par_p = ppp -> parent;
-        KJB(ASSERT( par_p && is_not_nil( par_p ) ));
-        KJB(ASSERT( ppp == par_p ->* par_br ));
-        KJB(ASSERT( is_nil( ppp ->* opposite_direction( child_br ) ) ));
-        KJB(ASSERT( child_p ));
-        KJB(ASSERT( is_nil( child_p ) || ppp == child_p -> parent ));
-        KJB(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( par_p && is_not_nil( par_p ) ));
+        IVI(ASSERT( ppp == par_p ->* par_br ));
+        IVI(ASSERT( is_nil( ppp ->* opposite_direction( child_br ) ) ));
+        IVI(ASSERT( child_p ));
+        IVI(ASSERT( is_nil( child_p ) || ppp == child_p -> parent ));
+        IVI(ASSERT( 00 == m_nil.parent ));
 
         /*
          * NOTE WELL:  we do the following EVEN WHEN CHILD IS THE NIL NODE!!
@@ -1130,8 +1130,8 @@ private:
         */
         par_p -> you_are_my_child( child_p, par_br );
 
-        KJB(ASSERT( (ppp ->* child_br) -> parent == ppp -> parent ));
-        KJB(ASSERT( ppp -> parent ->* par_br == ppp ->* child_br ));
+        IVI(ASSERT( (ppp ->* child_br) -> parent == ppp -> parent ));
+        IVI(ASSERT( ppp -> parent ->* par_br == ppp ->* child_br ));
 
         return ppp;
     }
@@ -1148,8 +1148,8 @@ private:
     {
         if ( ppp == root )
         {
-            KJB(ASSERT( is_nil( ppp ->* opposite_direction( child_br ) ) ));
-            KJB(ASSERT(     is_nil( ppp ->* child_br )
+            IVI(ASSERT( is_nil( ppp ->* opposite_direction( child_br ) ) ));
+            IVI(ASSERT(     is_nil( ppp ->* child_br )
                         ||  ppp == ( ppp ->* child_br ) -> parent ));
             root = ppp ->* child_br;
             return ppp;
@@ -1214,9 +1214,9 @@ private:
 #ifdef DEBUGGING
         enter( __func__ );
 #endif
-        KJB(ASSERT( target && is_not_nil( target ) ));
-        KJB(ASSERT( is_not_nil( target -> right ) ));
-        KJB(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( target && is_not_nil( target ) ));
+        IVI(ASSERT( is_not_nil( target -> right ) ));
+        IVI(ASSERT( 00 == m_nil.parent ));
 
         // must find victim (vic) -- min value of right subtree
         Node *vic = target -> right;
@@ -1225,7 +1225,7 @@ private:
             vic = vic -> left;
         }
 
-        KJB(ASSERT( is_not_nil( vic ) && is_nil( vic -> left ) ));
+        IVI(ASSERT( is_not_nil( vic ) && is_nil( vic -> left ) ));
 
 #if 0
         /*
@@ -1241,7 +1241,7 @@ private:
         // update subtree-sums between target, victim (i.e., retrace the path).
         for ( Node* ppp = target -> right; ppp != vic; ppp = ppp -> left )
         {
-            KJB(ASSERT( is_not_nil( ppp ) ));
+            IVI(ASSERT( is_not_nil( ppp ) ));
             ppp -> sum -= vic -> key;
         }
 
@@ -1249,13 +1249,13 @@ private:
         *to_child = vic -> right;
         return semiauto_splice( vic, & Node::right );
 #else
-        KJB(ASSERT( is_not_nil( target -> left ) ));
+        IVI(ASSERT( is_not_nil( target -> left ) ));
 
         // vic will supplant target, adopting its children and being adopted
         // by target's parent.  target will be dispossessed and shunned.
 
         // Deduct vic key from those nearby superiors soon to be subordinates.
-        KJB(ASSERT( vic -> parent && is_not_nil( vic -> parent ) ));
+        IVI(ASSERT( vic -> parent && is_not_nil( vic -> parent ) ));
         for (Node* vp = vic -> parent; vp != target; vp = vp -> parent)
         { 
             vp -> sum -= vic -> key;
@@ -1263,10 +1263,10 @@ private:
 
         // Splice out vic; vic's parent claims vic's right child (if any).
         // vic_child.parent points back at vic_parent too, even if child is nil
-        KJB(ASSERT( to_child ));
+        IVI(ASSERT( to_child ));
         *to_child = vic -> right;
         Node *vic2 = semiauto_splice( vic, & Node::right );
-        KJB(ASSERT( vic2 == vic ));
+        IVI(ASSERT( vic2 == vic ));
 
         // Plant vic in place of target
         std::swap(vic -> is_black, target -> is_black);
@@ -1277,7 +1277,7 @@ private:
         if (root == target)
         {
             // vic becomes Adam, the root, and has no parent.
-            KJB(ASSERT(00 == target -> parent));
+            IVI(ASSERT(00 == target -> parent));
             root = vic;
         }
         else
@@ -1298,9 +1298,9 @@ private:
 #ifdef DEBUGGING
         enter( __func__ );
 #endif
-        KJB(ASSERT( xblack ));
-        KJB(ASSERT( m_nil.is_black ));
-        KJB(ASSERT( root && is_not_nil( root ) ));
+        IVI(ASSERT( xblack ));
+        IVI(ASSERT( m_nil.is_black ));
+        IVI(ASSERT( root && is_not_nil( root ) ));
 
         if ( xblack -> is_red() )
         {
@@ -1318,7 +1318,7 @@ private:
         Node* Node::* xb_br = parent_branch_to_me( xblack );
         Node* Node::* sib_br = opposite_direction( xb_br );
         Node* sib = xblack -> parent ->* sib_br;
-        KJB(ASSERT( sib && is_not_nil( sib ) )); // CLRS page 290
+        IVI(ASSERT( sib && is_not_nil( sib ) )); // CLRS page 290
 
         // If my sibling is red, it can be rotated to become my (black) parent.
         if ( sib -> is_red() )
@@ -1334,7 +1334,7 @@ private:
 
         Node    *near_nephew = sib ->* xb_br,
                 *far_nephew = sib ->* sib_br;
-        KJB(ASSERT( far_nephew && near_nephew )); // could be nil
+        IVI(ASSERT( far_nephew && near_nephew )); // could be nil
 
         // Resolution depends on my nephews (possibly nil).  Tail recursion:
         if ( far_nephew -> is_red() )
@@ -1368,10 +1368,10 @@ private:
 #ifdef DEBUGGING
         enter( __func__ );
 #endif
-        KJB(ASSERT( sib && is_not_nil( sib ) && sib -> is_black ));
-        KJB(ASSERT( sib -> left && sib -> left -> is_black ));
-        KJB(ASSERT( sib -> right && sib -> right -> is_black ));
-        KJB(ASSERT( m_nil.is_black ));
+        IVI(ASSERT( sib && is_not_nil( sib ) && sib -> is_black ));
+        IVI(ASSERT( sib -> left && sib -> left -> is_black ));
+        IVI(ASSERT( sib -> right && sib -> right -> is_black ));
+        IVI(ASSERT( m_nil.is_black ));
         sib -> is_black = false;
         m_nil.parent = 00;
 
@@ -1404,18 +1404,18 @@ private:
 #ifdef DEBUGGING
         enter( __func__ );
 #endif
-        KJB(ASSERT( m_nil.is_black ));
+        IVI(ASSERT( m_nil.is_black ));
 
         Node* Node::* sib_br = opposite_direction( xb_br );
 
-        KJB(ASSERT( oldsib ));
+        IVI(ASSERT( oldsib ));
 
         Node    *oldparent = oldsib -> parent,
                 *old_far_nephew = oldsib ->* sib_br;
-        KJB(ASSERT( oldparent && is_not_nil( oldparent ) ));
-        KJB(ASSERT( oldsib == oldparent ->* sib_br ));
-        KJB(ASSERT( oldsib -> is_black ));
-        KJB(ASSERT( old_far_nephew -> is_red() ));
+        IVI(ASSERT( oldparent && is_not_nil( oldparent ) ));
+        IVI(ASSERT( oldsib == oldparent ->* sib_br ));
+        IVI(ASSERT( oldsib -> is_black ));
+        IVI(ASSERT( old_far_nephew -> is_red() ));
 
         rotate( to_parent_link( oldparent ), sib_br );
         old_far_nephew -> is_black = true;
@@ -1448,17 +1448,17 @@ private:
 #ifdef DEBUGGING
         enter( __func__ );
 #endif
-        KJB(ASSERT( xblack -> parent == oldsib -> parent ));
-        KJB(ASSERT( oldsib && is_not_nil( oldsib ) && oldsib -> is_black ));
-        KJB(ASSERT( oldsib -> left && oldsib -> right ));
-        KJB(ASSERT( m_nil.is_black ));
+        IVI(ASSERT( xblack -> parent == oldsib -> parent ));
+        IVI(ASSERT( oldsib && is_not_nil( oldsib ) && oldsib -> is_black ));
+        IVI(ASSERT( oldsib -> left && oldsib -> right ));
+        IVI(ASSERT( m_nil.is_black ));
 
         Node    *old_red_nef = ( oldsib ->* xb_br ),
                 *parent = xblack -> parent;
 
         // far nephew must be black too!  only the near nephew is red.
-        KJB(ASSERT( ( oldsib ->* opposite_direction( xb_br ) ) -> is_black ));
-        KJB(ASSERT( old_red_nef -> is_red() ));
+        IVI(ASSERT( ( oldsib ->* opposite_direction( xb_br ) ) -> is_black ));
+        IVI(ASSERT( old_red_nef -> is_red() ));
 
         /* unzigzag xblack's parent,sib,near-nephew, make them swap colors.
          * oldsib becomes new far-nephew.  old near-nephew becomes new sib.
@@ -1474,8 +1474,8 @@ private:
         new_blk_sib -> is_black = true;
 
         // old_red_nef has become the new black sibling of xblack
-        KJB(ASSERT( new_blk_sib == parent ->* opposite_direction( xb_br ) ));
-        KJB(ASSERT( oldsib == new_blk_sib ->* opposite_direction( xb_br ) ));
+        IVI(ASSERT( new_blk_sib == parent ->* opposite_direction( xb_br ) ));
+        IVI(ASSERT( oldsib == new_blk_sib ->* opposite_direction( xb_br ) ));
         return case_of_the_far_red_nephew( new_blk_sib, xb_br );
     }
 
@@ -1512,11 +1512,11 @@ private:
     {
 #ifdef DEBUGGING
         enter( __func__ );
-        KJB(ASSERT( m_nil.is_black ));
-        KJB(ASSERT( sib && is_not_nil( sib ) ));
-        KJB(ASSERT( xblack -> parent == sib -> parent ));
-        KJB(ASSERT( xblack -> is_black &&  sib -> is_red() ));
-        KJB(ASSERT( xblack != root ));
+        IVI(ASSERT( m_nil.is_black ));
+        IVI(ASSERT( sib && is_not_nil( sib ) ));
+        IVI(ASSERT( xblack -> parent == sib -> parent ));
+        IVI(ASSERT( xblack -> is_black &&  sib -> is_red() ));
+        IVI(ASSERT( xblack != root ));
 #endif
 
         Node* xb_parent = xblack -> parent;
@@ -1528,14 +1528,14 @@ private:
         // the following can be useful if xblack is nil, otherwise is benign:
         xblack -> parent = xb_parent;
 
-        KJB(ASSERT( xb_parent -> is_red() ));
+        IVI(ASSERT( xb_parent -> is_red() ));
 #ifdef DEBUGGING
-        KJB(ASSERT( xb_parent == sib ->* xb_br ));
-        KJB(ASSERT( sib -> is_black ));
+        IVI(ASSERT( xb_parent == sib ->* xb_br ));
+        IVI(ASSERT( sib -> is_black ));
 #endif
-        KJB(ASSERT( (xb_parent ->* sib_br) -> is_black ));
-        KJB(ASSERT( (xb_parent ->* xb_br ) == xblack ));
-        KJB(ASSERT( xblack -> is_black ));
+        IVI(ASSERT( (xb_parent ->* sib_br) -> is_black ));
+        IVI(ASSERT( (xb_parent ->* xb_br ) == xblack ));
+        IVI(ASSERT( xblack -> is_black ));
 
         resolve_double_black( xblack );
     }
@@ -1561,8 +1561,8 @@ private:
 #ifdef DEBUGGING
         enter( __func__ );
 #endif
-        KJB(ASSERT( 00 == m_nil.parent ));
-        KJB(ASSERT( target && is_not_nil( target ) ));
+        IVI(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( target && is_not_nil( target ) ));
         const Key_tp& query_key( target -> key );
 
         for ( Node* ppp = target; ppp != root; ppp = ppp -> parent )
@@ -1575,13 +1575,13 @@ private:
         Node *xblack, *tar2 = fully_auto_splice( target, & xblack );
 
         // *xblack is nil iff xblack -> parent equals tar2.
-        KJB(ASSERT( 00 == tar2 || 00 == m_nil.parent || is_nil( xblack ) ));
-        KJB(ASSERT( 00 == tar2 || m_nil.parent || is_not_nil( xblack ) ));
+        IVI(ASSERT( 00 == tar2 || 00 == m_nil.parent || is_nil( xblack ) ));
+        IVI(ASSERT( 00 == tar2 || m_nil.parent || is_not_nil( xblack ) ));
 
         if ( 00 == tar2 )
         {
             tar2 = supplant_target( target, & xblack );
-            KJB(ASSERT( tar2 == target ));
+            IVI(ASSERT( tar2 == target ));
         }
 
         if ( target -> is_black )
@@ -1646,7 +1646,7 @@ private:
         const Redblack_subtree_sum< SATELLITE_TYPE >& st
     )
     {
-        KJB(ASSERT( src ));
+        IVI(ASSERT( src ));
         if ( st.is_nil( src ) ) // the other tree's nil node
         {
             return & m_nil;
@@ -1680,7 +1680,7 @@ private:
         const Key_tp& max
     )   const
     {
-        KJB(ASSERT( ppp ));
+        IVI(ASSERT( ppp ));
         if ( is_nil( ppp ) )
         {
             return true;
@@ -1713,7 +1713,7 @@ private:
     /// @brief insert a node into dictionary stored as a sorted linear array
     Node* linear_insert( Node* n )
     {
-        KJB(ASSERT( n ));
+        IVI(ASSERT( n ));
         ++m_size;
         if (1 == m_size)
         {
@@ -1752,8 +1752,8 @@ private:
         insert_gp( &root, *n00b < *root, n00b );
         root -> is_black = true;
         ++m_size;
-        KJB(ASSERT( 00 == m_nil.parent ));
-        KJB(ASSERT( n00b ));
+        IVI(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( n00b ));
         return n00b;
     }
 
@@ -1782,10 +1782,10 @@ private:
     /// @brief dictionary is a tree; try to find, remove a key.
     bool del_tree_node( Node* ppp )
     {
-        KJB(ASSERT( ppp ));
+        IVI(ASSERT( ppp ));
         kill_a_node( ppp );
         --m_size;
-        KJB(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( 00 == m_nil.parent ));
 
         // Test whether the dictionary has just now shrunk down to lin-arr size
         if ( TREE_THRESH == m_size )
@@ -1823,14 +1823,14 @@ private:
         }
 
         // common case: search the tree down its chosen branch
-        KJB(ASSERT( root ));
+        IVI(ASSERT( root ));
         const Node* ppp;
         for ( ppp = root; ppp && is_not_nil( ppp ->* branch );
                                                         ppp = ppp ->* branch )
         {
-            KJB(ASSERT( ppp ));
+            IVI(ASSERT( ppp ));
         }
-        KJB(ASSERT( ppp && is_nil( ppp ->* branch ) ));
+        IVI(ASSERT( ppp && is_nil( ppp ->* branch ) ));
         return ppp;
     }
 
@@ -1839,7 +1839,7 @@ private:
     /// @brief recursively implements node_using_cumulative_key_sum for trees
     const_iterator tree_seek_cukes( const Node* ppp, Key_tp keysum ) const
     {
-        KJB(ASSERT( ppp && is_not_nil( ppp ) ));
+        IVI(ASSERT( ppp && is_not_nil( ppp ) ));
         if ( are_both_children_nil( ppp ) )
         {
             if ( ppp -> key < keysum )
@@ -1887,7 +1887,7 @@ private:
         const Redblack_subtree_sum< SATELLITE_TYPE >& tree
     )
     {
-        KJB(ASSERT(0 == size()));
+        IVI(ASSERT(0 == size()));
 
         if ( 0 == tree.size() ) return;
         root = 00; // must contain a defined value, if "catch" clause runs.
@@ -1902,10 +1902,10 @@ private:
                 {
                     tn[j++] = q;
                 }
-                KJB(ASSERT(j == tree.size()));
+                IVI(ASSERT(j == tree.size()));
                 while (! tn.empty())
                 {
-                    KJB(ASSERT(tn.back()));
+                    IVI(ASSERT(tn.back()));
                     const int BLACK = 1;
                     root = linear_insert(
                         new Node(tn.back() -> key, tn.back() -> sat, BLACK));
@@ -1973,7 +1973,7 @@ private:
                     return m;
                 }
             }
-            KJB(ASSERT( sum_so_far < keysum ));
+            IVI(ASSERT( sum_so_far < keysum ));
             chatter( "sought a cumulative key sum larger than "
                      "sum of all keys 1" );
             return last;
@@ -1984,10 +1984,10 @@ private:
 
     void swap_children(Node* p, Node* q, Node* Node::* branch)
     {
-        KJB(ASSERT( p && is_not_nil( p )));
-        KJB(ASSERT( q && is_not_nil( q )));
-        KJB(ASSERT( is_nil( p ->* branch ) || p ->* branch -> parent == p ));
-        KJB(ASSERT( is_nil( q ->* branch ) || q ->* branch -> parent == q ));
+        IVI(ASSERT( p && is_not_nil( p )));
+        IVI(ASSERT( q && is_not_nil( q )));
+        IVI(ASSERT( is_nil( p ->* branch ) || p ->* branch -> parent == p ));
+        IVI(ASSERT( is_nil( q ->* branch ) || q ->* branch -> parent == q ));
 
         if ( is_nil( p ->* branch ))
         {
@@ -1996,7 +1996,7 @@ private:
         }
         else if ( is_nil( q ->* branch ))
         {
-            KJB(ASSERT( p ->* branch -> parent == p ));
+            IVI(ASSERT( p ->* branch -> parent == p ));
             p ->* branch -> parent = q;
         }
         else
@@ -2030,7 +2030,7 @@ public:
      */
     void clear()
     {
-        KJB(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( 00 == m_nil.parent ));
         if ( 0 == size() )
         {
             return;
@@ -2093,7 +2093,7 @@ public:
      */
     iterator insert( const Key_tp& key, const Sat_tp& sat )
     {
-        KJB(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( 00 == m_nil.parent ));
         // Test whether we can do the insertion and STILL remain a linear array
         if ( size() < TREE_THRESH )
         {
@@ -2122,7 +2122,7 @@ public:
             os << "tiny tree is in an unsorted array, root=" << root << '\n';
             for ( size_t iii = 0; iii < size(); ++iii )
             {
-                KJB(ASSERT( are_both_children_nil( root + iii ) ));
+                IVI(ASSERT( are_both_children_nil( root + iii ) ));
                 recursive_db_print( root + iii, 0, os );
             }
         }
@@ -2234,7 +2234,7 @@ public:
      */
     bool erase_key( const Key_tp& query_key, Sat_tp* sat_out )
     {
-        KJB(ASSERT( 00 == m_nil.parent ));
+        IVI(ASSERT( 00 == m_nil.parent ));
 
         // handle the mini-array case
         if ( dictionary_is_small_linear_array() )
@@ -2251,7 +2251,7 @@ public:
         {
             return false;
         }
-        KJB(ASSERT( ppp -> key == query_key ));
+        IVI(ASSERT( ppp -> key == query_key ));
 
         return del_tree_node( ppp );
     }
@@ -2483,7 +2483,7 @@ public:
 
         const_iterator& operator++()
         {
-            KJB(ASSERT(00 == p_ || 00 == p_ -> left || p_ -> right));
+            IVI(ASSERT(00 == p_ || 00 == p_ -> left || p_ -> right));
             if (00 == p_)
             {
                 return *this; // end()++ is end()
@@ -2496,7 +2496,7 @@ public:
             {
                 // tree node with right subtree
                 p_ = p_ -> right;
-                KJB(ASSERT(p_ -> left));
+                IVI(ASSERT(p_ -> left));
                 while (! is_nil( p_ -> left ))
                 {
                     p_ = p_ -> left;
@@ -2574,7 +2574,7 @@ public:
         iterator& operator++()
         {
 #if 0
-            KJB(ASSERT(00 == p_ || 00 == p_ -> left || p_ -> right));
+            IVI(ASSERT(00 == p_ || 00 == p_ -> left || p_ -> right));
             if (00 == p_)
             {
                 return *this; // end()++ is end()
@@ -2587,7 +2587,7 @@ public:
             {
                 // tree node with right subtree
                 p_ = p_ -> right;
-                KJB(ASSERT(p_ -> left));
+                IVI(ASSERT(p_ -> left));
                 while (! is_nil( p_ -> left ))
                 {
                     p_ = p_ -> left;
@@ -2653,8 +2653,8 @@ namespace std
     /// @brief swap the contents of two trees of the same type
     template <typename S>
     inline void swap(
-        kjb::qd::Redblack_subtree_sum< S >& rb1,
-        kjb::qd::Redblack_subtree_sum< S >& rb2
+        ivi::qd::Redblack_subtree_sum< S >& rb1,
+        ivi::qd::Redblack_subtree_sum< S >& rb2
     )
     {
         rb1.swap(rb2);

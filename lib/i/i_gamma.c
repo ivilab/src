@@ -1,5 +1,5 @@
 
-/* $Id: i_gamma.c 20918 2016-10-31 22:08:27Z kobus $ */
+/* $Id: i_gamma.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -205,7 +205,7 @@ int set_gamma_options(const char* option, const char* value)
  *
  * This routine puts a gamma corection version of the input image (in_ip) in
  * the output location (out_ipp). The output image is created or resized as
- * necessary with the usual KJB library semantics.
+ * necessary with the usual IVI library semantics.
  *
  * The third argument is a vector of three gamma values one for each channel. If
  * it is NULL, then default gamma is used, either from lookup tables in standard
@@ -221,14 +221,14 @@ int set_gamma_options(const char* option, const char* value)
 
 int gamma_correct_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    gamma_vp
 )
 {
 
 
-    ERE(kjb_copy_image(out_ipp, in_ip));
+    ERE(ivi_copy_image(out_ipp, in_ip));
     ERE(ow_gamma_correct_image(*out_ipp, gamma_vp));
 
     return NO_ERROR;
@@ -255,7 +255,7 @@ int gamma_correct_image
  * -----------------------------------------------------------------------------
  */
 
-int ow_gamma_correct_image(KJB_image* in_ip, const Vector* gamma_vp)
+int ow_gamma_correct_image(IVI_image* in_ip, const Vector* gamma_vp)
 {
     int    num_rows, num_cols;
     Pixel* in_pos;
@@ -356,7 +356,7 @@ int ow_gamma_correct_image(KJB_image* in_ip, const Vector* gamma_vp)
  *
  * This routine puts a linear version of a gamma corected image (in_ip) in the
  * output location (out_ipp). The output image is created or resized as
- * necessary with the usual KJB library semantics.
+ * necessary with the usual IVI library semantics.
  *
  * The third argument is a vector of three gamma values one for each channel. If
  * it is NULL, then default gamma is used, either from lookup tables in standard
@@ -380,14 +380,14 @@ int ow_gamma_correct_image(KJB_image* in_ip, const Vector* gamma_vp)
 
 int invert_image_gamma
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Vector*          gamma_vp
 )
 {
 
 
-    ERE(kjb_copy_image(out_ipp, in_ip));
+    ERE(ivi_copy_image(out_ipp, in_ip));
     ERE(ow_invert_image_gamma(*out_ipp, gamma_vp));
 
     return NO_ERROR;
@@ -422,7 +422,7 @@ int invert_image_gamma
  * -----------------------------------------------------------------------------
  */
 
-int ow_invert_image_gamma(KJB_image* in_ip, Vector* gamma_vp)
+int ow_invert_image_gamma(IVI_image* in_ip, Vector* gamma_vp)
 {
     int    num_rows, num_cols;
     Pixel* in_pos;
@@ -628,14 +628,14 @@ static int initialize_default_gamma_correction(void)
                )
             {
                 good_data = FALSE;
-                kjb_print_error();
+                ivi_print_error();
             }
 
             CONTINUE_HEAP_CHECK_2();
 
-            kjb_fclose(r_lut_fp);
-            kjb_fclose(g_lut_fp);
-            kjb_fclose(b_lut_fp);
+            ivi_fclose(r_lut_fp);
+            ivi_fclose(g_lut_fp);
+            ivi_fclose(b_lut_fp);
         }
         else
         {
@@ -811,14 +811,14 @@ static int initialize_default_gamma_inversion(void)
                )
             {
                 good_data = FALSE;
-                kjb_print_error();
+                ivi_print_error();
             }
 
             CONTINUE_HEAP_CHECK_2();
 
-            kjb_fclose(r_lut_fp);
-            kjb_fclose(g_lut_fp);
-            kjb_fclose(b_lut_fp);
+            ivi_fclose(r_lut_fp);
+            ivi_fclose(g_lut_fp);
+            ivi_fclose(b_lut_fp);
         }
         else
         {
@@ -932,7 +932,7 @@ static FILE* open_gamma_config_file(const char* file_name)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int ow_linearize_pcd(KJB_image* ip)
+int ow_linearize_pcd(IVI_image* ip)
 {
     int i, j;
     Pixel* pos;
@@ -1064,7 +1064,7 @@ static double pcd_method_two_lut_y[ PCD_METHOD_TWO_LUT_TOP + 1 ] =
       255, 255, 255, 255, 255, 255
 };
 
-int ow_apply_pcd_output_lut(KJB_image* ip)
+int ow_apply_pcd_output_lut(IVI_image* ip)
 {
     int           i, j, num_rows, num_cols;
     int           result      = NO_ERROR;

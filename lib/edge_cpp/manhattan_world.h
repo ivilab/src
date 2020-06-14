@@ -31,7 +31,7 @@
 #define MW_FOCAL_INIT_VALUE 150
 #define MW_MIN_FOCAL_INIT_VALUE 50
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Manhattan_segment
@@ -110,20 +110,20 @@ class Manhattan_segment
         ~Manhattan_segment() { }
 
         /** @brief Draws this Manhattan segment */
-        void draw( kjb::Image & img, double ir, double ig, double ib, double width = 1.0)  const
+        void draw( ivi::Image & img, double ir, double ig, double ib, double width = 1.0)  const
         {
             _segment.draw(img, ir, ig, ib, width);
         }
 
         /** @brief Randomly colors this Manhattan segment on an image */
-        void randomly_color(kjb::Image & img, double width = 1.0)  const
+        void randomly_color(ivi::Image & img, double width = 1.0)  const
         {
             _segment.randomly_color(img, width);
         }
 
          /** @brief Draws a line between the line segment mid point and the vanishing point it converges to
           *         Mostly for debug purposes */
-        void draw_mid_point_to_vanishing_point(kjb::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
+        void draw_mid_point_to_vanishing_point(ivi::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
 
         friend std::ostream & operator<<(std::ostream& out, const Manhattan_segment& ms);
     private:
@@ -304,7 +304,7 @@ public:
     {
         if(i >= 3)
         {
-            KJB_THROW_2(Illegal_argument,"Manhattan corners only have 3 segments");
+            IVI_THROW_2(Illegal_argument,"Manhattan corners only have 3 segments");
         }
         return available[i];
     }
@@ -313,7 +313,7 @@ public:
     {
         if(!is_available(i))
         {
-            KJB_THROW_2(Illegal_argument,"Manhattan corners, the requested segment is not available!");
+            IVI_THROW_2(Illegal_argument,"Manhattan corners, the requested segment is not available!");
         }
         return segments[i];
     }
@@ -324,23 +324,23 @@ public:
     {
         if(!is_available(i))
         {
-            KJB_THROW_2(Illegal_argument,"Manhattan corners, the requested segment is not available!");
+            IVI_THROW_2(Illegal_argument,"Manhattan corners, the requested segment is not available!");
         }
         return indexes[i];
     }
 
     /** @brief Returns the position of the corner in the image plane */
-    const kjb::Vector & get_position() const
+    const ivi::Vector & get_position() const
     {
         return position;
     }
 
     /** @brief Sets the position of the corner in the image plane */
-    void set_position(const kjb::Vector & iposition)
+    void set_position(const ivi::Vector & iposition)
     {
         if(iposition.size() < 2)
         {
-            KJB_THROW_2(Illegal_argument, "Corner position vector must be of size 2");
+            IVI_THROW_2(Illegal_argument, "Corner position vector must be of size 2");
         }
         position = iposition;
         for(unsigned int i =0; i < 3; i++)
@@ -395,14 +395,14 @@ public:
     {
         if(i > 2)
         {
-            KJB_THROW_2(Illegal_argument,"Manhattan corner, get orthogonal segment, index out of bounds");
+            IVI_THROW_2(Illegal_argument,"Manhattan corner, get orthogonal segment, index out of bounds");
         }
         return orthogonal_segments[i];
     }
 
     unsigned int num_available_segments() const;
 
-    void draw(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
     void get_3D_corner
     (
@@ -410,15 +410,15 @@ public:
         double focal_length,
         double princ_x,
         double princ_y,
-        kjb::Vector & corner3D_1,
-        kjb::Vector & corner3D_2,
-        kjb::Vector & corner3D_3,
-        kjb::Vector & position_3D
+        ivi::Vector & corner3D_1,
+        ivi::Vector & corner3D_2,
+        ivi::Vector & corner3D_3,
+        ivi::Vector & position_3D
     ) const;
 
     friend std::ostream & operator<<(std::ostream& out, const Manhattan_corner& mc);
 
-    void get_direction(unsigned int segment_index, kjb::Vector & direction) const;
+    void get_direction(unsigned int segment_index, ivi::Vector & direction) const;
 
     bool is_up_corner() const;
 
@@ -434,7 +434,7 @@ private:
 
     bool is_right_segment(unsigned int i);
 
-    kjb::Vector position;
+    ivi::Vector position;
 
     std::vector<Manhattan_corner_segment *> segments;
 
@@ -472,7 +472,7 @@ public:
         }
         if(ivpts.size() != 3)
         {
-            KJB_THROW_2(Illegal_argument,"Manhattan world requires three vanishing points");
+            IVI_THROW_2(Illegal_argument,"Manhattan world requires three vanishing points");
         }
     }
 
@@ -555,7 +555,7 @@ public:
      * vanishing point they are assigned to (green and red for horizontal,
      * blue for vertical, black for outliers).
      */
-    void draw_segments_with_vp_assignments(kjb::Image & img, double width = 1.0) const;
+    void draw_segments_with_vp_assignments(ivi::Image & img, double width = 1.0) const;
 
     /** @brief Draws a line between the mid point of each segment (excluding outliers)
      *  and the vanishing point the segment converges to. Line segments
@@ -563,7 +563,7 @@ public:
      *  vanishing point they are assigned to (green and red for horizontal,
      *  blue for vertical, black for outliers).
      */
-    void draw_lines_from_segments_midpoint_to_vp(kjb::Image & img, double width = 1.0) const;
+    void draw_lines_from_segments_midpoint_to_vp(ivi::Image & img, double width = 1.0) const;
 
     /** @brief Reads this Manhattan world from an input stream. */
     void read(std::istream& in, const Edge_segment_set & isegments, double outlier_threshold = MW_OUTLIER_THRESHOLD);
@@ -583,7 +583,7 @@ public:
         std::ofstream ofs(out_file);
         if(ofs.fail())
         {
-            KJB_THROW_2(kjb::IO_error, "Could not open file to write Manhattan world");
+            IVI_THROW_2(ivi::IO_error, "Could not open file to write Manhattan world");
         }
         write(ofs);
         ofs.close();
@@ -594,7 +594,7 @@ public:
     {
         if(i >= _corners2.size())
         {
-            KJB_THROW_2(Illegal_argument,"Corner2 index out of bounds");
+            IVI_THROW_2(Illegal_argument,"Corner2 index out of bounds");
         }
         return _corners2[i];
     }
@@ -604,7 +604,7 @@ public:
     {
         if(i >= _corners3.size())
         {
-            KJB_THROW_2(Illegal_argument,"Corner3 index out of bounds");
+            IVI_THROW_2(Illegal_argument,"Corner3 index out of bounds");
         }
         return _corners3[i];
     }
@@ -613,7 +613,7 @@ public:
     {
         if(i >= _extra_corners.size())
         {
-            KJB_THROW_2(Illegal_argument,"Extra corner index out of bounds");
+            IVI_THROW_2(Illegal_argument,"Extra corner index out of bounds");
         }
         return _extra_corners[i];
     }
@@ -630,21 +630,21 @@ public:
 
     void read_corners(std::istream& in);
 
-    void draw_corners(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_corners(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
-    void draw_corners2(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_corners2(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
-    void draw_corners2up(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_corners2up(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
-    void draw_corners3(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_corners3(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
-    void draw_corners3up(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_corners3up(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
-    void draw_corners2smart(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_corners2smart(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
-    void draw_corners3smart(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_corners3smart(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
-    void draw_extra_corners(kjb::Image & img, bool draw_full_segments = false, double width = 1.0) const;
+    void draw_extra_corners(ivi::Image & img, bool draw_full_segments = false, double width = 1.0) const;
 
 
     /** @brief Creates a corner from two line segments.
@@ -677,7 +677,7 @@ public:
       Manhattan_corner & corner,
       unsigned int index3,
       bool towards_vp,
-      const kjb::Vector & position,
+      const ivi::Vector & position,
       bool check_consistency = true
    );
 
@@ -728,10 +728,10 @@ public:
         double princ_y,
         unsigned int index,
         bool usecorner3,
-        kjb::Vector & corner3D_1,
-        kjb::Vector & corner3D_2,
-        kjb::Vector & corner3D_3,
-        kjb::Vector & position_3D
+        ivi::Vector & corner3D_1,
+        ivi::Vector & corner3D_2,
+        ivi::Vector & corner3D_3,
+        ivi::Vector & position_3D
     ) const;
 
     const std::vector<Manhattan_corner> & get_corners3() const
@@ -784,7 +784,7 @@ Manhattan_world * create_manhattan_world_from_CMU_file(const std::string & file_
 Manhattan_world * create_mw_from_CMU_file_and_compute_focal_length
 (
     const std::string & file_name,
-    const kjb::Edge_segment_set & iset,
+    const ivi::Edge_segment_set & iset,
     unsigned int num_rows,
     unsigned int num_cols
 );

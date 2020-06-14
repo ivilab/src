@@ -1,4 +1,4 @@
-/* $Id: color_likelihood.h 10622 2011-09-29 19:50:53Z predoehl $ */
+/* $Id: color_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -50,8 +50,8 @@
    |  Author: Ernesto Brau
  * =========================================================================== */
 
-#ifndef KJB_COLOR_LIKELIHOOD_H_
-#define KJB_COLOR_LIKELIHOOD_H_
+#ifndef IVI_COLOR_LIKELIHOOD_H_
+#define IVI_COLOR_LIKELIHOOD_H_
 
 #include "i_cpp/i_image.h"
 #include "m_cpp/m_int_matrix.h"
@@ -66,7 +66,7 @@
  * used to compute the likelihood of a set of block faces
  * given the grayscale intensities of the corresponding image regions.
  */
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Later...
@@ -121,7 +121,7 @@ public:
 
 };
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_COLOR_LIKELIHOOD_H_ */
+#endif /* IVI_COLOR_LIKELIHOOD_H_ */
 

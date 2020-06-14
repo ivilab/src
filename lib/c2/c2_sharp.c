@@ -1,5 +1,5 @@
 
-/* $Id: c2_sharp.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: c2_sharp.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -697,7 +697,7 @@ int get_mip_db_sharp_transform
     }
 
     if (    (result != ERROR)
-         && (kjb_get_verbose_level() >= report_positivity_verbose_level)
+         && (ivi_get_verbose_level() >= report_positivity_verbose_level)
        )
     {
         int            j, k;
@@ -754,7 +754,7 @@ int get_mip_db_sharp_transform
 
     if (result != ERROR)
     {
-        ASSERT(KJB_IS_SET(num_illum));
+        ASSERT(IVI_IS_SET(num_illum));
         result = copy_matrix(T_mpp, T_mp);
     }
 
@@ -1391,7 +1391,7 @@ static int verbose_output_fit_info
     Matrix* truncated_reflect_basis_mp = NULL;
 
 
-    if (kjb_get_verbose_level() < verbose_cutoff) return NO_ERROR;
+    if (ivi_get_verbose_level() < verbose_cutoff) return NO_ERROR;
 
     ERE(plot_id = plot_open());
     ERE(plot_set_title(plot_id, "Illuminants", 0, 0));
@@ -1512,7 +1512,7 @@ static int verbose_output_singular_values
     Vector *normalized_diag_vp = NULL;
 
 
-    if (    (kjb_get_verbose_level() < verbose_cutoff)
+    if (    (ivi_get_verbose_level() < verbose_cutoff)
          || (diag_vp == NULL)
        )
     {

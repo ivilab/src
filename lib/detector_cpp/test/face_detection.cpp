@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: face_detection.cpp 15844 2013-10-23 01:33:14Z jguan1 $ */
+/* $Id: face_detection.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <gr_cpp/gr_2D_bounding_box.h>
 #include <detector_cpp/d_facecom.h>
@@ -25,7 +25,7 @@
 #include <st_cpp/st_backproject.h>
 #include <st_cpp/st_perspective_camera.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char** argv)

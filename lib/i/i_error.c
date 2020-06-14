@@ -1,5 +1,5 @@
 
-/* $Id: i_error.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_error.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -43,7 +43,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int check_same_size_image(const KJB_image* ip1, const KJB_image* ip2)
+int check_same_size_image(const IVI_image* ip1, const IVI_image* ip2)
 {
 
 
@@ -76,7 +76,7 @@ int check_same_size_image(const KJB_image* ip1, const KJB_image* ip2)
  * -----------------------------------------------------------------------------
 */
 
-int is_same_size_image(const KJB_image* ip1, const KJB_image* ip2)
+int is_same_size_image(const IVI_image* ip1, const IVI_image* ip2)
 {
 
 

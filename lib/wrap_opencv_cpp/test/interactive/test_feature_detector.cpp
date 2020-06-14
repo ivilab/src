@@ -3,14 +3,14 @@
 
 #include <i_cpp/i_image.h>
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <opencv2/opencv.hpp>
 #else
 #error "Need OpenCV2 library"
 #endif
 
-using namespace kjb;
-using namespace kjb::opencv;
+using namespace ivi;
+using namespace ivi::opencv;
 int main(int argc, char* argv[])
 {
     // Read an image 

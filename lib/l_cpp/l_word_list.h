@@ -1,18 +1,18 @@
 /**
  * @file
- * @brief Wrapped version of Word_list integrated with kjb_glob
+ * @brief Wrapped version of Word_list integrated with ivi_glob
  * @author Andrew Predoehl
  *
  * This file implements a header-only wrapper on Word_list, and integrates it
- * with kjb_glob.
+ * with ivi_glob.
  */
 
 /*
- * $Id: l_word_list.h 17287 2014-08-13 23:56:14Z predoehl $
+ * $Id: l_word_list.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef WRAP_KJB_WORD_LIST_H
-#define WRAP_KJB_WORD_LIST_H
+#ifndef WRAP_IVI_WORD_LIST_H
+#define WRAP_IVI_WORD_LIST_H
 
 #include "l/l_sys_io.h"
 #include "l/l_word_list.h"
@@ -28,11 +28,11 @@
 #include <functional>
 #include <iterator>
 
-namespace kjb
+namespace ivi
 {
 
 /**
- * @brief Wrapper for the libKJB type Word_list (useful for globs).
+ * @brief Wrapper for the libIVI type Word_list (useful for globs).
  *
  * This class is useful mostly because of the glob-related constructors.  If
  * you don't need globs, then consider using vector<string> instead.
@@ -54,12 +54,12 @@ namespace kjb
  * @section tilglob Glob
  *
  * A glob(7) is what they call Unix filename pattern-matching expressions, such
- * as "*.cpp" or "/tmp/????.pid" or the like.  We wrap function kjb_c::kjb_glob
+ * as "*.cpp" or "/tmp/????.pid" or the like.  We wrap function ivi_c::ivi_glob
  * in some of the ctors for this class -- please see its man page.
  */
 class Word_list
 {
-    kjb_c::Word_list *m_word_list;
+    ivi_c::Word_list *m_word_list;
 
     // Basic predicate to match a C++ string to a C string.
     // We need this because we need the test as to whether wl_word equals null.
@@ -92,14 +92,14 @@ public:
      * @param [in] pattern  A string containing a filename "glob" pattern
      *
      * @param [in] filter   Optional parameter specifying the kind of directory
-     *                      entry wanted:  defaults to kjb_c::is_file, the
-     *                      common choice, but also can be kjb_c::is_directory
+     *                      entry wanted:  defaults to ivi_c::is_file, the
+     *                      common choice, but also can be ivi_c::is_directory
      *                      or others.
-     * @throws kjb::Result_error if the file globbing fails (see note).
-     * @throws kjb::KJB_error if memory allocation fails.
+     * @throws ivi::Result_error if the file globbing fails (see note).
+     * @throws ivi::IVI_error if memory allocation fails.
      * @see @ref tilglob
      *
-     * @note Please see documentation for kjb_c::kjb_glob() for behavior.  The
+     * @note Please see documentation for ivi_c::ivi_glob() for behavior.  The
      * resulting Word_list will indicate, via size(), the number of matches for
      * the glob pattern.  Clearly the number of matches could be zero, which is
      * not regarded as an error.  No matter the size, the resulting word list
@@ -108,14 +108,14 @@ public:
      */
     Word_list(
         const char* pattern,
-        int (*filter)(const char*) = kjb_c::is_file
+        int (*filter)(const char*) = ivi_c::is_file
     )
     :   m_word_list( 0 )
     {
-        int rc = kjb_c::kjb_glob( & m_word_list, pattern, filter );
-        if ( rc != kjb_c::NO_ERROR )
+        int rc = ivi_c::ivi_glob( & m_word_list, pattern, filter );
+        if ( rc != ivi_c::NO_ERROR )
         {
-            KJB_THROW_2( Result_error, "Bad glob" );
+            IVI_THROW_2( Result_error, "Bad glob" );
         }
         NTX( m_word_list );
     }
@@ -126,14 +126,14 @@ public:
      * @param [in] pattern  A string containing a filename "glob" pattern
      *
      * @param [in] filter   Optional parameter specifying the kind of directory
-     *                      entry wanted:  defaults to kjb_c::is_file, the
-     *                      common choice, but also can be kjb_c::is_directory
+     *                      entry wanted:  defaults to ivi_c::is_file, the
+     *                      common choice, but also can be ivi_c::is_directory
      *                      or others.
      * Please see the documentation for the other ctor for further discussion.
      */
     Word_list(
         const std::string& pattern,
-        int (*filter)(const char*) = kjb_c::is_file
+        int (*filter)(const char*) = ivi_c::is_file
     )
     :   m_word_list( 0 )
     {
@@ -143,12 +143,12 @@ public:
 
     /**
      * @brief take non-negative word-count; generate that many empty entries.
-     * @throws KJB_error if anything (such as memory allocation) fails.
+     * @throws IVI_error if anything (such as memory allocation) fails.
      */
     Word_list( int num_words = 0 )
     :   m_word_list( 0 )
     {
-        ETX( kjb_c::get_target_word_list( &m_word_list, num_words ) );
+        ETX( ivi_c::get_target_word_list( &m_word_list, num_words ) );
         NTX( m_word_list );
     }
 
@@ -156,7 +156,7 @@ public:
     Word_list( int argc, const char* const* argv )
     :   m_word_list( 0 )
     {
-        ETX( kjb_c::get_target_word_list( &m_word_list, argc ) );
+        ETX( ivi_c::get_target_word_list( &m_word_list, argc ) );
         NTX( m_word_list );
         std::for_each( argv, argv+argc,
                                 std::bind1st(std::ptr_fun(append_f),this) );
@@ -164,18 +164,18 @@ public:
 
     /**
      * @brief copy ctor (slow) creates a deep copy of an existing word list.
-     * @throws KJB_error if anything (such as memory allocation) fails.
+     * @throws IVI_error if anything (such as memory allocation) fails.
      */
     Word_list( const Word_list& that )
     :   m_word_list( 0 )
     {
-        ETX( kjb_c::copy_word_list( &m_word_list, that.m_word_list ) );
+        ETX( ivi_c::copy_word_list( &m_word_list, that.m_word_list ) );
         NTX( m_word_list );
     }
 
     /**
      * @brief assignment operator deep-copies contents of given list.
-     * @throws KJB_error if anything (such as memory allocation) fails.
+     * @throws IVI_error if anything (such as memory allocation) fails.
      */
     Word_list& operator=( const Word_list& that )
     {
@@ -204,13 +204,13 @@ public:
     /// @brief return the number of non-empty entries in the list
     int count_strings() const
     {
-        return kjb_c::count_strings_in_word_list( m_word_list );
+        return ivi_c::count_strings_in_word_list( m_word_list );
     }
 
     /**
      * @brief Return the underlying C representation (as const)
      */
-    const kjb_c::Word_list* c_ptr() const
+    const ivi_c::Word_list* c_ptr() const
     {
         NTX( m_word_list );
         return m_word_list;
@@ -221,7 +221,7 @@ public:
      * @return If found, returns the index of the entry.  Otherwise, it
      *         returns size().
      * @warning Please test for the not-found possibility!
-     * @warning This does NOT follow the same API as kjb_c::search_word_list.
+     * @warning This does NOT follow the same API as ivi_c::search_word_list.
      * @warning This is a linear-time search, i.e., slow.
      */
     size_t match( const std::string& word ) const
@@ -243,7 +243,7 @@ public:
         NTX( m_word_list );
         if ( size() <= index )
         {
-            KJB_THROW( Index_out_of_bounds );
+            IVI_THROW( Index_out_of_bounds );
         }
         return m_word_list -> words[ index ];
     }
@@ -255,20 +255,20 @@ public:
      * first one encountered.  Otherwise the list is reallocated and grown, and
      * the given word goes in the first newly-created entry.
      *
-     * @throws KJB_error if anything (such as memory allocation) fails.
+     * @throws IVI_error if anything (such as memory allocation) fails.
      *
      * @warning This operation can alter the size() of the object by an
      *          unspecified amount (not a plus-one increment, in general).
      */
     void append( const std::string& word )
     {
-        ETX( kjb_c::append_word_list( &m_word_list, word.c_str() ) );
+        ETX( ivi_c::append_word_list( &m_word_list, word.c_str() ) );
     }
 
     /// @brief remove all empty entries from back (only) of the list.
     void trim_empty_entries_at_tail()
     {
-        ETX( kjb_c::trim_word_list_empty_entries_at_tail( m_word_list ) );
+        ETX( ivi_c::trim_word_list_empty_entries_at_tail( m_word_list ) );
     }
 
     /// @brief Convert the word list into a STL vector of STL strings.
@@ -285,10 +285,10 @@ public:
     Word_list operator+( const Word_list& that ) const
     {
         Word_list result;
-        std::vector< const kjb_c::Word_list* > input( 2 );
+        std::vector< const ivi_c::Word_list* > input( 2 );
         input[ 0 ] = m_word_list;
         input[ 1 ] = that.m_word_list;
-        ETX( kjb_c::concat_word_lists(&result.m_word_list, 2, &input.front()));
+        ETX( ivi_c::concat_word_lists(&result.m_word_list, 2, &input.front()));
         return result;
     }
 
@@ -310,10 +310,10 @@ public:
                     char* const&>
     {
         size_t m_index;
-        const kjb_c::Word_list* m_list;
+        const ivi_c::Word_list* m_list;
 
     public:
-        const_iterator( size_t iii, const kjb_c::Word_list* www )
+        const_iterator( size_t iii, const ivi_c::Word_list* www )
         :   m_index( iii ), m_list( www )
         {}
 
@@ -384,7 +384,7 @@ public:
     }
 };
 
-} // namespace kjb
+} // namespace ivi
 
 #endif
 

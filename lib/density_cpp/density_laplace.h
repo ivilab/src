@@ -30,7 +30,7 @@
 #include <l_cpp/l_exception.h>
 #include <cmath>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Approximates the value of the max of a pdf using the
@@ -78,7 +78,7 @@ double laplace_max_log_density(const Matrix& H)
     return p;
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DENSITY_LAPLCE_H */
 

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: likelihood.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <prob_cpp/prob_distribution.h>
@@ -34,7 +34,7 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
-using namespace kjb::ties;
+using namespace ivi::ties;
 
 #include <boost/ref.hpp>
 
@@ -90,10 +90,10 @@ double Likelihood::log_prob
         {
             const std::string& obs_name = lss.obs_names()[j];
             Obs_map::const_iterator obs_it = observables.find(obs_name);
-            KJB(ASSERT(obs_it != observables.end()));
+            IVI(ASSERT(obs_it != observables.end()));
             // loop through all the observables 
             const Vector_v& vals = obs_it->second;
-            KJB(ASSERT(vals.size() == num_oscillators));
+            IVI(ASSERT(vals.size() == num_oscillators));
             for(int k = vals.size() - 1; k >= 0; k--)
             {
                 double data_val = vals[k][real_index];
@@ -130,7 +130,7 @@ double Likelihood::log_prob
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<double> kjb::ties::individual_likelihoods
+std::vector<double> ivi::ties::individual_likelihoods
 (
     const Lss_set& lsss,
     const std::vector<Likelihood>& likelihoods,
@@ -195,10 +195,10 @@ Vector Likelihood::get_squared_errors(const Linear_state_space& lss) const
             double error_per_obs = 0.0;
             const std::string& obs_name = lss.obs_names()[j];
             Obs_map::const_iterator obs_it = observables.find(obs_name);
-            KJB(ASSERT(obs_it != observables.end()));
+            IVI(ASSERT(obs_it != observables.end()));
             // loop through all the observables 
             const Vector_v& vals = obs_it->second;
-            KJB(ASSERT(vals.size() == num_osc));
+            IVI(ASSERT(vals.size() == num_osc));
             // for each oscillator at the current observation
             for(size_t k = 0; k < num_osc; k++)
             {

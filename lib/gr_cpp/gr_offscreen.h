@@ -64,17 +64,17 @@
  * are supported.
  */
 
-#ifndef KJB_GR_OFFSCREEN_H
-#define KJB_GR_OFFSCREEN_H
+#ifndef IVI_GR_OFFSCREEN_H
+#define IVI_GR_OFFSCREEN_H
 
 #include "l_cpp/l_exception.h"
 #include "gr_cpp/gr_opengl_headers.h"
 
-#ifdef KJB_HAVE_X11
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_X11
+#ifdef IVI_HAVE_OPENGL
 #ifndef MAC_OSX
 
-#ifdef KJB_HAVE_OSMESA
+#ifdef IVI_HAVE_OSMESA
 #include <GL/osmesa.h>
 #else
 #include <X11/Xlib.h>
@@ -92,7 +92,7 @@
 
 
 
-namespace kjb {
+namespace ivi {
 
 
 /** @brief Checks what offscreen rendering capabilities are available
@@ -131,13 +131,13 @@ class Offscreen_buffer
         virtual ~Offscreen_buffer() { }
 
         /** @brief Activates an offscreen buffer. */
-        virtual void activate() throw(kjb::Exception) = 0;
+        virtual void activate() throw(ivi::Exception) = 0;
 
         /** @brief Deactivates an offscreen buffer. */
-        virtual void deactivate() throw(kjb::Exception) = 0;
+        virtual void deactivate() throw(ivi::Exception) = 0;
 
         /** @brief Reactivates an offscreen buffer. */
-        virtual void reactivate() throw(kjb::Exception) = 0;
+        virtual void reactivate() throw(ivi::Exception) = 0;
 
     protected:
 
@@ -152,8 +152,8 @@ class Offscreen_buffer
 };
 
 
-#if defined KJB_HAVE_X11 && defined KJB_HAVE_OPENGL
-#ifndef KJB_HAVE_OSMESA
+#if defined IVI_HAVE_X11 && defined IVI_HAVE_OPENGL
+#ifndef IVI_HAVE_OSMESA
 #ifndef MAC_OSX
 /**
  * @class GLX_offscreen_buffer
@@ -172,13 +172,13 @@ class GLX_offscreen_buffer : public Offscreen_buffer
         virtual ~GLX_offscreen_buffer() { }
 
         /** @brief Activates an offscreen buffer for GLX. */
-        virtual void activate() throw(kjb::Exception);
+        virtual void activate() throw(ivi::Exception);
 
         /** @brief Deactivates an offscreen buffer for GLX. */
-        virtual void deactivate() throw(kjb::Exception);
+        virtual void deactivate() throw(ivi::Exception);
 
         /** @brief Reactivates an offscreen buffer for GLX. */
-        virtual void reactivate() throw(kjb::Exception);
+        virtual void reactivate() throw(ivi::Exception);
 
     protected:
 
@@ -190,11 +190,11 @@ class GLX_offscreen_buffer : public Offscreen_buffer
 
         /** @brief Opens the current X11 display. */
         void open_display(const char* disp_name=0) 
-            throw(kjb::Result_error);
+            throw(ivi::Result_error);
 
         /** @brief Creates the GLX drawable object and context. */
         virtual void create_drawable_and_context(int* attrs)
-            throw(kjb::Exception) = 0;
+            throw(ivi::Exception) = 0;
 
         /** @brief Destroys the GLX drawable object. */
         virtual void destroy_drawable() = 0;
@@ -240,7 +240,7 @@ class GLX_offscreen_pixmap : public GLX_offscreen_buffer
 
         /** @brief Constructs an offscreen pixmap for GLX. */
         GLX_offscreen_pixmap(int width, int height, int* attrs=0)
-            throw(kjb::Exception);
+            throw(ivi::Exception);
         
         /** @brief Deletes an offscreen pixmap for GLX. */
         virtual ~GLX_offscreen_pixmap();
@@ -249,7 +249,7 @@ class GLX_offscreen_pixmap : public GLX_offscreen_buffer
 
         /** @brief Creates the GLX drawable object and context. */
         virtual void create_drawable_and_context(int* attrs)
-            throw(kjb::Result_error);
+            throw(ivi::Result_error);
 
         /** @brief Destroys the GLX drawable object. */
         virtual void destroy_drawable();
@@ -274,11 +274,11 @@ class GLX_offscreen_pbuffer : public GLX_offscreen_buffer
 
         /** @brief Constructs an offscreen pbuffer for GLX. */
         GLX_offscreen_pbuffer(int width, int height)
-            throw(kjb::Exception);
+            throw(ivi::Exception);
 
         /** @brief Constructs an offscreen pbuffer for GLX. */
         GLX_offscreen_pbuffer(int width, int heigth, int* attrs)
-            throw (kjb::Exception);
+            throw (ivi::Exception);
 
         /** @brief Deletes an offscreen pbuffer for GLX. */
         virtual ~GLX_offscreen_pbuffer();
@@ -287,7 +287,7 @@ class GLX_offscreen_pbuffer : public GLX_offscreen_buffer
 
         /** @brief Creates the GLX drawable object and context. */
         virtual void create_drawable_and_context(int* attrs)
-            throw(kjb::Exception);
+            throw(ivi::Exception);
 
         /** @brief Destroys the GLX drawable object. */
         virtual void destroy_drawable();
@@ -312,19 +312,19 @@ class CGL_offscreen_pbuffer : public Offscreen_buffer
             GLenum  format=GL_RGBA,
             const CGLPixelFormatAttribute* attrs=0
         )
-        throw (kjb::Exception);
+        throw (ivi::Exception);
 
         /** @brief Deletes an offscreen pbuffer for CGL. */
         virtual ~CGL_offscreen_pbuffer();
 
         /** @brief Activates an offscreen buffer for CGL. */
-        virtual void activate() throw(kjb::Exception);
+        virtual void activate() throw(ivi::Exception);
 
         /** @brief Deactivates an offscreen buffer for CGL. */
-        virtual void deactivate() throw(kjb::Exception);
+        virtual void deactivate() throw(ivi::Exception);
 
         /** @brief Reactivates an offscreen buffer for CGL. */
-        virtual void reactivate() throw(kjb::Exception);
+        virtual void reactivate() throw(ivi::Exception);
 
     protected:
 
@@ -339,7 +339,7 @@ class CGL_offscreen_pbuffer : public Offscreen_buffer
             GLenum format,
             const CGLPixelFormatAttribute* attrs
         )
-        throw(kjb::Exception);
+        throw(ivi::Exception);
 
     protected:
 
@@ -356,7 +356,7 @@ class CGL_offscreen_pbuffer : public Offscreen_buffer
 #endif
 #endif
 
-#ifdef KJB_HAVE_OSMESA
+#ifdef IVI_HAVE_OSMESA
 /**
  * @class OSMesa32_offscreen_buffer
  *
@@ -376,19 +376,19 @@ class OSMesa32_offscreen_buffer : public Offscreen_buffer
             GLint   stencil_bits=4,
             GLint   accum_bits=4
         )
-        throw (kjb::Exception);
+        throw (ivi::Exception);
 
         /** @brief Deletes an offscreen buffer for OSMesa32. */
         virtual ~OSMesa32_offscreen_buffer();
 
         /** @brief Activates an offscreen buffer for OSMesa32. */
-        virtual void activate() throw(kjb::Exception);
+        virtual void activate() throw(ivi::Exception);
 
         /** @brief Deactivates an offscreen buffer for OSMesa32. */
-        virtual void deactivate() throw(kjb::Exception);
+        virtual void deactivate() throw(ivi::Exception);
 
         /** @brief Reactivates an offscreen buffer for OSMesa32. */
-        virtual void reactivate() throw(kjb::Exception);
+        virtual void reactivate() throw(ivi::Exception);
 
     protected:
 
@@ -400,7 +400,7 @@ class OSMesa32_offscreen_buffer : public Offscreen_buffer
             GLint  stencil_bits,
             GLint  accum_bits
         )
-        throw(kjb::Exception);
+        throw(ivi::Exception);
 
     protected:
 
@@ -412,7 +412,7 @@ class OSMesa32_offscreen_buffer : public Offscreen_buffer
 };
 #endif
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 /** @brief This function will create an offscreen buffer using the available
  * offscreen rendering capabilities.

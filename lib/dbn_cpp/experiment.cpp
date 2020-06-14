@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: experiment.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: experiment.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <string>
 #include <vector>
@@ -25,8 +25,8 @@
 
 #include "dbn_cpp/experiment.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 std::vector<std::vector<std::string> > Lss_set_options::get_all_moderators
 (
@@ -77,7 +77,7 @@ std::vector<std::vector<std::string> > Lss_set_options::get_all_moderators
         }
         else
         {
-            KJB_THROW_2(Illegal_argument, "moderator-params must be:\n "
+            IVI_THROW_2(Illegal_argument, "moderator-params must be:\n "
                                           " mass-ratio \n"
                                           " stiffiness \n"
                                           " damping \n"
@@ -101,7 +101,7 @@ std::vector<std::vector<std::string> > Lss_set_options::get_all_moderators
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::generate_model_name(Ties_experiment& exp)
+void ivi::ties::generate_model_name(Ties_experiment& exp)
 {
     if(exp.run_average_model)
     {

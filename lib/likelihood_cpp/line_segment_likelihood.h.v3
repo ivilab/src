@@ -32,7 +32,7 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 
-namespace kjb {
+namespace ivi {
 
 /** @brief  Soon... */
 class Line_segment_likelihood
@@ -112,10 +112,10 @@ public:
         double sigma_length = m_p * std::sqrt(m_L * m.get_length());
         double sigma_width = m_q;
 
-        double angle = kjb::sample(Normal_distribution(0.0, sigma_angle));
-        double length = kjb::sample(Normal_distribution(0.0, sigma_length));
-        double width = kjb::sample(Normal_distribution(0.0, sigma_width));
-        double seg_length = kjb::sample(Uniform_distribution(
+        double angle = ivi::sample(Normal_distribution(0.0, sigma_angle));
+        double length = ivi::sample(Normal_distribution(0.0, sigma_length));
+        double width = ivi::sample(Normal_distribution(0.0, sigma_width));
+        double seg_length = ivi::sample(Uniform_distribution(
                                                 1.0, m.get_length() / 4.0));
 
         Vector l_dir = geometry::projective_to_euclidean_2d(m.get_end())
@@ -166,7 +166,7 @@ private:
     /** @brief  Gauss-like distribution...might just use a Gaussian later. */
     double gauss_like_pdf(double x, double s) const
     {
-        return kjb::pdf(Normal_distribution(0.0, s), x);
+        return ivi::pdf(Normal_distribution(0.0, s), x);
     }
 
     /*==============================================================*
@@ -181,7 +181,7 @@ private:
     double m_r;
 };
 
-} // namespace kjb
+} // namespace ivi
 
 #endif //LINE_SEGMENT_LIKELIHOOD
 

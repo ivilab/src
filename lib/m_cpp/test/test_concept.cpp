@@ -1,4 +1,4 @@
-/* $Id: test_concept.cpp 17431 2014-09-01 18:49:11Z predoehl $ */
+/* $Id: test_concept.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -22,14 +22,14 @@
 #include <l/l_incl.h>
 #include <iostream>
 //#include <cstdlibs>
-#ifdef KJB_HAVE_BOOST_HEADERS
+#ifdef IVI_HAVE_BOOST_HEADERS
 #include <boost/concept/assert.hpp>
 #include <boost/concept_check.hpp>
 using namespace boost;
 #endif
 
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 
@@ -38,8 +38,8 @@ using namespace std;
 
 int main (int /* argc */, char ** /* argv */)
 {
-    kjb_c::kjb_init();
-#ifdef KJB_HAVE_BOOST_HEADERS
+    ivi_c::ivi_init();
+#ifdef IVI_HAVE_BOOST_HEADERS
     // Vector is a model of RandomAccessContainer
     // http://www.sgi.com/tech/stl/RandomAccessContainer.html
     BOOST_CONCEPT_ASSERT((RandomAccessContainer<Vector>));

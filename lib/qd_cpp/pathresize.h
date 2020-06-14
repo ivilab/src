@@ -24,7 +24,7 @@
  * goal size, use function polyline_approx().
  */
 /*
- * $Id: pathresize.h 17756 2014-10-15 18:58:24Z predoehl $
+ * $Id: pathresize.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef PATHRESIZE_H_INCLUDED_PREDOEHL_UOFARIZONA_VISION
@@ -37,7 +37,7 @@
 #include <vector>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -156,6 +156,6 @@ PixPath reduce_pixels_pv(const PixPath&);
 PixPath reduce_pixels_bfs(const PixPath&);
 
 } // ns qd
-} // ns kjb
+} // ns ivi
 
 #endif /* PATHRESIZE_H_INCLUDED_PREDOEHL_UOFARIZONA_VISION */

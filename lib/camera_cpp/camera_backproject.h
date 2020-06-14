@@ -18,8 +18,8 @@
 
 /* $Id$ */
 
-#ifndef KJB_CPP_CAMERA_BACKPROJECT
-#define KJB_CPP_CAMERA_BACKPROJECT
+#ifndef IVI_CPP_CAMERA_BACKPROJECT
+#define IVI_CPP_CAMERA_BACKPROJECT
 
 #include <camera_cpp/perspective_camera.h>
 #include <l_cpp/l_algorithm.h>
@@ -32,7 +32,7 @@
 #include <g_cpp/g_camera.h>
 #include <limits>
 
-namespace kjb {
+namespace ivi {
 
 /** @class  Back_projector
  *
@@ -180,7 +180,7 @@ double get_3d_height
     const Perspective_camera& camera
 )
 {
-    KJB(ASSERT((bottom_2d(1) < top_2d(1))));
+    IVI(ASSERT((bottom_2d(1) < top_2d(1))));
     Ground_back_projector ground_back_projector(camera,  0.0);
     Vector bottom_3d = ground_back_projector(bottom_2d(0), bottom_2d(1));
     if(bottom_3d.empty())
@@ -200,7 +200,7 @@ double get_3d_height
     return top_3d(1);
 }
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /*KJB_CPP_CAMERA_BACKPROJECT */
+#endif /*IVI_CPP_CAMERA_BACKPROJECT */
 

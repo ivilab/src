@@ -1,5 +1,5 @@
 
-/* $Id: image.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: image.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -7,7 +7,7 @@
  * Make sure that these files are not a liability when there is no X11. If this
  * is the case, then comment out the whole thing.
 */
-#ifdef KJB_HAVE_X11 
+#ifdef IVI_HAVE_X11 
 
 /* -------------------------------------------------------------------------- */
 
@@ -18,7 +18,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -462,7 +462,7 @@ extern void
 
 /* -------------------------------------------------------------------------- */
 
-#endif   /* #ifdef KJB_HAVE_X11  */
+#endif   /* #ifdef IVI_HAVE_X11  */
 
 #endif   /* #ifndef __C2MAN__  */
 

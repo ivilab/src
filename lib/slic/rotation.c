@@ -125,7 +125,7 @@ int compute_rotation
     /*db_mat( result_mp );*/
 
     /*verbose_pso(5, " | Reading the source image: %s\n", src_filename);*/
-    /*result = kjb_read_image( &src_ip, src_filename );*/
+    /*result = ivi_read_image( &src_ip, src_filename );*/
     /*if (result == ERROR) { EGC(result); }*/
 
     /* compute the offset O */

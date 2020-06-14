@@ -1,4 +1,4 @@
-/* $Id: m_special.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_special.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,16 +19,16 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_CPP_M_SPECIAL_H
-#define KJB_M_CPP_M_SPECIAL_H
+#ifndef IVI_M_CPP_M_SPECIAL_H
+#define IVI_M_CPP_M_SPECIAL_H
 
 #include "l/l_sys_def.h"
 
-namespace kjb
+namespace ivi
 {
 // consider moving n_cpp
 double log_binomial_coefficient(size_t n, size_t k);
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

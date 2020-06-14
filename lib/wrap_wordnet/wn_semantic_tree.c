@@ -52,7 +52,7 @@
 * =========================================================================== */
 
 #include "wrap_wordnet/wn_semantic_tree.h"
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
 
@@ -114,7 +114,7 @@ static int insert_path_node_to_hashtable_1
     Hash_table        *ht_ptr
 );
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 static Path_node *is_synset_in_table_1
 (
     const SynsetPtr  synset_ptr,
@@ -259,7 +259,7 @@ int construct_semantic_tree_for_word
        /* print_path_node(dequeue_node_ptr);*/
         if(res == ERROR) /* found or terminated*/
         {
-            kjb_print_error();
+            ivi_print_error();
             break;
         }
     }
@@ -332,7 +332,7 @@ static int traverse_to_parent
     Tree             *tree_ptr
 )
 {
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
     SynsetPtr synset_ptr = NULL;
     Word_sense *word_wp = NULL;
     int res = NO_ERROR;
@@ -396,7 +396,7 @@ static int traverse_to_neighbor
     Tree             *tree_ptr
 )
 {
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
     Word_sense *word_wp;
     char *word;
     int sense;
@@ -562,7 +562,7 @@ static int insert_path_node_to_hashtable
     Hash_table        *ht_ptr
 )
 {
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
     SynsetPtr synset_ptr = NULL;
     int tmp_sense;
 
@@ -668,7 +668,7 @@ static int insert_path_node_to_hashtable_1
      return res;
 }
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 static Path_node *is_synset_in_table_1
 (
     const SynsetPtr  synset_ptr,
@@ -769,15 +769,15 @@ int generate_dot_file
     Word_sense *word_wp = NULL;
     Int_matrix *visited_imp = NULL;
 
-    fp = kjb_fopen(filename, "w");
+    fp = ivi_fopen(filename, "w");
     if(fp == NULL) return ERROR;
 
     /* write the head info. */
-    kjb_fprintf(fp, "digraph G {\n");
-    kjb_fprintf(fp, "page=\"8.5,11\";\n");
-    kjb_fprintf(fp, "margin=0;\n");
-    kjb_fprintf(fp, "ratio=auto;\n");
-    kjb_fprintf(fp, "pagedir=TL;\n");
+    ivi_fprintf(fp, "digraph G {\n");
+    ivi_fprintf(fp, "page=\"8.5,11\";\n");
+    ivi_fprintf(fp, "margin=0;\n");
+    ivi_fprintf(fp, "ratio=auto;\n");
+    ivi_fprintf(fp, "pagedir=TL;\n");
     
     /* write the nodes first */
     len = tree_array_ptr->length;
@@ -785,7 +785,7 @@ int generate_dot_file
     {
         tree_ptr = (Tree*)tree_array_ptr->elements[i];
         word_wp = (Word_sense*)tree_ptr->root->contents;
-        kjb_fprintf(fp, "n%d [label=\"%s(%d)\"];\n", i+1, word_wp->word, word_wp->sense);
+        ivi_fprintf(fp, "n%d [label=\"%s(%d)\"];\n", i+1, word_wp->word, word_wp->sense);
     }
 
     ERE(get_zero_int_matrix(&visited_imp, len, len));
@@ -796,7 +796,7 @@ int generate_dot_file
         print_tree_edge(fp, tree_ptr->root, visited_imp);
     }
 
-    kjb_fprintf(fp, "}\n");
+    ivi_fprintf(fp, "}\n");
 
     free_int_matrix(visited_imp);
     return NO_ERROR;
@@ -829,7 +829,7 @@ static void print_tree_edge
         child_index = ((Word_sense*)current_node_ptr->contents)->index;
         if(visited_imp->elements[index][child_index] == 0)
         {
-            kjb_fprintf(fp, "n%d -> n%d [label=1];\n", index+1, child_index+1);
+            ivi_fprintf(fp, "n%d -> n%d [label=1];\n", index+1, child_index+1);
             visited_imp->elements[index][child_index] = 1;
         }
         print_tree_edge(fp, current_node_ptr, visited_imp);

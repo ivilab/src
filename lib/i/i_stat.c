@@ -1,5 +1,5 @@
 
-/* $Id: i_stat.c 21744 2017-09-03 08:15:30Z jiachengz $ */
+/* $Id: i_stat.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -43,7 +43,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int get_ave_rgb(Vector** out_rgb_vpp, const KJB_image* in_ip)
+int get_ave_rgb(Vector** out_rgb_vpp, const IVI_image* in_ip)
 {
     Vector* out_rgb_vp;
     int     num_rows, num_cols;
@@ -130,7 +130,7 @@ int get_ave_rgb(Vector** out_rgb_vpp, const KJB_image* in_ip)
  * -----------------------------------------------------------------------------
 */
 
-int get_max_rgb(Vector** out_rgb_vpp, const KJB_image* in_ip)
+int get_max_rgb(Vector** out_rgb_vpp, const IVI_image* in_ip)
 {
     Vector* out_rgb_vp;
     int     num_rows, num_cols;
@@ -226,7 +226,7 @@ int get_image_stats
     int*             num_valid_pixels_ptr,
     Vector**         mean_vpp,
     Vector**         stdev_vpp,
-    const KJB_image* source_ip
+    const IVI_image* source_ip
 )
 {
 
@@ -274,7 +274,7 @@ int get_image_window_stats
     int*             num_valid_pixels_ptr,
     Vector**         mean_vpp,
     Vector**         stdev_vpp,
-    const KJB_image* source_ip,
+    const IVI_image* source_ip,
     int              row_offset,
     int              col_offset,
     int              num_target_rows,
@@ -449,8 +449,8 @@ int get_image_window_stats
 int get_ave_ratio_without_invalid
 (
     Vector**         out_vpp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     double           threshold,
     int              min_num_good_points
 )
@@ -567,8 +567,8 @@ int get_ave_ratio_without_invalid
 int get_ave_sum_ratio_without_invalid
 (
     double*          ratio_ptr,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     double           threshold,
     int              min_num_good_points
 )

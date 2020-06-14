@@ -77,7 +77,7 @@
 #include "gr_cpp/gr_polymesh_renderer.h"
 #include "gr_cpp/gr_camera.h"
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * @param n the number of polygons
@@ -96,8 +96,8 @@ Polymesh::Polymesh(unsigned int n)
  *
  * @param  fname  Input file to read this mesh from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Polymesh::Polymesh(const char* fname) throw (Illegal_argument, IO_error)
 :  Abstract_renderable(),
@@ -111,8 +111,8 @@ Polymesh::Polymesh(const char* fname) throw (Illegal_argument, IO_error)
  *
  * @param  in  Input stream to read this mesh from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Polymesh::Polymesh(std::istream& in) throw (Illegal_argument, IO_error)
 :  Abstract_renderable(),
@@ -170,7 +170,7 @@ Polymesh::~Polymesh()
  *
  * @return The specified mesh face.
  *
- * @throw  kjb::Illegal_argument  Invalid face index.
+ * @throw  ivi::Illegal_argument  Invalid face index.
  */
 const Polygon& Polymesh::get_face(unsigned int i) const throw (Index_out_of_bounds)
 { 
@@ -188,7 +188,7 @@ const Polygon& Polymesh::get_face(unsigned int i) const throw (Index_out_of_boun
  *
  * @return The specified mesh face.
  *
- * @throw  kjb::Illegal_argument  Invalid face index.
+ * @throw  ivi::Illegal_argument  Invalid face index.
  */
 Polygon& Polymesh::get_face_ref(unsigned int i) throw (Index_out_of_bounds)
 {
@@ -201,7 +201,7 @@ Polygon& Polymesh::get_face_ref(unsigned int i) throw (Index_out_of_bounds)
 }
 
 /** @brief Returns the faces of this mesh. */
-const std::vector<kjb::Polygon>& Polymesh::get_faces() const
+const std::vector<ivi::Polygon>& Polymesh::get_faces() const
 {
     return _faces;
 }
@@ -239,10 +239,10 @@ void Polymesh::add_face(const Polygon & face) throw (Illegal_argument)
  * @param  e  First point index in @em face of the shared edge. If set to num_faces,
  *            the other point forming the edge will be 0.
  *
- * @throw  kjb::Illegal_argument  If @em i or @em p are not valid indices.
+ * @throw  ivi::Illegal_argument  If @em i or @em p are not valid indices.
  */
 /** @brief returns the index of the face adjacent to face f along edge e */
-unsigned int Polymesh::adjacent_face(unsigned int f, unsigned int e) const throw (Index_out_of_bounds,KJB_error)
+unsigned int Polymesh::adjacent_face(unsigned int f, unsigned int e) const throw (Index_out_of_bounds,IVI_error)
 {
     try{
         const Polygon & face = get_face(f);
@@ -267,7 +267,7 @@ unsigned int Polymesh::adjacent_face(unsigned int f, unsigned int e) const throw
         throw ex;
     }
 
-    throw KJB_error("The mesh not fully connected, there is at least one edge with no adjacent face");
+    throw IVI_error("The mesh not fully connected, there is at least one edge with no adjacent face");
 }
 
 /**
@@ -288,7 +288,7 @@ unsigned int Polymesh::adjacent_face(unsigned int f, unsigned int e) const throw
  * @param  M  Homogeneous transformation matrix to transform this
  *            parallelepiped by.
  *
- * @throw  kjb::Illegal_argument  The matrix is not in 4x4 homogeneous
+ * @throw  ivi::Illegal_argument  The matrix is not in 4x4 homogeneous
  *                                  coordinates.
  */
 void Polymesh::transform(const Matrix& M) throw(Illegal_argument)
@@ -315,7 +315,7 @@ void Polymesh::transform(const Matrix& M) throw(Illegal_argument)
  */
 void Polymesh::translate(double x, double y, double z)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     Matrix M = Matrix::create_3d_homo_translation_matrix(x, y, z);
     transform(M);
@@ -331,7 +331,7 @@ void Polymesh::translate(double x, double y, double z)
  */
 void Polymesh::rotate(double phi, double x, double y, double z)
 {
-    using namespace kjb;
+    using namespace ivi;
     Matrix M = Matrix::create_3d_homo_rotation_matrix(phi, x, y, z);
     transform(M);
 }
@@ -348,7 +348,7 @@ void Polymesh::scale(double scale_x, double scale_y, double scale_z)
 {
     if( (scale_x < DBL_EPSILON) || (scale_y < DBL_EPSILON) || (scale_z < DBL_EPSILON) )
     {
-        KJB_THROW_2(Illegal_argument, "Scale amounts must be positive");
+        IVI_THROW_2(Illegal_argument, "Scale amounts must be positive");
     }
     Matrix M = Matrix::create_3d_homo_scaling_matrix(scale_x, scale_y, scale_z);
     transform(M);
@@ -380,7 +380,7 @@ void Polymesh::get_faces(std::vector<const Polygon *> & ifaces) const
  *
  * @param  out  Output stream to write the members of this parallelepiped to.
  *
- * @throw  kjb::IO_error  Could not write to @em out.
+ * @throw  ivi::IO_error  Could not write to @em out.
  */
 void Polymesh::write(const char *filename) const throw (IO_error)
 {
@@ -399,16 +399,16 @@ void Polymesh::write(const char *filename) const throw (IO_error)
  *
  * @param  out  Output stream to write the members of this parallelepiped to.
  *
- * @throw  kjb::IO_error  Could not write to @em out.
+ * @throw  ivi::IO_error  Could not write to @em out.
  */
 void Polymesh::write(std::ostream& out) const throw (IO_error)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     uint32_t _num_faces = (uint32_t)_faces.size();
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
-        kjb_c::bswap_u32((uint32_t*)&(_num_faces));
+        ivi_c::bswap_u32((uint32_t*)&(_num_faces));
     }
     out.write((char*)&_num_faces, sizeof(uint32_t));
     if(out.fail() || out.eof())
@@ -425,18 +425,18 @@ void Polymesh::write(std::ostream& out) const throw (IO_error)
 /** 
  * @param  in  Input stream to read the members of this parallelepiped from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid argument to read from file.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid argument to read from file.
  */
 void Polymesh::read(std::istream& in) throw (IO_error, Illegal_argument)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     
     uint32_t _num_faces;
     _faces.clear();
     
     in.read((char*)&_num_faces, sizeof(uint32_t));
-    if(!kjb_is_bigendian())
+    if(!ivi_is_bigendian())
     {
         bswap_u32((uint32_t*)&(_num_faces));
     }
@@ -453,7 +453,7 @@ void Polymesh::read(std::istream& in) throw (IO_error, Illegal_argument)
 bool Polymesh::is_shared_edge(const Polygon & f1, unsigned int e1, const Polygon & f2, unsigned int e2) const
        throw (Index_out_of_bounds)
 {
-  using namespace kjb;
+  using namespace ivi;
 
   try{
       const Vector & e1_p1 = f1.get_edge_first_vertex(e1);
@@ -504,42 +504,42 @@ bool Polymesh::edge_index_in_polygon(const Polygon &f1, unsigned int e, const Po
 
 void Polymesh::wire_render() const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polymesh_Renderer::wire_render(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
 
 void Polymesh::wire_occlude_render() const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polymesh_Renderer::wire_occlude_render(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
 
 void Polymesh::solid_render() const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polymesh_Renderer::solid_render(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
@@ -555,14 +555,14 @@ void Polymesh::solid_render() const
 */
 unsigned int Polymesh::wire_render_with_sequential_ids(unsigned int start_id) const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             start_id = GL_Polymesh_Renderer::wire_render_with_sequential_ids(*this, start_id);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
     return start_id;
@@ -570,14 +570,14 @@ unsigned int Polymesh::wire_render_with_sequential_ids(unsigned int start_id) co
 
 unsigned int Polymesh::solid_render_with_sequential_ids(unsigned int start_id) const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             start_id = GL_Polymesh_Renderer::solid_render_with_sequential_ids(*this, start_id);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
     return start_id;
@@ -592,18 +592,18 @@ unsigned int Polymesh::solid_render_with_sequential_ids(unsigned int start_id) c
  */
 void Polymesh::silhouette_render
 (
-    const kjb::Base_gl_interface &   camera,
+    const ivi::Base_gl_interface &   camera,
     double iwidth
 ) const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polymesh_Renderer::silhouette_render(camera, *this, iwidth);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
@@ -613,14 +613,14 @@ void Polymesh::silhouette_render
  */
 void Polymesh::project()
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polymesh_Renderer::project(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }

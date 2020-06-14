@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: data.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: data.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l/l_sys_def.h>
 #include <l/l_sys_debug.h>
@@ -43,10 +43,10 @@
 
 #include "dbn_cpp/data.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
-Data kjb::ties::parse_data(const std::string& fname)
+Data ivi::ties::parse_data(const std::string& fname)
 {
     using namespace std;
     ifstream ifs(fname.c_str());
@@ -58,8 +58,8 @@ Data kjb::ties::parse_data(const std::string& fname)
     getline(ifs, line);
     boost::trim(line);
     boost::split(tokens, line, boost::is_any_of(" :"), boost::token_compress_on);
-    KJB(ASSERT(tokens.size() == 2));
-    KJB(ASSERT(tokens[0] == "dyid"));
+    IVI(ASSERT(tokens.size() == 2));
+    IVI(ASSERT(tokens[0] == "dyid"));
     size_t dyid = boost::lexical_cast<size_t>(tokens[1]);
     
     // create data
@@ -70,8 +70,8 @@ Data kjb::ties::parse_data(const std::string& fname)
     boost::trim(line);
     boost::split(tokens, line, boost::is_any_of(" :"), 
                                boost::token_compress_on);
-    KJB(ASSERT(tokens.size() == 2));
-    KJB(ASSERT(tokens[0] == "oscillators"));
+    IVI(ASSERT(tokens.size() == 2));
+    IVI(ASSERT(tokens[0] == "oscillators"));
     size_t num_oscillators = boost::lexical_cast<size_t>(tokens[1]);
 
     // parse moderators 
@@ -80,7 +80,7 @@ Data kjb::ties::parse_data(const std::string& fname)
     boost::split(tokens, line, boost::is_any_of(" :"), 
                                boost::token_compress_on);
     string name; 
-    KJB(ASSERT(tokens[0] == "moderators"));
+    IVI(ASSERT(tokens[0] == "moderators"));
     int t = 1;
     while(t < tokens.size())
     {
@@ -126,7 +126,7 @@ Data kjb::ties::parse_data(const std::string& fname)
     bool parse_group = false;
     if(tokens[0] == "group")
     {
-        KJB(ASSERT(tokens.size() == 2));
+        IVI(ASSERT(tokens.size() == 2));
         data.group_index = boost::lexical_cast<size_t>(tokens[1]);
         parse_group = true;
     }
@@ -138,7 +138,7 @@ Data kjb::ties::parse_data(const std::string& fname)
         boost::split(tokens, line, boost::is_any_of(" :"), 
                                    boost::token_compress_on);
     }
-    KJB(ASSERT(tokens[0] == "observables"));
+    IVI(ASSERT(tokens[0] == "observables"));
     t = 1;
     while(t < tokens.size())
     {
@@ -183,7 +183,7 @@ Data kjb::ties::parse_data(const std::string& fname)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<size_t> kjb::ties::parse_list
+std::vector<size_t> ivi::ties::parse_list
 (
     const std::string& id_fname
 )
@@ -202,7 +202,7 @@ std::vector<size_t> kjb::ties::parse_list
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Data> kjb::ties::parse_data
+std::vector<Data> ivi::ties::parse_data
 (
     const std::string& data_dir, 
     const std::string& list_fp,
@@ -233,7 +233,7 @@ std::vector<Data> kjb::ties::parse_data
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Data> kjb::ties::parse_data_from_dir
+std::vector<Data> ivi::ties::parse_data_from_dir
 (
     const std::string& data_base_dir,
     const std::vector<size_t>& ids
@@ -261,7 +261,7 @@ std::vector<Data> kjb::ties::parse_data_from_dir
         {
             fname = (data_fmt % default_ids[i]).str();
         }
-        if(kjb_c::is_file(fname.c_str()))
+        if(ivi_c::is_file(fname.c_str()))
         {
             // Read in data
             //std::cout << "Read in data: " << fname << std::endl;
@@ -277,7 +277,7 @@ std::vector<Data> kjb::ties::parse_data_from_dir
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Data> kjb::ties::parse_data
+std::vector<Data> ivi::ties::parse_data
 (
     const std::string& data_dir, 
     const std::vector<std::string>& list_fps,
@@ -300,7 +300,7 @@ std::vector<Data> kjb::ties::parse_data
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::write_data
+void ivi::ties::write_data
 (
     const Data& data, 
     const std::string& fname, 

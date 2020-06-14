@@ -5,10 +5,10 @@
  *
  * This performs interpolation on NED data using Gaussian processes, a
  * technique historically called "kriging."  This file uses its own
- * implementation rather than the libkjb Gaussian process code (sorry).
+ * implementation rather than the libivi Gaussian process code (sorry).
  */
 /*
- * $Id: nedget.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: nedget.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
@@ -53,11 +53,11 @@ bool seems_legit( const float* begin, const float* end )
         {
             return false;   // infinity or NaN is not legit.  Not even once.
         }
-        if ( kjb::NED_MISSING == *ppp )
+        if ( ivi::NED_MISSING == *ppp )
         {
             continue;       // the MISSING sentinel gets a pass.
         }
-        if ( *ppp < kjb::NED_MIN || kjb::NED_MAX < *ppp )
+        if ( *ppp < ivi::NED_MIN || ivi::NED_MAX < *ppp )
         {
             return false; // value is out of range
         }
@@ -74,20 +74,20 @@ bool seems_legit( const float* begin, const float* end )
  */
 int try_to_resolve_byteorder(
     const std::string& fn,
-    enum kjb::NED13_FLOAT_AUTODETECT* byteorder
+    enum ivi::NED13_FLOAT_AUTODETECT* byteorder
 )
 {
-    KJB( NRE( byteorder ) );
-    if ( kjb::NED_AD_UNCERTAIN == *byteorder )
+    IVI( NRE( byteorder ) );
+    if ( ivi::NED_AD_UNCERTAIN == *byteorder )
     {
-        KJB( ERE( autodetect_ned_byteorder( fn, byteorder ) ) );
-        if ( kjb::NED_AD_UNCERTAIN == *byteorder )
+        IVI( ERE( autodetect_ned_byteorder( fn, byteorder ) ) );
+        if ( ivi::NED_AD_UNCERTAIN == *byteorder )
         {
-            kjb_c::set_error( AMBI_BYTEORDER_FMT, fn.c_str() );
-            return kjb_c::ERROR;
+            ivi_c::set_error( AMBI_BYTEORDER_FMT, fn.c_str() );
+            return ivi_c::ERROR;
         }
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -95,13 +95,13 @@ int try_to_resolve_byteorder(
 
 
 
-namespace kjb
+namespace ivi
 {
 
 
 /**
  * @brief read the floating-point values of a NED13 file into a deque.
- * @return kjb_c::ERROR or kjb_c::NO_ERROR to indicate failure or success
+ * @return ivi_c::ERROR or ivi_c::NO_ERROR to indicate failure or success
  * @param[in] fn    Filename (possibly with path) of local file, which is
  *                  assumed to contain nothing except binary-format float data,
  *                  IEEE 754 single-precision.  The byte order is assumed to be
@@ -119,18 +119,18 @@ namespace kjb
 int get_ned_fdeq( const std::string& fn, std::deque< float >* odq, bool flip )
 {
     // preconditions
-    KJB(NRE( odq ));
+    IVI(NRE( odq ));
 
     // get ready to read
 
     Ned_Float_t buf[ 128 * 1024 ]; // size is relatively arbitrary
-    FILE *fff = kjb_c::kjb_fopen( fn.c_str(), "r" );
-    KJB( NRE( fff ) );
+    FILE *fff = ivi_c::ivi_fopen( fn.c_str(), "r" );
+    IVI( NRE( fff ) );
 
     // read from file, in chunks, optionally change endian order
 
     odq -> clear();
-    for( long bct = -1; 0 < ( bct=kjb_c::kjb_fread( fff, buf, sizeof buf ) ); )
+    for( long bct = -1; 0 < ( bct=ivi_c::ivi_fread( fff, buf, sizeof buf ) ); )
     {
         ASSERT( 0 == bct % sizeof( Ned_Float_t ) );
         const size_t float_count = size_t( bct ) / sizeof( Ned_Float_t );
@@ -140,15 +140,15 @@ int get_ned_fdeq( const std::string& fn, std::deque< float >* odq, bool flip )
         }
         std::copy( buf, buf + float_count, std::back_inserter( *odq ) );
     }
-    KJB(ERE( kjb_c::kjb_fclose( fff ) ));
-    return kjb_c::NO_ERROR;
+    IVI(ERE( ivi_c::ivi_fclose( fff ) ));
+    return ivi_c::NO_ERROR;
 }
 
 
 
 /**
  * @brief read the floating-point values of a NED13 file into a deque.
- * @return kjb_c::ERROR or kjb_c::NO_ERROR to indicate failure or success
+ * @return ivi_c::ERROR or ivi_c::NO_ERROR to indicate failure or success
  * @param[in] fn    Filename, same as 'fn' in sibling function (q.v.).
  * @param[out] odq  Pointer to std::deque<float> into which to store the data.
  *                  It must not equal null.
@@ -168,8 +168,8 @@ int get_ned_fdeq(
     enum NED13_FLOAT_AUTODETECT byteorder
 )
 {
-    KJB(NRE( odq ));
-    KJB(ERE( try_to_resolve_byteorder( fn, &byteorder ) ));
+    IVI(NRE( odq ));
+    IVI(ERE( try_to_resolve_byteorder( fn, &byteorder ) ));
     return get_ned_fdeq( fn, odq, NED_AD_MSBFIRST == byteorder );
 }
 
@@ -177,8 +177,8 @@ int get_ned_fdeq(
 
 
 /**
- * @brief convert a deque of floats into a square kjb Matrix
- * @return kjb_c::ERROR or kjb_c::NO_ERROR to indicate failure or success
+ * @brief convert a deque of floats into a square ivi Matrix
+ * @return ivi_c::ERROR or ivi_c::NO_ERROR to indicate failure or success
  * @param[in]   ibuf    Deque of floating point values, possibly derived from
  *                      get_ned_fdeq().  The number of entries must be a
  *                      positive square.
@@ -188,15 +188,15 @@ int get_ned_fdeq(
  */
 int ned_fdeq_to_matrix( const std::deque< float >& ibuf, Matrix* omat )
 {
-    KJB(NRE( omat ));
+    IVI(NRE( omat ));
 
     // compute matrix size
     const int edgesz = static_cast< int >( sqrt( double( ibuf.size() ) ) );
 
     if ( ibuf.size() < 1 || size_t( edgesz * edgesz ) != ibuf.size() )
     {
-        kjb_c::set_error( NONSQUARE_FMT, ibuf.size() );
-        return kjb_c::ERROR;
+        ivi_c::set_error( NONSQUARE_FMT, ibuf.size() );
+        return ivi_c::ERROR;
     }
 
     // read from deque, into matrix, in row-major order
@@ -208,14 +208,14 @@ int ned_fdeq_to_matrix( const std::deque< float >& ibuf, Matrix* omat )
     }
     ASSERT( ibuf.end() == iii );
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 
 /**
  * @brief read the floating-point values of a NED13 file into a square matrix.
- * @return kjb_c::ERROR or kjb_c::NO_ERROR to indicate failure or success
+ * @return ivi_c::ERROR or ivi_c::NO_ERROR to indicate failure or success
  * @param[in] fn    Filename (possibly with path) of local file, which is
  *                  assumed to contain nothing except binary-format float data,
  *                  IEEE 754 single-precision.  The byte order is assumed to be
@@ -234,12 +234,12 @@ int ned_fdeq_to_matrix( const std::deque< float >& ibuf, Matrix* omat )
  */
 int get_ned_matrix( const std::string& fn, Matrix* omat, bool flip )
 {
-    KJB(NRE( omat ));
+    IVI(NRE( omat ));
     std::deque< float > buf;
-    if ( kjb_c::ERROR == get_ned_fdeq( fn, &buf, flip ) )
+    if ( ivi_c::ERROR == get_ned_fdeq( fn, &buf, flip ) )
     {
-        kjb_c::add_error( BAD_FILE_FMT, fn.c_str() );
-        return kjb_c::ERROR;
+        ivi_c::add_error( BAD_FILE_FMT, fn.c_str() );
+        return ivi_c::ERROR;
     }
 
     return ned_fdeq_to_matrix( buf, omat );
@@ -249,7 +249,7 @@ int get_ned_matrix( const std::string& fn, Matrix* omat, bool flip )
 
 /**
  * @brief read the floating-point values of a NED13 file into a square matrix.
- * @return kjb_c::ERROR or kjb_c::NO_ERROR to indicate failure or success
+ * @return ivi_c::ERROR or ivi_c::NO_ERROR to indicate failure or success
  * @param[in] fn    same as 'fn' for get_ned_matrix( const std::string&,
  *                  Matrix*, bool ).
  * @param[out] omat Pointer to matrix into which to store the data.  It must
@@ -265,8 +265,8 @@ int get_ned_matrix(
     enum NED13_FLOAT_AUTODETECT byteorder
 )
 {
-    KJB(NRE( omat ));
-    KJB(ERE( try_to_resolve_byteorder( fn, &byteorder ) ));
+    IVI(NRE( omat ));
+    IVI(ERE( try_to_resolve_byteorder( fn, &byteorder ) ));
     return get_ned_matrix( fn, omat, NED_AD_MSBFIRST == byteorder );
 }
 
@@ -274,7 +274,7 @@ int get_ned_matrix(
 
 /**
  * @brief attempt to determine the byteorder of the input file.
- * @return kjb_c::ERROR or kjb_c::NO_ERROR to indicate problems with the file.
+ * @return ivi_c::ERROR or ivi_c::NO_ERROR to indicate problems with the file.
  * @param[in]   fn      Filename of the float file to read
  * @param[out]  result  Output parameter containing a sentinel value indicating
  *                      either the byteorder (if the evidence is clear) or a
@@ -289,28 +289,28 @@ int autodetect_ned_byteorder(
     enum NED13_FLOAT_AUTODETECT *result
 )
 {
-    KJB(NRE( result ));
+    IVI(NRE( result ));
     *result = NED_AD_UNCERTAIN;
 
     // read the file size, check that it is a square
     off_t fbsize;
-    KJB(ERE( get_file_size( fn.c_str(), &fbsize ) ));
+    IVI(ERE( get_file_size( fn.c_str(), &fbsize ) ));
     const int edgesz = static_cast< int >( sqrt( double( fbsize ) ) );
     if ( edgesz < 1 || edgesz * edgesz != fbsize )
     {
-        kjb_c::set_error( NONSQUARE_FMT, fbsize );
-        return kjb_c::ERROR;
+        ivi_c::set_error( NONSQUARE_FMT, fbsize );
+        return ivi_c::ERROR;
     }
 
     // read in some of the file
     const size_t SMALL = 32 * 1024; // any fairly modest size should do
     Ned_Float_t buf[ SMALL ];
     File_Ptr_Read fff( fn );
-    long bct = kjb_c::kjb_fread( fff, buf, sizeof buf );
+    long bct = ivi_c::ivi_fread( fff, buf, sizeof buf );
     if ( bct < std::min( off_t( sizeof buf ), fbsize ) )
     {
-        kjb_c::set_error( "Error reading file %s.\n", fn.c_str() );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Error reading file %s.\n", fn.c_str() );
+        return ivi_c::ERROR;
     }
 
     // test this buf using both possible byte orders
@@ -320,16 +320,16 @@ int autodetect_ned_byteorder(
 
     if ( lsbfirst && msbfirst )
     {
-        return kjb_c::NO_ERROR; // both seem OK, which is surprising.
+        return ivi_c::NO_ERROR; // both seem OK, which is surprising.
     }
     if ( ! lsbfirst && ! msbfirst )
     {
-        kjb_c::set_error( "File %s contains invalid floats.\n", fn.c_str() );
-        return kjb_c::ERROR;    // both seem bad, which is disastrous.
+        ivi_c::set_error( "File %s contains invalid floats.\n", fn.c_str() );
+        return ivi_c::ERROR;    // both seem bad, which is disastrous.
     }
 
     *result = lsbfirst ?  NED_AD_LSBFIRST : NED_AD_MSBFIRST;
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 

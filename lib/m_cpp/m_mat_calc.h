@@ -1,4 +1,4 @@
-/* $Id: m_mat_calc.h 12036 2012-04-05 20:54:58Z ksimek $ */
+/* $Id: m_mat_calc.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -18,15 +18,15 @@
  * =========================================================================== */
 
 
-#ifndef KJB_MAT_CALC
-#define KJB_MAT_CALC
+#ifndef IVI_MAT_CALC
+#define IVI_MAT_CALC
 
 /* *
  * @file m_mat_calc.h
  *
  * Collection of functions implementing calculus-related matrix functionality.
  */
-namespace kjb
+namespace ivi
 {
     /* DEPRECATED March 22, 2012 --KS */ Matrix derivative_matrix(int degree, int N);
 

@@ -17,8 +17,8 @@
 #include <cstring>
 #include <cmath>
 
-using namespace kjb;
-using namespace kjb::flandmark;
+using namespace ivi;
+using namespace ivi::flandmark;
 
 void detectFaceInImage(IplImage *orig, IplImage* input, CvHaarClassifierCascade* cascade, FLANDMARK_Model *model, int *bbox, double *landmarks)
 {

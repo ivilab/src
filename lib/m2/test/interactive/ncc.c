@@ -1,5 +1,5 @@
 
-/* $Id: ncc.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: ncc.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -169,7 +169,7 @@ int variance_normalization_matrix1(Matrix **mpp, const Matrix *in_mp,
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int is_same_image(const KJB_image *ip1, const KJB_image *ip2, int gutter) 
+int is_same_image(const IVI_image *ip1, const IVI_image *ip2, int gutter) 
 {
     int num_rows, num_cols;
     int i, j;
@@ -193,8 +193,8 @@ int is_same_image(const KJB_image *ip1, const KJB_image *ip2, int gutter)
 /*                write_image(ip2, NULL); */
 
 
-                    kjb_display_image(ip1, "slow convolve");
-                    kjb_display_image(ip2, "fast convolve");
+                    ivi_display_image(ip1, "slow convolve");
+                    ivi_display_image(ip2, "fast convolve");
 
                     sleep(30);
                     exit(1);
@@ -280,9 +280,9 @@ static void test_convolve()
 
 static void test_convolve_image() 
 {
-    KJB_image* in_ip = NULL;
-    KJB_image* conv_ip1 = NULL;
-    KJB_image* conv_ip2 = NULL;
+    IVI_image* in_ip = NULL;
+    IVI_image* conv_ip1 = NULL;
+    IVI_image* conv_ip2 = NULL;
 
     Matrix* mask_mp = NULL;
     Matrix* r_mp = NULL;
@@ -318,9 +318,9 @@ static void test_convolve_image()
     free_matrix(r_mp);
     free_matrix(g_mp);
     free_matrix(b_mp);
-    kjb_free_image(in_ip);
-    kjb_free_image(conv_ip1);
-    kjb_free_image(conv_ip2);
+    ivi_free_image(in_ip);
+    ivi_free_image(conv_ip1);
+    ivi_free_image(conv_ip2);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

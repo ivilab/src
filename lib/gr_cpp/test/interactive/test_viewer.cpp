@@ -23,8 +23,8 @@
 #include <gr_cpp/gr_glut.h>
 #include <gr_cpp/gr_primitive.h>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 int main()
 {

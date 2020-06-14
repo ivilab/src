@@ -1,5 +1,5 @@
 
-/* $Id: kjb_mkdir.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: ivi_mkdir.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -12,7 +12,7 @@ int main(void)
 
     while (BUFF_STDIN_GET_LINE("dir> ", dir) != EOF)
     {
-        EPE(kjb_mkdir(dir));
+        EPE(ivi_mkdir(dir));
     }
 
     return EXIT_SUCCESS; 

@@ -27,14 +27,14 @@
  */
 
 
-#ifndef KJB_RECTANGLE_2D_H
-#define KJB_RECTANGLE_2D_H
+#ifndef IVI_RECTANGLE_2D_H
+#define IVI_RECTANGLE_2D_H
 
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_matrix.h>
 #include <g_cpp/g_util.h>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Rectangle_2d
@@ -142,7 +142,7 @@ private:
 
 };
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /*KJB_RECTANGLE_2D_H */
+#endif /*IVI_RECTANGLE_2D_H */
 

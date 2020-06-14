@@ -1,5 +1,5 @@
 
-/* $Id: s2_fluorescence.h 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: s2_fluorescence.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -37,7 +37,7 @@ namespace kjb_c {
  *
  * Fluorescent surface type
  *
- * This type is the fluorescent reflectance type for the KJB library. It is
+ * This type is the fluorescent reflectance type for the IVI library. It is
  * normally used by library routines, with the external interface being
  * provided by the fluorescent database type. It is documented here mostly to
  * help explain the fluorescent database type, but it may ocasionally be useful
@@ -69,7 +69,7 @@ Fluorescent_surface;
  * Flourescent database type
  *
  * This type is used to store a collection of fluorscent surfaces. It uses the
- * type Fluorescent_surface, but normally the interface with the KJB library is
+ * type Fluorescent_surface, but normally the interface with the IVI library is
  * through this type.
  *
  * Related:

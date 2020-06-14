@@ -1,5 +1,5 @@
 
-/* $Id: copy_image.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: copy_image.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "i/i_incl.h" 
@@ -11,8 +11,8 @@
 /*ARGSUSED*/
 int main(int argc, char **argv)
 {
-    KJB_image* ip = NULL;
-    KJB_image* ip2 = NULL;
+    IVI_image* ip = NULL;
+    IVI_image* ip2 = NULL;
     int i;
     long memcpy_cpu = 0;
     long std_cpy_cpu   = 0; 
@@ -42,8 +42,8 @@ int main(int argc, char **argv)
         EPETB(set_verbose_options("verbose", "1")); 
     }
 
-    kjb_l_set("debug", "2");
-    kjb_l_set("page", "off");
+    ivi_l_set("debug", "2");
+    ivi_l_set("page", "off");
 
     EPETE(get_zero_image(&ip, NUM_ROWS, NUM_COLS));
 
@@ -52,17 +52,17 @@ int main(int argc, char **argv)
         int r;
         int c;
 
-        kjb_l_set("use-memcpy", "f");
+        ivi_l_set("use-memcpy", "f");
 
-        r = NUM_ROWS * kjb_rand();
-        c = NUM_COLS * kjb_rand();
+        r = NUM_ROWS * ivi_rand();
+        c = NUM_COLS * ivi_rand();
 
         ip->pixels[ r ][ c ].r = i;
         ip->pixels[ r ][ c ].g = i + 1;
         ip->pixels[ r ][ c ].b = i + 2;
 
         init_cpu_time();
-        EPETE(kjb_copy_image(&ip2, ip));
+        EPETE(ivi_copy_image(&ip2, ip));
         std_cpy_cpu += get_cpu_time(); 
 
         compute_rms_image_difference(ip, ip2, &diff);
@@ -73,10 +73,10 @@ int main(int argc, char **argv)
             return EXIT_FAILURE;
         }
 
-        kjb_l_set("use-memcpy", "t");
+        ivi_l_set("use-memcpy", "t");
 
-        r = NUM_ROWS * kjb_rand();
-        c = NUM_COLS * kjb_rand();
+        r = NUM_ROWS * ivi_rand();
+        c = NUM_COLS * ivi_rand();
 
         ip->pixels[ r ][ c ].r = i;
         ip->pixels[ r ][ c ].g = i + 1;
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 
 
         init_cpu_time();
-        EPETE(kjb_copy_image(&ip2, ip));
+        EPETE(ivi_copy_image(&ip2, ip));
         memcpy_cpu += get_cpu_time(); 
 
         compute_rms_image_difference(ip, ip2, &diff);
@@ -102,8 +102,8 @@ int main(int argc, char **argv)
         dbi(memcpy_cpu);
     }
 
-    kjb_free_image(ip); 
-    kjb_free_image(ip2); 
+    ivi_free_image(ip); 
+    ivi_free_image(ip2); 
 
     return EXIT_SUCCESS; 
 }

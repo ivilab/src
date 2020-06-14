@@ -1,4 +1,4 @@
-/* $Id: gr_primitive.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_primitive.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -16,10 +16,10 @@
    |
    |  Author:  Kyle Simek
  * =========================================================================== */
-#ifndef KJB_CPP_PRIMITIVE_H
-#define KJB_CPP_PRIMITIVE_H
+#ifndef IVI_CPP_PRIMITIVE_H
+#define IVI_CPP_PRIMITIVE_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 /**
  * @file gr_primitive.h
@@ -31,7 +31,7 @@
 #include "m_cpp/m_vector.h"
 #include "gr_cpp/gr_opengl_headers.h"
 
-namespace kjb 
+namespace ivi 
 {
 namespace opengl 
 {
@@ -40,7 +40,7 @@ namespace opengl
  * Base class for glu quadric types (sphere, cylinder, cone, etc).
  */
 class Quadric : 
-    public kjb::Generic_renderable
+    public ivi::Generic_renderable
 {
 public:
     Quadric(unsigned int slices = DEFAULT_SLICES, unsigned int rings = DEFAULT_RINGS);
@@ -137,11 +137,11 @@ private:
 
 /**
  * A cylinder whose dimensions cannot change over it's lifetime.  This
- * is significantly faster to render than a standard kjb::Cylinder, because
+ * is significantly faster to render than a standard ivi::Cylinder, because
  * it uses OpenGL display lists.
  */
 class Static_cylinder :
-    public kjb::Generic_renderable
+    public ivi::Generic_renderable
 {
 public:
     Static_cylinder(
@@ -257,7 +257,7 @@ private:
 /**
  * 3D arrow defined by a location and a direction.
  */
-class Arrow3d : public kjb::Generic_renderable
+class Arrow3d : public ivi::Generic_renderable
 {
 public:
     Arrow3d() :
@@ -274,7 +274,7 @@ public:
         _dir[2] = 1.0;
     }
 
-    Arrow3d(const kjb::Vector& position, const kjb::Vector& direction, float width = 1.0) :
+    Arrow3d(const ivi::Vector& position, const ivi::Vector& direction, float width = 1.0) :
         _pos(position),
         _length(direction.magnitude()),
         _shaft_length(0.0),
@@ -297,13 +297,13 @@ public:
         _head_cap  = Disk(head_width/2);
     }
 
-    void set_position(const kjb::Vector& position)
+    void set_position(const ivi::Vector& position)
     {
         ASSERT(position.size() == 3);
         _pos = position;
     }
 
-    void set_direction(const kjb::Vector& direction)
+    void set_direction(const ivi::Vector& direction)
     {
         ASSERT(direction.size() == 3);
         _dir = direction;
@@ -332,11 +332,11 @@ public:
 private:
     void _generic_render(const Generic_renderer& renderer) const;
 
-    kjb::Vector _pos;
+    ivi::Vector _pos;
     float _length;
     float _shaft_length;
     float _width;
-    kjb::Vector _dir;
+    ivi::Vector _dir;
 
     Cylinder _shaft;
     Cylinder _head;
@@ -345,7 +345,7 @@ private:
     Disk _head_cap;
 };
 
-class Teapot : public kjb::Generic_renderable
+class Teapot : public ivi::Generic_renderable
 {
 public:
     void solid_render() const;
@@ -379,6 +379,6 @@ private:
 };
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 #endif
 #endif

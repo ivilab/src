@@ -23,7 +23,7 @@
 /*
 // Sometimes glu.h includes glut.h--sometimes not.
 */
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #ifdef MAC_OSX
 #    include <OpenGL/glu.h>
 #    include <GLUT/glut.h>
@@ -40,12 +40,12 @@
 #error "not opengl"
 #endif
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/archive/text_iarchive.hpp>
 #endif
 
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -72,8 +72,8 @@
 
 namespace po = boost::program_options;
 using namespace std;
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 using namespace boost::foreach;
 
 string PROGRAM_NAME = "test_turntable_camera";
@@ -227,7 +227,7 @@ void render_point(const Vector& v)
 
     glPushMatrix();
     glTranslate(v);
-    kjb::opengl::Sphere(10.0).render();
+    ivi::opengl::Sphere(10.0).render();
     glPopMatrix();
 }
 void render_points(const vector<Vector>& pts)
@@ -419,7 +419,7 @@ void cleanup()
 
 int main(int argc, char* argv[])
 {
-    kjb_c::kjb_l_set("page", "off");
+    ivi_c::ivi_l_set("page", "off");
 //    try 
     {
         const int WIDTH = 530;
@@ -460,7 +460,7 @@ int main(int argc, char* argv[])
         else
         {
             // turntable camera file was specified
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
             try{
                 ifstream ifs(camera_fname.c_str());
                 boost::archive::text_iarchive ia(ifs);
@@ -507,7 +507,7 @@ int main(int argc, char* argv[])
 
     }
         run();
-//    catch(const kjb::Exception& ex)
+//    catch(const ivi::Exception& ex)
 //    {
 //        cerr << ex.get_msg() << endl;
 //        exit(1);

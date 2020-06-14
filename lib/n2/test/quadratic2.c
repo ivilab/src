@@ -1,5 +1,5 @@
 
-/* $Id: quadratic2.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: quadratic2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -25,14 +25,14 @@ int main(int argc, char *argv[])
     Vector* ub_row_vp = NULL;
     Vector* dbocls_result_vp            = NULL;
     Vector* dlsei_result_vp            = NULL;
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
     Vector* loqo_result_vp            = NULL;
 #endif 
     int     res;
     int     size, i, j;
     Vector* est_vp = NULL; 
     double  dbocls_dlsei; 
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
     double  loqo_dlsei; 
     double  loqo_dbocls; 
 #endif 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -66,21 +66,21 @@ int main(int argc, char *argv[])
         */
         double factor_for_linear = pow((double)test_factor, 1.0/4.0);
 
-        max_size = kjb_rint((double)MAX_SIZE * factor_for_linear);
-        num_tries = kjb_rint((double)BASE_NUM_TRIES * factor_for_linear);
+        max_size = ivi_rint((double)MAX_SIZE * factor_for_linear);
+        num_tries = ivi_rint((double)BASE_NUM_TRIES * factor_for_linear);
     } 
 
     EPETE(set_heap_options("heap-checking", "f")); 
 
     if (is_interactive())
     {
-        EPETE(kjb_set_debug_level(2));
-        EPETE(kjb_set_verbose_level(1)); 
+        EPETE(ivi_set_debug_level(2));
+        EPETE(ivi_set_verbose_level(1)); 
     }
     else
     {
-        EPETE(kjb_set_debug_level(0));
-        EPETE(kjb_set_verbose_level(0)); 
+        EPETE(ivi_set_debug_level(0));
+        EPETE(ivi_set_verbose_level(0)); 
     }
 
     size = max_size;
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
             verbose_pso(1, "DLSEI cpu: %ld.\n", dlsei_cpu);  
 
          
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
             EPE(res = do_loqo_quadratic(&loqo_result_vp, mp, target_vp ,
                                         le_constraint_mp, le_constraint_col_vp,
                                         NULL, NULL,
@@ -194,12 +194,12 @@ int main(int argc, char *argv[])
                 (double)min_vector_element(dbocls_result_vp)); 
             verbose_pso(1, "DLSEI feasible: %.5e.\n", 
                 (double)min_vector_element(dlsei_result_vp)); 
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
             verbose_pso(1, "LOQO feasible: %.5e.\n", 
                 (double)min_vector_element(loqo_result_vp)); 
 #endif 
 
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
             loqo_dbocls = max_abs_vector_difference(loqo_result_vp, 
                                                     dbocls_result_vp); 
             loqo_dbocls /= (num_vars * num_eq); 
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
             }
 #endif 
 
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
             loqo_dlsei = max_abs_vector_difference(loqo_result_vp,
                                                    dlsei_result_vp); 
             loqo_dlsei /= (num_vars * num_eq); 
@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
     free_vector(ub_row_vp);
     free_vector(dbocls_result_vp);
     free_vector(dlsei_result_vp);
-#ifdef KJB_HAVE_LOQO
+#ifdef IVI_HAVE_LOQO
     free_vector(loqo_result_vp);
 #endif 
     free_matrix(mp);

@@ -1,5 +1,5 @@
 
-/* $Id: x_complex.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: x_complex.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,9 +30,9 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-KJB_complex make_complex(double r, double i)
+IVI_complex make_complex(double r, double i)
 {
-    KJB_complex z;
+    IVI_complex z;
 
 
     UNTESTED_CODE(); 
@@ -45,9 +45,9 @@ KJB_complex make_complex(double r, double i)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-KJB_complex conjugate_of_complex(KJB_complex z)
+IVI_complex conjugate_of_complex(IVI_complex z)
 {
-    KJB_complex z_bar;
+    IVI_complex z_bar;
 
     UNTESTED_CODE(); 
 
@@ -59,7 +59,7 @@ KJB_complex conjugate_of_complex(KJB_complex z)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-double magnitude_of_complex(KJB_complex z)
+double magnitude_of_complex(IVI_complex z)
 {
     UNTESTED_CODE(); 
 
@@ -113,7 +113,7 @@ double magnitude_of_complex_2(double r, double i)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-double angle_of_complex(KJB_complex z)
+double angle_of_complex(IVI_complex z)
 {
     UNTESTED_CODE(); 
 
@@ -155,9 +155,9 @@ double angle_of_complex_2(double re, double im)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-KJB_complex add_complex(KJB_complex a, KJB_complex b)
+IVI_complex add_complex(IVI_complex a, IVI_complex b)
 {
-    KJB_complex c;
+    IVI_complex c;
 
 
     UNTESTED_CODE(); 
@@ -170,9 +170,9 @@ KJB_complex add_complex(KJB_complex a, KJB_complex b)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-KJB_complex subtract_complex(KJB_complex a, KJB_complex b)
+IVI_complex subtract_complex(IVI_complex a, IVI_complex b)
 {
-    KJB_complex c;
+    IVI_complex c;
 
 
     UNTESTED_CODE(); 
@@ -185,9 +185,9 @@ KJB_complex subtract_complex(KJB_complex a, KJB_complex b)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-KJB_complex multiply_complex(KJB_complex a, KJB_complex b)
+IVI_complex multiply_complex(IVI_complex a, IVI_complex b)
 {
-    KJB_complex c;
+    IVI_complex c;
 
 
     UNTESTED_CODE(); 
@@ -200,9 +200,9 @@ KJB_complex multiply_complex(KJB_complex a, KJB_complex b)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-KJB_complex divide_complex(KJB_complex a, KJB_complex b)
+IVI_complex divide_complex(IVI_complex a, IVI_complex b)
 {
-    KJB_complex c;
+    IVI_complex c;
     double      denominator;
     double      temp;
 
@@ -235,9 +235,9 @@ KJB_complex divide_complex(KJB_complex a, KJB_complex b)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-KJB_complex multiply_complex_by_real(KJB_complex a, double s)
+IVI_complex multiply_complex_by_real(IVI_complex a, double s)
 {
-    KJB_complex z;
+    IVI_complex z;
 
 
     UNTESTED_CODE(); 

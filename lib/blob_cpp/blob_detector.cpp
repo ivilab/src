@@ -17,7 +17,7 @@ std::vector<Matrix_vector> dog_scale_space(const GSS& gss)
     for (int i_o = 0; i_o < gss.get_num_octaves(); ++i_o)
     {
         dogss.push_back(Matrix_vector());
-        typedef std::vector<kjb::Image>::const_iterator VICI;
+        typedef std::vector<ivi::Image>::const_iterator VICI;
         std::pair<VICI, VICI> oct_its = gss.get_x_octave_at_index(i_o);
         for (VICI p = oct_its.first + 1; p != oct_its.second; ++p)
         {
@@ -54,7 +54,7 @@ Vec_vec_vec matrix_vector_to_vvv(const Matrix_vector& mv)
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
-const std::set<Blob>& Blob_detector::operator()(const kjb::Image& I)
+const std::set<Blob>& Blob_detector::operator()(const ivi::Image& I)
 {
     /*const int num_levels = 3;
     const int min_level = -1;
@@ -75,7 +75,7 @@ const std::set<Blob>& Blob_detector::operator()(const kjb::Image& I)
     int w = I.get_num_cols();
     if(sigma > std::min(h, w) )
     {
-        KJB_THROW_2(kjb::Illegal_argument, "min blob size is too big\n");
+        IVI_THROW_2(ivi::Illegal_argument, "min blob size is too big\n");
     }
 
     const int max_octave = round(log2(max_blob_size) - log2(1.6) - ((max_level + 1.0) / num_levels) - 1.0);

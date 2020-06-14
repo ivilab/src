@@ -27,7 +27,7 @@
 
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 
 Triangular_mesh * tm = NULL;
 

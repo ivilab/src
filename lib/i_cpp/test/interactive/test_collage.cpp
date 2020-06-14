@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_collage.cpp 20769 2016-07-28 15:31:21Z ernesto $
+ * $Id: test_collage.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <i_cpp/i_image.h>
@@ -18,18 +18,18 @@ int test1()
     // load a few images from ../input/
     const std::string path = std::string("..") + DIR_STR + "input" + DIR_STR;
 
-    const kjb::Image    i2(path + "123_map.jpeg"),
+    const ivi::Image    i2(path + "123_map.jpeg"),
                         i1(path + "123_trail.jpeg"),
                         i3(path + "test.jpeg"),
                         *images[4] = {&i1, &i2, &i3, &i2};
 
     // build a collage image
-    kjb::Image c1(kjb::make_collage(images, 3, 1));
-    kjb::Image c2(kjb::make_collage(images, 2, 2));
-    kjb::Image c3(kjb::make_collage(images, 1, 3));
+    ivi::Image c1(ivi::make_collage(images, 3, 1));
+    ivi::Image c2(ivi::make_collage(images, 2, 2));
+    ivi::Image c3(ivi::make_collage(images, 1, 3));
 
     // show it
-    if (0 == kjb_c::kjb_fork())
+    if (0 == ivi_c::ivi_fork())
     {
         c1.display("collage 3x1");
         c2.display("collage 2x2");
@@ -37,7 +37,7 @@ int test1()
         while (1) {}
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 int test2()
@@ -45,23 +45,23 @@ int test2()
     // load a few images from ../input/
     const std::string path = std::string("..") + DIR_STR + "input" + DIR_STR;
 
-    kjb::Image    i2(path + "123_map.jpeg"),
+    ivi::Image    i2(path + "123_map.jpeg"),
                   i1(path + "123_trail.jpeg"),
                   i3(path + "test.jpeg");
 
-    std::vector< kjb::Image > iii(4);
+    std::vector< ivi::Image > iii(4);
     iii.at(0).swap(i1);
     iii.at(1) = i2; // deep copy
     iii.at(2).swap(i3);
     iii.at(3).swap(i2);
 
     // build a collage image
-    kjb::Image c1(kjb::make_collage(& iii.front(), 3, 1));
-    kjb::Image c2(kjb::make_collage(& iii.front(), 2, 2));
-    kjb::Image c3(kjb::make_collage(& iii.front(), 1, 3));
+    ivi::Image c1(ivi::make_collage(& iii.front(), 3, 1));
+    ivi::Image c2(ivi::make_collage(& iii.front(), 2, 2));
+    ivi::Image c3(ivi::make_collage(& iii.front(), 1, 3));
 
     // show it
-    if (0 == kjb_c::kjb_fork())
+    if (0 == ivi_c::ivi_fork())
     {
         c1.display("test2 3x1");
         c2.display("test2 2x2");
@@ -69,7 +69,7 @@ int test2()
         while (1) {}
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -79,10 +79,10 @@ int main()
 {
     try
     {
-        KJB(EPETE(test1()));
-        KJB(EPETE(test2()));
+        IVI(EPETE(test1()));
+        IVI(EPETE(test2()));
     }
-    catch(const kjb::Exception& e)
+    catch(const ivi::Exception& e)
     {
         e.print_details_exit();
     }

@@ -129,7 +129,7 @@ int* DTLib::ComputeCircum (const int& radius, const int& Width)
     const int Length = CircumLength(radius)+1;
     
     if ((tmp = new int[Length]) == NULL) {
-    	KJB_THROW_2(kjb::KJB_error, "circle.cpp:ComputeCircum()");
+    	IVI_THROW_2(ivi::IVI_error, "circle.cpp:ComputeCircum()");
     }    
     // radius = 1 is a special case because we take all 8 neighbors then
     if (radius == 1) {

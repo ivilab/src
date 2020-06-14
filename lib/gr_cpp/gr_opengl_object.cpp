@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_object.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_opengl_object.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -24,13 +24,13 @@
 #include "gr_cpp/gr_opengl_object.h"
 #include "gr_cpp/gr_opengl_texture.h"
 
-#ifdef KJB_HAVE_OPENGL
-namespace kjb
+#ifdef IVI_HAVE_OPENGL
+namespace ivi
 {
 namespace opengl
 {
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 Renderbuffer::Renderbuffer(GLuint renderbuffer_id) :
     handle_(renderbuffer_id)
 {
@@ -40,12 +40,12 @@ Renderbuffer::Renderbuffer(GLuint renderbuffer_id) :
 Renderbuffer::Renderbuffer() :
     handle_(0)
 {
-#if defined(DEBUGGING) && defined(KJB_HAVE_GLUT)
-    Glut::test_initialized("kjb::opengl::Renderbuffer");
+#if defined(DEBUGGING) && defined(IVI_HAVE_GLUT)
+    Glut::test_initialized("ivi::opengl::Renderbuffer");
 #endif
 
 #ifdef DEBUGGING
-    Glew::test_initialized("kjb::opengl::Renderbuffer");
+    Glew::test_initialized("ivi::opengl::Renderbuffer");
 #endif
 
     glGenRenderbuffers(1, &handle_);
@@ -89,18 +89,18 @@ GLuint Renderbuffer::get() const
 {
     return handle_;
 }
-#endif //KJB_HAVE_GLEW
+#endif //IVI_HAVE_GLEW
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 Framebuffer_object::Framebuffer_object() :
     handle_(0)
 {
-#if defined(DEBUGGING) && defined(KJB_HAVE_GLUT)
-    Glut::test_initialized("kjb::opengl::Framebuffer_object");
+#if defined(DEBUGGING) && defined(IVI_HAVE_GLUT)
+    Glut::test_initialized("ivi::opengl::Framebuffer_object");
 #endif
 
 #ifdef DEBUGGING
-    Glew::test_initialized("kjb::opengl::Framebuffer_object");
+    Glew::test_initialized("ivi::opengl::Framebuffer_object");
 #endif
 
     glGenFramebuffers(1, &handle_);
@@ -190,7 +190,7 @@ void Framebuffer_object::attach_color(const Renderbuffer& renderbuffer, int i)
             attach(renderbuffer, GL_COLOR_ATTACHMENT15);
             return;
         default:
-            KJB_THROW_2(Illegal_argument, "Maximum of 15 color attachments allowed for FBOs");
+            IVI_THROW_2(Illegal_argument, "Maximum of 15 color attachments allowed for FBOs");
     }
 
 }
@@ -259,7 +259,7 @@ void Framebuffer_object::attach_color(const Texture& texture, int i)
             attach(texture, GL_COLOR_ATTACHMENT15);
             return;
         default:
-            KJB_THROW_2(Illegal_argument, "Maximum of 15 color attachments allowed for FBOs");
+            IVI_THROW_2(Illegal_argument, "Maximum of 15 color attachments allowed for FBOs");
     }
 
 }
@@ -357,9 +357,9 @@ GLuint Framebuffer_object::get() const
 {
     return handle_;
 }
-#endif // KJB_HAVE_GLEW
+#endif // IVI_HAVE_GLEW
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 Buffer::Buffer(GLuint buffer_id) :
     handle_(buffer_id),
     type_(0)
@@ -369,12 +369,12 @@ Buffer::Buffer() :
     handle_(0),
     type_(0)
 {
-#if defined(DEBUGGING) && defined(KJB_HAVE_GLUT)
-    Glut::test_initialized("kjb::opengl::Buffer");
+#if defined(DEBUGGING) && defined(IVI_HAVE_GLUT)
+    Glut::test_initialized("ivi::opengl::Buffer");
 #endif
 
 #ifdef DEBUGGING
-    Glew::test_initialized("kjb::opengl::Buffer");
+    Glew::test_initialized("ivi::opengl::Buffer");
 #endif
 
     glGenBuffers(1, &handle_);
@@ -438,19 +438,19 @@ GLuint Buffer::get() const
     return handle_;
 }
 
-void allocate_grayscale_color_buffer(::kjb::opengl::Renderbuffer& color, int width, int height)
+void allocate_grayscale_color_buffer(::ivi::opengl::Renderbuffer& color, int width, int height)
 {
     if(GLEW_ARB_texture_rg)
         color.allocate(GL_R32F, width, height);
     else
     {
-        KJB_THROW(Not_implemented);
-//            KJB(UNTESTED_CODE());
+        IVI_THROW(Not_implemented);
+//            IVI(UNTESTED_CODE());
 //            color.allocate(GL_RED, width_, height_);
     }
 
 }
-#endif //KJB_HAVE_GLEW
+#endif //IVI_HAVE_GLEW
 
 /**********************
  * The functions below are poached from songho.ca 
@@ -723,7 +723,7 @@ void printFramebufferInfo()
 #endif /* if 0 */
 
 
-} // namespace kjb
+} // namespace ivi
 
 } // namespace opengl
-#endif /*KJB_HAVE_OPENGL */
+#endif /*IVI_HAVE_OPENGL */

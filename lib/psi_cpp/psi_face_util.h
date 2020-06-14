@@ -16,7 +16,7 @@
    |  Author: Jinyan Guan 
  * =========================================================================== */
 
-/* $Id: psi_face_util.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: psi_face_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PSI_FACE_UTIL_H
 #define PSI_FACE_UTIL_H
@@ -32,7 +32,7 @@
 #include <camera_cpp/perspective_camera.h>
 #include <detector_cpp/d_facecom.h>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -232,6 +232,6 @@ void draw_standardized_face_box
 }
 
 } //namespace psi
-} //namespace kjb
+} //namespace ivi
 
 #endif

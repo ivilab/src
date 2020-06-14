@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <sys/time.h>
 
-namespace kjb {
+namespace ivi {
 
 /** @brief  Helper function for gradient_cfd_mt */
 template<class Func, class Model, class Adapter>
@@ -112,10 +112,10 @@ void gradient_ffd_mt_worker
  * @param   dx      The step sizes in each of the dimensions of x.
  * @param   adapter Adapts a model type to behave as a vector. If the model
  *                  type has operator[] and size() implemented, then use
- *                  the default kjb::Vector_adapter. Otherwise, provide
+ *                  the default ivi::Vector_adapter. Otherwise, provide
  *                  a class which implements
  *                  get(), set(), and size() for your model type. See
- *                  kjb::Vector_adapater for more information.
+ *                  ivi::Vector_adapater for more information.
  * @param   nt      The number of threads. If not set, use the number of
  *                  hardware threads available on the current system 
  */
@@ -203,10 +203,10 @@ Vector gradient_cfd_mt
  * @param   dx      The step sizes in each of the dimensions of x.
  * @param   adapter Adapts a model type to behave as a vector. If the model
  *                  type has operator[] and size() implemented, then use
- *                  the default kjb::Vector_adapter. Otherwise, provide
+ *                  the default ivi::Vector_adapter. Otherwise, provide
  *                  a class which implements
  *                  get(), set(), and size() for your model type. See
- *                  kjb::Vector_adapater for more information.
+ *                  ivi::Vector_adapater for more information.
  */
 template<class Func, class Model, class Adapter>
 Vector gradient_ffd_mt
@@ -334,10 +334,10 @@ void gradient_ind_cfd_mt_worker
  * @param   dx      The step sizes in each of the dimensions of x.
  * @param   adapter Adapts a model type to behave as a vector. If the model
  *                  type has operator[] and size() implemented, then use
- *                  the default kjb::Vector_adapter. Otherwise, provide
+ *                  the default ivi::Vector_adapter. Otherwise, provide
  *                  a class which implements
  *                  get(), set(), and size() for your model type. See
- *                  kjb::Vector_adapater for more information.
+ *                  ivi::Vector_adapater for more information.
  */
 template<class Func, class Model, class Adapter>
 Vector gradient_ind_cfd_mt
@@ -414,7 +414,7 @@ Vector gradient_ind_cfd_mt
     return gradient_ind_cfd_mt(f, x, dx, Vector_adapter<Vec>(), nt);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_GRADIENT_MT_H */
 

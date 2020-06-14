@@ -29,7 +29,7 @@ using namespace std;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
     Image img("001.jpg");
     Image img2 = img;

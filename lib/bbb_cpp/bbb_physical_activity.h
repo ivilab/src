@@ -30,7 +30,7 @@
 #include <iterator>
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -112,7 +112,7 @@ std::ostream& operator<<(std::ostream& ost, const Physical_activity& activity)
     return ost;
 }
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_PHYSICAL_ACTIVITY_H */
 

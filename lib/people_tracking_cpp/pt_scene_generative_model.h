@@ -49,7 +49,7 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /** @brief  Helper function that determines if a pixel is visible. */
@@ -128,8 +128,8 @@ void sample
         target.update_pos_gp(pos_prior.scale(), pos_prior.signal_variance());
         std::vector<Vector> F_x(2);
 
-        F_x[0] = kjb::gp::sample(target.pos_prior());
-        F_x[1] = kjb::gp::sample(target.pos_prior());
+        F_x[0] = ivi::gp::sample(target.pos_prior());
+        F_x[1] = ivi::gp::sample(target.pos_prior());
         for(size_t f = sf; f <= ef; f++)
         {
             traj[f - 1] = Trajectory_element();
@@ -139,7 +139,7 @@ void sample
 
         // set body direction
         target.update_dir_gp(dir_prior.scale(), dir_prior.signal_variance());
-        Vector F_d = kjb::gp::sample(target.dir_prior());
+        Vector F_d = ivi::gp::sample(target.dir_prior());
         for(size_t f = sf; f <= ef; f++)
         {
             traj[f - 1]->value.body_dir = F_d[f - sf];
@@ -147,8 +147,8 @@ void sample
 
         // set face directions
         target.update_fdir_gp(fdir_prior.scale(), fdir_prior.signal_variance());
-        Vector F_p = kjb::gp::sample(target.fdir_prior());
-        Vector F_y = kjb::gp::sample(target.fdir_prior());
+        Vector F_p = ivi::gp::sample(target.fdir_prior());
+        Vector F_y = ivi::gp::sample(target.fdir_prior());
         for(size_t f = sf; f <= ef; f++)
         {
             traj[f - 1]->value.face_dir[0] = F_p[f - sf];
@@ -156,9 +156,9 @@ void sample
         }
 
         // set height, width and girth
-        traj.height = kjb::sample(height_prior);
-        traj.width = kjb::sample(width_prior);
-        traj.girth = kjb::sample(girth_prior);
+        traj.height = ivi::sample(height_prior);
+        traj.width = ivi::sample(width_prior);
+        traj.girth = ivi::sample(girth_prior);
     }
 }
 
@@ -167,9 +167,9 @@ inline
 Perspective_camera sample(const Camera_prior& cam_prior)
 {
     Perspective_camera cam(0.1, 10000);
-    cam.set_camera_centre_y(kjb::sample(cam_prior.height_prior()));
-    cam.set_pitch(kjb::sample(cam_prior.pitch_prior()));
-    cam.set_focal_length(kjb::sample(cam_prior.focal_length_prior()));
+    cam.set_camera_centre_y(ivi::sample(cam_prior.height_prior()));
+    cam.set_pitch(ivi::sample(cam_prior.pitch_prior()));
+    cam.set_focal_length(ivi::sample(cam_prior.focal_length_prior()));
 
     return cam;
 }
@@ -212,9 +212,9 @@ Detection_box sample
     b = params_bot[1] + params_bot[3] * height;
     Laplace_distribution P_bot(mean, b);
 
-    double dx = kjb::sample(P_x);
-    double dtop = kjb::sample(P_top);
-    double dbot = kjb::sample(P_bot);
+    double dx = ivi::sample(P_x);
+    double dtop = ivi::sample(P_top);
+    double dbot = ivi::sample(P_bot);
 
     Vector c = mbox.get_center();
     c[0] += dx;
@@ -274,9 +274,9 @@ void sample
             Uniform_distribution U_h(-imh/2, imh/2);
             Uniform_distribution U_w(-imw/2, imw/2);
 
-            double top = kjb::sample(U_h);
-            double bot = kjb::sample(U_h);
-            double xc = kjb::sample(U_w);
+            double top = ivi::sample(U_h);
+            double bot = ivi::sample(U_h);
+            double xc = ivi::sample(U_w);
             double yc = (top - bot)/2;
 
             double h = fabs(top - bot);
@@ -315,7 +315,7 @@ void sample
                 double yaw = (180*fd)/M_PI;
                 if(f2d.visibility.visible >= 0.5)
                 {
-                    if(kjb::sample(Uniform_distribution()) <= 0.5)
+                    if(ivi::sample(Uniform_distribution()) <= 0.5)
                     {
                         Vector le_mark;
                         Vector re_mark;
@@ -333,36 +333,36 @@ void sample
                         bool all_empty = true;
                         if(!f2d.left_eye.empty())
                         {
-                            le_mark.set(f2d.left_eye[0] + kjb::sample(N_ex),
-                                        f2d.left_eye[1] + kjb::sample(N_ey));
+                            le_mark.set(f2d.left_eye[0] + ivi::sample(N_ex),
+                                        f2d.left_eye[1] + ivi::sample(N_ey));
                             all_empty = false;
                         }
 
                         if(!f2d.right_eye.empty())
                         {
-                            re_mark.set(f2d.right_eye[0] + kjb::sample(N_ex),
-                                        f2d.right_eye[1] + kjb::sample(N_ey));
+                            re_mark.set(f2d.right_eye[0] + ivi::sample(N_ex),
+                                        f2d.right_eye[1] + ivi::sample(N_ey));
                             all_empty = false;
                         }
 
                         if(!f2d.nose.empty())
                         {
-                            n_mark.set(f2d.nose[0] + kjb::sample(N_nx),
-                                       f2d.nose[1] + kjb::sample(N_ny));
+                            n_mark.set(f2d.nose[0] + ivi::sample(N_nx),
+                                       f2d.nose[1] + ivi::sample(N_ny));
                             all_empty = false;
                         }
 
                         if(!f2d.left_mouth.empty())
                         {
-                            lm_mark.set(f2d.left_mouth[0] + kjb::sample(N_mx),
-                                        f2d.left_mouth[1] + kjb::sample(N_my));
+                            lm_mark.set(f2d.left_mouth[0] + ivi::sample(N_mx),
+                                        f2d.left_mouth[1] + ivi::sample(N_my));
                             all_empty = false;
                         }
 
                         if(!f2d.right_mouth.empty())
                         {
-                            rm_mark.set(f2d.right_mouth[0] + kjb::sample(N_mx),
-                                        f2d.right_mouth[1] + kjb::sample(N_my));
+                            rm_mark.set(f2d.right_mouth[0] + ivi::sample(N_mx),
+                                        f2d.right_mouth[1] + ivi::sample(N_my));
                             all_empty = false;
                         }
 
@@ -415,8 +415,8 @@ void sample
     {
         for(size_t j = 0; j < image_height; j++)
         {
-            bg_flow_x(j, i) = kjb::sample(L_bg_x);
-            bg_flow_y(j, i) = kjb::sample(L_bg_y);
+            bg_flow_x(j, i) = ivi::sample(L_bg_x);
+            bg_flow_y(j, i) = ivi::sample(L_bg_y);
         }
     }
 
@@ -439,8 +439,8 @@ void sample
             const Bbox& nxtbox = btraj[f + 1]->value.body_bbox;
             const Visibility& vis = btraj[f]->value.visibility;
             Vector model_vel = nxtbox.get_center() - curbox.get_center();
-            model_vel[0] += kjb::sample(L_x);
-            model_vel[1] += kjb::sample(L_y);
+            model_vel[0] += ivi::sample(L_x);
+            model_vel[1] += ivi::sample(L_y);
 
             int bl = std::max(curbox.get_left(), -image_width/2.0);
             int br = std::min(curbox.get_right(), image_width/2.0 - 1);
@@ -468,8 +468,8 @@ void sample
             const Bbox& facebox = ftraj[f]->value.bbox;
             const Visibility& facevis = ftraj[f]->value.visibility;
             model_vel = ftraj[f]->value.model_dir;
-            model_vel[0] += kjb::sample(L_x);
-            model_vel[1] += kjb::sample(L_y);
+            model_vel[0] += ivi::sample(L_x);
+            model_vel[1] += ivi::sample(L_y);
 
             bl = std::max(facebox.get_left(), -image_width/2.0);
             br = std::min(facebox.get_right(), image_width/2.0 - 1);
@@ -624,7 +624,7 @@ void sample
     sample(of_lh, scene, xflow_out, yflow_out);
 }
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_SCENE_GENERATIVE_MOODEL_H */
 

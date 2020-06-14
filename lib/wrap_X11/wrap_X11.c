@@ -1,5 +1,5 @@
 
-/* $Id: wrap_X11.c 16823 2014-05-17 02:14:09Z kobus $ */
+/* $Id: wrap_X11.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,7 +20,7 @@
 
 #include "l/l_gen.h"           /* Only safe as first include in a ".c" file. */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
      /*
       * C2man cannot handle the X11 headers. We can ignore them as long as we
@@ -62,7 +62,7 @@ extern "C" {
 
 int X11_is_ok(void)
 {
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
     static int cached_result = NOT_SET;
     Display *display;
 
@@ -93,7 +93,7 @@ int X11_is_ok(void)
 
 int ring_X11_bell(void)
 {
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
     Display *display;
 
 

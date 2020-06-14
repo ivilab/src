@@ -1,5 +1,5 @@
 
-/* $Id: gr_opengl.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_opengl.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
 #include "gr_cpp/gr_opengl.h"
@@ -16,14 +16,14 @@
 #include "g_cpp/g_line.h"
 
 #include <boost/multi_array.hpp>
-namespace kjb {
+namespace ivi {
 namespace opengl {
 
 static const int NOT_SET = -1;
 static int m_has_stencil_buffer = NOT_SET;
 
 /* Define symbol as a void NULL in case of NO_LIBS */
-#ifndef KJB_HAVE_GLUT
+#ifndef IVI_HAVE_GLUT
 #define GLUT_BITMAP_8_BY_13 0
 #endif
 
@@ -76,7 +76,7 @@ float* to_gl_array(const Image& img)
 
 // "private" to this file.
 // Called by get_modelview and get_projection
-#ifdef  KJB_HAVE_OPENGL
+#ifdef  IVI_HAVE_OPENGL
 static Matrix get_gl_matrix(GLenum matrix_type)
 {
     double gl_matrix[16];
@@ -93,21 +93,21 @@ static Matrix get_gl_matrix(GLenum matrix_type)
 #endif
 
 
-void glRotate(const kjb::Quaternion & q)
+void glRotate(const ivi::Quaternion & q)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glRotatef(q.get_angle() * 180 / M_PI,
             q.get_axis()(0),
             q.get_axis()(1),
             q.get_axis()(2));
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
-void glTranslate(const kjb::Vector& p)
+void glTranslate(const ivi::Vector& p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     IFT(p.get_length() == 2 || p.get_length() == 3, Illegal_argument,
         "glTranslate requires a vector of dimension 2 or 3.");
 
@@ -120,22 +120,22 @@ void glTranslate(const kjb::Vector& p)
         glTranslated(p[0], p[1], p[2]);
     }
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
-void glTranslate(const kjb::Vector3& p)
+void glTranslate(const ivi::Vector3& p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glTranslated(p[0], p[1], p[2]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void glVertex(const Vector& p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     switch(p.get_length())
     {
         case 2:
@@ -148,54 +148,54 @@ void glVertex(const Vector& p)
             glVertex4d(p[0], p[1], p[2], p[3]);
             break;
         default:
-            KJB_THROW_2(Illegal_argument, "glVertex requires a vector of dimension = {2, 3, 4}.");
+            IVI_THROW_2(Illegal_argument, "glVertex requires a vector of dimension = {2, 3, 4}.");
             break;
     }
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
-void glTranslate(const kjb::Vector2& p)
+void glTranslate(const ivi::Vector2& p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glTranslated(p[0], p[1], 0.0);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void glVertex(const Vector2& p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glVertex2d(p[0], p[1]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 
 void glVertex(const Vector3& p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glVertex3d(p[0], p[1], p[2]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void glVertex(const Vector4& p)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glVertex4d(p[0], p[1], p[2], p[3]);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void glColor(const Vector& color)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     IFT(color.get_length() == 3 || color.size() == 4, Illegal_argument,
                                    "Color vector must be size 3 or 4.");
 
@@ -208,16 +208,16 @@ void glColor(const Vector& color)
         glColor4d(color[0], color[1], color[2], color[3]);
     }
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
-void glColor(const kjb::PixelRGBA& color)
+void glColor(const ivi::PixelRGBA& color)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glColor3d(color.r/255.0, color.g/255.0, color.b/255.0);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -235,7 +235,7 @@ void glColor(const Vector4& color)
 
 void glLoadMatrix(const Matrix& m)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     IFT(m.get_num_rows() == 4 && m.get_num_cols() == 4, Dimension_mismatch,
                                                         "Matrix must be 4x4.");
     double gl_matrix[16];
@@ -246,15 +246,15 @@ void glLoadMatrix(const Matrix& m)
 
     glLoadMatrixd(gl_matrix);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void glLoadMatrix(const kjb::Matrix_d<4,4>& m)
+void glLoadMatrix(const ivi::Matrix_d<4,4>& m)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     double gl_matrix[16];
     for(int i = 0; i < 16; i++)
     {
@@ -263,7 +263,7 @@ void glLoadMatrix(const kjb::Matrix_d<4,4>& m)
 
     glLoadMatrixd(gl_matrix);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 
 }
@@ -271,7 +271,7 @@ void glLoadMatrix(const kjb::Matrix_d<4,4>& m)
 template <class Matrix_type>
 void glMultMatrix_disp_(const Matrix_type& m)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     double gl_matrix[16];
     for(int i = 0; i < 16; i++)
     {
@@ -280,7 +280,7 @@ void glMultMatrix_disp_(const Matrix_type& m)
 
     glMultMatrixd(gl_matrix);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 
 }
@@ -304,7 +304,7 @@ void glMultMatrix(const Matrix_d<4,4>& m)
 
 void gluBuild2DMipmaps(const Image& img)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     float* array = to_gl_array<true>(img);
 
     ::gluBuild2DMipmaps(
@@ -318,13 +318,13 @@ void gluBuild2DMipmaps(const Image& img)
 
     delete[] array;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 void glTexImage2D(GLenum target, GLint level, GLint border, const Image& img)
 {
     float* array = to_gl_array<true>(img);
@@ -338,10 +338,10 @@ void glTexImage2D(GLenum target, GLint level, GLint border, const Image& img)
 
 void glTexImage2D(const Image& img)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glTexImage2D(GL_TEXTURE_2D, 0, 0, img);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -352,7 +352,7 @@ void glTexImage2D(const Image& img)
 template <class ReturnVectorType, class VectorType>
 ReturnVectorType gluUnProject_dispatch_(const VectorType& vertex, double* modelview, double* projection, int* viewport)
 {
-#ifdef  KJB_HAVE_OPENGL
+#ifdef  IVI_HAVE_OPENGL
     ReturnVectorType result;
     result.resize(3);
 
@@ -369,15 +369,15 @@ ReturnVectorType gluUnProject_dispatch_(const VectorType& vertex, double* modelv
     }
     else
     {
-        KJB_THROW_2(Illegal_argument, "gluUnProject() vertex must be of dimension 2 or 3");
+        IVI_THROW_2(Illegal_argument, "gluUnProject() vertex must be of dimension 2 or 3");
     }
 
     if(!status)
-        KJB_THROW_2(Runtime_error, "gluUnProject() failed");
+        IVI_THROW_2(Runtime_error, "gluUnProject() failed");
 
     return result;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -500,16 +500,16 @@ void glOrtho(
 
 void glClearDepthBuffer()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glClear(GL_DEPTH_BUFFER_BIT);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void glcolormask(bool b1, bool b2, bool b3, bool b4)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     /*GLboolean gb1 = GL_TRUE;
     GLboolean gb2 = GL_TRUE;
     GLboolean gb3 = GL_TRUE;
@@ -535,31 +535,31 @@ void glcolormask(bool b1, bool b2, bool b3, bool b4)
 
     glColorMask((GLboolean)b1, (GLboolean)b2, (GLboolean)b3, (GLboolean)b4);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void glEnableLineSmooth()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glEnable(GL_LINE_SMOOTH);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void glDisableLineSmooth()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glDisable(GL_LINE_SMOOTH);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 void default_init_opengl(unsigned int width, unsigned int height)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // Why is lighting disabled by default?? --Ernesto (2011/02/17)
 
     glEnable(GL_DEPTH_TEST);
@@ -568,39 +568,39 @@ void default_init_opengl(unsigned int width, unsigned int height)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, width, height);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 size_t get_viewport_width()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     
     GLint glv[4];
     glGetIntegerv(GL_VIEWPORT, glv);
     return glv[2];
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 size_t get_viewport_height()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLint glv[4];
     glGetIntegerv(GL_VIEWPORT, glv);
     return glv[3];
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 Image get_framebuffer_as_image()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     return get_framebuffer_as_image(0, 0, get_viewport_width(), get_viewport_height());
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -609,10 +609,10 @@ Image get_framebuffer_as_image()
 
 Matrix get_modelview_matrix()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     return get_gl_matrix(GL_MODELVIEW_MATRIX);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -620,10 +620,10 @@ Matrix get_modelview_matrix()
 
 Matrix get_projection_matrix()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     return get_gl_matrix(GL_PROJECTION_MATRIX);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -631,7 +631,7 @@ Matrix get_projection_matrix()
 
 Vector project(const Vector& x)
 {
-    Vector h_x = ::kjb::geometry::euclidean_to_projective(x);
+    Vector h_x = ::ivi::geometry::euclidean_to_projective(x);
 
     Matrix P = get_projection_matrix() * get_modelview_matrix();
 
@@ -662,7 +662,7 @@ Vector2 project(const Vector3& x)
 template <class ReturnVectorType, class VectorType>
 ReturnVectorType unproject_dispatch_(const VectorType& vertex)
 {
-#ifdef  KJB_HAVE_OPENGL
+#ifdef  IVI_HAVE_OPENGL
     double modelview[16];
     double projection[16];
     int viewport[4];
@@ -673,7 +673,7 @@ ReturnVectorType unproject_dispatch_(const VectorType& vertex)
 
     return gluUnProject_dispatch_<ReturnVectorType, VectorType>(vertex, modelview, projection, viewport);
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -698,7 +698,7 @@ Vector3 unproject(const Vector3& vertex)
 
 void draw_full_screen_quad(float z)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
@@ -717,7 +717,7 @@ void draw_full_screen_quad(float z)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -725,7 +725,7 @@ void draw_full_screen_quad(float z)
 
 bool has_stencil_buffer()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     if(m_has_stencil_buffer == NOT_SET)
     {
         int bits = 0;
@@ -741,7 +741,7 @@ bool has_stencil_buffer()
 
     return m_has_stencil_buffer;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -749,7 +749,7 @@ bool has_stencil_buffer()
 
 void set_framebuffer(const Image& img)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
 
@@ -758,12 +758,12 @@ void set_framebuffer(const Image& img)
     size_t num_cols = get_viewport_width();
     size_t num_rows = get_viewport_height();
     IFTD(num_cols == static_cast<size_t>(img.get_num_cols())
-            && num_rows == static_cast<size_t>(img.get_num_rows()), KJB_error,
+            && num_rows == static_cast<size_t>(img.get_num_rows()), IVI_error,
             "Input image (%d x %d) size differs from viewport size (%d x %d)",
             (img.get_num_rows())(img.get_num_cols())(num_rows)(num_cols));
 
     float* img_buf = new float[NUM_CHANNELS * num_cols * num_rows];
-    IFT(img_buf, KJB_error, "Could not allocate buffer to store image in GL framebuffer.");
+    IFT(img_buf, IVI_error, "Could not allocate buffer to store image in GL framebuffer.");
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 //    glWindowPos2f(0.0, 0.0);
@@ -789,7 +789,7 @@ void set_framebuffer(const Image& img)
 
     glPopAttrib();
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -797,7 +797,7 @@ void set_framebuffer(const Image& img)
 
 void set_framebuffer(const Matrix& mat)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
 
@@ -806,11 +806,11 @@ void set_framebuffer(const Matrix& mat)
     size_t num_cols = get_viewport_width();
     size_t num_rows = get_viewport_height();
     IFT(num_cols == static_cast<size_t>(mat.get_num_cols()) && num_rows == static_cast<size_t>(mat.get_num_rows()),
-        KJB_error, "Input image is smaller than viewport size");
+        IVI_error, "Input image is smaller than viewport size");
 
 
     float* img_buf = new float[NUM_CHANNELS * num_cols * num_rows];
-    IFT(img_buf, KJB_error, "Could not allocate buffer to store image in GL framebuffer.");
+    IFT(img_buf, IVI_error, "Could not allocate buffer to store image in GL framebuffer.");
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 //    glWindowPos2f(0.0, 0.0);
@@ -832,7 +832,7 @@ void set_framebuffer(const Matrix& mat)
 
     GL_ETX();
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -840,7 +840,7 @@ void set_framebuffer(const Matrix& mat)
 
 void set_framebuffer(const Int_matrix& mat)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
 
@@ -848,7 +848,7 @@ void set_framebuffer(const Int_matrix& mat)
     size_t num_rows = get_viewport_height();
 
     IFT(num_cols == static_cast<size_t>(mat.get_num_cols()) && num_rows == static_cast<size_t>(mat.get_num_rows()),
-        KJB_error, "Input image is smaller than viewport size");
+        IVI_error, "Input image is smaller than viewport size");
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 //    glWindowPos2f(0.0, 0.0);
@@ -872,7 +872,7 @@ void set_framebuffer(const Int_matrix& mat)
 
     glPopAttrib();
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -886,7 +886,7 @@ Image get_framebuffer_as_image
     size_t height
 )
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     const int NUM_CHANNELS = 3;
 
     Image result(height, width);
@@ -916,7 +916,7 @@ Image get_framebuffer_as_image
 
     return result;
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 
 }
@@ -939,7 +939,7 @@ void get_buffer_as_matrix_
     Matrix& result
 )
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     const int NUM_CHANNELS = 1;
 
     result.resize(height, width);
@@ -962,7 +962,7 @@ void get_buffer_as_matrix_
     delete[] rgb;
     GL_ETX();
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 
 }
@@ -1012,28 +1012,28 @@ Matrix get_depth_buffer_as_matrix(size_t x, size_t y, size_t width, size_t heigh
 
 Matrix get_framebuffer_as_matrix()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     return get_framebuffer_as_matrix(0, 0, get_viewport_width(), get_viewport_height());
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 }
 
 Matrix get_depth_buffer_as_matrix()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     return get_depth_buffer_as_matrix(0, 0, get_viewport_width(), get_viewport_height());
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 }
 
 Int_matrix get_framebuffer_as_int_matrix()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     return get_framebuffer_as_int_matrix(0, 0, get_viewport_width(), get_viewport_height());
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 }
 
@@ -1048,8 +1048,8 @@ Int_matrix get_framebuffer_as_int_matrix
     size_t height
 )
 {
-#ifdef KJB_HAVE_OPENGL
-    kjb_c::Int_matrix* temp_mat = NULL;
+#ifdef IVI_HAVE_OPENGL
+    ivi_c::Int_matrix* temp_mat = NULL;
     get_target_int_matrix(&temp_mat, height, width);
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -1068,7 +1068,7 @@ Int_matrix get_framebuffer_as_int_matrix
 
     return result;
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 
 }
@@ -1082,14 +1082,14 @@ void bitmap_string(const std::string& s, double x, double y, void* font)
 {
     if(font == 0)
         font = GLUT_BITMAP_8_BY_13;
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glRasterPos2d(x, y);
     for(size_t i = 0; i < s.length(); i++)
     {
         glutBitmapCharacter(font, s.c_str()[i]);
     }
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 }
 
@@ -1105,9 +1105,9 @@ void bitmap_string(const std::string& s, double x, double y, void* font)
  * @param screen_point A 2d cursor position where the 3d point should project to
  * Note that cursor coordinates are relatve to bottom-left of screen, following OpenGL standard (as opposed to Glut-standard top-left)
  */
-void move_in_plane(kjb::Vector3& plane_pt, const kjb::Vector2& new_pt)
+void move_in_plane(ivi::Vector3& plane_pt, const ivi::Vector2& new_pt)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     /*
      * The approach here might seem more roundabout than you might expect,
      * but this approach results in better precision and less drift than 
@@ -1115,7 +1115,7 @@ void move_in_plane(kjb::Vector3& plane_pt, const kjb::Vector2& new_pt)
      */
 
     // get rotation matrix from world to camera axes 
-//    const kjb::Matrix_d<3,3>& R = get_rotation_matrix();
+//    const ivi::Matrix_d<3,3>& R = get_rotation_matrix();
 
     double modelview_array[16];
     double projection_array[16];
@@ -1138,7 +1138,7 @@ void move_in_plane(kjb::Vector3& plane_pt, const kjb::Vector2& new_pt)
     // TODO: Test this; it's unlikely that I got this right the first time...
     // find plane parallel to image plane 
     // through current point .
-    kjb::Vector3 plane_norm(0.0, 0.0, 1.0);
+    ivi::Vector3 plane_norm(0.0, 0.0, 1.0);
     Matrix_d<3,3> R;
     R(0,0) = modelview[0][0];
     R(0,1) = modelview[0][1];
@@ -1170,12 +1170,12 @@ void move_in_plane(kjb::Vector3& plane_pt, const kjb::Vector2& new_pt)
 
 
     tmp[2] = 0; // near-plane
-    kjb::Vector3 line_pt1 = gluUnProject(tmp, modelview_array, projection_array, viewport);
+    ivi::Vector3 line_pt1 = gluUnProject(tmp, modelview_array, projection_array, viewport);
 
     tmp[2] = 1; // far-plane
-    kjb::Vector3 line_pt2 = gluUnProject(tmp, modelview_array, projection_array, viewport);
+    ivi::Vector3 line_pt2 = gluUnProject(tmp, modelview_array, projection_array, viewport);
 
-    kjb::Vector3 line_dir = (line_pt2 - line_pt1);
+    ivi::Vector3 line_dir = (line_pt2 - line_pt1);
     line_dir.normalize(); // probably not necessary
     
     // intersect backprojection line with plane of motion to find the 3d location of the new point.
@@ -1184,8 +1184,8 @@ void move_in_plane(kjb::Vector3& plane_pt, const kjb::Vector2& new_pt)
 
     plane_pt = line_pt1 + t * line_dir;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /**
@@ -1198,7 +1198,7 @@ void move_in_plane(kjb::Vector3& plane_pt, const kjb::Vector2& new_pt)
  */
 void get_backprojection_line(const Vector2& pt, Vector3& line_pt, Vector3& line_dir)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     double modelview_array[16];
     double projection_array[16];
     int viewport[4];
@@ -1218,13 +1218,13 @@ void get_backprojection_line(const Vector2& pt, Vector3& line_pt, Vector3& line_
     line_pt = gluUnProject(tmp, modelview_array, projection_array, viewport);
 
     tmp[2] = 1; // far-plane
-    kjb::Vector3 pt2 = gluUnProject(tmp, modelview_array, projection_array, viewport);
+    ivi::Vector3 pt2 = gluUnProject(tmp, modelview_array, projection_array, viewport);
 
     line_dir = (pt2 - line_pt);
     line_dir.normalize(); // probably not necessary
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -1238,7 +1238,7 @@ void render_xz_plane_grid
     double csz
 )
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // draw horizontal lines
     glBegin(GL_LINES);
     for(double z = zmin; z <= zmax; z += csz)
@@ -1257,8 +1257,8 @@ void render_xz_plane_grid
 
     GL_ETX();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -1272,7 +1272,7 @@ void render_xy_plane_grid
     double csz
 )
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // draw horizontal lines
     glBegin(GL_LINES);
     for(double y = ymin; y <= ymax; y += csz)
@@ -1291,15 +1291,15 @@ void render_xy_plane_grid
 
     GL_ETX();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
 void render_arrow(const Vector& src, const Vector& dest)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     Vector dir(dest - src);
     double mag = dir.magnitude();
 
@@ -1327,15 +1327,15 @@ void render_arrow(const Vector& src, const Vector& dest)
         glVertex(src + R*r);
     glEnd();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
 void render_x(const Vector& center, double sz)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glBegin(GL_LINES);
         glVertex(center + Vector(-sz/2, sz/2));
         glVertex(center + Vector(sz/2, -sz/2));
@@ -1343,13 +1343,13 @@ void render_x(const Vector& center, double sz)
         glVertex(center + Vector(sz/2, sz/2));
     glEnd();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 Opengl_error::Opengl_error(unsigned int error_code, const char* file, int line) :
     Runtime_error((const char*) gluErrorString(error_code), file, line),
     code_(error_code)
@@ -1367,8 +1367,8 @@ Opengl_error::Opengl_error(const std::string& msg, const char* file, int line) :
     Runtime_error(msg, file, line),
     code_(-1)
 {}
-#endif // KJB_HAVE_OPENGL
+#endif // IVI_HAVE_OPENGL
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 

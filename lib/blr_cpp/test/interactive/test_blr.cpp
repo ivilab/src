@@ -5,7 +5,7 @@
 #include <l_cpp/l_test.h>
 #include <boost/random.hpp>
 
-using namespace kjb;
+using namespace ivi;
 
 void test_blr
 (

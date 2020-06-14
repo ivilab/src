@@ -82,17 +82,17 @@
 #include <l_cpp/l_cloneable.h>
 #include <m_cpp/m_vector.h>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 //#include <boost/serialization/nvp.hpp>
 #include <boost/serialization/access.hpp>
 #endif
 
-namespace kjb
+namespace ivi
 {
 
 class Perspective_camera : public Cloneable, public Readable, public Writeable
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
 
@@ -116,7 +116,7 @@ public:
             double inear = 10,
             double ifar = 10000);
 
-    Perspective_camera(const kjb::Vector & icamera_centre,
+    Perspective_camera(const ivi::Vector & icamera_centre,
                        double ipitch,
                        double iyaw,
                        double iroll,
@@ -191,7 +191,7 @@ public:
     Vector get_world_origin() const;
 
     /** @brief returns the camera centre */
-    const kjb::Vector & get_camera_centre() const {return camera_centre;}
+    const ivi::Vector & get_camera_centre() const {return camera_centre;}
 
     /** @brief returns the x-coordinate of the camera centre */
     double get_camera_centre_x() const {return camera_centre(0);}
@@ -218,7 +218,7 @@ public:
     double get_focal_length() const {return focal_length;}
 
     /** @brief returns the principal point */
-    const kjb::Vector & get_principal_point() const { return principal_point;}
+    const ivi::Vector & get_principal_point() const { return principal_point;}
 
     /** @brief returns the coordinate of the principal point specified by the input index*/
     double get_principal_point(unsigned int index) const { return principal_point(index);}
@@ -243,15 +243,15 @@ public:
      * built from the intrinsic and extrinsic parameters
      */
     // commented this out, since no implementation exists -- Kyle Mar 5, 2011
-//    void get_camera_matrix(kjb::Matrix & camera_matrix);
+//    void get_camera_matrix(ivi::Matrix & camera_matrix);
 
     /** Setters */
 
     /** @brief sets the world origin in camera coordinates. */
-    void set_world_origin(const kjb::Vector& origin);
+    void set_world_origin(const ivi::Vector& origin);
 
     /** @brief sets the camera centre */
-    virtual void set_camera_centre(const kjb::Vector & icentre);
+    virtual void set_camera_centre(const ivi::Vector & icentre);
 
     /** @brief sets the coordinate of the camera centre specified by the input index*/
     virtual void set_camera_centre(unsigned int index, double ivalue);
@@ -296,7 +296,7 @@ public:
     virtual void update_focal_with_scale(double ifocal);
 
     /** @brief sets the principal point */
-    virtual void set_principal_point(const kjb::Vector & ip);
+    virtual void set_principal_point(const ivi::Vector & ip);
 
     /** @brief sets the coordinate of the principal point specified by the input index*/
     virtual void set_principal_point(unsigned int index, double ip);
@@ -321,7 +321,7 @@ public:
             double dupx, double dupy, double dupz);
 
     /** @brief sets the position and orientation with the semantics similar to gluLookAt in a more convenient form */
-    virtual void set_look_at(const kjb::Vector & eye, const kjb::Vector & look, const kjb::Vector & up);
+    virtual void set_look_at(const ivi::Vector & eye, const ivi::Vector & look, const ivi::Vector & up);
 
     virtual void translate(double dx, double dy, double dz, unsigned int frame = FRAME_CAMERA_WORLD_COORDINATES );
 
@@ -335,7 +335,7 @@ public:
 
     /**
      * Return opengl modelview matrix, which can be passed to
-     * kjb::opengl::glMultMatrix()
+     * ivi::opengl::glMultMatrix()
      */
     const Matrix& get_modelview_matrix() const
     {
@@ -345,7 +345,7 @@ public:
 
     /**
      * Return opengl projection matrix, which can be passed to
-     * kjb::opengl::glMultMatrix().  Note that this needs to be 
+     * ivi::opengl::glMultMatrix().  Note that this needs to be 
      * preceeded by a call to glOrtho()
      */
     inline const Matrix& get_projection_matrix() const
@@ -356,7 +356,7 @@ public:
 
     /**
      * Return opengl projection matrix, which can be passed to
-     * kjb::opengl::glMultMatrix().  This is the exact matrix that is
+     * ivi::opengl::glMultMatrix().  This is the exact matrix that is
      * passed to opengl; i.e. the effect of the glOrtho call is included
      * in this matrix.
      */
@@ -388,37 +388,37 @@ public:
      * and roll as Euler angle 3. This function (except for
      * standard mode XYZR) is not adequately tested
      */
-    void set_rotation_mode(kjb::Quaternion::Euler_mode imode)
+    void set_rotation_mode(ivi::Quaternion::Euler_mode imode)
     {
         update_rendering_interface();
         rendering_interface.set_rotation_mode(imode);
     }
 
     /** @brief sets the rotation angles from an input quaternion */
-    virtual void set_angles_from_quaternion(const kjb::Quaternion & q);
+    virtual void set_angles_from_quaternion(const ivi::Quaternion & q);
 
     /** @brief Alias of set_angles_from_quaternion() */
-    virtual void set_orientation(const kjb::Quaternion & q)
+    virtual void set_orientation(const ivi::Quaternion & q)
     {
         set_angles_from_quaternion(q);
     }
 
 
     /** @brief returns the rotations of this camera as a quaternion */
-    inline const kjb::Quaternion & get_rotations_as_a_quaternion() const
+    inline const ivi::Quaternion & get_rotations_as_a_quaternion() const
     {
         update_rendering_interface();
         return rendering_interface.get_orientation();
     }
 
     /** @brief Alias of get_angles_as_a_quaternion() */
-    inline const kjb::Quaternion & get_orientation() const
+    inline const ivi::Quaternion & get_orientation() const
     {
         return get_rotations_as_a_quaternion();
     }
 
     /** @brief Rotates the input point into the camera coordinate system*/
-    inline void rotate_point_to_camera_frame(kjb::Vector &ipoint)
+    inline void rotate_point_to_camera_frame(ivi::Vector &ipoint)
     {
         update_rendering_interface();
         rendering_interface.rotate_point_to_camera_frame(ipoint);
@@ -427,8 +427,8 @@ public:
     /** @brief Given a point in camera coordinates, it converts it to world coordinates */
     inline void get_point_in_world_coordinates
     (
-        const kjb::Vector & point_in_camera_coordinates,
-        kjb::Vector & point_in_world_coordinates
+        const ivi::Vector & point_in_camera_coordinates,
+        ivi::Vector & point_in_world_coordinates
     ) const
     {
         update_rendering_interface();
@@ -441,7 +441,7 @@ public:
      *  for the computation */
     inline bool is_point_in_camera_frustum
     (
-        const kjb::Vector & point_in_world_coordinates,
+        const ivi::Vector & point_in_world_coordinates,
         double & x_,
 		double & y_,
         unsigned int num_image_rows,
@@ -457,7 +457,7 @@ public:
     /** @brief Given a point in world coordinates, it converts it to camera coordinates */
     inline void get_point_in_camera_coordinates
     (
-        kjb::Vector & io_point
+        ivi::Vector & io_point
     ) const
     {
         update_rendering_interface();
@@ -503,11 +503,11 @@ private:
     /* 3D position of the camera centre in homogeneous coordinates.
      * We store it in homogeneous coordinates for convenience. It is always to be kept normalized
      * such that the homgeneous coordinate is 1 */
-    kjb::Vector camera_centre;
+    ivi::Vector camera_centre;
 
     /* Vector storing the rotation angles around the object's x axis (pitch),
      * the object's y axis (yaw), and the object's z axis (roll). Sorted in this order*/
-    kjb::Vector rotation_angles;
+    ivi::Vector rotation_angles;
 
     /* Intrinsic parameters */
 
@@ -515,7 +515,7 @@ private:
     double focal_length;
 
     /* The 2D position of the principal point in the image plane */
-    kjb::Vector principal_point;
+    ivi::Vector principal_point;
 
     /* The skew defined as the angle between the two image axis (usually 90 degrees
      * or very close). Stored in radian
@@ -564,7 +564,7 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int /* version */)
     {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
         double near;
         double far;
         if(Archive::is_saving::value == true)
@@ -597,7 +597,7 @@ private:
             update_rendering_interface();
         }
 #else
-    KJB_THROW_2(Missing_dependency, "boost::serialization");
+    IVI_THROW_2(Missing_dependency, "boost::serialization");
 #endif
     }
 
@@ -615,6 +615,6 @@ inline void swap(Perspective_camera& cam1, Perspective_camera& cam2)
     cam1.swap(cam2);
 }
 
-} // namespace kjb
+} // namespace ivi
 
 #endif  /* CAMERA_CPP_PERSPECTIVE_CAMERA_H_ */

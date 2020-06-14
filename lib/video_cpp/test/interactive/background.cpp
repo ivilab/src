@@ -27,7 +27,7 @@
 #include <vector>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char** argv)

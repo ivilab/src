@@ -28,11 +28,11 @@ int main(int argc, char *argv[])
     {
         if (ss1d(line, &d) == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
         }
         else
         {
-            pso("%d\n", kjb_rint(d));
+            pso("%d\n", ivi_rint(d));
         }
     }
     

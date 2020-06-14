@@ -16,18 +16,18 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_entity.h 18329 2014-12-02 04:29:44Z ksimek $ */
+/* $Id: pt_entity.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_ENTITY_H
 #define PT_ENTITY_H
 
 #include <tracking_cpp/tracking_entity.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
-using namespace kjb::tracking;
+using namespace ivi::tracking;
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /* PT_ENTITY_H */

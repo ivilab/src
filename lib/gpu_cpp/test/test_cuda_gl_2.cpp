@@ -19,7 +19,7 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_HAVE_CUDA
+#ifndef IVI_HAVE_CUDA
 #include <l/l_incl.h>
 #include <iostream>
 int main()
@@ -31,8 +31,8 @@ int main()
 
 
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_GLUT
 #else
 #error "glut not found"
 #endif
@@ -52,9 +52,9 @@ int main()
 #include <time.h>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::opengl;
-using namespace kjb::gpu;
+using namespace ivi;
+using namespace ivi::opengl;
+using namespace ivi::gpu;
 
 Framebuffer_object* fbo;
 Buffer* pbo;

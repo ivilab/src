@@ -1,4 +1,4 @@
-/* $Id: test_learned_discrete_prior.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: test_learned_discrete_prior.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /*=========================================================================== *
   |
   | Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 
 #include "likelihood_cpp/learned_discrete_prior.h"
 
-using namespace kjb;
+using namespace ivi;
 
 
 void print_histo(Learned_discrete_prior& dp, std::ofstream& outFile)
@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
 
     if(!outFile.is_open())
     {
-        KJB_THROW_2(IO_error, "Could not open output file");
+        IVI_THROW_2(IO_error, "Could not open output file");
         std::cout << "File is not open!\n";
         return 1;
     }

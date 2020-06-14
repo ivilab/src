@@ -1,5 +1,5 @@
 
-/* $Id: vagal.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: vagal.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     double stretch;
 
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     /*
      * Not ready to do anything in batch mode. 
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
     free_vector(re_dft_vp);
     free_vector(mag_dft_vp);
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

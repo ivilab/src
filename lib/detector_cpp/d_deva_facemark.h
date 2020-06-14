@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_deva_facemark.h 19991 2015-10-29 19:50:11Z jguan1 $ */
+/* $Id: d_deva_facemark.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef D_DEVA_FACEMARK_H
 #define D_DEVA_FACEMARK_H
@@ -29,7 +29,7 @@
 #include <iterator>
 #include <algorithm>
 
-namespace kjb
+namespace ivi
 {
 class Deva_facemark
 {
@@ -134,6 +134,6 @@ void write_deva_facemark_line
     std::ostream& os
 );
 
-} //namepsace kjb
+} //namepsace ivi
 
 #endif

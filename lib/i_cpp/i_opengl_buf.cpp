@@ -4,14 +4,14 @@
  * @author Kyle Simek
  */
 
-/* $Id: i_opengl_buf.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: i_opengl_buf.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "i_cpp/i_opengl_buf.h"
 
 #include <string>
 #include <iostream>
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     #if defined(MAC_OSX)
         #include <OpenGL/glu.h>
         #include <GLUT/glut.h>
@@ -24,19 +24,19 @@
     #endif
 #endif
 
-namespace kjb {
+namespace ivi {
 
 
 /**
  * Initialize image from opengl framebuffer
  *
  * @note Should re-implement this using Joe's faster offscreen buffer code
- * @note This method is DEPRECATED in favor of the kjb::opengl::framebuffer_to_image() function.
+ * @note This method is DEPRECATED in favor of the ivi::opengl::framebuffer_to_image() function.
  * */
 Opengl_framebuffer_image::Opengl_framebuffer_image(uint32_t x, uint32_t y, uint32_t width, uint32_t height) :
     Image(height, width)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #ifdef TEST
     std::cerr << "WARNING: executing deprecated code in file " << __FILE__ << ", line " << __LINE__ << std::endl;
 #endif
@@ -65,7 +65,7 @@ Opengl_framebuffer_image::Opengl_framebuffer_image(uint32_t x, uint32_t y, uint3
 
     delete[] rgb;
 #else
-    KJB_THROW_2(Missing_dependency, "OpenGL");
+    IVI_THROW_2(Missing_dependency, "OpenGL");
 #endif
 }
 

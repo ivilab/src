@@ -10,8 +10,8 @@
 #include <algorithm>
 #include <cmath>
 
-using namespace kjb;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::mcmcda;
 using namespace std;
 
 typedef Generic_track<Vector> V_track;

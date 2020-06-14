@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: tracking_trajectory.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: tracking_trajectory.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef TRACKING_TRAJECTORY_H
 #define TRACKING_TRAJECTORY_H
@@ -43,17 +43,17 @@
 
 /** @file   Classes and functions for dealing with generic trajectories. */
 
-namespace kjb {
+namespace ivi {
 namespace tracking {
 
 // forward declarations
 template <class T>
 class Generic_trajectory;
-typedef Generic_trajectory<kjb::Vector> Canonical_trajectory;
+typedef Generic_trajectory<ivi::Vector> Canonical_trajectory;
 
 template <class T>
 class Generic_trajectory_map;
-typedef Generic_trajectory_map<kjb::Vector> Canonical_trajectory_map;
+typedef Generic_trajectory_map<ivi::Vector> Canonical_trajectory_map;
 
 
 /**
@@ -72,7 +72,7 @@ struct Generic_trajectory_element
     bool parse(const std::string& line)
     {
         // NOT_IMPLEMENTED IN GENERAL
-        KJB_THROW(Not_implemented);
+        IVI_THROW(Not_implemented);
     }
 
     /**
@@ -81,7 +81,7 @@ struct Generic_trajectory_element
     void write(std::ofstream& ofs) const
     {
         // Implementer must specialize this function
-        KJB_THROW(Not_implemented);
+        IVI_THROW(Not_implemented);
     }
 
     /**
@@ -90,7 +90,7 @@ struct Generic_trajectory_element
     static void write_invalid(std::ofstream& ofs)
     {
         // Implementer must specialize this function
-        KJB_THROW(Not_implemented);
+        IVI_THROW(Not_implemented);
     }
 
     /** @brief  Swap two trajectories. */
@@ -199,7 +199,7 @@ public:
     double girth;
 };
 
-typedef Generic_trajectory<kjb::Vector> Canonical_trajectory;
+typedef Generic_trajectory<ivi::Vector> Canonical_trajectory;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
@@ -265,7 +265,7 @@ void Generic_trajectory<T>::write(const std::string& filename) const
     std::ofstream ofs(filename.c_str()); 
     if(!ofs)
     {
-        KJB_THROW_3(IO_error, "Couldn't write to file: %s", (filename.c_str()));
+        IVI_THROW_3(IO_error, "Couldn't write to file: %s", (filename.c_str()));
     }
 
     write_header(ofs);
@@ -360,7 +360,7 @@ public:
     /** @brief   Constructor. */
     Generic_trajectory_map(size_t duration = 0) : duration_(duration) {}
 
-    /** @brief convert to a "canonical" trajectory of kjb::Vectors.  Used for evaluation. */
+    /** @brief convert to a "canonical" trajectory of ivi::Vectors.  Used for evaluation. */
     template <class F>
     Canonical_trajectory_map to_canonical(F to_vector) const;
 
@@ -397,7 +397,7 @@ public:
 private:
     size_t duration_;
 };
-typedef Generic_trajectory_map<kjb::Vector> Canonical_trajectory_map;
+typedef Generic_trajectory_map<ivi::Vector> Canonical_trajectory_map;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
@@ -486,7 +486,7 @@ void Generic_trajectory_map<T>::parse
 template <class T>
 void Generic_trajectory_map<T>::write(const std::string& dirname) const
 {
-    kjb_c::kjb_mkdir(dirname.c_str());
+    ivi_c::ivi_mkdir(dirname.c_str());
     for(typename Generic_trajectory_map<T>::const_iterator it = Base::begin();
                                                            it != Base::end();
                                                            it++)
@@ -502,7 +502,7 @@ void Generic_trajectory_map<T>::write(const std::string& dirname) const
     }
 }
 
-}} //namespace kjb::tracking
+}} //namespace ivi::tracking
 
 #endif /*TRACKING_TRAJECTORY_H */
 

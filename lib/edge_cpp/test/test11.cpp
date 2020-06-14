@@ -31,7 +31,7 @@ using namespace std;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
     long before, after;
 

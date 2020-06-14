@@ -1,5 +1,5 @@
 
-/* $Id: word_list.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: word_list.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -10,15 +10,15 @@ int main(void)
     Word_list* word_list_ptr = NULL; 
     Word_list* sorted_word_list_ptr = NULL; 
 
-    kjb_init();
+    ivi_init();
 
     if (is_interactive())
     {
-        kjb_set_debug_level(2); 
+        ivi_set_debug_level(2); 
     }
     else 
     {
-        kjb_set_debug_level(0); 
+        ivi_set_debug_level(0); 
     }
 
     EPETE(read_word_list(&word_list_ptr, NULL));
@@ -28,7 +28,7 @@ int main(void)
     free_word_list(word_list_ptr); 
     free_word_list(sorted_word_list_ptr); 
 
-    kjb_cleanup();
+    ivi_cleanup();
     
     return EXIT_SUCCESS;
 }

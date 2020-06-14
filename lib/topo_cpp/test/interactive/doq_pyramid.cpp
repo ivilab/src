@@ -4,7 +4,7 @@
  * @brief show a bunch of DOQ images of various size, with common center
  */
 /*
- * $Id: doq_pyramid.cpp 14929 2013-07-17 19:10:37Z predoehl $
+ * $Id: doq_pyramid.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 #include <i_cpp/i_image.h>
 #include <i_cpp/i_pixel.h>
@@ -12,17 +12,17 @@
 
 namespace {
 
-void show(const kjb::Int_matrix& m)
+void show(const ivi::Int_matrix& m)
 {
-    if (0 == kjb_c::kjb_fork())
+    if (0 == ivi_c::ivi_fork())
     {
         std::ostringstream o;
         o << "Speedway-Campbell, size "
                         << m.get_num_cols() << 'x' << m.get_num_rows();
-        kjb::Image i(m);
-        i.at(m.get_num_rows()/2, m.get_num_cols()/2)=kjb::PixelRGBA(200,0,0);
+        ivi::Image i(m);
+        i.at(m.get_num_rows()/2, m.get_num_cols()/2)=ivi::PixelRGBA(200,0,0);
         i.display(o.str());
-        while (true) kjb_c::nap(1000);
+        while (true) ivi_c::nap(1000);
     }
 }
 
@@ -31,7 +31,7 @@ void show(const kjb::Int_matrix& m)
 
 int main()
 {
-    using namespace kjb::TopoFusion;
+    using namespace ivi::TopoFusion;
 
     int sizes[] = {200, 400, 500, 800,
         /*1100, 1400, 1700, 2000,*/

@@ -55,8 +55,8 @@
 #include "m_cpp/m_matrix_stream_io.h"
 #include "m_cpp/m_vector_stream_io.h"
 
-using namespace kjb_c;
-using namespace kjb;
+using namespace ivi_c;
+using namespace ivi;
 
 /**
  *  @param  ro Rigid_object to copy into this one.
@@ -120,7 +120,7 @@ void  Rigid_object::rotate(double dpitch, double dyaw, double droll)
  * @param droll the amount of rotation around the object's z-axis
  * @param angles will contain the new Euler angles (pitch, yaw, roll)
  */
-void Rigid_object::compute_new_euler_angles_on_rotations(double dpitch, double dyaw, double droll, kjb::Vector & angles) const
+void Rigid_object::compute_new_euler_angles_on_rotations(double dpitch, double dyaw, double droll, ivi::Vector & angles) const
 {
     Quaternion q2(dpitch, dyaw, droll,q.get_euler_mode());
     q2 = q*q2;

@@ -1,5 +1,5 @@
 
-/* $Id: v_chunk.c 5835 2010-05-02 21:55:15Z ksimek $ */
+/* $Id: v_chunk.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
      Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -35,7 +35,7 @@ static int              fs_marked_pixels_num_cols     = 0;
 static int**            fs_marked_pixels              = NULL;
 static Image_chunk*     fs_cached_chunk_ptr           = NULL;
 /* We play it a bit fast and loose to reduce stack use during recursion. */
-static const KJB_image* fs_cached_const_ip;  /* Do NOT free this! */
+static const IVI_image* fs_cached_const_ip;  /* Do NOT free this! */
 
 /* -------------------------------------------------------------------------- */
 
@@ -245,7 +245,7 @@ int set_chunk_options(const char* option, const char* value)
 
 int segment_from_background
 (
-    const KJB_image*   ip,
+    const IVI_image*   ip,
     int                (*is_background_pixel_fn) (Pixel),
     Image_chunk_info** image_chunk_info_ptr_ptr
 )
@@ -407,7 +407,7 @@ int segment_from_background
 
             cur_elem = cur_elem->next;
 
-            kjb_free(save_cur_elem);
+            ivi_free(save_cur_elem);
         }
     }
     else
@@ -521,7 +521,7 @@ static Image_chunk_info* create_image_chunk_info(int num_chunks)
 
         if (image_chunk_info_ptr->chunks == NULL)
         {
-            kjb_free(image_chunk_info_ptr);
+            ivi_free(image_chunk_info_ptr);
             return NULL;
         }
     }
@@ -550,8 +550,8 @@ void free_image_chunk_info(Image_chunk_info* image_chunk_info_ptr)
         {
             free_image_chunk(image_chunk_info_ptr->chunks[ i ]);
         }
-        kjb_free(image_chunk_info_ptr->chunks);
-        kjb_free(image_chunk_info_ptr);
+        ivi_free(image_chunk_info_ptr->chunks);
+        ivi_free(image_chunk_info_ptr);
     }
 }
 
@@ -573,9 +573,9 @@ static Image_chunk* create_image_chunk
 
     if ((chunk_ptr->pixels == NULL) || (chunk_ptr->boundary_pixels == NULL))
     {
-        kjb_free(chunk_ptr->pixels);
-        kjb_free(chunk_ptr->boundary_pixels);
-        kjb_free(chunk_ptr);
+        ivi_free(chunk_ptr->pixels);
+        ivi_free(chunk_ptr->boundary_pixels);
+        ivi_free(chunk_ptr);
         return NULL;
     }
 
@@ -600,11 +600,11 @@ static void free_image_chunk(Image_chunk* chunk_ptr)
 
     if (chunk_ptr != NULL)
     {
-        kjb_free(chunk_ptr->pixels);
-        kjb_free(chunk_ptr->boundary_pixels);
+        ivi_free(chunk_ptr->pixels);
+        ivi_free(chunk_ptr->boundary_pixels);
     }
 
-    kjb_free(chunk_ptr);
+    ivi_free(chunk_ptr);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

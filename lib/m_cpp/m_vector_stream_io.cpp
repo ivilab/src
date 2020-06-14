@@ -1,4 +1,4 @@
-/* $Id: m_vector_stream_io.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vector_stream_io.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #include "m_cpp/m_vector.h"
 
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -42,11 +42,11 @@ void Vector_stream_io::write_int_vector(
     const Int_vector & ivec
 )
 {
-     using namespace kjb_c;
+     using namespace ivi_c;
 
      int num_elts   = ivec.size();
 
-     if(! kjb_is_bigendian() )
+     if(! ivi_is_bigendian() )
      {
          bswap_u32((uint32_t*)&(num_elts));
      }
@@ -61,7 +61,7 @@ void Vector_stream_io::write_int_vector(
      for(int i = 0; i < ivec.size(); i++)
      {
          int value = ivec(i);
-         if(! kjb_is_bigendian() )
+         if(! ivi_is_bigendian() )
          {
              bswap_u32((uint32_t*)&(value));
          }
@@ -85,7 +85,7 @@ void Vector_stream_io::read_int_vector(
     Int_vector & ivec
 )
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     int num_elts;
     int value;
@@ -97,7 +97,7 @@ void Vector_stream_io::read_int_vector(
         throw IO_error("Could not read int vector dimensions");
     }
 
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32((uint32_t*)&(num_elts));
     }
@@ -116,7 +116,7 @@ void Vector_stream_io::read_int_vector(
             throw IO_error("Could not read vector elements");
         }
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u32((uint32_t*)&(value));
         }
@@ -134,11 +134,11 @@ void Vector_stream_io::read_int_vector(
  */
 void Vector_stream_io::write_vector(std::ostream& out, const Vector & ivec)
 {
-     using namespace kjb_c;
+     using namespace ivi_c;
 
      int num_elts   = ivec.size();
 
-     if(! kjb_is_bigendian() )
+     if(! ivi_is_bigendian() )
      {
          bswap_u32((uint32_t*)&(num_elts));
      }
@@ -153,7 +153,7 @@ void Vector_stream_io::write_vector(std::ostream& out, const Vector & ivec)
      for(int i = 0; i < ivec.size(); i++)
      {
          double value = ivec(i);
-         if(! kjb_is_bigendian() )
+         if(! ivi_is_bigendian() )
          {
              bswap_u64((uint64_t*)&(value));
          }
@@ -174,7 +174,7 @@ void Vector_stream_io::write_vector(std::ostream& out, const Vector & ivec)
  */
 void Vector_stream_io::read_vector(std::istream& in, Vector & ivec)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     int num_elts;
     double value;
@@ -186,7 +186,7 @@ void Vector_stream_io::read_vector(std::istream& in, Vector & ivec)
         throw IO_error("Could not read vector dimensions");
     }
 
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32((uint32_t*)&(num_elts));
     }
@@ -206,7 +206,7 @@ void Vector_stream_io::read_vector(std::istream& in, Vector & ivec)
             throw IO_error("Could not read vector elements");
         }
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u64((uint64_t*)&(value));
         }
@@ -215,4 +215,4 @@ void Vector_stream_io::read_vector(std::istream& in, Vector & ivec)
 
 }
 
-} // namespace kjb
+} // namespace ivi

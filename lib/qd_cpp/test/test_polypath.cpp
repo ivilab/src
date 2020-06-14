@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_polypath.cpp 20160 2015-12-08 23:36:20Z predoehl $
+ * $Id: test_polypath.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -55,31 +55,31 @@ Ref ref[] =
     {  true,    0, 12,   -1, 0,                 1, 0    },
 };
 
-inline kjb::Vector2 doubler(const kjb::Vector2& v)
+inline ivi::Vector2 doubler(const ivi::Vector2& v)
 {
-    return kjb::qd::get_unit_vector_2x_angle_of_unit_vector(v);
+    return ivi::qd::get_unit_vector_2x_angle_of_unit_vector(v);
 }
 
 
 
 bool test1()
 {
-    kjb::qd::PixPath c(kjb::qd::PixPath::reserve(4));
+    ivi::qd::PixPath c(ivi::qd::PixPath::reserve(4));
 
-    c.push_back(kjb::qd::PixPoint(0, 0));
-    c.push_back(kjb::qd::PixPoint(10, 0));
-    c.push_back(kjb::qd::PixPoint(10, 10));
-    c.push_back(kjb::qd::PixPoint(0, 10));
+    c.push_back(ivi::qd::PixPoint(0, 0));
+    c.push_back(ivi::qd::PixPoint(10, 0));
+    c.push_back(ivi::qd::PixPoint(10, 10));
+    c.push_back(ivi::qd::PixPoint(0, 10));
 
     // small sharp kink
-    c.push_back(kjb::qd::PixPoint(0, 11));
-    c.push_back(kjb::qd::PixPoint(1, 11));
-    c.push_back(kjb::qd::PixPoint(1, 12));
-    c.push_back(kjb::qd::PixPoint(0, 12));
+    c.push_back(ivi::qd::PixPoint(0, 11));
+    c.push_back(ivi::qd::PixPoint(1, 11));
+    c.push_back(ivi::qd::PixPoint(1, 12));
+    c.push_back(ivi::qd::PixPoint(0, 12));
 
-    kjb::qd::PolyPath pp(kjb::qd::PolyPath::construct_from_vertices(c));
+    ivi::qd::PolyPath pp(ivi::qd::PolyPath::construct_from_vertices(c));
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         pp.debug_print(std::cout);
     }
@@ -97,7 +97,7 @@ bool test1()
         TEST_TRUE(fabs(pp.tangent_at(iii).y() - ref[iii].dy) < 5e-7);
 
         // try out the angle-doubling function also
-        const kjb::Vector2 dubang = doubler(pp.tangent_at(iii));
+        const ivi::Vector2 dubang = doubler(pp.tangent_at(iii));
         TEST_TRUE(fabs(dubang.x() - ref[iii].ex) < 5e-7);
         TEST_TRUE(fabs(dubang.y() - ref[iii].ey) < 5e-7);
     }
@@ -108,14 +108,14 @@ bool test1()
 // test for is_valid_as_polypath()
 bool test2()
 {
-    kjb::qd::PixPath p(kjb::qd::PixPath::reserve(5));
-    kjb::qd::PixPath q(kjb::qd::PixPath::reserve(5));
+    ivi::qd::PixPath p(ivi::qd::PixPath::reserve(5));
+    ivi::qd::PixPath q(ivi::qd::PixPath::reserve(5));
 
-    p.push_back(kjb::qd::PixPoint(32, 31));
-    p.push_back(kjb::qd::PixPoint(35, 35));
-    p.push_back(kjb::qd::PixPoint(38, 39)); // index 2, the hinge of a whisker
-    p.push_back(kjb::qd::PixPoint(29, 27));
-    p.push_back(kjb::qd::PixPoint(30, 30));
+    p.push_back(ivi::qd::PixPoint(32, 31));
+    p.push_back(ivi::qd::PixPoint(35, 35));
+    p.push_back(ivi::qd::PixPoint(38, 39)); // index 2, the hinge of a whisker
+    p.push_back(ivi::qd::PixPoint(29, 27));
+    p.push_back(ivi::qd::PixPoint(30, 30));
 
     TEST_FALSE(is_valid_as_polypath(p));
 
@@ -124,7 +124,7 @@ bool test2()
     {
         is_valid_as_polypath(p, true);
     }
-    catch (kjb::Exception& e)
+    catch (ivi::Exception& e)
     {
         caught = true;
         size_t k=e.get_msg().find("Input has a whisker bend around index 2 ");
@@ -132,14 +132,14 @@ bool test2()
     }
     TEST_TRUE(caught);
 
-    q.push_back(kjb::qd::PixPoint(35, 35));
-    q.push_back(kjb::qd::PixPoint(38, 39));
-    q.push_back(kjb::qd::PixPoint(27, 29));
-    q.push_back(kjb::qd::PixPoint(30, 30));
+    q.push_back(ivi::qd::PixPoint(35, 35));
+    q.push_back(ivi::qd::PixPoint(38, 39));
+    q.push_back(ivi::qd::PixPoint(27, 29));
+    q.push_back(ivi::qd::PixPoint(30, 30));
 
     TEST_TRUE(is_valid_as_polypath(q));
 
-    q.push_back(kjb::qd::PixPoint(38, 39));
+    q.push_back(ivi::qd::PixPoint(38, 39));
 
     TEST_FALSE(is_valid_as_polypath(q));
 
@@ -148,7 +148,7 @@ bool test2()
     {
         is_valid_as_polypath(q, true);
     }
-    catch (kjb::Exception& e)
+    catch (ivi::Exception& e)
     {
         caught = true;
         size_t k = e.get_msg().find("Input path has a duplicate point "
@@ -165,10 +165,10 @@ bool test2()
 
 int main(int argc, char *argv[])
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
     TEST_TRUE(test1());
     TEST_TRUE(test2());
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

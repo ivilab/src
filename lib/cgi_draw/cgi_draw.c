@@ -1,5 +1,5 @@
 
-/* $Id: cgi_draw.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: cgi_draw.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
   cgi-draw.c
@@ -32,7 +32,7 @@
 #include "cgi_draw/cgi_draw.h"   /* Kobus--added dir */
 
 
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 #    define new c_new
 #endif
 

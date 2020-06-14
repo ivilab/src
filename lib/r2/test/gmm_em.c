@@ -125,48 +125,48 @@ int main(int argc, char* argv[])
     int         i;
     int         num_clusters = DEFAULT_NUM_CLUSTERS;
     int         do_plotting = TRUE;
-    kjb_uint16  seed_buff[3];
+    ivi_uint16  seed_buff[3];
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
-    kjb_disable_paging();
+    ivi_disable_paging();
 
     /* set defaults */
-    kjb_strncpy(plot_file_name, "gmm_plot", MAX_FILE_NAME_SIZE);
-    kjb_strncpy(data_file_name, "data_2.txt", MAX_FILE_NAME_SIZE);
+    ivi_strncpy(plot_file_name, "gmm_plot", MAX_FILE_NAME_SIZE);
+    ivi_strncpy(data_file_name, "data_2.txt", MAX_FILE_NAME_SIZE);
 
     argv++; argc--;
     while(argc > 0)
     {
-        if (     kjb_strcmp(*argv, "-h") == EQUAL_STRINGS 
-             ||  kjb_strcmp(*argv, "--help") == EQUAL_STRINGS
+        if (     ivi_strcmp(*argv, "-h") == EQUAL_STRINGS 
+             ||  ivi_strcmp(*argv, "--help") == EQUAL_STRINGS
            )
         {
-            kjb_printf("Usage: \n");
-            kjb_printf("gmm_em [num_clusters] [data_fname] [plot_fname] \n");
-            kjb_printf("     (equivalent to --test 2 below) \n");
-            kjb_printf("\n");
-            kjb_printf("gmm_em --test N [num_clusters] [data_fname] [plot_fname]\n");
-            kjb_printf("    --test N    Run preset test N=1-5\n");
-            kjb_printf("         1. Independent GMM      \n");
-            kjb_printf("         2. Independent GMM w/ held-out data     \n");
-            kjb_printf("         3. Independent GMM w/ missing data     \n");
-            kjb_printf("         4. Full -covariance GMM \n");
-            kjb_printf("         5. Full -covariance GMM w/ held out data \n");
-            kjb_printf("         (default is 2) \n");
-            kjb_printf("\n");
-            kjb_printf("gmm_em --test-all [num_clusters] [data_fname] \n");
-            kjb_printf("         Run all tests 1-5 above \n");
+            ivi_printf("Usage: \n");
+            ivi_printf("gmm_em [num_clusters] [data_fname] [plot_fname] \n");
+            ivi_printf("     (equivalent to --test 2 below) \n");
+            ivi_printf("\n");
+            ivi_printf("gmm_em --test N [num_clusters] [data_fname] [plot_fname]\n");
+            ivi_printf("    --test N    Run preset test N=1-5\n");
+            ivi_printf("         1. Independent GMM      \n");
+            ivi_printf("         2. Independent GMM w/ held-out data     \n");
+            ivi_printf("         3. Independent GMM w/ missing data     \n");
+            ivi_printf("         4. Full -covariance GMM \n");
+            ivi_printf("         5. Full -covariance GMM w/ held out data \n");
+            ivi_printf("         (default is 2) \n");
+            ivi_printf("\n");
+            ivi_printf("gmm_em --test-all [num_clusters] [data_fname] \n");
+            ivi_printf("         Run all tests 1-5 above \n");
 
-            kjb_exit(EXIT_SUCCESS);
+            ivi_exit(EXIT_SUCCESS);
         }
-        else if( kjb_strcmp(*argv, "--test-all") == EQUAL_STRINGS)
+        else if( ivi_strcmp(*argv, "--test-all") == EQUAL_STRINGS)
         {
             /* add add presets to the test suite */
-            kjb_memcpy(test_list, preset_tests, sizeof(Options*)*NUM_PRESET_TESTS);
+            ivi_memcpy(test_list, preset_tests, sizeof(Options*)*NUM_PRESET_TESTS);
             num_test = NUM_PRESET_TESTS;
         }
-        else if( kjb_strcmp(*argv, "--test") == EQUAL_STRINGS)
+        else if( ivi_strcmp(*argv, "--test") == EQUAL_STRINGS)
         {
             /* add a test preset to the test suite */
             int test_num;
@@ -176,8 +176,8 @@ int main(int argc, char* argv[])
             if(argc == 0)
             {
                 set_error("missing test number");
-                kjb_print_error();
-                kjb_exit(EXIT_FAILURE);
+                ivi_print_error();
+                ivi_exit(EXIT_FAILURE);
             }
 
             result = ss1pi(*argv, &test_num);
@@ -185,15 +185,15 @@ int main(int argc, char* argv[])
             if(result == ERROR || test_num < 1 || test_num > NUM_PRESET_TESTS)
             {
                 set_error("Invalid test number");
-                kjb_print_error();
-                kjb_exit(EXIT_FAILURE);
+                ivi_print_error();
+                ivi_exit(EXIT_FAILURE);
             }
 
             if(num_test >= MAX_NUM_TESTS)
             {
                 set_error("Maximum test count exceeded.");
-                kjb_print_error();
-                kjb_exit(EXIT_FAILURE);
+                ivi_print_error();
+                ivi_exit(EXIT_FAILURE);
             }
 
             test_list[num_test++] = preset_tests[test_num-1];
@@ -217,8 +217,8 @@ int main(int argc, char* argv[])
             else
             {
                 set_error("Too many positional options");
-                kjb_print_error();
-                kjb_exit(EXIT_FAILURE);
+                ivi_print_error();
+                ivi_exit(EXIT_FAILURE);
             }
 
             arg_position++;
@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
         else
         {
             /* run entire test suite */
-            kjb_memcpy(test_list, preset_tests, sizeof(Options*)*NUM_PRESET_TESTS);
+            ivi_memcpy(test_list, preset_tests, sizeof(Options*)*NUM_PRESET_TESTS);
             num_test = NUM_PRESET_TESTS;
         }
     }
@@ -252,11 +252,11 @@ int main(int argc, char* argv[])
     EPETE(get_rand_seed(seed_buff));
     pso("Seed: %d %d %d\n", seed_buff[ 0 ], seed_buff[ 1 ], seed_buff[ 2 ]);
     */
-    kjb_seed_rand_with_tod(); 
+    ivi_seed_rand_with_tod(); 
     EPETE(get_rand_seed(seed_buff));
     pso("Seed: %d %d %d\n", seed_buff[ 0 ], seed_buff[ 1 ], seed_buff[ 2 ]);
 
-    kjb_set_verbose_level(5);
+    ivi_set_verbose_level(5);
     /* set_random_options("seed","?"); */
     /* EPETE(set_em_cluster_options("cluster-tie-cluster-var", "t")); */
     EPETE(set_em_cluster_options("cluster-var-offset", "0.0")); 
@@ -283,7 +283,7 @@ int main(int argc, char* argv[])
 
     pso("All tests ran without crashing (results not verified).\n");
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
     return EXIT_SUCCESS;
 }
 
@@ -374,7 +374,7 @@ int run_test(Options options, int num_clusters, const Matrix* data_mp, const cha
 
             for (i = 0; i < num_points; i++)
             {
-                if (kjb_rand() < 0.1)
+                if (ivi_rand() < 0.1)
                 /* if (i % 10 == 0) */
                 {
                     held_out_vp->elements[ i ] = TRUE;
@@ -416,7 +416,7 @@ int run_test(Options options, int num_clusters, const Matrix* data_mp, const cha
             for (i = 0; i < num_points; i++)
             {
                 /* if (i % 100 == 0) */
-                if (kjb_rand() < 0.1) 
+                if (ivi_rand() < 0.1) 
                 {
                     held_out_vp->elements[ i ] = TRUE;
                 }
@@ -431,7 +431,7 @@ int run_test(Options options, int num_clusters, const Matrix* data_mp, const cha
 
         for(i = 0; i < num_clusters; ++i)
         {
-            kjb_printf(" Covariance of cluster %d\n", i);
+            ivi_printf(" Covariance of cluster %d\n", i);
             db_mat(var_mvp->elements[i]); 
         }
 

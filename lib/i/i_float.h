@@ -1,5 +1,5 @@
 
-/* $Id: i_float.h 21673 2017-08-05 21:28:22Z kobus $ */
+/* $Id: i_float.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -66,7 +66,7 @@ Kiff_data_type;
  * Invalid_pixel type for Pixel type
  *
  * This type is used mostly for the type Pixel, which in turn is usually
- * used for the type KJB_image.
+ * used for the type IVI_image.
  *
  * The structure contains a validity field for each channel, and the pixel taken
  * as a whole. The validy may be one of:
@@ -121,7 +121,7 @@ Pixel_extra;
 /* =============================================================================
  *                             Pixel
  *
- * Pixel type for KJB_image type
+ * Pixel type for IVI_image type
  *
  * Index: images
  *
@@ -159,11 +159,11 @@ Pixel_info;
 
 
 /* =============================================================================
- *                             KJB_image
+ *                             IVI_image
  *
  * Type for floating point images
  *
- * This is the basic image type for the KJB library. There is also a Byte image
+ * This is the basic image type for the IVI library. There is also a Byte image
  * format, but Byte images are only used by a few routines.
  *
  * The sizes (num_rows and num_cols) must both be nonnegative.
@@ -183,7 +183,7 @@ Pixel_info;
  * for Matrix.  Don't forget to change any copy code that uses memcpy.
 */
 #define HAS_ALPHA_CHANNEL     0x01    /* Not invalid, per-se...  */
-typedef struct KJB_image
+typedef struct IVI_image
 {
     int     num_rows;
     int     num_cols;
@@ -191,19 +191,19 @@ typedef struct KJB_image
     int     flags;
     Pixel** pixels;
 }
-KJB_image;
+IVI_image;
 
 /* -------------------------------------------------------------------------- */
 
 #ifdef TRACK_MEMORY_ALLOCATION
 
-#   define kjb_create_image(x, y) \
+#   define ivi_create_image(x, y) \
             debug_create_image(x, y, __FILE__, __LINE__)
 
 #   define get_target_image(x, y, z) \
             debug_get_target_image(x, y, z, __FILE__, __LINE__)
 
-    KJB_image* debug_create_image
+    IVI_image* debug_create_image
     (
         int         num_rows,
         int         num_cols,
@@ -213,20 +213,20 @@ KJB_image;
 
     int debug_get_target_image
     (
-        KJB_image** out_ipp,
+        IVI_image** out_ipp,
         int         num_rows,
         int         num_cols,
         const char* file_name,
         int         line_number
     );
 #else
-    KJB_image* kjb_create_image(int num_rows, int num_cols);
+    IVI_image* ivi_create_image(int num_rows, int num_cols);
 
-    int get_target_image(KJB_image** out_ipp, int num_rows, int num_cols);
+    int get_target_image(IVI_image** out_ipp, int num_rows, int num_cols);
 #endif
 
 #ifdef TRACK_MEMORY_ALLOCATION
-    void check_image_initialization(const KJB_image* ip);
+    void check_image_initialization(const IVI_image* ip);
 #else
 #    define check_image_initialization(x)
 #endif
@@ -251,14 +251,14 @@ KJB_image;
  * -----------------------------------------------------------------------------
 */
 #ifdef __C2MAN__
-    void verify_image(const KJB_image* ip);
+    void verify_image(const IVI_image* ip);
 #else
 #    ifdef TEST
 #       define verify_image(x)                     debug_verify_image(x, __FILE__, __LINE__)
 
         void debug_verify_image
         (
-            const KJB_image* ip,
+            const IVI_image* ip,
             const char*   file_name,
             int           line_number
         );
@@ -271,22 +271,22 @@ KJB_image;
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-void kjb_free_image(KJB_image* ip);
+void ivi_free_image(IVI_image* ip);
 
-int kjb_copy_image(KJB_image** target_ipp, const KJB_image* source_ip);
+int ivi_copy_image(IVI_image** target_ipp, const IVI_image* source_ip);
 
-int get_zero_image(KJB_image** target_ipp, int num_rows, int num_cols);
+int get_zero_image(IVI_image** target_ipp, int num_rows, int num_cols);
 
 int get_invalid_zero_image
 (
-    KJB_image** target_ipp,
+    IVI_image** target_ipp,
     int         num_rows,
     int         num_cols
 );
 
 int get_initialized_image
 (
-    KJB_image** target_ipp,
+    IVI_image** target_ipp,
     int         num_rows,
     int         num_cols,
     Pixel*      initial_value_ptr
@@ -294,7 +294,7 @@ int get_initialized_image
 
 int get_initialized_image_2
 (
-    KJB_image** target_ipp,
+    IVI_image** target_ipp,
     int         num_rows,
     int         num_cols,
     int         r,
@@ -304,8 +304,8 @@ int get_initialized_image_2
 
 int get_image_window
 (
-    KJB_image**      target_ipp,
-    const KJB_image* source_ip,
+    IVI_image**      target_ipp,
+    const IVI_image* source_ip,
     int              row_offset,
     int              col_offset,
     int              num_target_rows,
@@ -314,7 +314,7 @@ int get_image_window
 
 int is_black_and_white
 (
-    const KJB_image * ip
+    const IVI_image * ip
 );
 
 #ifdef __cplusplus

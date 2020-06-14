@@ -39,8 +39,8 @@
 #include <boost/foreach.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace boost;
 
 bool VERBOSE = false;
@@ -317,7 +317,7 @@ int main(int argc, char** argv)
             }
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

@@ -18,8 +18,8 @@
 #include <functional>
 #include <boost/format.hpp>
 
-using namespace kjb;
-using namespace kjb::geometry;
+using namespace ivi;
+using namespace ivi::geometry;
 
 // segment wrapper
 enum Segment_type{DATA_SEGMENT, MODEL_SEGMENT};
@@ -200,7 +200,7 @@ void display_scene()
                     boost::format("Likelihood: %0.4f") % lh),
                     win_width - 200, win_height - 50);
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
     }
@@ -375,13 +375,13 @@ void process_key(unsigned char key, int, int)
             case 'q':
             {
                 delete segments;
-                kjb_c::kjb_exit(0);
+                ivi_c::ivi_exit(0);
             }
 
             default: return;
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
     }

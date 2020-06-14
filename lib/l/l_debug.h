@@ -1,5 +1,5 @@
 
-/* $Id: l_debug.h 21597 2017-07-31 00:28:31Z kobus $ */
+/* $Id: l_debug.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 
 #ifdef TEST
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-#    define TEST_PSO(x) kjb_c::test_pso x
+#    define TEST_PSO(x) ivi_c::test_pso x
 #else 
 #    define TEST_PSO(x) test_pso x
 #endif 
@@ -40,7 +40,7 @@
 
 #ifdef TEST
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-#    define TEST_PSE(x) kjb_c::test_pse x
+#    define TEST_PSE(x) ivi_c::test_pse x
 #else 
 #    define TEST_PSE(x) test_pse x
 #endif 
@@ -96,7 +96,7 @@
 
 #define UNTESTED_CODE() \
             { \
-                USING_KJB_C()                               \
+                USING_IVI_C()                               \
                 static int untested_first_time = TRUE;      \
                                                             \
                 if (untested_first_time)                    \
@@ -125,12 +125,12 @@
 */
 #ifdef TEST 
 
-/* We do not use KJB IO in this macro because often enough, the relevant
- * (suspect) code is in KJB IO. 
+/* We do not use IVI IO in this macro because often enough, the relevant
+ * (suspect) code is in IVI IO. 
 */
 #define SUSPECT_CODE() \
             { \
-                USING_KJB_C()                              \
+                USING_IVI_C()                              \
                 static int suspect_first_time = TRUE;      \
                                                            \
                 if (suspect_first_time)                    \
@@ -153,13 +153,13 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
     
 int  set_debug_options  (const char* option, const char* value);
-int  kjb_set_debug_level(int new_level);
-int  kjb_get_debug_level(void);
+int  ivi_set_debug_level(int new_level);
+int  ivi_get_debug_level(void);
 #ifdef TEST
 int  set_suppress_test_messages(int new_level);
 #endif 

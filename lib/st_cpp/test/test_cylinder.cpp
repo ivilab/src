@@ -23,7 +23,7 @@
 
 #include <st_cpp/st_draw_shape.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -31,21 +31,21 @@
 #endif
 #endif
 
-using namespace kjb;
+using namespace ivi;
 
 void init_onscreen_buffer(int argc, char **argv);
 
 float gwidth = 600;
 float gheight = 400;
-kjb::Perspective_camera camera;
+ivi::Perspective_camera camera;
 
 int main(int argc, char **argv)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     init_onscreen_buffer(argc, argv);
     camera.set_camera_centre_z(400);
     camera.set_camera_centre_y(0);
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         glutMainLoop();
     }
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 }
 
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 static void timer_glut(int ignored)
 {
     glutPostRedisplay();
@@ -75,8 +75,8 @@ static void display_glut()
 
     // Defines the radius and the two center points of the cylinder that
     // will be drawn.
-    kjb::Vector top(3,0.0);
-    kjb::Vector bottom(3,0.0);
+    ivi::Vector top(3,0.0);
+    ivi::Vector bottom(3,0.0);
     top(0) = 40.0;
     bottom(0) = 0.0;
 
@@ -90,7 +90,7 @@ static void display_glut()
     glColor3f(1.0,0.0,0.0);
     GLUquadricObj* myQuadric = 0;
     myQuadric = gluNewQuadric();
-    kjb::draw_cylinder(camera, myQuadric, top, bottom, radius);
+    ivi::draw_cylinder(camera, myQuadric, top, bottom, radius);
 
 // draw purple sphere
 glColor3f(64,0,64);
@@ -136,7 +136,7 @@ void init_onscreen_buffer(int argc, char **argv)
     glutKeyboardFunc(keyboard_glut);
     glutTimerFunc(10, timer_glut, 0);
 
-    kjb::opengl::default_init_opengl(gwidth, gheight);
+    ivi::opengl::default_init_opengl(gwidth, gheight);
 
 }
 #endif

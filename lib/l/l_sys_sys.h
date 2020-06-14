@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_sys.h 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: l_sys_sys.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -42,7 +42,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -238,8 +238,8 @@ namespace kjb_c {
     extern int __isnanf(float x);
 
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-#    define isnand ::kjb_c::__isnand
-#    define isnanf ::kjb_c::__isnanf
+#    define isnand ::ivi_c::__isnand
+#    define isnanf ::ivi_c::__isnanf
 #else
 #    define isnand __isnand
 #    define isnanf __isnanf
@@ -255,8 +255,8 @@ namespace kjb_c {
 #    define isfinited isfinite
 #    define isfinitef isfinite
 
-#    define KJB_HAVE_FINITE
-#    define KJB_HAVE_ISNAN
+#    define IVI_HAVE_FINITE
+#    define IVI_HAVE_ISNAN
 
 #endif   /* MAC_OSX */
 
@@ -316,8 +316,8 @@ namespace kjb_c {
 #    define isfinited finite
 #    define isfinitef finitef
 
-#    define KJB_HAVE_FINITE
-#    define KJB_HAVE_ISNAN
+#    define IVI_HAVE_FINITE
+#    define IVI_HAVE_ISNAN
 
 #endif   /* LINUX_X86 */
 
@@ -341,8 +341,8 @@ namespace kjb_c {
 #        define UNIX_SYSTEM
 #    endif
 
-#    define KJB_HAVE_ISNAN
-#    define KJB_HAVE_FINITE
+#    define IVI_HAVE_ISNAN
+#    define IVI_HAVE_FINITE
 
 #endif   /* SUN5 */
 
@@ -383,8 +383,8 @@ namespace kjb_c {
 
 #define isnand isnan
 
-#    define KJB_HAVE_ISNAN
-#    define KJB_HAVE_FINITE
+#    define IVI_HAVE_ISNAN
+#    define IVI_HAVE_FINITE
 
 
 #endif   /* HPUX */
@@ -403,8 +403,8 @@ namespace kjb_c {
 
 #    define SGI_NEXT
 
-#    define KJB_HAVE_ISNAN
-#    define KJB_HAVE_FINITE
+#    define IVI_HAVE_ISNAN
+#    define IVI_HAVE_FINITE
 
 #    ifndef __LONGLONG
 #        define __LONGLONG
@@ -577,7 +577,7 @@ namespace kjb_c {
 #endif 
 
 #ifndef SUN4
-#    define KJB_HAVE_ATEXIT
+#    define IVI_HAVE_ATEXIT
 #endif
 
 
@@ -602,7 +602,7 @@ namespace kjb_c {
      //
      // Currently long doubles break gnu's variable arg on the HP. There may be
      // a way to fix this if we really need to use them.  Alternately,
-     // kjb_vfprintf and kjb_vsprintf could be changed so that they set_bug if
+     // ivi_vfprintf and ivi_vsprintf could be changed so that they set_bug if
      // we get a 'L' on these systems (and the routines that actually print
      // them would have to be adjusted to print doubles instead. Note that
      // currently using fprintf does not solve the problem.
@@ -661,12 +661,12 @@ namespace kjb_c {
 // bad thing for those simply trying to compile some of our code.)
 */
 
-#ifndef KJB_HAVE_ISNAN
+#ifndef IVI_HAVE_ISNAN
 #    define isnand(x) 0
 #    define isnanf(x) 0
 #endif
 
-#ifndef KJB_HAVE_FINITE
+#ifndef IVI_HAVE_FINITE
 #    define finite(x) 1
 #endif
 

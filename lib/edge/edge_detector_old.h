@@ -22,7 +22,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -99,8 +99,8 @@ Edge_point_DEPRECATED;
 void detect_edge_points_DEPRECATED
 (
     Edge_point_DEPRECATED** points_out,
-    KJB_image** img_out,
-    const KJB_image* img_in,
+    IVI_image** img_out,
+    const IVI_image* img_in,
     double sigma,
     double begin_threshold,
     double end_threshold
@@ -128,7 +128,7 @@ void sample_edge_points_DEPRECATED( Edge_point_DEPRECATED* points, double radius
  */
 void color_edge_points_DEPRECATED
 (
-    KJB_image* img,
+    IVI_image* img,
     Edge_point_DEPRECATED* points,
     float r,
     float g,

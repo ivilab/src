@@ -1,5 +1,5 @@
 
-/* $Id: get_matrix_from_matrix_vector.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: get_matrix_from_matrix_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -20,10 +20,10 @@ int main(int argc, char **argv)
         dbp("#######################################################"); 
         for (i=0; i<7; i++)
         {
-            if (kjb_rand() > 0.7)
+            if (ivi_rand() > 0.7)
             {
                 EPETE(get_random_matrix(&(mvp->elements[ i ]), 
-                                        (int)(1.1 + 5.0 * kjb_rand()), 5));
+                                        (int)(1.1 + 5.0 * ivi_rand()), 5));
             }
 
             dbi(i); 

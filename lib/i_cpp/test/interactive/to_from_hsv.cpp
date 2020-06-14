@@ -15,29 +15,29 @@
  * then HSY ==> RGB.
  */
 /*
- * $Id: to_from_hsv.cpp 9336 2011-04-20 20:45:22Z predoehl $
+ * $Id: to_from_hsv.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_rand.h>
 #include <i_cpp/i_cpp_incl.h>
 
-kjb_c::Pixel get_rgb_rand()
+ivi_c::Pixel get_rgb_rand()
 {
-    return kjb::PixelRGBA(  55 + 200 * kjb_c::kjb_rand(),
-                            55 + 200 * kjb_c::kjb_rand(),
-                            55 + 200 * kjb_c::kjb_rand()
+    return ivi::PixelRGBA(  55 + 200 * ivi_c::ivi_rand(),
+                            55 + 200 * ivi_c::ivi_rand(),
+                            55 + 200 * ivi_c::ivi_rand()
                         );
 }
 
-void get_a_color( kjb::Vector* u, kjb_c::Pixel* pu )
+void get_a_color( ivi::Vector* u, ivi_c::Pixel* pu )
 {
     int rc;
     do
     {
-        u -> at( 0 ) = kjb_c::kjb_rand();
-        u -> at( 1 ) = kjb_c::kjb_rand();
-        u -> at( 2 ) = kjb_c::kjb_rand();
-        rc = kjb::get_pixel_from_hsluma_space( *u, pu );
+        u -> at( 0 ) = ivi_c::ivi_rand();
+        u -> at( 1 ) = ivi_c::ivi_rand();
+        u -> at( 2 ) = ivi_c::ivi_rand();
+        rc = ivi::get_pixel_from_hsluma_space( *u, pu );
     }
     while ( EXIT_FAILURE == rc );
 }
@@ -45,13 +45,13 @@ void get_a_color( kjb::Vector* u, kjb_c::Pixel* pu )
 
 int main()
 {
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
     const int CHUNK = 50, NUMCHUNK = 10;
-    kjb::Image bands( CHUNK * NUMCHUNK, CHUNK * 3 );
+    ivi::Image bands( CHUNK * NUMCHUNK, CHUNK * 3 );
 
-    kjb::Vector u( 3 );
-    kjb::PixelRGBA pu(0,0,0), pv=pu, black(0,0,0);
-    kjb::PixelHSVA q1;
+    ivi::Vector u( 3 );
+    ivi::PixelRGBA pu(0,0,0), pv=pu, black(0,0,0);
+    ivi::PixelHSVA q1;
     float h, s, v;
     for( int chunkrow = 0; chunkrow < NUMCHUNK; ++chunkrow )
     {
@@ -63,11 +63,11 @@ int main()
 
             q1 = pu;
             q1.get_hsv( &h, &s, &v );
-            kjb::PixelHSVA q2( h, s, v );
+            ivi::PixelHSVA q2( h, s, v );
             bands.draw_aa_rectangle( cr1, CHUNK, cr2, 2*CHUNK-1,   q2 );
 
-            u = kjb::hsluma_space( pu );
-            int rc = kjb::get_pixel_from_hsluma_space( u, &pv );
+            u = ivi::hsluma_space( pu );
+            int rc = ivi::get_pixel_from_hsluma_space( u, &pv );
             if ( EXIT_SUCCESS == rc )
             {
                 bands.draw_aa_rectangle( cr1, 2*CHUNK, cr2, 3*CHUNK-1,   pv );

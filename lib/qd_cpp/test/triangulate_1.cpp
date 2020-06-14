@@ -10,7 +10,7 @@
  * are liable to change.
  */
 /*
- * $Id: triangulate_1.cpp 20176 2015-12-12 20:31:18Z predoehl $
+ * $Id: triangulate_1.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l_cpp/l_test.h>
@@ -25,20 +25,20 @@
 namespace
 {
 
-using kjb::qd::PixPoint;
-using kjb::qd::RatPoint;
-using kjb::qd::RatPoint_line_segment;
-using kjb::qd::Doubly_connected_edge_list;
-using kjb::qd::is_face_triangle;
+using ivi::qd::PixPoint;
+using ivi::qd::RatPoint;
+using ivi::qd::RatPoint_line_segment;
+using ivi::qd::Doubly_connected_edge_list;
+using ivi::qd::is_face_triangle;
 
 const int VISUALIZATION = 0; // meaningful values: 0=none, 1=some, 2=more.
 
 const long GRANULARITY = 128;
 
 
-RatPoint quasirandom_pt(kjb::Gsl_Qrng_Sobol& qrng)
+RatPoint quasirandom_pt(ivi::Gsl_Qrng_Sobol& qrng)
 {
-    kjb::Vector v( 2 );
+    ivi::Vector v( 2 );
     v = qrng.read();
 
     return RatPoint(RatPoint::Rat(long(v[0] * GRANULARITY), GRANULARITY),
@@ -46,12 +46,12 @@ RatPoint quasirandom_pt(kjb::Gsl_Qrng_Sobol& qrng)
 }
 
 
-// kjb_rand is repeatable, which is what I want.
+// ivi_rand is repeatable, which is what I want.
 int shuffler(int i)
 {
     const int BIG = 65536, dbli = 2*i;
-    KJB(ASSERT(i <= BIG));
-    int u = kjb_c::kjb_rand() * BIG;
+    IVI(ASSERT(i <= BIG));
+    int u = ivi_c::ivi_rand() * BIG;
     // shift right u until m is within an octave of the size of i
     for (int m = BIG; m >= dbli; m >>= 1)
     {
@@ -63,10 +63,10 @@ int shuffler(int i)
 Doubly_connected_edge_list complicated()
 {
     Doubly_connected_edge_list d;
-    kjb::Gsl_Qrng_Sobol qq( 2 );
+    ivi::Gsl_Qrng_Sobol qq( 2 );
 
     d = d.merge(
-        kjb::qd::get_axis_aligned_rectangle(PixPoint(0,0), PixPoint(1,1)));
+        ivi::qd::get_axis_aligned_rectangle(PixPoint(0,0), PixPoint(1,1)));
     std::vector< RatPoint > vertices;
 
     for (int i = 0; i < 20; ++i)
@@ -89,7 +89,7 @@ Doubly_connected_edge_list complicated()
         vertices.pop_back();
         zig.push_back(vertices.back());
         vertices.pop_back();
-        d = d.merge(kjb::qd::Doubly_connected_edge_list::ctor_open_path(zig));
+        d = d.merge(ivi::qd::Doubly_connected_edge_list::ctor_open_path(zig));
 
         if (VISUALIZATION > 1)
         {
@@ -128,12 +128,12 @@ int test3()
         std::ofstream fd("triangulate_131.xml");
         fd << xml_output(d);
         std::ofstream ff("triangulate_131.svg");
-        ff << kjb::qd::draw_dcel_as_svg(d);
+        ff << ivi::qd::draw_dcel_as_svg(d);
 
         std::ofstream fe("triangulate_132.xml");
         fe << xml_output(s);
         std::ofstream fg("triangulate_132.svg");
-        fg << kjb::qd::draw_dcel_as_svg(s);
+        fg << ivi::qd::draw_dcel_as_svg(s);
     }
 
     // Verify all faces are now triangles.  Skip face zero, of course.
@@ -146,18 +146,18 @@ int test3()
     RatPoint::Rat area = 0;
     for (size_t i = 1; i < d.get_face_table().size(); ++i)
     {
-        area += kjb::qd::area_of_face(d, i);
+        area += ivi::qd::area_of_face(d, i);
     }
     TEST_TRUE(RatPoint::Rat(1) == area);
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 
 int test2()
 {
-    kjb::qd::PixPath t1 = kjb::qd::PixPath::reserve(3), t2(t1);
+    ivi::qd::PixPath t1 = ivi::qd::PixPath::reserve(3), t2(t1);
     t1.push_back(PixPoint(0,0));
     t1.push_back(PixPoint(10,0));
     t1.push_back(PixPoint(5,8));
@@ -190,12 +190,12 @@ int test2()
         std::ofstream fd("triangulate_121.xml");
         fd << xml_output(t5);
         std::ofstream ff("triangulate_121.svg");
-        ff << kjb::qd::draw_dcel_as_svg(t5);
+        ff << ivi::qd::draw_dcel_as_svg(t5);
 
         std::ofstream fe("triangulate_122.xml");
         fe << xml_output(t);
         std::ofstream fg("triangulate_122.svg");
-        fg << kjb::qd::draw_dcel_as_svg(t);
+        fg << ivi::qd::draw_dcel_as_svg(t);
     }
 
     // Skip face zero, of course.
@@ -205,10 +205,10 @@ int test2()
     }
 
     // Area of triangle is 40 with or without wire intrusion t4
-    TEST_TRUE(RatPoint::Rat(40) == kjb::qd::area_of_face(t3, 1));
-    TEST_TRUE(RatPoint::Rat(40) == kjb::qd::area_of_face(t5, 1));
+    TEST_TRUE(RatPoint::Rat(40) == ivi::qd::area_of_face(t3, 1));
+    TEST_TRUE(RatPoint::Rat(40) == ivi::qd::area_of_face(t5, 1));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -216,7 +216,7 @@ int test2()
 int test1()
 {
     // shape looks like north carolina
-    kjb::qd::PixPath t1 = kjb::qd::PixPath::reserve(6);
+    ivi::qd::PixPath t1 = ivi::qd::PixPath::reserve(6);
     t1.push_back(PixPoint(2,0));
     t1.push_back(PixPoint(10,0));
     t1.push_back(PixPoint(11,3));
@@ -242,15 +242,15 @@ int test1()
         std::ofstream fd("triangulate_111.xml");
         fd << xml_output(d);
         std::ofstream ff("triangulate_111.svg");
-        ff << kjb::qd::draw_dcel_as_svg(d);
+        ff << ivi::qd::draw_dcel_as_svg(d);
 
         std::ofstream fe("triangulate_112.xml");
         fe << xml_output(t);
         std::ofstream fg("triangulate_112.svg");
-        fg << kjb::qd::draw_dcel_as_svg(t);
+        fg << ivi::qd::draw_dcel_as_svg(t);
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -504,14 +504,14 @@ int test4()
 
     TEST_TRUE(is_isomorphic(dout, doref, 00));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 
 int test5()
 {
-    kjb::qd::PixPath t1 = kjb::qd::PixPath::reserve(5), t2(t1);
+    ivi::qd::PixPath t1 = ivi::qd::PixPath::reserve(5), t2(t1);
     t1.push_back(PixPoint(2,-2));
     t1.push_back(PixPoint(0,3));
     t1.push_back(PixPoint(-2,-2));
@@ -560,7 +560,7 @@ int test5()
         TEST_TRUE(is_face_triangle(t8, i));
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -568,25 +568,25 @@ int test5()
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
 
     int time_factor = 1;
-    KJB(EPETE(scan_time_factor(argv[1], &time_factor)));
+    IVI(EPETE(scan_time_factor(argv[1], &time_factor)));
 
     try
     {
-        KJB(EPETE(test1()));
-        KJB(EPETE(test2()));
-        if (time_factor > 1) KJB(EPETE(test3()));
-        KJB(EPETE(test4()));
-        KJB(EPETE(test5()));
+        IVI(EPETE(test1()));
+        IVI(EPETE(test2()));
+        if (time_factor > 1) IVI(EPETE(test3()));
+        IVI(EPETE(test4()));
+        IVI(EPETE(test5()));
     }
-    catch(const kjb::Exception& e)
+    catch(const ivi::Exception& e)
     {
         e.print_details_exit(std::cout, true);
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

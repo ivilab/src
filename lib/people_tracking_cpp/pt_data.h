@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: pt_data.h 18751 2015-04-03 20:33:13Z ernesto $ */
+/* $Id: pt_data.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_DATA_H
 #define PT_DATA_H
@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -143,7 +143,7 @@ void write_deva_facemarks
     double img_height
 );
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_DATA_H */
 

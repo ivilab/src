@@ -16,14 +16,14 @@
    |  Author:  Kyle Simek, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_bbox.h 15862 2013-10-23 17:20:23Z jguan1 $ */
+/* $Id: d_bbox.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef D_BBOX_H
 #define D_BBOX_H
 
 #include <gr_cpp/gr_2D_bounding_box.h>
 
-namespace kjb
+namespace ivi
 {
     // Useful typdefs
     typedef Axis_aligned_rectangle_2d Bbox;

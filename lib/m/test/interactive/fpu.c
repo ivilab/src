@@ -1,5 +1,5 @@
 
-/* $Id: fpu.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: fpu.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -18,7 +18,7 @@
 
 /* For declared function pointers. Generally harmless. */
 #ifdef __cplusplus     
-using namespace kjb_c;
+using namespace ivi_c;
 extern "C" {
 #endif 
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     double z, n;
 
 
-    kjb_init();
+    ivi_init();
 
     set_atn_trap(confirm_exit_sig_fn, DONT_RESTART_AFTER_SIGNAL); 
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
         {
             insert_error("Processing of hard coded default option %q failed.",
                          *cur_option);
-            kjb_print_error();
+            ivi_print_error();
         }
         cur_option++;
     }
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 
     dbe(z); 
 
-    kjb_cleanup(); /* Not needed on most platforms, but doing it twice is OK. */
+    ivi_cleanup(); /* Not needed on most platforms, but doing it twice is OK. */
     
     return EXIT_SUCCESS; 
 }
@@ -102,8 +102,8 @@ static int process_option(const char *option, const char *value)
     int  temp_result; 
     int  (*set_fn_list[ MAX_NUM_SET_FN ]) (const char* opt, const char* val);
 
-    set_fn_list[ 0 ] = kjb_l_set;
-    set_fn_list[ 1 ] = kjb_m_set;
+    set_fn_list[ 0 ] = ivi_l_set;
+    set_fn_list[ 1 ] = ivi_m_set;
 
     ERE(temp_result = call_set_fn(1, set_fn_list, "Low Level Options",
                                       option, value));

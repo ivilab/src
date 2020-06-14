@@ -1,4 +1,4 @@
-/* $Id: turntable_camera.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: turntable_camera.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -34,7 +34,7 @@
 #include <fstream>
 #include <numeric>
 
-namespace kjb {
+namespace ivi {
 
 Turntable_camera::Turntable_camera() :
         neutral_camera_(),
@@ -153,13 +153,13 @@ void Turntable_camera::set_index_list(const Index_range& indices)
         std::generate(
             indices_.begin(),
             indices_.end(),
-            kjb::Increment<size_t>(0));
+            ivi::Increment<size_t>(0));
 
         return;
     }
 
     if(indices.size() == 0)
-        KJB_THROW_2(Illegal_argument, "index list must contain at least one index.");
+        IVI_THROW_2(Illegal_argument, "index list must contain at least one index.");
 
     angles_.clear();
     indices_.clear();
@@ -179,7 +179,7 @@ void Turntable_camera::evenly_space_cameras(size_t n)
 {
     angles_.resize(n);
     indices_.clear();
-    kjb::linspace(0, 2*M_PI, n, angles_.begin(), false);
+    ivi::linspace(0, 2*M_PI, n, angles_.begin(), false);
     set_active_camera(0);
 }
 
@@ -232,7 +232,7 @@ Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camer
             if(&cur_camera_1 == &cur_camera_2)
                 continue;
 
-            rotations_.push_back(kjb::difference(
+            rotations_.push_back(ivi::difference(
                     cur_camera_1.get_orientation(),
                     cur_camera_2.get_orientation()));
         }
@@ -244,13 +244,13 @@ Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camer
 //
     std::vector<Vector> axes_(
             rotations_.size(),
-            kjb::Vector(3));
+            ivi::Vector(3));
 
     // get rotation axes
     transform(rotations_.begin(),
             rotations_.end(),
             axes_.begin(),
-            std::mem_fun_ref(&kjb::Quaternion::get_axis));
+            std::mem_fun_ref(&ivi::Quaternion::get_axis));
 
     std::vector<double> angles_(
             rotations_.size(),
@@ -260,14 +260,14 @@ Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camer
     transform(rotations_.begin(),
             rotations_.end(),
             angles_.begin(),
-            std::mem_fun_ref(&kjb::Quaternion::get_angle));
+            std::mem_fun_ref(&ivi::Quaternion::get_angle));
 
     // make sure axes all point in same direction
-    const kjb::Vector& first = axes_[0];
+    const ivi::Vector& first = axes_[0];
 
     for(size_t i = 0; i < axes_.size(); ++i)
     {
-        kjb::Vector& axis = axes_[i];
+        ivi::Vector& axis = axes_[i];
 //            std::cout << axis << std::endl;
 //            std::cout << first << std::endl;
 //            std::cout << dot(axis, first) << std::endl;
@@ -279,38 +279,38 @@ Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camer
     }
 
 // FIND MEAN ROTATION AXIS
-    Vector mean_axis_ = kjb::mean(axes_.begin(), axes_.end());
+    Vector mean_axis_ = ivi::mean(axes_.begin(), axes_.end());
     mean_axis_.normalize();
 
-//        double mean_angle_ = kjb::mean(angles_.begin(), angles_.end());
+//        double mean_angle_ = ivi::mean(angles_.begin(), angles_.end());
 
 
 // EXTRACT ALL CAMERA TRANSLATIONS
     // find camera locations and compare
-    std::vector<kjb::Vector> ccenters(cameras_.size());
+    std::vector<ivi::Vector> ccenters(cameras_.size());
     transform(cameras_.begin(),
             cameras_.end(),
             ccenters.begin(),
-            std::mem_fun_ref(&kjb::Calibrated_camera::get_camera_centre));
+            std::mem_fun_ref(&ivi::Calibrated_camera::get_camera_centre));
 
     // convert to non-homogeneous coordinates
     transform(ccenters.begin(),
             ccenters.end(),
             ccenters.begin(),
-            kjb::geometry::projective_to_euclidean);
+            ivi::geometry::projective_to_euclidean);
 
 
     // find average camera position. (center of gravity)
-    kjb::Vector mean_c = kjb::mean(ccenters.begin(), ccenters.end());
+    ivi::Vector mean_c = ivi::mean(ccenters.begin(), ccenters.end());
 
     // Find turntable origin:
     // find plane containing origin, in direction of mean axis
     // and find intersection of rotation axis with plane. 
     // see: http://local.wasp.uwa.edu.au/~pbourke/geometry/planeline/
-    const kjb::Vector& N = mean_axis_;
-    const kjb::Vector  P3(0.0,0.0,0.0);
-    const kjb::Vector& P1 = mean_c.resize(3);
-    const kjb::Vector& P2 = mean_c + mean_axis_;
+    const ivi::Vector& N = mean_axis_;
+    const ivi::Vector  P3(0.0,0.0,0.0);
+    const ivi::Vector& P1 = mean_c.resize(3);
+    const ivi::Vector& P2 = mean_c + mean_axis_;
 
     double u = dot(N, P3 - P1) / dot(N, P2 - P1);
     Vector turntable_origin_ = P1 + mean_axis_ * u;
@@ -323,8 +323,8 @@ Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camer
 // REMOVE TURNTABLE ROTATION FROM CAMERA POSITIONS, TO FIND THE MEAN "NEUTRAL" CAMERA POSITION
     for(size_t i = 0; i < ccenters.size(); ++i)
     {
-        kjb::Vector& ccenter = ccenters[i];
-        kjb::Rotation_axis r(turntable_origin_, mean_axis_);
+        ivi::Vector& ccenter = ccenters[i];
+        ivi::Rotation_axis r(turntable_origin_, mean_axis_);
         ccenter = r.rotate(ccenter, -turntable_angles[i]);
     }
 
@@ -339,24 +339,24 @@ Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camer
 
 
 // GET GENERIC CAMERA ORIENTATION
-    std::vector<kjb::Quaternion> camera_orientations(cameras_.size());
+    std::vector<ivi::Quaternion> camera_orientations(cameras_.size());
     transform(cameras_.begin(),
             cameras_.end(),
             camera_orientations.begin(),
-            std::mem_fun_ref(&kjb::Calibrated_camera::get_orientation));
+            std::mem_fun_ref(&ivi::Calibrated_camera::get_orientation));
 
     // remove part contributed by turntable
     for(size_t i = 0; i < camera_orientations.size(); ++i)
     {
-        kjb::Quaternion& q = camera_orientations[i];
-        kjb::Quaternion turntable_unrotation(mean_axis_, -turntable_angles[i]);
+        ivi::Quaternion& q = camera_orientations[i];
+        ivi::Quaternion turntable_unrotation(mean_axis_, -turntable_angles[i]);
         // notice that the order is reversed and so is the angle.  We want to undo the rotation in the
         // _camera_.  This the opposite of undoing the rotation in a world point.  Analogy: translating world
         // points vs. translating camera.  Transformations are inverted and applied in reverse.
         q = q * turntable_unrotation.conj() ;
     }
 
-    Quaternion mean_orientation = kjb::mean(
+    Quaternion mean_orientation = ivi::mean(
             camera_orientations.begin(),
             camera_orientations.end());
 
@@ -419,4 +419,4 @@ Turntable_camera regularize_turntable_cameras(const std::vector<Calibrated_camer
 
 
 }
-//namespce kjb
+//namespce ivi

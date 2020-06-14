@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_face_2d_trajectory.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_face_2d_trajectory.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "people_tracking_cpp/pt_trajectory.h"
 #include "people_tracking_cpp/pt_complete_trajectory.h"
@@ -25,10 +25,10 @@
 
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
-Face_2d_trajectory kjb::pt::get_face_2d_trajectory
+Face_2d_trajectory ivi::pt::get_face_2d_trajectory
 (
     const Trajectory& traj,
     const Perspective_camera& cam

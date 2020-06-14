@@ -1,5 +1,5 @@
 
-/* $Id: complex_mat_arith_ew.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: complex_mat_arith_ew.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     Bool verification_failed = FALSE;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -39,11 +39,11 @@ int main(int argc, char **argv)
 
     if (is_interactive())
     {
-        kjb_set_verbose_level(2);
+        ivi_set_verbose_level(2);
     }
     else 
     {
-        kjb_set_verbose_level(2);  /* Also 2 for now */
+        ivi_set_verbose_level(2);  /* Also 2 for now */
     }
 
     for (count = 0; count < max_count; count++)
@@ -53,9 +53,9 @@ int main(int argc, char **argv)
         EPETE(get_random_matrix(&re2_mp, num_rows, num_cols));
         EPETE(get_random_matrix(&im2_mp, num_rows, num_cols));
 
-        if (kjb_rand() < 0.7) 
+        if (ivi_rand() < 0.7) 
         {
-            if (kjb_rand() < 0.5)
+            if (ivi_rand() < 0.5)
             {
                 free_matrix(re1_mp); re1_mp = NULL; 
             }
@@ -66,9 +66,9 @@ int main(int argc, char **argv)
         }
 
 
-        if (kjb_rand() < 0.7) 
+        if (ivi_rand() < 0.7) 
         {
-            if (kjb_rand() < 0.5)
+            if (ivi_rand() < 0.5)
             {
                 free_matrix(re2_mp); re2_mp = NULL; 
             }
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
         {
             for (j = 0; j < num_cols; j++)
             {
-                KJB_complex a, b, c;
+                IVI_complex a, b, c;
 
                 a.r = (re1_mp == NULL) ? 0.0 : re1_mp->elements[ i ][ j ];
                 a.i = (im1_mp == NULL) ? 0.0 : im1_mp->elements[ i ][ j ];
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
         {
             for (j = 0; j < num_cols; j++)
             {
-                KJB_complex a, b, c;
+                IVI_complex a, b, c;
 
                 a.r = (re1_mp == NULL) ? 0.0 : re1_mp->elements[ i ][ j ];
                 a.i = (im1_mp == NULL) ? 0.0 : im1_mp->elements[ i ][ j ];
@@ -148,49 +148,49 @@ int main(int argc, char **argv)
         }
 
         verify_matrix(mult_re_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
         verify_matrix(nr_mult_re_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
         verify_matrix(mult_im_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
         verify_matrix(nr_mult_im_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
         verify_matrix(div_re_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
         verify_matrix(nr_div_re_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
         verify_matrix(div_im_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
         verify_matrix(nr_div_im_mp, &verification_failed);
-        if (verification_failed) { kjb_exit(EXIT_BUG); }
+        if (verification_failed) { ivi_exit(EXIT_BUG); }
 
 
         if (max_abs_matrix_difference(mult_re_mp, nr_mult_re_mp) > 100.0 * DBL_EPSILON)
         {
             dbe(max_abs_matrix_difference(mult_re_mp, nr_mult_re_mp));
-            kjb_exit(EXIT_BUG); 
+            ivi_exit(EXIT_BUG); 
         }
         if (max_abs_matrix_difference(mult_im_mp, nr_mult_im_mp) > 100.0 * DBL_EPSILON)
         {
             dbe(max_abs_matrix_difference(mult_im_mp, nr_mult_im_mp));
-            kjb_exit(EXIT_BUG); 
+            ivi_exit(EXIT_BUG); 
         }
         if (max_abs_matrix_difference(div_re_mp, nr_div_re_mp) > 100.0 * DBL_EPSILON)
         {
             dbe(max_abs_matrix_difference(div_re_mp, nr_div_re_mp));
-            kjb_exit(EXIT_BUG); 
+            ivi_exit(EXIT_BUG); 
         }
         if (max_abs_matrix_difference(div_im_mp, nr_div_im_mp) > 100.0 * DBL_EPSILON)
         {
             dbe(max_abs_matrix_difference(div_im_mp, nr_div_im_mp));
-            kjb_exit(EXIT_BUG); 
+            ivi_exit(EXIT_BUG); 
         }
     }
 

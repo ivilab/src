@@ -1,5 +1,5 @@
 
-/* $Id: gp_gaussian_processes.h 5464 2010-02-17 17:25:35Z ernesto $ */
+/* $Id: gp_gaussian_processes.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -22,7 +22,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

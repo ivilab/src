@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flow_visualizer.cpp 14083 2013-03-12 18:41:07Z jguan1 $ */
+/* $Id: flow_visualizer.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <flow_cpp/flow_visualizer.h>
 #include <i_cpp/i_image.h>
@@ -24,9 +24,9 @@
 
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 
-void kjb::draw_features
+void ivi::draw_features
 (
     Image& img, 
     const std::vector<Feature_pair>& features, 

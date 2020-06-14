@@ -3,7 +3,7 @@
 #include <iostream>
 
 using namespace DTLib;
-using namespace kjb;
+using namespace ivi;
 int main(int argc, char ** argv)
 {
     std::string img_name("~/data/furniture/ucbroom/");
@@ -34,14 +34,14 @@ int main(int argc, char ** argv)
     in_dm_name.append("_DOG_mean.out");
     in_dv_name.append("_DOG_variance.out");
 
-    kjb::Image img(img_name.c_str());
-    kjb::Matrix m(seg_name.c_str());
-    kjb::Int_matrix im = create_int_matrix_from_matrix_floor(m);
+    ivi::Image img(img_name.c_str());
+    ivi::Matrix m(seg_name.c_str());
+    ivi::Int_matrix im = create_int_matrix_from_matrix_floor(m);
 
-    kjb::Matrix Oe_mean;
-    kjb::Matrix Oe_var;
-    kjb::Matrix DOG_mean;
-    kjb::Matrix DOG_var;
+    ivi::Matrix Oe_mean;
+    ivi::Matrix Oe_var;
+    ivi::Matrix DOG_mean;
+    ivi::Matrix DOG_var;
     extract_texture
     (
         img,
@@ -65,15 +65,15 @@ int main(int argc, char ** argv)
     DOG_mean.write(out_dm_name.c_str());
     DOG_var.write(out_dv_name.c_str());
 
-    kjb::Matrix in_Oe_mean(in_oem_name.c_str());
-    kjb::Matrix in_Oe_var(in_oev_name.c_str());
-    kjb::Matrix in_DOG_mean(in_dm_name.c_str());
-    kjb::Matrix in_DOG_var(in_dv_name.c_str());
+    ivi::Matrix in_Oe_mean(in_oem_name.c_str());
+    ivi::Matrix in_Oe_var(in_oev_name.c_str());
+    ivi::Matrix in_DOG_mean(in_dm_name.c_str());
+    ivi::Matrix in_DOG_var(in_dv_name.c_str());
 
-    double d1 = kjb::max_abs_difference(Oe_mean, in_Oe_mean);
-    double d2 = kjb::max_abs_difference(Oe_var, in_Oe_var);
-    double d3 = kjb::max_abs_difference(DOG_mean, in_DOG_mean);
-    double d4 = kjb::max_abs_difference(DOG_var, in_DOG_var);
+    double d1 = ivi::max_abs_difference(Oe_mean, in_Oe_mean);
+    double d2 = ivi::max_abs_difference(Oe_var, in_Oe_var);
+    double d3 = ivi::max_abs_difference(DOG_mean, in_DOG_mean);
+    double d4 = ivi::max_abs_difference(DOG_var, in_DOG_var);
     std::cout << argv[1] << ": " << d1 << " " << d2 << " " << d3 << " " << d4 << std::endl;
 
     return 0;

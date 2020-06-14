@@ -1,5 +1,5 @@
 
-/* $Id: sample_misc.h 8192 2011-01-12 18:56:16Z delpero $ */
+/* $Id: sample_misc.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,11 +27,11 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-int kjb_rand_int(int lb, int ub);
+int ivi_rand_int(int lb, int ub);
 
 int sample_from_discrete_distribution(int* idx, const Vector* dist);
 

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: test_wishart.cpp 20241 2016-01-20 22:34:46Z jguan1 $ */
+/* $Id: test_wishart.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_pdf.h>
@@ -26,7 +26,7 @@
 #include <m/m_mat_metric.h>
 #include <l_cpp/l_test.h>
 
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     //std::cout << sample_mean << std::endl;
     //std::cout << mean << std::endl;
 
-    TEST_TRUE(kjb_c::rms_matrix_difference(sample_mean.get_c_matrix(), 
+    TEST_TRUE(ivi_c::rms_matrix_difference(sample_mean.get_c_matrix(), 
                               mean.get_c_matrix()) < 1.0);
     //std::cout << x << std::endl;
 

@@ -1,5 +1,5 @@
 
-/* $Id: int_matrix.c 24615 2019-12-07 23:14:30Z kobus $ */
+/* $Id: int_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #define BASE_NUM_TRIES  10000
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     int prev_num_cols;
 
 
-    kjb_init();
+    ivi_init();
 
     /* Test corner cases: 0 x 0 matrix, n x 0 matrix, or 0 x n */
     EPETE(get_target_int_matrix(&mp, 0, 0));
@@ -43,11 +43,11 @@ int main(int argc, char **argv)
 
     if (is_interactive())
     {
-        kjb_set_debug_level(2); 
+        ivi_set_debug_level(2); 
     }
     else 
     {
-        kjb_set_debug_level(0); 
+        ivi_set_debug_level(0); 
     }
 
     prev_num_rows = MAX_DIM / 10; 
@@ -64,8 +64,8 @@ int main(int argc, char **argv)
 
     for (try_count = 0; try_count< num_tries; try_count++)
     {
-        int num_rows = MIN_OF(MAX_DIM - 1, 2.0 + (kjb_rand() * (double)MAX_DIM));
-        int num_cols = MIN_OF(MAX_DIM - 1, 2.0 + (kjb_rand() * (double)MAX_DIM));
+        int num_rows = MIN_OF(MAX_DIM - 1, 2.0 + (ivi_rand() * (double)MAX_DIM));
+        int num_cols = MIN_OF(MAX_DIM - 1, 2.0 + (ivi_rand() * (double)MAX_DIM));
 
         if (try_count % 2 == 0)
         {
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
 
     free_int_matrix(mp);
 
-    kjb_cleanup();
+    ivi_cleanup();
     
     return EXIT_SUCCESS;
 }

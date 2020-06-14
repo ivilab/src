@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: propagate.cpp 18562 2015-02-16 22:50:01Z jguan1 $ */
+/* $Id: propagate.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 #include <people_tracking_cpp/pt_data.h>
 #include <people_tracking_cpp/pt_util.h>
 #include <people_tracking_cpp/pt_file_util.h>
@@ -36,10 +36,10 @@
 
 #include <boost/array.hpp>
 #include <boost/assign.hpp>
-using namespace kjb;
+using namespace ivi;
 
 using namespace std;
-using namespace kjb::pt;
+using namespace ivi::pt;
 bool smooth = false;
 const boost::array<Vector3, 7> COLOR_ORDER_ = boost::assign::list_of
     (Vector3(0.0, 0.0, 1.0))
@@ -52,7 +52,7 @@ const boost::array<Vector3, 7> COLOR_ORDER_ = boost::assign::list_of
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
     
     if(argc != 5 && argc != 6 && argc != 7) 
     {
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
         return EXIT_SUCCESS;
     }
 
-    kjb_c::kjb_mkdir(output_dir.c_str());
+    ivi_c::ivi_mkdir(output_dir.c_str());
 
     Input_directory input_dir(movie_dir_str);
 
@@ -104,8 +104,8 @@ int main(int argc, char** argv)
     vector<Integral_flow> back_flows_x;
     vector<Integral_flow> back_flows_y;
 
-    KJB(ASSERT(x_of_fps.size() == y_of_fps.size()));
-    KJB(ASSERT(back_x_of_fps.size() == back_y_of_fps.size()));
+    IVI(ASSERT(x_of_fps.size() == y_of_fps.size()));
+    IVI(ASSERT(back_x_of_fps.size() == back_y_of_fps.size()));
     size_t num_frames = x_of_fps.size();
     //size_t num_frames = 200;
 

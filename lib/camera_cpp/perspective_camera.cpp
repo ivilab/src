@@ -52,7 +52,7 @@
 * =========================================================================== */
 
 // this should be first:
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/export.hpp>
@@ -66,11 +66,11 @@
 #include <typeinfo>
 #include <iostream>
 
-#define KJB_DEG_TO_RAD 0.01745329251994
+#define IVI_DEG_TO_RAD 0.01745329251994
 #define SKEW_90 1.57079633
 #define INIT_FOCAL_LENGTH_VALUE 1000
 
-namespace kjb
+namespace ivi
 {
 /**
  * @param inear The distance between the camera centre and the near clipping plane
@@ -159,11 +159,11 @@ Perspective_camera::Perspective_camera(
     {
     // This isn't always true.  If a camera was calibrated using non-standard conventions, you could get a negative focal length in either direction.
     // Commenting out, for eventual deletion.  Kyle, Aug 23, 2010
-//        KJB_THROW_2(kjb::Illegal_argument, "Aspect ratio for perspective camera must be positive");
+//        IVI_THROW_2(ivi::Illegal_argument, "Aspect ratio for perspective camera must be positive");
     }
     if(iscale <= 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "World scale for perspective camera must be positive");
+        IVI_THROW_2(ivi::Illegal_argument, "World scale for perspective camera must be positive");
     }
     camera_centre(0) = icentre_x;
     camera_centre(1) = icentre_y;
@@ -194,7 +194,7 @@ Perspective_camera::Perspective_camera(
  * @param ifar The distance between the camera centre and the far clipping plane
  */
 Perspective_camera::Perspective_camera(
-        const kjb::Vector & icamera_centre,
+        const ivi::Vector & icamera_centre,
         double ipitch,
         double iyaw,
         double iroll,
@@ -231,11 +231,11 @@ Perspective_camera::Perspective_camera(
     // Commenting out, for eventual deletion.  Kyle, Aug 23, 2010
 //    if(iaspect_ratio <= 0)
 //    {
-//        KJB_THROW_2(kjb::Illegal_argument, "Aspect ratio for perspective camera must be positive");
+//        IVI_THROW_2(ivi::Illegal_argument, "Aspect ratio for perspective camera must be positive");
 //    }
     if(iscale <= 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "World scale for perspective camera must be positive");
+        IVI_THROW_2(ivi::Illegal_argument, "World scale for perspective camera must be positive");
     }
 
 
@@ -281,7 +281,7 @@ Perspective_camera::Perspective_camera(const char* fname) :
     m_rd_p1(0.0),
     m_rd_p2(0.0)
 {
-    kjb::Readable::read(fname);
+    ivi::Readable::read(fname);
 }
 
 /**
@@ -401,10 +401,10 @@ void Perspective_camera::swap(Perspective_camera& other)
 void Perspective_camera::mult_modelview_matrix() const
 {
     update_rendering_interface();
-#ifdef KJB_HAVE_OPENGL
-    kjb::opengl::glMultMatrix(rendering_interface.get_modelview_matrix());
+#ifdef IVI_HAVE_OPENGL
+    ivi::opengl::glMultMatrix(rendering_interface.get_modelview_matrix());
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -425,7 +425,7 @@ Vector Perspective_camera::to_camera_coordinates(const Vector& v) const
     {
         if(result.size() != 4)
         {
-            KJB_THROW_2(Illegal_argument, "v must have dimension 3 or 4.");
+            IVI_THROW_2(Illegal_argument, "v must have dimension 3 or 4.");
         }
     }
 
@@ -496,26 +496,26 @@ void Perspective_camera::read(std::istream& in)
      // Type
     if (!(field_value = read_field_value(in, "Type")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Type field");
+        IVI_THROW_2(Illegal_argument, "Missing Type field");
     }
     if (strncmp(field_value, type_name, strlen(type_name)) != 0)
     {
         ostringstream ost;
         ost << "Tried to read a '" << field_value << "' as a '"
             << type_name << "'";
-        KJB_THROW_2(Illegal_argument, ost.str());
+        IVI_THROW_2(Illegal_argument, ost.str());
     }
 
     // Camera centre
     if (!(field_value = read_field_value(in, "camera_centre")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Camera Centre");
+        IVI_THROW_2(Illegal_argument, "Missing Camera Centre");
     }
     istringstream ist(field_value);
     ist >> camera_centre(0) >> camera_centre(1) >> camera_centre(2) >> camera_centre(3);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Camera ccentre");
+        IVI_THROW_2(Illegal_argument, "Invalid Camera ccentre");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -523,97 +523,97 @@ void Perspective_camera::read(std::istream& in)
 
     if (!(field_value = read_field_value(in, "pitch")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing pitch");
+        IVI_THROW_2(Illegal_argument, "Missing pitch");
     }
     ist.str(field_value);
     ist >> rotation_angles(CAMERA_PITCH_INDEX);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Pitch");
+        IVI_THROW_2(Illegal_argument, "Invalid Pitch");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "yaw")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing yaw");
+        IVI_THROW_2(Illegal_argument, "Missing yaw");
     }
     ist.str(field_value);
     ist >> rotation_angles(CAMERA_YAW_INDEX);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Yaw");
+        IVI_THROW_2(Illegal_argument, "Invalid Yaw");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "roll")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing roll");
+        IVI_THROW_2(Illegal_argument, "Missing roll");
     }
     ist.str(field_value);
     ist >> rotation_angles(CAMERA_ROLL_INDEX);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Roll");
+        IVI_THROW_2(Illegal_argument, "Invalid Roll");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "focal_length")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing focal length");
+        IVI_THROW_2(Illegal_argument, "Missing focal length");
     }
     ist.str(field_value);
     ist >> focal_length;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Focal length");
+        IVI_THROW_2(Illegal_argument, "Invalid Focal length");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "principal_point")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Principal_point");
+        IVI_THROW_2(Illegal_argument, "Missing Principal_point");
     }
     ist.str(field_value);
     ist >> principal_point(0) >> principal_point(1);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Principal point");
+        IVI_THROW_2(Illegal_argument, "Invalid Principal point");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "skew")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing skew");
+        IVI_THROW_2(Illegal_argument, "Missing skew");
     }
     ist.str(field_value);
     ist >> skew;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Skew");
+        IVI_THROW_2(Illegal_argument, "Invalid Skew");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "aspect_ratio")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing aspect_ratio");
+        IVI_THROW_2(Illegal_argument, "Missing aspect_ratio");
     }
     ist.str(field_value);
     ist >> aspect_ratio;
     if (ist.fail() || aspect_ratio <= 0.0)
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Aspect ratio");
+        IVI_THROW_2(Illegal_argument, "Invalid Aspect ratio");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "world_scale")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing world scale");
+        IVI_THROW_2(Illegal_argument, "Missing world scale");
     }
     ist.str(field_value);
     ist >> world_scale;
     if (ist.fail() || (world_scale <=0.0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid world scale");
+        IVI_THROW_2(Illegal_argument, "Invalid world scale");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -622,25 +622,25 @@ void Perspective_camera::read(std::istream& in)
 
     if (!(field_value = read_field_value(in, "near")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing near clipping plane");
+        IVI_THROW_2(Illegal_argument, "Missing near clipping plane");
     }
     ist.str(field_value);
     ist >> tempnear;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Near clipping plane ");
+        IVI_THROW_2(Illegal_argument, "Invalid Near clipping plane ");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "far")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing far clipping plane");
+        IVI_THROW_2(Illegal_argument, "Missing far clipping plane");
     }
     ist.str(field_value);
     ist >> tempfar;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Far clipping plane ");
+        IVI_THROW_2(Illegal_argument, "Invalid Far clipping plane ");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -703,7 +703,7 @@ void Perspective_camera::update_rendering_interface() const
 /*
  * @param origin The world origin in camera coordinates, [x,y,z]. Optionally in homogeneous coordinates
  */
-void Perspective_camera::set_world_origin(const kjb::Vector & iorigin)
+void Perspective_camera::set_world_origin(const ivi::Vector & iorigin)
 {
     Vector origin = iorigin;
 
@@ -715,7 +715,7 @@ void Perspective_camera::set_world_origin(const kjb::Vector & iorigin)
 
     if(origin.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Invalid vector size.  must be 3 or 4.");
+        IVI_THROW_2(Illegal_argument, "Invalid vector size.  must be 3 or 4.");
     }
 
     const Quaternion& orientation = get_orientation();
@@ -734,7 +734,7 @@ Vector Perspective_camera::get_world_origin() const
 /*
  * @param icentre The new camera centre position [x,y,z]. Optionally in homogeneous coordinates
  */
-void Perspective_camera::set_camera_centre(const kjb::Vector & icentre)
+void Perspective_camera::set_camera_centre(const ivi::Vector & icentre)
 {
     if(icentre.size() == 3)
     {
@@ -749,14 +749,14 @@ void Perspective_camera::set_camera_centre(const kjb::Vector & icentre)
         double epsilon = 1e-127;
         if(icentre(3) < epsilon)
         {
-            KJB_THROW_2(kjb::Illegal_argument, "Camera centre, the homogeneous coordinate is too close to zero");
+            IVI_THROW_2(ivi::Illegal_argument, "Camera centre, the homogeneous coordinate is too close to zero");
         }
         camera_centre = icentre;
         camera_centre /= camera_centre(3);
     }
     else
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Camera centre must contain exactly three coordinates, or four if homogeneous");
+        IVI_THROW_2(ivi::Illegal_argument, "Camera centre must contain exactly three coordinates, or four if homogeneous");
     }
     extrinsic_dirty = true;
     cam_matrix_dirty = true;
@@ -770,7 +770,7 @@ void Perspective_camera::set_camera_centre(unsigned int index, double ivalue)
 {
     if(index > 2)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Camera centre vector index must be between 0 and 2");
+        IVI_THROW_2(ivi::Illegal_argument, "Camera centre vector index must be between 0 and 2");
     }
     camera_centre(index) = ivalue;
     extrinsic_dirty = true;
@@ -917,7 +917,7 @@ void Perspective_camera::set_focal_length(double ifocal)
     // in some sitatuions.  Commenting this out, for eventual deletion.  Kyle, Aug 18, 2010
 //    if(ifocal < 0)
 //    {
-//        KJB_THROW_2(kjb::Illegal_argument, "Focal length for perspective camera cannot be negative");
+//        IVI_THROW_2(ivi::Illegal_argument, "Focal length for perspective camera cannot be negative");
 //    }
     focal_length = ifocal;
     intrinsic_dirty = true;
@@ -936,11 +936,11 @@ void Perspective_camera::update_focal_with_scale(double ifocal)
 /*
  * @param ip The new principal point [x,y]
  */
-void Perspective_camera::set_principal_point(const kjb::Vector & ip)
+void Perspective_camera::set_principal_point(const ivi::Vector & ip)
 {
     if(ip.size() != 2)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Principal point vector must contain exactly two coordinates");
+        IVI_THROW_2(ivi::Illegal_argument, "Principal point vector must contain exactly two coordinates");
     }
     principal_point = ip;
     intrinsic_dirty = true;
@@ -955,7 +955,7 @@ void Perspective_camera::set_principal_point(unsigned int index, double ip)
 {
     if(index >= 2)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Principal point vector index must be zero or one");
+        IVI_THROW_2(ivi::Illegal_argument, "Principal point vector index must be zero or one");
     }
     principal_point(index) = ip;
     intrinsic_dirty = true;
@@ -1000,7 +1000,7 @@ void Perspective_camera::set_aspect_ratio(double iar)
     // calibrated cameras sometimes have negative aspect ratios, representing a flipped y-axis.  Commenting this out for now, for eventual deletion. --Kyle Aug 18, 2010
 //    if(iar <= 0)
 //    {
-//        KJB_THROW_2(kjb::Illegal_argument, "Aspect ratio for perspective camera must be positive");
+//        IVI_THROW_2(ivi::Illegal_argument, "Aspect ratio for perspective camera must be positive");
 //    }
     aspect_ratio = iar;
     intrinsic_dirty = true;
@@ -1014,7 +1014,7 @@ void Perspective_camera::set_world_scale(double iscale)
 {
     if(iscale <= 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "World scale for perspective camera must be positive");
+        IVI_THROW_2(ivi::Illegal_argument, "World scale for perspective camera must be positive");
     }
     world_scale = iscale;
 }
@@ -1024,9 +1024,9 @@ void Perspective_camera::set_world_scale(double iscale)
  *
  * @param q the input quaternion
  */
-void Perspective_camera::set_angles_from_quaternion(const kjb::Quaternion & q)
+void Perspective_camera::set_angles_from_quaternion(const ivi::Quaternion & q)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
 
     // need to convert euler mode so rotation angles are in pitch, yaw, roll
     Quaternion tmp = q;
@@ -1064,7 +1064,7 @@ void Perspective_camera::set_look_at(double deyex, double deyey, double deyez, d
  * @param look Specifies the position of the reference point.
  * @param up Specifies the direction of the up vector.
  */
-void Perspective_camera::set_look_at(const kjb::Vector & p_eye, const kjb::Vector & p_look, const kjb::Vector & p_up)
+void Perspective_camera::set_look_at(const ivi::Vector & p_eye, const ivi::Vector & p_look, const ivi::Vector & p_up)
 {
     Vector eye = p_eye;
     Vector target = p_look;
@@ -1095,7 +1095,7 @@ void Perspective_camera::set_look_at(const kjb::Vector & p_eye, const kjb::Vecto
 
     try {
         q.set_rotation_matrix(rot_mat);
-    } catch (kjb::Illegal_argument& ex) {
+    } catch (ivi::Illegal_argument& ex) {
         std::cout << ex.get_msg() << std::endl;
         abort();
     }
@@ -1176,10 +1176,10 @@ Vector Perspective_camera::radial_distortion(const Vector& v)
     return Vector(cx + fx*x, cy + fy*y);
 }
 
-} // namespace kjb
+} // namespace ivi
 
 
 // allow calibrated cameras to be serialized through a pointer to a perspective_camera
-#ifdef KJB_HAVE_BST_SERIAL
-BOOST_CLASS_EXPORT(kjb::Perspective_camera);
+#ifdef IVI_HAVE_BST_SERIAL
+BOOST_CLASS_EXPORT(ivi::Perspective_camera);
 #endif

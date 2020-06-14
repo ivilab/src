@@ -20,7 +20,7 @@
 
 /* $Id$ */
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_scene_viewer.h"
@@ -42,7 +42,7 @@
 #include "gr_cpp/gr_primitive.h"
 #include "gr_cpp/gr_sprite.h"
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include "gr_cpp/gr_glut.h"
 #endif
 
@@ -51,9 +51,9 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
 
 const Scene_viewer::Render_style
     Scene_viewer::DEFAULT_GROUND_STYLE(Vector(1.0, 1.0, 1.0), 1.0);
@@ -72,7 +72,7 @@ Scene_viewer::Scene_viewer
     double height, 
     bool show_window 
 ) :
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     m_glwin(0),
 #endif
     m_scene_p(&scene),
@@ -91,7 +91,7 @@ Scene_viewer::Scene_viewer
 {
     if(show_window)
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         m_glwin = new Glut_window(width, height, "View scene");
 #endif
     }
@@ -124,7 +124,7 @@ void Scene_viewer::set_scene(const Scene& scene)
 
 void Scene_viewer::resize(size_t width, size_t height)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(m_glwin)
     {
         m_glwin->set_size(width, height);
@@ -196,7 +196,7 @@ void Scene_viewer::draw_labels(bool dl)
     m_draw_labels = dl; 
     if(m_draw_labels) 
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         if(!m_glwin)
         {
             std::cerr << "WARNING: GLUT windown is not initialized\n";
@@ -438,7 +438,7 @@ void Scene_viewer::init_gl()
     draw_3d_mode();
 
     // display callback
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(m_glwin)
     {
         m_glwin->set_reshape_callback(boost::bind(
@@ -547,7 +547,7 @@ void Scene_viewer::render_scene() const
     // errors?
     GL_ETX();
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(m_glwin) glutSwapBuffers();
 #endif
 }
@@ -870,7 +870,7 @@ void Scene_viewer::render_model_boxes() const
             if(m_draw_full_boxes) fbox.wire_render();
             if(m_draw_body_boxes) bbox.wire_render();
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
             if(m_draw_labels)
             {
                 const double padding = 10;
@@ -1275,4 +1275,4 @@ Vector Scene_viewer::get_text_line_color(const std::string& /*str*/) const
     return m_text_color;
 }
 
-#endif // KJB_HAVE_OPENGL
+#endif // IVI_HAVE_OPENGL

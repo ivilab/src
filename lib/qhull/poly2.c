@@ -1,5 +1,5 @@
 
-/* $Id: poly2.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: poly2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -110,7 +110,7 @@ void qh_check_bestdist (void) {
   trace1((qh ferr, "qh_check_bestdist: check that all points are within %2.2g of best facet\n", maxoutside));
   facets= qh_pointfacet (/*qh facet_list*/);
   if (!qh_QUICKhelp && qh PRINTprecision)
-    kjb_fprintf (qh ferr, "\n\
+    ivi_fprintf (qh ferr, "\n\
 qhull output completed.  Verifying that %d points are\n\
 below %2.2g of the nearest %sfacet.\n",
 	     qh_setsize(facets), maxoutside, (qh ONLYgood ?  "good " : ""));
@@ -134,7 +134,7 @@ below %2.2g of the nearest %sfacet.\n",
 	notgood++;
       else {
 	waserror= True;
-	kjb_fprintf(qh ferr, "qhull precision error: point p%d is outside facet f%d, distance= %6.8g maxoutside= %6.8g\n",
+	ivi_fprintf(qh ferr, "qhull precision error: point p%d is outside facet f%d, distance= %6.8g maxoutside= %6.8g\n",
 		facet_i, bestfacet->id, dist, maxoutside);
 	errfacet2= errfacet1;
 	errfacet1= bestfacet;		
@@ -144,7 +144,7 @@ below %2.2g of the nearest %sfacet.\n",
   }
   qh_settempfree (&facets);
   if (notverified && !qh DELAUNAY && !qh_QUICKhelp && qh PRINTprecision)
-    kjb_fprintf(qh ferr, "%d points were well inside the hull.  If the hull contains\n\
+    ivi_fprintf(qh ferr, "%d points were well inside the hull.  If the hull contains\n\
 a lens-shaped component, these points were not verified.  Use\n\
 options 'Qi Tv' to verify all points.\n", notverified);
   if (waserror)
@@ -183,7 +183,7 @@ void qh_check_maxout (void) {
 	minimize_(minvertex, dist);
 	if (-dist > qh TRACEdist || dist > qh TRACEdist
 	    || neighbor == qh tracefacet || vertex == qh tracevertex)
-	  kjb_fprintf (qh ferr, "qh_check_maxout: p%d (v%d) is %.2g from f%d\n",
+	  ivi_fprintf (qh ferr, "qh_check_maxout: p%d (v%d) is %.2g from f%d\n",
 		   qh_pointid (vertex->point), vertex->id, dist, neighbor->id);
       }
     }
@@ -212,7 +212,7 @@ void qh_check_maxout (void) {
 	  maxoutside= dist;
       }
       if (dist > qh TRACEdist || (bestfacet && bestfacet == qh tracefacet))
-	kjb_fprintf (qh ferr, "qh_check_maxout: p%d is %.2g above f%d\n",
+	ivi_fprintf (qh ferr, "qh_check_maxout: p%d is %.2g above f%d\n",
 		   qh_pointid (point), dist, bestfacet->id);
     }
   }
@@ -284,7 +284,7 @@ void qh_check_point (pointT *point, facetT *facet, realT *maxoutside, facetT **e
   if (dist > *maxoutside) {
     *errfacet2= *errfacet1;
     *errfacet1= facet;
-    kjb_fprintf(qh ferr, "qhull precision error: point p%d is outside facet f%d, distance= %6.8g maxoutside= %6.8g\n",
+    ivi_fprintf(qh ferr, "qhull precision error: point p%d is outside facet f%d, distance= %6.8g maxoutside= %6.8g\n",
 	      qh_pointid(point), facet->id, dist, *maxoutside);
   }
 } /* qh_check_point */
@@ -319,7 +319,7 @@ void qh_check_points (void) {
   if (total >= qh_VERIFYdirect
   && (!qh MERGING || qh SKIPcheckmax || qh ZEROall_ok)) {
     if (!qh_QUICKhelp && qh SKIPcheckmax && qh MERGING)
-      kjb_fprintf (qh ferr, "\n\
+      ivi_fprintf (qh ferr, "\n\
 qhull input warning: merging without checking outer planes ('Q5').\n\
 Verify may report that a point is outside of a facet.\n");
     qh_check_bestdist();
@@ -330,19 +330,19 @@ Verify may report that a point is outside of a facet.\n");
       testouter= False;
     if (!qh_QUICKhelp) {
       if (qh MERGEexact || qh SKIPcheckmax || qh NOnearinside)
-	kjb_fprintf (qh ferr, "\n\
+	ivi_fprintf (qh ferr, "\n\
 qhull input warning: exact merge ('Qx'), no outer plane check ('Q5'), or\n\
 no processing of near-inside points ('Q8').  Verify may report that a point\n\
 is outside of a facet.\n");
     }
     if (qh PRINTprecision) {
       if (testouter)
-	kjb_fprintf (qh ferr, "\n\
+	ivi_fprintf (qh ferr, "\n\
 Output completed.  Verifying that all points are below outer planes of\n\
 all %sfacets.  Will make %2.0f distance computations.\n",
 	      (qh ONLYgood ?  "good " : ""), total);
       else
-	kjb_fprintf (qh ferr, "\n\
+	ivi_fprintf (qh ferr, "\n\
 Output completed.  Verifying that all points are below %2.2g of\n\
 all %sfacets.  Will make %2.0f distance computations.\n",
 	      maxoutside, (qh ONLYgood ?  "good " : ""), total);
@@ -396,7 +396,7 @@ void qh_checkconvex(facetT *facetlist, int fault) {
   zzval_(Zcoplanarridges)= 0;
   FORALLfacet_(facetlist) {
     if (facet->flipped) {
-      kjb_fprintf (qh ferr, "qhull precision error: f%d is flipped (interior point is outside)\n",
+      ivi_fprintf (qh ferr, "qhull precision error: f%d is flipped (interior point is outside)\n",
 	       facet->id);
       errfacet1= facet;
       waserror= True;
@@ -416,12 +416,12 @@ void qh_checkconvex(facetT *facetlist, int fault) {
         qh_distplane (vertex->point, neighbor, &dist);
         if (dist > -qh DISTround) {
 	  if (fault == qh_DATAfault) {
-	    kjb_fprintf (qh ferr, "qhull precision error: initial simplex is not convex. Distance=%.2g\n", dist);
+	    ivi_fprintf (qh ferr, "qhull precision error: initial simplex is not convex. Distance=%.2g\n", dist);
 	    qh_errexit (qh_ERRsingular, (facetT*)NULL, (ridgeT*)NULL);
 	  }
           if (dist > qh DISTround) {
             zzinc_(Zconcaveridges);
-            kjb_fprintf (qh ferr, "qhull precision error: f%d is concave to f%d, since p%d (v%d) is %6.4g above\n",
+            ivi_fprintf (qh ferr, "qhull precision error: f%d is concave to f%d, since p%d (v%d) is %6.4g above\n",
               facet->id, neighbor->id, qh_pointid(vertex->point), vertex->id, dist);
             errfacet1= facet;
             errfacet2= neighbor;
@@ -429,7 +429,7 @@ void qh_checkconvex(facetT *facetlist, int fault) {
           }else if (qh ZEROcentrum) {
             if (dist > 0) {     /* qh_checkzero checks that dist < - qh DISTround */
               zzinc_(Zcoplanarridges);
-              kjb_fprintf (qh ferr, "qhull precision error: f%d is clearly not convex to f%d, since p%d (v%d) is %6.4g above\n",
+              ivi_fprintf (qh ferr, "qhull precision error: f%d is clearly not convex to f%d, since p%d (v%d) is %6.4g above\n",
                 facet->id, neighbor->id, qh_pointid(vertex->point), vertex->id, dist);
               errfacet1= facet;
               errfacet2= neighbor;
@@ -459,7 +459,7 @@ void qh_checkconvex(facetT *facetlist, int fault) {
         qh_distplane (centrum, neighbor, &dist);
         if (dist > qh DISTround) {
           zzinc_(Zconcaveridges);
-          kjb_fprintf (qh ferr, "qhull precision error: f%d is concave to f%d.  Centrum of f%d is %6.4g above f%d\n",
+          ivi_fprintf (qh ferr, "qhull precision error: f%d is concave to f%d.  Centrum of f%d is %6.4g above f%d\n",
             facet->id, neighbor->id, facet->id, dist, neighbor->id);
           errfacet1= facet;
           errfacet2= neighbor;
@@ -467,7 +467,7 @@ void qh_checkconvex(facetT *facetlist, int fault) {
         }else if (dist >= 0.0) {   /* if arithmetic always rounds the same,
 				     can test against centrum radius instead */
           zzinc_(Zcoplanarridges);
-          kjb_fprintf (qh ferr, "qhull precision error: f%d is coplanar or concave to f%d.  Centrum of f%d is %6.4g above f%d\n",
+          ivi_fprintf (qh ferr, "qhull precision error: f%d is coplanar or concave to f%d.  Centrum of f%d is %6.4g above f%d\n",
             facet->id, neighbor->id, facet->id, dist, neighbor->id);
 	  errfacet1= facet;
 	  errfacet2= neighbor;
@@ -512,12 +512,12 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
   setT *intersection;
 
   if (facet->visible) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_checkfacet): facet f%d is on the visible_list\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_checkfacet): facet f%d is on the visible_list\n",
       facet->id);
     qh_errexit (qh_ERRqhull, facet, (ridgeT*)NULL);
   }
   if (!facet->normal) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_checkfacet): facet f%d does not have  a normal\n",
+    ivi_fprintf (qh ferr, "qhull internal error (qh_checkfacet): facet f%d does not have  a normal\n",
       facet->id);
     waserror= True;
   }
@@ -528,12 +528,12 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
   qh_setcheck (facet->neighbors, "neighbors for f", facet->id);
   FOREACHvertex_(facet->vertices) {
     if (vertex->deleted) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): deleted vertex v%d in f%d\n", vertex->id, facet->id);
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): deleted vertex v%d in f%d\n", vertex->id, facet->id);
       qh_errprint ("ERRONEOUS", NULL, NULL, NULL, vertex);
       waserror= True;
     }
     if (vertex->id >= previousid) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): vertices of f%d are not in descending id order at v%d\n", facet->id, vertex->id);
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): vertices of f%d are not in descending id order at v%d\n", facet->id, vertex->id);
       waserror= True;
       break;
     }
@@ -545,7 +545,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
   if (facet->simplicial) {
     if (numvertices+numneighbors != 2*qh hull_dim
     && !facet->degenerate && !facet->redundant) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for simplicial facet f%d, #vertices %d + #neighbors %d != 2*qh hull_dim\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for simplicial facet f%d, #vertices %d + #neighbors %d != 2*qh hull_dim\n",
                 facet->id, numvertices, numneighbors);
       qh_setprint (qh ferr, "", facet->neighbors);
       waserror= True;
@@ -554,7 +554,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
     if (!newmerge
     &&(numvertices < qh hull_dim || numneighbors < qh hull_dim)
     && !facet->degenerate && !facet->redundant) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for facet f%d, #vertices %d or #neighbors %d < qh hull_dim\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for facet f%d, #vertices %d or #neighbors %d < qh hull_dim\n",
          facet->id, numvertices, numneighbors);
        waserror= True;
     }
@@ -562,7 +562,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
     ||(qh hull_dim == 3 && numvertices != numridges && !qh NEWfacets)
     ||(qh hull_dim == 2 && numridges + numvertices + numneighbors != 6)) {
       if (!facet->degenerate && !facet->redundant) {
-	kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for facet f%d, #ridges %d < #neighbors %d or (3-d) != #vertices %d or (2-d) not all 2\n",
+	ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for facet f%d, #ridges %d < #neighbors %d or (3-d) != #vertices %d or (2-d) not all 2\n",
 	    facet->id, numridges, numneighbors, numvertices);
 	waserror= True;
       }
@@ -570,20 +570,20 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
   }
   FOREACHneighbor_(facet) {
     if (neighbor == qh_MERGEridge || neighbor == qh_DUPLICATEridge) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d still has a MERGE or DUP neighbor\n", facet->id);
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d still has a MERGE or DUP neighbor\n", facet->id);
       qh_errexit (qh_ERRqhull, facet, (ridgeT*)NULL);
     }
     neighbor->seen= True;
   }
   FOREACHneighbor_(facet) {
     if (!qh_setin(neighbor->neighbors, facet)) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d has neighbor f%d, but f%d does not have neighbor f%d\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d has neighbor f%d, but f%d does not have neighbor f%d\n",
 	      facet->id, neighbor->id, neighbor->id, facet->id);
       errother= neighbor;
       waserror= True;
     }
     if (!neighbor->seen) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d has a duplicate neighbor f%d\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d has a duplicate neighbor f%d\n",
 	      facet->id, neighbor->id);
       errother= neighbor;
       waserror= True;
@@ -596,7 +596,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
   }
   FOREACHridge_(facet->ridges) {
     if (ridge->seen) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d has a duplicate ridge r%d\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d has a duplicate ridge r%d\n",
 	      facet->id, ridge->id);
       errridge= ridge;
       waserror= True;
@@ -604,7 +604,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
     ridge->seen= True;
     numRvertices= qh_setsize(ridge->vertices);
     if (numRvertices != qh hull_dim - 1) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): ridge between f%d and f%d has %d vertices\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): ridge between f%d and f%d has %d vertices\n",
                 ridge->top->id, ridge->bottom->id, numRvertices);
       errridge= ridge;
       waserror= True;
@@ -612,7 +612,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
     neighbor= otherfacet_(ridge, facet);
     neighbor->seen= True;
     if (!qh_setin(facet->neighbors, neighbor)) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for facet f%d, neighbor f%d of ridge r%d not in facet\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): for facet f%d, neighbor f%d of ridge r%d not in facet\n",
            facet->id, neighbor->id, ridge->id);
       errridge= ridge;
       waserror= True;
@@ -621,7 +621,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
   if (!facet->simplicial) {
     FOREACHneighbor_(facet) {
       if (!neighbor->seen) {
-        kjb_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d does not have a ridge for neighbor f%d\n",
+        ivi_fprintf(qh ferr, "qhull internal error (qh_checkfacet): facet f%d does not have a ridge for neighbor f%d\n",
 	      facet->id, neighbor->id);
 	errother= neighbor;
         waserror= True;
@@ -639,7 +639,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
 	    continue;
 	FOREACHvertex_(ridge->vertices) {
 	  if (!vertex->seen) {
-	    kjb_fprintf (qh ferr, "qhull internal error (qh_checkfacet): vertex v%d in r%d not in f%d intersect f%d\n",
+	    ivi_fprintf (qh ferr, "qhull internal error (qh_checkfacet): vertex v%d in r%d not in f%d intersect f%d\n",
   	          vertex->id, ridge->id, facet->id, neighbor->id);
 	    qh_errexit (qh_ERRqhull, facet, ridge);
 	  }
@@ -650,7 +650,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
 	FOREACHvertex_(intersection) {
 	  if (!vertex->seen2) {
 	    if (qh IStracing >=3 || !qh MERGING) {
-	      kjb_fprintf (qh ferr, "qhull precision error (qh_checkfacet): vertex v%d in f%d intersect f%d but\n\
+	      ivi_fprintf (qh ferr, "qhull precision error (qh_checkfacet): vertex v%d in f%d intersect f%d but\n\
  not in a ridge.  This is ok under merging.  Last point was p%d\n",
 		     vertex->id, facet->id, neighbor->id, qh furthest_id);
 	      if (!qh FORCEoutput && !qh MERGING) {
@@ -670,7 +670,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
 	skipA= SETindex_(facet->neighbors, neighbor);
 	skipB= qh_setindex (neighbor->neighbors, facet);
 	if (!qh_setequal_skip (facet->vertices, skipA, neighbor->vertices, skipB)) {
-	  kjb_fprintf (qh ferr, "qhull internal error (qh_checkfacet): facet f%d skip %d and neighbor f%d skip %d do not match \n",
+	  ivi_fprintf (qh ferr, "qhull internal error (qh_checkfacet): facet f%d skip %d and neighbor f%d skip %d do not match \n",
 		   facet->id, skipA, neighbor->id, skipB);
 	  errother= neighbor;
 	  waserror= True;
@@ -683,7 +683,7 @@ void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp) {
       for (i= ridge_i+1; i < ridge_n; i++) {
 	ridge2= (ridgeT*)SETelem_(facet->ridges, i);
 	if (qh_setequal (ridge->vertices, ridge2->vertices)) {
-	  kjb_fprintf (qh ferr, "qh_checkfacet: ridges r%d and r%d have the same vertices\n",
+	  ivi_fprintf (qh ferr, "qh_checkfacet: ridges r%d and r%d have the same vertices\n",
 		  ridge->id, ridge2->id);
 	  errridge= ridge;
 	  waserror= True;
@@ -710,7 +710,7 @@ void qh_checkflipped_all (facetT *facetlist) {
     zzval_(Zflippedfacets)= 0;
   FORALLfacet_(facetlist) {
     if (facet->normal && !qh_checkflipped (facet, &dist, !qh_ALL)) {
-      kjb_fprintf(qh ferr, "qhull precision error: facet f%d is flipped, distance= %6.12g\n",
+      ivi_fprintf(qh ferr, "qhull precision error: facet f%d is flipped, distance= %6.12g\n",
 	      facet->id, dist);
       if (!qh FORCEoutput) {
 	qh_errprint("ERRONEOUS", facet, NULL, NULL, NULL);
@@ -719,7 +719,7 @@ void qh_checkflipped_all (facetT *facetlist) {
     }
   }
   if (waserror) {
-    kjb_fprintf (qh ferr, "\n\
+    ivi_fprintf (qh ferr, "\n\
 A flipped facet occurs when its distance to the interior point is\n\
 greater than %2.2g, the maximum roundoff error.\n", -qh DISTround);
     qh_errexit (qh_ERRprec, (facetT*)NULL, (ridgeT*)NULL);
@@ -749,7 +749,7 @@ void qh_checkpolygon(facetT *facetlist) {
 	if (facet == qh facet_next)
 	  nextseen= True;
 	else if (qh_setsize (facet->outsideset)) {
-	  kjb_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): f%d has outside set before qh facet_next\n",
+	  ivi_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): f%d has outside set before qh facet_next\n",
 		   facet->id);
 	  qh_errexit (qh_ERRqhull, facet, (ridgeT*)NULL);
 	}
@@ -759,7 +759,7 @@ void qh_checkpolygon(facetT *facetlist) {
     }
   }
   if (qh visible_list && !visibleseen && facetlist == qh facet_list) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): visible list f%d no longer on facet list\n", qh visible_list->id);
+    ivi_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): visible list f%d no longer on facet list\n", qh visible_list->id);
     qh_printlists();
     qh_errexit (qh_ERRqhull, qh visible_list, (ridgeT*)NULL);
   }
@@ -786,7 +786,7 @@ void qh_checkpolygon(facetT *facetlist) {
 	vertex->seen= True;
 	numvertices++;
 	if (qh_pointid (vertex->point) == -1) {
-	  kjb_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): unknown point %p for vertex v%d first_point %p\n",
+	  ivi_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): unknown point %p for vertex v%d first_point %p\n",
 		   vertex->point, vertex->id, qh first_point);
 	  waserror= True;
 	}
@@ -796,7 +796,7 @@ void qh_checkpolygon(facetT *facetlist) {
   qh vertex_visit += numfacets;
   if (facetlist == qh facet_list) {
     if (numfacets != qh num_facets - qh num_visible) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkpolygon): actual number of facets is %d, cumulative facet count is %d\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkpolygon): actual number of facets is %d, cumulative facet count is %d\n",
 	      numfacets, qh num_facets- qh num_visible);
       waserror= True;
     }
@@ -811,23 +811,23 @@ void qh_checkpolygon(facetT *facetlist) {
       FORALLfacet_(facetlist)
 	totvertices += qh_setsize (facet->vertices);
       if (totvneighbors != totvertices) {
-	kjb_fprintf(qh ferr, "qhull internal error (qh_checkpolygon): vertex neighbors inconsistent.  Totvneighbors %d, totvertices %d\n",
+	ivi_fprintf(qh ferr, "qhull internal error (qh_checkpolygon): vertex neighbors inconsistent.  Totvneighbors %d, totvertices %d\n",
 		totvneighbors, totvertices);
 	waserror= True;
       }
     }
     if (numvertices != qh num_vertices - qh_setsize(qh del_vertices)) {
-      kjb_fprintf(qh ferr, "qhull internal error (qh_checkpolygon): actual number of vertices is %d, cumulative vertex count is %d\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_checkpolygon): actual number of vertices is %d, cumulative vertex count is %d\n",
 	      numvertices, qh num_vertices - qh_setsize(qh del_vertices));
       waserror= True;
     }
     if (qh hull_dim == 2 && numvertices != numfacets) {
-      kjb_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): #vertices %d != #facets %d\n",
+      ivi_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): #vertices %d != #facets %d\n",
         numvertices, numfacets);
       waserror= True;
     }
     if (qh hull_dim == 3 && numvertices + numfacets - numridges/2 != 2) {
-      kjb_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): #vertices %d + #facets %d - #edges %d != 2\n",
+      ivi_fprintf (qh ferr, "qhull internal error (qh_checkpolygon): #vertices %d + #facets %d - #edges %d != 2\n",
         numvertices, numfacets, numridges/2);
       waserror= True;
     }
@@ -848,18 +848,18 @@ void qh_checkvertex (vertexT *vertex) {
   int size;
 
   if (qh_pointid (vertex->point) == -1) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_checkvertex): unknown point id %p\n", vertex->point);
+    ivi_fprintf (qh ferr, "qhull internal error (qh_checkvertex): unknown point id %p\n", vertex->point);
     waserror= True;
   }
   if (vertex->id >= qh vertex_id) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_checkvertex): unknown vertex id %d\n", vertex->id);
+    ivi_fprintf (qh ferr, "qhull internal error (qh_checkvertex): unknown vertex id %d\n", vertex->id);
     waserror= True;
   }
   if (!waserror && !vertex->deleted) {
     if ((size= qh_setsize (vertex->neighbors))) {
       FOREACHneighbor_(vertex) {
         if (!qh_setin (neighbor->vertices, vertex)) {
-          kjb_fprintf (qh ferr, "qhull internal error (qh_checkvertex): neighbor f%d does not contain v%d\n", neighbor->id, vertex->id);
+          ivi_fprintf (qh ferr, "qhull internal error (qh_checkvertex): neighbor f%d does not contain v%d\n", neighbor->id, vertex->id);
 	  errfacet= neighbor;
 	  waserror= True;
 	}
@@ -982,7 +982,7 @@ setT *qh_facet3vertex (facetT *facet) {
   vertices= qh_settemp (cntvertices);
   if (facet->simplicial) {
     if (cntvertices != 3) {
-      kjb_fprintf (qh ferr, "qhull internal error (qh_facet3vertex): only %d vertices for simplicial facet f%d\n",
+      ivi_fprintf (qh ferr, "qhull internal error (qh_facet3vertex): only %d vertices for simplicial facet f%d\n",
                   cntvertices, facet->id);
       qh_errexit (qh_ERRqhull, facet, (ridgeT*)NULL);
     }
@@ -1000,7 +1000,7 @@ setT *qh_facet3vertex (facetT *facet) {
         break;
     }
     if (!ridge || cntprojected != cntvertices) {
-      kjb_fprintf (qh ferr, "qhull internal error (qh_facet3vertex): ridges for facet %d don't match up.  got at least %d\n",
+      ivi_fprintf (qh ferr, "qhull internal error (qh_facet3vertex): ridges for facet %d don't match up.  got at least %d\n",
                   facet->id, cntprojected);
       qh_errexit(qh_ERRqhull, facet, ridge);
     }
@@ -1162,7 +1162,7 @@ void qh_findgood_all (facetT *facetlist) {
     FORALLfacet_(facetlist) {
       if (facet->good && ((qh GOODvertex > 0) ^ !!qh_isvertex (qh GOODvertexp, facet->vertices))) {
         if (!--numgood) {
-          kjb_fprintf (qh ferr, "qhull warning: good vertex p%d does not match last good facet f%d.  Ignored.\n",
+          ivi_fprintf (qh ferr, "qhull warning: good vertex p%d does not match last good facet f%d.  Ignored.\n",
              qh_pointid(qh GOODvertexp), facet->id);
           return;
         }
@@ -1202,7 +1202,7 @@ void qh_findgood_all (facetT *facetlist) {
 */
 void qh_infiniteloop (facetT *facet) {
 
-  kjb_fprintf (qh ferr, "qhull internal error (qh_infiniteloop): potential infinite loop detected\n");
+  ivi_fprintf (qh ferr, "qhull internal error (qh_infiniteloop): potential infinite loop detected\n");
   qh_errexit (qh_ERRqhull, facet, (ridgeT*)NULL);
 } /* qh_infiniteloop */
 
@@ -1241,7 +1241,7 @@ void qh_initialhull(setT *vertices) {
   }
   FORALLfacets {
     if (!qh_checkflipped (facet, NULL, !qh_ALL)) {  /* can happen with 'R0.1' */
-      kjb_fprintf (qh ferr, "qhull precision error: facet %d is coplanar with the interior point\n",
+      ivi_fprintf (qh ferr, "qhull precision error: facet %d is coplanar with the interior point\n",
                    facet->id);
       qh_errexit (qh_ERRsingular, facet, (ridgeT*)NULL);
     }
@@ -1251,10 +1251,10 @@ void qh_initialhull(setT *vertices) {
   qh_checkconvex(qh facet_list,   qh_DATAfault);
 #ifndef qh_NOtrace
   if (qh IStracing >= 1) {
-    kjb_fprintf(qh ferr, "qh_initialhull: simplex constructed, interior point:");
+    ivi_fprintf(qh ferr, "qh_initialhull: simplex constructed, interior point:");
     for (k=0; k<qh hull_dim; k++)
-      kjb_fprintf (qh ferr, " %6.4g", qh interior_point[k]);
-    kjb_fprintf (qh ferr, "\n");
+      ivi_fprintf (qh ferr, " %6.4g", qh interior_point[k]);
+    ivi_fprintf (qh ferr, "\n");
   }
 #endif
 } /* initialhull */
@@ -1440,7 +1440,7 @@ void qh_matchduplicates (facetT *atfacet, int atskip, int hashsize, int *hashcou
 	  ismatch= (same == (newfacet->toporient ^ facet->toporient));
 	  if (SETelem_(facet->neighbors, skip) != qh_DUPLICATEridge) {
 	    if (!makematch) {
-	      kjb_fprintf (qh ferr, "qhull internal error (qh_matchduplicates): missing dupridge at f%d skip %d for new f%d skip %d hash %d\n",
+	      ivi_fprintf (qh ferr, "qhull internal error (qh_matchduplicates): missing dupridge at f%d skip %d for new f%d skip %d hash %d\n",
 		     facet->id, skip, newfacet->id, newskip, hash);
 	      qh_errexit2 (qh_ERRqhull, facet, newfacet);
 	    }
@@ -1473,7 +1473,7 @@ void qh_matchduplicates (facetT *atfacet, int atskip, int hashsize, int *hashcou
 	}
 	if (makematch && !facet
         && SETelem_(facet->neighbors, skip) == qh_DUPLICATEridge) {
-	  kjb_fprintf (qh ferr, "qhull internal error (qh_matchduplicates): no MERGEridge match for duplicate f%d skip %d at hash %d\n",
+	  ivi_fprintf (qh ferr, "qhull internal error (qh_matchduplicates): no MERGEridge match for duplicate f%d skip %d at hash %d\n",
 		     newfacet->id, newskip, hash);
 	  qh_errexit (qh_ERRqhull, newfacet, (ridgeT*)NULL);
 	}
@@ -1481,7 +1481,7 @@ void qh_matchduplicates (facetT *atfacet, int atskip, int hashsize, int *hashcou
     } /* end of for each new facet at hash */
     if (!makematch) {
       if (!maxmatch) {
-	kjb_fprintf (qh ferr, "qhull internal error (qh_matchduplicates): no maximum match at duplicate f%d skip %d at hash %d\n",
+	ivi_fprintf (qh ferr, "qhull internal error (qh_matchduplicates): no maximum match at duplicate f%d skip %d at hash %d\n",
 		     atfacet->id, atskip, hash);
 	qh_errexit (qh_ERRqhull, atfacet, (ridgeT*)NULL);
       }
@@ -1547,7 +1547,7 @@ vertexT *qh_newvertex(pointT *point) {
   vertex= (vertexT *)qh_memalloc(sizeof(vertexT));
   memset ((char *) vertex, 0, sizeof (vertexT));
   if (qh vertex_id == 0xFFFFFF) {
-    kjb_fprintf(qh ferr, "qhull input error: more than %d vertices.  Id field overflows and two vertices\n\
+    ivi_fprintf(qh ferr, "qhull input error: more than %d vertices.  Id field overflows and two vertices\n\
 may have the same identifier.  Vertices not sorted correctly.\n", 0xFFFFFF);
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -1611,7 +1611,7 @@ facetT *qh_nonupper (facetT *facetlist) {
     if (!facet->upperdelaunay && !facet->flipped)
       return facet;
   }
-  kjb_fprintf(qh ferr, "qhull errror (qh_nonupper): all facets from f%d are upper-Delaunay or flipped\n",
+  ivi_fprintf(qh ferr, "qhull errror (qh_nonupper): all facets from f%d are upper-Delaunay or flipped\n",
     getid_(facetlist));
   qh_errexit( qh_ERRqhull, facetlist, (ridgeT*)NULL);
   return NULL; /* avoid warning */
@@ -1643,10 +1643,10 @@ void qh_point_add (setT *set, pointT *point, void *elem) {
 
   SETreturnsize_(set, size);
   if ((id= qh_pointid(point)) < 0)
-    kjb_fprintf (qh ferr, "qhull internal warning (point_add): unknown point %p id %d\n",
+    ivi_fprintf (qh ferr, "qhull internal warning (point_add): unknown point %p id %d\n",
       point, id);
   else if (id >= size) {
-    kjb_fprintf (qh ferr, "qhull internal errror (point_add): point p%d is out of bounds (%d)\n",
+    ivi_fprintf (qh ferr, "qhull internal errror (point_add): point p%d is out of bounds (%d)\n",
 	     id, size);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }else
@@ -1751,10 +1751,10 @@ void qh_printhashtable(FILE *fp) {
       }
       if (neighbor_i == neighbor_n)
         continue;
-      kjb_fprintf (fp, "hash %d f%d ", facet_i, facet->id);
+      ivi_fprintf (fp, "hash %d f%d ", facet_i, facet->id);
       FOREACHvertex_(facet->vertices)
-        kjb_fprintf (fp, "v%d ", vertex->id);
-      kjb_fprintf (fp, "\n neighbors:");
+        ivi_fprintf (fp, "v%d ", vertex->id);
+      ivi_fprintf (fp, "\n neighbors:");
       FOREACHneighbor_i_(facet) {
 	if (neighbor == qh_MERGEridge)
 	  id= -3;
@@ -1762,9 +1762,9 @@ void qh_printhashtable(FILE *fp) {
 	  id= -2;
 	else
 	  id= getid_(neighbor);
-        kjb_fprintf (fp, " %d", id);
+        ivi_fprintf (fp, " %d", id);
       }
-      kjb_fprintf (fp, "\n");
+      ivi_fprintf (fp, "\n");
     }
   }
 } /* printhashtable */
@@ -1777,15 +1777,15 @@ void qh_printlists (void) {
   facetT *facet;
   vertexT *vertex;
 
-  kjb_fprintf (qh ferr, "qh_printlists: facets:");
+  ivi_fprintf (qh ferr, "qh_printlists: facets:");
   FORALLfacets
-    kjb_fprintf (qh ferr, " %d", facet->id);
-  kjb_fprintf (qh ferr, "\n  new facets %d visible facets %d next facet for addpoint %d\n  vertices (new %d):",
+    ivi_fprintf (qh ferr, " %d", facet->id);
+  ivi_fprintf (qh ferr, "\n  new facets %d visible facets %d next facet for addpoint %d\n  vertices (new %d):",
      getid_(qh newfacet_list), getid_(qh visible_list), getid_(qh facet_next),
      getid_(qh newvertex_list));
   FORALLvertices
-    kjb_fprintf (qh ferr, " %d", vertex->id);
-  kjb_fprintf (qh ferr, "\n");
+    ivi_fprintf (qh ferr, " %d", vertex->id);
+  ivi_fprintf (qh ferr, "\n");
 } /* printlists */
 
 /*-------------------------------------------------

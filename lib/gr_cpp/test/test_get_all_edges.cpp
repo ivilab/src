@@ -29,7 +29,7 @@
 #include <vector>
 #include <time.h>
 
-using namespace kjb;
+using namespace ivi;
 
 Triangular_mesh * tm = NULL;
 char* fileName = NULL;
@@ -139,7 +139,7 @@ void test_polymesh_from_file(char* fname)
     // Test Polymesh class get_all_edges() method
     try{
         tm = new Triangular_mesh(fname);
-    } catch(KJB_error e)
+    } catch(IVI_error e)
     {
         e.print(std::cout);
     }

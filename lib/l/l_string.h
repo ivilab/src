@@ -1,5 +1,5 @@
 
-/* $Id: l_string.h 21654 2017-08-05 14:10:14Z kobus $ */
+/* $Id: l_string.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -43,7 +43,7 @@ namespace kjb_c {
 #endif 
 
 #ifndef EMULATE_MEMCPY
-#    define kjb_memcpy(x, y, z)  (void*)memcpy((void*)(x), \
+#    define ivi_memcpy(x, y, z)  (void*)memcpy((void*)(x), \
                                               (const void*)(y), \
                                               (size_t)(z))
 #endif 
@@ -56,18 +56,18 @@ namespace kjb_c {
 #define IS_DIGIT(x)            (((x) >= '0') && ((x) <= '9' ))
 
 
-#define BUFF_CPY(x,y)              kjb_buff_cpy(x, y, (sizeof(x)))
-#define BUFF_CAT(x,y)              kjb_buff_cat(x, y, (sizeof(x)))
+#define BUFF_CPY(x,y)              ivi_buff_cpy(x, y, (sizeof(x)))
+#define BUFF_CAT(x,y)              ivi_buff_cat(x, y, (sizeof(x)))
 #define BUFF_TRUNC_CPY(x,y)        str_trunc_cpy(x, y, sizeof(x))
 #define BUFF_TRUNC_CAT(x,y)        str_trunc_cat(x, y, sizeof(x))
 #define BUFF_TRUNC_QUOTE_CPY(x,y)  trunc_quote_cpy(x, y, sizeof(x))
 
 #define EXTENDED_LC_BUFF_CPY(x,y)  extended_lc_strncpy(x, y, (sizeof(x)))
 #define EXTENDED_UC_BUFF_CPY(x,y)  extended_uc_strncpy(x, y, (sizeof(x)))
-#define FIELD_CPY(x,y)             (void*)kjb_memcpy((void*)(x),(const void*)&(y),(sizeof(y)))
+#define FIELD_CPY(x,y)             (void*)ivi_memcpy((void*)(x),(const void*)&(y),(sizeof(y)))
 
 
-#define BUFF_REVERSE(x, y)                kjb_reverse(x, y, sizeof(y))
+#define BUFF_REVERSE(x, y)                ivi_reverse(x, y, sizeof(y))
 #define BUFF_CAP_FIRST_LETTER_CPY(x, y)   cap_first_letter_cpy(x, y, sizeof(x))
 
 
@@ -150,11 +150,11 @@ namespace kjb_c {
 #define CHARACTER_NOT_IN_STRING  0
 
 #define HEAD_CMP_EQ(x, y)     (head_cmp((x),(y)) == EQUAL_HEADS)
-#define MEMCMP_EQ(x, y, z)    (kjb_memcmp((x),(y),(size_t)(z)) == EQUAL_STRINGS)
-#define STRCMP_EQ(x, y)       (kjb_strcmp((x),(y)) == EQUAL_STRINGS)
-#define STRNCMP_EQ(x, y, z)   (kjb_strncmp((x),(y),(size_t)(z))==EQUAL_STRINGS)
+#define MEMCMP_EQ(x, y, z)    (ivi_memcmp((x),(y),(size_t)(z)) == EQUAL_STRINGS)
+#define STRCMP_EQ(x, y)       (ivi_strcmp((x),(y)) == EQUAL_STRINGS)
+#define STRNCMP_EQ(x, y, z)   (ivi_strncmp((x),(y),(size_t)(z))==EQUAL_STRINGS)
 #define IC_HEAD_CMP_EQ(x, y)  (ic_head_cmp((x),(y)) == EQUAL_HEADS)
-#define IC_STRCMP_EQ(x, y)    (kjb_ic_strcmp((x),(y)) == EQUAL_STRINGS)
+#define IC_STRCMP_EQ(x, y)    (ivi_ic_strcmp((x),(y)) == EQUAL_STRINGS)
 #define FIND_CHAR_YES(x, y)   (find_char((x),(y)) != CHARACTER_NOT_IN_STRING)
 #define FIND_CHAR_NO(x, y)    (find_char((x),(y)) == CHARACTER_NOT_IN_STRING)
 #define FIND_STRING_YES(x, y) (find_string((x),(y)) != NOT_A_SUBSTRING)
@@ -162,7 +162,7 @@ namespace kjb_c {
 
 
 #ifdef TRACK_MEMORY_ALLOCATION
-#    define kjb_strdup(x)         debug_kjb_str_dup(x, __FILE__, __LINE__)
+#    define ivi_strdup(x)         debug_ivi_str_dup(x, __FILE__, __LINE__)
 #endif
 
 
@@ -190,12 +190,12 @@ void   extended_n_uc_lc(char* in_string, size_t len);
 void   extended_n_lc_uc(char* in_string, size_t len);
 int    extended_tolower(int c);
 int    extended_toupper(int c);
-int    kjb_strcmp      (const char* s1, const char* s2);
+int    ivi_strcmp      (const char* s1, const char* s2);
 int    void_strcmp     (const void* s1, const void* s2);
-int    kjb_memcmp      (const char* s1, const char* s2, size_t len);
-int    kjb_strncmp     (const char* s1, const char* s2, size_t max_len);
-int    kjb_ic_strcmp   (const char* s1, const char* s2);
-int    kjb_ic_strncmp  (const char* s1, const char* s2, size_t max_len);
+int    ivi_memcmp      (const char* s1, const char* s2, size_t len);
+int    ivi_strncmp     (const char* s1, const char* s2, size_t max_len);
+int    ivi_ic_strcmp   (const char* s1, const char* s2);
+int    ivi_ic_strncmp  (const char* s1, const char* s2, size_t max_len);
 int    head_cmp        (const char* input, const char* test_head);
 int    ic_head_cmp     (const char* input, const char* test_head);
 
@@ -248,14 +248,14 @@ void rpad_cpy
 
 
 #ifdef TRACK_MEMORY_ALLOCATION
-    char* debug_kjb_str_dup
+    char* debug_ivi_str_dup
     (
         const char* input_string,
         const char* file_name,
         int         line_number
     );
 #else
-    char* kjb_strdup(const char* input_string);
+    char* ivi_strdup(const char* input_string);
 #endif
 
 
@@ -280,13 +280,13 @@ void trunc_quote_cpy
     size_t      max_len
 );
 
-void kjb_buff_cat(char* s1, const char* s2, size_t max_len);
-void kjb_strncat (char* s1, const char* s2, size_t max_len);
-int  kjb_buff_cpy(char* s1, const char* s2, size_t max_len);
-void kjb_strncpy (char* s1, const char* s2, size_t max_len);
+void ivi_buff_cat(char* s1, const char* s2, size_t max_len);
+void ivi_strncat (char* s1, const char* s2, size_t max_len);
+int  ivi_buff_cpy(char* s1, const char* s2, size_t max_len);
+void ivi_strncpy (char* s1, const char* s2, size_t max_len);
 
-#ifndef kjb_memcpy
-void *kjb_memcpy(void* dest, const void* src, size_t max_len);
+#ifndef ivi_memcpy
+void *ivi_memcpy(void* dest, const void* src, size_t max_len);
 #endif
 
 void   extended_lc_strncpy (char* s1, const char* s2, size_t max_len);
@@ -353,7 +353,7 @@ int const_sget_line_2
 size_t get_str_indent(const char* str);
 char last_char(const char* str);
 
-int kjb_reverse(const char* input, char* output, size_t output_buff_len);
+int ivi_reverse(const char* input, char* output, size_t output_buff_len);
 
 int string_is_in_string_array(char* test_str, char** str_array);
 int is_pattern(const char* pattern);

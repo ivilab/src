@@ -1,5 +1,5 @@
 
-/* $Id: cgi_draw.h 8780 2011-02-27 23:42:02Z predoehl $ */
+/* $Id: cgi_draw.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef CGI_DRAW_INCLUDED    /* Kobus */
 #define CGI_DRAW_INCLUDED
@@ -10,7 +10,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

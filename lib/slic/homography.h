@@ -1,4 +1,4 @@
-/* $Id: homography.h 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: homography.h 25499 2020-06-14 13:26:04Z kobus $
  */
 #ifndef SLIC_HOMOGRAPHY_DEFINED_H_
 #define SLIC_HOMOGRAPHY_DEFINED_H_
@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

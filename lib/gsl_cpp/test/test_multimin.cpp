@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_multimin.cpp 9821 2011-06-27 00:52:55Z predoehl $
+ * $Id: test_multimin.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_incl.h>
@@ -57,18 +57,18 @@ void paraboloid_and_gradient(
 
 
 
-void status_report( const kjb::Gsl_Multimin_fdf &tool, int iter )
+void status_report( const ivi::Gsl_Multimin_fdf &tool, int iter )
 {
     std::cout << iter << "  ";
 
-    kjb::Gsl_Vector argmin( * tool.argmin() );
+    ivi::Gsl_Vector argmin( * tool.argmin() );
     for( int iii = 0; iii < argmin.size(); ++iii )
     {
         std::cout << ' ' << std::fixed << argmin.at( iii );
     }
 
     std::cout << '\t';
-    kjb::Gsl_Vector gradient( * tool.gradient() );
+    ivi::Gsl_Vector gradient( * tool.gradient() );
     for( int iii = 0; iii < gradient.size(); ++iii )
     {
         std::cout << ' ' << gradient.at( iii );
@@ -117,10 +117,10 @@ int test_minimization()
     bool caught_something = false;
     try
     {
-        kjb::Gsl_Multimin_fdf toolz(
+        ivi::Gsl_Multimin_fdf toolz(
         gsl_multimin_fdfminimizer_conjugate_pr, &parabo, 00, .01, 1e-4 );
     }
-    catch( kjb::KJB_error& e )
+    catch( ivi::IVI_error& e )
     {
         if ( VERBOSE )
         {
@@ -135,12 +135,12 @@ int test_minimization()
     caught_something = false;
     try
     {
-        kjb::Gsl_Vector xbad( 1+FDIMS );
+        ivi::Gsl_Vector xbad( 1+FDIMS );
         gsl_set_error_handler_off();
-        kjb::Gsl_Multimin_fdf tooly(
+        ivi::Gsl_Multimin_fdf tooly(
         gsl_multimin_fdfminimizer_conjugate_pr, &parabo, xbad, .01, 1e-4 );
     }
-    catch( kjb::KJB_error& e )
+    catch( ivi::IVI_error& e )
     {
         if ( VERBOSE )
         {
@@ -155,7 +155,7 @@ int test_minimization()
     // Now we actually run the minimizer with legit values
 
     /* start the minimization from pi,pi */
-    kjb::Gsl_Vector x0( FDIMS );
+    ivi::Gsl_Vector x0( FDIMS );
     x0.at( 0 ) = M_PI;
     x0.at( 1 ) = M_PI;
 
@@ -171,7 +171,7 @@ int test_minimization()
      * In the test code below, I optionally can cause a "setback" that muddles
      * up the above numbers.
      */
-    kjb::Gsl_Multimin_fdf tool(
+    ivi::Gsl_Multimin_fdf tool(
         //gsl_multimin_fdfminimizer_conjugate_fr,
         gsl_multimin_fdfminimizer_conjugate_pr,
         //gsl_multimin_fdfminimizer_vector_bfgs2,
@@ -194,10 +194,10 @@ int test_minimization()
             if ( 4 == iter )
             {
                 // throw in a monkey wrench
-                kjb::Gsl_Vector xx( FDIMS );
+                ivi::Gsl_Vector xx( FDIMS );
                 xx.at( 0 ) = 5;
                 xx.at( 1 ) = 5;
-                kjb::Gsl_Multimin_fdf( gsl_multimin_fdfminimizer_conjugate_pr,
+                ivi::Gsl_Multimin_fdf( gsl_multimin_fdfminimizer_conjugate_pr,
                         &parabo, xx, .01, 1e-4 ).swap( tool );
             }
         #endif
@@ -228,7 +228,7 @@ int test_minimization()
         status_report( tool, iter );
     }
 
-    kjb::Gsl_Vector argmin( * tool.argmin() );
+    ivi::Gsl_Vector argmin( * tool.argmin() );
     if ( EPS < abs(argmin.at( 0 ) - x_root) )
     {
         return fail( "Bad root (x direction)" );

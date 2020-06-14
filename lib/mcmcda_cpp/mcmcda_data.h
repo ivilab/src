@@ -35,7 +35,7 @@
 #include <boost/ref.hpp>
 #include <fstream>
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 /**
@@ -107,7 +107,7 @@ public:
      */
     virtual E_set read_single_time(const std::string& /*filename*/) const
     {
-        KJB_THROW_2(Not_implemented, "read_single_time: not defined in general");
+        IVI_THROW_2(Not_implemented, "read_single_time: not defined in general");
         return E_set();
     }
 
@@ -117,7 +117,7 @@ public:
      */
     virtual void write_single_time(const E_set&, const std::string&) const
     {
-        KJB_THROW_2(Not_implemented,
+        IVI_THROW_2(Not_implemented,
                     "write_single_time: not defined in general");
     }
 
@@ -297,7 +297,7 @@ int Data<Element>::neighborhood_size
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-/** @brief  Useful specialization for kjb::Vector. */
+/** @brief  Useful specialization for ivi::Vector. */
 template<>
 inline
 std::set<Vector> Data<Vector>::read_single_time(const std::string& filename) const
@@ -311,7 +311,7 @@ std::set<Vector> Data<Vector>::read_single_time(const std::string& filename) con
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-/** @brief  Useful specialization for kjb::Vector. */
+/** @brief  Useful specialization for ivi::Vector. */
 template<>
 inline
 void Data<Vector>::write_single_time
@@ -323,14 +323,14 @@ void Data<Vector>::write_single_time
     std::ofstream ofs(filename.c_str());
     if(ofs.fail())
     {
-        KJB_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
+        IVI_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
     }
 
     std::copy(data_t.begin(), data_t.end(),
               std::ostream_iterator<Vector>(ofs, "\n"));
 }
 
-}} //namespace kjb::mcmcda
+}} //namespace ivi::mcmcda
 
 #endif /*MCMCDA_DATA_H_INCLUDED */
 

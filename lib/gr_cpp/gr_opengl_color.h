@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_color.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_opengl_color.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,12 +19,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 //
-#ifndef KJB_CPP_OPENGL_COLOR_H
-#define KJB_CPP_OPENGL_COLOR_H
+#ifndef IVI_CPP_OPENGL_COLOR_H
+#define IVI_CPP_OPENGL_COLOR_H
 
 #include "m_cpp/m_vector_d.h"
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {

@@ -42,8 +42,8 @@
 #include <iomanip>
 #include <boost/lexical_cast.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 void Scene_info::set(const Scene_posterior& post, const Scene& sc, bool cmlh)
 {
@@ -133,7 +133,7 @@ void Scene_info::set(const std::string& info)
         size_t n = tok.find('=');
         if(n == std::string::npos)
         {
-            KJB_THROW_2(
+            IVI_THROW_2(
                 Runtime_error, "Bad scene info; 'var=val' required");
         }
         else
@@ -146,7 +146,7 @@ void Scene_info::set(const std::string& info)
             }
             catch(const boost::bad_lexical_cast& lex)
             {
-                KJB_THROW_2(
+                IVI_THROW_2(
                     Runtime_error, "Bad scene info; value not valid number");
             }
 
@@ -154,7 +154,7 @@ void Scene_info::set(const std::string& info)
             Sip_map::iterator pr_q = cts.find(var);
             if(pr_p == facs.end() && pr_q == cts.end())
             {
-                KJB_THROW_2(
+                IVI_THROW_2(
                     Runtime_error, "Bad scene info; var not valid element");
             }
             else if(pr_p != facs.end())
@@ -258,7 +258,7 @@ std::string Scene_info::to_string() const
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::ostream& kjb::pt::operator<<(std::ostream& ost, const Scene_info& info)
+std::ostream& ivi::pt::operator<<(std::ostream& ost, const Scene_info& info)
 {
     ost << info.to_string();
 
@@ -267,7 +267,7 @@ std::ostream& kjb::pt::operator<<(std::ostream& ost, const Scene_info& info)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::istream& kjb::pt::operator>>(std::istream& ist, Scene_info& info)
+std::istream& ivi::pt::operator>>(std::istream& ist, Scene_info& info)
 {
     std::string str;
     if(std::getline(ist, str)) info.set(str);
@@ -277,7 +277,7 @@ std::istream& kjb::pt::operator>>(std::istream& ist, Scene_info& info)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::scene_info_table(const Scene_info& info, std::ostream& ost)
+void ivi::pt::scene_info_table(const Scene_info& info, std::ostream& ost)
 {
     using namespace std;
 

@@ -30,7 +30,7 @@
 #include <people_tracking_cpp/pt_scene_init.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <flow_cpp/flow_integral_flow.h>
@@ -46,8 +46,8 @@
 #include <boost/lexical_cast.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace boost;
 
 // modes
@@ -93,9 +93,9 @@ bool render_image;
 int main(int argc, char** argv)
 {
 //#ifdef TEST
-//    kjb_c::kjb_init();
-//    kjb_c::kjb_l_set("heap-checking", "off");
-//    kjb_c::kjb_l_set("initialization-checking", "off");
+//    ivi_c::ivi_init();
+//    ivi_c::ivi_l_set("heap-checking", "off");
+//    ivi_c::ivi_l_set("initialization-checking", "off");
 //#endif
 
     try
@@ -165,11 +165,11 @@ int main(int argc, char** argv)
         }
 
         // GL stuff
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;
@@ -392,7 +392,7 @@ void handle_key(Scene_viewer& viewer, unsigned char key, int, int)
     }
 
     update_viewer(viewer);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

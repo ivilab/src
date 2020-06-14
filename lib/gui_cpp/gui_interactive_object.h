@@ -1,4 +1,4 @@
-/* $Id: gui_interactive_object.h 11210 2011-11-22 06:09:53Z ksimek $ */
+/* $Id: gui_interactive_object.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,10 +19,10 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_INTERACTIVE_OBJECT_H
-#define KJB_CPP_GUI_INTERACTIVE_OBJECT_H
+#ifndef IVI_CPP_GUI_INTERACTIVE_OBJECT_H
+#define IVI_CPP_GUI_INTERACTIVE_OBJECT_H
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -38,5 +38,5 @@ class Interactive_object : public Selectable, public Event_listener
 
 
 } // namespace gui
-} // namespace kjb
+} // namespace ivi
 #endif

@@ -1,5 +1,5 @@
 
-/* $Id: im_display.c 16078 2013-11-23 21:01:35Z kobus $ */
+/* $Id: im_display.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__
 
@@ -179,7 +179,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 #include "im/im_private.h"
 
@@ -15496,12 +15496,12 @@ static int im_do_patch_output
             r_ave, g_ave, b_ave, r_stdev, g_stdev, b_stdev,
             xmin, ymin, xmax - xmin + 1, ymax - ymin +1);
     }
-    kjb_flush();
+    ivi_flush();
 
     return NO_ERROR;
 }
 
-#endif  /* #ifdef KJB_HAVE_X11 */
+#endif  /* #ifdef IVI_HAVE_X11 */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -15511,7 +15511,7 @@ static int im_do_patch_output
  *        enhanced version of ImageMagick display
  */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 int im_display_main(int argc, char** argv)
 {

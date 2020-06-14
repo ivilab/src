@@ -1,4 +1,4 @@
-/* $Id: gui_trackball.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_trackball.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,14 +19,14 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <gui_cpp/gui_trackball.h>
 #include <gui_cpp/gui_viewer.h>
 
 #include <m_cpp/m_vector_d.h>
 #include <m_cpp/m_matrix_d.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -47,7 +47,7 @@ void rotate(Vector3& pt, const Matrix_d<4,4>& R)
 }
 
 /// add mouse controls to viewer's listener queue
-void Trackball::attach(kjb::gui::Viewer& wnd)
+void Trackball::attach(ivi::gui::Viewer& wnd)
 {
     using namespace boost;
     wnd.add_after_mouse_listener(boost::bind(&Trackball::opengl_mouse_down, this, _1, _2, _3, _4));
@@ -80,7 +80,7 @@ void Trackball::update_viewport(int x, int y, int width, int height)
 
 bool Trackball::opengl_mouse_down(int button, int state, int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(button == GLUT_LEFT_BUTTON)
     {
         // ROTATE MODE
@@ -126,7 +126,7 @@ bool Trackball::opengl_mouse_down(int button, int state, int x, int y)
 
     return true;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -147,7 +147,7 @@ void Trackball::rotate_mouse_down(double x, double y)
 
 bool Trackball::opengl_mouse_move(int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 //        std::cout << "y: " << y << std::endl;
 
     if(mode_ ==  rotate_mode)
@@ -170,7 +170,7 @@ bool Trackball::opengl_mouse_move(int x, int y)
     glutPostRedisplay();
     return true;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
@@ -234,7 +234,7 @@ void Trackball::rotate_mouse_move(double x, double y)
 
     if(click_pt_.size() != 3)
     {
-        KJB_THROW_2(Runtime_error, "Mouse_move must be called after rotate_mouse_down but before rotate_mouse_up.");
+        IVI_THROW_2(Runtime_error, "Mouse_move must be called after rotate_mouse_down but before rotate_mouse_up.");
     }
 
     // convert to sphere-centric coordinates
@@ -268,7 +268,7 @@ void Trackball::rotate_mouse_up()
     if(!delta_q_.is_identity())
     {
         // get object origin w.r.t. current camera
-        kjb::Vector3 object_origin_cam = (cur_q_ * base_cam_.get_orientation()).rotate(object_origin_);
+        ivi::Vector3 object_origin_cam = (cur_q_ * base_cam_.get_orientation()).rotate(object_origin_);
 
         // translate to camera origin, rotate, translate back, i.e.:
         // o + R_delta * -o
@@ -293,10 +293,10 @@ void Trackball::set_extrinsic_dispatch_(const Matrix_type& extrinsic)
         extrinsic(3, 2) != 0 ||
         extrinsic(3, 3) != 1))
     {
-        KJB_THROW_2(Illegal_argument, "Last row of extrinsic matrix must be {0, 0, 0, 1}");
+        IVI_THROW_2(Illegal_argument, "Last row of extrinsic matrix must be {0, 0, 0, 1}");
     }
 
-    kjb::Matrix base_rotation = kjb::create_identity_matrix(4);
+    ivi::Matrix base_rotation = ivi::create_identity_matrix(4);
 
     for(size_t row = 0; row < 3; row++)
     for(size_t col = 0; col < 3; col++)
@@ -304,9 +304,9 @@ void Trackball::set_extrinsic_dispatch_(const Matrix_type& extrinsic)
         base_rotation(row, col) = extrinsic(row, col);
     }
 
-    base_cam_.set_orientation(kjb::Quaternion(base_rotation));
+    base_cam_.set_orientation(ivi::Quaternion(base_rotation));
 
-    kjb::Vector base_translation(4);
+    ivi::Vector base_translation(4);
     for(size_t row = 0; row < 3; row++)
     {
         base_translation[row] = extrinsic(row, 3);
@@ -318,8 +318,8 @@ void Trackball::set_extrinsic_dispatch_(const Matrix_type& extrinsic)
     reset(); // set cam_ = base_cam_
 }
 
-template void Trackball::set_extrinsic_dispatch_<kjb::Matrix>(const kjb::Matrix& extrinsic);
-template void Trackball::set_extrinsic_dispatch_<kjb::Matrix4>(const kjb::Matrix4& extrinsic);
+template void Trackball::set_extrinsic_dispatch_<ivi::Matrix>(const ivi::Matrix& extrinsic);
+template void Trackball::set_extrinsic_dispatch_<ivi::Matrix4>(const ivi::Matrix4& extrinsic);
 
 void Trackball::set_clipping_planes(double near, double far)
 {
@@ -355,7 +355,7 @@ void Trackball::set_camera_same_fovy(const Perspective_camera& cam)
     set_focal_from_fovy_();
 }
 
-const kjb::Perspective_camera& Trackball::get_camera() const
+const ivi::Perspective_camera& Trackball::get_camera() const
 {
     update_camera_();
 
@@ -398,7 +398,7 @@ void Trackball::reset()
  */
 void Trackball::prepare_for_rendering_dispatch_(bool selecting, double select_x, double select_y, double select_dx, double select_dy )
 {
-    using namespace kjb::opengl;
+    using namespace ivi::opengl;
     update_camera_();
 
     glMatrixMode(GL_PROJECTION);
@@ -435,7 +435,7 @@ void Trackball::render_object_origin()
     glPushAttrib(GL_ENABLE_BIT); // lighting
     glDisable(GL_LIGHTING);
     glPushMatrix();
-    kjb::opengl::glTranslate(object_origin_);
+    ivi::opengl::glTranslate(object_origin_);
     glScalef(scale, scale, scale);
     glBegin(GL_LINES);
         // x axis
@@ -524,10 +524,10 @@ void Trackball::render()
     }
 #endif
 
-    kjb::opengl::glRotate(get_orientation());
+    ivi::opengl::glRotate(get_orientation());
 
 
-    kjb::opengl::Sphere s;
+    ivi::opengl::Sphere s;
     s.set_radius(sphere_radius_);
     s.wire_render();
 
@@ -569,21 +569,21 @@ void Trackball::update_camera_() const
     cam_.set_orientation(delta_q_ * cur_q_ * base_cam_.get_orientation());
 
     /// TRANSLATION
-    kjb::Vector3 t(cur_t_);
+    ivi::Vector3 t(cur_t_);
 
     // add translation due to in-progress rotation in order to
     // keep object origin stationary
     if(!delta_q_.is_identity())
     {
         // get object origin w.r.t. current camera
-        kjb::Vector3 object_origin_cam = (cur_q_ * base_cam_.get_orientation()).rotate(object_origin_);
+        ivi::Vector3 object_origin_cam = (cur_q_ * base_cam_.get_orientation()).rotate(object_origin_);
 
         // translate to camera origin, rotate, translate back, i.e.:
         // o + R_delta * -o
         t += object_origin_cam + delta_q_.rotate(-object_origin_cam);
     }
 
-    cam_.set_world_origin(kjb::Vector(t.begin(), t.end()));
+    cam_.set_world_origin(ivi::Vector(t.begin(), t.end()));
 
     cam_dirty_ = false;
 }
@@ -607,6 +607,6 @@ void Trackball::set_focal_from_fovy_()
 
 
 } // namespace gui
-} // namespace kjb
+} // namespace ivi
 
 #endif /* have_opengl */

@@ -1,4 +1,4 @@
-/* $Id: l_test.cpp 20086 2015-11-16 23:42:01Z predoehl $ */
+/* $Id: l_test.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -36,8 +36,8 @@ void down_in_flames(
 {
     std::cerr << filename << ':' << line_num << ":  " << test_kind
               << " EPIC FAIL whilst executing\n\t\"" << bad_line << "\"\n";
-    // changed from kjb_exit() to abort() for easier debugging
-    kjb_c::kjb_abort();
+    // changed from ivi_exit() to abort() for easier debugging
+    ivi_c::ivi_abort();
 }
 
 void print_victory(const char* filename)
@@ -48,40 +48,40 @@ void print_victory(const char* filename)
 int scan_time_factor(const char* argv1, int* tf)
 {
     // No time factor?  That is fine.  *tf remains at its default value.
-    if (00 == argv1) return kjb_c::NO_ERROR;
+    if (00 == argv1) return ivi_c::NO_ERROR;
 
     // No output parameter?  That is a problem.
-    KJB(NRE(tf));
+    IVI(NRE(tf));
 
     // try to scan an integer from argv1
     int time_factor = -1;
     std::istringstream s(argv1);
     if (!(s >> time_factor))
     {
-        kjb_c::set_error("Bad time factor string: %s", argv1);
-        if ('\0' == argv1[0]) kjb_c::add_error("(empty string)");
-        kjb_c::add_error("Time factor should be nonnegative or omitted.");
-        return kjb_c::ERROR;
+        ivi_c::set_error("Bad time factor string: %s", argv1);
+        if ('\0' == argv1[0]) ivi_c::add_error("(empty string)");
+        ivi_c::add_error("Time factor should be nonnegative or omitted.");
+        return ivi_c::ERROR;
     }
 
     // test scanned value
     if (time_factor < 0)
     {
-        kjb_c::set_error("Bad time factor value (must be nonnegative): %d",
+        ivi_c::set_error("Bad time factor value (must be nonnegative): %d",
                             time_factor);
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 
     // look for trailing characters
     char c;
     if (s >> c)
     {
-        kjb_c::set_error("Time factor string has trailing characters: %s",
+        ivi_c::set_error("Time factor string has trailing characters: %s",
                           argv1);
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 
     *tf = time_factor;
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 

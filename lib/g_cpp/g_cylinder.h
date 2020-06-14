@@ -1,4 +1,4 @@
-/* $Id: g_cylinder.h 13673 2013-01-29 23:17:18Z elh $ */
+/* $Id: g_cylinder.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* ===========================================================================*
  |
  |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,16 +19,16 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_G_CPP_CYLINDER_H
-#define KJB_G_CPP_CYLINDER_H
+#ifndef IVI_G_CPP_CYLINDER_H
+#define IVI_G_CPP_CYLINDER_H
 
 #include <m_cpp/m_vector.h>
 #include <l_cpp/l_readable.h>
 #include <l_cpp/l_writeable.h>
 
-namespace kjb
+namespace ivi
 {
-// Geometric cylinder class.  For renderable cylinder, see kjb::opengl::Cylinder
+// Geometric cylinder class.  For renderable cylinder, see ivi::opengl::Cylinder
 class Cylinder : public Readable, public Writeable
 {
 public:
@@ -41,7 +41,7 @@ public:
     {
         if(p1_.size() != 3  || p2_.size() != 3)
         {
-            KJB_THROW_2(Illegal_argument, 
+            IVI_THROW_2(Illegal_argument, 
                         "Cylinder() both points must be 3-dimensional.");
         }
     }
@@ -94,6 +94,6 @@ protected:
 };
 
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

@@ -2,7 +2,7 @@
  * @file Elaboration_tree.cpp
  *
  * @author Colin Dawson 
- * $Id: Elaboration_tree.cpp 21596 2017-07-30 23:33:36Z kobus $ 
+ * $Id: Elaboration_tree.cpp 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "l/l_sys_debug.h"
@@ -46,7 +46,7 @@ namespace semantics
         curr_parent_ = root_;
         curr_object_ =
             boost::dynamic_pointer_cast<Object_elaboration>(root_->child(TARGET));
-        IFT(curr_object_ != NULL, kjb::Cant_happen,
+        IFT(curr_object_ != NULL, ivi::Cant_happen,
             "Somehow an Elaboration_tree is being instantiated with "
             "a non Object_elaboration in the top TARGET position.");
     }
@@ -152,7 +152,7 @@ namespace semantics
 	Elab_ptr the_child = parent -> child(which_child);
 	Obj_ptr the_object =
 	    boost::dynamic_pointer_cast<Object_elaboration>(the_child);
-	IFT(the_object != NULL, kjb::Illegal_argument,
+	IFT(the_object != NULL, ivi::Illegal_argument,
             "Elaboration_tree::add_object_to_queue(Elab_ptr parent, size_t which_child)"
             " received parent argument whose child is not an Object_elaboration.");
 	live_object_parents_.push_front(parent);

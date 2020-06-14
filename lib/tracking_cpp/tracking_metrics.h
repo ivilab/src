@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Jinyan Guan, Ernesto Brau
  * =========================================================================== */
 
-/* $Id: tracking_metrics.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: tracking_metrics.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef TRACKING_METRICS_H
 #define TRACKING_METRICS_H
@@ -28,7 +28,7 @@
 #include <boost/bimap.hpp>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace tracking {
 
 typedef boost::bimap<Entity_id, Entity_id> Correspondence;
@@ -117,7 +117,7 @@ void get_pw_distance
  */
 void get_best_matching
 (
-    const kjb::Matrix& pw_distance, 
+    const ivi::Matrix& pw_distance, 
     double threshold, 
     std::vector<std::pair<int, int> >& matching
 );
@@ -140,7 +140,7 @@ void get_counts_and_distances
     std::vector<double>& dists
 );
 
-}} // namespace kjb::tracking
+}} // namespace ivi::tracking
 
 
 #endif /* TRACKING_METRICS_H */

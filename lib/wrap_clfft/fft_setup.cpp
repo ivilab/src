@@ -46,7 +46,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
 #include "wrap_clfft/fft_internal.h"
 #include "wrap_clfft/fft_base_kernels.h"
 #include <stdlib.h>
@@ -400,4 +400,4 @@ void clFFT_DumpPlan( clFFT_Plan Plan, FILE *file)
 	}
 	fprintf(out, "%s\n", plan->kernel_string->c_str());
 }
-#endif // KJB_HAVE_OPENCL
+#endif // IVI_HAVE_OPENCL

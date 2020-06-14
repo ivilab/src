@@ -1,5 +1,5 @@
 
-/* $Id: image_draw_point.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: image_draw_point.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -23,9 +23,9 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -35,15 +35,15 @@ int main(int argc, char** argv)
     }
 
     check_num_args(argc, 1, 1,  "image_draw_point [ file_name ]");
-    EPETE(kjb_read_image(&ip, argv[ 1 ]));
+    EPETE(ivi_read_image(&ip, argv[ 1 ]));
 
     EPETE(image_draw_point(ip, 100,40, 5, 200,0,0));
 
-    EPETE(kjb_display_image(ip, NULL));
+    EPETE(ivi_display_image(ip, NULL));
 
     prompt_to_continue();
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
     
     return EXIT_SUCCESS; 
 } 

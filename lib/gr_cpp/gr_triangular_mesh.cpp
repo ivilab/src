@@ -65,15 +65,15 @@
 #include <fstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * The file format is big-endian binary.
  *
  * @param  fname  Input file to read this mesh from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Triangular_mesh::Triangular_mesh(const char* fname) throw (Illegal_argument, IO_error)
 {
@@ -85,8 +85,8 @@ Triangular_mesh::Triangular_mesh(const char* fname) throw (Illegal_argument, IO_
  *
  * @param  in  Input stream to read this mesh from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Triangular_mesh::Triangular_mesh(std::istream& in) throw (Illegal_argument, IO_error)
 {
@@ -133,25 +133,25 @@ Triangular_mesh* Triangular_mesh::clone() const
  * @param  p  First point index in @em face of the shared edge. If set to num_faces,
  *            the other point forming the edge will be 0.
  *
- * @throw  kjb::Illegal_argument  If @em i or @em p are not valid indices.
+ * @throw  ivi::Illegal_argument  If @em i or @em p are not valid indices.
  */
 uint32_t Triangular_mesh::adjacent_face(unsigned int f, unsigned int e) const throw (Index_out_of_bounds)
 {
     if(!_is_adjacency_consistent)
     {
-        throw KJB_error("Adjacency information not available");
+        throw IVI_error("Adjacency information not available");
     }
     return _adjacency(f, e);
 }
 
 
-/*void Triangular_mesh::add_face(const Polygon & face, uint32_t id) throw (kjb::Illegal_argument)
+/*void Triangular_mesh::add_face(const Polygon & face, uint32_t id) throw (ivi::Illegal_argument)
 {
     Polymesh::add_face(face, id);
     _is_adjacency_consistent = false;
 }*/
 
-void Triangular_mesh::add_face(const Polygon & face) throw (kjb::Illegal_argument)
+void Triangular_mesh::add_face(const Polygon & face) throw (ivi::Illegal_argument)
 {
     Polymesh::add_face(face);
     _is_adjacency_consistent = false;
@@ -159,7 +159,7 @@ void Triangular_mesh::add_face(const Polygon & face) throw (kjb::Illegal_argumen
 /**
  * It creates the adjacency matrix for this triangular mesh
  */
-void Triangular_mesh::create_adjacency_matrix() throw(KJB_error)
+void Triangular_mesh::create_adjacency_matrix() throw(IVI_error)
 {
     unsigned int i, j, ei, ej;
     int supcount = 0;
@@ -205,9 +205,9 @@ void Triangular_mesh::create_adjacency_matrix() throw(KJB_error)
                 }
             }
         }
-    } catch(KJB_error)
+    } catch(IVI_error)
     {
-        throw KJB_error("Triangular mesh not fully connected, adjacency could not be created");
+        throw IVI_error("Triangular mesh not fully connected, adjacency could not be created");
     }
     //std::cout << "The last count is " << supcount << std::endl;
 
@@ -219,7 +219,7 @@ void Triangular_mesh::create_adjacency_matrix() throw(KJB_error)
  * has not been created yet, otherwise reads adjacency matrix
  * from a file.
  */
-void Triangular_mesh::set_adjacency_matrix(const char* fname) throw(KJB_error)
+void Triangular_mesh::set_adjacency_matrix(const char* fname) throw(IVI_error)
 {
     char adjFile[100];
     strcpy(adjFile, fname);
@@ -247,7 +247,7 @@ void Triangular_mesh::set_adjacency_matrix(const char* fname) throw(KJB_error)
  *
  * @param  out  Output stream to write the members of this parallelepiped to.
  *
- * @throw  kjb::IO_error  Could not write to @em out.
+ * @throw  ivi::IO_error  Could not write to @em out.
  */
 void Triangular_mesh::write(const char *filename) const throw (IO_error)
 {
@@ -266,11 +266,11 @@ void Triangular_mesh::write(const char *filename) const throw (IO_error)
  *
  * @param  out  Output stream to write the members of this parallelepiped to.
  *
- * @throw  kjb::IO_error  Could not write to @em out.
+ * @throw  ivi::IO_error  Could not write to @em out.
  */
 void Triangular_mesh::write(std::ostream& out) const throw (IO_error)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     try{
         Polymesh::write(out);
@@ -284,13 +284,13 @@ void Triangular_mesh::write(std::ostream& out) const throw (IO_error)
 /**
  * @param  in  Input stream to read the members of this parallelepiped from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid argument to read from file.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid argument to read from file.
  */
 
 void Triangular_mesh::read(std::istream& in) throw (IO_error, Illegal_argument)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     try{
         Polymesh::read(in);

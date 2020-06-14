@@ -1,4 +1,4 @@
-/* $Id: g_cylinder_section.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g_cylinder_section.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -63,7 +63,7 @@
 #include <g_cpp/g_cylinder_section.h>
 #include <sstream>
 
-using namespace kjb;
+using namespace ivi;
 
 
 /**
@@ -117,41 +117,41 @@ void Cylinder_section::read(std::istream & in)
 
     if(!(field_value = read_field_value(in, "angle")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing angle");
+        IVI_THROW_2(Illegal_argument,"Missing angle");
     }
     istringstream ist(field_value);
     ist >> angle_;
     if(angle_ < (-1 * TWO_PI) || angle_ > TWO_PI)
     {
-        KJB_THROW_2(Illegal_argument, "Angle must be between -2*PI and 2*PI");
+        IVI_THROW_2(Illegal_argument, "Angle must be between -2*PI and 2*PI");
     }
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing angle");
+        IVI_THROW_2(Illegal_argument, "Missing angle");
     }
     ist.clear(std::ios_base::goodbit);
     //////////
     if(!(field_value = read_field_value(in, "angleStartpoint")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing angle startpoint");
+        IVI_THROW_2(Illegal_argument,"Missing angle startpoint");
     }
     ist.str(field_value);
     ist >> angle_startpt_(0) >> angle_startpt_(1) >> angle_startpt_(2);
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing angle startpoint");
+        IVI_THROW_2(Illegal_argument, "Missing angle startpoint");
     }
     ist.clear(std::ios_base::goodbit);
     //////////
     if(!(field_value = read_field_value(in, "angleEndpoint")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing angle endpoint");
+        IVI_THROW_2(Illegal_argument,"Missing angle endpoint");
     }
     ist.str(field_value);
     ist >> angle_endpt_(0) >> angle_endpt_(1) >> angle_endpt_(2);
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing angle endpoint");
+        IVI_THROW_2(Illegal_argument, "Missing angle endpoint");
     }
     ist.clear(std::ios_base::goodbit);
 }

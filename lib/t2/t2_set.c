@@ -1,5 +1,5 @@
 
-/* $Id: t2_set.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: t2_set.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
    Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -22,7 +22,7 @@ extern "C" {
 
 /*
  * =============================================================================
- *                            kjb_t2_set
+ *                            ivi_t2_set
  *
  *
  *
@@ -33,7 +33,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
  */
 
-int kjb_t2_set(const char* option, const char* value)
+int ivi_t2_set(const char* option, const char* value)
 {
     int         temp_result;
     int         result = NOT_FOUND;

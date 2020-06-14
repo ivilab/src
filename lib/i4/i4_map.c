@@ -1,5 +1,5 @@
 
-/* $Id: i4_map.c 5837 2010-05-02 21:56:10Z ksimek $ */
+/* $Id: i4_map.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -42,8 +42,8 @@ extern "C" {
 
 int change_basis_post_map_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          change_basis_mp,
     Matrix*          map_mp
 )
@@ -105,13 +105,13 @@ int change_basis_post_map_image
 
 int change_basis_post_map_projected_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          change_basis_mp,
     Matrix*          map_mp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     Pixel*     in_pos;
     Pixel*     out_pos;
     int        i, j, num_rows, num_cols;

@@ -16,31 +16,31 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_util.cpp 24606 2019-12-07 22:02:46Z kobus $ */
+/* $Id: cv_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* Kobus: Added Jan 13, 2017. */
 #include <iostream>
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <opencv2/imgcodecs/imgcodecs_c.h>
 #endif 
 
 #include <wrap_opencv_cpp/cv_util.h>
 
 
-//#ifdef KJB_HAVE_OPENCV
+//#ifdef IVI_HAVE_OPENCV
 /* Does not compile */ 
 //#warning "Disabling OPENCV in cv_object_detec.cpp  because it does not compile"
-//#undef KJB_HAVE_OPENCV
+//#undef IVI_HAVE_OPENCV
 //#endif
 
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 
 /*cv::Ptr<IplImage> to_opencv(const Image& image)
 {
@@ -89,7 +89,7 @@ cv::Ptr<IplImage> to_opencv_gray(const Image& image)
         return iplImage;
 
     }
-    catch(kjb::IO_error kio)
+    catch(ivi::IO_error kio)
     {
         kio.print(std::cout);
     }
@@ -168,7 +168,7 @@ cv::Mat to_opencv(const Matrix& matrix)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix opencv_to_kjb(const cv::Mat& cv_mat)
+Matrix opencv_to_ivi(const cv::Mat& cv_mat)
 {
     Matrix matrix(cv_mat.rows, cv_mat.cols);
     for(int i = 0; i < cv_mat.rows; i++)
@@ -183,4 +183,4 @@ Matrix opencv_to_kjb(const cv::Mat& cv_mat)
 
 #endif
 } //namespace opencv
-} //namespace kjb
+} //namespace ivi

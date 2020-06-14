@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: m_vector.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_vector.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /** @file
  *
@@ -19,7 +19,7 @@
  *
  * @brief Definition for the Vector class methods.
  *
- * The Vector class is a thin wrapper on the KJB Vector struct
+ * The Vector class is a thin wrapper on the IVI Vector struct
  * and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -46,8 +46,8 @@ namespace {
 
 // functor used for the floor transformation, like a mythical int floor(double)
 struct iFloor {
-    typedef kjb::Int_vector::value_type my_int;
-    typedef kjb::Vector::value_type my_real;
+    typedef ivi::Int_vector::value_type my_int;
+    typedef ivi::Vector::value_type my_real;
     my_int operator()( my_real xxx ) const
     {
         return static_cast< my_int >( floor( xxx ) );
@@ -57,7 +57,7 @@ struct iFloor {
 } // end anonymous namespace
 
 
-namespace kjb {
+namespace ivi {
 
 //const char* const Vector::BAD_SEGMENT =
     //"Failure in create_from_vector_section:  allocation error or bad indices";
@@ -70,7 +70,7 @@ void Vector::throw_bad_bounds( int index ) const
     std::ostringstream msg;
     msg << "Invalid Vector access at (" << index << ").  "
            "Vector size is " << get_length() << ".\n";
-    KJB_THROW_2( Index_out_of_bounds, msg.str() );
+    IVI_THROW_2( Index_out_of_bounds, msg.str() );
 }
 
 /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
@@ -109,17 +109,17 @@ Vector::Vector(const Matrix& src)
     if( 1 == src.get_num_cols() )
     {
         // Test program was HERE.
-        kjb_c::get_matrix_col(&m_vector, src.get_c_matrix(), 0);
+        ivi_c::get_matrix_col(&m_vector, src.get_c_matrix(), 0);
     }
     else if ( 1 == src.get_num_rows() )
     {
         // Test program was HERE.
-        kjb_c::get_matrix_row(&m_vector, src.get_c_matrix(), 0);
+        ivi_c::get_matrix_row(&m_vector, src.get_c_matrix(), 0);
     }
     else
     {
         // Test program was HERE.
-        KJB_THROW_2(Illegal_argument, "Cannot convert matrix to vector:  "
+        IVI_THROW_2(Illegal_argument, "Cannot convert matrix to vector:  "
                                 "matrix is not a column or row vector." );
     }
 }
@@ -156,20 +156,20 @@ Vector::Vector(const Matrix_view& src)
 {
     if( 1 == src.get_num_cols() )
     {
-        kjb_c::get_target_vector(&m_vector, src.get_num_rows());
+        ivi_c::get_target_vector(&m_vector, src.get_num_rows());
         for(int row = 0; row < src.get_num_rows(); row++)
             operator[](row) = src(row, 0);
     }
     else if ( 1 == src.get_num_rows() )
     {
-        kjb_c::get_target_vector(&m_vector, src.get_num_cols());
+        ivi_c::get_target_vector(&m_vector, src.get_num_cols());
         for(int col = 0; col < src.get_num_cols(); col++)
             operator[](col) = src(0, col);
     }
     else
     {
         // Test program was HERE.
-        KJB_THROW_2(Illegal_argument, "Cannot convert matrix view to vector:  "
+        IVI_THROW_2(Illegal_argument, "Cannot convert matrix view to vector:  "
                                 "matrix view is not a column or row vector." );
     }
 }
@@ -195,16 +195,16 @@ Vector::Vector(const std::string& file_name)
     if ( file_name.length() == 0)
     {
         // Test program was HERE.
-        KJB_THROW_2(Illegal_argument, "Cannot read vector from file:  "
+        IVI_THROW_2(Illegal_argument, "Cannot read vector from file:  "
                                             "file name is empty");
     }
     else
     {
         // Test program was HERE.
-        int err = kjb_c::read_vector(&m_vector, file_name.c_str());
+        int err = ivi_c::read_vector(&m_vector, file_name.c_str());
         if(err)
         {
-            KJB_THROW_3(kjb::IO_error, "File not found %s", (file_name.c_str()));
+            IVI_THROW_3(ivi::IO_error, "File not found %s", (file_name.c_str()));
         }
     }
 }
@@ -311,7 +311,7 @@ void Vector::assign(size_type N, value_type t)
     // which will be immediately overwritten by std::fill_n on the 
     // next line.
     //
-    // Suggest adding a "realloc" method similar to kjb::Matrix that
+    // Suggest adding a "realloc" method similar to ivi::Matrix that
     // implements "resize without copy" semantics.
     this->resize(N); 
     std::fill_n(this->begin(), N, t);
@@ -391,8 +391,8 @@ Vector& Vector::operator-= (double x)
 Vector create_gauss_random_vector(int length)
 {
     // Test program was HERE.
-    kjb_c::Vector* result = 0;
-    ETX( kjb_c::get_gauss_random_vector( &result, length ) );
+    ivi_c::Vector* result = 0;
+    ETX( ivi_c::get_gauss_random_vector( &result, length ) );
     return Vector(result);
 }
 
@@ -405,15 +405,15 @@ Vector operator*(const Vector& op1, const Matrix& op2)
     if( op1.get_length() != op2.get_num_rows() )
     {
         // Test program was HERE.
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
     //else
     //{
     //    // Test program was HERE.
     //}
 
-    kjb_c::Vector* result = 0;
-    ETX(kjb_c::multiply_vector_and_matrix( &result, op1.get_c_vector(),
+    ivi_c::Vector* result = 0;
+    ETX(ivi_c::multiply_vector_and_matrix( &result, op1.get_c_vector(),
                                                     op2.get_c_matrix() ));
     return Vector(result);
 }
@@ -426,14 +426,14 @@ Vector operator*(const Matrix& op1, const Vector& op2)
     if ( op1.get_num_cols() != op2.get_length() )
     {
         // Test program was HERE.
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
     //else
     //{
     //    // Test program was HERE.
     //}
     Vector::Impl_type* result = 0;
-    ETX(kjb_c::multiply_matrix_and_vector( &result, op1.get_c_matrix(),
+    ETX(ivi_c::multiply_matrix_and_vector( &result, op1.get_c_matrix(),
                                                     op2.get_c_vector() ));
     return Vector( result );
 }
@@ -469,7 +469,7 @@ bool operator==(const Vector& op1, const Vector::Impl_type& op2)
     else
     {
         // Test program was HERE.
-        return ( kjb_c::max_abs_vector_difference( op1.get_c_vector(), &op2 ) < FLT_EPSILON);
+        return ( ivi_c::max_abs_vector_difference( op1.get_c_vector(), &op2 ) < FLT_EPSILON);
     }
 }
 
@@ -477,7 +477,7 @@ bool operator==(const Vector& op1, const Vector::Impl_type& op2)
 
 double Vector::get_max_abs_difference(const Vector & op2) const
 {
-    return kjb_c::max_abs_vector_difference( get_c_vector(), op2.get_c_vector() );
+    return ivi_c::max_abs_vector_difference( get_c_vector(), op2.get_c_vector() );
 }
 
 /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
@@ -521,7 +521,7 @@ Matrix Vector::hat() const
     if( get_length() != 3)
     {
         // Test program was HERE.
-        KJB_THROW_2(Not_implemented, "Hat operator is only implemented "
+        IVI_THROW_2(Not_implemented, "Hat operator is only implemented "
                                             "for vectors of dimension 3.");
     }
     //else
@@ -548,7 +548,7 @@ Vector& Vector::cross_with( const Vector& op2 )
     if ( get_length() != 3 || op2.get_length() != 3 )
     {
         // Test program was HERE.
-        KJB_THROW_2( Illegal_argument,
+        IVI_THROW_2( Illegal_argument,
                 "Cross product is undefined for vectors not of size 3." );
     }
     //else
@@ -565,7 +565,7 @@ Vector cross( const Vector& op1, const Vector& op2 )
     if ( op1.get_length() != 3 || op2.get_length() != 3 )
     {
         // Test program was HERE.
-        KJB_THROW_2( Illegal_argument,
+        IVI_THROW_2( Illegal_argument,
                 "Cross product is undefined for vectors not of size 3." );
     }
     //else
@@ -618,11 +618,11 @@ std::ostream& stream_write_vector(std::ostream& ost, const Vector& v)
 
 std::istream& stream_read_vector(std::istream& ist, Vector& v)
 {
-    kjb::Vector::size_type n;
+    ivi::Vector::size_type n;
     ist >> n;
     v.resize(n);
     
-    for(kjb::Vector::size_type i = 0; i < n; ++i)
+    for(ivi::Vector::size_type i = 0; i < n; ++i)
     {
         ist >> v[i];
     }
@@ -641,7 +641,7 @@ std::vector<Vector> get_transpose(const std::vector<Vector>& m)
 
     for(size_t i = 0; i < num_vecs; i++)
     {
-        IFT(m[i].get_length() == (int) vec_len, kjb::Dimension_mismatch,
+        IFT(m[i].get_length() == (int) vec_len, ivi::Dimension_mismatch,
             "Vectors transpose: all Vectors must be same size.");
 
         for(size_t j = 0; j < vec_len; j++)
@@ -668,9 +668,9 @@ Int_vector floor( const Vector& realv )
 /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
 //@author Josh Bowdish
-kjb::Vector create_uniformly_spaced_vector(double a,double b,unsigned n){
+ivi::Vector create_uniformly_spaced_vector(double a,double b,unsigned n){
 
-    kjb::Vector toreturn(n);
+    ivi::Vector toreturn(n);
 
     double stepsize;
     if(n==1){
@@ -686,5 +686,5 @@ kjb::Vector create_uniformly_spaced_vector(double a,double b,unsigned n){
     return toreturn;
 }
 
-} //namespace kjb
+} //namespace ivi
 

@@ -1,4 +1,4 @@
-/* $Id: m_special.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_special.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 #include "m_cpp/m_special.h"
 #include <boost/math/special_functions/factorials.hpp>
 
-double kjb::log_binomial_coefficient(size_t n, size_t k)
+double ivi::log_binomial_coefficient(size_t n, size_t k)
 {
    if((k == 0) || (k == n))
       return 0;

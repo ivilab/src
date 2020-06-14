@@ -1,5 +1,5 @@
 
-/* $Id: m_io.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -107,7 +107,7 @@ int read_and_create_array(char* file_name, int* num_elements_ptr,
     int   scan_res, read_res;
 
 
-    NRE(data_fp = kjb_fopen(file_name, "r"));
+    NRE(data_fp = ivi_fopen(file_name, "r"));
 
     num_elements = 0;
 
@@ -121,7 +121,7 @@ int read_and_create_array(char* file_name, int* num_elements_ptr,
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
 
             return ERROR;
@@ -145,7 +145,7 @@ int read_and_create_array(char* file_name, int* num_elements_ptr,
 
         set_error("Expecting at least one number in file %F.", data_fp);
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        (void)kjb_fclose(data_fp);
+        (void)ivi_fclose(data_fp);
         set_error_action(save_error_action);
 
         return ERROR;
@@ -169,9 +169,9 @@ int read_and_create_array(char* file_name, int* num_elements_ptr,
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
-            kjb_free(data_array);
+            ivi_free(data_array);
 
             return ERROR;
         }
@@ -200,8 +200,8 @@ int read_and_create_array(char* file_name, int* num_elements_ptr,
                 insert_error("Error reading floating point number from %F.",
                              data_fp);
                 set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-                (void)kjb_fclose(data_fp);
-                kjb_free(data_array);
+                (void)ivi_fclose(data_fp);
+                ivi_free(data_array);
                 set_error_action(save_error_action);
 
                 return ERROR;
@@ -210,7 +210,7 @@ int read_and_create_array(char* file_name, int* num_elements_ptr,
         }
     }
 
-    ERE(kjb_fclose(data_fp));
+    ERE(ivi_fclose(data_fp));
 
     *num_elements_ptr = num_elements;
     *array_ptr = data_array;

@@ -1,25 +1,25 @@
 /**
  * @file
- * @brief Code for a wrapper class around the C struct KJB_Filter.
+ * @brief Code for a wrapper class around the C struct IVI_Filter.
  * @author Ernesto Brau
  */
 /*
- * $Id: i_filter.h 18347 2014-12-03 16:58:53Z jguan1 $
+ * $Id: i_filter.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef KJB_CPP_FILTER_H
-#define KJB_CPP_FILTER_H
+#ifndef IVI_CPP_FILTER_H
+#define IVI_CPP_FILTER_H
 
 #include "m_cpp/m_matrix.h"
 #include "l_cpp/l_exception.h"
 #include "i_cpp/i_image.h"
 #include <string>
 
-namespace kjb 
+namespace ivi 
 {
 
 /**
- * @addtogroup kjbImageProc
+ * @addtogroup iviImageProc
  * @{
  */
 
@@ -90,7 +90,7 @@ public:
     }
 
     /// @brief Assignment of a matrix to a filter.
-    Filter& operator=(const kjb::Matrix& src)
+    Filter& operator=(const ivi::Matrix& src)
     {
         if(&m_kernel != &src)
         {
@@ -114,14 +114,14 @@ public:
     /// @brief Lvalue value access at given row & column, no bounds-checking.
     Value_type& operator()(int row, int col)
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         return m_kernel(row, col);
     }
 
     /// @brief Rvalue value access at given row & column, no bounds-checking.
     Value_type operator()(int row, int col) const
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         return m_kernel(row, col);
     }
 
@@ -131,11 +131,11 @@ public:
      */
     void check_bounds(int row, int col) const
     {
-        // hit KJB(UNTESTED_CODE()); 
+        // hit IVI(UNTESTED_CODE()); 
         if(row < 0 || get_num_rows() <= row || col < 0 || get_num_cols() <= col)
         {
-            // hit KJB(UNTESTED_CODE());
-            KJB_THROW(Index_out_of_bounds);
+            // hit IVI(UNTESTED_CODE());
+            IVI_THROW(Index_out_of_bounds);
         }
     }
 
@@ -144,7 +144,7 @@ public:
      */
     Value_type& at(int row, int col)
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         check_bounds(row, col);
         return operator()(row, col);
     }
@@ -154,7 +154,7 @@ public:
      */
     Value_type at(int row, int col) const
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         check_bounds(row, col);
         return operator()(row, col);
     }
@@ -187,22 +187,22 @@ Filter laplacian_of_gaussian_filter(int size, double sigma);
 /** @brief   Convolve an image with a filter */
 Image operator*(const Image& image, const Filter& kernel);
 
-/// @brief this wraps C function kjb_c::gauss_sample_image (q.v.).
+/// @brief this wraps C function ivi_c::gauss_sample_image (q.v.).
 Image gauss_sample_image(const Image& in, int resolution, double sigma);
 
 /// @}
 
-} // namespace kjb
+} // namespace ivi
 
 namespace std {
 
 template<>
-inline void swap(kjb::Filter& a, kjb::Filter& b) 
+inline void swap(ivi::Filter& a, ivi::Filter& b) 
 {
     a.swap(b);
 }
 
 } // namespace std
 
-#endif /*KJB_CPP_FILTER_H */
+#endif /*IVI_CPP_FILTER_H */
 

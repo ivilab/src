@@ -1,4 +1,4 @@
-/* $Id: psi_action.h 12743 2012-07-25 23:52:02Z jguan1 $ */
+/* $Id: psi_action.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -29,7 +29,7 @@
 #include <people_tracking_cpp/pt_entity.h>
 
 #include <boost/function.hpp>
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -268,6 +268,6 @@ Action parse_cli_action(const std::string& str);
 
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 #endif
 

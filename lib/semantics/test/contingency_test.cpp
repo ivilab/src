@@ -2,7 +2,7 @@
  * @file Contingency_test.cpp
  *
  * @author Colin Dawson 
- * $Id: contingency_test.cpp 17426 2014-08-30 00:36:27Z predoehl $
+ * $Id: contingency_test.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_init.h"
@@ -12,8 +12,8 @@
 
 int main(int, char**)
 {
-    kjb_c::kjb_init();
-    // if(! kjb_c::is_interactive())
+    ivi_c::ivi_init();
+    // if(! ivi_c::is_interactive())
     // {
     //  return EXIT_SUCCESS;
     // }

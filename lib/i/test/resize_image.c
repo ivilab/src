@@ -27,27 +27,27 @@
 
 int main (void)
 {
-    KJB_image* image = NULL;
-    KJB_image* image_half = NULL;
-    KJB_image* image_double = NULL;
+    IVI_image* image = NULL;
+    IVI_image* image_half = NULL;
+    IVI_image* image_double = NULL;
     int result = NO_ERROR;
 
-    kjb_init();
+    ivi_init();
 
-    EGC(result = kjb_read_image(&image, "image_tr.jpg"));
+    EGC(result = ivi_read_image(&image, "image_tr.jpg"));
     EGC(result = scale_image_size(&image_half, image, 0.5));
     EGC(result = scale_image_size(&image_double, image, 2.0));
 
-    EGC(result = kjb_write_image(image_half, "image_tr_half.jpg"));
-    EGC(result = kjb_write_image(image_double, "image_tr_double.jpg"));
+    EGC(result = ivi_write_image(image_half, "image_tr_half.jpg"));
+    EGC(result = ivi_write_image(image_double, "image_tr_double.jpg"));
 
 cleanup:
 
-    if (result == ERROR) { kjb_print_error(); }
+    if (result == ERROR) { ivi_print_error(); }
 
-    kjb_free_image(image);
-    kjb_free_image(image_half);
-    kjb_free_image(image_double);
+    ivi_free_image(image);
+    ivi_free_image(image_half);
+    ivi_free_image(image_double);
 
 
     return EXIT_SUCCESS;

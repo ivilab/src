@@ -1,4 +1,4 @@
-/* $Id: test_multifit.cpp 20313 2016-02-02 06:14:36Z predoehl $ */
+/* $Id: test_multifit.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -21,7 +21,7 @@
 
 #include <iostream>
 using namespace std;
-#ifndef KJB_HAVE_GSL
+#ifndef IVI_HAVE_GSL
 int main(int argc, char** argv)
 {
     cout << "gsl not installed." << endl;
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
 #include <gsl_cpp/gsl_multifit.h>
 
-using namespace kjb;
+using namespace ivi;
 
 int eval_f(const gsl_vector* x, void * params, gsl_vector* f)
 {

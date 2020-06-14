@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: m_matrix.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_matrix.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /**
  * @file
@@ -17,7 +17,7 @@
  * @author Andrew Predoehl
  * @brief Definition for the Matrix class methods.
  *
- * The Matrix class is a thin wrapper on the KJB Matrix struct
+ * The Matrix class is a thin wrapper on the IVI Matrix struct
  * and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -55,7 +55,7 @@ void throw_cannot( const std::string& task )
 {
     std::string whine( "Could not create 3d " );
     whine += task + " matrix";
-    KJB_THROW_2( kjb::KJB_error, whine.c_str() );
+    IVI_THROW_2( ivi::IVI_error, whine.c_str() );
 }
 
 void throw_cannot_rot()
@@ -86,7 +86,7 @@ void throw_cannot_homog_xlate()
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 
-namespace kjb {
+namespace ivi {
 
 void Matrix::throw_bad_bounds( int row_ix, int col_ix ) const
 {
@@ -95,7 +95,7 @@ void Matrix::throw_bad_bounds( int row_ix, int col_ix ) const
     msg << "Invalid Matrix access at (" << row_ix << ',' << col_ix
         << ").  Matrix size is " << get_num_rows() << " x "
         << get_num_cols() << ".\n";
-    KJB_THROW_2( Index_out_of_bounds, msg.str() );
+    IVI_THROW_2( Index_out_of_bounds, msg.str() );
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
@@ -124,16 +124,16 @@ Matrix::Matrix(const std::string& file_name)
     if ( file_name.length() == 0 )
     {
         // Test program was HERE.
-        KJB_THROW_2(Illegal_argument, "Cannot read matrix from file:  "
+        IVI_THROW_2(Illegal_argument, "Cannot read matrix from file:  "
                                             "filename is empty." );
     }
     else
     {
         // Test program was HERE.
-        int err = kjb_c::read_matrix(&m_matrix, file_name.c_str());
+        int err = ivi_c::read_matrix(&m_matrix, file_name.c_str());
         if(err)
         {
-            KJB_THROW_3(kjb::IO_error, "File not found %s", (file_name.c_str()));
+            IVI_THROW_3(ivi::IO_error, "File not found %s", (file_name.c_str()));
         }
     }
 }
@@ -192,7 +192,7 @@ Matrix& Matrix::operator=(const Impl_type& mat_ref)
     if ( m_matrix != &mat_ref )
     {
         // Test program was HERE.
-        ETX( kjb_c::copy_matrix( &m_matrix, &mat_ref ) );
+        ETX( ivi_c::copy_matrix( &m_matrix, &mat_ref ) );
     }
     //else
     //{
@@ -265,7 +265,7 @@ const Matrix::Value_type& Matrix::at(int row, int col) const
 Matrix& Matrix::zero_out( int num_rows, int num_cols )
 {
     // Test program was HERE.
-    ETX( kjb_c::get_zero_matrix( &m_matrix, num_rows, num_cols ) );
+    ETX( ivi_c::get_zero_matrix( &m_matrix, num_rows, num_cols ) );
     return *this;
 }
 
@@ -344,8 +344,8 @@ Matrix create_column_matrix( const Matrix::Vec_type& vec )
 
 Matrix create_gauss_random_matrix( int num_rows, int num_cols )
 {
-    kjb_c::Matrix* c_mat = NULL;
-    ETX(kjb_c::get_gauss_random_matrix(&c_mat, num_rows, num_cols));
+    ivi_c::Matrix* c_mat = NULL;
+    ETX(ivi_c::get_gauss_random_matrix(&c_mat, num_rows, num_cols));
     return Matrix(c_mat);
 }
 
@@ -355,8 +355,8 @@ Matrix create_gauss_random_matrix( int num_rows, int num_cols )
 Matrix create_diagonal_matrix(const Matrix::Vec_type& diagonal)
 {
     // Test program was HERE.
-    kjb_c::Matrix* result = 0;
-    ETX(kjb_c::get_diagonal_matrix(&result, diagonal.get_c_vector()));
+    ivi_c::Matrix* result = 0;
+    ETX(ivi_c::get_diagonal_matrix(&result, diagonal.get_c_vector()));
     return Matrix(result);
 }
 
@@ -380,14 +380,14 @@ Matrix create_diagonal_matrix(const Matrix::Vec_type& diagonal, size_t n)
 
 //Matrix& Matrix::init_euler_zxz(float phi, float theta, float psi, bool homogeneous)
 //{
-//    //!!KJB(UNTESTED_CODE());
+//    //!!IVI(UNTESTED_CODE());
 //
 //    int err;
 //
 //    if(homogeneous) {
-//        ETX(kjb_c::get_euler_matrix(&m_matrix, phi, theta, psi, KJB_EULER_4_ZXZ));
+//        ETX(ivi_c::get_euler_matrix(&m_matrix, phi, theta, psi, IVI_EULER_4_ZXZ));
 //    } else {
-//        ETX(kjb_c::get_euler_matrix(&m_matrix, phi, theta, psi, KJB_EULER_3_ZXZ));
+//        ETX(ivi_c::get_euler_matrix(&m_matrix, phi, theta, psi, IVI_EULER_3_ZXZ));
 //    }
 //
 //    return *this;
@@ -396,8 +396,8 @@ Matrix create_diagonal_matrix(const Matrix::Vec_type& diagonal, size_t n)
 Matrix Matrix::transpose() const
 {
     // Test program was HERE.
-    kjb_c::Matrix* result = 0;
-    ETX( kjb_c::get_matrix_transpose( &result, m_matrix ) );
+    ivi_c::Matrix* result = 0;
+    ETX( ivi_c::get_matrix_transpose( &result, m_matrix ) );
     return Matrix(result);
     //return matrix_transpose(*this);
 }
@@ -405,8 +405,8 @@ Matrix Matrix::transpose() const
 Matrix Matrix::inverse() const
 {
     // Test program was HERE.
-    kjb_c::Matrix* result = 0;
-    ETX( kjb_c::get_matrix_inverse( &result, m_matrix ) );
+    ivi_c::Matrix* result = 0;
+    ETX( ivi_c::get_matrix_inverse( &result, m_matrix ) );
     return Matrix(result);
     //return matrix_inverse(*this);
 }
@@ -415,7 +415,7 @@ double Matrix::abs_of_determinant() const
 {
     double det;
     // Test program was HERE.
-    ETX( kjb_c::get_determinant_abs( m_matrix, &det ) );
+    ETX( ivi_c::get_determinant_abs( m_matrix, &det ) );
     return det;
 }
 
@@ -482,7 +482,7 @@ Matrix& Matrix::resize(int new_rows, int new_cols, Value_type pad)
         }
 
 #ifdef TEST
-        const kjb_c::Matrix* old_m_ptr;
+        const ivi_c::Matrix* old_m_ptr;
         const double* old_d_ptr;
 #endif /*TEST */
         int old_rows = m_matrix->num_rows;
@@ -674,7 +674,7 @@ Matrix::Vec_type Matrix::get_diagonal() const
 
 double Matrix::trace() const
 {
-    IFT(get_num_rows() == get_num_cols(), kjb::Dimension_mismatch,
+    IFT(get_num_rows() == get_num_cols(), ivi::Dimension_mismatch,
         "Trace is only defined for square matrices.");
 
     double tr = 0.0;
@@ -708,7 +708,7 @@ bool operator==(const Matrix& op1, const Matrix::Impl_type& op2)
          * But, if you DID reach here, the answer clearly should be "false."
          */
 
-        KJB(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
+        IVI(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
         return false;
     }
     else if (       op1.get_num_rows() != op2.num_rows
@@ -722,11 +722,11 @@ bool operator==(const Matrix& op1, const Matrix::Impl_type& op2)
 #if 1
         // Exact equality
         // Test program was HERE.
-        return 0 == kjb_c::max_abs_matrix_difference(op1.get_c_matrix(), &op2);
+        return 0 == ivi_c::max_abs_matrix_difference(op1.get_c_matrix(), &op2);
 #else
         // Luca's approximate equality code
         double threshold = 1e-5;
-        double thediff =  kjb_c::max_abs_matrix_difference( op1.get_c_matrix(), &op2 );
+        double thediff =  ivi_c::max_abs_matrix_difference( op1.get_c_matrix(), &op2 );
         //std::cout << "Diff:" << thediff << " and threshold is:" << threshold << std::endl;
         return (thediff < threshold);
 #endif
@@ -737,9 +737,9 @@ bool operator==(const Matrix& op1, const Matrix::Impl_type& op2)
 
 Matrix matrix_inverse( const Matrix& op1 )
 {
-    kjb_c::Matrix* kjb_matrix = 0;
-    ETX( kjb_c::get_matrix_inverse( &kjb_matrix, op1.get_c_matrix() ) );
-    return Matrix(kjb_matrix);
+    ivi_c::Matrix* ivi_matrix = 0;
+    ETX( ivi_c::get_matrix_inverse( &ivi_matrix, op1.get_c_matrix() ) );
+    return Matrix(ivi_matrix);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
@@ -788,7 +788,7 @@ Matrix& Matrix::vertcat(const Matrix& A)
         return *this;
 
     IFT(A.get_num_cols() == this->get_num_cols(),
-            kjb::Dimension_mismatch,
+            ivi::Dimension_mismatch,
             "Dimensions of matrices being concatenated are not consistent.");
 
     size_t row = this->get_num_rows();
@@ -810,7 +810,7 @@ Matrix& Matrix::horzcat(const Matrix& A)
         return *this;
 
     IFT(A.get_num_rows() == this->get_num_rows(),
-            kjb::Dimension_mismatch,
+            ivi::Dimension_mismatch,
             "Dimensions of matrices being concatenated are not consistent.");
 
     size_t col = this->get_num_cols();
@@ -867,7 +867,7 @@ Matrix& Matrix::ew_multiply_rows_by(const Vector& v)
 
 Matrix& Matrix::ew_multiply_by(const Matrix& m)
 {
-    ETX(kjb_c::ow_multiply_matrices_ew(m_matrix, m.m_matrix));
+    ETX(ivi_c::ow_multiply_matrices_ew(m_matrix, m.m_matrix));
     return *this;
 }
     
@@ -893,7 +893,7 @@ void Matrix::convert_to_euler_rotation_matrix
 {
     // Test program was HERE.
     // Yes, I checked -- the following fun does return void.
-    kjb_c::get_euler_rotation_matrix(&m_matrix, phi, theta, psi);
+    ivi_c::get_euler_rotation_matrix(&m_matrix, phi, theta, psi);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
@@ -941,7 +941,7 @@ void Matrix::convert_to_euler_homo_rotation_matrix
 )
 {
     // Test program was HERE.
-    kjb_c::get_euler_homo_rotation_matrix(&m_matrix, phi, theta, psi);
+    ivi_c::get_euler_homo_rotation_matrix(&m_matrix, phi, theta, psi);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
@@ -990,9 +990,9 @@ void Matrix::convert_to_3d_rotation_matrix
     double      z
 )
 {
-    int rc = kjb_c::get_3d_rotation_matrix_2(&m_matrix, phi, x, y, z);
+    int rc = ivi_c::get_3d_rotation_matrix_2(&m_matrix, phi, x, y, z);
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
         // Test program was HERE.
         throw_cannot_rot();
@@ -1015,9 +1015,9 @@ void Matrix::convert_to_2d_rotation_matrix
     double      phi
 )
 {
-    int rc = kjb_c::get_2d_rotation_matrix(&m_matrix, phi);
+    int rc = ivi_c::get_2d_rotation_matrix(&m_matrix, phi);
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
         // Test program was HERE.
         throw_cannot_rot();
@@ -1115,9 +1115,9 @@ void Matrix::convert_to_3d_rotation_matrix
 )
 {
     // Test program was HERE.
-    int rc=kjb_c::get_3d_rotation_matrix_1(&m_matrix, phi, vec.get_c_vector());
+    int rc=ivi_c::get_3d_rotation_matrix_1(&m_matrix, phi, vec.get_c_vector());
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
         // Test program was HERE.
         throw_cannot_rot();
@@ -1193,9 +1193,9 @@ void Matrix::convert_to_3d_homo_rotation_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_homo_rotation_matrix_2(&m_matrix, phi, x, y, z);
+    int rc = ivi_c::get_3d_homo_rotation_matrix_2(&m_matrix, phi, x, y, z);
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
         // Test program was HERE.
         throw_cannot_rot();
@@ -1218,9 +1218,9 @@ void Matrix::convert_to_2d_homo_rotation_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_2d_homo_rotation_matrix(&m_matrix, phi);
+    int rc = ivi_c::get_2d_homo_rotation_matrix(&m_matrix, phi);
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
         // Test program was HERE.
         throw_cannot_rot();
@@ -1318,9 +1318,9 @@ void Matrix::convert_to_3d_homo_rotation_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_homo_rotation_matrix_1( &m_matrix, phi,
+    int rc = ivi_c::get_3d_homo_rotation_matrix_1( &m_matrix, phi,
                                                         vec.get_c_vector() );
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
         // Test program was HERE.
         throw_cannot_rot();
@@ -1393,11 +1393,11 @@ void Matrix::convert_to_3d_scaling_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_scaling_matrix_2(&m_matrix, x, y, z);
+    int rc = ivi_c::get_3d_scaling_matrix_2(&m_matrix, x, y, z);
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
-        KJB(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
+        IVI(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
         throw_cannot_scale();
     }
     // else // Test program was HERE.
@@ -1463,9 +1463,9 @@ void Matrix::convert_to_3d_scaling_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_scaling_matrix_1(&m_matrix, vec.get_c_vector());
+    int rc = ivi_c::get_3d_scaling_matrix_1(&m_matrix, vec.get_c_vector());
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
         // Test program was HERE.
         throw_cannot_scale();
@@ -1534,11 +1534,11 @@ void Matrix::convert_to_3d_homo_scaling_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_homo_scaling_matrix_2(&m_matrix, x, y, z);
+    int rc = ivi_c::get_3d_homo_scaling_matrix_2(&m_matrix, x, y, z);
 
-    if ( rc != kjb_c::NO_ERROR )
+    if ( rc != ivi_c::NO_ERROR )
     {
-        KJB(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
+        IVI(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
         throw_cannot_homog_scale();
     }
     // else // Test program was HERE.
@@ -1599,9 +1599,9 @@ void Matrix::convert_to_3d_homo_scaling_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_homo_scaling_matrix_1(&m_matrix,vec.get_c_vector());
+    int rc = ivi_c::get_3d_homo_scaling_matrix_1(&m_matrix,vec.get_c_vector());
 
-    if ( rc != kjb_c::NO_ERROR)
+    if ( rc != ivi_c::NO_ERROR)
     {
         // Test program was HERE.
         throw_cannot_homog_scale();
@@ -1666,11 +1666,11 @@ void Matrix::convert_to_3d_homo_translation_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_homo_translation_matrix_2(&m_matrix, x, y, z);
+    int rc = ivi_c::get_3d_homo_translation_matrix_2(&m_matrix, x, y, z);
 
-    if ( rc != kjb_c::NO_ERROR)
+    if ( rc != ivi_c::NO_ERROR)
     {
-        KJB(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
+        IVI(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
         throw_cannot_homog_xlate();
     }
     // else // Test program was HERE.
@@ -1735,10 +1735,10 @@ void Matrix::convert_to_3d_homo_translation_matrix
 )
 {
     // Test program was HERE.
-    int rc = kjb_c::get_3d_homo_translation_matrix_1( &m_matrix,
+    int rc = ivi_c::get_3d_homo_translation_matrix_1( &m_matrix,
                                                         vec.get_c_vector() );
 
-    if ( rc != kjb_c::NO_ERROR)
+    if ( rc != ivi_c::NO_ERROR)
     {
         // Test program was HERE.
         throw_cannot_homog_xlate();
@@ -1794,7 +1794,7 @@ int Matrix::display(const char* title) const
 {
     int result;
 
-    ETX((result = kjb_c::display_matrix(m_matrix,title)));
+    ETX((result = ivi_c::display_matrix(m_matrix,title)));
     return result;
 }
 
@@ -1829,7 +1829,7 @@ Matrix::Value_type Matrix::reduce(
     Matrix::Value_type init
 )   const
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     const int rows = get_num_rows();
     const int cols = get_num_cols();
     
@@ -1849,49 +1849,49 @@ Matrix::Value_type Matrix::reduce(
 
 void Matrix::ow_add_scalar(Value_type c)
 {
-    ETX(kjb_c::ow_add_scalar_to_matrix(m_matrix, c));
+    ETX(ivi_c::ow_add_scalar_to_matrix(m_matrix, c));
 }
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 /// @brief add a row vector to each row of a matrix, in place
 void Matrix::ow_add_row_vector(const Vec_type v)
 {
-    ETX(kjb_c::ow_add_row_vector_to_matrix(m_matrix, v.get_c_vector()));
+    ETX(ivi_c::ow_add_row_vector_to_matrix(m_matrix, v.get_c_vector()));
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 void Matrix::ow_add_col_vector(const Vec_type v)
 {
-    ETX(kjb_c::ow_add_col_vector_to_matrix(m_matrix, v.get_c_vector()));
+    ETX(ivi_c::ow_add_col_vector_to_matrix(m_matrix, v.get_c_vector()));
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 void Matrix::ow_multiply_col_vector_ew(const Vec_type v)
 {
-    ETX(kjb_c::ow_multiply_matrix_by_col_vector_ew(m_matrix, v.get_c_vector()));
+    ETX(ivi_c::ow_multiply_matrix_by_col_vector_ew(m_matrix, v.get_c_vector()));
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 void Matrix::ow_multiply_row_vector_ew(const Vec_type v)
 {
-    ETX(kjb_c::ow_multiply_matrix_by_row_vector_ew(m_matrix, v.get_c_vector()));
+    ETX(ivi_c::ow_multiply_matrix_by_row_vector_ew(m_matrix, v.get_c_vector()));
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 void Matrix::ow_vertical_flip()
 {
-    ETX(kjb_c::ow_vertical_flip_matrix(m_matrix));
+    ETX(ivi_c::ow_vertical_flip_matrix(m_matrix));
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 void Matrix::ow_horizontal_flip()
 {
-    ETX(kjb_c::ow_horizontal_flip_matrix(m_matrix));
+    ETX(ivi_c::ow_horizontal_flip_matrix(m_matrix));
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
@@ -1902,13 +1902,13 @@ Matrix::Value_type max_abs_difference( const Matrix& op1, const Matrix& op2 )
          || op1.get_num_cols() != op2.get_num_cols() )
     {
         // Test program was HERE.
-        KJB_THROW( Dimension_mismatch );
+        IVI_THROW( Dimension_mismatch );
     }
     //else
     //{
     //    // Test program was HERE.
     //}
-    return kjb_c::max_abs_matrix_difference( op1.get_c_matrix(), op2.get_c_matrix() );
+    return ivi_c::max_abs_matrix_difference( op1.get_c_matrix(), op2.get_c_matrix() );
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
@@ -1940,14 +1940,14 @@ std::ostream & operator<<(std::ostream& out, const Matrix& m)
 
 std::istream& stream_read_matrix(std::istream& ist, Matrix& m)
 {
-    kjb::Matrix::Size_type num_rows, num_cols;
+    ivi::Matrix::Size_type num_rows, num_cols;
     ist >> num_rows;
     ist >> num_cols;
     m.resize(num_rows, num_cols);
     
-    for(kjb::Matrix::Size_type i = 0; i < num_rows; ++i)
+    for(ivi::Matrix::Size_type i = 0; i < num_rows; ++i)
     {
-        for(kjb::Matrix::Size_type j = 0; j < num_rows; ++j)
+        for(ivi::Matrix::Size_type j = 0; j < num_rows; ++j)
         {
             ist >> m(i, j);
         }
@@ -1985,14 +1985,14 @@ double det(const Matrix& mat)
 {
     if(mat.get_num_cols() != mat.get_num_rows())
     {
-        KJB_THROW_2(Illegal_argument, "Can't find determinant of a non-square matrix.");
+        IVI_THROW_2(Illegal_argument, "Can't find determinant of a non-square matrix.");
     }
 
     // this is CRYING for a better implementation...
     switch(mat.get_num_rows())
     {
         case 0:
-            KJB_THROW_2(Illegal_argument, "Can't find determinanat of an empty matrix.");
+            IVI_THROW_2(Illegal_argument, "Can't find determinanat of an empty matrix.");
         case 1:
             return mat(0,0);
         case 2:
@@ -2013,7 +2013,7 @@ double det(const Matrix& mat)
                 mat(c)*mat(e)*mat(g);
         }
         default:
-            KJB_THROW_2(Not_implemented, "Determinant isn't implemented for dimension > 4.  Consider using Matrix::abs_of_determinant");
+            IVI_THROW_2(Not_implemented, "Determinant isn't implemented for dimension > 4.  Consider using Matrix::abs_of_determinant");
             
     }
 
@@ -2026,7 +2026,7 @@ Matrix::Vec_type sum_matrix_cols( const Matrix& m )
 {
     // not an exception-safe way to roll
     Matrix::Vec_type::Impl_type * vp = 00;
-    ETX( kjb_c::sum_matrix_cols( &vp, m.get_c_matrix() ) );
+    ETX( ivi_c::sum_matrix_cols( &vp, m.get_c_matrix() ) );
     return Matrix::Vec_type( vp );
 }
 
@@ -2036,7 +2036,7 @@ Matrix::Vec_type sum_matrix_rows( const Matrix& m )
 {
     // not an exception-safe way to roll
     Matrix::Vec_type::Impl_type * vp = 00;
-    ETX( kjb_c::sum_matrix_rows( &vp, m.get_c_matrix() ) );
+    ETX( ivi_c::sum_matrix_rows( &vp, m.get_c_matrix() ) );
     return Matrix::Vec_type( vp );
 }
 
@@ -2214,8 +2214,8 @@ Matrix tile_matrix(int tehnum, unsigned m, unsigned n)
     }
     return toreturn;
 #else
-    KJB(UNTESTED_CODE());
-    KJB(TEST_PSE(("(%s:%d) This function is deprecated.\n",
+    IVI(UNTESTED_CODE());
+    IVI(TEST_PSE(("(%s:%d) This function is deprecated.\n",
                                                     __FILE__, __LINE__)));
     return Matrix(m, n, Matrix::Value_type(tehnum));
 #endif
@@ -2223,4 +2223,4 @@ Matrix tile_matrix(int tehnum, unsigned m, unsigned n)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
-} //namespace kjb
+} //namespace ivi

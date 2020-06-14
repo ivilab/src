@@ -30,7 +30,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 const bool VERBOSE = true;
 

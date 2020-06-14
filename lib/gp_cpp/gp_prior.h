@@ -26,7 +26,7 @@
 #include <m_cpp/m_vector.h>
 #include <prob_cpp/prob_distribution.h>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 /** @brief  Represents the prior distribution induced by a Gaussian process. */
@@ -153,7 +153,7 @@ Prior<Mean, Covariance> make_prior
     return Prior<Mean, Covariance>(mf, cf, inputs.begin(), inputs.end());
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_PRIOR_H_INCLUDED */
 

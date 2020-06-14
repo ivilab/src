@@ -1,5 +1,5 @@
 
-/* $Id: l_word_list.h 15639 2013-10-10 21:18:59Z predoehl $ */
+/* $Id: l_word_list.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,7 +38,7 @@ namespace kjb_c {
 /* =============================================================================
  *                                   Word_list
  *
- * KJB library string vector type
+ * IVI library string vector type
  *
  * This type is for vectors of strings. 
  *

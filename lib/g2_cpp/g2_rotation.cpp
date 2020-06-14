@@ -1,4 +1,4 @@
-/* $Id: g2_rotation.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g2_rotation.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -24,7 +24,7 @@
 #include <g_cpp/g_quaternion.h>
 #include <gr_cpp/gr_matrix.h>
 
-namespace kjb {
+namespace ivi {
 Rotation_axis::Rotation_axis(const Vector& pt, const Vector& dir) :
     axis_pt_(pt),
     axis_dir_(dir)
@@ -35,7 +35,7 @@ Vector Rotation_axis::rotate(const Vector& pt, double angle) const
 {
     if(pt.size() != 3)
     {
-        KJB_THROW_2(Illegal_argument, "Point must have size = 3.");
+        IVI_THROW_2(Illegal_argument, "Point must have size = 3.");
 
     }
     Quaternion q(axis_dir_, angle);
@@ -50,7 +50,7 @@ Matrix Rotation_axis::get_transformation_matrix(double a) const
 {
     Matrix result = create_identity_matrix(4);
     translate(result, -axis_pt_);
-    kjb::rotate(result, Quaternion(axis_dir_, a));
+    ivi::rotate(result, Quaternion(axis_dir_, a));
     translate(result, axis_pt_);
 
     // first translate axis to origin, then rotate and translate back
@@ -58,4 +58,4 @@ Matrix Rotation_axis::get_transformation_matrix(double a) const
 
 }
 
-} // namespace kjb 
+} // namespace ivi 

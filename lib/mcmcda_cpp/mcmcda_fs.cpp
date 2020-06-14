@@ -1,7 +1,7 @@
 #include <mcmcda_cpp/mcmcda_fs.h>
 
-using namespace kjb;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::mcmcda;
 
 // sub directory names
 const std::string Experiment_directory::preprocessed_dn = "preprocessed";

@@ -18,9 +18,9 @@
 |
 * =========================================================================== */
 
-/* $Id: cross_validate_util.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: cross_validate_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_HAVE_ERGO
+#ifndef IVI_HAVE_ERGO
 #error "You need libergo to use this program"
 #endif
 #include <libgen.h>
@@ -47,9 +47,9 @@
 #include "dbn_cpp/cross_validate_util.h"
 #include "dbn_cpp/typedefs.h"
 
-using namespace kjb::ties;
+using namespace ivi::ties;
 
-void kjb::ties::fold_worker
+void ivi::ties::fold_worker
 (
     size_t fold,
     std::vector<Vector>& training_errors, 
@@ -63,12 +63,12 @@ void kjb::ties::fold_worker
 {
     using namespace std;
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
 
     Ties_experiment exp_copy = exp;
     if(exp.likelihood.obs_names.empty())
     {
-        KJB_THROW_2(Illegal_argument, "No observable is provided.");
+        IVI_THROW_2(Illegal_argument, "No observable is provided.");
     }
     double training_percent = exp_copy.likelihood.training_percent;
     string orig_in_dp;
@@ -105,7 +105,7 @@ void kjb::ties::fold_worker
                                 training_fp);
     // set up the output directory
     exp_copy.out_dp = out_dp + "/training/";
-    ETX(kjb_c::kjb_mkdir(exp_copy.out_dp.c_str()));
+    ETX(ivi_c::ivi_mkdir(exp_copy.out_dp.c_str()));
 
     // @TODO hack!!!
     if(exp_copy.run.gp_params_fp != "")
@@ -150,14 +150,14 @@ void kjb::ties::fold_worker
     } 
 
     best_lss_set.write(exp_copy.out_dp);
-    long st = kjb_c::get_real_time();
+    long st = ivi_c::get_real_time();
     std::cout << "Training takes: " << st / (1000.0 * 3600.0) << " hours.\n";
     double total_running_seconds = st / 1000.0;
 
     ///////////////////////////////////////////////////////////////////
     //         Compute the training error      
     ///////////////////////////////////////////////////////////////////
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     const vector<Data>& data = lss_set_sampler.data();
 
     // compute errors of each observable 
@@ -180,7 +180,7 @@ void kjb::ties::fold_worker
                   std::vector<Vector>(1, error), 
                   obs_all_errors,
                   obs_names);
-    st = kjb_c::get_real_time();
+    st = ivi_c::get_real_time();
     std::cout << "Reporting training error takes: " << st / (1000.0) << " s.\n";
     total_running_seconds += st/1000.0;
 
@@ -200,7 +200,7 @@ void kjb::ties::fold_worker
     vector<size_t> testing_ids = parse_list(exp_copy.data.id_list_fp);
     if(testing_ids.empty()) return;
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     if(exp_copy.run.read_model)
     {
         // only read in the model if no additional training
@@ -208,7 +208,7 @@ void kjb::ties::fold_worker
         {
             boost::format in_fmt(orig_in_dp + "/fold-%02d/testing/");
             std::string test_dir = (in_fmt % fold).str();
-            if(kjb_c::is_directory(test_dir.c_str()))
+            if(ivi_c::is_directory(test_dir.c_str()))
             {
                 exp_copy.run.in_dp = test_dir;
             }
@@ -225,7 +225,7 @@ void kjb::ties::fold_worker
         }
     }
 
-    ETX(kjb_c::kjb_mkdir(exp_copy.out_dp.c_str()));
+    ETX(ivi_c::ivi_mkdir(exp_copy.out_dp.c_str()));
     log_fp = out_dp + "/test_log.txt";
     exp_copy.run.iter_log_fname = log_fp;
     exp_copy.run.fit_err_fname = out_dp + "/test_err.txt";
@@ -286,7 +286,7 @@ void kjb::ties::fold_worker
     test_best_lss_set = test_lss_set_sampler.test_model(
                                         exp_copy.test_num_iterations);
     test_best_lss_set.write(exp_copy.out_dp);
-    st = kjb_c::get_real_time();
+    st = ivi_c::get_real_time();
     std::cout << "Testing takes: " << st / (1000.0 * 3600) << " hours.\n";
 
     ///////////////////////////////////////////////////////////////////
@@ -294,7 +294,7 @@ void kjb::ties::fold_worker
     ///////////////////////////////////////////////////////////////////
     
     // record the testing errors for each couple 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     const vector<Data>& test_data = test_lss_set_sampler.data();
     string test_fp("err_couples.txt");
     std::vector<Linear_state_space>& lss_set = test_best_lss_set.lss_vec();
@@ -420,13 +420,13 @@ void kjb::ties::fold_worker
         }
     }
        
-    st = kjb_c::get_real_time();
+    st = ivi_c::get_real_time();
     std::cout << "Reporting testing error takes: " << st / (1000.0) << " s.\n";
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::write_fold_list
+void ivi::ties::write_fold_list
 (
     size_t fold,
     const std::string& training_fp, 
@@ -464,7 +464,7 @@ void kjb::ties::write_fold_list
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-size_t kjb::ties::create_fold
+size_t ivi::ties::create_fold
 (
     const std::string& out_dp,
     const std::string& list_fp,
@@ -498,7 +498,7 @@ size_t kjb::ties::create_fold
     for(size_t fold = 1; fold <= K; fold++)
     {
         std::string cur_out_dp = (out_fmt % fold).str();
-        ETX(kjb_c::kjb_mkdir(cur_out_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(cur_out_dp.c_str()));
         std::string training_fp = (cur_out_dp + "/training-list.txt");
         std::string testing_fp = (cur_out_dp + "/testing-list.txt");
         if(group_name != "")
@@ -520,12 +520,12 @@ size_t kjb::ties::create_fold
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::run_cross_validate(const Ties_experiment& exp)
+void ivi::ties::run_cross_validate(const Ties_experiment& exp)
 {
     using namespace std;
    
     // hack to make Condor respect the output
-    ETX(kjb_c::kjb_mkdir(exp.out_dp.c_str()));
+    ETX(ivi_c::ivi_mkdir(exp.out_dp.c_str()));
     std::ofstream touch((exp.out_dp + DIR_STR + "invocation.txt").c_str());
     touch << "Program invocation:\n" << "run_cross_validate" 
           << ' ' << exp.data.data_dp << ' '

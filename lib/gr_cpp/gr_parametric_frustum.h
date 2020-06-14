@@ -60,8 +60,8 @@
  */
 
 
-#ifndef KJB_Frustum_H
-#define KJB_Frustum_H
+#ifndef IVI_Frustum_H
+#define IVI_Frustum_H
 
 #include <vector>
 #include <iosfwd>
@@ -71,7 +71,7 @@
 #include <gr_cpp/gr_polymesh.h>
 #include <gr_cpp/gr_polymesh_renderer.h>
 
-namespace kjb {
+namespace ivi {
 
 
 /** 
@@ -79,7 +79,7 @@ namespace kjb {
  *
  * @brief frustum: a polyhedron of which each torso face is a trapezoid and the top and bottom surfaces are polygons.
  */
-class Frustum : public kjb::Polymesh
+class Frustum : public ivi::Polymesh
 {
     public:
 
@@ -99,9 +99,9 @@ class Frustum : public kjb::Polymesh
         /** @brief Constructs a */
         Frustum
         (
-            const std::vector<kjb::Vector> & p
+            const std::vector<ivi::Vector> & p
         )
-        throw (kjb::Illegal_argument);
+        throw (ivi::Illegal_argument);
 
 
         /** @brief Constructs a frustum by copying another. */
@@ -109,13 +109,13 @@ class Frustum : public kjb::Polymesh
 
 
         /** @brief Reads a frustum from an input file. */
-        Frustum(const char* fname, unsigned int inv) throw (kjb::Illegal_argument,
-                kjb::IO_error);
+        Frustum(const char* fname, unsigned int inv) throw (ivi::Illegal_argument,
+                ivi::IO_error);
 
 
         /** @brief Reads a frustum from an input stream. */
-        Frustum(std::istream& in, unsigned int inv) throw (kjb::Illegal_argument,
-                kjb::IO_error);
+        Frustum(std::istream& in, unsigned int inv) throw (ivi::Illegal_argument,
+                ivi::IO_error);
 
 
         /** @brief Deletes this frustum. */
@@ -130,32 +130,32 @@ class Frustum : public kjb::Polymesh
         virtual Frustum* clone() const;
 
         /** @brief Transforms this frustum */
-        virtual void transform(const kjb::Matrix & M)
-            throw (kjb::Illegal_argument);
+        virtual void transform(const ivi::Matrix & M)
+            throw (ivi::Illegal_argument);
 
 
         /** @brief Returns an indexed point defining this Frustum. */
-        const kjb::Vector & get_point(size_t i) const
-            throw (kjb::Illegal_argument);
+        const ivi::Vector & get_point(size_t i) const
+            throw (ivi::Illegal_argument);
 
 
         /** @brief Returns the center vector for this frustum. */
-        const kjb::Vector & get_center() const;
+        const ivi::Vector & get_center() const;
 
         /** @brief Adds a face to this Frustum -> Not implemented here,
          * it will throw an exception, because the use of this method
          * will violate the constraints defining this Frustum
          */
-        virtual void add_face(const Polygon & face) throw (kjb::Illegal_argument);
+        virtual void add_face(const Polygon & face) throw (ivi::Illegal_argument);
 
 
         /** @brief Reads this frustum from an input stream. */
-        virtual void read(std::istream& in) throw (kjb::IO_error,
-                kjb::Illegal_argument);
+        virtual void read(std::istream& in) throw (ivi::IO_error,
+                ivi::Illegal_argument);
 
         /** @brief Writes this frustum to an output stream. */
         virtual void write(std::ostream& out) const
-            throw (kjb::IO_error);
+            throw (ivi::IO_error);
 
         /** @brief reset the points of this Frustum */
         void set_points
@@ -170,7 +170,7 @@ class Frustum : public kjb::Polymesh
          *  of the frustum
          */
         virtual unsigned int adjacent_face(unsigned int f, unsigned int e) const
-                       throw (Index_out_of_bounds,KJB_error);
+                       throw (Index_out_of_bounds,IVI_error);
 
         void draw_orientation_map() const;
 
@@ -180,7 +180,7 @@ class Frustum : public kjb::Polymesh
 
         static int get_num_edges(int num_facets)
         {
-            //KJB_THROW(kjb::Not_implemented);
+            //IVI_THROW(ivi::Not_implemented);
             return 0; //TODO implement
         }
 
@@ -193,7 +193,7 @@ class Frustum : public kjb::Polymesh
         )
         {
             //TODO implement
-            //KJB_THROW(kjb::Not_implemented);
+            //IVI_THROW(ivi::Not_implemented);
             return 0;
         }
 
@@ -203,14 +203,14 @@ class Frustum : public kjb::Polymesh
         unsigned int nv;
 
         /** @brief Points defining this Frustum. */
-        std::vector<kjb::Vector > points;
+        std::vector<ivi::Vector > points;
 
         /** 
          * @brief Center of this frustum.
          * 
          * Calculated as the average of the face centroids.
          */
-        kjb::Vector center;
+        ivi::Vector center;
 
     private:
 

@@ -1,5 +1,5 @@
 
-/* $Id: v_ellipse.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: v_ellipse.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #define USE_FANCY_ERROR
 
@@ -269,7 +269,7 @@ int find_ellipses
                 double  x_diff     = x2 - x1;
                 double  y_diff     = y2 - y1;
                 double  dist       = sqrt(x_diff*x_diff + y_diff*y_diff);
-                int     num_points = kjb_rint(3.0 * dist + 0.5);
+                int     num_points = ivi_rint(3.0 * dist + 0.5);
                 double  x_step     = x_diff / num_points;
                 double  y_step     = y_diff / num_points;
 
@@ -614,7 +614,7 @@ int find_ellipses
             elem_to_free = curr_elem;
             curr_elem = curr_elem->next;
 
-            kjb_free(elem_to_free);
+            ivi_free(elem_to_free);
         }
     }
 
@@ -717,7 +717,7 @@ int find_ellipses
             elem_to_free = curr_elem;
             curr_elem = curr_elem->next;
 
-            kjb_free(elem_to_free);
+            ivi_free(elem_to_free);
         }
     }
 
@@ -1143,7 +1143,7 @@ Ellipse* fit_ellipse
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 #ifdef AS_IT_WAS
-int image_draw_ellipse(KJB_image* out_ip, Ellipse* ellipse_ptr)
+int image_draw_ellipse(IVI_image* out_ip, Ellipse* ellipse_ptr)
 {
     double theta;
     Vector* canon_ellipse_vp = NULL;
@@ -1198,7 +1198,7 @@ int image_draw_ellipse(KJB_image* out_ip, Ellipse* ellipse_ptr)
     return NO_ERROR;
 }
 #else
-int image_draw_ellipse(KJB_image *out_ip, Ellipse *ellipse_ptr)
+int image_draw_ellipse(IVI_image *out_ip, Ellipse *ellipse_ptr)
 {
     int r = MIN_OF(255, (int)(5.0 / ellipse_ptr->error_1));
     int g = MIN_OF(255, (int)(25.0  / ellipse_ptr->error_2));
@@ -1212,7 +1212,7 @@ int image_draw_ellipse(KJB_image *out_ip, Ellipse *ellipse_ptr)
 
 int image_draw_ellipse_2
 (
-    KJB_image* out_ip,
+    IVI_image* out_ip,
     Ellipse*   ellipse_ptr,
     int        r,
     int        g,
@@ -1248,8 +1248,8 @@ int image_draw_ellipse_2
 
         if (result != ERROR)
         {
-            i = kjb_rint(ellipse_vp->elements[ 0 ] + 0.5);
-            j = kjb_rint(ellipse_vp->elements[ 1 ] + 0.5);
+            i = ivi_rint(ellipse_vp->elements[ 0 ] + 0.5);
+            j = ivi_rint(ellipse_vp->elements[ 1 ] + 0.5);
 
             if (    (i >= 0) && (i < out_ip->num_rows)
                  && (j >= 0) && (j < out_ip->num_cols)

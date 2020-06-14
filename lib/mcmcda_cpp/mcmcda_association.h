@@ -18,7 +18,7 @@
 #include <boost/lambda/lambda.hpp>
 #include <boost/algorithm/string.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 /** 
@@ -487,7 +487,7 @@ void Association<Track>::write(const std::string& filename) const
     std::ofstream ofs(filename.c_str());
     if(!ofs)
     {
-        KJB_THROW_3(IO_error,
+        IVI_THROW_3(IO_error,
                     "Cannot write association; could not open file %s",
                     (filename.c_str()));
     }
@@ -642,7 +642,7 @@ void get_association_totals
     n = N - a;
 }
 
-}} //namespace kjb::mcmcda
+}} //namespace ivi::mcmcda
 
 #endif /*MCMCDA_ASSOCIATION_H_INCLUDED */
 

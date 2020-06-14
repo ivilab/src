@@ -1,5 +1,5 @@
 
-/* $Id: svd.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: svd.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "n/n_incl.h"
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     Vector* nr_diag_vp         = NULL;
     double    projection_error;
     double    fit_error;
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
     int     alternate          = FALSE;
     double    max_d_diff;
 #endif 
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -83,18 +83,18 @@ int main(int argc, char *argv[])
 
     for (count=0; count<num_tries; count++)
     {
-        num_rows = 1 + kjb_rint(MAX_SIZE * kjb_rand());
-        num_cols = 1 + kjb_rint(MAX_SIZE * kjb_rand());
+        num_rows = 1 + ivi_rint(MAX_SIZE * ivi_rand());
+        num_cols = 1 + ivi_rint(MAX_SIZE * ivi_rand());
 
         EPETE(get_random_matrix(&first_mp, num_rows, num_cols)); 
 
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
         EPETE(set_svd_options("svd-method", "nr")); 
 
         if (do_svd(first_mp, (Matrix**)NULL, (Vector**)NULL,
                    (Matrix**)NULL, &rank) == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
 #ifdef VERBOSE
             db_mat(first_mp);
 #endif
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
         if (do_svd(first_mp, &nr_u_mp, &nr_diag_vp, &nr_v_trans_mp,
                    &rank) == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
 #ifdef VERBOSE
             db_mat(first_mp);
 #endif
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
         if (do_svd(first_mp, (Matrix**)NULL, (Vector**)NULL,
                    (Matrix**)NULL, &rank) == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
 #ifdef VERBOSE
             db_mat(first_mp);
 #endif
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
         if (do_svd(first_mp, &lp_u_mp, &lp_diag_vp, &lp_v_trans_mp,
                    &rank) == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
 #ifdef VERBOSE
             db_mat(first_mp);
 #endif
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
         }
 
 
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
         /*
         // Note that nr_u_mp, lp_u_mp, and nr_v_trans_mp, lp_v_trans_mp
         // are only the same up to signs, and then only if A is square
@@ -161,8 +161,8 @@ int main(int argc, char *argv[])
 
     for (count=0; count<num_tries; count++)
     {
-        num_rows = 1 + kjb_rint(MAX_SIZE * kjb_rand());
-        num_cols = num_rows + kjb_rint(MAX_SIZE * kjb_rand());
+        num_rows = 1 + ivi_rint(MAX_SIZE * ivi_rand());
+        num_cols = num_rows + ivi_rint(MAX_SIZE * ivi_rand());
 
         {
             double diff_1        = 0.0;
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
             int    save_num_rows;
 
 
-#ifdef KJB_HAVE_NUMERICAL_RECIPES
+#ifdef IVI_HAVE_NUMERICAL_RECIPES
             if (alternate)
             {
                 alternate = FALSE; 
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
 #endif 
             if (do_svd(first_mp, &u_mp, &diag_vp, &v_trans_mp, &rank) == ERROR)
             {
-                kjb_print_error();
+                ivi_print_error();
 #ifdef VERBOSE
                 db_mat(first_mp);
 #endif
@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
                       && (num_cols < 10) 
                       && (abs(num_rows - num_cols) < 3)
                     )
-                 || (kjb_rand() < 0.05) 
+                 || (ivi_rand() < 0.05) 
                )
             {
                 save_num_rows = v_trans_mp->num_rows;
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
                                                   &projection_error) 
                         == ERROR)
                     {
-                        kjb_print_error();
+                        ivi_print_error();
 #ifdef VERBOSE
                         db_mat(first_mp);
 #endif
@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
                                        &fit_error)
                         == ERROR)
                     {
-                        kjb_print_error();
+                        ivi_print_error();
 #ifdef VERBOSE
                         db_mat(first_mp);
 #endif

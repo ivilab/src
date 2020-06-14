@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_integral_optimization.h 20911 2016-10-30 17:50:20Z ernesto $ */
+/* $Id: pt_integral_optimization.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_INTEGRAL_OPTIMIZATION_H
 #define PT_INTEGRAL_OPTIMIZATION_H
@@ -36,13 +36,13 @@
 #include <boost/optional.hpp>
 #include <boost/ref.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/mh.h>
 #include <ergo/record.h>
 #endif
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -131,7 +131,7 @@ private:
     size_t hess_nthreads_;
 };
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_INTEGRAL_OPTIMIZATION_H */
 

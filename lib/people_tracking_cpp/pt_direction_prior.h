@@ -15,7 +15,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_direction_prior.h 19986 2015-10-29 04:12:04Z jguan1 $ */
+/* $Id: pt_direction_prior.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_DIRECTION_PRIOR_H_
 #define PT_DIRECTION_PRIOR_H_
@@ -24,7 +24,7 @@
 #include <people_tracking_cpp/pt_target.h>
 #include <gp_cpp/gp_prior.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -215,7 +215,7 @@ private:
     size_t m_local_sz;
 };
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_DIRECTION_PRIOR_H_ */
 

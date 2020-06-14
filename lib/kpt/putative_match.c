@@ -1,5 +1,5 @@
 /*
- * $Id: putative_match.c 20654 2016-05-05 23:13:43Z kobus $
+ * $Id: putative_match.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "kpt/putative_match.h"
@@ -132,7 +132,7 @@ int get_putative_matches
 
 
 
-    if ((match_idx_impp != NULL) && ( kjb_get_verbose_level() > 7))
+    if ((match_idx_impp != NULL) && ( ivi_get_verbose_level() > 7))
     {
         /* DEBUGGING */    
         dbi_mat(*match_idx_impp);
@@ -322,7 +322,7 @@ int get_putative_matches_2
 
 
 
-    if ((match_idx_impp != NULL) && ( kjb_get_verbose_level() > 7))
+    if ((match_idx_impp != NULL) && ( ivi_get_verbose_level() > 7))
     {
         /* DEBUGGING */    
         dbi_mat(*match_idx_impp);
@@ -492,7 +492,7 @@ int get_putative_matches_3
     
     verbose_pso(7, " | Finished putative keypoint match...\n");
 
-    if ((match_idx_impp != NULL) && ( kjb_get_verbose_level() > 7))
+    if ((match_idx_impp != NULL) && ( ivi_get_verbose_level() > 7))
     {
         /* DEBUGGING */    
         dbi_mat(*match_idx_impp);

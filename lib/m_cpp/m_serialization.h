@@ -1,4 +1,4 @@
-/* $Id: m_serialization.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: m_serialization.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_CPP_M_SERLIALIZE_H
-#define KJB_M_CPP_M_SERLIALIZE_H
+#ifndef IVI_M_CPP_M_SERLIALIZE_H
+#define IVI_M_CPP_M_SERLIALIZE_H
 
 
 namespace boost {
@@ -30,7 +30,7 @@ namespace archive {
 } // namespace archive
 } // namespace boost
 
-namespace kjb
+namespace ivi
 {
 
 class Matrix;
@@ -38,17 +38,17 @@ class Vector;
 //class Int_matrix;
 //class Int_vector;
 
-void kjb_serialize(boost::archive::text_iarchive& ar, Matrix& obj, const unsigned int /* version */);
-void kjb_serialize(boost::archive::text_oarchive& ar, Matrix& obj, const unsigned int /* version */);
+void ivi_serialize(boost::archive::text_iarchive& ar, Matrix& obj, const unsigned int /* version */);
+void ivi_serialize(boost::archive::text_oarchive& ar, Matrix& obj, const unsigned int /* version */);
 //
-//void kjb_serialize(boost::archive::text_iarchive& ar, Int_matrix& obj, const unsigned int /* version */);
-//void kjb_serialize(boost::archive::text_oarchive& ar, Int_matrix& obj, const unsigned int /* version */);
+//void ivi_serialize(boost::archive::text_iarchive& ar, Int_matrix& obj, const unsigned int /* version */);
+//void ivi_serialize(boost::archive::text_oarchive& ar, Int_matrix& obj, const unsigned int /* version */);
 //
-void kjb_serialize(boost::archive::text_iarchive& ar, Vector& obj, const unsigned int /* version */);
-void kjb_serialize(boost::archive::text_oarchive& ar, Vector& obj, const unsigned int /* version */);
+void ivi_serialize(boost::archive::text_iarchive& ar, Vector& obj, const unsigned int /* version */);
+void ivi_serialize(boost::archive::text_oarchive& ar, Vector& obj, const unsigned int /* version */);
 //
-//void kjb_serialize(boost::archive::text_iarchive& ar, Int_vector& obj, const unsigned int /* version */);
-//void kjb_serialize(boost::archive::text_oarchive& ar, Int_vector& obj, const unsigned int /* version */);
+//void ivi_serialize(boost::archive::text_iarchive& ar, Int_vector& obj, const unsigned int /* version */);
+//void ivi_serialize(boost::archive::text_oarchive& ar, Int_vector& obj, const unsigned int /* version */);
 
 }
 

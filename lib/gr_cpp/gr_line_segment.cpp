@@ -1,4 +1,4 @@
-/* $Id: gr_line_segment.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_line_segment.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -30,9 +30,9 @@
 #include <ostream>
 
 
-#define KJB_LS_MAX_RGB_VALUE 255
+#define IVI_LS_MAX_RGB_VALUE 255
 
-namespace kjb {
+namespace ivi {
 
 Matrix Line_segment::_line_segment_rotation(3,3);
 
@@ -274,7 +274,7 @@ void Line_segment::init_from_end_points(double x_1, double y_1, double x_2, doub
 
     if( (fabs(x_1 - x_2) < FLT_EPSILON ) && (fabs(y_1 - y_2) < FLT_EPSILON ) )
     {
-        throw KJB_error("Init line segment, ends point coincide!");
+        throw IVI_error("Init line segment, ends point coincide!");
     }
 
     if(fabs(x_1 - x_2) < FLT_EPSILON)
@@ -304,37 +304,37 @@ void Line_segment::read(std::istream& in)
     // Line segment centre
     if (!(field_value = read_field_value(in, "centre")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Line segment Centre");
+        IVI_THROW_2(Illegal_argument, "Missing Line segment Centre");
     }
     istringstream ist(field_value);
     ist >> centre(0) >> centre(1) >> centre(2);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line segment centre");
+        IVI_THROW_2(Illegal_argument, "Invalid line segment centre");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "orientation")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing orientation");
+        IVI_THROW_2(Illegal_argument, "Missing orientation");
     }
     ist.str(field_value);
     ist >> orientation;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Orientation");
+        IVI_THROW_2(Illegal_argument, "Invalid Orientation");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "length")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing length");
+        IVI_THROW_2(Illegal_argument, "Missing length");
     }
     ist.str(field_value);
     ist >> length;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Length");
+        IVI_THROW_2(Illegal_argument, "Invalid Length");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -357,7 +357,7 @@ void Line_segment::write(std::ostream& out) const
  *  translates it to the reight position*/
 void Line_segment::compute_extrema()
 {
-    //kjb::Matrix rotation = Matrix::create_2d_homo_rotation_matrix(orientation);
+    //ivi::Matrix rotation = Matrix::create_2d_homo_rotation_matrix(orientation);
     _line_segment_rotation.convert_to_2d_homo_rotation_matrix(orientation);
     start_point(0) = - length/2.0;
     end_point(0) =  + length/2.0;
@@ -377,7 +377,7 @@ void Line_segment::compute_extrema()
     /** As a convention we store in start point the leftmost point */
     if(end_point(0) < start_point(0))
     {
-        kjb::Vector temp = end_point;
+        ivi::Vector temp = end_point;
         end_point = start_point;
         start_point = temp;
     }
@@ -386,7 +386,7 @@ void Line_segment::compute_extrema()
     {
         if(end_point(1) < start_point(1))
         {
-            kjb::Vector temp = end_point;
+            ivi::Vector temp = end_point;
             end_point = start_point;
             start_point = temp;
         }
@@ -420,13 +420,13 @@ void Line_segment::compute_line_parameters()
  * @param ib the blue channel
  * @param width the width of the segment to be drawn (in pixel)
  */
-void Line_segment::draw(kjb::Image & img, double ir, double ig, double ib,  double width)  const
+void Line_segment::draw(ivi::Image & img, double ir, double ig, double ib,  double width)  const
 {
     if(!img.c_ptr())
     {
-        throw kjb::Illegal_argument("Bad input image");
+        throw ivi::Illegal_argument("Bad input image");
     }
-    kjb_c::image_draw_segment_2(img.non_const_c_ptr(), start_point(1), start_point(0), end_point(1), end_point(0), width, ir,ig,ib);
+    ivi_c::image_draw_segment_2(img.non_const_c_ptr(), start_point(1), start_point(0), end_point(1), end_point(0), width, ir,ig,ib);
 }
 
 /**
@@ -435,13 +435,13 @@ void Line_segment::draw(kjb::Image & img, double ir, double ig, double ib,  doub
  * @param img the image
  * @param width the width of the segment to be drawn (in pixel)
  */
-void Line_segment::randomly_color(kjb::Image & img, double width)  const
+void Line_segment::randomly_color(ivi::Image & img, double width)  const
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
-    double tempr =(double)kjb_rand()*KJB_LS_MAX_RGB_VALUE;
-    double tempg =(double)kjb_rand()*KJB_LS_MAX_RGB_VALUE;
-    double tempb =(double)kjb_rand()*KJB_LS_MAX_RGB_VALUE;
+    double tempr =(double)ivi_rand()*IVI_LS_MAX_RGB_VALUE;
+    double tempg =(double)ivi_rand()*IVI_LS_MAX_RGB_VALUE;
+    double tempb =(double)ivi_rand()*IVI_LS_MAX_RGB_VALUE;
 
     // We don't want the segment to be black
     if( (tempr < 50.0) && (tempg < 50.0) && (tempb < 50.0) )
@@ -556,11 +556,11 @@ bool Line_segment::point_outside_segment(const Vector& point) const
  *
  * @param point the input point
  */
-double Line_segment::get_distance_from_point (const kjb::Vector& point) const
+double Line_segment::get_distance_from_point (const ivi::Vector& point) const
 {
     if(point.size() < 2)
     {
-        KJB_THROW_2(Illegal_argument, "Distance between line segment and point, point vector size smaller than 2");
+        IVI_THROW_2(Illegal_argument, "Distance between line segment and point, point vector size smaller than 2");
     }
     
     double vx = start_point(0) - point(0);
@@ -590,11 +590,11 @@ double Line_segment::get_distance_from_point (const kjb::Vector& point) const
  *
  * @param point The point to compute t for
  */
-double Line_segment::find_t(const kjb::Vector & point) const
+double Line_segment::find_t(const ivi::Vector & point) const
 {
     if(point.size() < 2)
     {
-        KJB_THROW_2(Illegal_argument, "Distance between line segment and point, point vector size smaller than 2");
+        IVI_THROW_2(Illegal_argument, "Distance between line segment and point, point vector size smaller than 2");
     }
     double vx = start_point(0) - point(0);
     double vy = start_point(1) - point(1);
@@ -617,11 +617,11 @@ double Line_segment::find_t(const kjb::Vector & point) const
  * @return the perpendicular distance between the line the segment lies on and
  * the point. If we are in case (1) these two distances are the same
  */
-double Line_segment::get_distance_from_point (const kjb::Vector& point, double * perp_dist) const
+double Line_segment::get_distance_from_point (const ivi::Vector& point, double * perp_dist) const
 {
     if(point.size() < 2)
     {
-        KJB_THROW_2(Illegal_argument, "Distance between line segment and point, point vector size smaller than 2");
+        IVI_THROW_2(Illegal_argument, "Distance between line segment and point, point vector size smaller than 2");
     }
     double vx = start_point(0) - point(0);
     double vy = start_point(1) - point(1);
@@ -674,7 +674,7 @@ double Line_segment::get_angle_between_line (const Line_segment& line_segment) c
  *
  *  @param idirection This will contain the line segment direction
  */
-void Line_segment::get_direction(kjb::Vector & idirection) const
+void Line_segment::get_direction(ivi::Vector & idirection) const
 {
     if(idirection.size() != 3)
     {
@@ -716,7 +716,7 @@ std::ostream & operator<<(std::ostream& out, const Line_segment& ls)
 bool Line_segment::get_intersection
 (
     const Line_segment&      _line,
-    kjb::Vector&             point_p
+    ivi::Vector&             point_p
 ) const
 {
     return Line::find_line_intersection(_line.get_line(), line, point_p);
@@ -807,7 +807,7 @@ bool Line_segment::project_line_segment_onto_line_segment
 {
     if(point1.size() < 2 || point2.size() < 2)
     {
-        throw kjb::Illegal_argument("Invalid input point with for Line::less_than ");
+        throw ivi::Illegal_argument("Invalid input point with for Line::less_than ");
     }
     
     return (point1[0] < point2[0]) || (point1[0] == point2[0] && point1[1] < point2[1]);
@@ -1076,8 +1076,8 @@ bool Line_segment::is_collinear
     double collinear_threshold
 ) const
 {
-    kjb::Vector v1(3,0.0);
-    kjb::Vector v2(3,0.0);
+    ivi::Vector v1(3,0.0);
+    ivi::Vector v2(3,0.0);
     get_direction(v1);
     ls.get_direction(v2);
     double cp = v1(0)*v2(1) -   v1(1)*v2(0);
@@ -1088,4 +1088,4 @@ bool Line_segment::is_collinear
     return true;
 }
 
-} // namespace kjb
+} // namespace ivi

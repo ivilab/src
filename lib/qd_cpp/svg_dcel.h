@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: svg_dcel.h 20074 2015-11-13 06:39:29Z predoehl $
+ * $Id: svg_dcel.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef QD_CPP_SVG_DCEL_H_INCLUDED_IVILAB
@@ -13,7 +13,7 @@
 #include <qd_cpp/pixpath.h>
 #include <qd_cpp/dcel.h>
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {

@@ -1,5 +1,5 @@
 
-/* $Id: im_display.h 8067 2010-12-23 21:11:58Z kobus $ */
+/* $Id: im_display.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef IM_DISPLAY_INCLUDED
 #define IM_DISPLAY_INCLUDED
@@ -9,11 +9,11 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 #include "magick/magick.h"
 int im_display(Image* image, ImageInfo* image_info_ptr);
 #endif 

@@ -8,12 +8,12 @@
  *
  * Originally from TopoFusion.
  *
- * I (Andrew) made many superficial changes to port it into the KJB library.
+ * I (Andrew) made many superficial changes to port it into the IVI library.
  * Also I added the table of leap seconds, and the policy of using them.
  */
 
 /*
- * $Id: xml.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: xml.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
@@ -42,7 +42,7 @@
 /* Kobus: Changed this from test_pso, to pso, as test_pso has changed. It is not
  * clear what exact behaviour is wanted. 
 */
-#define DbgLog kjb_c::pso   /**< TopoFusion macro for debug messages */
+#define DbgLog ivi_c::pso   /**< TopoFusion macro for debug messages */
 
 namespace
 {
@@ -90,7 +90,7 @@ char theString[FULL_TAG_SIZE+1];
 inline
 bool is_tag_name( const char* string )
 {
-    using kjb_c::kjb_strcmp;
+    using ivi_c::ivi_strcmp;
     return STRCMP_EQ( theTag.name, string );
 }
 
@@ -98,10 +98,10 @@ bool is_tag_name( const char* string )
 #define FILE_PEEK( buf )                                            \
     do                                                              \
     {                                                               \
-        using namespace kjb_c;                                      \
+        using namespace ivi_c;                                      \
         ASSERT( xmlFile );                                          \
         ASSERT( xmlPosition < xmlSize );                            \
-        kjb_strncpy( (buf), xmlFile + xmlPosition, sizeof(buf) );   \
+        ivi_strncpy( (buf), xmlFile + xmlPosition, sizeof(buf) );   \
     } while( 0 )
 
 
@@ -176,7 +176,7 @@ void countStruct_type::db_print() const
 
 int XML_ParseTag ()
 {
-    int len = kjb_c::signed_strlen(theTag.fulltag);
+    int len = ivi_c::signed_strlen(theTag.fulltag);
 
     //int pos=0;
     int i=0;
@@ -257,7 +257,7 @@ int XML_ParseTag ()
             startPos = i;
             while (theTag.fulltag[i] != '=') i++;
             endPos = i;
-            kjb_c::kjb_strncpy ( theTag.attributes[idx],
+            ivi_c::ivi_strncpy ( theTag.attributes[idx],
                                 theTag.fulltag+startPos, endPos-startPos+1 );
             theTag.attributes[idx][endPos-startPos] = 0;
 
@@ -268,7 +268,7 @@ int XML_ParseTag ()
             startPos = i;
             while (theTag.fulltag[i] != '"') i++;
             endPos = i;
-            kjb_c::kjb_strncpy (theTag.values[idx], theTag.fulltag+startPos,
+            ivi_c::ivi_strncpy (theTag.values[idx], theTag.fulltag+startPos,
                                                             endPos-startPos+1);
             theTag.values[idx][endPos-startPos] = 0;
             idx++;
@@ -336,7 +336,7 @@ double XML_GetAttrib_Double(const char *attrib)
 {
     for (int i=0;i<theTag.numAttrib;i++)
     {
-        using kjb_c::kjb_strcmp;
+        using ivi_c::ivi_strcmp;
         if ( STRCMP_EQ( theTag.attributes[i], attrib ) )
         {
             return atof(theTag.values[i]);
@@ -376,7 +376,7 @@ long XML_Read_Long()
 
 void XML_Write_String(FILE *f, const char *s)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     if (!s) return;
 
@@ -394,7 +394,7 @@ void XML_Write_String(FILE *f, const char *s)
 
     if (useCdata)
     {
-        kjb_c::kjb_fprintf (f, "<![CDATA[%s]]>", s);
+        ivi_c::ivi_fprintf (f, "<![CDATA[%s]]>", s);
     }
     else
     {
@@ -409,7 +409,7 @@ void XML_Write_String(FILE *f, const char *s)
                 default:    str << *s;      break;
             }
         }
-        kjb_c::kjb_fputs( f, str.str().c_str() );
+        ivi_c::ivi_fputs( f, str.str().c_str() );
     }
 }
 
@@ -418,9 +418,9 @@ void XML_Write_StringTag(FILE *f, const char *s, const char *tag)
 {
     if ((s) && (*s))
     {
-        kjb_c::kjb_fprintf (f," <%s>",tag);
+        ivi_c::ivi_fprintf (f," <%s>",tag);
         XML_Write_String(f,s);
-        kjb_c::kjb_fprintf (f,"</%s>\n",tag);
+        ivi_c::ivi_fprintf (f,"</%s>\n",tag);
     }
 }
 
@@ -473,7 +473,7 @@ bool XML_Read_String()
         }
         else    // If it's '<', it's either the end of the string
         {       // or the start of a CDATA section.
-            using kjb_c::kjb_strcmp;
+            using ivi_c::ivi_strcmp;
 
             // first perform subsitutions on this last non-cdata section
             theString[pos] = 0;
@@ -489,7 +489,7 @@ bool XML_Read_String()
             char cdata[] = "![CDATA";   // just big enough to hold exactly this
             ASSERT( 8u == sizeof( cdata ) );
             if ( xmlPosition + long(sizeof( cdata )) > xmlSize ) return false;
-            kjb_c::kjb_strncpy( cdata, xmlFile+xmlPosition, sizeof(cdata) );
+            ivi_c::ivi_strncpy( cdata, xmlFile+xmlPosition, sizeof(cdata) );
             xmlPosition += sizeof(cdata)-1;
 
             // if CDATA
@@ -694,93 +694,93 @@ int XML_Write_Header( FILE *f )
  * Allocate memory for the layer objects.
  * If anything goes wrong, this frees the xmlFile, plus all local allocations.
  */
-int allocate( const countStruct_type& countStruct, kjb::TopoFusion::layer* l )
+int allocate( const countStruct_type& countStruct, ivi::TopoFusion::layer* l )
 {
-    using kjb::TopoFusion::pt;
-    using kjb::TopoFusion::waypoint;
-    using kjb::TopoFusion::track;
+    using ivi::TopoFusion::pt;
+    using ivi::TopoFusion::waypoint;
+    using ivi::TopoFusion::track;
 
     if (countStruct.numTracks != 0)
     {
-        KJB( l->tracks = N_TYPE_MALLOC( track, countStruct.numTracks ) );
+        IVI( l->tracks = N_TYPE_MALLOC( track, countStruct.numTracks ) );
         if ( 0 == l -> tracks )
         {
-            kjb_c::add_error( "%s: error: tracks bad alloc", __func__ );
-            kjb_c::kjb_free( xmlFile );
-            return kjb_c::ERROR;
+            ivi_c::add_error( "%s: error: tracks bad alloc", __func__ );
+            ivi_c::ivi_free( xmlFile );
+            return ivi_c::ERROR;
         }
     }
     l->numTracks = countStruct.numTracks;
 
     if (countStruct.numWaypoints != 0)
     {
-        KJB(l->waypoints = N_TYPE_MALLOC(waypoint, countStruct.numWaypoints));
+        IVI(l->waypoints = N_TYPE_MALLOC(waypoint, countStruct.numWaypoints));
         if ( 0 == l -> waypoints )
         {
-            kjb_c::add_error( "%s: error: waypoints bad alloc", __func__ );
-            kjb_c::kjb_free( l -> tracks );
-            kjb_c::kjb_free( xmlFile );
-            return kjb_c::ERROR;
+            ivi_c::add_error( "%s: error: waypoints bad alloc", __func__ );
+            ivi_c::ivi_free( l -> tracks );
+            ivi_c::ivi_free( xmlFile );
+            return ivi_c::ERROR;
         }
     }
     l->numWaypoints = countStruct.numWaypoints;
 
     for (int i=0;i<countStruct.numTracks;i++)
     {
-        using namespace kjb_c;
+        using namespace ivi_c;
         initTrack(&(l->tracks[i]));
         l->tracks[i].s.numPoints = countStruct.numPoints[i];
         l->tracks[i].s.points = N_TYPE_MALLOC(pt, countStruct.numPoints[i]);
         if ( 0 == l->tracks[i].s.points )
         {
             add_error( "%s: error: tracks-%d bad alloc", __func__, i );
-            for(int j=i-1; 0 <= j; --j) kjb_free( l->tracks[j].s.points );
-            kjb_free( l -> tracks );
-            kjb_free( xmlFile );
+            for(int j=i-1; 0 <= j; --j) ivi_free( l->tracks[j].s.points );
+            ivi_free( l -> tracks );
+            ivi_free( xmlFile );
             return ERROR;
         }
-        const pt ZP(kjb::TopoFusion::make_pt(0, 0, 0, 0));
+        const pt ZP(ivi::TopoFusion::make_pt(0, 0, 0, 0));
         std::fill_n( l->tracks[i].s.points, countStruct.numPoints[i], ZP );
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 // read entire file.  postcondition:  if successful, xmlFile owns heap memory.
 int read_gpx_payload( const std::string& filename )
 {
-    if ( ! kjb_c::is_file( filename.c_str() ) )
+    if ( ! ivi_c::is_file( filename.c_str() ) )
     {
         DbgLog( "%s: Unable to open '%s'\n", __func__, filename.c_str() );
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 
     // get the size of the file, allocate a buffer for it
-    kjb::File_Ptr_Read f( filename );
-    kjb_c::kjb_fseek(f,0,SEEK_END);
-    xmlSize = kjb_c::kjb_ftell(f);
-    kjb_c::kjb_fseek(f,0,SEEK_SET);
+    ivi::File_Ptr_Read f( filename );
+    ivi_c::ivi_fseek(f,0,SEEK_END);
+    xmlSize = ivi_c::ivi_ftell(f);
+    ivi_c::ivi_fseek(f,0,SEEK_SET);
 
-    kjb_c::kjb_free( xmlFile );
-    KJB( xmlFile = STR_MALLOC( xmlSize + 100 ) );
-    KJB( NRE( xmlFile ) );
+    ivi_c::ivi_free( xmlFile );
+    IVI( xmlFile = STR_MALLOC( xmlSize + 100 ) );
+    IVI( NRE( xmlFile ) );
 
     // read the whole file
-    long numRead = kjb_c::kjb_fread(f,xmlFile,xmlSize);
+    long numRead = ivi_c::ivi_fread(f,xmlFile,xmlSize);
     if (numRead != xmlSize)
     {
-        kjb_c::kjb_free(xmlFile);
-        kjb_c::set_error( "%s: Unable to read '%s'\n", __func__,
+        ivi_c::ivi_free(xmlFile);
+        ivi_c::set_error( "%s: Unable to read '%s'\n", __func__,
                                                     filename.c_str() );
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
     std::fill_n( xmlFile+xmlSize, 100, '\0' );
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
-bool XML_Read_Waypoint( kjb::TopoFusion::layer* l, int* wayptIdx )
+bool XML_Read_Waypoint( ivi::TopoFusion::layer* l, int* wayptIdx )
 { //wpt
     ASSERT( wayptIdx );
 
@@ -792,8 +792,8 @@ bool XML_Read_Waypoint( kjb::TopoFusion::layer* l, int* wayptIdx )
     initWaypoint( & l -> waypoints[ *wayptIdx ] );
 
     // default name is its index -- later we override if it has a name tag.
-    kjb_c::kjb_sprintf( l -> waypoints[ *wayptIdx ].name,
-                        kjb::TopoFusion::MAX_TRACKSTRING, "%d", *wayptIdx );
+    ivi_c::ivi_sprintf( l -> waypoints[ *wayptIdx ].name,
+                        ivi::TopoFusion::MAX_TRACKSTRING, "%d", *wayptIdx );
 
     for( valid = XML_GetNextTag();
                     valid && ! is_tag_name( "/wpt" );
@@ -802,8 +802,8 @@ bool XML_Read_Waypoint( kjb::TopoFusion::layer* l, int* wayptIdx )
         if ( is_tag_name( "name" ) )
         {
             XML_Read_String();
-            kjb_c::kjb_strncpy( l -> waypoints[ *wayptIdx ].name,
-                                theString, kjb::TopoFusion::MAX_TRACKSTRING );
+            ivi_c::ivi_strncpy( l -> waypoints[ *wayptIdx ].name,
+                                theString, ivi::TopoFusion::MAX_TRACKSTRING );
         }
 
         if ( is_tag_name( "ele" ) )
@@ -827,22 +827,22 @@ bool XML_Read_Waypoint( kjb::TopoFusion::layer* l, int* wayptIdx )
 }
 
 
-bool XML_Read_Track( kjb::TopoFusion::layer* l, int* trkIdx )
+bool XML_Read_Track( ivi::TopoFusion::layer* l, int* trkIdx )
 {
     ASSERT( l );
     ASSERT( trkIdx );
 
     bool valid = true;
     int ptIdx = 0;
-    kjb::TopoFusion::track *trak = & l -> tracks[ *trkIdx ];
+    ivi::TopoFusion::track *trak = & l -> tracks[ *trkIdx ];
 
     for ( ; valid && ! is_tag_name( "/trk" ) ; valid = XML_GetNextTag() )
     {
         if ( is_tag_name( "name" ) )
         {
             XML_Read_String();
-            kjb_c::kjb_strncpy( trak -> name, theString,
-                                            kjb::TopoFusion::MAX_TRACKSTRING );
+            ivi_c::ivi_strncpy( trak -> name, theString,
+                                            ivi::TopoFusion::MAX_TRACKSTRING );
         }
 
         if ( is_tag_name( "cmt"     ) ) XML_Read_String();
@@ -874,14 +874,14 @@ bool XML_Read_Track( kjb::TopoFusion::layer* l, int* trkIdx )
             {
                 if ( is_tag_name( "trkpt" ) )
                 { //trkpoint
-                    kjb::TopoFusion::pt *point = & trak->s.points[ptIdx] ;
+                    ivi::TopoFusion::pt *point = & trak->s.points[ptIdx] ;
                     XML_ParseTag();
                     double  lon = XML_GetAttrib_Double("lon"),
                             lat = XML_GetAttrib_Double("lat");
 
-                    kjb::TopoFusion::LLtoUTM(23,lat, lon, *point);   // WGS 84
+                    ivi::TopoFusion::LLtoUTM(23,lat, lon, *point);   // WGS 84
 
-                    point->ele = kjb::TopoFusion::NO_ELEV;
+                    point->ele = ivi::TopoFusion::NO_ELEV;
 
                     if (! theTag.selfEnding)
                     {
@@ -911,22 +911,22 @@ bool XML_Read_Track( kjb::TopoFusion::layer* l, int* trkIdx )
 } // trk
 
 
-bool XML_Read_Route( kjb::TopoFusion::layer* l, int* trkIdx )
+bool XML_Read_Route( ivi::TopoFusion::layer* l, int* trkIdx )
 {
     ASSERT( l );
     ASSERT( trkIdx );
 
     bool valid = true;
     int ptIdx = 0;
-    kjb::TopoFusion::track *trk = &(l->tracks[ *trkIdx ]);
+    ivi::TopoFusion::track *trk = &(l->tracks[ *trkIdx ]);
 
     for ( ; valid && ! is_tag_name( "/rte" ); valid = XML_GetNextTag() )
     {
         if ( is_tag_name( "name" ) )
         { //name
             XML_Read_String();
-            kjb_c::kjb_strncpy( trk -> name, theString,
-                                            kjb::TopoFusion::MAX_TRACKSTRING );
+            ivi_c::ivi_strncpy( trk -> name, theString,
+                                            ivi::TopoFusion::MAX_TRACKSTRING );
         }
 
         if ( is_tag_name( "cmt"     ) ) XML_Read_String();
@@ -937,13 +937,13 @@ bool XML_Read_Route( kjb::TopoFusion::layer* l, int* trkIdx )
 
         if ( is_tag_name( "rtept" ) )
         { //trkpoint
-            kjb::TopoFusion::pt &ppp = trk -> s.points[ ptIdx ];
+            ivi::TopoFusion::pt &ppp = trk -> s.points[ ptIdx ];
             XML_ParseTag();
             double  lon = XML_GetAttrib_Double("lon"),
                     lat = XML_GetAttrib_Double("lat");
 
-            kjb::TopoFusion::LLtoUTM(23,lat, lon, ppp);   // WGS 84
-            ppp.ele = kjb::TopoFusion::NO_ELEV;
+            ivi::TopoFusion::LLtoUTM(23,lat, lon, ppp);   // WGS 84
+            ppp.ele = ivi::TopoFusion::NO_ELEV;
 
             if ( ! theTag.selfEnding )
             {
@@ -1028,7 +1028,7 @@ bool detect_ignorable_tag_and_discard()
 } // end anonymous namespace
 
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -1037,22 +1037,22 @@ namespace TopoFusion
  * @brief read a track from a named file into the pointed-to layer
  * @param[in]   filename    name of the file to read
  * @param[out]  l           pointer to layer into which to write the track
- * @return kjb_c::NO_ERROR or ERROR as appropriate
+ * @return ivi_c::NO_ERROR or ERROR as appropriate
  */
 int readTrack_GPX( const std::string& filename, layer *l )
 {
     int trkIdx = 0, wayptIdx = 0;
 
-    KJB( NRE( l ) );
+    IVI( NRE( l ) );
 
     // read entire file contents into char buffer xmlFile (on the heap).
-    KJB( ERE( read_gpx_payload( filename ) ) );
+    IVI( ERE( read_gpx_payload( filename ) ) );
 
     // pointer to the front of unscanned characters in xmlFile, i.e., input
     xmlPosition = 0;
 
     initLayer(l);
-    kjb_c::kjb_strncpy( l->filename, filename.c_str(), LAYER_FN_SIZE );
+    ivi_c::ivi_strncpy( l->filename, filename.c_str(), LAYER_FN_SIZE );
     l->filename[ LAYER_FN_SIZE-1 ] = 0;
 
     // count the number of waypoints and tracks; store globally.
@@ -1060,7 +1060,7 @@ int readTrack_GPX( const std::string& filename, layer *l )
     countStruct.numTracks = 0;
     XML_Count();
 
-    KJB( ERE( allocate( countStruct, l ) ) );
+    IVI( ERE( allocate( countStruct, l ) ) );
 
     while( XML_GetNextTag() )
     {
@@ -1088,10 +1088,10 @@ int readTrack_GPX( const std::string& filename, layer *l )
         }
     }
 
-    kjb_c::kjb_free(xmlFile);
+    ivi_c::ivi_free(xmlFile);
     xmlFile=0;
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1100,62 +1100,62 @@ int readTrack_GPX( const std::string& filename, layer *l )
  * @brief write a track (stored in the indicated layer) into a named file
  * @param filename  name of the file to write to
  * @param l         layer containing the tracks to be written
- * @return kjb_c::NO_ERROR or ERROR as appropriate
- * @throws kjb::IO_error for certain error conditions.
+ * @return ivi_c::NO_ERROR or ERROR as appropriate
+ * @throws ivi::IO_error for certain error conditions.
  */
 int writeTrack_GPX (const std::string& filename, const layer& l )
 {
-    kjb::File_Ptr_Write f( filename );
+    ivi::File_Ptr_Write f( filename );
     XML_Write_Header(f);
 
     for (int i=0; i<l.numWaypoints; ++i)
     {
         double lat, lon;
         UTMtoGPXLL(23, l.waypoints[i].point, lat, lon);
-        kjb_c::kjb_fprintf (f,"<wpt " LATLONF ">\n",lat,lon);
+        ivi_c::ivi_fprintf (f,"<wpt " LATLONF ">\n",lat,lon);
 
         if (l.waypoints[i].point.ele != NO_ELEV)
         {
-            kjb_c::kjb_fprintf (f," <ele>%f</ele>\n",l.waypoints[i].point.ele);
+            ivi_c::ivi_fprintf (f," <ele>%f</ele>\n",l.waypoints[i].point.ele);
         }
 
         XML_Write_StringTag(f,l.waypoints[i].name,"name");
-        kjb_c::kjb_fputs (f,"</wpt>\n");
+        ivi_c::ivi_fputs (f,"</wpt>\n");
     }
 
 
     for (int i=0; i<l.numTracks; ++i)
     {
         if (l.tracks[i].s.numPoints <=0) continue;
-        kjb_c::kjb_fputs (f,"<trk>\n");
+        ivi_c::ivi_fputs (f,"<trk>\n");
 
         XML_Write_StringTag(f,l.tracks[i].name,"name");
 
-        kjb_c::kjb_fputs (f,"  <trkseg>\n");
+        ivi_c::ivi_fputs (f,"  <trkseg>\n");
         for (int j=0;j<l.tracks[i].s.numPoints;j++)
         {
             double lat, lon;
             UTMtoGPXLL(23,l.tracks[i].s.points[j], lat, lon);
             if (lon < -180)
             {
-                kjb_c::set_error( "Invalid longitude, lon=%f", lon );
-                return kjb_c::ERROR;
+                ivi_c::set_error( "Invalid longitude, lon=%f", lon );
+                return ivi_c::ERROR;
             }
-            kjb_c::kjb_fprintf (f,"    <trkpt " LATLONF ">\n", lat, lon);
+            ivi_c::ivi_fprintf (f,"    <trkpt " LATLONF ">\n", lat, lon);
             if (l.tracks[i].s.points[j].ele != NO_ELEV)
             {
-                kjb_c::kjb_fprintf (f,
+                ivi_c::ivi_fprintf (f,
                         "      <ele>%f</ele>\n",l.tracks[i].s.points[j].ele);
             }
-            kjb_c::kjb_fputs (f,"    </trkpt>\n");
+            ivi_c::ivi_fputs (f,"    </trkpt>\n");
         }
-        kjb_c::kjb_fputs (f,"  </trkseg>\n</trk>\n");
+        ivi_c::ivi_fputs (f,"  </trkseg>\n</trk>\n");
     }
 
-    kjb_c::kjb_fputs (f,"</gpx>\n");
-    return kjb_c::NO_ERROR;
+    ivi_c::ivi_fputs (f,"</gpx>\n");
+    return ivi_c::NO_ERROR;
 }
 
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi

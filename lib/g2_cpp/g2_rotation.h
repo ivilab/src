@@ -1,4 +1,4 @@
-/* $Id: g2_rotation.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g2_rotation.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,12 +20,12 @@
 /**
  * @file General-purpose rotation classes and functions.
  */
-#ifndef KJB_G2_CPP_ROTATION_H
-#define KJB_G2_CPP_ROTATION_H
+#ifndef IVI_G2_CPP_ROTATION_H
+#define IVI_G2_CPP_ROTATION_H
 
 #include <m_cpp/m_vector.h>
 
-namespace kjb
+namespace ivi
 {
 class Matrix;
 
@@ -70,6 +70,6 @@ private:
     Vector axis_dir_;
 }; // class Rotation_axis
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

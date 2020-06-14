@@ -1,5 +1,5 @@
 
-/* $Id: i_video.c 5831 2010-05-02 21:52:24Z ksimek $ */
+/* $Id: i_video.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
 
 #    include "i/i_valid.h"
 #    include <setjmp.h>
@@ -46,7 +46,7 @@ extern "C" {
 // videograb_sub.c, the setting of Mike's
 // verbose level is tied to my verbose level (take a look at the routines that
 // are already used). Then make sure that after the call to the routine, that we
-// do a kjb_fflush((FILE*)NULL);
+// do a ivi_fflush((FILE*)NULL);
 */
 
 #endif
@@ -57,7 +57,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
     static int fs_video_active        = FALSE;
     static jmp_buf fs_before_video_routine_env;
 #endif
@@ -66,7 +66,7 @@ static int fs_capture_frame_count = 1;
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
     static void stop_video_grabber_guts(void);
     static TRAP_FN_RETURN_TYPE video_grabber_atn_fn(TRAP_FN_ARGS);
 #endif
@@ -84,7 +84,7 @@ static int fs_capture_frame_count = 1;
 
 /*
 // We have a set routine expecially for video so that this file is not
-// automatically linked whenever kjb_set is used. Thus if these set commands are
+// automatically linked whenever ivi_set is used. Thus if these set commands are
 // needed, then set_video_options has to be explicitly called.
 */
 
@@ -135,7 +135,7 @@ int set_video_options(const char* option, const char* value)
 /*
 // We have to export this one because programs such as multi_capture use it. It
 // is possible to get arround this, but since the video set routines are
-// regarded as special (see comment for kjb_video_set()), it is easier to simply
+// regarded as special (see comment for ivi_video_set()), it is easier to simply
 // export this routine.
 */
 
@@ -150,7 +150,7 @@ int set_capture_frame_count(int new_value)
 
     fs_capture_frame_count = new_value;
 
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
     if (fs_video_active)
     {
         struct msg_arg_struct msg_arg;
@@ -166,7 +166,7 @@ int set_capture_frame_count(int new_value)
 
         send_args_res = send_args_vgrab(&msg_arg);
 
-        kjb_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
+        ivi_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
 
         if (send_args_res == -1)
         {
@@ -191,7 +191,7 @@ int get_capture_frame_count(void)
 
 int start_video_grabber(void)
 {
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
     const int              argc                      = 1;
     char                   zeroth_program_arg[ 100 ];
     char*                  argv[ 1 ];
@@ -206,7 +206,7 @@ int start_video_grabber(void)
 
     init_vgrab(argc, argv, dflags);
     init_args_res = init_args_vgrab(&msg_arg);
-    kjb_fflush((FILE*)NULL); /* Always flush after a videograb routine. */
+    ivi_fflush((FILE*)NULL); /* Always flush after a videograb routine. */
 
     if (init_args_res == NULL)
     {
@@ -223,7 +223,7 @@ int start_video_grabber(void)
 
     send_args_res = send_args_vgrab(&msg_arg);
 
-    kjb_fflush((FILE*)NULL); /* Always flush after a videograb routine. */
+    ivi_fflush((FILE*)NULL); /* Always flush after a videograb routine. */
 
     if (send_args_res == -1)
     {
@@ -247,11 +247,11 @@ int start_video_grabber(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
 /*ARGSUSED*/
 int capture_image
 (
-    KJB_image**   ipp,
+    IVI_image**   ipp,
     Image_window* __attribute__((unused)) dummy_image_window_ptr
 )
 {
@@ -310,7 +310,7 @@ int capture_image
         if ((res = sigsetjmp(fs_before_video_routine_env, 1)) != 0)
         {
             unset_atn_trap();
-            kjb_fflush((FILE*)NULL); /*Always flush after a videograb routine.*/
+            ivi_fflush((FILE*)NULL); /*Always flush after a videograb routine.*/
 
             if (res != INTERRUPTED)
             {
@@ -324,7 +324,7 @@ int capture_image
             return ERROR;
         }
 
-        kjb_clear_error();
+        ivi_clear_error();
 
         chk = get_video_image( argc, argv, &returned_image,
                                fs_capture_frame_count,
@@ -334,7 +334,7 @@ int capture_image
                                (char*)NULL /*blackfile-name*/
                              );
 
-        kjb_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
+        ivi_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
         unset_atn_trap();
 
         if (chk == -1)
@@ -404,7 +404,7 @@ int capture_image
     }
 
     free_ret_image(&(returned_image.im));
-    kjb_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
+    ivi_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
 
     ERE(mark_clipped_pixels(*ipp));
     ERE(remove_camera_offset_from_image(*ipp));
@@ -413,12 +413,12 @@ int capture_image
     return NO_ERROR;
 }
 
-#else  /* Case !KJB_HAVE_VIDEO follows. */
+#else  /* Case !IVI_HAVE_VIDEO follows. */
 
 /*ARGSUSED*/
 int capture_image
 (
-    KJB_image**   __attribute__((unused)) dummy_ipp,
+    IVI_image**   __attribute__((unused)) dummy_ipp,
     Image_window* __attribute__((unused)) dummy_image_window_ptr
 )
 {
@@ -434,7 +434,7 @@ int capture_image
 
 int stop_video_grabber(void)
 {
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
 
     stop_video_grabber_guts();
     return NO_ERROR;
@@ -446,14 +446,14 @@ int stop_video_grabber(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
 
 static void stop_video_grabber_guts(void)
 {
     if (fs_video_active)
     {
         kill_vgrab();
-        kjb_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
+        ivi_fflush((FILE*)NULL);  /* Always flush after a videograb routine. */
         fs_video_active = FALSE;
     }
 }
@@ -462,7 +462,7 @@ static void stop_video_grabber_guts(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_VIDEO
+#ifdef IVI_HAVE_VIDEO
 
 /*ARGSUSED*/ /* Usually have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE video_grabber_atn_fn(TRAP_FN_DUMMY_ARGS)

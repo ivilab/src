@@ -104,7 +104,7 @@ TENTATIVELY ELIMINATE *   - find_new_event()              -- (factory version) f
  *                            called by update_sweep()
  */
 /*
- * $Id: sweep.h 20176 2015-12-12 20:31:18Z predoehl $
+ * $Id: sweep.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef QD_CPP_SWEEP_H_INCLUDED_IVILAB_UARIZONAVISION
@@ -131,7 +131,7 @@ TENTATIVELY ELIMINATE *   - find_new_event()              -- (factory version) f
 #include <iosfwd>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -163,7 +163,7 @@ bool does_seg_straddle_sweepline(
     const RatPoint& p ///< sweepline locus
 )
 {
-    KJB(ASSERT(s.a <= s.b)); // s must be rectified
+    IVI(ASSERT(s.a <= s.b)); // s must be rectified
     return s.a <= p && p <= s.b;
 }
 
@@ -437,7 +437,7 @@ class SweepCompare : public std::binary_function< Shemp, Shemp, bool >
             return l_bumper_;
         }
         // else,
-        KJB(ASSERT(Shemp::RBUMP == i.shemp_index()));
+        IVI(ASSERT(Shemp::RBUMP == i.shemp_index()));
         return r_bumper_;
     }
 
@@ -490,14 +490,14 @@ public:
      */
     bool operator()(Shemp i, Shemp j) const
     {
-        using kjb::qd::line_intersection;
+        using ivi::qd::line_intersection;
         const RatPoint_line_segment
             hz(RatPoint(0, sweep_at_ -> y), RatPoint(1, sweep_at_ -> y)),
             sa = get_segment(i), sb = get_segment(j);
 
         // straddle invariant
-        KJB(ASSERT(does_seg_straddle_sweepline(sa, *sweep_at_)));
-        KJB(ASSERT(does_seg_straddle_sweepline(sb, *sweep_at_)));
+        IVI(ASSERT(does_seg_straddle_sweepline(sa, *sweep_at_)));
+        IVI(ASSERT(does_seg_straddle_sweepline(sb, *sweep_at_)));
 
         /*
          * Test for the annoying case of horizontal segments.
@@ -522,7 +522,7 @@ public:
          * intersection with the horizontal sweep LINE (not line segment).
          */
         const RatPoint ha = line_intersection(sa, hz);
-        KJB(ASSERT(ha.y == sweep_at_ -> y));
+        IVI(ASSERT(ha.y == sweep_at_ -> y));
 
         if (is_horizontal(sb))
         {
@@ -537,7 +537,7 @@ public:
          * finite cotangents.
          */
         const RatPoint hb = line_intersection(sb, hz);
-        KJB(ASSERT(ha.y == hb.y));
+        IVI(ASSERT(ha.y == hb.y));
 
         /* If those points are distinct, the order is defined by x coordinate,
          * the primary criterion.
@@ -585,7 +585,7 @@ struct SweepLine
         void operator()(size_t seg_index)
         {
             // Our records indicate you are indeed in the sweep line:
-            KJB(ASSERT(p_rev_sw_ -> at(seg_index) != psweep_ -> end()));
+            IVI(ASSERT(p_rev_sw_ -> at(seg_index) != psweep_ -> end()));
             psweep_ -> erase( p_rev_sw_ -> at(seg_index) );
             p_rev_sw_ -> at(seg_index) = psweep_ -> end();
         }
@@ -608,10 +608,10 @@ struct SweepLine
         void operator()(size_t seg_index)
         {
             // Our records indicate you are not already in the sweep line:
-            KJB(ASSERT(p_rev_sw_ -> at(seg_index) == psweep_ -> end()));
+            IVI(ASSERT(p_rev_sw_ -> at(seg_index) == psweep_ -> end()));
             std::pair<iterator, bool>
                 j = psweep_ -> insert( Shemp::ctor_from_true(seg_index) );
-            KJB(ASSERT(j.second));
+            IVI(ASSERT(j.second));
             p_rev_sw_ -> at(seg_index) = j.first;
         }
     };
@@ -710,12 +710,12 @@ get_event_neighbors(
      * if not coincident -- possibly the bumpers, possibly segments
      * immediately neighboring sweep_location, possibly both on sweep_location.
      */
-    KJB(ASSERT(ir != sweep.begin() && ir != sweep.end()));
+    IVI(ASSERT(ir != sweep.begin() && ir != sweep.end()));
 
-    KJB(ASSERT(   il -> is_fake()
+    IVI(ASSERT(   il -> is_fake()
                || does_seg_straddle_sweepline(
                       segmap.lookup(il -> true_index()), sweep_location)));
-    KJB(ASSERT(   ir -> is_fake()
+    IVI(ASSERT(   ir -> is_fake()
                || does_seg_straddle_sweepline(
                       segmap.lookup(ir -> true_index()), sweep_location)));
 
@@ -788,7 +788,7 @@ void pull_events_here(
     SegMap segmap
 )
 {
-    KJB(ASSERT(eq && !eq -> empty()));
+    IVI(ASSERT(eq && !eq -> empty()));
     const RatPoint sweep_location = (* eq -> begin()) -> p;
 
     // Pull from event queue.
@@ -798,7 +798,7 @@ void pull_events_here(
         eq -> erase(eq -> begin());
         if (i != SWEEP_BLANK)
         {
-            KJB(ASSERT(segmap.valid(i)));
+            IVI(ASSERT(segmap.valid(i)));
             classify_segment(segmap.lookup(i), i, ulma, sweep_location);
         }
     }
@@ -809,9 +809,9 @@ void pull_events_here(
              eir = get_event_neighbors(sweep, sweep_location, segmap);
     while (++eir.first != eir.second)
     {
-        KJB(ASSERT(eir.first -> is_true()));
+        IVI(ASSERT(eir.first -> is_true()));
         const size_t i = eir.first -> true_index();
-        KJB(ASSERT(is_on(segmap.lookup(i), sweep_location)));
+        IVI(ASSERT(is_on(segmap.lookup(i), sweep_location)));
         classify_segment(segmap.lookup(i), i, ulma, sweep_location);
     }
 }
@@ -941,10 +941,10 @@ void find_new_event(
     const RatPoint& sweep_location
 )
 {
-    KJB(ASSERT(peq));
+    IVI(ASSERT(peq));
     // Shemps might be fake, specifically bumpers, but they're not vspike.
-    KJB(ASSERT(Shemp::VSPIKE != shemp1.shemp_index()));
-    KJB(ASSERT(Shemp::VSPIKE != shemp2.shemp_index()));
+    IVI(ASSERT(Shemp::VSPIKE != shemp1.shemp_index()));
+    IVI(ASSERT(Shemp::VSPIKE != shemp2.shemp_index()));
 
     // Fake Shemps do not generate events.
     if (shemp1.is_fake() || shemp2.is_fake())
@@ -953,19 +953,19 @@ void find_new_event(
     }
 
     const size_t index1(shemp1.true_index()), index2(shemp2.true_index());
-    KJB(ASSERT(segmap.valid(index1)));
-    KJB(ASSERT(segmap.valid(index2)));
+    IVI(ASSERT(segmap.valid(index1)));
+    IVI(ASSERT(segmap.valid(index2)));
 
     RatPoint_line_segment s1(segmap.lookup(index1)),
                           s2(segmap.lookup(index2)),
                           common(s1);
 
-    bool bx = kjb::qd::segment_intersection(s1, s2, &common);
+    bool bx = ivi::qd::segment_intersection(s1, s2, &common);
     const RatPoint px = std::min(common.a, common.b);
     if (bx && sweep_location < px)
     {
-        KJB(ASSERT(is_on(s1, px)));
-        KJB(ASSERT(is_on(s2, px)));
+        IVI(ASSERT(is_on(s1, px)));
+        IVI(ASSERT(is_on(s2, px)));
         // insert one (no need to insert both)
         //peq -> insert(boost::make_shared<Event_point>(px, index1));
         peq -> insert(boost::make_shared<Event_point>(px, SWEEP_BLANK));
@@ -1156,7 +1156,7 @@ std::ostream& debug_queue_dump(
 
 } // end ns sweep
 } // end ns qd
-} // end ns kjb
+} // end ns ivi
 
 #endif /* QD_CPP_SWEEP_H_INCLUDED_IVILAB_UARIZONAVISION */
 

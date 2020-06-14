@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_util.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*!
  * @file prob_util.cpp
@@ -24,7 +24,7 @@
 
 #include <boost/math/special_functions/gamma.hpp>
 
-namespace kjb{
+namespace ivi{
 
     Vector log_normalize(const Vector& vec)
     {
@@ -145,7 +145,7 @@ namespace kjb{
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::multivariate_gamma_function(size_t D, double val)
+double ivi::multivariate_gamma_function(size_t D, double val)
 {
     /*double gamma_D = std::pow(M_PI, D * (D-1)/4.0);
     for(int i = 1; i <= D; i++)
@@ -160,7 +160,7 @@ double kjb::multivariate_gamma_function(size_t D, double val)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::log_multivariate_gamma_function(size_t D, double val)
+double ivi::log_multivariate_gamma_function(size_t D, double val)
 {
     double log_gamma_D = D * (D-1)/4.0 * std::log(M_PI); 
     for(int i = 1; i <= D; i++)

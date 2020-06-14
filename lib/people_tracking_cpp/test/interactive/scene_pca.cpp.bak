@@ -34,8 +34,8 @@
 #include <boost/format.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 int main(int argc, char** argv)
 {
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
         data.read(file_names_from_format(datadir + "/%05d.txt"));
 
         // scene dirs
-        Word_list scene_dps(scenesdir + "/*", kjb_c::is_directory);
+        Word_list scene_dps(scenesdir + "/*", ivi_c::is_directory);
         const size_t num_scenes = scene_dps.size();
         IFT(num_scenes > 0, IO_error, "Input directory is empty.");
 
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
         }
 
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;

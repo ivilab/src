@@ -35,8 +35,8 @@
 #include <boost/bind.hpp>
 #include "utils.h"
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 int main(int argc, char** argv)
 {
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 
         write_scene(scene, "output/refine_scene_cpp");
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         std::cerr << std::endl;

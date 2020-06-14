@@ -60,13 +60,13 @@
  */
 
 
-#ifndef KJB_RENDERABLE_H
-#define KJB_RENDERABLE_H
+#ifndef IVI_RENDERABLE_H
+#define IVI_RENDERABLE_H
 
 #include <m_cpp/m_matrix.h>
 #include <l_cpp/l_exception.h>
 
-namespace kjb {
+namespace ivi {
 
 class Base_gl_interface;
 
@@ -192,7 +192,7 @@ public:
      * @brief  Renders the silhouette of this object. The most basic implementation is
      *         to render the occluded wireframe
      */
-    virtual void silhouette_render(const kjb::Base_gl_interface &, double width) const
+    virtual void silhouette_render(const ivi::Base_gl_interface &, double width) const
     {
         width = width + 0.0; //This is to avoid a warning
         render_occluded_wireframe();
@@ -231,7 +231,7 @@ protected:
  *
  */
 class Generic_renderable :
-    public kjb::Abstract_renderable
+    public ivi::Abstract_renderable
 {
 public:
 
@@ -314,7 +314,7 @@ public:
 
     virtual void render() const
     {
-        IFT(m_model != NULL, KJB_error, "Model not set.");
+        IFT(m_model != NULL, IVI_error, "Model not set.");
         render(*m_model);
     }
 
@@ -472,26 +472,26 @@ public:
 class Renderer_renderable : public Generic_renderable
 {
 public:
-    virtual void render(const kjb::Generic_renderer& renderer) const = 0;
+    virtual void render(const ivi::Generic_renderer& renderer) const = 0;
 
     void render() const
     {
-        return render(kjb::Solid_renderer());
+        return render(ivi::Solid_renderer());
     }
 
     void solid_render() const
     {
-        return render(kjb::Solid_renderer());
+        return render(ivi::Solid_renderer());
     }
 
     void wire_renderer() const
     {
-        return render(kjb::Wire_renderer());
+        return render(ivi::Wire_renderer());
     }
 
     void wire_occlude_renderer() const
     {
-        return render(kjb::Wire_occlude_renderer());
+        return render(ivi::Wire_occlude_renderer());
     }
 
 

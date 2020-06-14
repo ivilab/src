@@ -1,4 +1,4 @@
-/* $Id: i_colormap.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: i_colormap.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -25,7 +25,7 @@
 
 #include <boost/assign/list_of.hpp>
 
-namespace kjb
+namespace ivi
 {
 
 std::map<std::string, Colormap::Preset_map_func>
@@ -162,7 +162,7 @@ std::vector<PixelRGBA> Colormap::hsv(int n)
         for(int i = 0; i < n; i++)
         {
             double x = range[i];
-//            map[i] = static_cast<kjb_c::Pixel>(PixelHSVA(x, 1.0, 1.0));
+//            map[i] = static_cast<ivi_c::Pixel>(PixelHSVA(x, 1.0, 1.0));
             PixelHSVA color(x, 1.0, 1.0);
             map[i] = PixelRGBA(color.r, color.g, color.b);
         }
@@ -256,4 +256,4 @@ std::vector<PixelRGBA> Colormap::cool(int n)
     abort(); // can't get here
 }
 
-} // namespace kjb
+} // namespace ivi

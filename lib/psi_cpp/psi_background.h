@@ -1,4 +1,4 @@
-/* $Id: psi_background.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: psi_background.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 #include <people_tracking_cpp/pt_box_trajectory.h>
 #include <video_cpp/video.h>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -57,7 +57,7 @@ void compute_median_background
 
 
 } //namespace psi
-} //namespace kjb
+} //namespace ivi
 
 #endif /* PSI_BACKGROUND_H */
 

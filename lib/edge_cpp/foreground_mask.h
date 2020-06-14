@@ -20,7 +20,7 @@
  * @author Andrew Predoehl
  * @author Ernesto Brau
  *
- * @brief Definition for the Int_matrix class, a thin wrapper on the KJB
+ * @brief Definition for the Int_matrix class, a thin wrapper on the IVI
  *        Int_matrix struct and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -40,7 +40,7 @@
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
 
-namespace kjb {
+namespace ivi {
 
 class Foreground_mask
 {

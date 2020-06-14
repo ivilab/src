@@ -38,10 +38,10 @@
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/property_map/property_map.hpp>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
-std::vector<size_t> kjb::bbb::trajectory_endpoints
+std::vector<size_t> ivi::bbb::trajectory_endpoints
 (
     Endpoint_set& endpoints,
     const Intentional_activity& act,
@@ -124,7 +124,7 @@ std::vector<size_t> kjb::bbb::trajectory_endpoints
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-boost::tuple<Vector, Vector, std::vector<size_t> > kjb::bbb::endpoint_mean
+boost::tuple<Vector, Vector, std::vector<size_t> > ivi::bbb::endpoint_mean
 (
     const Endpoint_set& endpoints,
     const Description& desc,
@@ -167,7 +167,7 @@ boost::tuple<Vector, Vector, std::vector<size_t> > kjb::bbb::endpoint_mean
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix kjb::bbb::endpoint_covariance
+Matrix ivi::bbb::endpoint_covariance
 (
     const Endpoint_set& endpoints,
     const Activity_library& library
@@ -241,7 +241,7 @@ Matrix kjb::bbb::endpoint_covariance
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::bbb::endpoint_distribution
+void ivi::bbb::endpoint_distribution
 (
     Vector& mux,
     Vector& muy,

@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: test_wordlist.cpp 21356 2017-03-30 05:34:45Z kobus $
+ * $Id: test_wordlist.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_incl.h"
@@ -25,7 +25,7 @@
         {                                                                   \
             TEST_PSE(( "Test failed on line %d of function %s, "            \
                 "file %s:\n\t%s\n", __LINE__, __func__, __FILE__, (#P)));   \
-            kjb_c::kjb_exit( EXIT_FAILURE );                                \
+            ivi_c::ivi_exit( EXIT_FAILURE );                                \
         }                                                                   \
         else{ ; }
 
@@ -41,15 +41,15 @@ void test_1()
 {
     const size_t SIZE = 8;
 
-    kjb::Word_list wl1( "input/nobody/file*" );
+    ivi::Word_list wl1( "input/nobody/file*" );
     WE_EXPECT( wl1.size() == SIZE );
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::pso( "wl size is %d\n", wl1.size() );
+        ivi_c::pso( "wl size is %d\n", wl1.size() );
         for( size_t iii = 0; iii < wl1.size(); ++iii )
         {
-            kjb_c::pso( "%s\n", wl1[ iii ] );
+            ivi_c::pso( "%s\n", wl1[ iii ] );
         }
     }
 
@@ -82,17 +82,17 @@ void test_2()
     const size_t SIZE = 3;
     const char* pointy = "porcupine";
 
-    kjb::Word_list wl2( "input/nobody/file*", kjb_c::is_directory );
-    kjb::Word_list wm2( wl2 ), wn2( 17 );
+    ivi::Word_list wl2( "input/nobody/file*", ivi_c::is_directory );
+    ivi::Word_list wm2( wl2 ), wn2( 17 );
 
     WE_EXPECT( wl2.size() == SIZE );
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::pso( "wl size is %d\n", wl2.size() );
+        ivi_c::pso( "wl size is %d\n", wl2.size() );
         for( size_t iii = 0; iii < wl2.size(); ++iii )
         {
-            kjb_c::pso( "%s\n", wl2[ iii ] );
+            ivi_c::pso( "%s\n", wl2[ iii ] );
         }
     }
 
@@ -145,7 +145,7 @@ void test_2()
 
 
     // test concatenation
-    kjb::Word_list wp2( wl2 + wm2 );
+    ivi::Word_list wp2( wl2 + wm2 );
     WE_EXPECT( wp2.size() == wl2.size() + wm2.size() );
     WE_EXPECT( 0 == strcmp( wl2[ 0 ], wp2[ 0 ] ) );
     WE_EXPECT( 0 == strcmp( wm2[ 0 ], wp2[ wl2.size() ] ) );
@@ -157,7 +157,7 @@ void test_2()
     WE_EXPECT( 1+SIZE == wl2.count_strings() );
 
     // test append some more
-    kjb::Word_list xyz( 10 );
+    ivi::Word_list xyz( 10 );
     WE_EXPECT( 10 == xyz.size() );
     WE_EXPECT( 0 == xyz.count_strings() );
     xyz.append( "alpha" ); xyz.append( "beta" ); xyz.append( "gamma" );
@@ -174,15 +174,15 @@ void test_3()
 {
     const size_t SIZE = 11;
 
-    kjb::Word_list wl3( "input/nobody/file*", is_anything );
+    ivi::Word_list wl3( "input/nobody/file*", is_anything );
     WE_EXPECT( wl3.size() == SIZE );
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::pso( "wl size is %d\n", wl3.size() );
+        ivi_c::pso( "wl size is %d\n", wl3.size() );
         for( size_t iii = 0; iii < wl3.size(); ++iii )
         {
-            kjb_c::pso( "%s\n", wl3[ iii ] );
+            ivi_c::pso( "%s\n", wl3[ iii ] );
         }
     }
 
@@ -215,14 +215,14 @@ void test_3()
 // test iterators
 void test_4()
 {
-    kjb::Word_list wl4( "input/nobody/file*" );
+    ivi::Word_list wl4( "input/nobody/file*" );
 
     // test that reference type works (it was a pain to get right)
-    kjb::Word_list::const_iterator::reference wdi = *wl4.begin();
+    ivi::Word_list::const_iterator::reference wdi = *wl4.begin();
     WE_EXPECT( 0 == strcmp( "input/nobody/file", wdi ) );
 
     // the predicate is explained in sec. 18.4.4.4 of Stroustrup, TC++PL/3e
-    kjb::Word_list::const_iterator ci = std::find_if( wl4.begin(), wl4.end(),
+    ivi::Word_list::const_iterator ci = std::find_if( wl4.begin(), wl4.end(),
         std::not1( std::bind2nd( std::ptr_fun( strcmp ), "input/nobody/file_f"
         ) ) );
 
@@ -241,7 +241,7 @@ void test_4()
     WE_EXPECT( 0 == strcmp( "input/nobody/file", * wl4.begin() ) );
 
     // test that find fails for strings not in the list
-    kjb::Word_list::const_iterator cj = std::find( wl4.begin(), wl4.end(),
+    ivi::Word_list::const_iterator cj = std::find( wl4.begin(), wl4.end(),
                                                                 "impossible" );
     WE_EXPECT( ! (cj != wl4.end()) ); // i.e., it DOES equal end
 }
@@ -251,7 +251,7 @@ void test_4()
 void test_5()
 {
     const char* argv[] = { "cat", "in", "the", "hat", 0 };
-    kjb::Word_list seuss( 4, argv );
+    ivi::Word_list seuss( 4, argv );
     WE_EXPECT( 4 == seuss.size() );
     WE_EXPECT( 4 == seuss.count_strings() );
     WE_EXPECT( 0 == strcmp( seuss[0], "cat" ) );
@@ -273,14 +273,14 @@ int main()
         test_4();
         test_5();
     }
-    catch( kjb::Exception& e )
+    catch( ivi::Exception& e )
     {
         e.print_details_exit();
     }
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::kjb_fputs( stdout, "Success!\n" );
+        ivi_c::ivi_fputs( stdout, "Success!\n" );
     }
 
     return EXIT_SUCCESS;

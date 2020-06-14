@@ -22,7 +22,7 @@
 #include <iostream>
 
 
-using namespace kjb;
+using namespace ivi;
 int main(int argc, char **argv)
 {
     if(argc != 2)

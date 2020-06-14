@@ -49,7 +49,7 @@
 #ifndef __CL_FFT_BASE_KERNELS_
 #define __CL_FFT_BASE_KERNELS_
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
 #include <string>
 
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
@@ -276,5 +276,5 @@ static string twistKernelPlannar = string(
 
 
 
-#endif /* KJB_HAVE_OPENCL */
+#endif /* IVI_HAVE_OPENCL */
 #endif

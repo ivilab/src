@@ -1,5 +1,5 @@
 
-/* This test file does not use KJB to study linking under that assumption. */
+/* This test file does not use IVI to study linking under that assumption. */
 
 #include <stdio.h>
 

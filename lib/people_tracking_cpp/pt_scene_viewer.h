@@ -23,7 +23,7 @@
 #ifndef PT_SCENE_VIEWER
 #define PT_SCENE_VIEWER
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_target.h>
 #include <people_tracking_cpp/pt_detection_box.h>
@@ -39,7 +39,7 @@
 #include <boost/bind.hpp>
 #include <boost/optional.hpp>
 
-namespace kjb {
+namespace ivi {
 
 namespace pt {
 
@@ -73,7 +73,7 @@ public:
         bool show_window = true
     );
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     ~Scene_viewer()
     {
         if(m_glwin)
@@ -103,7 +103,7 @@ public:
     template<class Func>
     void set_key_callback(const Func& cb)
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         if(m_glwin)
         {
             m_glwin->set_keyboard_callback(cb);
@@ -336,7 +336,7 @@ public:
     void build_entity_map();
 
     /** @brief  Force redisplay on this viewer. */
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     void redisplay() const { if(m_glwin) m_glwin->redisplay(); }
 #endif
 
@@ -436,7 +436,7 @@ private:
 
 private:
     // scene-releated members
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     opengl::Glut_window* m_glwin;
 #endif
     const Scene* m_scene_p;
@@ -485,9 +485,9 @@ private:
 
 };
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
 
 #endif /*PT_SCENE_VIEWER */
 

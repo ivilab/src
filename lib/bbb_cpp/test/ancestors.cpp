@@ -39,7 +39,7 @@
 #include <utility>
 #include <boost/variant.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 const bool VERBOSE = false;

@@ -30,7 +30,7 @@
 #include <numeric>
 #include <functional>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Computes the integral of a function numerically using a
@@ -45,7 +45,7 @@ namespace kjb {
  * @param   nbins       Number of bins for approximation.
  * @param   adapter     Allows us to treat our model as a vector. Must have
  *                      A::get, A::set, and A::size implemented. See
- *                      kjb::Vector_adapter for an example.
+ *                      ivi::Vector_adapter for an example.
  * @param   def_model   An initialized model. Must be ready for getting and
  *                      setting.
  *
@@ -67,7 +67,7 @@ double riemann_sum
 
     if(D > 8)
     {
-        kjb_c::warn_pso("The dimensionality of this function is %d; this "
+        ivi_c::warn_pso("The dimensionality of this function is %d; this "
                         "approximation might take a really long time.", D);
     }
 
@@ -105,7 +105,7 @@ double riemann_sum
  * @param   nbins   Number of bins for approximation.
  * @param   adapter Allows us to treat our model as a vector. Must have
  *                  A::get, A::set, and A::size implemented. See
- *                  kjb::Vector_adapter for an example.
+ *                  ivi::Vector_adapter for an example.
  *
  * @warn    The runtime of this function grows exponentially with the number
  *          of dimensions. Please only use for proof-of-concept or testing.
@@ -128,7 +128,7 @@ double riemann_sum
  * @brief   Computes the integral of a function numerically using a
  *          Riemann sum.
  *
- * @param   fcn     Function of interest. Must receive a kjb::Vector
+ * @param   fcn     Function of interest. Must receive a ivi::Vector
  *                  and return a double. Its type can be anything that
  *                  is callablle with the correct signature.
  * @param   bounds  Bounds (one pair of upper and lower bounds per dimension)
@@ -152,7 +152,7 @@ double riemann_sum
                        Vector(bounds.size()));
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*INTEGRAL_RIEMANN_H */
 

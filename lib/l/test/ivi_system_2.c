@@ -1,5 +1,5 @@
 
-/* $Id: kjb_glob.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: ivi_glob.c 4723 2009-11-16 18:57:09Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -9,8 +9,8 @@ int main(void)
     char input_str[ 100 ];
     int prog_rc = 0;
    
-    /* kjb_set_debug_level(4); */
-    kjb_init();
+    /* ivi_set_debug_level(4); */
+    ivi_init();
 
     while (TRUE)
     {
@@ -23,9 +23,9 @@ int main(void)
             if (BUFF_FGET_LINE(stdin, input_str) == EOF)  break;
         }
 
-        if (kjb_system_2(input_str, &prog_rc) == ERROR) 
+        if (ivi_system_2(input_str, &prog_rc) == ERROR) 
         {
-            kjb_print_error(); 
+            ivi_print_error(); 
         }
 
         dbi(prog_rc); 

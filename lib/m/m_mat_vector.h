@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_vector.h 15081 2013-08-01 18:00:47Z predoehl $ */
+/* $Id: m_mat_vector.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -39,7 +39,7 @@ namespace kjb_c {
  *
  * Type for an array of matrices
  *
- * This type is used in the KJB library for arrays of matrices.
+ * This type is used in the IVI library for arrays of matrices.
  *
  * Index: matrices
  *
@@ -63,7 +63,7 @@ Matrix_vector;
  *
  * Type for an array of arrays of matrices
  *
- * This type is used in the KJB library for arrays of arrays of matrices.
+ * This type is used in the IVI library for arrays of arrays of matrices.
  *
  * Index: matrices
  *

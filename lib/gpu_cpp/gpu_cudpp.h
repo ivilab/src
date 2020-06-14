@@ -1,4 +1,4 @@
-/* $Id: gpu_cudpp.h 10607 2011-09-29 19:50:31Z predoehl $ */
+/* $Id: gpu_cudpp.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -18,12 +18,12 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef KJB_CPP_CUDPP_H
-#define KJB_CPP_CUDPP_H
+#ifndef IVI_CPP_CUDPP_H
+#define IVI_CPP_CUDPP_H
 
 #include <l_cpp/l_exception.h>
 
-#ifdef KJB_HAVE_CUDPP
+#ifdef IVI_HAVE_CUDPP
 #include <cudpp.h>
 
 // TODO Create a CUDPP error class and convert error codes into meaningful strings
@@ -32,7 +32,7 @@
     CUDPPResult err = a; \
     if(err) \
     { \
-        KJB_THROW_3(Runtime_error, "CUDPP error: %d", (err)); \
+        IVI_THROW_3(Runtime_error, "CUDPP error: %d", (err)); \
     } \
 }
 

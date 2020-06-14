@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: tracking_entity.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: tracking_entity.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
 #include "tracking_cpp/tracking_entity.h"
@@ -34,8 +34,8 @@
 #include <boost/io/ios_state.hpp>
 #include <boost/lexical_cast.hpp>
 
-using namespace kjb;
-using namespace kjb::tracking;
+using namespace ivi;
+using namespace ivi::tracking;
 
 // Map between names and types
 typedef boost::bimap<Entity_type, std::string> Entity_type_map;
@@ -79,7 +79,7 @@ const double entity_type_sdv_girths[] = {0.04, -1.0, -1.0, -1.0, -1.0,
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<std::string> kjb::tracking::get_all_entity_type_names()
+std::vector<std::string> ivi::tracking::get_all_entity_type_names()
 {
     std::vector<std::string> result;
 
@@ -95,63 +95,63 @@ std::vector<std::string> kjb::tracking::get_all_entity_type_names()
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Entity_type kjb::tracking::get_entity_type(const std::string& name)
+Entity_type ivi::tracking::get_entity_type(const std::string& name)
 {
     return entity_type_map.right.at(name);
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-const std::string& kjb::tracking::get_entity_type_name(Entity_type type)
+const std::string& ivi::tracking::get_entity_type_name(Entity_type type)
 {
     return entity_type_map.left.at(type);
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::tracking::get_entity_type_average_height(Entity_type type)
+double ivi::tracking::get_entity_type_average_height(Entity_type type)
 {
     return entity_type_avg_heights[type];
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::tracking::get_entity_type_stddev_height(Entity_type type)
+double ivi::tracking::get_entity_type_stddev_height(Entity_type type)
 {
     return entity_type_sdv_heights[type];
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::tracking::get_entity_type_average_width(Entity_type type)
+double ivi::tracking::get_entity_type_average_width(Entity_type type)
 {
     return entity_type_avg_widths[type];
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::tracking::get_entity_type_stddev_width(Entity_type type)
+double ivi::tracking::get_entity_type_stddev_width(Entity_type type)
 {
     return entity_type_sdv_widths[type];
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::tracking::get_entity_type_average_girth(Entity_type type)
+double ivi::tracking::get_entity_type_average_girth(Entity_type type)
 {
     return entity_type_avg_girths[type];
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::tracking::get_entity_type_stddev_girth(Entity_type type)
+double ivi::tracking::get_entity_type_stddev_girth(Entity_type type)
 {
     return entity_type_sdv_girths[type];
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::ostream& kjb::tracking::operator<<(std::ostream& ost, Entity_type type)
+std::ostream& ivi::tracking::operator<<(std::ostream& ost, Entity_type type)
 {
     // NUM_ENTITY_TYPES is a sentinal value, and should never be read/written
     ASSERT(type != NUM_ENTITY_TYPES);
@@ -162,7 +162,7 @@ std::ostream& kjb::tracking::operator<<(std::ostream& ost, Entity_type type)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::istream& kjb::tracking::operator>>(std::istream& ist, Entity_type& type)
+std::istream& ivi::tracking::operator>>(std::istream& ist, Entity_type& type)
 {
     // NUM_ENTITY_TYPES is a sentinal value, and should never be read/written
     ASSERT(type != NUM_ENTITY_TYPES);
@@ -184,7 +184,7 @@ std::istream& kjb::tracking::operator>>(std::istream& ist, Entity_type& type)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::istream& kjb::tracking::operator>>(std::istream& ist, Entity_id& id)
+std::istream& ivi::tracking::operator>>(std::istream& ist, Entity_id& id)
 {
     // this will restore the "skipws" state after leaving scope.
     boost::io::ios_flags_saver  ifs( ist );
@@ -205,7 +205,7 @@ std::istream& kjb::tracking::operator>>(std::istream& ist, Entity_id& id)
         if(sindex == ".")
         {
             // must specify both stype and sindex
-            KJB_THROW_2(IO_error, "Cannot read entity-id; wrong format.");
+            IVI_THROW_2(IO_error, "Cannot read entity-id; wrong format.");
         }
 
         id.type = boost::lexical_cast<Entity_type>(stype);
@@ -217,7 +217,7 @@ std::istream& kjb::tracking::operator>>(std::istream& ist, Entity_id& id)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::ostream& kjb::tracking::operator<<(std::ostream& ost, const Entity_id& id)
+std::ostream& ivi::tracking::operator<<(std::ostream& ost, const Entity_id& id)
 {
     if(!id)
     {

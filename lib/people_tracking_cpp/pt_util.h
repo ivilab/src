@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan 
  * =========================================================================== */
 
-/* $Id: pt_util.h 20912 2016-10-30 17:52:31Z ernesto $ */
+/* $Id: pt_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_UTIL
 #define PT_UTIL
@@ -37,7 +37,7 @@
 #include <detector_cpp/d_deva_facemark.h>
 #include <boost/optional.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -232,7 +232,7 @@ private:
 
 /**
  * @brief   Compute the average flow in a box, ignoring occluded parts.
- * @return  A kjb::Vector representing the average flow.
+ * @return  A ivi::Vector representing the average flow.
  *
  */
 Vector average_box_flow
@@ -287,7 +287,7 @@ void find_looking_subjects(const Scene& scene, double thresh = 0.3);
 /** @brief  Find set of gaze intersections. */
 std::vector<Vector> locations_3d(const Scene& scene, double thresh = 0.3);
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_UTIL */
 

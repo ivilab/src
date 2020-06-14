@@ -10,7 +10,7 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
@@ -18,7 +18,7 @@
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
 using namespace std;
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
-using namespace kjb_c;
+using namespace ivi_c;
 
 
 namespace DTLib {
@@ -103,12 +103,12 @@ namespace DTLib {
         // THIS IS THE OUTPUT OF K-MEANS
         // assignments of clusters to the p data points, ZERO-INDEXED
         // (i.e. first cluster center is indexed by 0, next index is 1, ..)
-        kjb_int32* pPtClusters() { return m_pPtClusters; }
+        ivi_int32* pPtClusters() { return m_pPtClusters; }
 
         // as above, but detaches buffer from object (to avoid copying)
         // NB: you must delete this pointer yourself eventually!
-        kjb_int32* pPtClustersDetach() {
-            kjb_int32* pRes = m_pPtClusters; m_pPtClusters = NULL; return pRes;
+        ivi_int32* pPtClustersDetach() {
+            ivi_int32* pRes = m_pPtClusters; m_pPtClusters = NULL; return pRes;
         }
 
     private:
@@ -169,7 +169,7 @@ namespace DTLib {
 
         // THIS IS THE OUTPUT OF K-MEANS
         // the assignment of clusters to points (size = P)
-        kjb_int32* m_pPtClusters;
+        ivi_int32* m_pPtClusters;
 
         // Array of K integers, each = # of points per cluster.
 

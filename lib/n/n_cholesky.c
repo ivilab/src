@@ -1,5 +1,5 @@
 
-/* $Id: n_cholesky.c 17895 2014-10-24 23:38:49Z ksimek $ */
+/* $Id: n_cholesky.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -80,7 +80,7 @@ int set_cholesky_options(const char* option, const char* value)
  *                          cholesky_decomposition
  *
  * Performs Cholesky decomposition on a matrix, using a method hand-coded for 
- * the KJB library.
+ * the IVI library.
  *
  * This routine finds matrix L such that LL' = A. A must be positive definite.
  *
@@ -98,7 +98,7 @@ int set_cholesky_options(const char* option, const char* value)
  * The operation may be performed in one of several ways. The method used can be
  * set using the option "cholesky-method" which is normally exposed to
  * the user. If this options is "native" (the default), then we compute the
- * Cholesky decomposition using a native KJB implementation.  If this option 
+ * Cholesky decomposition using a native IVI implementation.  If this option 
  * is "lapack," Cholesky decomposition is perfomed by Lapack's DBOTRF subroutine.
  * The lapack version is slightly more forgiving on ill-conditioned matrices.
  *
@@ -154,7 +154,7 @@ int cholesky_decomposition(Matrix** target_mpp, const Matrix* input_mp)
  *                          do_native_cholesky_decomposition
  *
  * Performs Cholesky decomposition on a matrix, using a method hand-coded for 
- * the KJB library.
+ * the IVI library.
  *
  * This routine finds matrix L such that LL' = A. A must be positive definite.
  *

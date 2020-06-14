@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_channels.cpp 15900 2013-10-25 02:14:07Z predoehl $
+ * $Id: test_channels.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <i_cpp/i_image.h>
@@ -13,28 +13,28 @@ namespace {
 
 int nnn = 0;
 
-void show(const kjb::Image& iii)
+void show(const ivi::Image& iii)
 {
     std::string title = "Image 0";
     title[6] += nnn++;
 
-    if (kjb_c::kjb_fork()) return;
+    if (ivi_c::ivi_fork()) return;
     iii.display(title);
     while(1) {}
 }
 
 int test()
 {
-    kjb::Image iii("image.jpg");
-    const kjb::Matrix   mr(iii.get_channel(kjb::Image::RED)),
-                        mg(iii.get_channel(kjb::Image::GREEN)),
-                        mb(iii.get_channel(kjb::Image::BLUE)),
+    ivi::Image iii("image.jpg");
+    const ivi::Matrix   mr(iii.get_channel(ivi::Image::RED)),
+                        mg(iii.get_channel(ivi::Image::GREEN)),
+                        mb(iii.get_channel(ivi::Image::BLUE)),
                         *chan[3] = {&mr, &mg, &mb};
     show(iii);
 
-    for (int ccc = kjb::Image::RED; ccc < kjb::Image::END_CHANNELS; ++ccc)
+    for (int ccc = ivi::Image::RED; ccc < ivi::Image::END_CHANNELS; ++ccc)
     {
-        kjb::Image jjj(*chan[ccc]);
+        ivi::Image jjj(*chan[ccc]);
         show(jjj);
     }
 
@@ -50,7 +50,7 @@ int main()
     {
         return test();
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details_exit();
     }

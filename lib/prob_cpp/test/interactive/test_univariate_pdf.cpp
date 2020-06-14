@@ -17,7 +17,7 @@
 |
 * =========================================================================== */
 
-/* $Id: test_univariate_pdf.cpp 20241 2016-01-20 22:34:46Z jguan1 $ */
+/* $Id: test_univariate_pdf.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "prob_cpp/prob_distribution.h"
 #include "prob_cpp/prob_pdf.h"
@@ -31,7 +31,7 @@
 #include <stdexcept>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 template<class D>
 struct pdf_helper

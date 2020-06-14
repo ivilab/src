@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Support for error handling exception classes in libKJB
+ * @brief Support for error handling exception classes in libIVI
  * @author Kobus Barnard
  * @author Joseph Schlect
  * @author Kyle Simek
@@ -9,7 +9,7 @@
  */
 
 /*
- * $Id: l_exception.h 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: l_exception.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 /* =========================================================================== *
@@ -32,8 +32,8 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_EXCEPTION_H
-#define KJB_EXCEPTION_H
+#ifndef IVI_EXCEPTION_H
+#define IVI_EXCEPTION_H
 
 #include "l/l_sys_err.h"
 #include "l/l_sys_str.h"
@@ -43,21 +43,21 @@
 #include <string>
 #include <iosfwd>
 
-#define KJB_THROW(ex) throw ex(__FILE__, __LINE__)
+#define IVI_THROW(ex) throw ex(__FILE__, __LINE__)
 
-#define KJB_THROW_2(ex, msg) throw ex(msg, __FILE__, __LINE__)
+#define IVI_THROW_2(ex, msg) throw ex(msg, __FILE__, __LINE__)
 
 /*
  * The do { ... } while(0) structure below avoids the mistake known as
  * "swallowing the semicolon."
  */
 
-// usage: KJB_THROW_3(Exception, format_string, (param1)(param2)(param3)(...))
-#define KJB_THROW_3(ex, fmt, params)                            \
+// usage: IVI_THROW_3(Exception, format_string, (param1)(param2)(param3)(...))
+#define IVI_THROW_3(ex, fmt, params)                            \
     do                                                          \
     {                                                           \
         char buffer[ERROR_MESS_BUFF_SIZE];                      \
-        kjb_c::kjb_sprintf(buffer, ERROR_MESS_BUFF_SIZE, fmt,   \
+        ivi_c::ivi_sprintf(buffer, ERROR_MESS_BUFF_SIZE, fmt,   \
                             BOOST_PP_SEQ_ENUM(params));         \
         throw ex(buffer, __FILE__, __LINE__);                   \
     }                                                           \
@@ -69,7 +69,7 @@
     {                                                           \
         if (a)                                                  \
         {                                                       \
-            kjb::throw_kjb_error( "", __FILE__, __LINE__ );     \
+            ivi::throw_ivi_error( "", __FILE__, __LINE__ );     \
         }                                                       \
     }                                                           \
     while(0)
@@ -80,7 +80,7 @@
     {                                                           \
         if (a)                                                  \
         {                                                       \
-            kjb::throw_kjb_error(msg, __FILE__, __LINE__);      \
+            ivi::throw_ivi_error(msg, __FILE__, __LINE__);      \
         }                                                       \
     }                                                           \
     while(0)
@@ -91,7 +91,7 @@
     {                                                           \
         if ((a) == NULL)                                        \
         {                                                       \
-            kjb::throw_kjb_error( "Null result",                \
+            ivi::throw_ivi_error( "Null result",                \
                                         __FILE__, __LINE__ );   \
         }                                                       \
     }                                                           \
@@ -103,7 +103,7 @@
     {                                                           \
         if(!(a))                                                \
         {                                                       \
-            KJB_THROW_2(ex, msg);                               \
+            IVI_THROW_2(ex, msg);                               \
         }                                                       \
     }                                                           \
     while(0)                                                    \
@@ -114,7 +114,7 @@
     {                                                           \
         if(!(a))                                                \
         {                                                       \
-            KJB_THROW_3(ex, msg, params);                       \
+            IVI_THROW_3(ex, msg, params);                       \
         }                                                       \
     }                                                           \
     while(0)                                                    \
@@ -122,7 +122,7 @@
 
 
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Exception
@@ -259,19 +259,19 @@ protected:
 
 
 /// @brief Exception often thrown when wrapped C functions return error codes.
-class KJB_error : public Exception
+class IVI_error : public Exception
 {
 public:
-    /// @brief Constructs Exception caused by an error in the KJB C library
-    KJB_error(const char* msg, const char* file=0, unsigned line=0);
+    /// @brief Constructs Exception caused by an error in the IVI C library
+    IVI_error(const char* msg, const char* file=0, unsigned line=0);
 
 
-    /// @brief Constructs Exception caused by an error in the KJB C library
-    KJB_error(const std::string& msg, const char* file=0, unsigned line=0);
+    /// @brief Constructs Exception caused by an error in the IVI C library
+    IVI_error(const std::string& msg, const char* file=0, unsigned line=0);
 
 
-    /** @brief Deletes a KJB_error. */
-    virtual ~KJB_error() throw() { }
+    /** @brief Deletes a IVI_error. */
+    virtual ~IVI_error() throw() { }
 
 };
 
@@ -314,7 +314,7 @@ public:
  * However, sometimes we think of certain tasks as central to a computation
  * (such as linear algebra, fourier transforms, etc.) and other tasks as
  * ancillary (such as option-parsing, filesystem IO, or execution as mediated
- * by macros like KJB_HAVE_LAPACK).  Failures in the "central" computational
+ * by macros like IVI_HAVE_LAPACK).  Failures in the "central" computational
  * tasks of a program are represented by throwing Runtime_error objects,
  * preferably more-specialized descendant classes than this base class.
  */
@@ -650,11 +650,11 @@ public:
 };
 
 
-std::string kjb_get_error();
+std::string ivi_get_error();
 
-void throw_kjb_error( const char* msg, const char* file, unsigned line);
+void throw_ivi_error( const char* msg, const char* file, unsigned line);
 
-} // namespace kjb
+} // namespace ivi
 
 
 #endif

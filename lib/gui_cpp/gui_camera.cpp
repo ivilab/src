@@ -1,4 +1,4 @@
-/* $Id: gui_camera.cpp 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: gui_camera.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -19,7 +19,7 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
@@ -29,7 +29,7 @@
 #include <boost/optional.hpp>
 #include <i_cpp/i_image.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -51,7 +51,7 @@ struct Camera_key_listener
         return true;
     }
 
-    std::vector<kjb::Perspective_camera> cams;
+    std::vector<ivi::Perspective_camera> cams;
     Viewer* viewer;
     size_t msec;
 };
@@ -70,7 +70,7 @@ struct Camera_key_listener
  * @return an iterator to the listener callback as it is stored in the viewer.  This can be used to remove the listener later if needed
  */
 Viewer::Keyboard_listener_iterator
-add_camera_keys(kjb::gui::Viewer& viewer, const std::vector<kjb::Perspective_camera>& cams, int msec)
+add_camera_keys(ivi::gui::Viewer& viewer, const std::vector<ivi::Perspective_camera>& cams, int msec)
 {
     boost::shared_ptr<Camera_key_listener> listener(new Camera_key_listener());
     listener->cams = cams;
@@ -81,16 +81,16 @@ add_camera_keys(kjb::gui::Viewer& viewer, const std::vector<kjb::Perspective_cam
 
 
 void add_camera_frusta_(
-        kjb::gui::Viewer& viewer,
-        const std::vector<kjb::Perspective_camera>& cams,
+        ivi::gui::Viewer& viewer,
+        const std::vector<ivi::Perspective_camera>& cams,
         int width,
         int height,
         double scale,
-        boost::optional<const std::vector<kjb::Image>& > img)
+        boost::optional<const std::vector<ivi::Image>& > img)
 {
     for(size_t i = 0; i < cams.size(); ++i)
     {
-        kjb::opengl::Frustum_display frustum(
+        ivi::opengl::Frustum_display frustum(
                 cams[i].get_camera_centre(),
                 cams[i].build_camera_matrix(),
                 width,
@@ -105,15 +105,15 @@ void add_camera_frusta_(
 
 /**
  * Add visualization for camera frusta.  This is a convienience
- * function that simply constructs kjb::opengl::Frustum_display objects and 
+ * function that simply constructs ivi::opengl::Frustum_display objects and 
  * adds them to the viewer's list of renderables.  If you
  * want to do anything more fancy than displaying static cameras
  * (e.g. show camera trajectories over time) you're better off doing this 
  * manually.
  */
 void add_camera_frusta(
-        kjb::gui::Viewer& viewer,
-        const std::vector<kjb::Perspective_camera>& cams,
+        ivi::gui::Viewer& viewer,
+        const std::vector<ivi::Perspective_camera>& cams,
         int width,
         int height,
         double scale)
@@ -122,17 +122,17 @@ void add_camera_frusta(
 }
 
 void add_camera_frusta(
-        kjb::gui::Viewer& viewer,
-        const std::vector<kjb::Perspective_camera>& cams,
-        const std::vector<kjb::Image>& img,
+        ivi::gui::Viewer& viewer,
+        const std::vector<ivi::Perspective_camera>& cams,
+        const std::vector<ivi::Image>& img,
         double scale)
 {
     if(cams.size() != img.size())
-        KJB_THROW(kjb::Dimension_mismatch);
+        IVI_THROW(ivi::Dimension_mismatch);
     assert(img.size() > 0);
     add_camera_frusta_(viewer, cams, img[0].get_num_cols(), img[0].get_num_rows(), scale, img);
 }
 
 }
 }
-#endif // KJB_HAVE_OPENGL
+#endif // IVI_HAVE_OPENGL

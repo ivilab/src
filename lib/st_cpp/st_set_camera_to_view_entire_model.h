@@ -1,4 +1,4 @@
-/* $Id: st_set_camera_to_view_entire_model.h 13676 2013-01-29 23:31:33Z elh $ */
+/* $Id: st_set_camera_to_view_entire_model.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -58,7 +58,7 @@
 #include <st_cpp/st_perspective_camera.h>
 #include <gr_cpp/gr_polymesh.h>
 
-namespace kjb
+namespace ivi
 {
 
 Vector set_camera_to_view_entire_model
@@ -69,7 +69,7 @@ Vector set_camera_to_view_entire_model
     int                 imageHeight
 );
 
-} // namespace kjb
+} // namespace ivi
 
 #endif /* ST_SET_CAMERA_TO_VIEW_ENTIRE_MODEL_H_ */
 

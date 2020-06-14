@@ -30,7 +30,7 @@
 #include <boost/program_options.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 namespace bpo = boost::program_options;
 
 template<class OutIter>

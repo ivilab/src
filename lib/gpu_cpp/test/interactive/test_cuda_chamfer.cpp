@@ -47,16 +47,16 @@
 
 #include <likelihood_cpp/edge_chamfer_likelihood.h>
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 #include <cuda.h>
 #include <cudaGL.h>
 #else
 #error "cuda required"
 #endif
 
-using namespace kjb;
-using namespace kjb::opengl;
-using namespace kjb::gpu;
+using namespace ivi;
+using namespace ivi::opengl;
+using namespace ivi::gpu;
 
 using namespace std;
 
@@ -113,7 +113,7 @@ float* to_float_array(const Matrix& m)
 
 void generate_edge_sprite()
 {
-    using kjb_c::kjb_rand;
+    using ivi_c::ivi_rand;
     // generate edge image
     edge_img_gray = Matrix(height, width, 0.0);
 //    Matrix edges(height, width, 255.0);
@@ -123,8 +123,8 @@ void generate_edge_sprite()
 
     for(int i = 0; i < NUM_EDGE_PTS; i++)
     {
-        int x = kjb_rand() * width;
-        int y = kjb_rand() * height;
+        int x = ivi_rand() * width;
+        int y = ivi_rand() * height;
 
         edge_img_gray(y, x) = 255.0;
     }

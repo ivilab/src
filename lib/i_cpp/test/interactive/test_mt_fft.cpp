@@ -3,7 +3,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_mt_fft.cpp 15752 2013-10-20 23:26:00Z predoehl $
+ * $Id: test_mt_fft.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <i/i_convolve.h>
@@ -21,23 +21,23 @@ const int IMAGE_SIZE = 500;
 
 const double sigma = 20;
 
-kjb::Fftw_image_convolution* pcon = 0;
+ivi::Fftw_image_convolution* pcon = 0;
 
-kjb_c::kjb_pthread_mutex_t mtx = KJB_PTHREAD_MUTEX_INITIALIZER;
+ivi_c::ivi_pthread_mutex_t mtx = IVI_PTHREAD_MUTEX_INITIALIZER;
 
 // This is what each worker thread needs:
 struct Convolution_context
 {
-    const kjb::Image *input;                 // const pointer to input image
-    kjb::Image *output;                      // pointer to output image
+    const ivi::Image *input;                 // const pointer to input image
+    ivi::Image *output;                      // pointer to output image
 };
 
 
 // This is the function each worker thread enters
 void* thread_workbench(void *v)
 {
-    using namespace kjb;
-    using namespace kjb_c;
+    using namespace ivi;
+    using namespace ivi_c;
 
     Convolution_context* cc = static_cast<Convolution_context*>(v);
     NRN(pcon);
@@ -52,7 +52,7 @@ void* thread_workbench(void *v)
 
     // sequentially kill the work buffer by clobbering its contents
     if (!work_buffer_is_unique(wb)) {
-        set_error("wb not unique in thread %d", get_kjb_pthread_number());
+        set_error("wb not unique in thread %d", get_ivi_pthread_number());
         return NULL;
     }
     if(1) { Mutex_lock l(&mtx); wb = Fftw_convolution_2d::Work_buffer(); }
@@ -63,10 +63,10 @@ void* thread_workbench(void *v)
 
 int work()
 {
-    std::vector<kjb::Image> queue, blur_1, blur_2;
+    std::vector<ivi::Image> queue, blur_1, blur_2;
 
     // Expecting working directory to be .../src/lib/i_cpp/test/interactive
-    kjb::Word_list wlj("../input/*.jpeg"), wlt("../input/*.tiff"), *w[2];
+    ivi::Word_list wlj("../input/*.jpeg"), wlt("../input/*.tiff"), *w[2];
     w[0] = &wlj;
     w[1] = &wlt;
 
@@ -75,11 +75,11 @@ int work()
     {
         for (size_t i = 0; i < w[j] -> size(); ++i)
         {
-            kjb::Image f(w[j] -> operator[](i));
+            ivi::Image f(w[j] -> operator[](i));
             // random background color
-            const kjb_c::Pixel p(kjb::PixelHSVA(kjb_c::kjb_rand(), .8, .8));
+            const ivi_c::Pixel p(ivi::PixelHSVA(ivi_c::ivi_rand(), .8, .8));
             queue.push_back(
-                kjb::Image::create_initialized_image(IMAGE_SIZE, IMAGE_SIZE,
+                ivi::Image::create_initialized_image(IMAGE_SIZE, IMAGE_SIZE,
                         p.r, p.g, p.b));
             queue.back().draw_image(f, 0, 0);
         }
@@ -88,20 +88,20 @@ int work()
     // blur them the old fashioned way, for reference
     for (size_t i = 0; i < queue.size(); ++i)
     {
-        kjb_c::KJB_image *b = NULL;
-        KJB(EPETE(gauss_convolve_image(&b, queue[i].c_ptr(), sigma)));
-        blur_1.push_back(kjb::Image(b));
+        ivi_c::IVI_image *b = NULL;
+        IVI(EPETE(gauss_convolve_image(&b, queue[i].c_ptr(), sigma)));
+        blur_1.push_back(ivi::Image(b));
     }
 
     // blur them fast way . . .
     blur_2.resize(queue.size());
 
-    kjb::Fftw_image_convolution con(IMAGE_SIZE, IMAGE_SIZE,
+    ivi::Fftw_image_convolution con(IMAGE_SIZE, IMAGE_SIZE,
                                                         1+6*sigma, 1+6*sigma);
     con.set_gaussian_mask(sigma);
     pcon = &con;
 
-    std::vector <kjb_c::kjb_pthread_t> vt(queue.size());
+    std::vector <ivi_c::ivi_pthread_t> vt(queue.size());
     std::vector < Convolution_context > vb(queue.size());
 
     // allocate a work buffer for each thread, plus a few pointers 
@@ -114,37 +114,37 @@ int work()
     // launch threads
     for (size_t i = 0; i < queue.size(); ++i)
     {
-        KJB(ERE(kjb_pthread_create(&vt[i], NULL, thread_workbench, &vb[i])));
+        IVI(ERE(ivi_pthread_create(&vt[i], NULL, thread_workbench, &vb[i])));
     }
 
     // wait for them to finish
     for (size_t i = 0; i < queue.size(); ++i)
     {
         void *v;
-        KJB(ERE(kjb_pthread_join(vt[i], &v)));
-        KJB(NRN(v));
+        IVI(ERE(ivi_pthread_join(vt[i], &v)));
+        IVI(NRN(v));
     }
     pcon = 0;
 
     // display the blurred image
-    std::vector<kjb::Image*> sharp, bc1, bc2;
+    std::vector<ivi::Image*> sharp, bc1, bc2;
     for (size_t i = 0; i < queue.size(); ++i)
     {
         sharp.push_back(&queue[i]);
         bc1.push_back(&blur_1[i]);
         bc2.push_back(&blur_2[i]);
     }
-    const kjb::Image sc(kjb::make_collage(&sharp.front(), 1, queue.size())),
-                    gc1(kjb::make_collage(&bc1.front(), 1, queue.size())),
-                    gc2(kjb::make_collage(&bc2.front(), 1, queue.size()));
+    const ivi::Image sc(ivi::make_collage(&sharp.front(), 1, queue.size())),
+                    gc1(ivi::make_collage(&bc1.front(), 1, queue.size())),
+                    gc2(ivi::make_collage(&bc2.front(), 1, queue.size()));
 
     sc.display("input images");
     gc1.display("reference blur");
     gc2.display("fast blur");
-    while(1) kjb_c::nap(1000);
+    while(1) ivi_c::nap(1000);
 
     /* NOTREACHED */
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 }
@@ -153,9 +153,9 @@ int main(int argc, char *argv[])
 {
     try
     {
-        KJB(EPETE(work()));
+        IVI(EPETE(work()));
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details_exit();
     }

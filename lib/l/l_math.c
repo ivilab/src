@@ -1,5 +1,5 @@
 
-/* $Id: l_math.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_math.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -199,7 +199,7 @@ int get_random_integer_list(int count, int min_value, int max_value,
     {
         do
         {
-            random_var =  kjb_rand();
+            random_var =  ivi_rand();
             range = 1 + max_value - min_value;
             temp = range * random_var;
             temp += (double)min_value;
@@ -251,14 +251,14 @@ int get_random_integer_list(int count, int min_value, int max_value,
 #    define M_LN2     0.69314718055994530942  /* log_e 2 */
 #endif
 
-double kjb_log2(double x)
+double ivi_log2(double x)
 {
     return log(x)/M_LN2;
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int kjb_floor(double x)
+int ivi_floor(double x)
 {
     double floor_x = floor(x); 
     int    int_x = (int)floor_x; 
@@ -269,7 +269,7 @@ int kjb_floor(double x)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             kjb_rint
+ *                             ivi_rint
  *
  * Rounds a double to an integer
  *
@@ -289,7 +289,7 @@ int kjb_floor(double x)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_rint(double x)
+int ivi_rint(double x)
 {
     /*
      * Pulling this off with a macro is too complex. The hard part is to
@@ -351,7 +351,7 @@ int kjb_rint(double x)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             kjb_rintf
+ *                             ivi_rintf
  *
  * Rounds a float to an integer
  *
@@ -371,7 +371,7 @@ int kjb_rint(double x)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_rintf(float x)
+int ivi_rintf(float x)
 {
     /*
      * Pulling this off with a macro is too complex. The hard part is to

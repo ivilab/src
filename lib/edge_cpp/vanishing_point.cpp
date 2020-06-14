@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 /** This is an approximation of the position of the
  * vanishing points located at infinity
@@ -45,19 +45,19 @@ void Vanishing_point::read(std::istream& in)
     // Vanishing point type
     if (!(field_value = read_field_value(in, "position")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Vanishing Point position");
+        IVI_THROW_2(Illegal_argument, "Missing Vanishing Point position");
     }
     istringstream ist(field_value);
     ist >> _point(0) >> _point(1);
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Vanishing Point position");
+        IVI_THROW_2(Illegal_argument, "Invalid Vanishing Point position");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "type")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Vanishing Point type");
+        IVI_THROW_2(Illegal_argument, "Missing Vanishing Point type");
     }
     ist.str(field_value);
 
@@ -65,7 +65,7 @@ void Vanishing_point::read(std::istream& in)
     ist >> temp_type;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Vanishing Point type");
+        IVI_THROW_2(Illegal_argument, "Invalid Vanishing Point type");
     }
     ist.clear(std::ios_base::goodbit);
     _type = (Vanishing_point_type)temp_type;
@@ -107,7 +107,7 @@ bool Vanishing_point::operator==(const Vanishing_point & vp)
 }
 
 
-void kjb::read_CMU_vanishing_points
+void ivi::read_CMU_vanishing_points
 (
     std::vector<Vanishing_point> & vpts,
     double & focal_length,
@@ -119,24 +119,24 @@ void kjb::read_CMU_vanishing_points
     std::ifstream ifs(file_name.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open file for reading vanishing points");
+        IVI_THROW_2(IO_error, "Could not open file for reading vanishing points");
     }
     getline(ifs, vpts_line);
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     getline(ifs, focal_line);
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "The second line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The second line of the CMU vanishing points file has an invalid format");
     }
     if(focal_line.length() < 3)
     {
         getline(ifs, focal_line);
         if(ifs.fail())
         {
-            KJB_THROW_2(IO_error, "The second line of the CMU vanishing points file has an invalid format");
+            IVI_THROW_2(IO_error, "The second line of the CMU vanishing points file has an invalid format");
         }
     }
 
@@ -144,13 +144,13 @@ void kjb::read_CMU_vanishing_points
     size_t vpt_end = vpts_line.find("]");
     if( (vpt_start == std::string::npos ) || (vpt_end == std::string::npos))
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     std::string vpt_string = vpts_line.substr(vpt_start, vpt_end - vpt_start);
     size_t separator = vpt_string.find(",");
     if( separator == std::string::npos)
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     std::string vpt_1 = vpt_string.substr(1, separator -1);
     std::string vpt_2 = vpt_string.substr(separator+1, vpt_string.size()-separator-1);
@@ -161,13 +161,13 @@ void kjb::read_CMU_vanishing_points
     vpt_end = vpts_line.find("]", vpt_end+1);
     if( (vpt_start == std::string::npos ) || (vpt_end == std::string::npos))
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     vpt_string = vpts_line.substr(vpt_start, vpt_end - vpt_start);
     separator = vpt_string.find(",");
     if( separator == std::string::npos)
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     vpt_1 = vpt_string.substr(1, separator -1);
     vpt_2 = vpt_string.substr(separator+1, vpt_string.size()-separator-1);
@@ -177,13 +177,13 @@ void kjb::read_CMU_vanishing_points
     vpt_end = vpts_line.find("]", vpt_end+1);
     if( (vpt_start == std::string::npos ) || (vpt_end == std::string::npos))
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     vpt_string = vpts_line.substr(vpt_start, vpt_end - vpt_start);
     separator = vpt_string.find(",");
     if( separator == std::string::npos)
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     vpt_1 = vpt_string.substr(1, separator-1);
     vpt_2 = vpt_string.substr(separator+1, vpt_string.size()-separator-1);
@@ -193,16 +193,16 @@ void kjb::read_CMU_vanishing_points
     separator = focal_line.find(":");
     if( separator == std::string::npos)
     {
-        KJB_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
+        IVI_THROW_2(IO_error, "The first line of the CMU vanishing points file has an invalid format");
     }
     std::string focal_string = focal_line.substr(separator+2, focal_line.size() - separator - 2);
     focal_length = (double)atof(focal_string.c_str());
     ifs.close();
 }
 
-void kjb::draw_mid_point_to_vanishing_point
+void ivi::draw_mid_point_to_vanishing_point
 (
-    kjb::Image & img,
+    ivi::Image & img,
     const Line_segment & segment,
     const Vanishing_point & vpt,
     double ir,
@@ -237,13 +237,13 @@ void kjb::draw_mid_point_to_vanishing_point
             break;
     }
 
-    kjb_c::image_draw_segment_2(img.non_const_c_ptr(), segment.get_centre_y(), segment.get_centre_x(),
+    ivi_c::image_draw_segment_2(img.non_const_c_ptr(), segment.get_centre_y(), segment.get_centre_x(),
          _y, _x, width, ir,ig,ib);
 }
 
-bool kjb::find_vanishing_point_given_one_and_line
+bool ivi::find_vanishing_point_given_one_and_line
 (
-    const kjb::Vanishing_point & vp1,
+    const ivi::Vanishing_point & vp1,
     double focal,
     unsigned int img_cols,
     unsigned int img_rows,
@@ -286,10 +286,10 @@ bool kjb::find_vanishing_point_given_one_and_line
     return true;
 }
 
-bool kjb::find_third_vanishing_point
+bool ivi::find_third_vanishing_point
 (
-    const kjb::Vanishing_point & vp1,
-    const kjb::Vanishing_point & vp2,
+    const ivi::Vanishing_point & vp1,
+    const ivi::Vanishing_point & vp2,
     double focal,
     unsigned int img_rows,
     unsigned int img_cols,
@@ -326,7 +326,7 @@ bool kjb::find_third_vanishing_point
 }
 
 
-bool kjb::read_hedau_vanishing_points
+bool ivi::read_hedau_vanishing_points
 (
     std::vector<Vanishing_point> & vpts,
     double & focal,
@@ -339,22 +339,22 @@ bool kjb::read_hedau_vanishing_points
     std::string vpts_line;
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
+        IVI_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
     }
     getline(ifs, vpts_line);
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
+        IVI_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
     }
     getline(ifs, vpts_line);
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
+        IVI_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
     }
     getline(ifs, vpts_line);
     if(ifs.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
+        IVI_THROW_2(IO_error, "Could not open file for reading Hedau vanishing points");
     }
 
     ifs.close();
@@ -371,7 +371,7 @@ bool kjb::read_hedau_vanishing_points
     return find_vertical_vanishing_point(vpts[0], vpts[1], vpts[2], num_cols, num_rows);
 }
 
-bool kjb::find_vertical_vanishing_point
+bool ivi::find_vertical_vanishing_point
 (
     Vanishing_point & vp1,
     Vanishing_point & vp2,

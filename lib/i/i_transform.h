@@ -1,5 +1,5 @@
 
-/* $Id: i_transform.h 6453 2010-08-11 16:15:58Z ernesto $ */
+/* $Id: i_transform.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,22 +30,22 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-int ow_invert_image(KJB_image* ip);
-int ow_invert_gamma_image(KJB_image* ip);
-int rotate_image_left(KJB_image** target_ipp, const KJB_image* ip);
-int rotate_image_right(KJB_image** target_ipp, const KJB_image* ip);
-int ow_horizontal_flip_image(KJB_image* ip);
-int ow_vertical_flip_image(KJB_image* ip);
+int ow_invert_image(IVI_image* ip);
+int ow_invert_gamma_image(IVI_image* ip);
+int rotate_image_left(IVI_image** target_ipp, const IVI_image* ip);
+int rotate_image_right(IVI_image** target_ipp, const IVI_image* ip);
+int ow_horizontal_flip_image(IVI_image* ip);
+int ow_vertical_flip_image(IVI_image* ip);
 
 int scale_image_size
 (
-    KJB_image**      target_ipp,
-    const KJB_image* ip,
+    IVI_image**      target_ipp,
+    const IVI_image* ip,
     double           scale_factor
 );
 

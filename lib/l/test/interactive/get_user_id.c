@@ -1,5 +1,5 @@
 
-/* $Id: get_user_id.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: get_user_id.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -35,10 +35,10 @@ int main(int argc, char **argv)
     */
 
 
-    EPETE(kjb_l_set("exchange-usr-and-net", "t")); 
-    EPETE(kjb_l_set("disable-dir-open", "t"));
-    EPETE(kjb_l_set("debug", "2")); 
-    EPETE(kjb_l_set("verbose", "20"));
+    EPETE(ivi_l_set("exchange-usr-and-net", "t")); 
+    EPETE(ivi_l_set("disable-dir-open", "t"));
+    EPETE(ivi_l_set("debug", "2")); 
+    EPETE(ivi_l_set("verbose", "20"));
 
 
     BUFF_GET_USER_ID(user_id);
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
 
 
-    kjb_cleanup(); /* Not needed on most platforms, but doing it twice is OK. */
+    ivi_cleanup(); /* Not needed on most platforms, but doing it twice is OK. */
     
     return EXIT_SUCCESS; 
 }

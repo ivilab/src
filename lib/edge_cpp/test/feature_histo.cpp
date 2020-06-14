@@ -29,7 +29,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     if(argc < 4)
     {

@@ -1,5 +1,5 @@
 /*
- * $Id: test_mat_flip.c 21712 2017-08-20 18:21:41Z kobus $
+ * $Id: test_mat_flip.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "m/m_mat_flip.h"
@@ -24,7 +24,7 @@ int main(void)
     
     if (is_interactive())
     {
-        kjb_puts("Starting matrix:\n");
+        ivi_puts("Starting matrix:\n");
         fp_write_matrix(m, stdout);
     }
 
@@ -32,7 +32,7 @@ int main(void)
 
     if (is_interactive())
     {
-        kjb_puts("Horizontally flipped matrix:\n");
+        ivi_puts("Horizontally flipped matrix:\n");
         fp_write_matrix(m, stdout);
     }
 
@@ -51,7 +51,7 @@ int main(void)
     EPETE(ow_vertical_flip_matrix(m));
     if (is_interactive())
     {
-        kjb_puts("Vertically flipped matrix:\n");
+        ivi_puts("Vertically flipped matrix:\n");
         fp_write_matrix(m, stdout);
     }
     for (row = 0, rm = 0; row < SIZE; ++row)

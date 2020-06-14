@@ -20,7 +20,7 @@
 #include <st_cpp/st_draw_shape.h>
 #include <glut_cpp/glut_perspective_camera.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -32,17 +32,17 @@
 #define CAMERA_SELECTED 1
 #define POLYMESH_SELECTED 2
 
-using namespace kjb;
+using namespace ivi;
 
 void init_onscreen_buffer(int argc, char **argv);
 
 float gwidth = 600;
 float gheight = 400;
-kjb::Perspective_camera camera;
+ivi::Perspective_camera camera;
 static unsigned int object_selected = NONE;
 
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 static void timer_glut(int ignored)
 {
     glutPostRedisplay();
@@ -56,7 +56,7 @@ static void camera_callback(int i)
 
 static void main_menu_glut(int id)
 {
-    using namespace kjb;
+    using namespace ivi;
     /*_current_action = id;
     if(id == EXIT_ID)
     {
@@ -81,8 +81,8 @@ static void display_glut()
     GLuint MY_CLIP_PLANE1 = GL_CLIP_PLANE1;
 
     // Draw first cylinder.
-    kjb::Vector top(3,0.0);
-    kjb::Vector bottom(3,0.0);
+    ivi::Vector top(3,0.0);
+    ivi::Vector bottom(3,0.0);
     top(0) = 0.0;
     bottom(0) = 0.0;
 
@@ -96,7 +96,7 @@ static void display_glut()
     glColor3f(255,0,0);
     GLUquadricObj* myQuadric = 0;
     myQuadric = gluNewQuadric();
-//    kjb::draw_cylinder(camera, myQuadric, top, bottom, radius);
+//    ivi::draw_cylinder(camera, myQuadric, top, bottom, radius);
     double scat_radius = 13.0;
     double angle = 3.14159;
     Vector scat_top(3);
@@ -115,7 +115,7 @@ static void display_glut()
     scat_end(0) = 281.5 - scat_radius;
     scat_end(1) = 161.619;
     scat_end(2) = 428.5;
-    kjb::draw_cylinder_section(myQuadric, scat_top, scat_bot, scat_radius, angle, scat_start, scat_end, MY_CLIP_PLANE, MY_CLIP_PLANE1);
+    ivi::draw_cylinder_section(myQuadric, scat_top, scat_bot, scat_radius, angle, scat_start, scat_end, MY_CLIP_PLANE, MY_CLIP_PLANE1);
 
     glFlush();
 
@@ -158,13 +158,13 @@ void init_onscreen_buffer(int argc, char **argv)
     glutKeyboardFunc(keyboard_glut);
     glutTimerFunc(10, timer_glut, 0);
 
-    kjb::opengl::default_init_opengl(gwidth, gheight);
+    ivi::opengl::default_init_opengl(gwidth, gheight);
 }
 #endif
 
 int main(int argc, char **argv)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     init_onscreen_buffer(argc, argv);
 //    camera.set_camera_centre_z(400);
 //    camera.set_camera_centre_y(0);
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 //////////
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         glutMainLoop();
     }

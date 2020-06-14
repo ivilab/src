@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_arith.c 21522 2017-07-22 15:14:27Z kobus $ */
+/* $Id: m_vec_arith.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -1923,7 +1923,7 @@ int ow_invert_vector(Vector* vp)
  * Calculates the element-wise sqrt of a vector.
  *
  * This routine calculates the element-wise square root of a vector with the
- * KJB library creation semantics.
+ * IVI library creation semantics.
  *
  * If we are respecting missing values, then the sqrt() of a missing value
  * (DBL_MISSING) is DBL_MISSING.
@@ -2021,7 +2021,7 @@ int ow_sqrt_vector(Vector* vp)
  *
  * Calculates the element-wise log of a vector.
  *
- * This routine calculates the element-wise log of a vector with the KJB library
+ * This routine calculates the element-wise log of a vector with the IVI library
  * creation semantics. If an element is zero, then LOG_ZERO is used.  LOG_ZERO
  * is suffiently negative number that exp(LOG_ZERO) is zero.  If an element is
  * negative, then this routine fails.
@@ -2049,7 +2049,7 @@ int log_vector(Vector** target_vpp, const Vector* vp)
  *
  * Calculates the element-wise log of a vector.
  *
- * This routine calculates the element-wise log of a vector with the KJB library
+ * This routine calculates the element-wise log of a vector with the IVI library
  * creation semantics. If an element is zero, then the value of the parameter
  * log_zero is used for the log. If an element is negative, then this routine
  * fails.
@@ -2163,7 +2163,7 @@ int ow_log_vector_2(Vector* vp, double log_zero)
  *
  * Calculates the element-wise exp of a vector.
  *
- * This routine calculates the element-wise exp() of a vector with the KJB
+ * This routine calculates the element-wise exp() of a vector with the IVI
  * library creation semantics.
  *
  * Returns:

@@ -11,7 +11,7 @@
  * I (Andrew) radically simplified many data structures, as apparent below.
  */
 /*
- * $Id: layer.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: layer.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
@@ -25,7 +25,7 @@
 #include "topo_cpp/LatLong-UTMconversion.h"
 
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -107,9 +107,9 @@ void destroyLayer( layer* l )
 {
     ASSERT( l );
     for( unsigned iii=l->numTracks; iii--; )
-        kjb_c::kjb_free( l->tracks[ iii ].s.points );
-    kjb_c::kjb_free( l->tracks );
-    kjb_c::kjb_free( l->waypoints );
+        ivi_c::ivi_free( l->tracks[ iii ].s.points );
+    ivi_c::ivi_free( l->tracks );
+    ivi_c::ivi_free( l->waypoints );
 
     // Since we often REUSE these layer structures, we ought to clean it up.
     initLayer( l );
@@ -156,4 +156,4 @@ void initWaypoint (waypoint *w)
 
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi

@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: gradient.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: gradient.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_GRADIENT_H_ 
-#define KJB_TIES_GRADIENT_H_
+#ifndef IVI_TIES_GRADIENT_H_ 
+#define IVI_TIES_GRADIENT_H_
 
 #include <diff_cpp/diff_gradient.h>
 #include <diff_cpp/diff_gradient_mt.h>
@@ -31,7 +31,7 @@
 #include "dbn_cpp/posterior.h"
 #include "dbn_cpp/util.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /**
@@ -338,6 +338,6 @@ std::vector<double> Shared_gradient_mt<Func, Adapt>::operator()
     return grads;
 }
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
 #endif 

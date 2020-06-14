@@ -60,13 +60,13 @@
  */
 
 
-#ifndef KJB_TRANSFORMABLE_H
-#define KJB_TRANSFORMABLE_H
+#ifndef IVI_TRANSFORMABLE_H
+#define IVI_TRANSFORMABLE_H
 
 #include "l_cpp/l_exception.h"
 
 
-namespace kjb{
+namespace ivi{
 
 
  class Matrix;

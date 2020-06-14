@@ -28,7 +28,7 @@
 #include <m_cpp/m_vector.h>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /** @brief  2D body information resulting from projecting the 3D body. */
@@ -80,7 +80,7 @@ Bbox cylinder_bounding_box
     const Vector& top
 );
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_BODY_2D_H */
 

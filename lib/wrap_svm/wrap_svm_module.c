@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_module.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: wrap_svm_module.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -28,8 +28,8 @@
 #include "wrap_svm/wrap_svm_gen.h"
 #include "wrap_svm/wrap_svm_module.h"
 
-#ifdef KJB_HAVE_SVM
-#undef KJB_HAVE_SVM
+#ifdef IVI_HAVE_SVM
+#undef IVI_HAVE_SVM
 #endif
 
 #ifdef __cplusplus

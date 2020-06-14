@@ -1,4 +1,4 @@
-/* $Id: ransac_fit.c 21596 2017-07-30 23:33:36Z kobus $
+/* $Id: ransac_fit.c 25499 2020-06-14 13:26:04Z kobus $
  */
 #include "slic/ransac_fit.h"
 
@@ -1361,7 +1361,7 @@ static int generate_random_index
     a_pos = n;
     while(current_left > 0)
     {
-        r = kjb_rand();
+        r = ivi_rand();
         current_picked = (int)( r * a_pos);
         if(current_picked == a_pos) current_picked--;
 
@@ -1375,7 +1375,7 @@ static int generate_random_index
         a[a_pos] = tmp;
     }
 
-    kjb_free(a);
+    ivi_free(a);
 
     return NO_ERROR;
 }

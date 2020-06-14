@@ -1,4 +1,4 @@
-/* $Id: sample_adaptive_mh.h 12839 2012-08-08 23:51:05Z ksimek $ */
+/* $Id: sample_adaptive_mh.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -34,7 +34,7 @@ public:
 
     Simple_adaptive_mh_step(
             const Target_distribution& target,
-            const kjb::Matrix& initial_covariance,
+            const ivi::Matrix& initial_covariance,
             double goal_accept_rate) :
         goal_accept_prob_(goal_accept_rate),
         i_(2), // first i_ comes from initial step
@@ -110,7 +110,7 @@ public:
     /**
      * get cholesky decomposition of covariance matrix _before_ incorporating global scale.  This should be multiplied by the global scale to get the actual covariance
      */
-    const kjb::Matrix& get_cholesky_covariance() const
+    const ivi::Matrix& get_cholesky_covariance() const
     {
         return proposer_->get_unscaled_cholesky_covariance();
     }
@@ -218,15 +218,15 @@ private:
 
 
 template <class Model>
-class Generic_adaptive_mh_step : public Simple_adaptive_mh_step<kjb::Vector>
+class Generic_adaptive_mh_step : public Simple_adaptive_mh_step<ivi::Vector>
 {
 public:
     typedef typename Model_evaluator<Model>::Type Target_distribution;
 private:
-    typedef boost::function2<void, const Model&, kjb::Vector&> To_vector;
-    typedef boost::function2<void, const kjb::Vector&, Model&> From_vector;
+    typedef boost::function2<void, const Model&, ivi::Vector&> To_vector;
+    typedef boost::function2<void, const ivi::Vector&, Model&> From_vector;
 
-    typedef Simple_adaptive_mh_step<kjb::Vector> Base_step;
+    typedef Simple_adaptive_mh_step<ivi::Vector> Base_step;
 
     struct target_wrapper
     {
@@ -241,7 +241,7 @@ private:
 #endif
         {}
 
-        double operator()(const kjb::Vector& v) const
+        double operator()(const ivi::Vector& v) const
         {
             from_vector(v, model);
 #ifdef TEST
@@ -267,7 +267,7 @@ public:
             const To_vector& to_vector,
             const From_vector& from_vector,
             const Target_distribution& target,
-            const kjb::Matrix& initial_covariance,
+            const ivi::Matrix& initial_covariance,
             double goal_accept_rate) :
         Base_step(boost::ref(target_wrapper_), initial_covariance, goal_accept_rate),
         target_wrapper_(target, from_vector),
@@ -295,7 +295,7 @@ public:
         target_wrapper_.called = false;
 #endif
 
-        kjb::Vector v;
+        ivi::Vector v;
         to_vector_(in, v);
         Step_log<Model> log = Base_step::operator()(v, lt_m);
 

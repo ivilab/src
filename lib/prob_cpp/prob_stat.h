@@ -1,4 +1,4 @@
-/* $Id: prob_stat.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_stat.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -18,8 +18,8 @@
  * =========================================================================== */
 
 
-#ifndef KJB_PROB_STAT
-#define KJB_PROB_STAT
+#ifndef IVI_PROB_STAT
+#define IVI_PROB_STAT
 /**
  * @file generic functions for computing statistics.
  */
@@ -39,7 +39,7 @@
 #include "prob_cpp/prob_distribution.h"
 #include "prob_cpp/prob_pdf.h"
 
-namespace kjb 
+namespace ivi 
 {
 
 /**
@@ -65,7 +65,7 @@ mean(Iterator begin, Iterator end, const Value_type& /* dummy */)
     typedef typename std::iterator_traits<Iterator>::difference_type difference_type;
     if(begin == end)
     {
-        KJB_THROW_2(Illegal_argument, "Can't take mean of collection of zero size.");
+        IVI_THROW_2(Illegal_argument, "Can't take mean of collection of zero size.");
     }
 
     difference_type size = std::distance(begin, end);
@@ -144,18 +144,18 @@ bool goodness_of_fit_test
 {
     if(num_params + 1 >= num_bins)
     {
-        KJB_THROW_2(Runtime_error, "Not enough bins to perform goodness-of-fit test.");
+        IVI_THROW_2(Runtime_error, "Not enough bins to perform goodness-of-fit test.");
     }
 
     if(alpha <= 0 || alpha >= 1)
     {
-        KJB_THROW_2(Runtime_error, "The p-value must be in (0,1).");
+        IVI_THROW_2(Runtime_error, "The p-value must be in (0,1).");
     }
 
     int N = std::distance(first, last);
     if(N < 10)
     {
-        KJB_THROW_2(Runtime_error, "Not enough data to perform test.");
+        IVI_THROW_2(Runtime_error, "Not enough data to perform test.");
     }
 
     Histogram h(first, last, num_bins);
@@ -166,7 +166,7 @@ bool goodness_of_fit_test
     {
         if(pair_p->second < 0)
         {
-            KJB_THROW_2(Runtime_error, "Histogram values cannot negative.");
+            IVI_THROW_2(Runtime_error, "Histogram values cannot negative.");
         }
 
         if(pair_p->second > 0)
@@ -216,13 +216,13 @@ bool goodness_of_fit_test
 {
     if(alpha <= 0 || alpha >= 1)
     {
-        KJB_THROW_2(Runtime_error, "The p-value must be in (0,1).");
+        IVI_THROW_2(Runtime_error, "The p-value must be in (0,1).");
     }
 
     int N = std::distance(first, last);
     if(N < 10)
     {
-        KJB_THROW_2(Runtime_error, "Not enough data to perform test.");
+        IVI_THROW_2(Runtime_error, "Not enough data to perform test.");
     }
 
     Histogram h(first, last, -1);
@@ -233,7 +233,7 @@ bool goodness_of_fit_test
     {
         if(pair_p->second < 0)
         {
-            KJB_THROW_2(Runtime_error, "Histogram values cannot negative.");
+            IVI_THROW_2(Runtime_error, "Histogram values cannot negative.");
         }
 
         if(pair_p->second > 0)
@@ -420,6 +420,6 @@ bool g_test
     return goodness_of_fit_test(first, last, dist, stat, alpha, dof_redux);
 }
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

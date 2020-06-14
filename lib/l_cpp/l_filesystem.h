@@ -1,4 +1,4 @@
-/* $Id: l_filesystem.h 15826 2013-10-21 18:24:31Z ksimek $ */
+/* $Id: l_filesystem.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #include <vector>
 #include <limits>
 
-namespace kjb {
+namespace ivi {
 
 /** @brief  Expands the format into a set of (existing) file names. */
 std::vector<std::string> file_names_from_format
@@ -63,11 +63,11 @@ inline std::string get_extension(const std::string& fname)
 }
 
 
-/// @brief return a canonicalized path, by wrapping kjb_c::kjb_realpath().
+/// @brief return a canonicalized path, by wrapping ivi_c::ivi_realpath().
 std::string realpath(const std::string& path);
 
 
-} //namespace kjb
+} //namespace ivi
 
 #endif
 

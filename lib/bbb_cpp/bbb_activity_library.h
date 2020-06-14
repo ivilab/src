@@ -33,7 +33,7 @@
 #include <utility>
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 class Activity_library
@@ -178,7 +178,7 @@ private:
     std::set<std::string> act_target_;
 };
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /* B3_ACTIVITY_LIBRARY_H */
 

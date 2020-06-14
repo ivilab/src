@@ -28,7 +28,7 @@
 #include <boost/bind.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 using namespace boost;
 
 int main(int argc, char** argv)

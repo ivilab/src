@@ -32,10 +32,10 @@
 #include <boost/lexical_cast.hpp>
 #include <fstream>
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
-void kjb::bbb::read(Data& data, const std::string& fname)
+void ivi::bbb::read(Data& data, const std::string& fname)
 {
     typedef std::multimap<size_t, std::pair<size_t, Vector> > Line_map;
 
@@ -122,7 +122,7 @@ void kjb::bbb::read(Data& data, const std::string& fname)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::bbb::write(const Data& data, const std::string& fname)
+void ivi::bbb::write(const Data& data, const std::string& fname)
 {
     std::ofstream ofs(fname.c_str());
     IFT(ofs, Runtime_error, "Cannot write data: cannot open file");

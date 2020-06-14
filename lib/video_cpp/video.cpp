@@ -1,4 +1,4 @@
-/* $Id: video.cpp 19023 2015-05-08 13:56:44Z ernesto $ */
+/* $Id: video.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 #include <video_cpp/video.h>
 #include <i_cpp/i_image.h>
 
-namespace kjb
+namespace ivi
 {
 bool Video::ffmpeg_registered_ = false;
 

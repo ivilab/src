@@ -7,11 +7,11 @@
 #include <prob_cpp/prob_stat.h>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     Vector mu1, mu2, mu3;
     mu1.set(1.0, 2.0, 3.0);

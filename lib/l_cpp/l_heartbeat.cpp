@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: l_heartbeat.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: l_heartbeat.cpp 25499 2020-06-14 13:26:04Z kobus $
  *
  * Recommended tab width:  4
  */
@@ -98,7 +98,7 @@ std::string timestring( time_t duration )
 }
 
 
-namespace kjb {
+namespace ivi {
 
 
 Heartbeat::Heartbeat(
@@ -112,7 +112,7 @@ Heartbeat::Heartbeat(
     m_denominator( 100.0 / m_total ),
     m_start_time( time( 00 ) ),
     m_progress_counter( 0 ),
-    m_is_output_to_tty( kjb_c::kjb_isatty( STDIN_FILENO ) ),
+    m_is_output_to_tty( ivi_c::ivi_isatty( STDIN_FILENO ) ),
     m_lastlen( 0 )
 {
 }

@@ -6,7 +6,7 @@
  * See header for details and citations.
  */
 /*
- * $Id: triangulate.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: triangulate.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -35,9 +35,9 @@
 namespace
 {
 
-using kjb::qd::Doubly_connected_edge_list;
-using kjb::qd::RatPoint;
-using kjb::qd::RatPoint_line_segment;
+using ivi::qd::Doubly_connected_edge_list;
+using ivi::qd::RatPoint;
+using ivi::qd::RatPoint_line_segment;
 
 enum Emv { undefined, START, FINISH, SPLIT, MERGE, PLAIN_R, PLAIN_L };
 
@@ -66,8 +66,8 @@ public:
 
     RatPoint_line_segment lookup(size_t i) const
     {
-        KJB(ASSERT(valid(i)));
-        return kjb::qd::sweep::rectify(lookup_no_rectify(i));
+        IVI(ASSERT(valid(i)));
+        return ivi::qd::sweep::rectify(lookup_no_rectify(i));
     }
 
     bool valid(size_t i) const
@@ -81,7 +81,7 @@ public:
 
 // Sweep line data structure (aka status line) used in monotone plane sweep.
 // Stores Shemps of DCEL edge indices (not fence indices).
-typedef kjb::qd::sweep::SweepLine< Dcel_subset > Sweep;
+typedef ivi::qd::sweep::SweepLine< Dcel_subset > Sweep;
 typedef Sweep::const_iterator SLCI;
 
 
@@ -95,13 +95,13 @@ size_t left_bystander(
 )
 {
     std::pair< SLCI, SLCI >
-        eir = kjb::qd::sweep::get_event_neighbors(sweep, sweep_loc, def);
-    KJB(ASSERT(eir.first -> is_true()));
+        eir = ivi::qd::sweep::get_event_neighbors(sweep, sweep_loc, def);
+    IVI(ASSERT(eir.first -> is_true()));
     // left bumper guarantees this stays legit
     while (is_horizontal(def.lookup_no_rectify(eir.first -> true_index())))
     {
         --eir.first;
-        KJB(ASSERT(eir.first -> is_true()));
+        IVI(ASSERT(eir.first -> is_true()));
     }
     // . . . but it shouldn't come to that anyway.
     return eir.first -> true_index();
@@ -117,7 +117,7 @@ std::vector<size_t> get_incident_edges(
 {
     std::vector<size_t> eee;
 
-    if (fi >= d.get_face_table().size()) KJB_THROW(kjb::Index_out_of_bounds);
+    if (fi >= d.get_face_table().size()) IVI_THROW(ivi::Index_out_of_bounds);
 
     // enumerate edges of outer component (must exist since fi > 0)
     if (fi > 0)
@@ -161,7 +161,7 @@ std::vector<size_t> get_nexus(
     const std::vector<size_t>& eee ///< sinc index to dcel-edge index
 )
 {
-    KJB(ASSERT(0 == sinc.size() % 2));
+    IVI(ASSERT(0 == sinc.size() % 2));
     std::vector<size_t> nexus(sinc.size());
 
     /* Build a very small partial inverse table for eee.
@@ -183,16 +183,16 @@ std::vector<size_t> get_nexus(
             nexus.at(j++) = *i;
             const size_t ei = d.get_edge_table().at(eo).prev;
 #ifdef DEBUGGING
-            KJB(ASSERT(d.get_edge_table().at(
+            IVI(ASSERT(d.get_edge_table().at(
                         d.get_edge_table().at(ei).twin
                             ).origin == vi));
 #endif
-            KJB(ASSERT(inv_eee.find(ei) != inv_eee.end()));
+            IVI(ASSERT(inv_eee.find(ei) != inv_eee.end()));
             // queue matching inedge sweepline index
             nexus.at(j++) = inv_eee[ei];
         }
     }
-    KJB(ASSERT(nexus.size() == j));
+    IVI(ASSERT(nexus.size() == j));
     return nexus;
 }
 
@@ -206,7 +206,7 @@ size_t get_vertex(
 {
     const size_t ei = eee.at(si);
     const RatPoint_line_segment r = get_edge(d, ei);
-    KJB(ASSERT(r.a == sweep_loc || r.b == sweep_loc));
+    IVI(ASSERT(r.a == sweep_loc || r.b == sweep_loc));
     const Doubly_connected_edge_list::Edge_record& h=d.get_edge_table().at(ei);
     return r.a==sweep_loc ? h.origin : d.get_edge_table().at(h.twin).origin;
 }
@@ -231,7 +231,7 @@ enum Emv vtx_status(size_t eo, const Doubly_connected_edge_list& d)
 {
     const size_t ei = d.get_edge_table().at(eo).prev;
     const RatPoint_line_segment ri = get_edge(d, ei), ro = get_edge(d, eo);
-    KJB(ASSERT(ri.b == ro.a));
+    IVI(ASSERT(ri.b == ro.a));
 
     const bool distal_out_lower = ro.b < ro.a,
                distal_in_lower = ri.a < ri.b;
@@ -267,7 +267,7 @@ std::string str(const RatPoint_line_segment& s)
 }
 
 
-struct Edge_link : public kjb::qd::sweep::Event_point
+struct Edge_link : public ivi::qd::sweep::Event_point
 {
     bool distal_up_;
     Edge_link(const Event_point& e, bool distal_up)
@@ -283,7 +283,7 @@ std::vector<RatPoint_line_segment> edges_to_tri_ymonotone(
     size_t fi
 )
 {
-    KJB(ASSERT(is_face_ymonotone(dcel, fi)));
+    IVI(ASSERT(is_face_ymonotone(dcel, fi)));
 
     std::vector<RatPoint_line_segment> acc;
 
@@ -292,7 +292,7 @@ std::vector<RatPoint_line_segment> edges_to_tri_ymonotone(
             ! eee.empty(); eee.pop_back())
     {
         const RatPoint_line_segment s = get_edge(dcel, eee.back());
-        q.push_back( Edge_link(kjb::qd::sweep::Event_point(s.a, eee.back()),
+        q.push_back( Edge_link(ivi::qd::sweep::Event_point(s.a, eee.back()),
                         s.a < s.b) );
     }
     std::sort(q.begin(), q.end());
@@ -315,7 +315,7 @@ std::vector<RatPoint_line_segment> edges_to_tri_ymonotone(
             // x is the stale ally, and stack top is the new ally.  Imagine a
             // masonic Richard who disposes of his enemies as Montresor from
             // The Cask of Amontillado does, by immuring them in a triangle.
-            KJB(ASSERT(! stk.empty()));
+            IVI(ASSERT(! stk.empty()));
             Edge_link x = stk.back();
             stk.pop_back();
 
@@ -368,15 +368,15 @@ std::vector<RatPoint_line_segment> edges_to_tri_ymonotone(
 
 class Shemp_eq
 :   public std::binary_function<
-        kjb::qd::sweep::Shemp,
-        kjb::qd::sweep::Shemp,
+        ivi::qd::sweep::Shemp,
+        ivi::qd::sweep::Shemp,
         bool >
 {
-    kjb::qd::sweep::Shemp v_;
+    ivi::qd::sweep::Shemp v_;
 public:
-    Shemp_eq(const kjb::qd::sweep::Shemp& a) : v_(a) {}
+    Shemp_eq(const ivi::qd::sweep::Shemp& a) : v_(a) {}
 
-    bool operator()(const kjb::qd::sweep::Shemp& b) const
+    bool operator()(const ivi::qd::sweep::Shemp& b) const
     {
         return v_.shemp_index() == b.shemp_index();
     }
@@ -418,7 +418,7 @@ bool is_face_ymono_impl(
     }
     if (dcel.get_face_table().size() <= fi)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Face index is out of range");
+        IVI_THROW_2(ivi::Illegal_argument, "Face index is out of range");
     }
     if (! dcel.get_face_table().at(fi).inner_components.empty())
     {
@@ -442,7 +442,7 @@ public:
 /// @pre face fi of DCEL d must really be a triangle.
 RatPoint::Rat area_of_dcel_tri(const Doubly_connected_edge_list& d, size_t fi)
 {
-    KJB(ASSERT(is_face_triangle(d, fi)));
+    IVI(ASSERT(is_face_triangle(d, fi)));
 
     const size_t a = d.get_face_table().at(fi).outer_component,
                  b = d.get_edge_table().at(a).next,
@@ -472,7 +472,7 @@ public:
 }
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -496,11 +496,11 @@ std::string db_fence_labels(
     float scale
 )
 {
-    using kjb::qd::dbl_ratio;
-    using kjb::qd::SVG_UNCRAMP;
+    using ivi::qd::dbl_ratio;
+    using ivi::qd::SVG_UNCRAMP;
 
     // Cannot do this for face zero.
-    if (0 == fi) KJB_THROW(kjb::Illegal_argument);
+    if (0 == fi) IVI_THROW(ivi::Illegal_argument);
 
     std::ostringstream s;
     s << "<g stroke=\"gray\" stroke-width=\"" << 2 * scale << "\">\n";
@@ -568,7 +568,7 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
     // Check for unacceptable face indices.
     if (0 == fi)
     {
-        KJB_THROW_2(kjb::Illegal_argument,
+        IVI_THROW_2(ivi::Illegal_argument,
                     "DCEL face 0 is unbounded and cannot be made monotone.");
     }
     ETX(is_valid(d_in));
@@ -592,11 +592,11 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
     do { static int count = 0;
     char b[32];
     snprintf(b, 32, "etym-in-%03d.svg", count++);
-    std::string facesvg = kjb::qd::draw_dcel_as_svg(d_in);
+    std::string facesvg = ivi::qd::draw_dcel_as_svg(d_in);
     size_t jj = facesvg.find("<text ");
-    KJB(ASSERT(jj < facesvg.size()));
+    IVI(ASSERT(jj < facesvg.size()));
     jj = facesvg.rfind("<!--", jj);
-    KJB(ASSERT(jj < facesvg.size()));
+    IVI(ASSERT(jj < facesvg.size()));
     facesvg.insert(jj, "<!-- fence labels -->\n" + db_fence_labels(d_in, fi, 1));
     std::ofstream fs(b);
     fs << facesvg << "\n<!-- face index fi = " << fi << " -->\n"; } while(0);
@@ -604,17 +604,17 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
 
     // set up event queue and sweep line
     RatPoint_line_segment lbump(def.lookup(0)), rbump(lbump);
-    std::set< kjb::qd::sweep::Event_p > q; // event queue
+    std::set< ivi::qd::sweep::Event_p > q; // event queue
     do { std::vector<RatPoint_line_segment> sl(eee.size(), lbump);
-        using namespace kjb::qd::sweep;
+        using namespace ivi::qd::sweep;
         for (size_t k=0; k < eee.size(); ++k) sl[k] = def.lookup(k);
         std::set<Event_p> qq = fill_queue_get_bumpers(sl, &lbump, &rbump);
         q.swap(qq);
     } while(0);
     RatPoint sweep_loc = (* q.begin()) -> p;
     Sweep::SL sweep(
-        kjb::qd::sweep::SweepCompare<Dcel_subset>(def,&sweep_loc,lbump,rbump));
-    do { using kjb::qd::sweep::Shemp;
+        ivi::qd::sweep::SweepCompare<Dcel_subset>(def,&sweep_loc,lbump,rbump));
+    do { using ivi::qd::sweep::Shemp;
         sweep.insert(Shemp(Shemp::LBUMP));
         sweep.insert(Shemp(Shemp::RBUMP));
     } while(0);
@@ -672,7 +672,7 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
         void operator()(size_t sj, size_t vj, bool neutralize_old_helper)
         {
             const size_t vh = helper_ -> at(sj);
-            KJB(ASSERT(vh < Doubly_connected_edge_list::BLANK));
+            IVI(ASSERT(vh < Doubly_connected_edge_list::BLANK));
             if (neutralize_old_helper)
             {
                 // Queue a wire, t, from old helper vertex vh to vertex vj.
@@ -687,7 +687,7 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
 
 #if MONOTONE_CPP_DEBUG
     do { std::cout << "Initial event queue:\n";
-    const std::vector<kjb::qd::sweep::Event_p> iiq(q.begin(), q.end());
+    const std::vector<ivi::qd::sweep::Event_p> iiq(q.begin(), q.end());
     for (size_t i=0; i<iiq.size(); ++i)
         std::cout << "Index:" << iiq[i]->index << "\tLoc:" << iiq[i]->p <<'\n';
     } while(0);
@@ -701,12 +701,12 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
         std::set<size_t> ulma[4]; // [0]=upper, [1]=lower, [2]=middle, [3]=all
 
         // Collect all edges incident to the current sweep location.
-        kjb::qd::sweep::pull_events_here(&q, sweep, ulma, def);
-        KJB(ASSERT(ulma[2].empty())); // middle set is always empty
-        KJB(ASSERT(!ulma[3].empty())); // "all" set is never empty
+        ivi::qd::sweep::pull_events_here(&q, sweep, ulma, def);
+        IVI(ASSERT(ulma[2].empty())); // middle set is always empty
+        IVI(ASSERT(!ulma[3].empty())); // "all" set is never empty
         // cheapo partial check that uppers and lowers are a partition of all
         // which is another way of saying "no degenerate segments"
-        KJB(ASSERT(ulma[0].size() + ulma[1].size() == ulma[3].size()));
+        IVI(ASSERT(ulma[0].size() + ulma[1].size() == ulma[3].size()));
 
         // Figure out vertex index vi of the vertex we have struck.
         const size_t vi = get_vertex(* ulma[3].begin(), sweep_loc, d_in, eee);
@@ -715,7 +715,7 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
         for (size_t i = 0; i < check_all.size(); ++i)
         {
             // verify all edges we collected "know" they are incident to vi
-            KJB(ASSERT(get_vertex(check_all[i], sweep_loc, d_in, eee) == vi));
+            IVI(ASSERT(get_vertex(check_all[i], sweep_loc, d_in, eee) == vi));
         }
 #endif
 
@@ -729,8 +729,8 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
 
         // enumerate SL indices of all out-edge, in-edge pairs inc. to vi
         std::vector<size_t> nexus = get_nexus(vi, ulma[3], d_in, eee);
-        KJB(ASSERT(0 == nexus.size() % 2));
-        KJB(ASSERT(nexus.size() == ulma[3].size()));
+        IVI(ASSERT(0 == nexus.size() % 2));
+        IVI(ASSERT(nexus.size() == ulma[3].size()));
 
         // Process each in-edge, out-edge pair incident to vertex vi.
         while (! nexus.empty())
@@ -743,24 +743,24 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
              */
             const size_t si = nexus.back(); // inward halfedge
             nexus.pop_back();
-            KJB(ASSERT(! nexus.empty()));
+            IVI(ASSERT(! nexus.empty()));
             const size_t so = nexus.back(); // outward halfedge
             nexus.pop_back();
             const size_t ei = eee[si], eo = eee[so];
 
             // Sanity-check in-edge index ei, out-edge index eo.
-            KJB(ASSERT(d_in.get_edge_table().at(ei).next == eo));
-            KJB(ASSERT(d_in.get_edge_table().at(eo).prev == ei));
-            KJB(ASSERT(d_in.get_edge_table().at(eo).origin == vi));
-            KJB(ASSERT(d_in.get_edge_table().at(
+            IVI(ASSERT(d_in.get_edge_table().at(ei).next == eo));
+            IVI(ASSERT(d_in.get_edge_table().at(eo).prev == ei));
+            IVI(ASSERT(d_in.get_edge_table().at(eo).origin == vi));
+            IVI(ASSERT(d_in.get_edge_table().at(
                            d_in.get_edge_table().at(ei).twin
                                 ).origin == vi));
-            KJB(ASSERT(d_in.get_edge_table().at(ei).face == fi));
-            KJB(ASSERT(d_in.get_edge_table().at(eo).face == fi));
+            IVI(ASSERT(d_in.get_edge_table().at(ei).face == fi));
+            IVI(ASSERT(d_in.get_edge_table().at(eo).face == fi));
 
             // What "kind" of vertex is vi with respect to edges ei, eo?
             const enum Emv vstat = vtx_status(eo, d_in);
-            KJB(ASSERT(     START == vstat
+            IVI(ASSERT(     START == vstat
                         ||  SPLIT == vstat
                         ||  FINISH == vstat
                         ||  MERGE == vstat
@@ -778,20 +778,20 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
 
             // si will be inserted for START, SPLIT, and PLAIN on left side.
             // ulma[0] lists the to-be-inserted edges.
-            KJB(ASSERT(     FINISH==vstat || MERGE==vstat || PLAIN_R==vstat
+            IVI(ASSERT(     FINISH==vstat || MERGE==vstat || PLAIN_R==vstat
                         ||  ulma[0].find(si) != ulma[0].end()));
             // 'so' will be deleted for FINISH, MERGE, and PLAIN on left side.
             // ulma[1] lists the to-be-deleted edges.
-            KJB(ASSERT(     START==vstat || SPLIT==vstat || PLAIN_R==vstat
+            IVI(ASSERT(     START==vstat || SPLIT==vstat || PLAIN_R==vstat
                         ||  ulma[1].find(so) != ulma[1].end()));
 
             // Unfortunately si is scheduled to be deleted for FINISH, MERGE,
             // and PLAIN on right side.  We will suppress this later.
-            KJB(ASSERT(     START==vstat || SPLIT==vstat || PLAIN_L==vstat
+            IVI(ASSERT(     START==vstat || SPLIT==vstat || PLAIN_L==vstat
                         ||  ulma[1].find(si) != ulma[1].end()));
             // Unfortunately 'so' is scheduled to be inserted for START, SPLIT,
             // and PLAIN on the right side.  We will suppress this later.
-            KJB(ASSERT(     FINISH==vstat || MERGE==vstat || PLAIN_L==vstat
+            IVI(ASSERT(     FINISH==vstat || MERGE==vstat || PLAIN_L==vstat
                         ||  ulma[0].find(so) != ulma[0].end()));
 
             if (START == vstat)
@@ -841,7 +841,7 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
             }
             else
             {
-                KJB(ASSERT(PLAIN_R == vstat));
+                IVI(ASSERT(PLAIN_R == vstat));
                 // Face is locally to the left.
                 const size_t sj = left_bystander(sweep, sweep_loc, def);
 
@@ -881,20 +881,20 @@ std::vector< RatPoint_line_segment > edges_to_ymonotonize(
             {
                 // More suppression.
                 // si is not even in the sweep line, right?
-                KJB(ASSERT(sweep.end()==std::find_if(sweep.begin(),sweep.end(),
-                    Shemp_eq(kjb::qd::sweep::Shemp::ctor_from_true(si)))));
+                IVI(ASSERT(sweep.end()==std::find_if(sweep.begin(),sweep.end(),
+                    Shemp_eq(ivi::qd::sweep::Shemp::ctor_from_true(si)))));
                 // Remove si from list of segments we try to remove from sweep.
                 ulma[1].erase(si);
             }
         }
 
         // Delete the retiring edges from sweep line, insert the starting ones.
-        kjb::qd::sweep::update_sweep< Dcel_subset >(&sweep, ulma, &rvs_sweep);
+        ivi::qd::sweep::update_sweep< Dcel_subset >(&sweep, ulma, &rvs_sweep);
 
 #if MONOTONE_CPP_DEBUG
         std::cout << "Sweep line :";
         std::copy(sweep.begin(), sweep.end(),
-            std::ostream_iterator<kjb::qd::sweep::Shemp>(std::cout, " : "));
+            std::ostream_iterator<ivi::qd::sweep::Shemp>(std::cout, " : "));
         std::cout << "\nHelpers (slix,vx):";
         for (size_t i = 0; i < helper.size(); ++i)
             if (helper[i] < Doubly_connected_edge_list::BLANK)
@@ -965,7 +965,7 @@ std::vector< RatPoint_line_segment > edges_to_triangulate(
     if (! is_face_ymonotone(dcel, fi))
     {
         acc = edges_to_ymonotonize(dcel, fi);
-        KJB(ASSERT(! acc.empty()));
+        IVI(ASSERT(! acc.empty()));
         d2 = ctor_from_edge_list(acc).merge(dcel);
 
         // build list of the subfaces
@@ -973,13 +973,13 @@ std::vector< RatPoint_line_segment > edges_to_triangulate(
         for (size_t i = 0; i < acc.size(); ++i)
         {
             size_t ej = lookup_edge(d2, acc[i]);
-            KJB(ASSERT(ej < d2.get_edge_table().size()));
+            IVI(ASSERT(ej < d2.get_edge_table().size()));
             size_t fj = d2.get_edge_table().at(ej).face,
                    ejt = d2.get_edge_table().at(ej).twin,
                    fjt = d2.get_edge_table().at(ejt).face;
-            KJB(ASSERT(fj != fjt));
-            KJB(ASSERT(is_face_ymonotone(d2, fj)));
-            KJB(ASSERT(is_face_ymonotone(d2, fjt)));
+            IVI(ASSERT(fj != fjt));
+            IVI(ASSERT(is_face_ymonotone(d2, fj)));
+            IVI(ASSERT(is_face_ymonotone(d2, fjt)));
             subfaces.insert(fj);
             subfaces.insert(fjt);
         }
@@ -1036,13 +1036,13 @@ RatPoint::Rat area_of_face(const Doubly_connected_edge_list& dcel, size_t fi)
     for (size_t i = 0; i < e.size(); ++i)
     {
         size_t ej = lookup_edge(d2, e[i]);
-        KJB(ASSERT(ej < d2.get_edge_table().size()));
+        IVI(ASSERT(ej < d2.get_edge_table().size()));
         size_t fj = d2.get_edge_table().at(ej).face,
                ejt = d2.get_edge_table().at(ej).twin,
                fjt = d2.get_edge_table().at(ejt).face;
-        KJB(ASSERT(fj != fjt));
-        KJB(ASSERT(is_face_triangle(d2, fj)));
-        KJB(ASSERT(is_face_triangle(d2, fjt)));
+        IVI(ASSERT(fj != fjt));
+        IVI(ASSERT(is_face_triangle(d2, fj)));
+        IVI(ASSERT(is_face_triangle(d2, fjt)));
         tri_faces.insert(fj);
         tri_faces.insert(fjt);
     }

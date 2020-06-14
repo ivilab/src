@@ -1,5 +1,5 @@
 /*
- * $Id: test_basic_threads.c 21491 2017-07-20 13:19:02Z kobus $
+ * $Id: test_basic_threads.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_lib.h>
@@ -11,16 +11,16 @@
 
 #define HIVE_SIZE 50
 
-kjb_pthread_mutex_t mtx = KJB_PTHREAD_MUTEX_INITIALIZER;
+ivi_pthread_mutex_t mtx = IVI_PTHREAD_MUTEX_INITIALIZER;
 
 static void* thready_work(void* p)
 {
     union { void* v; int i; } u;
     u.v = p;
 
-    EPETE(kjb_pthread_mutex_lock(&mtx));
-    kjb_printf("worker thread %d\n", u.i);
-    EPETE(kjb_pthread_mutex_unlock(&mtx));
+    EPETE(ivi_pthread_mutex_lock(&mtx));
+    ivi_printf("worker thread %d\n", u.i);
+    EPETE(ivi_pthread_mutex_unlock(&mtx));
 
     return NULL;
 }
@@ -28,7 +28,7 @@ static void* thready_work(void* p)
 int main(int argc, char** argv)
 {
     int i;
-    kjb_pthread_t worker_bees[HIVE_SIZE];
+    ivi_pthread_t worker_bees[HIVE_SIZE];
 
     if (! is_interactive()) 
     {
@@ -38,25 +38,25 @@ int main(int argc, char** argv)
     }
     
 
-    EPETE(kjb_init());
-    kjb_puts("home thread hello\n");
+    EPETE(ivi_init());
+    ivi_puts("home thread hello\n");
 
     /* start them */
     for (i = 0; i < HIVE_SIZE; ++i)
     {
-        EPETE(kjb_pthread_create(worker_bees+i, NULL, thready_work, (void*)i));
+        EPETE(ivi_pthread_create(worker_bees+i, NULL, thready_work, (void*)i));
     }
 
-    EPETE(kjb_pthread_mutex_lock(&mtx));
-    kjb_puts("all threads launched\n");
-    EPETE(kjb_pthread_mutex_unlock(&mtx));
+    EPETE(ivi_pthread_mutex_lock(&mtx));
+    ivi_puts("all threads launched\n");
+    EPETE(ivi_pthread_mutex_unlock(&mtx));
 
     /* stop them */
     for (i = 0; i < HIVE_SIZE; ++i)
     {
-        EPETE(kjb_pthread_join(worker_bees[i], NULL));
+        EPETE(ivi_pthread_join(worker_bees[i], NULL));
     }
-    kjb_cleanup();
+    ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

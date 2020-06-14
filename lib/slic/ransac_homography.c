@@ -343,8 +343,8 @@ int main21(int argc, char *argv[])
     int i;
     double tmp;
     int id;
-    KJB_image *src_ip = NULL;
-    KJB_image *dst_ip = NULL;
+    IVI_image *src_ip = NULL;
+    IVI_image *dst_ip = NULL;
     int num_rows, num_cols;
     int warp_type;
     Vector *dist_vp = NULL;
@@ -400,10 +400,10 @@ int main21(int argc, char *argv[])
     
     num_rows = 341;
     num_cols = 442;
-    kjb_read_image(&src_ip, argv[3]);
+    ivi_read_image(&src_ip, argv[3]);
     
     ERE(transform_image(src_ip, a_mp, num_cols, num_rows, NULL, warp_type, &dst_ip, NULL));
-    kjb_display_image(dst_ip, NULL);
+    ivi_display_image(dst_ip, NULL);
 
     /*ERE(transform_image(src_ip, x_fit_mp, y_fit_mp, a_mp, inverse_affine,
     num_rows, num_cols, &dst_ip));*/

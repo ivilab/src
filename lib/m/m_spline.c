@@ -1,5 +1,5 @@
 
-/* $Id: m_spline.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_spline.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -240,7 +240,7 @@ int uniform_x_cubic_spline
     {
         if (fs_uniform_in_x != NULL)
         {
-            kjb_free(fs_uniform_in_x);
+            ivi_free(fs_uniform_in_x);
         }
 
         NRE(fs_uniform_in_x = DBL_MALLOC(in_n));
@@ -259,7 +259,7 @@ int uniform_x_cubic_spline
     {
         if (fs_uniform_out_x != NULL)
         {
-            kjb_free(fs_uniform_out_x);
+            ivi_free(fs_uniform_out_x);
         }
 
         NRE(fs_uniform_out_x = DBL_MALLOC(out_n));
@@ -294,8 +294,8 @@ int uniform_x_cubic_spline
 
 static void free_uniform_cubic_spline_storage(void)
 {
-    kjb_free(fs_uniform_in_x);
-    kjb_free(fs_uniform_out_x);
+    ivi_free(fs_uniform_in_x);
+    ivi_free(fs_uniform_out_x);
 }
 
 #endif
@@ -325,9 +325,9 @@ int cubic_spline
 
     if (in_n > fs_cubic_spline_max_size)
     {
-        if (fs_cubic_spline_b != NULL) kjb_free(fs_cubic_spline_b);
-        if (fs_cubic_spline_c != NULL) kjb_free(fs_cubic_spline_c);
-        if (fs_cubic_spline_d != NULL) kjb_free(fs_cubic_spline_d);
+        if (fs_cubic_spline_b != NULL) ivi_free(fs_cubic_spline_b);
+        if (fs_cubic_spline_c != NULL) ivi_free(fs_cubic_spline_c);
+        if (fs_cubic_spline_d != NULL) ivi_free(fs_cubic_spline_d);
 
         NRE(fs_cubic_spline_b = DBL_MALLOC(in_n));
         NRE(fs_cubic_spline_c = DBL_MALLOC(in_n));
@@ -394,9 +394,9 @@ int cubic_spline
 
 static void free_cubic_spline_storage(void)
 {
-    kjb_free(fs_cubic_spline_b);
-    kjb_free(fs_cubic_spline_c);
-    kjb_free(fs_cubic_spline_d);
+    ivi_free(fs_cubic_spline_b);
+    ivi_free(fs_cubic_spline_c);
+    ivi_free(fs_cubic_spline_d);
 }
 
 #endif
@@ -438,11 +438,11 @@ int get_spline_parms
 
     if (n > fs_gsp_max_size)
     {
-        if (fs_gsp_h != NULL) kjb_free(fs_gsp_h);
-        if (fs_gsp_l != NULL) kjb_free(fs_gsp_l);
-        if (fs_gsp_u != NULL) kjb_free(fs_gsp_u);
-        if (fs_gsp_z != NULL) kjb_free(fs_gsp_z);
-        if (fs_gsp_alpha != NULL) kjb_free(fs_gsp_alpha);
+        if (fs_gsp_h != NULL) ivi_free(fs_gsp_h);
+        if (fs_gsp_l != NULL) ivi_free(fs_gsp_l);
+        if (fs_gsp_u != NULL) ivi_free(fs_gsp_u);
+        if (fs_gsp_z != NULL) ivi_free(fs_gsp_z);
+        if (fs_gsp_alpha != NULL) ivi_free(fs_gsp_alpha);
 
         NRE(fs_gsp_h = DBL_MALLOC(n));
         NRE(fs_gsp_l = DBL_MALLOC(n));
@@ -524,11 +524,11 @@ int get_spline_parms
 
 static void free_get_spline_parms_storage(void)
 {
-     kjb_free(fs_gsp_h);
-     kjb_free(fs_gsp_l);
-     kjb_free(fs_gsp_u);
-     kjb_free(fs_gsp_z);
-     kjb_free(fs_gsp_alpha);
+     ivi_free(fs_gsp_h);
+     ivi_free(fs_gsp_l);
+     ivi_free(fs_gsp_u);
+     ivi_free(fs_gsp_z);
+     ivi_free(fs_gsp_alpha);
 }
 
 #endif

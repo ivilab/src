@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_pdf.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_pdf.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /** @file
  *
@@ -31,7 +31,7 @@
 
 #include <boost/math/special_functions/gamma.hpp>
 
-namespace kjb {
+namespace ivi {
 
 double pdf(const MV_gaussian_distribution& P, const Vector& x)
 {
@@ -228,5 +228,5 @@ double log_pdf(const Inverse_wishart_distribution& dist, const Matrix& val)
            0.5 * temp.trace() - dist.log_Z_; 
 }
 
-} //namespace kjb
+} //namespace ivi
 

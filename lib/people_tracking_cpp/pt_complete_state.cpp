@@ -35,8 +35,8 @@
 #include <boost/ref.hpp>
 #include <boost/tuple/tuple.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 // statics
 const double Head::HEIGHT_FRACTION = 1 / 7.0;
@@ -45,7 +45,7 @@ const double Head::GIRTH_FRACTION = 0.7;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector_vec kjb::pt::body_ellipse
+Vector_vec ivi::pt::body_ellipse
 (
     const Complete_state& cs,
     double h,
@@ -67,7 +67,7 @@ Vector_vec kjb::pt::body_ellipse
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::cylinder_points
+void ivi::pt::cylinder_points
 (
     const Complete_state& cs,
     double height,
@@ -119,7 +119,7 @@ void kjb::pt::cylinder_points
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector_vec kjb::pt::head_points
+Vector_vec ivi::pt::head_points
 (
     const Complete_state& cs,
     double height,
@@ -164,7 +164,7 @@ Vector_vec kjb::pt::head_points
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector_vec kjb::pt::face_features
+Vector_vec ivi::pt::face_features
 (
     const Complete_state& cs,
     double height,
@@ -213,7 +213,7 @@ Vector_vec kjb::pt::face_features
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::pt::visible_head_point
+Vector ivi::pt::visible_head_point
 (
     const Complete_state& cs,
     const Vector& cam_center,
@@ -236,7 +236,7 @@ Vector kjb::pt::visible_head_point
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::pt::looking
+bool ivi::pt::looking
 (
     const Complete_state& obs,
     double height,
@@ -282,7 +282,7 @@ bool kjb::pt::looking
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::pt::gaze_intersection
+Vector ivi::pt::gaze_intersection
 (
     const Complete_state& cs1,
     double height1,

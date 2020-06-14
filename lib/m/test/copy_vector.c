@@ -1,5 +1,5 @@
 
-/* $Id: copy_vector.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: copy_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     int status = EXIT_SUCCESS;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -38,19 +38,19 @@ int main(int argc, char **argv)
     } 
 
 
-    kjb_l_set("debug", "2");
-    kjb_l_set("page", "off");
+    ivi_l_set("debug", "2");
+    ivi_l_set("page", "off");
 
     for (i = 0; i < num_tries; i++)
     {
         int p; 
-        int length = kjb_rint(1 + MAX_LENGTH * kjb_rand());
+        int length = ivi_rint(1 + MAX_LENGTH * ivi_rand());
 
         EPETE(get_random_vector(&vp, length));
 
-        kjb_l_set("use-memcpy", "f");
+        ivi_l_set("use-memcpy", "f");
 
-        p = kjb_rint((double)length * kjb_rand());
+        p = ivi_rint((double)length * ivi_rand());
         p = MIN_OF(length - 1, p);
 
         vp->elements[ p ] = i; 
@@ -67,9 +67,9 @@ int main(int argc, char **argv)
             status = EXIT_BUG;
         }
 
-        kjb_l_set("use-memcpy", "t");
+        ivi_l_set("use-memcpy", "t");
 
-        p = kjb_rint((double)length * kjb_rand());
+        p = ivi_rint((double)length * ivi_rand());
         p = MIN_OF(length - 1, p);
 
         vp->elements[ p ] = i; 

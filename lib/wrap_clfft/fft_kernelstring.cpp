@@ -46,7 +46,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -1255,4 +1255,4 @@ void FFT1D(cl_fft_plan *plan, cl_fft_kernel_dir dir)
 	}
 }
 
-#endif // KJB_HAVE_OPENCL
+#endif // IVI_HAVE_OPENCL

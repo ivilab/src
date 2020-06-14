@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_scene_posterior.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_scene_posterior.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_scene_posterior.h"
@@ -48,8 +48,8 @@
 #include <boost/ref.hpp>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 double Scene_posterior::operator()(const Scene& scene) const
 {
@@ -77,8 +77,8 @@ double Scene_posterior::local
     size_t frame2
 ) const
 {
-    KJB(ASSERT(target1.trajectory()[frame1 - 1]));
-    KJB(ASSERT(target2.trajectory()[frame2 - 1]));
+    IVI(ASSERT(target1.trajectory()[frame1 - 1]));
+    IVI(ASSERT(target2.trajectory()[frame2 - 1]));
 
     // set up
     size_t sf1 = target1.get_start_time();

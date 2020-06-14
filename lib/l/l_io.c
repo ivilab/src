@@ -1,5 +1,5 @@
 
-/* $Id: l_io.c 24706 2019-12-13 23:00:26Z kobus $ */
+/* $Id: l_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -93,7 +93,7 @@ static TRAP_FN_RETURN_TYPE alternate_file_read_atn_fn(TRAP_FN_ARGS);
 /* -------------------------------------------------------------------------- */
 
 static int            fs_use_default_program_prompt = TRUE;
-static char           fs_kjb_program_prompt[ MAX_PROGRAM_PROMPT_SIZE ] = "";
+static char           fs_ivi_program_prompt[ MAX_PROGRAM_PROMPT_SIZE ] = "";
 static Queue_element* fs_alternate_input_left_over_stack     = NULL;
 static Queue_element* fs_alternate_input_fp_stack     = NULL;
 static int            fs_alternate_input_fp_stack_len = 0;
@@ -153,7 +153,7 @@ int set_io_options(const char* option, const char* value)
          || match_pattern(lc_option, "comment-character")
        )
     {
-        IMPORT int kjb_comment_char;
+        IMPORT int ivi_comment_char;
 
         if (value == NULL)
         {
@@ -161,11 +161,11 @@ int set_io_options(const char* option, const char* value)
         }
         else if (value[ 0 ] == '?')
         {
-            ERE(pso("comment-char = '%c'\n", kjb_comment_char));
+            ERE(pso("comment-char = '%c'\n", ivi_comment_char));
         }
         else if (value[ 0 ] == '\0')
         {
-            ERE(pso("Comment character is '%c'.\n", kjb_comment_char));
+            ERE(pso("Comment character is '%c'.\n", ivi_comment_char));
         }
         else
         {
@@ -174,7 +174,7 @@ int set_io_options(const char* option, const char* value)
                 set_error("Expecting a single character for comment char.");
                 return ERROR;
             }
-            kjb_comment_char = *value;
+            ivi_comment_char = *value;
         }
         result = NO_ERROR;
     }
@@ -184,7 +184,7 @@ int set_io_options(const char* option, const char* value)
          || match_pattern(lc_option, "header-character")
        )
     {
-        IMPORT int kjb_header_char;
+        IMPORT int ivi_header_char;
 
         if (value == NULL)
         {
@@ -192,11 +192,11 @@ int set_io_options(const char* option, const char* value)
         }
         else if (value[ 0 ] == '?')
         {
-            ERE(pso("header-char = '%c'\n", kjb_header_char));
+            ERE(pso("header-char = '%c'\n", ivi_header_char));
         }
         else if (value[ 0 ] == '\0')
         {
-            ERE(pso("Header character is' %c'.\n", kjb_header_char));
+            ERE(pso("Header character is' %c'.\n", ivi_header_char));
         }
         else
         {
@@ -205,7 +205,7 @@ int set_io_options(const char* option, const char* value)
                 set_error("Expecting a single character for header char.");
                 return ERROR;
             }
-            kjb_header_char = *value;
+            ivi_header_char = *value;
         }
         result = NO_ERROR;
     }
@@ -239,7 +239,7 @@ void set_program_prompt(const char* prompt)
 {
 
 
-    BUFF_CPY(fs_kjb_program_prompt, prompt);
+    BUFF_CPY(fs_ivi_program_prompt, prompt);
     fs_use_default_program_prompt = FALSE;
 }
 
@@ -256,8 +256,8 @@ static void set_default_program_prompt(const char* program_name)
 
     if (fs_use_default_program_prompt)
     {
-        BUFF_CPY(fs_kjb_program_prompt, program_name);
-        BUFF_CAT(fs_kjb_program_prompt, "> ");
+        BUFF_CPY(fs_ivi_program_prompt, program_name);
+        BUFF_CAT(fs_ivi_program_prompt, "> ");
     }
 }
 
@@ -270,14 +270,14 @@ void prompt_to_continue(void)
 
     if (is_interactive())
     {
-        kjb_query("Enter any key to continue ... ", buff, sizeof(buff));
+        ivi_query("Enter any key to continue ... ", buff, sizeof(buff));
     }
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                               kjb_query
+ *                               ivi_query
  *
  * Prompt the user for terminal input and returns the result.
  *
@@ -303,7 +303,7 @@ void prompt_to_continue(void)
  *    general purpose "cbreak" input.
  *
  * Returns:
- *    On error, kjb_query returns ERROR. Possible problems include failure to
+ *    On error, ivi_query returns ERROR. Possible problems include failure to
  *    obtain a terminal device. On success, the number of characters read is
  *    returned.
  *
@@ -315,7 +315,7 @@ void prompt_to_continue(void)
  * -----------------------------------------------------------------------------
  */
 
-long kjb_query(const char* prompt  /* Prompt for the query      */,
+long ivi_query(const char* prompt  /* Prompt for the query      */,
                       char* input         /* A buffer for the reply.   */,
                       size_t input_size   /* Max number of characters to
                                              read including NULL*/        )
@@ -416,7 +416,7 @@ int yes_no_query(const char* prompt)
                 if (yes_no_query("Confirm program exit (y/n)"))
 #endif
                 {
-                    kjb_exit_2(EXIT_FAILURE);
+                    ivi_exit_2(EXIT_FAILURE);
                     /* NOTREACHED */
                 }
             }
@@ -525,7 +525,7 @@ int confirm_risky_action(const char* prompt)
 
      if (yes_no_result == NOT_SET)
      {
-         kjb_abort();
+         ivi_abort();
      }
 
      /*
@@ -597,7 +597,7 @@ int multi_fclose(FILE** fp_ptr)
 
     while (*fp_ptr != NULL)
     {
-        if (kjb_fclose(*fp_ptr) == ERROR)
+        if (ivi_fclose(*fp_ptr) == ERROR)
         {
             /* From now on, we will add additional errors. */
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
@@ -641,11 +641,11 @@ int print_blanks(FILE* fp, int num_blanks)
 
     while (num_blanks > 40)
     {
-        ERE(kjb_fwrite(fp, blanks, (size_t)40));
+        ERE(ivi_fwrite(fp, blanks, (size_t)40));
         num_blanks -= 40;
     }
 
-    ERE(kjb_fwrite(fp, blanks, (size_t)num_blanks));
+    ERE(ivi_fwrite(fp, blanks, (size_t)num_blanks));
 
     return num_blanks;
 }
@@ -672,14 +672,14 @@ int rep_print(FILE* fp, int c, int n)
     IMPORT volatile Bool halt_term_output;
 
 
-    if (halt_all_output || (halt_term_output && kjb_isatty(fileno(fp))))
+    if (halt_all_output || (halt_term_output && ivi_isatty(fileno(fp))))
     {
         return NO_ERROR;
     }
 
     while (n > 0)
     {
-        ERE(kjb_fputc(fp, c));
+        ERE(ivi_fputc(fp, c));
         n--;
     }
 
@@ -723,7 +723,7 @@ long count_real_lines(FILE* fp)
     long i;
 
 
-    ftell_res = kjb_ftell(fp);
+    ftell_res = ivi_ftell(fp);
 
     if (ftell_res == ERROR)
     {
@@ -751,7 +751,7 @@ long count_real_lines(FILE* fp)
         i++;
     }
 
-    ERE(kjb_fseek(fp, ftell_res, SEEK_SET));
+    ERE(ivi_fseek(fp, ftell_res, SEEK_SET));
 
 
     return i;
@@ -785,7 +785,7 @@ long count_real_lines(FILE* fp)
  *
  * Returns:
  *     The number of data lines until the next data clock header on success, or
- *     ERROR on failure, with "kjb_error" set to a descriptive message.
+ *     ERROR on failure, with "ivi_error" set to a descriptive message.
  *
  * Related:
  *     count_real_lines
@@ -803,8 +803,8 @@ long count_real_lines(FILE* fp)
 
 long count_data_lines_until_next_header(FILE* fp)
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     char  line[ LARGE_IO_BUFF_SIZE ];
     int   get_res;
     char*  line_pos;
@@ -812,7 +812,7 @@ long count_data_lines_until_next_header(FILE* fp)
     long i;
 
 
-    ftell_res = kjb_ftell(fp);
+    ftell_res = ivi_ftell(fp);
 
     if (ftell_res == ERROR)
     {
@@ -833,12 +833,12 @@ long count_data_lines_until_next_header(FILE* fp)
             /*EMPTY*/
             ; /* Do nothing */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
             trim_beg(&line_pos);
 
-            if (*line_pos == kjb_header_char)
+            if (*line_pos == ivi_header_char)
             {
                 /* We've found a header line (or a soft EOF). Bail out of loop
                 // and return */
@@ -851,7 +851,7 @@ long count_data_lines_until_next_header(FILE* fp)
         }
     }
 
-    ERE(kjb_fseek(fp, ftell_res, SEEK_SET));
+    ERE(ivi_fseek(fp, ftell_res, SEEK_SET));
 
     return i;
 }
@@ -860,8 +860,8 @@ long count_data_lines_until_next_header(FILE* fp)
 
 int read_header_options(FILE* fp, char*** option_list_ptr, char*** value_list_ptr)
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     char line[ 1000 ];  /* Small buffer is OK, because truncation is OK. */
     int  read_res;
 
@@ -874,13 +874,13 @@ int read_header_options(FILE* fp, char*** option_list_ptr, char*** value_list_pt
         {
             return EOF;
         }
-        else if (    (line[ 0 ] == kjb_comment_char)
-                  && (line[ 1 ] == kjb_header_char)
+        else if (    (line[ 0 ] == ivi_comment_char)
+                  && (line[ 1 ] == ivi_header_char)
                 )
         {
             return parse_options(line + 2, option_list_ptr, value_list_ptr);
         }
-        else if (    (line[ 0 ] != kjb_comment_char)
+        else if (    (line[ 0 ] != ivi_comment_char)
                   && ( ! all_blanks(line))
                 )
         {
@@ -917,7 +917,7 @@ long count_tokens_in_file(FILE* fp)
 
     /* FIX: Check if fp is a file, and set program error if it is NOT. */
 
-    ftell_res = kjb_ftell(fp);
+    ftell_res = ivi_ftell(fp);
 
     if (ftell_res == ERROR)
     {
@@ -939,7 +939,7 @@ long count_tokens_in_file(FILE* fp)
         }
     }
 
-    ERE(kjb_fseek(fp, ftell_res, SEEK_SET));
+    ERE(ivi_fseek(fp, ftell_res, SEEK_SET));
 
     return i;
 }
@@ -958,7 +958,7 @@ long gen_count_tokens_in_file(FILE* fp, const char* terminators)
 
     /* FIX: Check if fp is a file, and set program error if it is NOT. */
 
-    ftell_res = kjb_ftell(fp);
+    ftell_res = ivi_ftell(fp);
 
     if (ftell_res == ERROR)
     {
@@ -980,7 +980,7 @@ long gen_count_tokens_in_file(FILE* fp, const char* terminators)
         }
     }
 
-    ERE(kjb_fseek(fp, ftell_res, SEEK_SET));
+    ERE(ivi_fseek(fp, ftell_res, SEEK_SET));
 
     return i;
 }
@@ -995,7 +995,7 @@ long gen_count_tokens_in_file(FILE* fp, const char* terminators)
  *
  * This routine is similar to fget_line() except that blank lines and
  * comment lines are ignored. Comment lines are identified by having the
- * kjb_comment_char in the first column. Normally kjb_comment_char is '#';
+ * ivi_comment_char in the first column. Normally ivi_comment_char is '#';
  * however this is normally exposed to the user as option.
  *
  * The routine also looks for the comment character in the first column,
@@ -1034,7 +1034,7 @@ long gen_count_tokens_in_file(FILE* fp, const char* terminators)
 
 long get_real_line(FILE* fp, char* line, size_t max_len)
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     long get_res;
     char*       line_pos;
 
@@ -1062,7 +1062,7 @@ long get_real_line(FILE* fp, char* line, size_t max_len)
             /*EMPTY*/
             ; /* Do nothing */
         }
-        else if (line_pos[ 0 ] == kjb_comment_char)
+        else if (line_pos[ 0 ] == ivi_comment_char)
         {
             if (line_pos[ 1 ] == '!')
             {
@@ -1115,7 +1115,7 @@ long get_real_line(FILE* fp, char* line, size_t max_len)
 
 long string_count_real_lines(const char* buff)
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     char       line[ LARGE_IO_BUFF_SIZE ];
     const char*      buff_pos;
     long       i;
@@ -1138,7 +1138,7 @@ long string_count_real_lines(const char* buff)
             /*EMPTY*/
             ; /* Do nothing */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             /*EMPTY*/
             ; /* Do nothing */
@@ -1195,7 +1195,7 @@ long string_get_real_line
     size_t       max_len
 )
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     long get_res;
     char*       line_pos;
 
@@ -1212,7 +1212,7 @@ long string_get_real_line
             /*EMPTY*/
             ; /* Do nothing */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             /*EMPTY*/
             ; /* Do nothing */
@@ -1254,7 +1254,7 @@ static int set_alternate_input(const char* file_name)
         return ERROR;
     }
 
-    NRE(alternate_input_fp=kjb_fopen(file_name, "r"));
+    NRE(alternate_input_fp=ivi_fopen(file_name, "r"));
 
     ERE(set_atn_trap(alternate_file_read_atn_fn, DONT_RESTART_AFTER_SIGNAL));
 
@@ -1268,7 +1268,7 @@ static int set_alternate_input(const char* file_name)
 
         save_error_action = get_error_action();
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(alternate_input_fp);
+        ivi_fclose(alternate_input_fp);
         set_error_action(save_error_action);
         return ERROR;
     }
@@ -1281,7 +1281,7 @@ static int set_alternate_input(const char* file_name)
 
         save_error_action = get_error_action();
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(alternate_input_fp);
+        ivi_fclose(alternate_input_fp);
         set_error_action(save_error_action);
         return ERROR;
     }
@@ -1297,7 +1297,7 @@ static int set_alternate_input(const char* file_name)
 
         save_error_action = get_error_action();
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(alternate_input_fp);
+        ivi_fclose(alternate_input_fp);
         set_error_action(save_error_action);
         return ERROR;
     }
@@ -1306,7 +1306,7 @@ static int set_alternate_input(const char* file_name)
 
     res = insert_into_queue(&fs_loop_line_buff_stack,
                             (Queue_element**)NULL,
-                            (void*)kjb_strdup(fs_loop_line_buff));
+                            (void*)ivi_strdup(fs_loop_line_buff));
     fs_loop_line_buff[ 0 ] = '\0';
 
     if (res == ERROR)
@@ -1315,14 +1315,14 @@ static int set_alternate_input(const char* file_name)
 
         save_error_action = get_error_action();
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(alternate_input_fp);
+        ivi_fclose(alternate_input_fp);
         set_error_action(save_error_action);
         return ERROR;
     }
 
     res = insert_into_queue(&fs_alternate_input_left_over_stack,
                             (Queue_element**)NULL,
-                            (void*)kjb_strdup(fs_input_line_buff_pos));
+                            (void*)ivi_strdup(fs_input_line_buff_pos));
     fs_input_line_buff_pos += strlen(fs_input_line_buff_pos);
 
     if (res == ERROR)
@@ -1331,7 +1331,7 @@ static int set_alternate_input(const char* file_name)
 
         save_error_action = get_error_action();
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(alternate_input_fp);
+        ivi_fclose(alternate_input_fp);
         set_error_action(save_error_action);
         return ERROR;
     }
@@ -1349,7 +1349,7 @@ static int set_alternate_input(const char* file_name)
  *
  * High level input routine
  *
- * This routine is the basic KJB library high level input routine. It provides
+ * This routine is the basic IVI library high level input routine. It provides
  * support for continued lines (last char is one a line is a "-"), multiple
  * commands on a line (commands are separated by semi-colons). In addition, this
  * routine provides support for an initialzation file and a history file
@@ -1382,7 +1382,7 @@ static int set_alternate_input(const char* file_name)
  * |  ...                         wait      User is prompted for return
  * |                                        to continue.
  * |
- * |  help { < topic > }          help      Uses kjb_help for help
+ * |  help { < topic > }          help      Uses ivi_help for help
  * |
  * |  loop <num> <command>        loop      Behaves as though the command
  * |                                        line was typed <num> times.
@@ -1430,13 +1430,13 @@ static int set_alternate_input(const char* file_name)
  *    It returns EOF if the end if input has been reached, or the user entered
  *    stop/exit/quit/q/. It returns ERROR if there was an error in the read, or
  *    (much more likely) an error in a preprocessed command. If error is
- *    returned, then the reason is available to kjb_print_error. If the input
+ *    returned, then the reason is available to ivi_print_error. If the input
  *    command is larger than max_len, then TRUNCATED is returned.
  *
  * See also;
- *    kjb_help, kjb_print_error, BUFF_GET_COMMAND_TEXT
+ *    ivi_help, ivi_print_error, BUFF_GET_COMMAND_TEXT
  *
- * Index: KJB library, High level routines, I/O, input
+ * Index: IVI library, High level routines, I/O, input
  *
  * -----------------------------------------------------------------------------
  */
@@ -1476,8 +1476,8 @@ long get_command_text
     {
         UNTESTED_CODE();
 
-        kjb_strncpy(command, fs_cached_pp_command, max_len);
-        kjb_free(fs_cached_pp_command);
+        ivi_strncpy(command, fs_cached_pp_command, max_len);
+        ivi_free(fs_cached_pp_command);
         fs_cached_pp_command = NULL;
 
         pp_res = PRE_PROCESS_INPUT;
@@ -1573,7 +1573,7 @@ int add_line_to_input_stream(const char* line)
 
     ERE(initialize_input_line_buffer());
 
-    kjb_strncat(fs_input_line_buff, line, fs_input_line_buff_size);
+    ivi_strncat(fs_input_line_buff, line, fs_input_line_buff_size);
 
     return NO_ERROR;
 }
@@ -1661,7 +1661,7 @@ static long get_input_line(char* line, size_t max_len)
 
     if (fs_loop_count > 0)
     {
-        kjb_strncpy(line, fs_loop_line_buff, fs_input_line_buff_size);
+        ivi_strncpy(line, fs_loop_line_buff, fs_input_line_buff_size);
         fs_loop_count--;
         return strlen(line);
     }
@@ -1679,7 +1679,7 @@ static long get_input_line(char* line, size_t max_len)
 
     if (interactive)
     {
-        BUFF_CPY(prompt, fs_kjb_program_prompt);
+        BUFF_CPY(prompt, fs_ivi_program_prompt);
     }
 
     while (more_input)
@@ -1707,32 +1707,32 @@ static long get_input_line(char* line, size_t max_len)
             {
                 int save_read_atn_flag = fs_read_atn_flag;
 
-                kjb_fclose(alternate_input_fp); /*Ignore return--only reading.*/
+                ivi_fclose(alternate_input_fp); /*Ignore return--only reading.*/
                 fs_read_atn_flag = FALSE;
                 ERE(unset_atn_trap());
 
                 NRE(removed_elem = remove_first_element(
                                                    &fs_alternate_input_fp_stack,
                                                    (Queue_element**)NULL));
-                kjb_free(removed_elem);
+                ivi_free(removed_elem);
 
                 fs_loop_count = *((int*)(fs_loop_count_stack->contents));
 
-                kjb_free(fs_loop_count_stack->contents);
+                ivi_free(fs_loop_count_stack->contents);
 
                 NRE(removed_elem = remove_first_element(&fs_loop_count_stack,
                                                         (Queue_element**)NULL));
-                kjb_free(removed_elem);
+                ivi_free(removed_elem);
 
-                kjb_strncpy(fs_loop_line_buff,
+                ivi_strncpy(fs_loop_line_buff,
                             (char*)(fs_loop_line_buff_stack->contents),
                             fs_input_line_buff_size);
 
-                kjb_free(fs_loop_line_buff_stack->contents);
+                ivi_free(fs_loop_line_buff_stack->contents);
 
                 NRE(removed_elem = remove_first_element(&fs_loop_line_buff_stack,
                                                         (Queue_element**)NULL));
-                kjb_free(removed_elem);
+                ivi_free(removed_elem);
 
                 fs_alternate_input_fp_stack_len--;
 
@@ -1743,14 +1743,14 @@ static long get_input_line(char* line, size_t max_len)
                 {
                     if (*((char*)removed_elem->contents) != '\0')
                     {
-                        kjb_strncpy(line, (char*)removed_elem->contents,
+                        ivi_strncpy(line, (char*)removed_elem->contents,
                                     max_len);
                         have_left_over = TRUE;
                     }
-                    kjb_free(removed_elem->contents);
+                    ivi_free(removed_elem->contents);
                 }
 
-                kjb_free(removed_elem);
+                ivi_free(removed_elem);
 
                 if (have_left_over)
                 {
@@ -1764,7 +1764,7 @@ static long get_input_line(char* line, size_t max_len)
 
                 if (fs_loop_count > 0)
                 {
-                    kjb_strncpy(line, fs_loop_line_buff, fs_input_line_buff_size);
+                    ivi_strncpy(line, fs_loop_line_buff, fs_input_line_buff_size);
                     fs_loop_count--;
                     return strlen(save_line);
                 }
@@ -1848,8 +1848,8 @@ static long get_input_line(char* line, size_t max_len)
                     return NO_ERROR;
                 }
 
-                kjb_strncpy(fs_loop_line_buff, line, fs_input_line_buff_size);
-                kjb_strncpy(save_line, fs_loop_line_buff, fs_input_line_buff_size);
+                ivi_strncpy(fs_loop_line_buff, line, fs_input_line_buff_size);
+                ivi_strncpy(save_line, fs_loop_line_buff, fs_input_line_buff_size);
                 fs_loop_count--;
             }
             else
@@ -1953,7 +1953,7 @@ static Pre_process_result preprocess_command(const char* program_name, char* com
     else if ((*command_pos == '$') || (*command_pos == '!'))
     {
         command_pos++;
-        EPE(kjb_system(command_pos));
+        EPE(ivi_system(command_pos));
         return PRE_PROCESS_SUCCESS;
     }
     else
@@ -2041,7 +2041,7 @@ static Pre_process_result preprocess_command(const char* program_name, char* com
         {
             trim_beg(&command_pos);
 
-            if (kjb_help(program_name, command_pos) == ERROR)
+            if (ivi_help(program_name, command_pos) == ERROR)
             {
                 return PRE_PROCESS_ERROR;
             }
@@ -2111,7 +2111,7 @@ static int initialize_input_line_buffer(void)
 
         if (fs_loop_line_buff == NULL)
         {
-            kjb_free(fs_input_line_buff);
+            ivi_free(fs_input_line_buff);
             return ERROR;
         }
 
@@ -2140,8 +2140,8 @@ static void free_input_line_buff(void)
 {
 
 
-    kjb_free(fs_input_line_buff);
-    kjb_free(fs_loop_line_buff);
+    ivi_free(fs_input_line_buff);
+    ivi_free(fs_loop_line_buff);
 
     fs_loop_line_buff      = NULL;
     fs_input_line_buff     = NULL;
@@ -2166,19 +2166,19 @@ static void free_alternate_input_file_queue(void)
         if (cur_elem != NULL)
         {
             /* Print error, as this is a void cleanup function. */
-            EPE(kjb_fclose((FILE*)(cur_elem->contents)));
+            EPE(ivi_fclose((FILE*)(cur_elem->contents)));
 
-            kjb_free(cur_elem);
+            ivi_free(cur_elem);
         }
     }
     while (cur_elem != NULL);
 
     fs_alternate_input_fp_stack_len = 0;
 
-    free_queue(&fs_loop_count_stack, (Queue_element**)NULL, kjb_free);
-    free_queue(&fs_loop_line_buff_stack, (Queue_element**)NULL, kjb_free);
+    free_queue(&fs_loop_count_stack, (Queue_element**)NULL, ivi_free);
+    free_queue(&fs_loop_line_buff_stack, (Queue_element**)NULL, ivi_free);
     free_queue(&fs_alternate_input_left_over_stack, (Queue_element**)NULL,
-               kjb_free);
+               ivi_free);
 
     fs_alternate_input_fp_stack = NULL;
     fs_alternate_input_left_over_stack = NULL; 
@@ -2189,7 +2189,7 @@ static void free_alternate_input_file_queue(void)
 
 Continue_query_response continue_query(void)
 {
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_cols;
     static int long_prompt_cutoff = NOT_SET;
     static int medium_prompt_cutoff = NOT_SET;
     static const char* long_prompt = "Continue? (SPACE or y for yes, n for no) ";
@@ -2209,7 +2209,7 @@ Continue_query_response continue_query(void)
         medium_prompt_cutoff = strlen(medium_prompt) + 1;
     }
 
-    if (kjb_tty_cols < medium_prompt_cutoff)
+    if (ivi_tty_cols < medium_prompt_cutoff)
     {
         /*
         // If short prompt wont fit on a line, then tough. Let the user deal
@@ -2217,7 +2217,7 @@ Continue_query_response continue_query(void)
         */
         prompt = short_prompt;
     }
-    else if (kjb_tty_cols < long_prompt_cutoff)
+    else if (ivi_tty_cols < long_prompt_cutoff)
     {
         prompt = medium_prompt;
     }
@@ -2362,7 +2362,7 @@ int read_int_from_file(int* int_ptr, const char* file_name)
     int   temp_int;
 
 
-    NRE(data_fp = kjb_fopen(file_name, "r"));
+    NRE(data_fp = ivi_fopen(file_name, "r"));
 
     num_elements = 0;
 
@@ -2376,7 +2376,7 @@ int read_int_from_file(int* int_ptr, const char* file_name)
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
 
             return ERROR;
@@ -2400,7 +2400,7 @@ int read_int_from_file(int* int_ptr, const char* file_name)
 
         set_error("Expecting exactly one number in file %F.", data_fp);
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        (void)kjb_fclose(data_fp);
+        (void)ivi_fclose(data_fp);
         set_error_action(save_error_action);
 
         return ERROR;
@@ -2418,7 +2418,7 @@ int read_int_from_file(int* int_ptr, const char* file_name)
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
 
             return ERROR;
@@ -2440,7 +2440,7 @@ int read_int_from_file(int* int_ptr, const char* file_name)
 
                 insert_error("Error reading integer from %F.", data_fp);
                 set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-                (void)kjb_fclose(data_fp);
+                (void)ivi_fclose(data_fp);
                 set_error_action(save_error_action);
 
                 return ERROR;
@@ -2448,7 +2448,7 @@ int read_int_from_file(int* int_ptr, const char* file_name)
         }
     }
 
-    ERE(kjb_fclose(data_fp));
+    ERE(ivi_fclose(data_fp));
 
     *int_ptr = temp_int;
 
@@ -2497,7 +2497,7 @@ int read_dbl_from_file(double* dbl_ptr, const char* file_name)
     double   temp_dbl;
 
 
-    NRE(data_fp = kjb_fopen(file_name, "r"));
+    NRE(data_fp = ivi_fopen(file_name, "r"));
 
     num_elements = 0;
 
@@ -2511,7 +2511,7 @@ int read_dbl_from_file(double* dbl_ptr, const char* file_name)
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
 
             return ERROR;
@@ -2535,7 +2535,7 @@ int read_dbl_from_file(double* dbl_ptr, const char* file_name)
 
         set_error("Expecting exactly one number in file %F.", data_fp);
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        (void)kjb_fclose(data_fp);
+        (void)ivi_fclose(data_fp);
         set_error_action(save_error_action);
 
         return ERROR;
@@ -2553,7 +2553,7 @@ int read_dbl_from_file(double* dbl_ptr, const char* file_name)
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
 
             return ERROR;
@@ -2575,7 +2575,7 @@ int read_dbl_from_file(double* dbl_ptr, const char* file_name)
 
                 insert_error("Error reading double from %F.", data_fp);
                 set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-                (void)kjb_fclose(data_fp);
+                (void)ivi_fclose(data_fp);
                 set_error_action(save_error_action);
 
                 return ERROR;
@@ -2583,7 +2583,7 @@ int read_dbl_from_file(double* dbl_ptr, const char* file_name)
         }
     }
 
-    ERE(kjb_fclose(data_fp));
+    ERE(ivi_fclose(data_fp));
 
     *dbl_ptr = temp_dbl;
 
@@ -2604,7 +2604,7 @@ int read_and_create_int_array(char* file_name, int* num_elements_ptr, int** arra
     int   scan_res, read_res;
 
 
-    NRE(data_fp = kjb_fopen(file_name, "r"));
+    NRE(data_fp = ivi_fopen(file_name, "r"));
 
     num_elements = 0;
 
@@ -2618,7 +2618,7 @@ int read_and_create_int_array(char* file_name, int* num_elements_ptr, int** arra
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
 
             return ERROR;
@@ -2642,7 +2642,7 @@ int read_and_create_int_array(char* file_name, int* num_elements_ptr, int** arra
 
         set_error("Expecting at least one number in file %F.", data_fp);
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        (void)kjb_fclose(data_fp);
+        (void)ivi_fclose(data_fp);
         set_error_action(save_error_action);
 
         return ERROR;
@@ -2666,9 +2666,9 @@ int read_and_create_int_array(char* file_name, int* num_elements_ptr, int** arra
             Error_action save_error_action = get_error_action();
 
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            (void)kjb_fclose(data_fp);
+            (void)ivi_fclose(data_fp);
             set_error_action(save_error_action);
-            kjb_free(data_array);
+            ivi_free(data_array);
 
             return ERROR;
         }
@@ -2689,8 +2689,8 @@ int read_and_create_int_array(char* file_name, int* num_elements_ptr, int** arra
 
                 insert_error("Error reading integer from %F.", data_fp);
                 set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-                (void)kjb_fclose(data_fp);
-                kjb_free(data_array);
+                (void)ivi_fclose(data_fp);
+                ivi_free(data_array);
                 set_error_action(save_error_action);
 
                 return ERROR;
@@ -2699,7 +2699,7 @@ int read_and_create_int_array(char* file_name, int* num_elements_ptr, int** arra
         }
     }
 
-    ERE(kjb_fclose(data_fp));
+    ERE(ivi_fclose(data_fp));
 
     *num_elements_ptr = num_elements;
     *array_ptr = data_array;
@@ -2709,20 +2709,20 @@ int read_and_create_int_array(char* file_name, int* num_elements_ptr, int** arra
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int kjb_fread_4_bytes(FILE* fp, void* buff)
+int ivi_fread_4_bytes(FILE* fp, void* buff)
 {
 
-    return kjb_fread_exact(fp, buff, 4);
+    return ivi_fread_exact(fp, buff, 4);
 }
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int kjb_fread_4_bytes_backwards(FILE* fp, void* buff)
+int ivi_fread_4_bytes_backwards(FILE* fp, void* buff)
 {
     char temp_buff[ 4 ];
 
-    ERE(kjb_fread_exact(fp, temp_buff, 4));
+    ERE(ivi_fread_exact(fp, temp_buff, 4));
 
     ((char*)buff)[ 0 ] = temp_buff[ 3 ];
     ((char*)buff)[ 1 ] = temp_buff[ 2 ];
@@ -2746,14 +2746,14 @@ int read_double(double* value_ptr, const char* file_name)
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_double(value_ptr, fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
     }
 
     return result;
@@ -2800,10 +2800,10 @@ int output_int(const char* output_dir, const char* file_name, int value)
 
     if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-    NRE(fp = kjb_fopen(out_file_name, "w"));
-    ERE(kjb_fprintf(fp, "%d\n", value));
+    NRE(fp = ivi_fopen(out_file_name, "w"));
+    ERE(ivi_fprintf(fp, "%d\n", value));
 
-    return kjb_fclose(fp);
+    return ivi_fclose(fp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -2830,10 +2830,10 @@ int output_double
 
     if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-    NRE(fp = kjb_fopen(out_file_name, "w"));
-    ERE(kjb_fprintf(fp, "%.10e\n", value));
+    NRE(fp = ivi_fopen(out_file_name, "w"));
+    ERE(ivi_fprintf(fp, "%.10e\n", value));
 
-    return kjb_fclose(fp);
+    return ivi_fclose(fp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -2937,7 +2937,7 @@ void pop_no_overwrite(void)
 
     if (cur_elem == NULL)
     {
-        kjb_print_error();
+        ivi_print_error();
         set_bug("Unable to pop no overwrite from stack."); 
         return;
     }
@@ -2945,7 +2945,7 @@ void pop_no_overwrite(void)
     set_no_overwrite(*((int*)(cur_elem->contents)));
 
     SKIP_HEAP_CHECK_2(); 
-    free_queue_element(cur_elem, kjb_free); 
+    free_queue_element(cur_elem, ivi_free); 
     CONTINUE_HEAP_CHECK_2();
 }
 
@@ -2961,7 +2961,7 @@ void pop_no_overwrite(void)
 static void free_no_overwrite_stack(void)
 {
     free_queue(&fs_no_overwrite_stack_head, (Queue_element**)NULL,
-               kjb_free); 
+               ivi_free); 
 
     fs_no_overwrite_stack_head = NULL; 
 }

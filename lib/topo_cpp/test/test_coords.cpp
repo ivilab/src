@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_coords.cpp 22174 2018-07-01 21:49:18Z kobus $
+ * $Id: test_coords.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_debug.h>
@@ -27,7 +27,7 @@
 
 namespace {
 
-const int WGS_84 = kjb::TopoFusion::ELLIPSOID_WGS_84;
+const int WGS_84 = ivi::TopoFusion::ELLIPSOID_WGS_84;
 
 struct City {
     const char* name;
@@ -113,36 +113,36 @@ int similar(double a, double b, double TOL, unsigned line)
 {
     const double d = fabs(a-b);
     const double s = fabs(a)+fabs(b);
-    if (s > 0 && kjb_c::is_interactive()) kjb_c::pso("%f\t%f\t%e\t", a,b,d/s);
+    if (s > 0 && ivi_c::is_interactive()) ivi_c::pso("%f\t%f\t%e\t", a,b,d/s);
     bool is_similar = d < s * TOL;
 
     if (!is_similar)
     {
-        kjb_c::add_error("Nonsimilar output from line %u:\n" 
+        ivi_c::add_error("Nonsimilar output from line %u:\n" 
                             "\ta = %e, b = %e, d = %e, s = %e\n"
                             "\ttolerance = %e\n",
                             line, a, b, d, s, TOL);
     }
-    return is_similar ? kjb_c::NO_ERROR : kjb_c::ERROR;
+    return is_similar ? ivi_c::NO_ERROR : ivi_c::ERROR;
 }
 
 #if HAS_SPY
 int sim_spy()
 {
-    using kjb::TopoFusion::spy;
-    KJB(ERE(SIMILAR(spy[0].eccPrimeSquared, spy[1].eccPrimeSquared)));
-    KJB(ERE(SIMILAR(spy[0].e1,      spy[1].e1)));
-    KJB(ERE(SIMILAR(spy[0].mu,      spy[1].mu)));
-    KJB(ERE(SIMILAR(spy[0].phi1Rad, spy[1].phi1Rad)));
-    KJB(ERE(SIMILAR(spy[0].N1,      spy[1].N1)));
-    KJB(ERE(SIMILAR(spy[0].T1,      spy[1].T1)));
-    KJB(ERE(SIMILAR(spy[0].C1,      spy[1].C1)));
-    KJB(ERE(SIMILAR(spy[0].R1,      spy[1].R1)));
-    KJB(ERE(SIMILAR(spy[0].D,       spy[1].D)));
-    KJB(ERE(SIMILAR(spy[0].Lat,     spy[1].Lat)));
-    KJB(ERE(SIMILAR(spy[0].Long,    spy[1].Long)));;
+    using ivi::TopoFusion::spy;
+    IVI(ERE(SIMILAR(spy[0].eccPrimeSquared, spy[1].eccPrimeSquared)));
+    IVI(ERE(SIMILAR(spy[0].e1,      spy[1].e1)));
+    IVI(ERE(SIMILAR(spy[0].mu,      spy[1].mu)));
+    IVI(ERE(SIMILAR(spy[0].phi1Rad, spy[1].phi1Rad)));
+    IVI(ERE(SIMILAR(spy[0].N1,      spy[1].N1)));
+    IVI(ERE(SIMILAR(spy[0].T1,      spy[1].T1)));
+    IVI(ERE(SIMILAR(spy[0].C1,      spy[1].C1)));
+    IVI(ERE(SIMILAR(spy[0].R1,      spy[1].R1)));
+    IVI(ERE(SIMILAR(spy[0].D,       spy[1].D)));
+    IVI(ERE(SIMILAR(spy[0].Lat,     spy[1].Lat)));
+    IVI(ERE(SIMILAR(spy[0].Long,    spy[1].Long)));;
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 #endif
 
@@ -155,27 +155,27 @@ int test1()
     for (const City* p = us_capitals; ! p->end_of_list(); ++p )
     {
         if (p->missing()) continue;
-        kjb::TopoFusion::pt q;
-        kjb::TopoFusion::LLtoUTM(WGS_84, p->lat, p->lon, q);
+        ivi::TopoFusion::pt q;
+        ivi::TopoFusion::LLtoUTM(WGS_84, p->lat, p->lon, q);
 #if HAS_SPY
         double la, lo;
-        kjb::TopoFusion::UTMtoLL(WGS_84, q, la, lo);
-        KJB(ERE(SIMILAR(la, p->lat)));
-        KJB(ERE(SIMILAR(lo, p->lon)));
+        ivi::TopoFusion::UTMtoLL(WGS_84, q, la, lo);
+        IVI(ERE(SIMILAR(la, p->lat)));
+        IVI(ERE(SIMILAR(lo, p->lon)));
 #endif
         double la2, lo2;
-        kjb::TopoFusion::utm_to_lat_long(WGS_84, q, la2, lo2);
-        if (kjb_c::is_interactive()) kjb_c::pso("%s\t", p->name);
-        KJB(ERE(SIMILAR(la2, p->lat)));
-        if (kjb_c::is_interactive()) kjb_c::pso("\n%s\t", p->name);
-        KJB(ERE(SIMILAR(lo2, p->lon)));
-        if (kjb_c::is_interactive()) kjb_c::pso("\n", p->name);
+        ivi::TopoFusion::utm_to_lat_long(WGS_84, q, la2, lo2);
+        if (ivi_c::is_interactive()) ivi_c::pso("%s\t", p->name);
+        IVI(ERE(SIMILAR(la2, p->lat)));
+        if (ivi_c::is_interactive()) ivi_c::pso("\n%s\t", p->name);
+        IVI(ERE(SIMILAR(lo2, p->lon)));
+        if (ivi_c::is_interactive()) ivi_c::pso("\n", p->name);
 
 #if HAS_SPY
         for (int i=0; i<2; ++i)
         {
-            using kjb::TopoFusion::spy;
-            kjb_c::pso("spy: %e %e %e %e %e %e %e %e %e %e %e\n",
+            using ivi::TopoFusion::spy;
+            ivi_c::pso("spy: %e %e %e %e %e %e %e %e %e %e %e\n",
                 spy[i].eccPrimeSquared,
                 spy[i].e1,
                 spy[i].mu,
@@ -188,21 +188,21 @@ int test1()
                 spy[i].Lat,
                 spy[i].Long);
         }
-        KJB(ERE(sim_spy()));
+        IVI(ERE(sim_spy()));
 #endif
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
-std::vector<kjb::TopoFusion::pt> get_cities()
+std::vector<ivi::TopoFusion::pt> get_cities()
 {
-    std::vector<kjb::TopoFusion::pt> pts;
+    std::vector<ivi::TopoFusion::pt> pts;
 
     for (const City* p = us_capitals; ! p->end_of_list(); ++p )
     {
         if (p->missing()) continue;
-        kjb::TopoFusion::pt q;
-        kjb::TopoFusion::LLtoUTM(WGS_84, p->lat, p->lon, q);
+        ivi::TopoFusion::pt q;
+        ivi::TopoFusion::LLtoUTM(WGS_84, p->lat, p->lon, q);
         pts.push_back(q);
     }
     return pts;
@@ -212,21 +212,21 @@ std::vector<kjb::TopoFusion::pt> get_cities()
 // empirically they appear to produce identical results, exact float equality.
 int test2()
 {
-    std::vector<kjb::TopoFusion::pt> pts = get_cities();
+    std::vector<ivi::TopoFusion::pt> pts = get_cities();
     std::vector<double> la, lo;
-    kjb::TopoFusion::utm_to_lat_long(WGS_84, pts, &la, &lo);
+    ivi::TopoFusion::utm_to_lat_long(WGS_84, pts, &la, &lo);
     for (size_t iii = 0; iii < pts.size(); ++iii)
     {
         double nla, wlo;
-        kjb::TopoFusion::utm_to_lat_long(WGS_84, pts[iii], nla, wlo);
-        if (kjb_c::is_interactive()) kjb_c::pso("%d\t", iii);
-        KJB(ERE(SIMILAR(nla, la[iii])));
-        if (kjb_c::is_interactive()) kjb_c::pso("\n%d\t", iii);
-        KJB(ERE(SIMILAR(wlo, lo[iii])));
-        if (kjb_c::is_interactive()) kjb_c::pso("\n");
+        ivi::TopoFusion::utm_to_lat_long(WGS_84, pts[iii], nla, wlo);
+        if (ivi_c::is_interactive()) ivi_c::pso("%d\t", iii);
+        IVI(ERE(SIMILAR(nla, la[iii])));
+        if (ivi_c::is_interactive()) ivi_c::pso("\n%d\t", iii);
+        IVI(ERE(SIMILAR(wlo, lo[iii])));
+        if (ivi_c::is_interactive()) ivi_c::pso("\n");
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 // speed test:  is the vector version significantly faster?  yes!
@@ -234,10 +234,10 @@ int test3(int tf)
 {
     long trial1, trial2;
 
-    if (tf <= 0 || ! kjb_c::is_interactive()) return kjb_c::NO_ERROR;
+    if (tf <= 0 || ! ivi_c::is_interactive()) return ivi_c::NO_ERROR;
     const size_t TEST_SIZE = 1024u*1024u << tf-1;
 
-    std::vector<kjb::TopoFusion::pt> pts = get_cities(), big;
+    std::vector<ivi::TopoFusion::pt> pts = get_cities(), big;
 
     while(big.size() < TEST_SIZE)
     {
@@ -248,29 +248,29 @@ int test3(int tf)
     std::vector<double> la(big.size()), lo(big.size());
 
     // trial 1
-    kjb_c::init_cpu_time();
-    kjb::TopoFusion::utm_to_lat_long(WGS_84, pts, &la, &lo);
-    trial1 = kjb_c::get_cpu_time();
+    ivi_c::init_cpu_time();
+    ivi::TopoFusion::utm_to_lat_long(WGS_84, pts, &la, &lo);
+    trial1 = ivi_c::get_cpu_time();
 
     // trial 2
-    kjb_c::init_cpu_time();
+    ivi_c::init_cpu_time();
     for (size_t iii = 0; iii < big.size(); ++iii)
     {
-        kjb::TopoFusion::utm_to_lat_long(WGS_84, big[iii], la[iii], lo[iii]);
+        ivi::TopoFusion::utm_to_lat_long(WGS_84, big[iii], la[iii], lo[iii]);
     }
-    trial2 = kjb_c::get_cpu_time();
+    trial2 = ivi_c::get_cpu_time();
 
-    kjb_c::pso("   Vector version time: %f seconds\n"
+    ivi_c::pso("   Vector version time: %f seconds\n"
                "Singleton version time: %f seconds\n",
                trial1/1000.0, trial2/1000.0);
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 inline int fre(bool p)
 {
-    return p ? kjb_c::NO_ERROR : kjb_c::ERROR;
+    return p ? ivi_c::NO_ERROR : ivi_c::ERROR;
 }
 
 
@@ -294,50 +294,50 @@ int test4()
     // find a city in zone 10
     const City *c1 = std::find_if(us_capitals, us_capitals + CCT,
                                                     find_city("Olympia, WA"));
-    if (c1 >= us_capitals + CCT) return kjb_c::ERROR;
+    if (c1 >= us_capitals + CCT) return ivi_c::ERROR;
 
-    kjb::TopoFusion::pt olympia;
-    kjb::TopoFusion::LLtoUTM(WGS_84, c1 -> lat, c1 -> lon, olympia);
-    KJB(ERE(fre(10 == olympia.zone)));  // everyone knows Olypmpia is zone 10.
-    KJB(ERE(fre(10 == zone_of(WGS_84, olympia))));
+    ivi::TopoFusion::pt olympia;
+    ivi::TopoFusion::LLtoUTM(WGS_84, c1 -> lat, c1 -> lon, olympia);
+    IVI(ERE(fre(10 == olympia.zone)));  // everyone knows Olypmpia is zone 10.
+    IVI(ERE(fre(10 == zone_of(WGS_84, olympia))));
 
     // go 3 degrees east of Olympia, get UTM coordinates (b/c in the next zone)
-    kjb::TopoFusion::pt not_oly;
-    kjb::TopoFusion::LLtoUTM(WGS_84, c1 -> lat, c1 -> lon + 3, not_oly);
-    KJB(ERE(fre(11 == not_oly.zone)));  // we have crossed a zone boundary!
-    KJB(ERE(fre(11 == zone_of(WGS_84, not_oly))));
-    not_oly.x = kjb::TopoFusion::getNewEasting(not_oly, 10);
+    ivi::TopoFusion::pt not_oly;
+    ivi::TopoFusion::LLtoUTM(WGS_84, c1 -> lat, c1 -> lon + 3, not_oly);
+    IVI(ERE(fre(11 == not_oly.zone)));  // we have crossed a zone boundary!
+    IVI(ERE(fre(11 == zone_of(WGS_84, not_oly))));
+    not_oly.x = ivi::TopoFusion::getNewEasting(not_oly, 10);
     not_oly.zone = 10;                  // estimate this point from zone 10
-    KJB(ERE(fre(11 == zone_of(WGS_84, not_oly))));
+    IVI(ERE(fre(11 == zone_of(WGS_84, not_oly))));
 
     // find a city in zone 11
     const City *c2 = std::find_if(us_capitals, us_capitals + CCT,
                                                 find_city("Carson City, NV"));
-    if (c2 >= us_capitals + CCT) return kjb_c::ERROR;
+    if (c2 >= us_capitals + CCT) return ivi_c::ERROR;
 
-    kjb::TopoFusion::pt carsonc;
-    kjb::TopoFusion::LLtoUTM(WGS_84, c2 -> lat, c2 -> lon, carsonc);
-    KJB(ERE(fre(11 == carsonc.zone)));  // Carson City is in zone 11.
-    KJB(ERE(fre(11 == zone_of(WGS_84, carsonc))));
+    ivi::TopoFusion::pt carsonc;
+    ivi::TopoFusion::LLtoUTM(WGS_84, c2 -> lat, c2 -> lon, carsonc);
+    IVI(ERE(fre(11 == carsonc.zone)));  // Carson City is in zone 11.
+    IVI(ERE(fre(11 == zone_of(WGS_84, carsonc))));
 
     // go 0.5 degrees west of Carson City (into Cali), get UTM coordinates
-    kjb::TopoFusion::pt not_cc;
-    kjb::TopoFusion::LLtoUTM(WGS_84, c1 -> lat, c1 -> lon - 0.5, not_cc);
-    KJB(ERE(fre(10 == not_cc.zone)));   // we have crossed a zone boundary!
-    KJB(ERE(fre(10 == zone_of(WGS_84, not_cc))));
-    not_cc.x = kjb::TopoFusion::getNewEasting(not_cc, 11);
+    ivi::TopoFusion::pt not_cc;
+    ivi::TopoFusion::LLtoUTM(WGS_84, c1 -> lat, c1 -> lon - 0.5, not_cc);
+    IVI(ERE(fre(10 == not_cc.zone)));   // we have crossed a zone boundary!
+    IVI(ERE(fre(10 == zone_of(WGS_84, not_cc))));
+    not_cc.x = ivi::TopoFusion::getNewEasting(not_cc, 11);
     not_cc.zone = 11;                   // estimate this point from zone 11
-    KJB(ERE(fre(10 == zone_of(WGS_84, not_cc))));
+    IVI(ERE(fre(10 == zone_of(WGS_84, not_cc))));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 int test5()
 {
-    if (! kjb_c::is_interactive()) return kjb_c::NO_ERROR;
+    if (! ivi_c::is_interactive()) return ivi_c::NO_ERROR;
 
-    if (kjb_c::kjb_fork()) return kjb_c::NO_ERROR;
+    if (ivi_c::ivi_fork()) return ivi_c::NO_ERROR;
 
     double nmost = -90, smost = 90, emost = -180, wmost = 180;
     for (const City* p = us_capitals; ! p -> end_of_list(); ++p )
@@ -350,7 +350,7 @@ int test5()
     }
 
     const int NSSIZE = 500, EWSIZE = 800;
-    kjb::Image g(NSSIZE, EWSIZE, 0, 0, 0);
+    ivi::Image g(NSSIZE, EWSIZE, 0, 0, 0);
     const double    delta_ns = nmost - smost, delta_ew = emost - wmost,
                     MAG = .9 * std::min(NSSIZE/delta_ns, EWSIZE/delta_ew);
 
@@ -364,9 +364,9 @@ int test5()
     }
 
     g.display("us capitals");
-    while (true) kjb_c::nap(1000);
+    while (true) ivi_c::nap(1000);
     /* NOTREACHED */
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -383,11 +383,11 @@ int test6()
 
         if (p->missing()) continue;
         if (p->no_utm()) continue;
-        kjb::TopoFusion::pt q;
-        kjb::TopoFusion::LLtoUTM(WGS_84, p->lat, p->lon, q);
-        if (kjb_c::is_interactive())
+        ivi::TopoFusion::pt q;
+        ivi::TopoFusion::LLtoUTM(WGS_84, p->lat, p->lon, q);
+        if (ivi_c::is_interactive())
         {
-            KJB(TEST_PSE((  "%s\nlat %9.6f lon %11.6f "
+            IVI(TEST_PSE((  "%s\nlat %9.6f lon %11.6f "
                             "  east %8.1f north %9.1f zone %2d"
                             "\n                       "
                             "expected east %8.1f north %9.1f zone %2d"
@@ -401,12 +401,12 @@ int test6()
                             int(p -> zone - q.zone)
                 )));
         }
-        KJB(ERE(fabs(q.x - p->easting) >= ETOL ? ERROR : NO_ERROR));
-        KJB(ERE(fabs(q.y - p->northing) >= NTOL ? ERROR : NO_ERROR));
+        IVI(ERE(fabs(q.x - p->easting) >= ETOL ? ERROR : NO_ERROR));
+        IVI(ERE(fabs(q.y - p->northing) >= NTOL ? ERROR : NO_ERROR));
         // Actual error seems to be more like +/- 5 cm or less.
-        KJB(ERE(p-> zone != q.zone ? ERROR : NO_ERROR));
+        IVI(ERE(p-> zone != q.zone ? ERROR : NO_ERROR));
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -415,24 +415,24 @@ int test6()
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
 
     int time_factor = 1;
-    KJB(EPETE(scan_time_factor(argv[1], &time_factor)));
+    IVI(EPETE(scan_time_factor(argv[1], &time_factor)));
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         std::cout << "Interactive run with time factor " << time_factor <<'\n';
     }
 
-    KJB(EPETE(kjb::TopoFusion::validate_ellipsoid_table()));
-    KJB(EPETE(test1()));
-    KJB(EPETE(test2()));
-    KJB(EPETE(test3(time_factor)));
-    KJB(EPETE(test4()));
-    KJB(EPETE(test5()));
-    KJB(EPETE(test6()));
+    IVI(EPETE(ivi::TopoFusion::validate_ellipsoid_table()));
+    IVI(EPETE(test1()));
+    IVI(EPETE(test2()));
+    IVI(EPETE(test3(time_factor)));
+    IVI(EPETE(test4()));
+    IVI(EPETE(test5()));
+    IVI(EPETE(test6()));
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }

@@ -2,7 +2,7 @@
  * @file tmp2.cpp
  *
  * @author Colin Dawson 
- * $Id: test_elaboration_tree.cpp 17394 2014-08-23 21:53:00Z cdawson $ 
+ * $Id: test_elaboration_tree.cpp 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "semantics/Elaboration_tree.h"
@@ -54,7 +54,7 @@ void visit_enode(semantics::Elaboration_tree::Elab_ptr_const enode, const size_t
         std::cout << lead << "NULL SEMANTIC ELABORATION" << std::endl;
         break;
     default:
-            KJB_THROW_2(kjb::Cant_happen, "enode has an impossible type...");
+            IVI_THROW_2(ivi::Cant_happen, "enode has an impossible type...");
     };
 
     // std::cout << lead << "(enode -> children()).size() = "
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
         etree->print(std::cerr);
         // Elaboration_tree::Elab_ptr_const rooty = etree->root();
         // visit_enode(rooty);
-    } catch(const kjb::Exception& e)
+    } catch(const ivi::Exception& e)
     {
         e.print_details_exit();
     }

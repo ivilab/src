@@ -1,5 +1,5 @@
 
-/* $Id: r_cluster.h 9312 2011-04-13 06:49:57Z kobus $ */
+/* $Id: r_cluster.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -39,7 +39,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

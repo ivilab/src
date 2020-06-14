@@ -38,15 +38,15 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #endif
 
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::mcmcda;
 
-bool kjb::pt::all_new_targets(const Scene& scene)
+bool ivi::pt::all_new_targets(const Scene& scene)
 {
     BOOST_FOREACH(const Target& tg, scene.association)
     {
@@ -129,7 +129,7 @@ bool kjb::pt::all_new_targets(const Scene& scene)
 //
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 ergo::mh_proposal_result Propose_person_size::operator()
 (
     const Scene& in,
@@ -189,7 +189,7 @@ ergo::mh_proposal_result Propose_person_size::operator()
 
         default:
         {
-            KJB_THROW_2(
+            IVI_THROW_2(
                 Runtime_error,
                 "Cannot propose body dimension; invalid component.");
         }
@@ -215,7 +215,7 @@ ergo::mh_proposal_result Propose_person_size::operator()
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 ergo::mh_proposal_result Propose_point_location::operator()
 (
     const Scene& in,
@@ -247,7 +247,7 @@ ergo::mh_proposal_result Propose_point_location::operator()
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 
 Sample_scenes::Hmc_step Sample_scenes::make_hmc_traj_step
 (
@@ -291,7 +291,7 @@ Sample_scenes::Hmc_step Sample_scenes::make_hmc_traj_step
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 
 //Sample_scenes::Mh_step Sample_scenes::make_mh_traj_step() const
 //{
@@ -307,7 +307,7 @@ Sample_scenes::Hmc_step Sample_scenes::make_hmc_traj_step
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 
 Sample_scenes::Mh_step Sample_scenes::make_mh_size_step(bool infer_head) const
 {
@@ -322,7 +322,7 @@ Sample_scenes::Mh_step Sample_scenes::make_mh_size_step(bool infer_head) const
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 
 Sample_scenes::Mh_step Sample_scenes::make_mh_pos_step() const
 {

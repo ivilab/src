@@ -1,10 +1,10 @@
 /**
  * @file
  * @author Andrew Predoehl
- * @brief unit test for function kjb::realpath()
+ * @brief unit test for function ivi::realpath()
  */
 /*
- * $Id: real_path.cpp 14701 2013-06-07 20:35:16Z predoehl $
+ * $Id: real_path.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_std.h>
@@ -25,7 +25,7 @@ void check(bool false_means_failure, const char* file, unsigned line)
 {
     if (false_means_failure == false)
     {
-        kjb_c::kjb_fprintf(stderr, "Failure %s:%u\n", file, line);
+        ivi_c::ivi_fprintf(stderr, "Failure %s:%u\n", file, line);
         exit(EXIT_FAILURE);
     }
 }
@@ -39,37 +39,37 @@ int test()
                 *p5 = "/usr/lib/../bin/";
 
     // hopefully no embarrassing typos
-    SHOULD_BE_TRUE(kjb_c::is_directory(p1));
-    SHOULD_BE_TRUE(kjb_c::is_directory(p2));
-    SHOULD_BE_TRUE(kjb_c::is_directory(p3));
-    SHOULD_BE_TRUE(kjb_c::is_directory(p4));
-    SHOULD_BE_TRUE(kjb_c::is_directory(p5));
+    SHOULD_BE_TRUE(ivi_c::is_directory(p1));
+    SHOULD_BE_TRUE(ivi_c::is_directory(p2));
+    SHOULD_BE_TRUE(ivi_c::is_directory(p3));
+    SHOULD_BE_TRUE(ivi_c::is_directory(p4));
+    SHOULD_BE_TRUE(ivi_c::is_directory(p5));
 
     // is it reflexive?
-    SHOULD_BE_TRUE(kjb::realpath(p1) == kjb::realpath(p1));
-    SHOULD_BE_TRUE(kjb::realpath(p2) == kjb::realpath(p2));
-    SHOULD_BE_TRUE(kjb::realpath(p3) == kjb::realpath(p3));
-    SHOULD_BE_TRUE(kjb::realpath(p4) == kjb::realpath(p4));
-    SHOULD_BE_TRUE(kjb::realpath(p5) == kjb::realpath(p5));
+    SHOULD_BE_TRUE(ivi::realpath(p1) == ivi::realpath(p1));
+    SHOULD_BE_TRUE(ivi::realpath(p2) == ivi::realpath(p2));
+    SHOULD_BE_TRUE(ivi::realpath(p3) == ivi::realpath(p3));
+    SHOULD_BE_TRUE(ivi::realpath(p4) == ivi::realpath(p4));
+    SHOULD_BE_TRUE(ivi::realpath(p5) == ivi::realpath(p5));
 
     // is it symmetric?
-    SHOULD_BE_TRUE(kjb::realpath(p1) == kjb::realpath(p2));
-    SHOULD_BE_TRUE(kjb::realpath(p2) == kjb::realpath(p1)); // that's enough
+    SHOULD_BE_TRUE(ivi::realpath(p1) == ivi::realpath(p2));
+    SHOULD_BE_TRUE(ivi::realpath(p2) == ivi::realpath(p1)); // that's enough
 
     // is it gullible?
-    SHOULD_BE_TRUE(kjb::realpath(p1) != kjb::realpath(p3));
-    SHOULD_BE_TRUE(kjb::realpath(p1) != kjb::realpath(p4));
-    SHOULD_BE_TRUE(kjb::realpath(p3) != kjb::realpath(p2));
-    SHOULD_BE_TRUE(kjb::realpath(p4) != kjb::realpath(p2));
+    SHOULD_BE_TRUE(ivi::realpath(p1) != ivi::realpath(p3));
+    SHOULD_BE_TRUE(ivi::realpath(p1) != ivi::realpath(p4));
+    SHOULD_BE_TRUE(ivi::realpath(p3) != ivi::realpath(p2));
+    SHOULD_BE_TRUE(ivi::realpath(p4) != ivi::realpath(p2));
 
     // is it actually pretty smart?
-    SHOULD_BE_TRUE(kjb::realpath(p3) == kjb::realpath(p4));
-    SHOULD_BE_TRUE(kjb::realpath(p2) == kjb::realpath(p5));
-    SHOULD_BE_TRUE(kjb::realpath(p1) == kjb::realpath(p5));
-    SHOULD_BE_TRUE(kjb::realpath(p4) == kjb::realpath(p3));
-    SHOULD_BE_TRUE(kjb::realpath(p5) == kjb::realpath(p2));
+    SHOULD_BE_TRUE(ivi::realpath(p3) == ivi::realpath(p4));
+    SHOULD_BE_TRUE(ivi::realpath(p2) == ivi::realpath(p5));
+    SHOULD_BE_TRUE(ivi::realpath(p1) == ivi::realpath(p5));
+    SHOULD_BE_TRUE(ivi::realpath(p4) == ivi::realpath(p3));
+    SHOULD_BE_TRUE(ivi::realpath(p5) == ivi::realpath(p2));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 }
@@ -77,20 +77,20 @@ int test()
 
 int main()
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     try
     {
-        KJB(EPE(test()));
+        IVI(EPE(test()));
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details_exit();
     }
 
-    if (kjb_c::is_interactive()) kjb_c::kjb_printf("Success!\n");
+    if (ivi_c::is_interactive()) ivi_c::ivi_printf("Success!\n");
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

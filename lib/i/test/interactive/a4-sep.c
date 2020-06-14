@@ -1,5 +1,5 @@
 
-/* $Id: a4-sep.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: a4-sep.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -34,8 +34,8 @@ int main(int argc, char** argv)
     Matrix*    in_mp     = NULL;
     Matrix*    smooth_mp     = NULL;
     Matrix*    x_smooth_mp     = NULL;
-    KJB_image* in_ip = NULL;
-    KJB_image* out_ip    = NULL;
+    IVI_image* in_ip = NULL;
+    IVI_image* out_ip    = NULL;
     Vector*    diff_mask_vp = NULL;
     Vector*    x_combined_mask_vp = NULL;
     Vector*    y_combined_mask_vp = NULL;
@@ -43,15 +43,15 @@ int main(int argc, char** argv)
     int        i, j;
     char       title_str[ 1000 ];
     double     sigma;
-    KJB_image* collage_ip = NULL;
+    IVI_image* collage_ip = NULL;
     int        collage_image_num = 0;
     Vector*    gauss_1D_vp = NULL;
     char*      collage_image_titles[ NUM_SCALES * NUM_EXPERIMENTS ];
     /* Static to force initialization to 0. */
-    static KJB_image* collage_images[ NUM_SCALES * NUM_EXPERIMENTS ];  
+    static IVI_image* collage_images[ NUM_SCALES * NUM_EXPERIMENTS ];  
 
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     
     create_image_display();  /* Best to do this before displaying images. */
     
-    EPETE(kjb_read_image(&in_ip, "input.tiff"));
+    EPETE(ivi_read_image(&in_ip, "input.tiff"));
 
     num_rows = in_ip->num_rows; 
     num_cols = in_ip->num_cols; 
@@ -91,10 +91,10 @@ int main(int argc, char** argv)
         }
 
         EPETE(rgb_matrices_to_image(smooth_mp, smooth_mp, smooth_mp, &out_ip));
-        EPETE(kjb_sprintf(title_str, sizeof(title_str), "Input, sigma = %.1f", sigma));
-        NPETE(collage_image_titles[ collage_image_num ] = kjb_strdup(title_str));
+        EPETE(ivi_sprintf(title_str, sizeof(title_str), "Input, sigma = %.1f", sigma));
+        NPETE(collage_image_titles[ collage_image_num ] = ivi_strdup(title_str));
         collage_images[ collage_image_num ] = NULL;
-        EPETE(kjb_copy_image(&(collage_images[ collage_image_num ]), out_ip));
+        EPETE(ivi_copy_image(&(collage_images[ collage_image_num ]), out_ip));
         collage_image_num++; 
 
 
@@ -105,9 +105,9 @@ int main(int argc, char** argv)
         EPETE(ow_multiply_matrix_by_scalar(out_mp, 256.0 / max_matrix_element(out_mp)));  
         EPETE(ow_add_scalar_to_matrix(out_mp, 128.0));      
         EPETE(rgb_matrices_to_image(out_mp, out_mp, out_mp, &out_ip));
-        EPETE(kjb_sprintf(title_str, sizeof(title_str), "X edge, sigma = %.1f", sigma));
-        NPETE(collage_image_titles[ collage_image_num ] = kjb_strdup(title_str));
-        EPETE(kjb_copy_image(&(collage_images[ collage_image_num ]), out_ip));
+        EPETE(ivi_sprintf(title_str, sizeof(title_str), "X edge, sigma = %.1f", sigma));
+        NPETE(collage_image_titles[ collage_image_num ] = ivi_strdup(title_str));
+        EPETE(ivi_copy_image(&(collage_images[ collage_image_num ]), out_ip));
         collage_image_num++; 
 
 
@@ -126,9 +126,9 @@ int main(int argc, char** argv)
         EPETE(ow_multiply_matrix_by_scalar(out_mp, 256.0 / max_matrix_element(out_mp)));  
         EPETE(ow_add_scalar_to_matrix(out_mp, 128.0));      
         EPETE(rgb_matrices_to_image(out_mp, out_mp, out_mp, &out_ip));
-        EPETE(kjb_sprintf(title_str, sizeof(title_str), "Combined X edge, sigma = %.1f", sigma));
-        NPETE(collage_image_titles[ collage_image_num ] = kjb_strdup(title_str));
-        EPETE(kjb_copy_image(&(collage_images[ collage_image_num ]), out_ip));
+        EPETE(ivi_sprintf(title_str, sizeof(title_str), "Combined X edge, sigma = %.1f", sigma));
+        NPETE(collage_image_titles[ collage_image_num ] = ivi_strdup(title_str));
+        EPETE(ivi_copy_image(&(collage_images[ collage_image_num ]), out_ip));
         collage_image_num++; 
 
 
@@ -138,9 +138,9 @@ int main(int argc, char** argv)
         EPETE(ow_multiply_matrix_by_scalar(out_mp, 256.0 / max_matrix_element(out_mp)));  
         EPETE(ow_add_scalar_to_matrix(out_mp, 128.0));      
         EPETE(rgb_matrices_to_image(out_mp, out_mp, out_mp, &out_ip));
-        EPETE(kjb_sprintf(title_str, sizeof(title_str), "Y edge, sigma = %.1f", sigma));
-        NPETE(collage_image_titles[ collage_image_num ] = kjb_strdup(title_str));
-        EPETE(kjb_copy_image(&(collage_images[ collage_image_num ]), out_ip));
+        EPETE(ivi_sprintf(title_str, sizeof(title_str), "Y edge, sigma = %.1f", sigma));
+        NPETE(collage_image_titles[ collage_image_num ] = ivi_strdup(title_str));
+        EPETE(ivi_copy_image(&(collage_images[ collage_image_num ]), out_ip));
         collage_image_num++; 
 
 
@@ -159,9 +159,9 @@ int main(int argc, char** argv)
         EPETE(ow_multiply_matrix_by_scalar(out_mp, 256.0 / max_matrix_element(out_mp)));  
         EPETE(ow_add_scalar_to_matrix(out_mp, 128.0));      
         EPETE(rgb_matrices_to_image(out_mp, out_mp, out_mp, &out_ip));
-        EPETE(kjb_sprintf(title_str, sizeof(title_str), "Combined Y edge, sigma = %.1f", sigma));
-        NPETE(collage_image_titles[ collage_image_num ] = kjb_strdup(title_str));
-        EPETE(kjb_copy_image(&(collage_images[ collage_image_num ]), out_ip));
+        EPETE(ivi_sprintf(title_str, sizeof(title_str), "Combined Y edge, sigma = %.1f", sigma));
+        NPETE(collage_image_titles[ collage_image_num ] = ivi_strdup(title_str));
+        EPETE(ivi_copy_image(&(collage_images[ collage_image_num ]), out_ip));
         collage_image_num++; 
 
 
@@ -195,23 +195,23 @@ int main(int argc, char** argv)
 
 
         EPETE(rgb_matrices_to_image(out_mp, out_mp, out_mp, &out_ip));
-        EPETE(kjb_sprintf(title_str, sizeof(title_str), "Grad mag, sigma = %.1f", sigma));
-        NPETE(collage_image_titles[ collage_image_num ] = kjb_strdup(title_str));
-        EPETE(kjb_copy_image(&(collage_images[ collage_image_num ]), out_ip));
+        EPETE(ivi_sprintf(title_str, sizeof(title_str), "Grad mag, sigma = %.1f", sigma));
+        NPETE(collage_image_titles[ collage_image_num ] = ivi_strdup(title_str));
+        EPETE(ivi_copy_image(&(collage_images[ collage_image_num ]), out_ip));
         collage_image_num++; 
     }
 
     EPETE(make_image_collage_with_labels(&collage_ip, NUM_SCALES, 6, collage_images, collage_image_titles));
-    kjb_display_image(collage_ip, "collage");
+    ivi_display_image(collage_ip, "collage");
     prompt_to_continue();
     
     for (i = 0; i < collage_image_num; i++)
     {
-        kjb_free_image(collage_images[ i ]);
-        kjb_free(collage_image_titles[ i ]);
+        ivi_free_image(collage_images[ i ]);
+        ivi_free(collage_image_titles[ i ]);
     }
 
-    kjb_free_image(collage_ip);
+    ivi_free_image(collage_ip);
 
     free_matrix(x_sep_out_mp);
     free_matrix(y_sep_out_mp);
@@ -227,10 +227,10 @@ int main(int argc, char** argv)
     free_vector(y_combined_mask_vp);
     free_vector(x_combined_mask_vp);
 
-    kjb_free_image(in_ip);
-    kjb_free_image(out_ip);
+    ivi_free_image(in_ip);
+    ivi_free_image(out_ip);
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

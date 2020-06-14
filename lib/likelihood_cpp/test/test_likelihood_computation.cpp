@@ -1,4 +1,4 @@
-/* $Id: test_likelihood_computation.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: test_likelihood_computation.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -36,19 +36,19 @@
 #include "gr_cpp/gr_opengl.h"
 
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
-using kjb_c::kjb_rand;
+using ivi_c::ivi_rand;
 
 float width = 400;
 float height = 300;
 const float NEAR = 10;
 const float FAR = 10000;
 
-#ifdef KJB_HAVE_OPENGL
-static kjb::Offscreen_buffer* offscreen = 0;
+#ifdef IVI_HAVE_OPENGL
+static ivi::Offscreen_buffer* offscreen = 0;
 
-namespace kjb
+namespace ivi
 {
 
 /** Template specialization for computing the likelihood from
@@ -71,7 +71,7 @@ double Independent_edge_points_likelihood::compute_likelihood
 {
     if(mode != FROM_MAP_AND_EDGES)
     {
-        KJB_THROW_2(Illegal_argument, "Likelihood computation mode not supported for camera and parapiped");
+        IVI_THROW_2(Illegal_argument, "Likelihood computation mode not supported for camera and parapiped");
     }
 
     /** We update the camera and the parapiped so that their
@@ -99,16 +99,16 @@ double Independent_edge_points_likelihood::compute_likelihood
 
 void init_opengl(int argc, char* argv[])
 {
-    using namespace kjb;
+    using namespace ivi;
 
-    offscreen = kjb::create_and_initialize_offscreen_buffer((GLsizei)width,
+    offscreen = ivi::create_and_initialize_offscreen_buffer((GLsizei)width,
             (GLsizei)height);
 }
 
 int main(int argc, char* argv[])
 {
 
-    //kjb_c::kjb_init();
+    //ivi_c::ivi_init();
     init_opengl(argc, argv);
     glColor3f(1.0,0.0,0.0);
 
@@ -124,16 +124,16 @@ int main(int argc, char* argv[])
 
     camera.prepare_for_rendering(true);
     pp.update_if_needed();
-    kjb_c::KJB_image * img = 0;
+    ivi_c::IVI_image * img = 0;
     pp.wire_occlude_render();
     pp.wire_render();
     Base_gl_interface::capture_gl_view(&img);
-    kjb::Image im(img);
+    ivi::Image im(img);
     im.write("data_edges.tiff");
 
-    kjb::Image testimg("data_edges.tiff");
+    ivi::Image testimg("data_edges.tiff");
     Canny_edge_detector canny(1.0, 10, 5, 20, true);
-    kjb::Edge_set * data_edges =  canny.detect_edges(testimg, true);
+    ivi::Edge_set * data_edges =  canny.detect_edges(testimg, true);
     data_edges->break_edges_at_corners(0.9, 7);
     data_edges->remove_short_edges(10);
 

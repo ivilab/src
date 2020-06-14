@@ -1,4 +1,4 @@
-/* $Id: m_mat_util.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_mat_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -21,10 +21,10 @@
 #include "m_cpp/m_mat_util.h"
 #include "m_cpp/m_matrix.h"
 
-namespace kjb {
+namespace ivi {
 
-Matrix_stl_view get_matrix_stl_view(kjb::Matrix& mat)
+Matrix_stl_view get_matrix_stl_view(ivi::Matrix& mat)
 {
     return Matrix_stl_view(&mat(0,0), boost::extents[mat.get_num_rows()][mat.get_num_cols()]);
 }
-} // namespace kjb
+} // namespace ivi

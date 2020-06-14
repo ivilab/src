@@ -1,4 +1,4 @@
-/* $Id: test_readable.cpp 21356 2017-03-30 05:34:45Z kobus $ */
+/* $Id: test_readable.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l/l_sys_lib.h>
 #include <l/l_sys_io.h>
@@ -25,7 +25,7 @@ const std::string F1 = "Description",    // field names
                   D3 = "\n" + F3 + ": ";
 
 
-class Dessert : public kjb::Readable
+class Dessert : public ivi::Readable
 {
     std::string description_, storage_;
     float calories_;
@@ -63,7 +63,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_c::kjb_init()));
+    IVI(EPETE(ivi_c::ivi_init()));
     bool happy = false;
 
     // --------------------------------------------------------------------
@@ -75,17 +75,17 @@ int main(int argc, char** argv)
 
     // Generate a file representing a Dessert.
     // In it, we fiddle with the whitespace because Readable should ignore it.
-    kjb::Temporary_File f;
-    kjb_c::kjb_fputs(f, ( F1 + ":" + V1 + "\n   "
+    ivi::Temporary_File f;
+    ivi_c::ivi_fputs(f, ( F1 + ":" + V1 + "\n   "
                         + F2 + "  :   " + V2 + "\n"
                         + F3 + ": " + V3).c_str());
     fflush(f);
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
-        kjb_c::p_stderr("Test file f contains:\n------------------\n");
-        kjb_c::kjb_system(("cat " + f.get_filename()).c_str());
-        kjb_c::kjb_putc('\n');
+        ivi_c::p_stderr("Test file f contains:\n------------------\n");
+        ivi_c::ivi_system(("cat " + f.get_filename()).c_str());
+        ivi_c::ivi_putc('\n');
     }
 
     // Read the file using the Readable member function.
@@ -99,7 +99,7 @@ int main(int argc, char** argv)
     const std::string EXPECT = D1 + V1 + D2 + V2 + D3 + V3 + "\n";
     happy = (EXPECT == t.str());
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         if (!happy)
         {
@@ -121,18 +121,18 @@ int main(int argc, char** argv)
 
 
     // Generate a bad file representing a Desert.
-    kjb::Temporary_File g;
+    ivi::Temporary_File g;
     const std::string F4 = "Cactus";
-    kjb_c::kjb_fputs(g,
+    ivi_c::ivi_fputs(g,
             (F1 + ": Sonora\n" + F2 + ": plenty\n" + F4 + ": yes\n").c_str());
     fflush(g);
     happy = false;
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
-        kjb_c::pso("Test file g contains:\n------------------\n");
-        kjb_c::kjb_system(("cat " + g.get_filename()).c_str());
-        kjb_c::kjb_putc('\n');
+        ivi_c::pso("Test file g contains:\n------------------\n");
+        ivi_c::ivi_system(("cat " + g.get_filename()).c_str());
+        ivi_c::ivi_putc('\n');
     }
 
     try
@@ -140,9 +140,9 @@ int main(int argc, char** argv)
         Dessert e;
         e.read(g.get_filename().c_str());
     }
-    catch (const kjb::Illegal_argument& e)
+    catch (const ivi::Illegal_argument& e)
     {
-        if (kjb_c::is_interactive()) e.print_details();
+        if (ivi_c::is_interactive()) e.print_details();
         const std::string MSG = "Field name '" + F3 + "' not found in '" + F4;
         happy = 0==e.get_msg().find(MSG);
     }
@@ -154,19 +154,19 @@ int main(int argc, char** argv)
 
 
     // Test new behavior (field_name must match exactly, not just a prefix)
-    kjb::Temporary_File h;
+    ivi::Temporary_File h;
     const std::string BAD_SUFFIX = "z: yes";
-    kjb_c::kjb_fputs(h, ( F1 + " : ice cream\n  "
+    ivi_c::ivi_fputs(h, ( F1 + " : ice cream\n  "
                         + F2 + "  :  frozen\n"
                         + F3 + BAD_SUFFIX + "\n").c_str());
     fflush(h);
     happy = false;
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
-        kjb_c::p_stderr("Test file h contains:\n------------------\n");
-        kjb_c::kjb_system(("cat " + h.get_filename()).c_str());
-        kjb_c::kjb_putc('\n');
+        ivi_c::p_stderr("Test file h contains:\n------------------\n");
+        ivi_c::ivi_system(("cat " + h.get_filename()).c_str());
+        ivi_c::ivi_putc('\n');
     }
 
     try
@@ -174,9 +174,9 @@ int main(int argc, char** argv)
         Dessert e;
         e.read(h.get_filename().c_str());
     }
-    catch (const kjb::Illegal_argument& e)
+    catch (const ivi::Illegal_argument& e)
     {
-        if (kjb_c::is_interactive()) e.print_details();
+        if (ivi_c::is_interactive()) e.print_details();
         const std::string MSG = "Field name '" + F3
                               + "' has a suffix mismatch in '"
                               + F3 + BAD_SUFFIX + "'";
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
     // --------------------------------------------------------------------
 
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

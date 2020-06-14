@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     char         data_file_name[MAX_FILE_NAME_SIZE ] = "data.txt"; 
     int plot_id = NOT_SET;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -88,9 +88,9 @@ int main(int argc, char* argv[])
     }
     
     /*
-    kjb_set_verbose_level(200); 
+    ivi_set_verbose_level(200); 
     */
-    kjb_disable_paging(); 
+    ivi_disable_paging(); 
 
     if (argc <= 2)
     {
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
         verbose_pso(3, "Saving data to file '%s' \n", data_file_name);
     }
 
-    kjb_seed_rand_with_tod(); 
+    ivi_seed_rand_with_tod(); 
 
     EPETE(set_em_cluster_options("cluster-tie-cluster-var", "t")); 
     EPETE(set_em_cluster_options("cluster-var-offset", ".1")); 
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
 
     for (i = 0; i < NUM_POINTS; i++)
     {
-        int cluster = num_clusters * kjb_rand(); 
+        int cluster = num_clusters * ivi_rand(); 
         double angle = angle_vp->elements[ cluster ]; 
         double mean_x = mean_x_vp->elements[ cluster ]; 
         double stdev_x = stdev_x_vp->elements[ cluster ]; 
@@ -221,7 +221,7 @@ int main(int argc, char* argv[])
 
     if (plot_id == ERROR) 
     {
-        kjb_print_error();
+        ivi_print_error();
     }
     else
     {
@@ -251,14 +251,14 @@ int main(int argc, char* argv[])
     free_vector(angle_vp); 
     free_matrix_vector(data_mvp); 
 
-    kjb_fclose(data_fp); 
+    ivi_fclose(data_fp); 
 
     if (plot_id >= 0) 
     {
         prompt_to_continue(); 
     }
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS;
 }

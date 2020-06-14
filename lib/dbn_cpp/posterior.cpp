@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: posterior.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: posterior.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_pdf.h>
 #include <prob_cpp/prob_util.h>
@@ -38,9 +38,9 @@
 #include <boost/thread.hpp>
 #include <boost/foreach.hpp>
 
-using namespace kjb::ties;
+using namespace ivi::ties;
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
 using std::cref;
 using std::ref;
 #else
@@ -321,7 +321,7 @@ void Lss_set_pred_posterior_mh_v2::set_params
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::posterior_worker
+void ivi::ties::posterior_worker
 (
     const std::vector<Posterior>& posteriors,
     const std::vector<Linear_state_space>& lss_vec,
@@ -343,7 +343,7 @@ void kjb::ties::posterior_worker
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<double> kjb::ties::individual_posteriors
+std::vector<double> ivi::ties::individual_posteriors
 (
     const std::vector<Linear_state_space>& lss_vec,
     const std::vector<Posterior>& posteriors,
@@ -453,7 +453,7 @@ double Lss_set_gp_pred::operator()(const Vector& gp_params) const
 
         return pr;
     }
-    //catch(kjb::KJB_error& err)
+    //catch(ivi::IVI_error& err)
     catch(boost::exception& err)
     {
         std::cerr << boost::current_exception_diagnostic_information(); 

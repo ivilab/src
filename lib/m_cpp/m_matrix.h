@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: m_matrix.h 20369 2016-02-14 18:17:27Z jguan1 $ */
+/* $Id: m_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef MATRIX_WRAP_H
 #define MATRIX_WRAP_H
@@ -21,7 +21,7 @@
  * @author Ernesto Brau
  * @author Luca Del Pero
  *
- * @brief Definition for the Matrix class, a thin wrapper on the KJB
+ * @brief Definition for the Matrix class, a thin wrapper on the IVI
  *        Matrix struct and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -45,7 +45,7 @@
 
 #include <iosfwd>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/access.hpp>
 #endif
 
@@ -56,10 +56,10 @@
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
 
-namespace kjb {
+namespace ivi {
 
 /**
- * @defgroup kjbLinearAlgebra Linear Algebra
+ * @defgroup iviLinearAlgebra Linear Algebra
  *
  * This group tries to gather all the general-purpose matrix- and
  * vector-related functions and classes, including basic math and basic
@@ -88,11 +88,11 @@ typedef const Generic_vector_view<const Matrix> Const_matrix_vector_view;
  * Value_type typedef, instead of referring to 'double' directly.
  *
  * Most methods of this class are implemented in the C language portion of the
- * KJB library, with this class forming a thin (usually inlined) layer.
+ * IVI library, with this class forming a thin (usually inlined) layer.
  */
 class Matrix
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
     friend bool operator<( const Matrix& op1, const Matrix& op2 );
@@ -107,7 +107,7 @@ public:
     typedef double          Value_type; ///< data type of the elements
     typedef Value_type     value_type; ///< data type of the elements
     typedef int             Size_type; ///< size type of the elements
-    typedef kjb_c::Matrix   Impl_type;  ///< the underlying implementation
+    typedef ivi_c::Matrix   Impl_type;  ///< the underlying implementation
     typedef Matrix          Mat_type;   ///< the associated matrix type
     typedef Vector          Vec_type;   ///< the associated vector type
     typedef Value_type (*Mapper)(Value_type);   ///< element transformer fun
@@ -177,7 +177,7 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_matrix( &m_matrix, 0, 0 ) );
+        ETX( ivi_c::get_target_matrix( &m_matrix, 0, 0 ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -189,7 +189,7 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_matrix( &m_matrix, rows, cols ) );
+        ETX( ivi_c::get_target_matrix( &m_matrix, rows, cols ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -257,7 +257,7 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_initialized_matrix( &m_matrix, rows, cols, num ) );
+        ETX( ivi_c::get_initialized_matrix( &m_matrix, rows, cols, num ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -304,7 +304,7 @@ public:
      * @brief   Conversion ctor:  claim ownership of an existing matrix
      *          pointer (i.e., make a shallow copy).
      *
-     * This method is the proper way to say, ''Here is a kjb_c::Matrix
+     * This method is the proper way to say, ''Here is a ivi_c::Matrix
      * struct that I am responsible for deleting, and I must make sure that it
      * gets destroyed when it goes out of scope.''  This is a good way to wrap
      * a matrix "dynamically," after it has already been created.
@@ -327,7 +327,7 @@ public:
         if ( 0 == mat_ptr )
         {
             // Test program was HERE.
-            ETX( kjb_c::get_target_matrix( &m_matrix, 0, 0 ) );
+            ETX( ivi_c::get_target_matrix( &m_matrix, 0, 0 ) );
         }
         //else
         //{
@@ -340,7 +340,7 @@ public:
     /**
      * @brief   Ctor copies contents (i.e., a deep copy) of an existing
      *          C-struct matrix.
-     * @warning This method should be seldom used:  kjb_c::Matrix objects
+     * @warning This method should be seldom used:  ivi_c::Matrix objects
      *          should rarely be left in an unwrapped state.
      *
      * This kind of conversion is relatively expensive, thus we restrict its
@@ -350,14 +350,14 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::copy_matrix( &m_matrix, &mat_ref ) );
+        ETX( ivi_c::copy_matrix( &m_matrix, &mat_ref ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
      * @brief   Read matrix from file
-     * @see     kjb_c::read_matrix
+     * @see     ivi_c::read_matrix
      */
     Matrix(const std::string& file_name);
 
@@ -370,12 +370,12 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::copy_matrix( &m_matrix, mat_ref.m_matrix ) );
+        ETX( ivi_c::copy_matrix( &m_matrix, mat_ref.m_matrix ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
     /**
      * @brief   Move ctor
      */
@@ -385,7 +385,7 @@ public:
         m_matrix = mat_ref.m_matrix;
         mat_ref.m_matrix = 0;
     }
-#endif /* KJB_HAVE_CXX11 */
+#endif /* IVI_HAVE_CXX11 */
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
@@ -393,7 +393,7 @@ public:
     ~Matrix()
     {
         // Test program was HERE.
-        kjb_c::free_matrix( m_matrix );
+        ivi_c::free_matrix( m_matrix );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -410,7 +410,7 @@ public:
     /*Matrix& init_identity( int rank )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_identity_matrix( &m_matrix, rank ) );
+        ETX( ivi_c::get_identity_matrix( &m_matrix, rank ) );
         return *this;
     }*/
 
@@ -478,7 +478,7 @@ public:
      * ------------------------------------------------------------------ */
 
     /**
-     * @brief   Assign contents from a kjb_c::Matrix, a C struct;
+     * @brief   Assign contents from a ivi_c::Matrix, a C struct;
      *          make a deep copy.
      * @note    Consider using a shallow copy and swap() instead of
      *          assignment, to prevent unnecessary deep copying.
@@ -493,20 +493,20 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
-     * @brief   Assign contents from a kjb::Matrix, a C++ object.
+     * @brief   Assign contents from a ivi::Matrix, a C++ object.
      * @note    Consider using swap() instead of assignment, to prevent
      *          unnecessary deep copying.
      */
     Matrix& operator=(const Matrix& src)
     {
         // Test program was HERE.
-        // call assignment operator for kjb_c::Matrix
+        // call assignment operator for ivi_c::Matrix
         return operator=( *src.m_matrix );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
     /**
      * @brief   Move assignment
      */
@@ -515,12 +515,12 @@ public:
         if(this == &other)
             return *this;
 
-        kjb_c::free_matrix( m_matrix );
+        ivi_c::free_matrix( m_matrix );
         m_matrix = other.m_matrix;
         other.m_matrix = 0;
         return *this;
     }
-#endif /* KJB_HAVE_CXX11 */
+#endif /* IVI_HAVE_CXX11 */
 
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -584,7 +584,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
-     * @brief   Get pointer to the underlying kjb_c::Matrix C struct.
+     * @brief   Get pointer to the underlying ivi_c::Matrix C struct.
      * @warning:  This should only be used if you know what you're doing.  generally, it should only be used to write wrapper functions for c functions.
      */
     Impl_type*& get_underlying_representation_with_guilt()
@@ -595,7 +595,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
-     * @brief   Get const pointer to the underlying kjb_c::Matrix C struct.
+     * @brief   Get const pointer to the underlying ivi_c::Matrix C struct.
      */
     const Impl_type* get_c_matrix() const
     {
@@ -617,7 +617,7 @@ public:
      */
     Matrix& realloc(int new_rows, int new_cols)
     {
-        ETX(kjb_c::get_target_matrix(&m_matrix, new_rows, new_cols));
+        ETX(ivi_c::get_target_matrix(&m_matrix, new_rows, new_cols));
 
         return *this;
     }
@@ -652,8 +652,8 @@ public:
 
     /**
      * @brief   Invert this matrix
-     * @see     kjb_c::get_matrix_inverse()
-     * @see     kjb_c::set_matrix_inversion_options()
+     * @see     ivi_c::get_matrix_inverse()
+     * @see     ivi_c::set_matrix_inversion_options()
      * @warning may disappear -- use matrix_inverse() instead
      */
     Matrix inverse() const;
@@ -662,7 +662,7 @@ public:
 
     /**
      * @brief   Gets the absolute value of the determinant of this matrix.
-     * @see     kjb_c::get_determinant_abs()
+     * @see     ivi_c::get_determinant_abs()
      */
     double abs_of_determinant() const;
 
@@ -677,7 +677,7 @@ public:
 
     /**
      * @brief   Retrieves the diagonal of this matrix; returned as a vector.
-     * @see     kjb_c::get_determinant_abs()
+     * @see     ivi_c::get_determinant_abs()
      */
     Vec_type get_diagonal() const;
 
@@ -994,7 +994,7 @@ public:
 
     /**
      * @brief   Reads the matrix contents from a file specified by name.
-     * @see     kjb_c::read_matrix()
+     * @see     ivi_c::read_matrix()
      *
      * This routine reads the matrix contents from the specified file and
      * overwrites the current contents.
@@ -1005,14 +1005,14 @@ public:
     int read(const char* filename = 0)
     {
         // Test program was HERE.
-        return kjb_c::read_matrix( &m_matrix, filename );
+        return ivi_c::read_matrix( &m_matrix, filename );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
      * @brief   Writes the matrix contents to a file specified by name.
-     * @see     kjb_c::write_matrix_full_precision()
+     * @see     ivi_c::write_matrix_full_precision()
      *
      * If filename is NULL or the first character is null, then the output
      * is written to standard output.
@@ -1020,14 +1020,14 @@ public:
     int write( const char* filename = 0 ) const
     {
         // Test program was HERE.
-        return kjb_c::write_matrix_full_precision( m_matrix, filename );
+        return ivi_c::write_matrix_full_precision( m_matrix, filename );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
      * @brief   Writes the matrix contents to a file specified by name.
-     * @see     kjb_c::write_raw_matrix()
+     * @see     ivi_c::write_raw_matrix()
      *
      * If filename is NULL or the first character is null, then the output
      * is written to standard output.
@@ -1035,7 +1035,7 @@ public:
     int write_raw( const char* filename = 0 ) const
     {
         // Test program was HERE.
-        return kjb_c::write_raw_matrix( m_matrix, filename );
+        return ivi_c::write_raw_matrix( m_matrix, filename );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -1057,7 +1057,7 @@ public:
      */
     Matrix& operator*=(const Matrix& op2)
     {
-        ETX(kjb_c::multiply_matrices(&m_matrix, m_matrix, op2.m_matrix));
+        ETX(ivi_c::multiply_matrices(&m_matrix, m_matrix, op2.m_matrix));
         return *this;
 
     }
@@ -1086,7 +1086,7 @@ public:
     Matrix& operator*= (Value_type op2)
     {
         // Test program was HERE.
-        ETX(kjb_c::ow_multiply_matrix_by_scalar(m_matrix, op2));
+        ETX(ivi_c::ow_multiply_matrix_by_scalar(m_matrix, op2));
         return *this;
     }
 
@@ -1115,7 +1115,7 @@ public:
         if( 0 == op2 )
         {
             // Test program was HERE.
-            KJB_THROW(Divide_by_zero);
+            IVI_THROW(Divide_by_zero);
         }
         //else
         //{
@@ -1144,7 +1144,7 @@ public:
     /// @brief something luca will document eventually
     Matrix& scale_matrix_rows_by_sums()
     {
-        ETX(kjb_c::ow_scale_matrix_rows_by_sums(m_matrix));
+        ETX(ivi_c::ow_scale_matrix_rows_by_sums(m_matrix));
         return *this;
     }
 
@@ -1160,10 +1160,10 @@ public:
         // multiple of one another
         if( op2.get_num_rows() != get_num_rows() || 
                 op2.get_num_cols() != get_num_cols())
-            KJB_THROW( Dimension_mismatch );
+            IVI_THROW( Dimension_mismatch );
 
         // Test program was HERE.
-        ETX(kjb_c::ow_add_matrices(m_matrix, op2.m_matrix));
+        ETX(ivi_c::ow_add_matrices(m_matrix, op2.m_matrix));
         return *this;
     }
 
@@ -1197,10 +1197,10 @@ public:
         // multiple of one another
         if( op2.get_num_rows() != get_num_rows() || 
                 op2.get_num_cols() != get_num_cols())
-            KJB_THROW( Dimension_mismatch );
+            IVI_THROW( Dimension_mismatch );
 
         // Test program was HERE.
-        ETX(kjb_c::ow_subtract_matrices(m_matrix, op2.m_matrix));
+        ETX(ivi_c::ow_subtract_matrices(m_matrix, op2.m_matrix));
         return *this;
     }
 
@@ -1244,7 +1244,7 @@ public:
      */
     Matrix& remove_row(int row_num)
     {
-        ETX(kjb_c::remove_matrix_row(NULL, m_matrix, row_num));
+        ETX(ivi_c::remove_matrix_row(NULL, m_matrix, row_num));
         return *this;
     }
 
@@ -1256,7 +1256,7 @@ public:
      */
     Matrix& remove_column(int col_num)
     {
-        ETX(kjb_c::remove_matrix_col((kjb_c::Vector**) 0, m_matrix, col_num));
+        ETX(ivi_c::remove_matrix_col((ivi_c::Vector**) 0, m_matrix, col_num));
         return *this;
     }
 
@@ -1269,7 +1269,7 @@ public:
     Matrix& insert_zero_row(int row_num)
     {
         // resize(m_matrix->num_rows + 1, m_matrix->num_cols);
-        ETX(kjb_c::insert_zero_row_in_matrix(m_matrix, row_num));
+        ETX(ivi_c::insert_zero_row_in_matrix(m_matrix, row_num));
         return *this;
     }
     
@@ -1282,7 +1282,7 @@ public:
     Matrix& insert_zero_column(int col_num)
     {
         // resize(m_matrix->num_rows, m_matrix->num_cols + 1);
-        kjb_c::insert_zero_col_in_matrix(m_matrix, col_num);
+        ivi_c::insert_zero_col_in_matrix(m_matrix, col_num);
         return *this;
     }
 
@@ -1697,7 +1697,7 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-        return kjb_serialize(ar, *this, version);
+        return ivi_serialize(ar, *this, version);
     }
 
     friend Value_type sum_elements(const Matrix& mat);
@@ -1742,7 +1742,7 @@ void Matrix::set_row( int row, const Generic_vector& v )
     // Test program was HERE.
     using namespace boost;
 #ifdef TEST
-    BOOST_CONCEPT_ASSERT((kjb::SimpleVector<Generic_vector>));
+    BOOST_CONCEPT_ASSERT((ivi::SimpleVector<Generic_vector>));
 
     typedef typename Generic_vector::value_type Vector_value_type;
     BOOST_CONCEPT_ASSERT((Convertible<Vector_value_type, Value_type>));
@@ -1762,7 +1762,7 @@ void Matrix::set_row( int row, Iterator begin, Iterator end )
         if(it == end)
         {
             // range too short
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         operator()(row, col) = *it;
@@ -1772,7 +1772,7 @@ void Matrix::set_row( int row, Iterator begin, Iterator end )
     if(it != end)
     {
         // range too long 
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 }
 
@@ -1786,7 +1786,7 @@ void Matrix::set_col(int col, const Generic_vector& v)
     // Test program was HERE.
     using namespace boost;
 #ifdef TEST
-    BOOST_CONCEPT_ASSERT((kjb::SimpleVector<Generic_vector>));
+    BOOST_CONCEPT_ASSERT((ivi::SimpleVector<Generic_vector>));
 
     typedef typename Generic_vector::value_type Vector_value_type;
     BOOST_CONCEPT_ASSERT((Convertible<Vector_value_type, Value_type>));
@@ -1806,7 +1806,7 @@ void Matrix::set_col(int col, Iterator begin, Iterator end)
         if(it == end)
         {
             // range is too short
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         operator()(row, col) = *it;
@@ -1816,7 +1816,7 @@ void Matrix::set_col(int col, Iterator begin, Iterator end)
     if(it != end)
     {
         // range is too short
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
 }
@@ -1853,8 +1853,8 @@ inline
 Matrix create_identity_matrix( int rank )
 {
     // Test program was HERE.
-    kjb_c::Matrix* result = 0;
-    ETX( kjb_c::get_identity_matrix( &result, rank ) );
+    ivi_c::Matrix* result = 0;
+    ETX( ivi_c::get_identity_matrix( &result, rank ) );
     return Matrix(result);
 }
 
@@ -1881,8 +1881,8 @@ inline
 Matrix create_zero_matrix( int rows, int columns )
 {
     // Test program was HERE.
-    kjb_c::Matrix* result = 0;
-    ETX( kjb_c::get_zero_matrix( &result, rows, columns ) );
+    ivi_c::Matrix* result = 0;
+    ETX( ivi_c::get_zero_matrix( &result, rows, columns ) );
     return Matrix(result);
 }
 
@@ -1902,16 +1902,16 @@ Matrix create_zero_matrix( int size )
 
 /**
  * Construct a matrix with uniform random values in [0,1].  
- * Numbers are generated from kjb_rand(), which is seeded by
- * kjb_seed_rand().
+ * Numbers are generated from ivi_rand(), which is seeded by
+ * ivi_seed_rand().
  *
- * @see kjb_rand, kjb_seed_rand
+ * @see ivi_rand, ivi_seed_rand
  */
 inline
 Matrix create_random_matrix( int num_rows, int num_cols )
 {
-    kjb_c::Matrix* c_mat = NULL;
-    c_mat = kjb_c::create_random_matrix(num_rows, num_cols);
+    ivi_c::Matrix* c_mat = NULL;
+    c_mat = ivi_c::create_random_matrix(num_rows, num_cols);
     return Matrix(c_mat);
 }
 
@@ -1919,10 +1919,10 @@ Matrix create_random_matrix( int num_rows, int num_cols )
 
 /**
  * Construct a matrix with gaussian random values.
- * Numbers are generated from kjb_rand(), which is seeded by
- * kjb_seed_rand().
+ * Numbers are generated from ivi_rand(), which is seeded by
+ * ivi_seed_rand().
  *
- * @see gauss_rand, kjb_seed_rand
+ * @see gauss_rand, ivi_seed_rand
  */
 Matrix create_gauss_random_matrix( int num_rows, int num_cols );
 
@@ -1949,9 +1949,9 @@ Matrix create_diagonal_matrix(const Matrix::Vec_type& diagonal, size_t n);
 inline
 Matrix create_diagonal_matrix(int size, Matrix::Value_type a)
 {
-    kjb_c::Matrix* result = 0;
-    kjb_c::get_identity_matrix(&result, size);
-    kjb_c::ow_multiply_matrix_by_scalar(result, a);
+    ivi_c::Matrix* result = 0;
+    ivi_c::get_identity_matrix(&result, size);
+    ivi_c::ow_multiply_matrix_by_scalar(result, a);
     return Matrix(result);
 }
 
@@ -2249,9 +2249,9 @@ Matrix matrix_inverse( const Matrix& op1 );
 inline
 Matrix matrix_transpose( const Matrix& op1 )
 {
-    kjb_c::Matrix* kjb_matrix = 0;
-    ETX( kjb_c::get_matrix_transpose( &kjb_matrix, op1.get_c_matrix() ) );
-    return Matrix(kjb_matrix);
+    ivi_c::Matrix* ivi_matrix = 0;
+    ETX( ivi_c::get_matrix_transpose( &ivi_matrix, op1.get_c_matrix() ) );
+    return Matrix(ivi_matrix);
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -2265,8 +2265,8 @@ inline
 Matrix abs(const Matrix& mat)
 {
     // Test program was HERE.
-    kjb_c::Matrix* result = 0;
-    ETX( kjb_c::get_abs_of_matrix( &result, mat.get_c_matrix() ) );
+    ivi_c::Matrix* result = 0;
+    ETX( ivi_c::get_abs_of_matrix( &result, mat.get_c_matrix() ) );
     return Matrix(result);
 }
 
@@ -2277,10 +2277,10 @@ inline
 double sum_squared_elements(const Matrix& mat)
 {
     // Test program was HERE.
-    kjb_c::Matrix* result = 0;
-    ETX( kjb_c::multiply_matrices_ew( &result, mat.get_c_matrix(), mat.get_c_matrix() ) );
-    double res = kjb_c::sum_matrix_elements(result);
-    kjb_c::free_matrix(result);
+    ivi_c::Matrix* result = 0;
+    ETX( ivi_c::multiply_matrices_ew( &result, mat.get_c_matrix(), mat.get_c_matrix() ) );
+    double res = ivi_c::sum_matrix_elements(result);
+    ivi_c::free_matrix(result);
 
     return res;
 }
@@ -2291,7 +2291,7 @@ double sum_squared_elements(const Matrix& mat)
 inline
 Matrix::Value_type sum_elements(const Matrix& mat)
 {
-    return kjb_c::sum_matrix_elements(mat.m_matrix);
+    return ivi_c::sum_matrix_elements(mat.m_matrix);
 }
     
 /**
@@ -2300,8 +2300,8 @@ Matrix::Value_type sum_elements(const Matrix& mat)
 inline
 Matrix get_squared_elements(const Matrix& mat)
 {
-    kjb_c::Matrix* result = 0;
-    ETX( kjb_c::multiply_matrices_ew( &result, mat.get_c_matrix(), mat.get_c_matrix() ) );
+    ivi_c::Matrix* result = 0;
+    ETX( ivi_c::multiply_matrices_ew( &result, mat.get_c_matrix(), mat.get_c_matrix() ) );
     return Matrix(result);
 }
     
@@ -2327,7 +2327,7 @@ inline
 Matrix::Value_type min(const Matrix& mat)
 {
     // Test program was HERE.
-    return kjb_c::min_matrix_element(mat.get_c_matrix());
+    return ivi_c::min_matrix_element(mat.get_c_matrix());
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -2339,7 +2339,7 @@ inline
 Matrix::Value_type max(const Matrix& mat)
 {
     // Test program was HERE.
-    return kjb_c::max_matrix_element(mat.get_c_matrix());
+    return ivi_c::max_matrix_element(mat.get_c_matrix());
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -2348,7 +2348,7 @@ Matrix::Value_type max(const Matrix& mat)
  * @brief   Display matrix contents in an ASCII format.
  *
  * This routine is mostly for debugging; consider one of the many
- * KJB output routines for more output in a more standardized form.
+ * IVI output routines for more output in a more standardized form.
  */
 std::ostream& operator<<(std::ostream& out, const Matrix& m);
 
@@ -2417,7 +2417,7 @@ inline Matrix outer_product(const Vector& v1, const Vector& v2)
  * @return A vector of length m.get_num_rows() whose ith element is
  *          m(i,0) + m(i,1) + ...
  *
- * This is a thin wrapper around kjb_c::sum_matrix_cols.
+ * This is a thin wrapper around ivi_c::sum_matrix_cols.
  */
 Matrix::Vec_type sum_matrix_cols( const Matrix& );
 
@@ -2429,7 +2429,7 @@ Matrix::Vec_type sum_matrix_cols( const Matrix& );
  * @return A vector of length m.get_num_cols() whose ith element is
  *          m(0,i) + m(1,i) + ... 
  *
- * This is a thin wrapper around kjb_c::sum_matrix_rows.
+ * This is a thin wrapper around ivi_c::sum_matrix_rows.
  */
 Matrix::Vec_type sum_matrix_rows( const Matrix& );
 
@@ -2508,7 +2508,7 @@ Matrix tile_matrix(int tehnum,unsigned m,unsigned n);
 /** @brief  Non-member swap function. */
 inline void swap(Matrix& m1, Matrix& m2) { m1.swap(m2); }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif
 

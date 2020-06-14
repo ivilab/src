@@ -1,5 +1,5 @@
 
-/* $Id: mat_arith_ew.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: mat_arith_ew.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     Matrix* lr_mp = NULL;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {

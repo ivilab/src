@@ -1,4 +1,4 @@
-/* $Id: gpu_cuda.h 10604 2011-09-29 19:50:28Z predoehl $ */
+/* $Id: gpu_cuda.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== }}}*/
 
-#ifndef KJB_CUDA_H
-#define KJB_CUDA_H
+#ifndef IVI_CUDA_H
+#define IVI_CUDA_H
 
 #include <string>
 #include <vector>
@@ -29,7 +29,7 @@
 #include <m_cpp/m_vector.h>
 #include <l_cpp/l_exception.h>
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 #include <cuda.h>
 #if CUDA_VERSION < 3020
 typedef unsigned int Cuda_size_t;
@@ -42,19 +42,19 @@ typedef size_t Cuda_size_t;
 #undef minor
 
 
-namespace kjb
+namespace ivi
 {
 namespace gpu
 {
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 // "On error throw exception" -- in this case, "error" is ANY nonzero value.
 #define CU_ETX(a) \
 { \
     CUresult err = a; \
     if(err) \
     { \
-        throw ::kjb::gpu::Cuda_error(err, __FILE__, __LINE__); \
+        throw ::ivi::gpu::Cuda_error(err, __FILE__, __LINE__); \
     } \
 }
 
@@ -71,12 +71,12 @@ namespace gpu
 #endif
 
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 const char* get_cuda_error_string(const CUresult& err);
 #endif
 
-#ifdef KJB_HAVE_CUDA
-class Cuda_error : public kjb::Runtime_error 
+#ifdef IVI_HAVE_CUDA
+class Cuda_error : public ivi::Runtime_error 
 {
 public:
     Cuda_error(CUresult error_code, const char* file, int line) :
@@ -112,7 +112,7 @@ private:
  *
  * @author Kyle Simek
  */
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 struct Cuda_compute_capability
 {
     Cuda_compute_capability() :
@@ -164,7 +164,7 @@ struct Cuda_compute_capability
  *
  * @author Kyle Simek
  */
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 class Cuda_device
 {
 public:
@@ -367,7 +367,7 @@ private:
 #endif
 
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 class Cuda
 {
 public:
@@ -416,7 +416,7 @@ private:
     {
         if(initialized_)
         {
-            KJB_THROW_2(Runtime_error, "Cuda already initialized, cannot reinitialize.");
+            IVI_THROW_2(Runtime_error, "Cuda already initialized, cannot reinitialize.");
         }
 
         initialized_ = true;
@@ -429,7 +429,7 @@ private:
 #endif
 
 // TODO: how to handle contexts?  C-style handles it pretty well currently.  what added value do we get?  automatic garbage collection; RAII semantics.  so just have a really simple context, whhich destroys itself and can return the CUcontext object...  Not copyable, not default constructible.
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 class Cuda_context
 {
 public:
@@ -502,7 +502,7 @@ private:
  *
  * @author Kyle simek
  */
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 class Cuda_base_module
 {
 public:
@@ -538,7 +538,7 @@ private:
  * Loads and stores the "Reduce" cuda module, and provides an interface
  * to its functionality.
  */
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 class Cuda_reduce_module : public Cuda_base_module
 {
 private:
@@ -546,7 +546,7 @@ typedef Cuda_base_module Base;
 
     /// This maps types to array indeces in type_strings
     template<class T>
-    int type_index() { KJB_THROW(Not_implemented); }
+    int type_index() { IVI_THROW(Not_implemented); }
 
     /**************
      * ADDING SUPPORT FOR NEW TYPES
@@ -616,7 +616,7 @@ public:
     double reduce(T* h_in, int N);
 
     /**
-     * Sum a kjb array of size N store in main memory at location h_in.
+     * Sum a ivi array of size N store in main memory at location h_in.
      *
      * This is useful when the data already resides in main memory, but is 
      * slower than the version that takes a CUdeviceptr, because it requires
@@ -625,16 +625,16 @@ public:
      * @note GPU operations use floats, but Vector uses double so some precision will be lost, 
      * and it will cost some time to convert all values to float before copying to the GPU device.
      */
-    float reduce(const kjb::Vector& , int /*N*/)
+    float reduce(const ivi::Vector& , int /*N*/)
     {
         // TODO
-        KJB_THROW(Not_implemented);
+        IVI_THROW(Not_implemented);
     }
 
     float reduce(const std::vector<float>&, int /*N*/)
     {
         // TODO
-        KJB_THROW(Not_implemented);
+        IVI_THROW(Not_implemented);
     }
 
     double tex_reduce(CUarray da_in, int width, int height);
@@ -703,13 +703,13 @@ private:
 #endif
 
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 template <class T>
 double Cuda_reduce_module::reduce(CUdeviceptr d_in, int N)
 {
     using boost::scoped_array;
-    using kjb_c::kjb_debug_level;
-    using kjb_c::add_error;
+    using ivi_c::ivi_debug_level;
+    using ivi_c::add_error;
 
     CUcontext ctx;
     cuCtxAttach(&ctx, 0);
@@ -819,13 +819,13 @@ cleanup:
 }
 #endif
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 template <class T>
 double Cuda_reduce_module::reduce(T* h_in, int N)
 {
 
-    using kjb_c::kjb_debug_level;
-    using kjb_c::add_error;
+    using ivi_c::ivi_debug_level;
+    using ivi_c::add_error;
 
     double result;
     CUresult err = CUDA_SUCCESS;
@@ -872,7 +872,7 @@ cleanup:
 #endif
 
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 /* *************
  * Support for float 
  * *************/
@@ -882,7 +882,7 @@ template<>
 int Cuda_reduce_module::type_index<float>();
 #endif
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 /* *************
  * Support for unsigned char
  * *************/
@@ -900,7 +900,7 @@ int Cuda_reduce_module::type_index<unsigned char>();
  * UTILITY FUNCTIONS
  * ************/
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 /**
  * Create a cuda array and initialize it with the contents of a matrix.  Values will be cast to float.  
  *
@@ -1064,7 +1064,7 @@ CUdeviceptr create_cuda_pitch(const Matrix_type& m, size_t& pitch, bool flip_y)
 
 //const size_t Cuda_reduce_module MAX_THREADS = 256;
 //const size_t Cuda_reduce_module MAX_BLOCKS = 64;
-} // namespace kjb
+} // namespace ivi
 } // namespace gpu
 
 

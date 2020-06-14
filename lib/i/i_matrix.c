@@ -1,5 +1,5 @@
 
-/* $Id: i_matrix.c 15377 2013-09-19 21:23:28Z predoehl $ */
+/* $Id: i_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -46,7 +46,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int matrix_vector_to_image(const Matrix_vector* mvp, KJB_image** out_ipp)
+int matrix_vector_to_image(const Matrix_vector* mvp, IVI_image** out_ipp)
 {
     Matrix* mp_list[ 3 ];
 
@@ -96,7 +96,7 @@ int matrix_vector_to_image(const Matrix_vector* mvp, KJB_image** out_ipp)
  * -----------------------------------------------------------------------------
 */
 
-int image_to_matrix_vector(const KJB_image* ip, Matrix_vector** mvpp)
+int image_to_matrix_vector(const IVI_image* ip, Matrix_vector** mvpp)
 {
     int      i, j, num_rows, num_cols;
     Pixel*   ip_row_pos;
@@ -155,9 +155,9 @@ int image_to_matrix_vector(const KJB_image* ip, Matrix_vector** mvpp)
  * -----------------------------------------------------------------------------
 */
 
-int rgb_matrix_array_to_image(Matrix* mp_list[ 3 ], KJB_image** out_ipp)
+int rgb_matrix_array_to_image(Matrix* mp_list[ 3 ], IVI_image** out_ipp)
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j;
     Pixel*     out_ip_row_pos;
     double*    r_pos;
@@ -230,7 +230,7 @@ int rgb_matrix_array_to_image(Matrix* mp_list[ 3 ], KJB_image** out_ipp)
  * -----------------------------------------------------------------------------
 */
 
-int image_to_rgb_matrix_array(const KJB_image* ip, Matrix* mp_list[ 3 ])
+int image_to_rgb_matrix_array(const IVI_image* ip, Matrix* mp_list[ 3 ])
 {
     Matrix** mp_list_pos;
     int      i, j, num_rows, num_cols;
@@ -301,7 +301,7 @@ int image_to_rgb_matrix_array(const KJB_image* ip, Matrix* mp_list[ 3 ])
 int matrix_to_bw_image
 (
     const Matrix* mp,
-    KJB_image**   out_ipp
+    IVI_image**   out_ipp
 )
 {
 #define MODULAR_IMPLEMENTATION
@@ -313,7 +313,7 @@ int matrix_to_bw_image
 #else
     /* Faster, but do we care? */
 
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j;
     Pixel*     out_ip_row_pos;
     double*    pos;
@@ -389,7 +389,7 @@ int matrix_to_bw_image
 int matrix_to_max_contrast_8bit_bw_image
 (
     const Matrix* mp,
-    KJB_image**   out_ipp
+    IVI_image**   out_ipp
 )
 {
     int iii, jjj, rc;
@@ -453,10 +453,10 @@ int rgb_matrices_to_image
     const Matrix* r_mp,
     const Matrix* g_mp,
     const Matrix* b_mp,
-    KJB_image**   out_ipp
+    IVI_image**   out_ipp
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j;
     Pixel*     out_ip_row_pos;
     double*    r_pos;
@@ -537,7 +537,7 @@ int rgb_matrices_to_image
 
 int image_to_matrix
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Matrix**         mpp
 )
 {
@@ -569,7 +569,7 @@ int image_to_matrix
 
 int image_to_matrix_2
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     double           r_weight,
     double           g_weight,
     double           b_weight,
@@ -651,7 +651,7 @@ int image_to_matrix_2
 
 int bw_image_to_matrix
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Matrix**         mpp
 )
 {
@@ -683,7 +683,7 @@ int bw_image_to_matrix
 
 int image_to_rgb_matrices
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Matrix**         r_mpp,
     Matrix**         g_mpp,
     Matrix**         b_mpp

@@ -3,7 +3,7 @@
 #include <iostream>
 
 using namespace DTLib;
-using namespace kjb;
+using namespace ivi;
 int main(int argc, char ** argv)
 {
     if(argc != 4)
@@ -22,7 +22,7 @@ int main(int argc, char ** argv)
     ochi.append("_chi");
     othi.append("_thi");
 
-    kjb::Image img(img_name.c_str());
+    ivi::Image img(img_name.c_str());
     CImg<FloatCHistogramPtr> * m_pTextonHistoImg;
     CImg<FloatCHistogramPtr> * ColorHist;
     Compute_All_Histograms(img, &m_pTextonHistoImg, &ColorHist);

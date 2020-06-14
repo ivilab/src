@@ -1,5 +1,5 @@
 
-/* $Id: mat_metric.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: mat_metric.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     Matrix* second_mp        = NULL;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -54,13 +54,13 @@ int main(int argc, char **argv)
 
     if (is_interactive())
     {
-        kjb_set_verbose_level(2);
-        kjb_set_debug_level(2);
+        ivi_set_verbose_level(2);
+        ivi_set_debug_level(2);
     }
     else
     {
-        kjb_set_verbose_level(0);
-        kjb_set_debug_level(0);
+        ivi_set_verbose_level(0);
+        ivi_set_debug_level(0);
     }
 
     for (count=0; count<num_tries; count++)

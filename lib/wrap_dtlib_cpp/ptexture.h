@@ -22,7 +22,7 @@ namespace DTLib {
                             CImg<BYTE>& NMSCombImg,
                             CImg<float>& ThetaStarImg,
                             CImg<float>& TextureScaleImg,
-                            CImg<kjb_int32>& TextonMembershipImg,
+                            CImg<ivi_int32>& TextonMembershipImg,
                             const int& K,
                             const float& DiskMiddleBandThickness,
                             const float& Tau, const float& Beta,

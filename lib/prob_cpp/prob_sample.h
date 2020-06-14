@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_sample.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: prob_sample.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PROB_SAMPLE_H_INCLUDED
 #define PROB_SAMPLE_H_INCLUDED
@@ -39,7 +39,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /// Random seed used to initialize the random number generator
 extern const unsigned int DEFAULT_SEED;
@@ -209,7 +209,7 @@ inline double sample(const Inverse_chi_squared_distribution& dist)
 inline double sample(const Geometric_distribution& dist)
 {
 #warning "sample(Geometric_distribution) not implemented in Boost prior to 1.034"
-    KJB_THROW(Not_implemented);
+    IVI_THROW(Not_implemented);
 }
 #else
 inline double sample(const Geometric_distribution& dist)
@@ -219,7 +219,7 @@ inline double sample(const Geometric_distribution& dist)
 #if BOOST_VERSION >= 104700
     double dist_param = dist.success_fraction();
 #else /*  BOOST_VERSION >= 103400 */
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     double dist_param = 1.0-dist.success_fraction();
 #endif
 
@@ -248,7 +248,7 @@ T sample(const Categorical_distribution<T>& dist)
 
     if(dist.cdf_.empty())
     {
-        KJB_THROW_2(Runtime_error, "Attempting to sample from an empty set.");
+        IVI_THROW_2(Runtime_error, "Attempting to sample from an empty set.");
     }
 
     ASSERT(dist.cdf_.size() == dist.db.size()); // init_cdf() was called
@@ -283,7 +283,7 @@ template<class Iterator, class distance_type>
 inline
 Iterator element_uar(Iterator first, distance_type size)
 {
-    int dist = kjb::sample(kjb::Categorical_distribution<size_t>(0, size - 1, 1));
+    int dist = ivi::sample(ivi::Categorical_distribution<size_t>(0, size - 1, 1));
     Iterator p = first;
     std::advance(p, dist);
 
@@ -316,15 +316,15 @@ typename Distribution_traits<Mixture_distribution<Distribution> >::type
  * @brief   Sample uniformly from the surface of a unit-sphere in D-dimensional
  *          euclidean space
  */
-template <size_t D> inline kjb::Vector_d<D> sample(const Uniform_sphere_distribution<D>& /* dist */)
+template <size_t D> inline ivi::Vector_d<D> sample(const Uniform_sphere_distribution<D>& /* dist */)
 {
-    kjb::Vector_d<D> result;
+    ivi::Vector_d<D> result;
 
     static const Gaussian_distribution norm_dist(0, 1);
 
     for(size_t d = 0; d < D; ++d)
     {
-        result[d] = kjb::sample(norm_dist);
+        result[d] = ivi::sample(norm_dist);
     }
 
     return result.normalize();
@@ -334,14 +334,14 @@ template <size_t D> inline kjb::Vector_d<D> sample(const Uniform_sphere_distribu
 /**
  * Sample n i.i.d. D-dimensional unit vectors from a Von-mises fisher distribution.
  * 
- * @param it output iterator, stores a collection of kjb::Vector_d<D>
+ * @param it output iterator, stores a collection of ivi::Vector_d<D>
  */
 template <size_t D, class Vector_d_iterator>
 inline 
 void sample(const Von_mises_fisher_distribution<D>& dist, size_t n, Vector_d_iterator it)
 {
     size_t m = D;
-    static const kjb::Vector_d<D> z_hat = kjb::create_unit_vector<D>(D-1);
+    static const ivi::Vector_d<D> z_hat = ivi::create_unit_vector<D>(D-1);
 
     const Vector_d<D>& mu_ = dist.mu();
     double kappa_ = dist.kappa();
@@ -352,7 +352,7 @@ void sample(const Von_mises_fisher_distribution<D>& dist, size_t n, Vector_d_ite
     // between two directions in any dimension. I haven't tested it as
     // thoroughly as it needs, but I'm pretty confident it's correct.
     //                                       -- Ernesto [2014/10/28]
-    //kjb::Quaternion q; q.set_from_directions(z_hat, mu_);
+    //ivi::Quaternion q; q.set_from_directions(z_hat, mu_);
     Matrix_d<D, D> R = geometry::get_rotation_matrix(z_hat, mu_);
 
     double b = (-2*kappa_ + sqrt(4*kappa_*kappa_ + (m-1)*(m-1)))/(m-1);
@@ -369,16 +369,16 @@ void sample(const Von_mises_fisher_distribution<D>& dist, size_t n, Vector_d_ite
             // distributed as f(w) = k * exp(kappa*w) ; for w \in [-1, 1], zero elsewhere
             // see Sungkyu Jung's treatment:.
             // http://www.stat.pitt.edu/sungkyu/software/randvonMisesFisher3.pdf
-            double Z = kjb::sample(kjb::Beta_distribution((m-1)/2,(m-1)/2));
+            double Z = ivi::sample(ivi::Beta_distribution((m-1)/2,(m-1)/2));
             W = (1-(1+b)*Z)/(1-(1-b)*Z);
-            U = kjb::sample(kjb::Uniform_distribution());
+            U = ivi::sample(ivi::Uniform_distribution());
         } while(kappa_*W + (m-1)*log(1-x0*W) - c < log(U));
 
 
-        kjb::Vector_d<D-1> subdir = kjb::sample(subdir_dist);
+        ivi::Vector_d<D-1> subdir = ivi::sample(subdir_dist);
         subdir *= sqrt(1- W*W);
 
-        kjb::Vector_d<D> dir;
+        ivi::Vector_d<D> dir;
         std::copy(subdir.begin(), subdir.end(), dir.begin());
         dir.back() = W;
 
@@ -532,6 +532,6 @@ inline std::pair<Vector, double> sample
     return std::make_pair(mean, variance);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*PROB_SAMPLE_H_INCLUDED */

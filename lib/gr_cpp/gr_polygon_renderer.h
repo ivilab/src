@@ -1,5 +1,5 @@
 
-/* $Id: gr_polygon_renderer.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_polygon_renderer.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #include "gr_cpp/gr_polygon.h"
 #include "gr_cpp/gr_camera.h"
 
-namespace kjb {
+namespace ivi {
 
 class GL_Polygon_Renderer
 {

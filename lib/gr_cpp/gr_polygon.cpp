@@ -1,4 +1,4 @@
-/* $Id: gr_polygon.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_polygon.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -26,7 +26,7 @@
 #include <gr_cpp/gr_polygon_renderer.h>
 
 
-using namespace kjb;
+using namespace ivi;
 
 /** The constructed polygon has no points. */
 Polygon::Polygon()
@@ -67,13 +67,13 @@ Polygon::Polygon(const Polygon& p)
  *
  * @param  fname  Input file to read this polygon from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
-Polygon::Polygon(const char* fname) throw (kjb::Illegal_argument, kjb::IO_error)
+Polygon::Polygon(const char* fname) throw (ivi::Illegal_argument, ivi::IO_error)
 : Abstract_renderable(), Readable(), Writeable()
 {
-    kjb::Readable::read(fname);
+    ivi::Readable::read(fname);
 }
 
 
@@ -82,10 +82,10 @@ Polygon::Polygon(const char* fname) throw (kjb::Illegal_argument, kjb::IO_error)
  *
  * @param  in  Input stream to read this polygon from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
-Polygon::Polygon(std::istream& in) throw (kjb::Illegal_argument, kjb::IO_error)
+Polygon::Polygon(std::istream& in) throw (ivi::Illegal_argument, ivi::IO_error)
 : Abstract_renderable(), Readable(), Writeable()
 {
     read(in);
@@ -151,12 +151,12 @@ Polygon* Polygon::clone() const
 /** 
  * @param  in  Input stream to read the members of this polygon from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments to read from the file.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments to read from the file.
  */
- void Polygon::read(std::istream& in) throw (kjb::IO_error, kjb::Illegal_argument)
+ void Polygon::read(std::istream& in) throw (ivi::IO_error, ivi::Illegal_argument)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     ASSERT(sizeof(double) == sizeof(uint64_t));
 
@@ -171,7 +171,7 @@ Polygon* Polygon::clone() const
         throw IO_error("Could not read number of points");
     }
 
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32(&(N));
     }
@@ -192,7 +192,7 @@ Polygon* Polygon::clone() const
             throw IO_error("Could not read points");
         }
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -220,7 +220,7 @@ Polygon* Polygon::clone() const
             throw IO_error("Could not read normal");
         }
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -247,7 +247,7 @@ Polygon* Polygon::clone() const
             throw IO_error("Could not read centroid");
         }
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -264,7 +264,7 @@ Polygon* Polygon::clone() const
     
     update_centroid();
     in.read((char*)&normal_flipped, sizeof(unsigned int));
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32((unsigned int*)&(normal_flipped));
     }
@@ -282,11 +282,11 @@ Polygon* Polygon::clone() const
  *
  * @param  out  Output stream to write the members of this polygon to.
  *
- * @throw  kjb::IO_error  Could not write to @em out.
+ * @throw  ivi::IO_error  Could not write to @em out.
  */
-void Polygon::write(std::ostream& out) const throw (kjb::IO_error)
+void Polygon::write(std::ostream& out) const throw (ivi::IO_error)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     ASSERT(sizeof(double) == sizeof(uint64_t));
 
@@ -295,7 +295,7 @@ void Polygon::write(std::ostream& out) const throw (kjb::IO_error)
     // Number of points.
     unsigned int N = pts.size();
 
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32(&(N));
     }
@@ -315,7 +315,7 @@ void Polygon::write(std::ostream& out) const throw (kjb::IO_error)
         z = pts[i](2);
         w = pts[i](3);
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -339,7 +339,7 @@ void Polygon::write(std::ostream& out) const throw (kjb::IO_error)
     {
         if(normal.get_length() == 0)
         {
-            KJB_THROW_2(IO_error, "Invalid normal");
+            IVI_THROW_2(IO_error, "Invalid normal");
         }
 
         x = normal(0);
@@ -347,7 +347,7 @@ void Polygon::write(std::ostream& out) const throw (kjb::IO_error)
         z = normal(2);
         w = normal(3);
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -379,7 +379,7 @@ void Polygon::write(std::ostream& out) const throw (kjb::IO_error)
         z = centroid(2);
         w = centroid(3);
 
-        if(! kjb_is_bigendian() )
+        if(! ivi_is_bigendian() )
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -398,7 +398,7 @@ void Polygon::write(std::ostream& out) const throw (kjb::IO_error)
     }
 
     unsigned int nf = normal_flipped;
-    if(! kjb_is_bigendian() )
+    if(! ivi_is_bigendian() )
     {
         bswap_u32((unsigned int*)&(nf));
     }
@@ -415,7 +415,7 @@ void Polygon::transform(const Matrix& M) throw (Illegal_argument)
 {
     if(M.get_num_rows() != 4 && M.get_num_cols() != 4)
     {
-        KJB_THROW_2(Illegal_argument, "Transformation matrix not homogeneous");
+        IVI_THROW_2(Illegal_argument, "Transformation matrix not homogeneous");
     }
 
     unsigned int N = pts.size();
@@ -464,11 +464,11 @@ void Polygon::add_point(const Vector& pt) throw (Illegal_argument)
 {
     if(pt.get_length() != 4)
     {
-        KJB_THROW_2(Illegal_argument, "Point to add not homogeneous");
+        IVI_THROW_2(Illegal_argument, "Point to add not homogeneous");
     }
     else if(fabs(pt[3]) < 1.0e-10)
     {
-        KJB_THROW_2(Illegal_argument, "Homogeneous coordinate is zero");
+        IVI_THROW_2(Illegal_argument, "Homogeneous coordinate is zero");
     }
 
     unsigned int N = pts.size();
@@ -479,7 +479,7 @@ void Polygon::add_point(const Vector& pt) throw (Illegal_argument)
     {
         if(normal.get_length() == 0)
         {
-            KJB_THROW_2(IO_error, "Invalid normal");
+            IVI_THROW_2(IO_error, "Invalid normal");
         }
 
         double dp1 = dot(normal, pts[0]);
@@ -487,7 +487,7 @@ void Polygon::add_point(const Vector& pt) throw (Illegal_argument)
 
         if(fabs(dp1 - dp2) > 1.0e-4)
         {
-            KJB_THROW_2(Illegal_argument, "Point to add not in the polygon's plane");
+            IVI_THROW_2(Illegal_argument, "Point to add not in the polygon's plane");
         }
     }
     else if(N == 2)
@@ -646,70 +646,70 @@ void Polygon::update_centroid()
 
 void Polygon::wire_render() const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polygon_Renderer::wire_render(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
 
 void Polygon::wire_occlude_render() const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polygon_Renderer::wire_occlude_render(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
 
 void Polygon::solid_render() const
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polygon_Renderer::solid_render(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
 
 void Polygon::project()
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polygon_Renderer::project(*this);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
 
 void Polygon::project(const Matrix & M, double width, double height)
 {
-    using namespace kjb;
+    using namespace ivi;
     switch(_rendering_framework)
     {
         case RI_OPENGL:
             GL_Polygon_Renderer::project(*this, M, width, height);
             break;
         default:
-            throw KJB_error("Rendering framework not supported");
+            throw IVI_error("Rendering framework not supported");
             break;
     }
 }
@@ -721,13 +721,13 @@ void Polygon::project(const Matrix & M, double width, double height)
  *
  * @params  plane_params  Vector to store the plane coefficients in.
  *
- * @throw  KJB_error  Polygon has fewer than 3 points.
+ * @throw  IVI_error  Polygon has fewer than 3 points.
  */
 void Polygon::fit_plane(Vector& plane_params) const
 {
     if(pts.size() < 3)
     {
-        throw KJB_error("Polygon has fewer than 3 points");
+        throw IVI_error("Polygon has fewer than 3 points");
     }
     else
     {
@@ -753,7 +753,7 @@ void Polygon::fit_plane(Vector& plane_params) const
  *
  * @return  true if convex, false otherwise.
  *
- * @throw  KJB_error  Polygon has fewer than 3 points.
+ * @throw  IVI_error  Polygon has fewer than 3 points.
  */
 bool Polygon::check_convexity() const
 {
@@ -762,7 +762,7 @@ bool Polygon::check_convexity() const
 
     if(N < 3)
     {
-        throw KJB_error("Polygon has fewer than 3 points");
+        throw IVI_error("Polygon has fewer than 3 points");
     }
 
     Vector c(3);
@@ -817,13 +817,13 @@ bool Polygon::check_convexity() const
  *
  * @return  the area of the polygon.
  *
- * @throw  KJB_error  Polygon is not convex.
+ * @throw  IVI_error  Polygon is not convex.
  */
 double Polygon::compute_area() const
 {
     if(!check_convexity())
     {
-        throw KJB_error("Polygon is not convex");
+        throw IVI_error("Polygon is not convex");
     }
 
     Vector a(3);
@@ -881,7 +881,7 @@ bool Polygon::check_polygon_is_right_triangle(double tolerance) const
 
     if(N < 3)
     {
-        throw KJB_error("Polygon has fewer than 3 points");
+        throw IVI_error("Polygon has fewer than 3 points");
     }
     if(N > 3)
     {

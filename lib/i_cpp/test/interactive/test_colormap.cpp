@@ -1,4 +1,4 @@
-/* $Id: test_colormap.cpp 17413 2014-08-29 01:20:58Z predoehl $ */
+/* $Id: test_colormap.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -27,8 +27,8 @@ void test_colormap(const std::string& name)
     const size_t width = 200;
     const size_t height = 200;
 
-    kjb::Colormap map(name);
-    kjb::Image img(width, height);
+    ivi::Colormap map(name);
+    ivi::Image img(width, height);
 
     for(size_t row = 0; row < height; row++)
     {

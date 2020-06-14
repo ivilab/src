@@ -27,7 +27,7 @@
 #include <m_cpp/m_matrix.h>
 #include <m_cpp/m_vector.h>
 
-using namespace kjb;
+using namespace ivi;
 
 void test_blr
 (
@@ -172,7 +172,7 @@ int main(int argc, char** argv)
     // constrcut omega
     for(int i = 0; i < n; i++)
     {
-        double coef = 100.0 * kjb_c::kjb_rand();
+        double coef = 100.0 * ivi_c::ivi_rand();
         for(int j = 0; j < T; j++)
         {
             X(count, 0) = 1.0;

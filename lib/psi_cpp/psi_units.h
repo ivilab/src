@@ -1,4 +1,4 @@
-/* $Id: psi_units.h 10707 2011-09-29 20:05:56Z predoehl $ */
+/* $Id: psi_units.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 #ifndef PSI_UNITS_VERSION_1_H
 #define PSI_UNITS_VERSION_1_H
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -42,6 +42,6 @@ enum Unit_type { UNKNOWN_UNIT,  // error/bug
 
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 
 #endif

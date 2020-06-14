@@ -12,7 +12,7 @@
  * these terms reverse their senses.
  */
 /*
- * $Id: dcel.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: dcel.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -86,9 +86,9 @@
 
 namespace
 {
-using kjb::qd::Doubly_connected_edge_list;
-using kjb::qd::RatPoint;
-using kjb::qd::RatPoint_line_segment;
+using ivi::qd::Doubly_connected_edge_list;
+using ivi::qd::RatPoint;
+using ivi::qd::RatPoint_line_segment;
 
 
 // This routine is slow but safe to call even when dcel is temporarily broken,
@@ -122,21 +122,21 @@ std::set< RatPoint > vertices_valid(const Doubly_connected_edge_list& dcel)
             = dcel.get_vertex_table().at(i);
         if (!  vertices.insert(v.location).second)
         {
-            KJB(ASSERT(vertices.size() == i));
-            kjb_c::set_error("Duplicate vertex location in vertex %u", i);
+            IVI(ASSERT(vertices.size() == i));
+            ivi_c::set_error("Duplicate vertex location in vertex %u", i);
             vertices.clear();
             break;
         }
-        KJB(ASSERT(vertices.size() == 1+i));
+        IVI(ASSERT(vertices.size() == 1+i));
         if (v.outedge >= dcel.get_edge_table().size())
         {
-            kjb_c::set_error("Invalid outedge number in vertex %u", i);
+            ivi_c::set_error("Invalid outedge number in vertex %u", i);
             vertices.clear();
             break;
         }
         if (dcel.get_edge_table().at(v.outedge).origin != i)
         {
-            kjb_c::set_error("Outedge edge_%u of vertex_%u claims to have "
+            ivi_c::set_error("Outedge edge_%u of vertex_%u claims to have "
                     "origin vertex_%u", v.outedge, i,
                     dcel.get_edge_table().at(v.outedge).origin);
             vertices.clear();
@@ -158,23 +158,23 @@ bool edges_valid_partial(
             = dcel.get_edge_table().at(i);
         if (e.origin >= dcel.get_vertex_table().size())
         {
-            kjb_c::set_error("Invalid vertex index in edge origin %u",i);
+            ivi_c::set_error("Invalid vertex index in edge origin %u",i);
             return false;
         }
         if (e.twin >= dcel.get_edge_table().size())
         {
-            kjb_c::set_error("Out-of-range twin field %u at edge %u",e.twin,i);
+            ivi_c::set_error("Out-of-range twin field %u at edge %u",e.twin,i);
             return false;
         }
         if (dcel.get_edge_table().at(e.twin).twin != i)
         {
-            kjb_c::set_error("Irreflexive twin indices at edge %u", i);
+            ivi_c::set_error("Irreflexive twin indices at edge %u", i);
             return false;
         }
         if ( dcel.get_edge_table().at(e.twin).origin == e.origin)
         {
             // not sure if this is possible
-            kjb_c::set_error("Dup. origin, destination at edge %u", i);
+            ivi_c::set_error("Dup. origin, destination at edge %u", i);
             return false;
         }
     }
@@ -186,7 +186,7 @@ bool edges_valid(
     const Doubly_connected_edge_list& dcel
 )
 {
-    using kjb::qd::PixPoint;
+    using ivi::qd::PixPoint;
     std::set< PixPoint > prenex, orides;
     std::multimap< size_t, size_t > leaders, followers;
     std::vector< RatPoint_line_segment > segs;
@@ -198,19 +198,19 @@ bool edges_valid(
 #if 0
         if (e.origin >= dcel.get_vertex_table().size())
         {
-            kjb_c::set_error("Invalid vertex index in edge origin %u",i);
+            ivi_c::set_error("Invalid vertex index in edge origin %u",i);
             return false;
         }
         if (dcel.get_edge_table().at(e.twin).twin != i)
         {
-            kjb_c::set_error("Irreflexive twin indices at edge %u", i);
+            ivi_c::set_error("Irreflexive twin indices at edge %u", i);
             return false;
         }
         const size_t dest = dcel.get_edge_table().at(e.twin).origin;
         if (dest == e.origin)
         {
             // not sure if this is possible
-            kjb_c::set_error("Dup. origin, destination at edge %u", i);
+            ivi_c::set_error("Dup. origin, destination at edge %u", i);
             return false;
         }
 #else
@@ -223,28 +223,28 @@ bool edges_valid(
 
         if (dcel.get_edge_table().at(e.next).prev != i)
         {
-            kjb_c::set_error("Bad next index at edge %u", i);
+            ivi_c::set_error("Bad next index at edge %u", i);
             return false;
         }
         if (dcel.get_edge_table().at(e.prev).next != i)
         {
-            kjb_c::set_error("Bad prev index at edge %u", i);
+            ivi_c::set_error("Bad prev index at edge %u", i);
             return false;
         }
-        KJB(ASSERT(prenex.size() == i && orides.size() == i));
+        IVI(ASSERT(prenex.size() == i && orides.size() == i));
         if (! prenex.insert(PixPoint(e.prev, e.next)).second)
         {
-            KJB(ASSERT(prenex.size() == i));
-            kjb_c::set_error("Dup next/prev indices at edge %u", i);
+            IVI(ASSERT(prenex.size() == i));
+            ivi_c::set_error("Dup next/prev indices at edge %u", i);
             return false;
         }
         if (! orides.insert(PixPoint(e.origin, dest)).second)
         {
-            KJB(ASSERT(orides.size() == i));
-            kjb_c::set_error("Dup origin/destination at edge %u", i);
+            IVI(ASSERT(orides.size() == i));
+            ivi_c::set_error("Dup origin/destination at edge %u", i);
             return false;
         }
-        KJB(ASSERT(prenex.size() == 1+i && orides.size() == 1+i));
+        IVI(ASSERT(prenex.size() == 1+i && orides.size() == 1+i));
 
         // look for crossings
         const RatPoint_line_segment si = get_edge(dcel, i);
@@ -257,20 +257,20 @@ bool edges_valid(
             {
                 // origin is ok
                 if (e.origin == j) continue;
-                kjb_c::set_error("Edge %u has extra origin %u", i, j);
+                ivi_c::set_error("Edge %u has extra origin %u", i, j);
                 return false;
             }
             else if (v == si.b)
             {
                 // destination is ok
                 if (dest == j) continue;
-                kjb_c::set_error("Edge %u has extra destination %u", i, j);
+                ivi_c::set_error("Edge %u has extra destination %u", i, j);
                 return false;
             }
             else if (is_on(si, v))
             {
                 // interior is not ok
-                kjb_c::set_error("Vertex %u splits edge %u", j, i);
+                ivi_c::set_error("Vertex %u splits edge %u", j, i);
                 return false;
             }
         }
@@ -287,17 +287,17 @@ bool edges_valid(
              * parallel segments overlap, because that would cause a vertex to
              * touch an edge interior, which we detected earlier.
              */
-            KJB(ASSERT(is_degenerate(sx)));
+            IVI(ASSERT(is_degenerate(sx)));
             const bool hits_interior_i = sx.a != si.a && sx.a != si.b,
                        hits_interior_j = sx.a != sj.a && sx.a != sj.b;
             if (hits_interior_i && hits_interior_j)
             {
-                kjb_c::set_error("Unmarked edge crossing "
+                ivi_c::set_error("Unmarked edge crossing "
                                  "between edges %u, %u", i, j);
                 return false;
             }
             // We already detected vertex-edge splits; therefore,
-            KJB(ASSERT(hits_interior_i == hits_interior_j));
+            IVI(ASSERT(hits_interior_i == hits_interior_j));
         }
 #else
         if (i < e.twin) segs.push_back(si);
@@ -312,7 +312,7 @@ bool edges_valid(
                      n = leaders.count(key);
         if (n != 1)
         {
-            kjb_c::set_error("Edge %u has %u predecessors", key, n);
+            ivi_c::set_error("Edge %u has %u predecessors", key, n);
             return false;
         }
         leaders.erase(key);
@@ -323,7 +323,7 @@ bool edges_valid(
                      n = followers.count(key);
         if (n != 1)
         {
-            kjb_c::set_error("Edge %u has %u successors", key, n);
+            ivi_c::set_error("Edge %u has %u successors", key, n);
             return false;
         }
         followers.erase(key);
@@ -334,7 +334,7 @@ bool edges_valid(
     // If any interiors intersect, return false.
     if (! get_interior_intersections(segs).empty())
     {
-        kjb_c::set_error("segment error (overlap)");
+        ivi_c::set_error("segment error (overlap)");
         return false;
     }
 
@@ -444,8 +444,8 @@ bool is_on_outer_border(
             oes.pop_back();
         }
     }
-    /*KJB(ASSERT(std::find(oes.begin(), oes.end(), imax) != oes.end()));*/
-    KJB(ASSERT(oes.size() > 0));
+    /*IVI(ASSERT(std::find(oes.begin(), oes.end(), imax) != oes.end()));*/
+    IVI(ASSERT(oes.size() > 0));
 
     // Check direction of each transit of cycle c through vertex vmax.
     // Outer-border = always counterclockwise
@@ -457,10 +457,10 @@ bool is_on_outer_border(
                                     ei_max = get_edge(d,
                                              d.get_edge_table().at(ej).prev);
 
-        KJB(ASSERT(d.get_edge_table().at(ej).origin == vmax));
-        KJB(ASSERT(eo_max.a == d.get_vertex_table().at(vmax).location));
-        KJB(ASSERT(!is_degenerate(eo_max) && !is_degenerate(ei_max)));
-        KJB(ASSERT(eo_max.a == ei_max.b));
+        IVI(ASSERT(d.get_edge_table().at(ej).origin == vmax));
+        IVI(ASSERT(eo_max.a == d.get_vertex_table().at(vmax).location));
+        IVI(ASSERT(!is_degenerate(eo_max) && !is_degenerate(ei_max)));
+        IVI(ASSERT(eo_max.a == ei_max.b));
 
         // Find the "signed area"; sign reveals CW or CCW order of vertices.
         // Negative means clockwise, which implies it is not an outer border.
@@ -495,17 +495,17 @@ bool check_face_components(
             Facemap::iterator j = facemap -> find(dcel.get_cycle(ie));
             if (facemap -> end() == j)
             {
-                kjb_c::set_error("bad cycle on face %u", i);
+                ivi_c::set_error("bad cycle on face %u", i);
                 return false;
             }
             if (j -> second != i)
             {
-                kjb_c::set_error("Bad outer component identity of face %u", i);
+                ivi_c::set_error("Bad outer component identity of face %u", i);
                 return false;
             }
             if (! is_on_outer_border(dcel, ie))
             {
-                kjb_c::set_error("Face %u outer component %u runs clockwise, "
+                ivi_c::set_error("Face %u outer component %u runs clockwise, "
                     "but outer components must run counterclockwise).", i, ie);
                 return false;
             }
@@ -519,17 +519,17 @@ bool check_face_components(
             Facemap::iterator k;
             if ((k=facemap -> find(dcel.get_cycle(ie))) == facemap -> end())
             {
-                kjb_c::set_error("bad cycle on face %u", i);
+                ivi_c::set_error("bad cycle on face %u", i);
                 return false;
             }
             if (k -> second != i)
             {
-                kjb_c::set_error("Bad inner cycle identity %u of face %u",j,i);
+                ivi_c::set_error("Bad inner cycle identity %u of face %u",j,i);
                 return false;
             }
             if (is_on_outer_border(dcel, ie))
             {
-                kjb_c::set_error("Face %u inner cycle %u runs counterclockwise"
+                ivi_c::set_error("Face %u inner cycle %u runs counterclockwise"
                             ", but inner cycles must run clockwise).", i, ie);
                 return false;
             }
@@ -540,7 +540,7 @@ bool check_face_components(
     // That process should have exhausted the cycle-to-face list
     if (!facemap -> empty())
     {
-        kjb_c::set_error("Cycle number %d is not mentioned by face %u.  "
+        ivi_c::set_error("Cycle number %d is not mentioned by face %u.  "
              "There is/are %u unmentioned cycle(s).",
              facemap -> begin() -> first, facemap -> begin() -> second,
              facemap -> size());
@@ -584,7 +584,7 @@ std::vector<int>* get_inner_cycles(
             ic_storage -> push_back( d.get_cycle( f.at(j) ) );
         }
     }
-    KJB(ASSERT(* std::max_element(ic_storage -> begin(), ic_storage -> end())
+    IVI(ASSERT(* std::max_element(ic_storage -> begin(), ic_storage -> end())
                     < (int)d.get_number_of_cycles()));
     return ic_storage;
 }
@@ -755,12 +755,12 @@ bool holes_valid(
         }
         else
         {
-            kjb_c::set_error("Face %u record is mixed with another face.", i);
+            ivi_c::set_error("Face %u record is mixed with another face.", i);
             return false;
         }
 
         // I think we already checked that facemap is valid at ei's cycle
-        KJB(ASSERT(   facemap.find(c) != facemap.end()
+        IVI(ASSERT(   facemap.find(c) != facemap.end()
                    && facemap.find(c) -> second == i));
 
         // Get list of cycles for the G-component k of the cycle of edge ei.
@@ -771,7 +771,7 @@ bool holes_valid(
         // Check the number of components, inners plus outer except for index-0
         if (icc.size() != f.inner_components.size())
         {
-            kjb_c::set_error("Face %u has %u actual components but lists %u.",
+            ivi_c::set_error("Face %u has %u actual components but lists %u.",
                     i, icc.size(), 1+f.inner_components.size());
             return false;
         }
@@ -780,10 +780,10 @@ bool holes_valid(
         for (size_t j = 0; j < icc.size(); ++j)
         {
             const Facemap::const_iterator m = facemap.find(icc.at(j));
-            KJB(ASSERT(m != facemap.end()));
+            IVI(ASSERT(m != facemap.end()));
             if (m -> second != i)
             {
-                kjb_c::set_error("Face %u contains a cycle %d recorded for "
+                ivi_c::set_error("Face %u contains a cycle %d recorded for "
                         "face ", i, m -> second);
                 return false;
             }
@@ -864,7 +864,7 @@ class Star
                 os << "Failure inserting into Star at edge index " << e_ix
                     << ", which has termini " << s.a << " and " << s.b
                     << " around center " << center_;
-                KJB_THROW_2(kjb::Illegal_argument, os.str());
+                IVI_THROW_2(ivi::Illegal_argument, os.str());
             }
             const DistalMap::value_type v = std::make_pair(
                     Distal((ca ? s.b : s.a) - center_), e_ix);
@@ -911,7 +911,7 @@ public:
      */
     std::vector< std::pair<size_t, size_t> > out_in_pairs() const
     {
-        if (!is_valid()) KJB_THROW_2(kjb::Dimension_mismatch,"Unpaired edges");
+        if (!is_valid()) IVI_THROW_2(ivi::Dimension_mismatch,"Unpaired edges");
         std::vector< std::pair<size_t, size_t> > v(oe.size());
         DistalMap::const_iterator i = oe.begin(), j = ie.begin();
         ++j;
@@ -936,9 +936,9 @@ public:
     {
         const size_t &in_edge_ix = dcel_.get_edge_table().at(out_edge_ix).twin;
         RvsDSI::const_iterator k = rvs_.find(in_edge_ix);
-        if (rvs_.end() == k) KJB_THROW(kjb::Illegal_argument);
+        if (rvs_.end() == k) IVI_THROW(ivi::Illegal_argument);
         DistalMap::const_iterator i = k -> second;
-        KJB(ASSERT(i != ie.end() && i -> second == in_edge_ix));
+        IVI(ASSERT(i != ie.end() && i -> second == in_edge_ix));
         ++i; // get CCW-next in-edge
         return (i==ie.end() ? ie.begin() : i) -> second;
     }
@@ -950,9 +950,9 @@ public:
     {
         const size_t &oedge_ix = dcel_.get_edge_table().at(in_edge_ix).twin;
         RvsDSI::const_iterator k = rvs_.find(oedge_ix);
-        if (rvs_.end() == k) KJB_THROW(kjb::Illegal_argument);
+        if (rvs_.end() == k) IVI_THROW(ivi::Illegal_argument);
         DistalMap::const_iterator j = k -> second;
-        KJB(ASSERT(!oe.empty() && j != oe.end() && j->second == oedge_ix));
+        IVI(ASSERT(!oe.empty() && j != oe.end() && j->second == oedge_ix));
         if (j == oe.begin()) j = oe.end();
         --j; // get CW-next out-edge
         return j -> second;
@@ -1002,7 +1002,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
             w = dcel.get_top_vertex_of_cycle(c);
         if (w != v)
         {
-            kjb_c::set_error("Cycletop table bad:  cycle %d top vertex is %u"
+            ivi_c::set_error("Cycletop table bad:  cycle %d top vertex is %u"
                                 " but table says %u", c, v, w);
             return false;
         }
@@ -1014,7 +1014,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
     for (size_t i = 1; i < dcel.get_vertex_table().size(); ++i)
     {
         const RatPoint p = dcel.get_vertex_table().at(i).location;
-        KJB(ASSERT(p != ptiptop));
+        IVI(ASSERT(p != ptiptop));
         if (ptiptop < p)
         {
             itiptop = i;
@@ -1034,7 +1034,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
         {
             if (dcel.vertex_has_roof(i))
             {
-                kjb_c::set_error("Maximum-y vertex cannot have a roof");
+                ivi_c::set_error("Maximum-y vertex cannot have a roof");
                 return false;
             }
             continue; // this vertex is ok, skip to next vertex.
@@ -1078,7 +1078,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
                     &&  0 < (d2 = distance2(p, rs.a))
                     &&  p.x < std::max(s.a.x, s.b.x))
                 {
-                    KJB(ASSERT(is_degenerate(rs))); // already did verticals
+                    IVI(ASSERT(is_degenerate(rs))); // already did verticals
                     rayhit.insert(std::make_pair(d2, ej));
                 }
             }
@@ -1088,7 +1088,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
         {
             if (dcel.vertex_has_roof(i))
             {
-                kjb_c::set_error("Vertex %u has spurious roof", i);
+                ivi_c::set_error("Vertex %u has spurious roof", i);
                 return false;
             }
             // else v is correctly marked as roofless
@@ -1101,7 +1101,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
          */
         if (! dcel.vertex_has_roof(i))
         {
-            kjb_c::set_error("Vertex %u lacks expected roof", i);
+            ivi_c::set_error("Vertex %u lacks expected roof", i);
             return false;
         }
 
@@ -1110,7 +1110,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
         {
             if (dcel.get_vertex_roof(i) != rayhit.begin() -> second)
             {
-                kjb_c::set_error("Vertex %u has wrong roof "
+                ivi_c::set_error("Vertex %u has wrong roof "
                     "(expected flagstaff %u, found %u)",
                     i, rayhit.begin() -> second, dcel.get_vertex_roof(i));
                 return false;
@@ -1119,7 +1119,7 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
 #ifdef DEBUGGING
             DR::const_iterator b = rayhit.begin(),
                                bub = rayhit.upper_bound(b -> first);
-            KJB(ASSERT(++b == bub));
+            IVI(ASSERT(++b == bub));
 #endif
             continue; // this flagpolled vertex is ok, skip to next vertex
         }
@@ -1134,17 +1134,17 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
         std::vector<size_t> candidate_roofs;
         for (; b != bub; ++b)
         {
-            KJB(ASSERT(distance2(p, q) == b -> first));
+            IVI(ASSERT(distance2(p, q) == b -> first));
             const size_t ek = b -> second;
             const RatPoint_line_segment s = get_edge(dcel, ek);
-            KJB(ASSERT(is_on(s, q)));
+            IVI(ASSERT(is_on(s, q)));
             if (s.b.x < s.a.x)
             {
-                KJB(ASSERT(triangle_area(s, p) > 0));
+                IVI(ASSERT(triangle_area(s, p) > 0));
                 candidate_roofs.push_back(ek);
             }
         }
-        KJB(ASSERT(!candidate_roofs.empty()));
+        IVI(ASSERT(!candidate_roofs.empty()));
 
         size_t iroof = candidate_roofs.front();
         if (candidate_roofs.size() > 1)
@@ -1157,11 +1157,11 @@ bool vertex_roofs_valid(const Doubly_connected_edge_list& /*dcel*/)
             Star star(dcel, q);
             star.insert_in(candidate_roofs.begin(), candidate_roofs.end());
             iroof = star.lower_bound_in(RatPoint(0, 1));
-            KJB(ASSERT(iroof < dcel.get_edge_table().size()));
+            IVI(ASSERT(iroof < dcel.get_edge_table().size()));
         }
         if (dcel.get_vertex_roof(i) != iroof)
         {
-            kjb_c::set_error("Vertex %u has wrong roof "
+            ivi_c::set_error("Vertex %u has wrong roof "
                 "(expected %u, found %u)", i, iroof, dcel.get_vertex_roof(i));
             return false;
         }
@@ -1179,7 +1179,7 @@ bool faces_valid(const Doubly_connected_edge_list& dcel)
     if (    dcel.get_face_table().size() > 1
         &&  dcel.get_face_table().at(0).inner_components.size() < 1)
     {
-        kjb_c::set_error("Structure has more than one face, but index-0 "
+        ivi_c::set_error("Structure has more than one face, but index-0 "
                                " face does not list inner components.");
         return false;
     }
@@ -1223,7 +1223,7 @@ bool faces_valid(const Doubly_connected_edge_list& dcel)
         else if (facemap[c] != e.face)
         {
             // continuing an existing cycle
-            kjb_c::set_error("Inconsistent faces in edge cycle");
+            ivi_c::set_error("Inconsistent faces in edge cycle");
             return false;
         }
     }
@@ -1236,7 +1236,7 @@ bool faces_valid(const Doubly_connected_edge_list& dcel)
             = dcel.get_face_table().at(i);
         if (i > 0 && f.outer_component >= dcel.get_edge_table().size())
         {
-            kjb_c::set_error("Invalid edge index in outer component "
+            ivi_c::set_error("Invalid edge index in outer component "
                     "of face %u", i);
             return false;
         }
@@ -1245,7 +1245,7 @@ bool faces_valid(const Doubly_connected_edge_list& dcel)
         {
             if (f.inner_components.at(j) >= dcel.get_edge_table().size())
             {
-               kjb_c::set_error("Invalid edge index in inner cycle "
+               ivi_c::set_error("Invalid edge index in inner cycle "
                        "of face %u", i);
                return false;
             }
@@ -1255,14 +1255,14 @@ bool faces_valid(const Doubly_connected_edge_list& dcel)
 
     if (ftab_ob.size() != outer_border.size())
     {
-        kjb_c::set_error("Face table contains %u outer borders "
+        ivi_c::set_error("Face table contains %u outer borders "
                 "but geometric analysis counts %u outer borders",
                 ftab_ob.size(), outer_border.size());
         return false;
     }
     if (ftab_ic.size() != inner_cycles.size())
     {
-        kjb_c::set_error("Face table contains %u inner cycles "
+        ivi_c::set_error("Face table contains %u inner cycles "
                 "but geometric analysis counts %u inner cycles",
                  ftab_ic.size(), inner_cycles.size());
         return false;
@@ -1273,19 +1273,19 @@ bool faces_valid(const Doubly_connected_edge_list& dcel)
     std::sort(outer_border.begin(), outer_border.end());
     std::sort(inner_cycles.begin(), inner_cycles.end());
 
-    KJB(ASSERT(outer_border.end()
+    IVI(ASSERT(outer_border.end()
                 == std::unique(outer_border.begin(), outer_border.end())));
-    KJB(ASSERT(inner_cycles.end()
+    IVI(ASSERT(inner_cycles.end()
                 == std::unique(inner_cycles.begin(), inner_cycles.end())));
     if (ftab_ob.end() != std::unique(ftab_ob.begin(), ftab_ob.end()))
     {
-        kjb_c::set_error("Face table outer_components entries contain"
+        ivi_c::set_error("Face table outer_components entries contain"
                                "duplicates.");
         return false;
     }
     if (ftab_ic.end() != std::unique(ftab_ic.begin(), ftab_ic.end()))
     {
-        kjb_c::set_error("Face table inner_components entries contain"
+        ivi_c::set_error("Face table inner_components entries contain"
                                "duplicates.");
         return false;
     }
@@ -1295,13 +1295,13 @@ bool faces_valid(const Doubly_connected_edge_list& dcel)
     if (!std::includes(outer_border.begin(), outer_border.end(),
                         ftab_ob.begin(), ftab_ob.end()))
     {
-        kjb_c::set_error("Face table outer_components list is incomplete.");
+        ivi_c::set_error("Face table outer_components list is incomplete.");
         return false;
     }
     if (!std::includes(inner_cycles.begin(), inner_cycles.end(),
                         ftab_ic.begin(), ftab_ic.end()))
     {
-        kjb_c::set_error("Face table inner_components list is incomplete.");
+        ivi_c::set_error("Face table inner_components list is incomplete.");
         return false;
     }
 
@@ -1333,13 +1333,13 @@ Star build_star(
     const RatPoint &center = dcel.get_vertex_table().at(vertex_index).location;
     // safe_out_edges is the slow part -- it scans the entire edge table once.
     const std::vector< size_t > oute = safe_out_edges(dcel, vertex_index),
-                                ine = kjb::qd::twin_edges(dcel, oute);
+                                ine = ivi::qd::twin_edges(dcel, oute);
     Star star(dcel, center);
     star.insert_out(oute.begin(), oute.end());
     star.insert_in(ine.begin(), ine.end());
     if (throw_if_bad_here && !star.is_valid())
     {
-        KJB_THROW_2(kjb::Runtime_error, "DCEL is malformed");
+        IVI_THROW_2(ivi::Runtime_error, "DCEL is malformed");
     }
     return star;
 }
@@ -1354,18 +1354,18 @@ bool cycles_valid(const Doubly_connected_edge_list& dcel)
     for (size_t i = 0; i < nv; ++i)
     {
         const std::vector< size_t > oute = safe_out_edges(dcel, i),
-                                    ine = kjb::qd::twin_edges(dcel, oute);
+                                    ine = ivi::qd::twin_edges(dcel, oute);
 
         // Merge edge lists.  Check that oute and ine are disjoint.
         std::set< size_t > edges(oute.begin(), oute.end());
         edges.insert(ine.begin(), ine.end());
-        KJB(ASSERT(oute.size() + ine.size() == edges.size()));
+        IVI(ASSERT(oute.size() + ine.size() == edges.size()));
 
         // sort around vertex v location, say CCW starting from 3 o'clock.
         const Star star( build_star(dcel, i, false /* == do not throw */) );
         if (!star.is_valid())
         {
-            kjb_c::set_error("Mismatched in, out edges");
+            ivi_c::set_error("Mismatched in, out edges");
             return false;
         }
 
@@ -1379,14 +1379,14 @@ bool cycles_valid(const Doubly_connected_edge_list& dcel)
 
             if (eout_ix != dcel.get_edge_table().at(ein_ix).next)
             {
-                kjb_c::set_error("Crossed cycle at edges %u, %u",
+                ivi_c::set_error("Crossed cycle at edges %u, %u",
                         eout_ix, ein_ix);
                 return false;
             }
             if (dcel.get_cycle(eout_ix) != dcel.get_cycle(ein_ix))
             {
                 // maybe unreachable?
-                kjb_c::set_error("Malformed cycle, edges %u, %u",
+                ivi_c::set_error("Malformed cycle, edges %u, %u",
                         eout_ix, ein_ix);
                 return false;
             }
@@ -1403,7 +1403,7 @@ bool is_edge_btw_vxs(const Doubly_connected_edge_list& d, size_t v1, size_t v2)
 {
     if (std::max(v1, v2) >= d.get_vertex_table().size())
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Vertex indices out of bounds");
+        IVI_THROW_2(ivi::Illegal_argument, "Vertex indices out of bounds");
     }
     for (size_t i = 0; i < d.get_edge_table().size(); ++i)
     {
@@ -1421,26 +1421,26 @@ bool is_edge_btw_vxs(const Doubly_connected_edge_list& d, size_t v1, size_t v2)
 // Check validity of an empty DCEL (no edges).
 int is_tiny_valid(const Doubly_connected_edge_list& dcel)
 {
-    using kjb_c::ERROR;
-    KJB(ASSERT(dcel.get_edge_table().empty())); // that's why we are here
+    using ivi_c::ERROR;
+    IVI(ASSERT(dcel.get_edge_table().empty())); // that's why we are here
 
     if (!dcel.get_vertex_table().empty())
     {
-        kjb_c::set_error("Vertex or vertices without edges.");
+        ivi_c::set_error("Vertex or vertices without edges.");
         return ERROR;
     }
     if (dcel.get_face_table().size() != 1)
     {
-        kjb_c::set_error("Bad face table size of %u",
+        ivi_c::set_error("Bad face table size of %u",
                 dcel.get_face_table().size());
         return ERROR;
     }
     if (!dcel.get_face_table().at(0).inner_components.empty())
     {
-        kjb_c::set_error("Face table has spurious inner component(s).");
+        ivi_c::set_error("Face table has spurious inner component(s).");
         return ERROR;
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1452,8 +1452,8 @@ void graceful_import(
 )
 {
     const size_t N = sl.size();
-    KJB(ASSERT(N > 2));
-    KJB(ASSERT(pvtab && petab));
+    IVI(ASSERT(N > 2));
+    IVI(ASSERT(pvtab && petab));
 
     pvtab -> clear();
     for (size_t i = 0; i < N; ++i)
@@ -1466,7 +1466,7 @@ void graceful_import(
     petab -> clear();
     for (size_t i = 0; i < N-1; ++i)
     {
-        KJB(ASSERT(2*i == petab -> size()));
+        IVI(ASSERT(2*i == petab -> size()));
         // previous and next are valid for edges in the middle of the train
         petab -> push_back(
             Doubly_connected_edge_list::Edge_record(
@@ -1475,7 +1475,7 @@ void graceful_import(
             Doubly_connected_edge_list::Edge_record(
                 1+i, 2*i, 0, 2*i-1, 3+2*i));
     }
-    KJB(ASSERT(2*N-2 == petab -> size()));
+    IVI(ASSERT(2*N-2 == petab -> size()));
 
     // fix the caboose
     petab -> at(0).prev = 1;
@@ -1491,7 +1491,7 @@ Doubly_connected_edge_list ctor_from_el(
     size_t size
 )
 {
-    KJB(ASSERT(size >= 1));
+    IVI(ASSERT(size >= 1));
     if (1 == size)
     {
         return Doubly_connected_edge_list(el[0]);
@@ -1504,11 +1504,11 @@ Doubly_connected_edge_list ctor_from_el(
 }
 
 
-std::string xml_rational(const kjb::qd::RatPoint::Rat r)
+std::string xml_rational(const ivi::qd::RatPoint::Rat r)
 {
     std::ostringstream v, ooo;
-    BUILD_XML_ELT(v, XML_TAG_NUMERATOR, kjb::qd::i_numerator(r));
-    BUILD_XML_ELT(v, XML_TAG_DENOMINATOR, kjb::qd::i_denominator(r));
+    BUILD_XML_ELT(v, XML_TAG_NUMERATOR, ivi::qd::i_numerator(r));
+    BUILD_XML_ELT(v, XML_TAG_DENOMINATOR, ivi::qd::i_denominator(r));
     BUILD_XML_ELT(ooo, XML_TAG_RATIONAL, "\n" << v.str());
     return ooo.str();
 }
@@ -1628,13 +1628,13 @@ std::vector<size_t> get_edges_map_faces(
     std::vector<size_t>* facemap
 )
 {
-    KJB(ASSERT(facemap && facemap -> size() == d.get_face_table().size()));
-    KJB(ASSERT(std::find_if(facemap -> begin(), facemap -> end(), nonzero())
+    IVI(ASSERT(facemap && facemap -> size() == d.get_face_table().size()));
+    IVI(ASSERT(std::find_if(facemap -> begin(), facemap -> end(), nonzero())
                 == facemap -> end()));
 
     if (0 == fi || fi >= d.get_face_table().size())
     {
-        KJB_THROW(kjb::Index_out_of_bounds);
+        IVI_THROW(ivi::Index_out_of_bounds);
     }
 
     std::vector<size_t> eee;
@@ -1712,7 +1712,7 @@ void previous_next_link_impl(
     std::vector< Doubly_connected_edge_list::Edge_record >* etab
 )
 {
-    KJB(ASSERT(etab));
+    IVI(ASSERT(etab));
     etab -> at(e_engine).prev = e_caboose;
     etab -> at(e_caboose).next = e_engine;
 }
@@ -1740,13 +1740,13 @@ void previous_next_fixup(
     {
         const size_t v = vnout.begin() -> first;
         std::pair< UUMM::iterator, UUMM::iterator > k = vnout.equal_range(v);
-        KJB(ASSERT(k.first == vnout.begin()));
+        IVI(ASSERT(k.first == vnout.begin()));
 
         // Build list of out-edges (from vnout) and in-edges (the twins) at v.
         std::vector<size_t> innies, outies;
         for (UUMM::iterator j = k.first; j != k.second; ++j)
         {
-            KJB(ASSERT(v == j -> first));
+            IVI(ASSERT(v == j -> first));
             outies.push_back(j -> second);
             innies.push_back(dcel.get_edge_table().at(j -> second).twin);
         }
@@ -1756,7 +1756,7 @@ void previous_next_fixup(
         Star star(dcel, dcel.get_vertex_table().at(v).location);
         star.insert_in(innies.begin(), innies.end());
         star.insert_out(outies.begin(), outies.end());
-        KJB(ASSERT(star.is_valid()));
+        IVI(ASSERT(star.is_valid()));
         for (std::vector< std::pair<size_t, size_t> > q = star.out_in_pairs();
                 ! q.empty(); q.pop_back() )
         {
@@ -1782,8 +1782,8 @@ public:
 
     RatPoint_line_segment lookup(size_t i) const
     {
-        KJB(ASSERT(valid(i)));
-        return kjb::qd::sweep::rectify(lookup_no_rectify(i));
+        IVI(ASSERT(valid(i)));
+        return ivi::qd::sweep::rectify(lookup_no_rectify(i));
     }
 
     bool valid(size_t i) const
@@ -1797,7 +1797,7 @@ public:
 
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -1835,7 +1835,7 @@ void Doubly_connected_edge_list::intersect_red_blue_with_bentley_ottman(
         }
     }
     const size_t SLPART = sl.size(); // segment list partition btw red, blue
-    KJB(ASSERT( NRED/2 == SLPART ));
+    IVI(ASSERT( NRED/2 == SLPART ));
 
     // add blue segments, but not their twins
     for (size_t i = 0; i < NBLUE; ++i)
@@ -1845,7 +1845,7 @@ void Doubly_connected_edge_list::intersect_red_blue_with_bentley_ottman(
             sl.push_back( get_edge(*pblue, i) );
         }
     }
-    KJB(ASSERT( sl.size() == NRED/2 + NBLUE/2 ));
+    IVI(ASSERT( sl.size() == NRED/2 + NBLUE/2 ));
 
     // Bentley-Ottman uses time O(n log n + k log n), k is output size.
     // Iff the intersections are sparse (k is o(n*n)), you get a benefit.
@@ -1855,9 +1855,9 @@ void Doubly_connected_edge_list::intersect_red_blue_with_bentley_ottman(
     for (size_t k = 0; k < iei.size(); ++k)
     {
         size_t i = iei[k].first, j = iei[k].second;
-        KJB(ASSERT(i < j));
+        IVI(ASSERT(i < j));
         if (i >= SLPART || j < SLPART) continue; // "monochrome" intersection
-        KJB(ASSERT(is_intersecting(sl[i], sl[j])));
+        IVI(ASSERT(is_intersecting(sl[i], sl[j])));
         if (are_parallel(sl[i], sl[j])) continue; // a situation handled later.
 
         // If this intx. is a new discovery, save it to *pnewbies, *pbogus_voe
@@ -1937,12 +1937,12 @@ void Doubly_connected_edge_list::build_cycle_table() const
         for (size_t ej = get_edge_table().at(ei).next; ej != ei;
                     ej = get_edge_table().at(ej).next)
         {
-            KJB(ASSERT(ej > ei && BAD_CYCLE == m_cycles.at(ej)));
+            IVI(ASSERT(ej > ei && BAD_CYCLE == m_cycles.at(ej)));
             m_cycles.at(ej) = m_cycles.at(ei);
 
             if (++watchdog > ne)
             {
-                KJB_THROW_2(Runtime_error, "Bad prev/next fields");
+                IVI_THROW_2(Runtime_error, "Bad prev/next fields");
             }
         }
     }
@@ -1979,7 +1979,7 @@ void Doubly_connected_edge_list::walk_cycle_and_set_its_face(
         i = ei.next;
     }
     // In a proper table, the cycle cannot be longer than the number of edges.
-    if (count >= NE) KJB_THROW(kjb::Runtime_error);
+    if (count >= NE) IVI_THROW(ivi::Runtime_error);
 #else
     m_etab.at(edge_index).face = face_index;
 
@@ -1989,7 +1989,7 @@ void Doubly_connected_edge_list::walk_cycle_and_set_its_face(
     {
         m_etab.at(ei).face = face_index;
         // In a proper table, the cycle cannot be longer than NE.
-        if (++count >= NE) KJB_THROW(kjb::Runtime_error);
+        if (++count >= NE) IVI_THROW(ivi::Runtime_error);
     }
 #endif
 }
@@ -2018,7 +2018,7 @@ std::vector< size_t > out_edges(
     for (size_t oe = ET.at(ET.at(OEE).twin).next; oe != OEE;
                 oe = ET.at(ET.at(oe).twin).next )
     {
-        KJB(ASSERT(ET.at(oe).origin == vertex_index));
+        IVI(ASSERT(ET.at(oe).origin == vertex_index));
         voe.push_back(oe);
     }
 
@@ -2188,8 +2188,8 @@ Doubly_connected_edge_list Doubly_connected_edge_list::brute_force_merge(
     Doubly_connected_edge_list dcel // copy the input, and augment with *this
 )   const
 {
-    KJB(ASSERT(NO_ERROR == is_valid(*this)));
-    KJB(ASSERT(NO_ERROR == is_valid(dcel)));
+    IVI(ASSERT(NO_ERROR == is_valid(*this)));
+    IVI(ASSERT(NO_ERROR == is_valid(dcel)));
 
     // Handle trivial input
     if (is_empty(dcel)) return *this;
@@ -2209,7 +2209,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::brute_force_merge(
         dcel.lookup_vertex(v, &found);
         if (!found)
         {
-            KJB(ASSERT(newbies.end()==newbies.find(v)));
+            IVI(ASSERT(newbies.end()==newbies.find(v)));
             bogus_voe.insert(dcel.m_vtab.size());
             newbies[v] = dcel.m_vtab.size();
             dcel.m_vtab.push_back(Vertex_record(v, BLANK));
@@ -2298,7 +2298,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::brute_force_merge(
             // v might still have a bogus 'outedge' field, unfortunately.
             if (is_on(e, v)) vhits[distance2( e.a, v )] = j;
         }
-        KJB(ASSERT(vhits.size() > 1));
+        IVI(ASSERT(vhits.size() > 1));
         for (DR::const_iterator j1 = vhits.begin(), j2 = j1++;
                                 j1 != vhits.end(); j2 = j1++)
         {
@@ -2321,7 +2321,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::brute_force_merge(
             dcel.m_cycle_table_valid = false;
         }
     }
-    KJB(ASSERT(bogus_voe.empty()));
+    IVI(ASSERT(bogus_voe.empty()));
 #else
     // New routine is now smarter than brute force.
     dcel.sweep_edge_merge(*this);
@@ -2329,8 +2329,8 @@ Doubly_connected_edge_list Doubly_connected_edge_list::brute_force_merge(
 
 #ifdef DEBUGGING
     const std::set< RatPoint > vv = vertices_valid(dcel);
-    if (vv.empty()) KJB_THROW_2(Runtime_error, "Bad vertices during merge.\n"
-                                                + kjb_get_error() );
+    if (vv.empty()) IVI_THROW_2(Runtime_error, "Bad vertices during merge.\n"
+                                                + ivi_get_error() );
 #endif
 
     // Repair previous and next fields throughout edge table.
@@ -2339,21 +2339,21 @@ Doubly_connected_edge_list Doubly_connected_edge_list::brute_force_merge(
 
 #ifdef DEBUGGING
     const bool ed_valid = edges_valid(dcel);
-    if (!ed_valid) KJB_THROW_2(Runtime_error, "Bad edges during merge.\n"
-                                                + kjb_get_error() );
+    if (!ed_valid) IVI_THROW_2(Runtime_error, "Bad edges during merge.\n"
+                                                + ivi_get_error() );
 #endif
 
     // update faces
     dcel.rebuild_face_table();
 
-    KJB(ASSERT(NO_ERROR == is_valid(dcel)));
+    IVI(ASSERT(NO_ERROR == is_valid(dcel)));
     return dcel;
 }
 
 
 int is_valid(const Doubly_connected_edge_list& dcel)
 {
-    using kjb_c::ERROR;
+    using ivi_c::ERROR;
     if (dcel.get_edge_table().empty()) return is_tiny_valid(dcel);
 
     // test vertices in a separate routine
@@ -2370,7 +2370,7 @@ int is_valid(const Doubly_connected_edge_list& dcel)
 
     // test faces
     const bool fs_valid = faces_valid(dcel);
-    return fs_valid ? kjb_c::NO_ERROR : ERROR;
+    return fs_valid ? ivi_c::NO_ERROR : ERROR;
 }
 
 
@@ -2404,14 +2404,14 @@ Doubly_connected_edge_list& Doubly_connected_edge_list::transform(
         RatPoint::Rat det = xform[0] * (xform[4]*xform[8] - xform[5]*xform[7]);
         det -= xform[1] * (xform[3]*xform[8] - xform[5]*xform[6]);
         det += xform[2] * (xform[3]*xform[7] - xform[4]*xform[6]);
-        if (0 == det) KJB_THROW_2(Illegal_argument,"Affinity lacks full rank");
+        if (0 == det) IVI_THROW_2(Illegal_argument,"Affinity lacks full rank");
 
         for (size_t i = 0; i < NV; ++i)
         {
             Vertex_record& v = m_vtab.at(i);
             const RatPoint& p = v.location;
             const RatPoint::Rat D = p.x * xform[6] + p.y * xform[7] + xform[8];
-            if (0 == D) KJB_THROW_2(Illegal_argument, "Div by zero in xform");
+            if (0 == D) IVI_THROW_2(Illegal_argument, "Div by zero in xform");
 
             v.location = RatPoint((p.x*xform[0] + p.y*xform[1] + xform[2])/D,
                                   (p.x*xform[3] + p.y*xform[4] + xform[5])/D);
@@ -2439,7 +2439,7 @@ Doubly_connected_edge_list& Doubly_connected_edge_list::transform(
  */
 bool is_edge_of_stick_figure(const Doubly_connected_edge_list& d, size_t ei)
 {
-    if (ei >= d.get_edge_table().size()) KJB_THROW(Index_out_of_bounds);
+    if (ei >= d.get_edge_table().size()) IVI_THROW(Index_out_of_bounds);
     const size_t my_face = d.get_edge_table().at(ei).face;
 
     // cycle-scan idiom
@@ -2473,14 +2473,14 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_open_path(
         if (i < path.size()-1) sl[i].a = path[i];
     }
     const std::vector< std::pair<size_t, size_t> > iv = get_intersections(sl);
-    KJB(ASSERT(iv.size()+1 >= sl.size()));
+    IVI(ASSERT(iv.size()+1 >= sl.size()));
     // compute compound AND of trivality-tests
     bool trivial = iv.size()+1 == sl.size();
     RatPoint_line_segment c(s0);
     for (size_t i = 0; trivial && i < iv.size(); ++i)
     {
         const size_t j = iv[i].first;
-        KJB(ASSERT(j < iv[i].second && iv[i].second < sl.size()));
+        IVI(ASSERT(j < iv[i].second && iv[i].second < sl.size()));
         // && clause below does not need parens but mutes nagging compiler
         if (   iv[i].second != 1+j
             || (segment_intersection(sl[j], sl[1+j], &c) && !is_degenerate(c)))
@@ -2514,7 +2514,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_open_path(
         d.swap(e);
 #endif
     }
-    KJB(ASSERT(NO_ERROR == is_valid(d)));
+    IVI(ASSERT(NO_ERROR == is_valid(d)));
     return d;
 }
 
@@ -2559,7 +2559,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_open_path(
         d.swap(e);
 #endif
     }
-    KJB(ASSERT(NO_ERROR == is_valid(d)));
+    IVI(ASSERT(NO_ERROR == is_valid(d)));
     return d;
 }
 
@@ -2582,7 +2582,7 @@ size_t lookup_edge(
                             std::back_inserter(x1));
 
     if (x1.empty()) return d.get_edge_table().size();
-    KJB(ASSERT(1 == x1.size()));
+    IVI(ASSERT(1 == x1.size()));
     return x1.front();
 }
 
@@ -2594,7 +2594,7 @@ RatPoint_line_segment get_aa_bounding_box_diagonal(
 {
     if (is_empty(dcel))
     {
-        KJB_THROW_2(Illegal_argument, "Empty dcel has no bounding box");
+        IVI_THROW_2(Illegal_argument, "Empty dcel has no bounding box");
     }
 
     // Endpoint a is the min,min; b is the max,max.
@@ -2609,8 +2609,8 @@ RatPoint_line_segment get_aa_bounding_box_diagonal(
         if (slash.b.x < p.x) slash.b.x = p.x;
         if (slash.b.y < p.y) slash.b.y = p.y;
     }
-    KJB(ASSERT(slash.a.x <= slash.b.x));
-    KJB(ASSERT(slash.a.y <= slash.b.y));
+    IVI(ASSERT(slash.a.x <= slash.b.x));
+    IVI(ASSERT(slash.a.y <= slash.b.y));
     return slash;
 }
 
@@ -2626,7 +2626,7 @@ RatPoint_line_segment get_aa_bounding_box_diagonal(
  */
 void Doubly_connected_edge_list::scan_for_roof() const
 {
-    using namespace kjb::qd::sweep;
+    using namespace ivi::qd::sweep;
 
     m_roof_table_valid = true;
     m_cycletop.assign(get_number_of_cycles(), m_vtab.size());
@@ -2646,8 +2646,8 @@ void Doubly_connected_edge_list::scan_for_roof() const
     for (size_t ei = 0; ei < get_edge_table().size(); ++ei)
     {
         const size_t itwin = d.get_edge_table().at(ei).twin;
-        KJB(ASSERT(ei != itwin));
-        KJB(ASSERT(itwin == get_edge_table().at(ei).twin));
+        IVI(ASSERT(ei != itwin));
+        IVI(ASSERT(itwin == get_edge_table().at(ei).twin));
         if (itwin < ei) continue;
         s2e.at(sl.size()) = std::make_pair(ei, itwin);
         sl.push_back(rectify(get_edge(d, ei)));
@@ -2674,23 +2674,23 @@ void Doubly_connected_edge_list::scan_for_roof() const
         std::set<size_t> ulma[4]; // [0]=upper, [1]=lower, [2]=middle, [3]=all
 
         pull_events_here< Static_segment_map >(&q, sweep, ulma, ssm);
-        KJB(ASSERT(ulma[2].empty())); // middle set is always empty
-        KJB(ASSERT(!ulma[3].empty())); // "all" set is not empty
+        IVI(ASSERT(ulma[2].empty())); // middle set is always empty
+        IVI(ASSERT(!ulma[3].empty())); // "all" set is not empty
         // cheapo partial check that uppers and lowers are a partition of all
         // which is another way of saying "no degenerate segments"
-        KJB(ASSERT(ulma[0].size() + ulma[1].size() == ulma[3].size()));
+        IVI(ASSERT(ulma[0].size() + ulma[1].size() == ulma[3].size()));
 
         // Look up vertex index
         const II eiet = s2e[*ulma[3].begin()];
 #ifdef DEBUGGING
         const RatPoint_line_segment r = get_edge(d, eiet.first);
-        KJB(ASSERT(r.a == sweep_loc || r.b == sweep_loc));
+        IVI(ASSERT(r.a == sweep_loc || r.b == sweep_loc));
 #endif
         const size_t
             v1 = d.get_edge_table().at(eiet.first ).origin,
             v2 = d.get_edge_table().at(eiet.second).origin,
             vv = d.get_vertex_table().at(v1).location == sweep_loc ?  v1 : v2;
-        KJB(ASSERT(d.get_vertex_table().at(vv).location == sweep_loc));
+        IVI(ASSERT(d.get_vertex_table().at(vv).location == sweep_loc));
 
         // If there is a horizontal segment left of sweep_loc, handle it now.
         const std::vector<size_t> lowers(ulma[1].begin(), ulma[1].end()),
@@ -2715,7 +2715,7 @@ void Doubly_connected_edge_list::scan_for_roof() const
                 const II ejet = s2e[eir.first -> true_index()];
                 const RatPoint_line_segment r = get_edge(d, ejet.first);
                 // r cannot be horizontal:  it must straddle the sweepline
-                KJB(ASSERT(! is_horizontal(r)));
+                IVI(ASSERT(! is_horizontal(r)));
                 m_vertex_roof.at(vv)
                     = (r.b < r.a ? ejet.first : ejet.second) << 1 | 1;
             }
@@ -2746,7 +2746,7 @@ void Doubly_connected_edge_list::scan_for_roof() const
     }
 
     // cycletop table is full of valid values; no sentinels remain.
-    KJB(ASSERT(std::find(m_cycletop.begin(), m_cycletop.end(), m_vtab.size())
+    IVI(ASSERT(std::find(m_cycletop.begin(), m_cycletop.end(), m_vtab.size())
                 == m_cycletop.end()));
 }
 
@@ -2780,7 +2780,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_xml_stream(
 {
     typedef boost::property_tree::ptree::value_type PTV;
 
-    if (ist.bad()) KJB_THROW_2(IO_error, "Cannot build from bad stream");
+    if (ist.bad()) IVI_THROW_2(IO_error, "Cannot build from bad stream");
     Doubly_connected_edge_list dcel;
     const size_t z = 0;
     boost::property_tree::ptree pt;
@@ -2791,10 +2791,10 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_xml_stream(
     {
         // validate index attribute
         const size_t index = v.second.get("<xmlattr>.index", size_t(BLANK));
-        if (BLANK == index) KJB_THROW_2(IO_error, "No vertex index");
+        if (BLANK == index) IVI_THROW_2(IO_error, "No vertex index");
         if (dcel.m_vtab.size() != index)
         {
-            KJB_THROW_2(IO_error, "Bad vertex index");
+            IVI_THROW_2(IO_error, "Bad vertex index");
         }
 
         // read vertex fields
@@ -2808,7 +2808,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_xml_stream(
                     XML_TAG_RATIONAL "." XML_TAG_NUMERATOR, rz),
             yd = v.second.get( XML_TAG_LOCATION "." XML_TAG_Y "."
                     XML_TAG_RATIONAL "." XML_TAG_DENOMINATOR, rz);
-        if (0 == xd || 0 == yd) KJB_THROW_2(IO_error, "No vertex location");
+        if (0 == xd || 0 == yd) IVI_THROW_2(IO_error, "No vertex location");
         const RatPoint::Rat x(xn, xd), y(yn, yd);
         dcel.m_vtab.push_back(
             Vertex_record(
@@ -2821,14 +2821,14 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_xml_stream(
     {
         // validate index attribute
         const size_t index = v.second.get("<xmlattr>.index", size_t(BLANK));
-        if (BLANK == index) KJB_THROW_2(IO_error, "No edge index");
+        if (BLANK == index) IVI_THROW_2(IO_error, "No edge index");
         if (dcel.m_etab.size() != index)
         {
-            KJB_THROW_2(IO_error, "Bad edge index");
+            IVI_THROW_2(IO_error, "Bad edge index");
         }
 
         // read edge fields
-        if (v.first != XML_TAG_EDGE) KJB_THROW(IO_error);
+        if (v.first != XML_TAG_EDGE) IVI_THROW(IO_error);
         dcel.m_etab.push_back( Edge_record(
             v.second.get(XML_TAG_ORIGIN, z),
             v.second.get(XML_TAG_TWIN, z),
@@ -2842,20 +2842,20 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_xml_stream(
     {
         // validate index attribute
         const size_t index = v.second.get("<xmlattr>.index", size_t(BLANK));
-        if (BLANK == index) KJB_THROW_2(IO_error, "No face index");
+        if (BLANK == index) IVI_THROW_2(IO_error, "No face index");
 
         if (face_0)
         {
-            if (index != 0) KJB_THROW_2(IO_error, "Bad face 0 index");
+            if (index != 0) IVI_THROW_2(IO_error, "Bad face 0 index");
         }
         else if (dcel.m_ftab.size() != index)
         {
-            KJB_THROW_2(IO_error, "Bad face index");
+            IVI_THROW_2(IO_error, "Bad face index");
         }
 
         if (v.first != XML_TAG_FACE)
         {
-            KJB_THROW_2(IO_error, "Missing dcel.faces.face elt");
+            IVI_THROW_2(IO_error, "Missing dcel.faces.face elt");
         }
 
         // face 0 record already exists in dcel, just need to populate it.
@@ -2869,14 +2869,14 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_xml_stream(
         {
             if (w.first != XML_TAG_EDGEINDEX)
             {
-                KJB_THROW_2(IO_error,
+                IVI_THROW_2(IO_error,
                     "Missing dcel.faces.face.icomponents.edgeindex elt");
             }
             std::istringstream stedix( w.second.data() );
             size_t edge_index;
             if (!(stedix >> edge_index))
             {
-                KJB_THROW_2(IO_error,
+                IVI_THROW_2(IO_error,
                     "Bad dcel.faces.face.icomponents.edgeindex elt");
             }
             dcel.m_ftab.back().inner_components.push_back(edge_index);
@@ -2891,7 +2891,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::ctor_xml_stream(
         dcel.m_lookup_valid = false;
     }
 
-    KJB(ASSERT(NO_ERROR == is_valid(dcel)));
+    IVI(ASSERT(NO_ERROR == is_valid(dcel)));
     return dcel;
 }
 
@@ -2970,7 +2970,7 @@ bool is_isomorphic(
     std::vector<size_t> hab(NE, NE);
     for (size_t iva = 0; iva < NV; ++iva)
     {
-        using kjb::qd::sweep::Event_point;
+        using ivi::qd::sweep::Event_point;
 
         const size_t
             ivb = b.lookup_vertex(a.get_vertex_table().at(iva).location);
@@ -3026,8 +3026,8 @@ Doubly_connected_edge_list Doubly_connected_edge_list::face_export(
 {
     typedef std::map< size_t, size_t >::iterator UUMI;
 
-    if (0 == fi) KJB_THROW_2(Illegal_argument, "cannot export face zero");
-    if (fi >= m_ftab.size()) KJB_THROW(Illegal_argument);
+    if (0 == fi) IVI_THROW_2(Illegal_argument, "cannot export face zero");
+    if (fi >= m_ftab.size()) IVI_THROW(Illegal_argument);
 
     Doubly_connected_edge_list d;
     d.m_lookup_valid = d.m_cycle_table_valid = d.m_roof_table_valid = false;
@@ -3043,16 +3043,16 @@ Doubly_connected_edge_list Doubly_connected_edge_list::face_export(
         // If this edge is already mapped, skip (and twin must be mapped too).
         if (em[f.back()] < BLANK)
         {
-            KJB(ASSERT(em[get_edge_table().at(f.back()).twin] < BLANK));
+            IVI(ASSERT(em[get_edge_table().at(f.back()).twin] < BLANK));
             continue;
         }
 
         // eo = edges in old dcel, en = new dcel, index-0=on-fi, index-1=twin.
         size_t eo[2], en[2];
         eo[0] = f.back(); // old edge index, incident to face fi
-        KJB(ASSERT(get_edge_table().at(eo[0]).face == fi));
+        IVI(ASSERT(get_edge_table().at(eo[0]).face == fi));
         eo[1] = get_edge_table().at(eo[0]).twin;
-        KJB(ASSERT(BLANK == em[eo[1]])); // Twin must also be absent.
+        IVI(ASSERT(BLANK == em[eo[1]])); // Twin must also be absent.
         en[1] = en[0] = d.m_etab.size(); // new edge indices
         en[1] += 1;
         for (size_t j = 0; j < 2; ++j) // mimic edge on face fi, then its twin.
@@ -3086,7 +3086,7 @@ Doubly_connected_edge_list Doubly_connected_edge_list::face_export(
     previous_next_fixup(&d.m_etab, d);
     d.rebuild_face_table();
 
-    KJB(ASSERT(NO_ERROR == is_valid(d)));
+    IVI(ASSERT(NO_ERROR == is_valid(d)));
 
     return d;
 }
@@ -3150,10 +3150,10 @@ void Doubly_connected_edge_list::rebuild_face_table()
     MMR r_outer = c_of_k.equal_range(k_outer);
     for (MMII::const_iterator r = r_outer.first; r != r_outer.second; ++r)
     {
-        KJB(ASSERT(k_outer == r -> first));
+        IVI(ASSERT(k_outer == r -> first));
         const int c = r -> second, ei = get_edge_of_cycle(c);
-        KJB(ASSERT(ics.find(c) != ics.end()));
-        KJB(ASSERT(ei >= 0));
+        IVI(ASSERT(ics.find(c) != ics.end()));
+        IVI(ASSERT(ei >= 0));
         f0.inner_components.push_back(ei);
         walk_cycle_and_set_its_face(ei, 0);
     }
@@ -3170,7 +3170,7 @@ void Doubly_connected_edge_list::rebuild_face_table()
         for (MMII::const_iterator s = r.first; s != r.second; ++s)
         {
             const int c = s -> second, ei = get_edge_of_cycle(c);
-            KJB(ASSERT(ei >= 0));
+            IVI(ASSERT(ei >= 0));
             if (ics.end() == ics.find(c))
             {
                 m_ftab.back().outer_component = ei;
@@ -3182,7 +3182,7 @@ void Doubly_connected_edge_list::rebuild_face_table()
             }
             walk_cycle_and_set_its_face(ei, fx);
         }
-        KJB(ASSERT(outer_set)); // new face should have an outer boundary
+        IVI(ASSERT(outer_set)); // new face should have an outer boundary
     }
 }
 
@@ -3232,12 +3232,12 @@ void Doubly_connected_edge_list::sweep_edge_merge(
     using namespace sweep;
 
     // add foreign vertices
-    KJB(ASSERT(!m_lookup_valid || m_vtab.size() == m_vertex_lookup.size()));
+    IVI(ASSERT(!m_lookup_valid || m_vtab.size() == m_vertex_lookup.size()));
     for (size_t i = 0; i < d.get_vertex_table().size(); ++i)
     {
         const RatPoint &vp = d.get_vertex_table().at(i).location;
         const size_t vix = lookup_vertex(vp);
-        KJB(ASSERT(vix <= m_vtab.size()));
+        IVI(ASSERT(vix <= m_vtab.size()));
         if (get_vertex_table().size() == vix)
         {
             // Add new vertex, with bogus outedge field
@@ -3245,7 +3245,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             m_vertex_lookup[vp] = vix;
         }
     }
-    KJB(ASSERT(m_lookup_valid && m_vtab.size() == m_vertex_lookup.size()));
+    IVI(ASSERT(m_lookup_valid && m_vtab.size() == m_vertex_lookup.size()));
 
     /*
      * Add foreign edges, though they will fail the no-interior-touching
@@ -3255,14 +3255,14 @@ void Doubly_connected_edge_list::sweep_edge_merge(
     for (size_t i = 0; i < d.get_edge_table().size(); ++i)
     {
         const size_t &itwin = d.get_edge_table().at(i).twin;
-        KJB(ASSERT(d.get_edge_table().at(itwin).twin == i));
+        IVI(ASSERT(d.get_edge_table().at(itwin).twin == i));
         if (i < itwin)
         {
             const RatPoint_line_segment s = get_edge(d, i);
             const size_t ek = get_edge_table().size(), // new edge index
                          i_origin = lookup_vertex(s.a),
                          i_dest = lookup_vertex(s.b);
-            KJB(ASSERT(std::max(i_origin, i_dest) < m_vtab.size()));
+            IVI(ASSERT(std::max(i_origin, i_dest) < m_vtab.size()));
             m_etab.push_back(Edge_record(i_origin, 1+ek));
             m_etab.push_back(Edge_record(i_dest, ek));
             m_vtab[i_origin].outedge = ek;
@@ -3284,7 +3284,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
 
     // Edge data structures used by sweep
     Dcel_edge ded(*this);
-    KJB(ASSERT(! is_empty(*this)));
+    IVI(ASSERT(! is_empty(*this)));
     RatPoint_line_segment lbump(ded.lookup(0)), rbump(lbump);
 
     /*
@@ -3311,7 +3311,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
                 *j++ = i;
             }
         }
-        KJB(ASSERT(sref.end() == j));
+        IVI(ASSERT(sref.end() == j));
         // The extra "1" means to leave blank the exit event's index field.
         EventQueue r( fill_queue_get_bumpers(sls, &lbump, &rbump, 1) );
 
@@ -3323,7 +3323,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
                 (*i) -> index = sref.at((*i) -> index);
 #ifdef DEBUGGING
                 const RatPoint_line_segment s = ded.lookup((*i) -> index);
-                KJB(ASSERT( s.a == (*i)->p || s.b == (*i)->p ));
+                IVI(ASSERT( s.a == (*i)->p || s.b == (*i)->p ));
 #endif
             }
         }
@@ -3368,24 +3368,24 @@ void Doubly_connected_edge_list::sweep_edge_merge(
         sweep_loc = (* q.begin()) -> p; // update the sweep location
         std::set<size_t> ulma[4]; // [0]=upper, [1]=lower, [2]=middle, [3]=all
         pull_events_here(&q, sweep, ulma, ded);
-        KJB(ASSERT(ulma[3].size() > 0));
+        IVI(ASSERT(ulma[3].size() > 0));
         // the following is true because DCEL has no degenerate segments.
-        KJB(ASSERT(ulma[3].size()
+        IVI(ASSERT(ulma[3].size()
                     == ulma[0].size() + ulma[1].size() + ulma[2].size()));
 
         /* If ulma is middle-only, Search for vertex at this event point.
          * Search might fail.
          */
-        KJB(ASSERT(m_lookup_valid && m_vtab.size() == m_vertex_lookup.size()));
+        IVI(ASSERT(m_lookup_valid && m_vtab.size() == m_vertex_lookup.size()));
         if (ulma[0].empty() && ulma[1].empty())
         {
             // We have discovered the site of a new vertex.  Congratulations.
-            KJB(ASSERT(ulma[2].size() >= 2));
+            IVI(ASSERT(ulma[2].size() >= 2));
             m_vertex_lookup[sweep_loc] = m_vtab.size();
             m_vtab.push_back(Vertex_record(sweep_loc, BLANK));
         }
         const size_t vix = lookup_vertex(sweep_loc);
-        KJB(ASSERT(m_vtab.at(vix).location == sweep_loc));
+        IVI(ASSERT(m_vtab.at(vix).location == sweep_loc));
 
         /* Middle-striking segments must be split, in 5 steps.
          * 1) remove it from the sweep line,
@@ -3399,30 +3399,30 @@ void Doubly_connected_edge_list::sweep_edge_merge(
         {
             const size_t i = mid.back();
             // 1) remove long version from sweep line
-            KJB(ASSERT(rvs_sweep.at(i) != sweep.end()));
+            IVI(ASSERT(rvs_sweep.at(i) != sweep.end()));
             sweep.erase( rvs_sweep.at(i) );
             rvs_sweep.at(i) = sweep.end();
             // 2) shorten existing halfedge-pair
             const RatPoint_line_segment s = get_edge(*this, i);
             // sweep_loc is an interior point of s
-            KJB(ASSERT(is_on(s, sweep_loc)));
-            KJB(ASSERT(std::min(s.a, s.b) < sweep_loc));
-            KJB(ASSERT(sweep_loc < std::max(s.a, s.b)));
+            IVI(ASSERT(is_on(s, sweep_loc)));
+            IVI(ASSERT(std::min(s.a, s.b) < sweep_loc));
+            IVI(ASSERT(sweep_loc < std::max(s.a, s.b)));
             const size_t itwin = m_etab.at(i).twin,
                          // edge with origin not hit yet:
                          icut = s.a < sweep_loc ? itwin : i,
                          // ...but that is about to change.
                          ocut = m_etab.at(icut).origin,
                          j = m_etab.size();
-            KJB(ASSERT(std::max(s.a, s.b) == m_vtab.at(ocut).location));
-            KJB(ASSERT(ulma[2].end() == ulma[2].find(itwin))); // twin omitted
+            IVI(ASSERT(std::max(s.a, s.b) == m_vtab.at(ocut).location));
+            IVI(ASSERT(ulma[2].end() == ulma[2].find(itwin))); // twin omitted
             m_etab.at(icut).origin = vix; // this shortens edge icut
             // vix might be new.  If so, it needs a valid outedge:
             m_vtab.at(vix).outedge = icut;
             // 3) insert short version back into sweep line
             std::pair< Sweep::SL::iterator, bool >
                 y = sweep.insert( Shemp::ctor_from_true(i) );
-            KJB(ASSERT(y.second));
+            IVI(ASSERT(y.second));
             rvs_sweep.at(i) = y.first;
             // 4) create new edges
             //    New edge j dangles below sweepline.
@@ -3432,8 +3432,8 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             // If ocut is bereaved, it needs an accurate outedge:
             m_vtab.at(ocut).outedge = 1+j;
             kill_list.push_back(BLANK);
-            KJB(ASSERT(m_etab.size() == 2+j));
-            KJB(ASSERT(kill_list.size() == m_etab.size()));
+            IVI(ASSERT(m_etab.size() == 2+j));
+            IVI(ASSERT(kill_list.size() == m_etab.size()));
             // Each edge gets a reverse-lookup entry for the sweepline:
             rvs_sweep.resize(2+j, sweep.end());
             // TODO: check return values
@@ -3442,7 +3442,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             ulma[1].insert(i); // edge i was a "middle" (that's how we got i),
             ulma[2].erase(i); //  . . . but it has become a "lower."
         }
-        KJB(ASSERT(ulma[2].empty()));
+        IVI(ASSERT(ulma[2].empty()));
 
         // Low-end segments need to be tested in case any of them are parallel.
         // If so, throw away one of them -- add to kill_list
@@ -3461,7 +3461,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
                 if (hi_distal[i-1].p == hi_distal[i].p)
                 {
                     // kill off edge with index hi_distal[i].index:
-                    KJB(ASSERT(hi_distal[i].index != hi_distal[i-1].index));
+                    IVI(ASSERT(hi_distal[i].index != hi_distal[i-1].index));
                     kill_list[hi_distal[i].index] = hi_distal[i-1].index;
                     // The twin doesn't need to be marked, but it's doomed too.
                 }
@@ -3480,7 +3480,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             find_new_event(&q, *eir.first, *eir.second, ded, sweep_loc);
 #ifdef DEBUGGING
             SLCI bgin(eir.first);
-            KJB(ASSERT(++bgin == eir.second));
+            IVI(ASSERT(++bgin == eir.second));
 #endif
         }
         else
@@ -3489,7 +3489,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             SLCI li = eir.first, ri = eir.second; // left, right intersectors
             find_new_event(&q, *eir.first, *++li, ded, sweep_loc);
             find_new_event(&q, *--ri, *eir.second, ded, sweep_loc);
-            KJB(ASSERT(li != eir.second));
+            IVI(ASSERT(li != eir.second));
         }
     }
 
@@ -3516,25 +3516,25 @@ void Doubly_connected_edge_list::sweep_edge_merge(
                          vj = get_edge_table().at(ej).origin,
                          vjtwin = get_edge_table().at(ejtwin).origin;
 
-            KJB(ASSERT(ej != ek));
-            KJB(ASSERT(ej != ejtwin));
-            KJB(ASSERT(ek != ejtwin));
-            KJB(ASSERT(ek != ektwin));
-            KJB(ASSERT(ej != ektwin));
-            KJB(ASSERT(ejtwin != ektwin));
-            KJB(ASSERT(ektwin < get_edge_table().size()));
-            KJB(ASSERT(ejtwin < get_edge_table().size()));
-            KJB(ASSERT(get_edge_table().at(ejtwin).twin == ej));
-            KJB(ASSERT(get_edge_table().at(ektwin).twin == ek));
-            KJB(ASSERT(get_edge_table().at(eultwin).twin == eult));
-            KJB(ASSERT(get_edge_table().at(epenultwin).twin == epenult));
-            KJB(ASSERT(m_etab[ek].origin != m_etab[ektwin].origin));
+            IVI(ASSERT(ej != ek));
+            IVI(ASSERT(ej != ejtwin));
+            IVI(ASSERT(ek != ejtwin));
+            IVI(ASSERT(ek != ektwin));
+            IVI(ASSERT(ej != ektwin));
+            IVI(ASSERT(ejtwin != ektwin));
+            IVI(ASSERT(ektwin < get_edge_table().size()));
+            IVI(ASSERT(ejtwin < get_edge_table().size()));
+            IVI(ASSERT(get_edge_table().at(ejtwin).twin == ej));
+            IVI(ASSERT(get_edge_table().at(ektwin).twin == ek));
+            IVI(ASSERT(get_edge_table().at(eultwin).twin == eult));
+            IVI(ASSERT(get_edge_table().at(epenultwin).twin == epenult));
+            IVI(ASSERT(m_etab[ek].origin != m_etab[ektwin].origin));
 #ifdef DEBUGGING
             const RatPoint_line_segment sj=ded.lookup(ej), sk=ded.lookup(ek);
-            KJB(ASSERT(sj.a == sk.a && sj.b == sk.b)); // sj, sk are identical
-            KJB(ASSERT(   vj == m_etab[ek].origin
+            IVI(ASSERT(sj.a == sk.a && sj.b == sk.b)); // sj, sk are identical
+            IVI(ASSERT(   vj == m_etab[ek].origin
                        || vj == m_etab[ektwin].origin));
-            KJB(ASSERT(   vjtwin == m_etab[ek].origin
+            IVI(ASSERT(   vjtwin == m_etab[ek].origin
                        || vjtwin == m_etab[ektwin].origin));
 #endif
 
@@ -3545,7 +3545,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             if (eultwin != epenult)
             {
                 // The migrants are not a twin pair.  That's ok.
-                KJB(ASSERT(epenultwin != eult));
+                IVI(ASSERT(epenultwin != eult));
                 // Twin fields thus migrate:
                 m_etab[ej].twin = epenultwin;
                 m_etab[ejtwin].twin = eultwin;
@@ -3556,8 +3556,8 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             else
             {
                 // Migrants are a twin pair, so leave linked twin fields
-                KJB(ASSERT(eult == epenultwin)); // sensible assertion
-                KJB(ASSERT(epenult == eultwin)); // paranoiac assertion
+                IVI(ASSERT(eult == epenultwin)); // sensible assertion
+                IVI(ASSERT(epenult == eultwin)); // paranoiac assertion
             }
             // Origin fields migrate:
             m_etab[ej].origin = m_etab[epenult].origin;
@@ -3568,7 +3568,7 @@ void Doubly_connected_edge_list::sweep_edge_merge(
             // We've copied everything good, so let the old records go.
             m_etab.pop_back();
             m_etab.pop_back();
-            KJB(ASSERT(get_edge_table().size() == epenult));
+            IVI(ASSERT(get_edge_table().size() == epenult));
         }
     }
 }

@@ -1,4 +1,4 @@
-/* $Id: sample_real.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: sample_real.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -32,7 +32,7 @@ template<class Model>
 inline
 double get_real_model_parameter(const Model& m, int i)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     ASSERT(i == 0);
     return m;
 }
@@ -45,7 +45,7 @@ template<class Model>
 inline
 void set_real_model_parameter(Model& m, int i, double x)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     ASSERT(i == 0);
     m = x;
 }
@@ -127,7 +127,7 @@ public:
         (
             log_target,
             move_real_model_parameter<Model>,
-            Constant_parameter_evaluator<Model>(kjb::Vector(1, neighborhood)),
+            Constant_parameter_evaluator<Model>(ivi::Vector(1, neighborhood)),
             get_real_model_dimension<Model>
         )
     {}
@@ -216,7 +216,7 @@ public:
                num_dynamics_steps,
                gradient,
                move_real_model_parameter<Model>, 
-               Constant_parameter_evaluator<Model>(kjb::Vector(1, step_size)),
+               Constant_parameter_evaluator<Model>(ivi::Vector(1, step_size)),
                get_real_model_dimension<Model>,
                alpha)
     {}
@@ -249,11 +249,11 @@ public:
                num_dynamics_steps,
                gradient,
                move_real_model_parameter<Model>, 
-               Constant_parameter_evaluator<Model>(kjb::Vector(1, step_size)),
+               Constant_parameter_evaluator<Model>(ivi::Vector(1, step_size)),
                get_real_model_dimension<Model>,
                get_real_model_parameter<Model>,
-               Constant_parameter_evaluator<Model>(kjb::Vector(1, lower_bound)),
-               Constant_parameter_evaluator<Model>(kjb::Vector(1, upper_bound)),
+               Constant_parameter_evaluator<Model>(ivi::Vector(1, lower_bound)),
+               Constant_parameter_evaluator<Model>(ivi::Vector(1, upper_bound)),
                alpha)
     {}
 

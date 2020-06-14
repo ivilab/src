@@ -1,4 +1,4 @@
-/* $Id: psi_skeleton_detection.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: psi_skeleton_detection.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -31,7 +31,7 @@
 #include <l_cpp/l_exception.h>
 
 #include <string>
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -110,6 +110,6 @@ std::ostream& operator<<(std::ostream& ost, const Skeleton_detection& skeleton)
 std::vector<Skeleton_detection> parse_skeleton_detection(std::istream& ist);
 
 }// namespace psi
-}// namespace kjb
+}// namespace ivi
 
 #endif /*PSI_SKELETON_DETECTION_H */

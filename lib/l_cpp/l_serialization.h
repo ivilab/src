@@ -1,4 +1,4 @@
-/* $Id: l_serialization.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: l_serialization.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_L_SERIALIZATION_H
-#define KJB_L_SERIALIZATION_H
+#ifndef IVI_L_SERIALIZATION_H
+#define IVI_L_SERIALIZATION_H
 
 #include "l/l_sys_def.h"
 #include "l/l_sys_lib.h"
@@ -36,7 +36,7 @@
 #include <boost/type_traits.hpp>
 
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
@@ -49,7 +49,7 @@
 
 
 // boost serialization of most 
-namespace kjb {
+namespace ivi {
 
 
 /**
@@ -63,19 +63,19 @@ namespace kjb {
  * template <class T>
  * void my_func(T& my_object)
  * {
- * #ifdef KJB_HAVE_BST_SERIAL
+ * #ifdef IVI_HAVE_BST_SERIAL
  *      // check that T is serializable
- *      BOOST_CONCEPT_CHECK((kjb::SerializableConcept<T>));
+ *      BOOST_CONCEPT_CHECK((ivi::SerializableConcept<T>));
  *
  *      ...
  * #else
- *      KJB_THROW_2(Missing_dependency, "boost::serialization");
+ *      IVI_THROW_2(Missing_dependency, "boost::serialization");
  * #endif
  * }
  * </code>
  *
  * Note the double parentheses for BOOST_CONCEPT_CHECK, which are required,
- * as well as the guard statements for KJB_HAVE_BST_SERIAL.
+ * as well as the guard statements for IVI_HAVE_BST_SERIAL.
  * Also don't forget the include statement for boost's concept check library.
  */
 template <class X>
@@ -83,7 +83,7 @@ struct SerializableConcept
 {
     BOOST_CONCEPT_USAGE(SerializableConcept)
     {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 
         std::ofstream ofs("");
         std::ifstream ifs("");
@@ -98,14 +98,14 @@ struct SerializableConcept
 #else
         static const bool boost_serialization_not_available = true;
         BOOST_STATIC_ASSERT(boost_serialization_not_available == true);
-#endif /* KJB_HAVE_BST_SERIAL */
+#endif /* IVI_HAVE_BST_SERIAL */
     }
 };
 
 /** 
  * @brief Implements boost serialization for any object that implements the KjbReadableWritable concept.
  *
- * This function enables serialization for any Swappable class that can be constructed by receiving a filename, and implements a write(fname) method.  In general serialization should be implemented manually, but for kjb_c wrapped structures, manual wrapping is ill-advised for maintainability reasons.  This function makes those classes serializable.
+ * This function enables serialization for any Swappable class that can be constructed by receiving a filename, and implements a write(fname) method.  In general serialization should be implemented manually, but for ivi_c wrapped structures, manual wrapping is ill-advised for maintainability reasons.  This function makes those classes serializable.
  *
  * @warning This function is used by the boost library's serialization routines and should almost never be called directly.
  *
@@ -113,10 +113,10 @@ struct SerializableConcept
  *
  * @see KjbReadableWritable_concept, Swappable_concept
  */
-template <class Archive, class KJB_readable_writable>
-void kjb_serialize_default(Archive & ar, KJB_readable_writable& obj, const unsigned int /* version */)
+template <class Archive, class IVI_readable_writable>
+void ivi_serialize_default(Archive & ar, IVI_readable_writable& obj, const unsigned int /* version */)
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     // This is pretty hacky.  We basically use the existing "write-to-file"/"read-from-file" semantics to convert the matrix to/from a string and then serialize the string representation.
     
     std::string obj_as_string;
@@ -124,7 +124,7 @@ void kjb_serialize_default(Archive & ar, KJB_readable_writable& obj, const unsig
     char tmp_fname[ MAXPATHLEN ];
 
     // create a legal and unique temporary file name
-    KJB( ETX( BUFF_GET_TEMP_FILE_NAME( tmp_fname ) ) );
+    IVI( ETX( BUFF_GET_TEMP_FILE_NAME( tmp_fname ) ) );
     // (this solution is not thread-safe
     // and could result in race conditions.  Evenutally, we
     // should write real serialization methods for vector, matrix, and
@@ -155,21 +155,21 @@ void kjb_serialize_default(Archive & ar, KJB_readable_writable& obj, const unsig
         }
 
         // read file into m
-        KJB_readable_writable tmp_matrix(tmp_fname);
+        IVI_readable_writable tmp_matrix(tmp_fname);
         obj.swap(tmp_matrix);
     } 
 
     // delete tmp file
-    ETX( kjb_c::kjb_unlink( tmp_fname ) );
-#else /* KJB_HAVE_BST_SERIAL */
-    KJB_THROW_2(Missing_dependency, "boost::serialization");
-#endif /* KJB_HAVE_BST_SERIAL */
+    ETX( ivi_c::ivi_unlink( tmp_fname ) );
+#else /* IVI_HAVE_BST_SERIAL */
+    IVI_THROW_2(Missing_dependency, "boost::serialization");
+#endif /* IVI_HAVE_BST_SERIAL */
 }
 
-template <class Archive, class KJB_readable_writable>
-void kjb_serialize(Archive & ar, KJB_readable_writable& obj, const unsigned int version)
+template <class Archive, class IVI_readable_writable>
+void ivi_serialize(Archive & ar, IVI_readable_writable& obj, const unsigned int version)
 {
-    kjb_serialize_default(ar, obj, version);
+    ivi_serialize_default(ar, obj, version);
 }
 
 /** 
@@ -181,7 +181,7 @@ void kjb_serialize(Archive & ar, KJB_readable_writable& obj, const unsigned int 
  *  <li>The object was saved to an ascii format using text_oarchive, 
  *  <li>The file contains only this object
  *
- *  All three of these criteria are satisfied by the kjb::save() function.
+ *  All three of these criteria are satisfied by the ivi::save() function.
  *  Assuming the serialization routine and equality operator are implemented
  *  correctly, the test below should always pass:
  *
@@ -197,13 +197,13 @@ void kjb_serialize(Archive & ar, KJB_readable_writable& obj, const unsigned int 
  *  @author Kyle Simek
  */
 template <class Serializable>
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 void load(Serializable& obj, const std::string& fname)
 #else
 void load(Serializable&, const std::string&)
 #endif
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     // consider adding load(stream, object), also
 
     BOOST_CONCEPT_ASSERT((SerializableConcept<Serializable>));
@@ -211,7 +211,7 @@ void load(Serializable&, const std::string&)
     std::ifstream ifs(fname.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_3(IO_error, "Error opening %s.", (fname.c_str()));
+        IVI_THROW_3(IO_error, "Error opening %s.", (fname.c_str()));
     }
 
     try
@@ -221,11 +221,11 @@ void load(Serializable&, const std::string&)
     }
     catch(boost::archive::archive_exception& ex)
     {
-        KJB_THROW_3(IO_error, "Error reading %s. Format may be invalid.  Boost error was: %s", (fname.c_str())(ex.what()));
+        IVI_THROW_3(IO_error, "Error reading %s. Format may be invalid.  Boost error was: %s", (fname.c_str())(ex.what()));
     }
 
 #else
-        KJB_THROW_2(Missing_dependency, "boost::serialization");
+        IVI_THROW_2(Missing_dependency, "boost::serialization");
 #endif
 }
 
@@ -241,7 +241,7 @@ void load(Serializable&, const std::string&)
  * @note indices may be passed any of the following:
  *      <li> std::vector of type convertible to size_t
  *      <li> std::list of type convertible to size_t
- *      <li> kjb::Int_vector
+ *      <li> ivi::Int_vector
  *      <li> Matlab-formatted string (i.e. "1:2:100")
  *      <li> int or size_t
  */
@@ -344,7 +344,7 @@ void load_many_to_ptr(SerializablePtrOutputIterator it, const std::string& fmt_s
   @note indices may be any of the following:
        <li> std::vector of type convertible to size_t
        <li> std::list of type convertible to size_t
-       <li> kjb::Int_vector
+       <li> ivi::Int_vector
        <li> Matlab-formatted string (i.e. "1:2:100")
        <li> int or size_t
  */
@@ -370,26 +370,26 @@ load_many_to_ptr(SerializablePtrOutputIterator it, const std::string& fmt_str, c
  *
  * This function will serialize the object by value
  * to an ascii format using text_oarchive.  It can be
- * loaded using the kjb::load() method, or by manually
+ * loaded using the ivi::load() method, or by manually
  * using a boost::serialization text_iarchive object.
  *
  *  @author Kyle Simek
  */
 template <class Serializable>
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 void save(const Serializable& obj, const std::string& fname)
 #else
 void save(const Serializable&, const std::string&)
 #endif
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     // consider adding save(object, stream), also
     BOOST_CONCEPT_ASSERT((SerializableConcept<Serializable>));
    
     std::ofstream ofs(fname.c_str());
     if(ofs.fail())
     {
-        KJB_THROW_3(IO_error, "Error opening %s.", (fname.c_str()));
+        IVI_THROW_3(IO_error, "Error opening %s.", (fname.c_str()));
     }
 
     try
@@ -399,10 +399,10 @@ void save(const Serializable&, const std::string&)
     }
     catch(...)
     {
-        KJB_THROW_3(IO_error, "Error serializing object to file %s. Probably a bug in the serialization routine.", (fname.c_str()));
+        IVI_THROW_3(IO_error, "Error serializing object to file %s. Probably a bug in the serialization routine.", (fname.c_str()));
     }
 #else
-        KJB_THROW_2(Missing_dependency, "boost::serialization");
+        IVI_THROW_2(Missing_dependency, "boost::serialization");
 #endif
 }
 

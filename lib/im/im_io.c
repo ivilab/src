@@ -1,5 +1,5 @@
 
-/* $Id: im_io.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: im_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__
 
@@ -34,7 +34,7 @@
 
 #include <sys/types.h>
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 #    include <sys/wait.h>
 #endif 
 
@@ -78,7 +78,7 @@ void im_warning_handler(char* message, char* qualifier)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 Byte_image* im_read_byte_image
 (
@@ -121,7 +121,7 @@ Byte_image* im_read_byte_image
         *           client_name=ClientName(*argv);
         */
 
-        client_name = kjb_strdup("ImageMagick");
+        client_name = ivi_strdup("ImageMagick");
         im_client_name_set = TRUE;
     }
 
@@ -130,7 +130,7 @@ Byte_image* im_read_byte_image
     * an ImageMagick routine set it (via im_warning_handler).
     */
 
-    kjb_clear_error();
+    ivi_clear_error();
 
     /*
     ** Preempt ImageMagick printing of recoverable problems. Note that
@@ -180,7 +180,7 @@ Byte_image* im_read_byte_image
         /*
          *  The call to the ImageMagick routine may have set the error on
          *  failure (since this has been arranged in certain circumstances),
-         *  or it may still be unset due to the call to kjb_clear_error
+         *  or it may still be unset due to the call to ivi_clear_error
          *  above. Insert_error covers both possibilities.
          */
 
@@ -210,7 +210,7 @@ Byte_image* im_read_byte_image
         /*
          *  The call to the ImageMagick routine may have set the error on
          *  failure (since this has been arranged in certain circumstances),
-         *  or it may still be unset due to the call to kjb_clear_error
+         *  or it may still be unset due to the call to ivi_clear_error
          *  above. Insert_error covers both possibilities.
          */
 
@@ -299,12 +299,12 @@ Byte_image* im_read_byte_image
     return NULL;
 }
 
-#endif   /* KJB_HAVE_X11  */
+#endif   /* IVI_HAVE_X11  */
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 int im_write_byte_image
 (
@@ -344,7 +344,7 @@ int im_write_byte_image
         **           client_name=ClientName(*argv);
         */
 
-        client_name = kjb_strdup("ImageMagick");
+        client_name = ivi_strdup("ImageMagick");
         im_client_name_set = TRUE;
     }
    /*
@@ -352,7 +352,7 @@ int im_write_byte_image
     * then an ImageMagick routine set it (via im_warning_handler).
     */
 
-    kjb_clear_error();
+    ivi_clear_error();
 
     /*
     ** Preempt ImageMagick printing of recoverable problems. Note that since
@@ -400,7 +400,7 @@ int im_write_byte_image
         /*
          *  The call to the ImageMagick routine may have set the error on
          *  failure (since this has been arranged in certain circumstances),
-         *  or it may still be unset due to the call to kjb_clear_error
+         *  or it may still be unset due to the call to ivi_clear_error
          *  above. Insert_error covers both possibilities.
          */
 
@@ -427,7 +427,7 @@ int im_write_byte_image
         return ERROR;
     }
 
-    kjb_memcpy((char*)im_image->packed_pixels, ip->pixels[ 0 ], num_bytes);
+    ivi_memcpy((char*)im_image->packed_pixels, ip->pixels[ 0 ], num_bytes);
 
     im_image->class = DirectClass;
     im_image->compression = NoCompression;
@@ -439,7 +439,7 @@ int im_write_byte_image
         /*
          *  The call to the ImageMagick routine may have set the error on
          *  failure (since this has been arranged in certain circumstances),
-         *  or it may still be unset due to the call to kjb_clear_error
+         *  or it may still be unset due to the call to ivi_clear_error
          *  above. Insert_error covers both possibilities.
          */
 
@@ -451,7 +451,7 @@ int im_write_byte_image
          *   will free them (if they are not null).
          */
 
-        kjb_free(im_image->packed_pixels);
+        ivi_free(im_image->packed_pixels);
         im_image->packed_pixels = NULL;
         DestroyImages(im_image);
 
@@ -465,7 +465,7 @@ int im_write_byte_image
         /*
          *  The call to the ImageMagick routine may have set the error on
          *  failure (since this has been arranged in certain circumstances),
-         *  or it may still be unset due to the call to kjb_clear_error
+         *  or it may still be unset due to the call to ivi_clear_error
          *  above. Insert_error covers both possibilities.
          */
 
@@ -477,7 +477,7 @@ int im_write_byte_image
          *   will free them (if they are not null.
          */
 
-        kjb_free(im_image->packed_pixels);
+        ivi_free(im_image->packed_pixels);
         im_image->packed_pixels = NULL;
         DestroyImages(im_image);
 
@@ -489,7 +489,7 @@ int im_write_byte_image
        been allocated in this module, even though DestroyImages
        will free them (if they are not null.
     */
-    kjb_free(im_image->packed_pixels);
+    ivi_free(im_image->packed_pixels);
     im_image->packed_pixels = NULL;
     DestroyImages(im_image);
 
@@ -510,11 +510,11 @@ int im_write_byte_image
     return ERROR;
 }
 
-#endif   /* KJB_HAVE_X11  */
+#endif   /* IVI_HAVE_X11  */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 /*ARGSUSED*/
 IM_displayed_image* im_display_byte_image
@@ -558,7 +558,7 @@ IM_displayed_image* im_display_byte_image
         im_pipe[ WRITE_END ] = NOT_SET;
     }
 
-    display_pid = kjb_fork();
+    display_pid = ivi_fork();
 
     if (display_pid < 0)
     {
@@ -606,9 +606,9 @@ IM_displayed_image* im_display_byte_image
 
     if (im_image == NULL)
     {
-        kjb_fprintf(stderr, "Unable to allocate ImageMagick image.\n");
-        kjb_print_error();
-        kjb_exit( EXIT_FAILURE );
+        ivi_fprintf(stderr, "Unable to allocate ImageMagick image.\n");
+        ivi_print_error();
+        ivi_exit( EXIT_FAILURE );
     }
 
     im_image->columns = (unsigned int) num_cols;
@@ -626,12 +626,12 @@ IM_displayed_image* im_display_byte_image
 
     if (im_image->packed_pixels == NULL)
     {
-        kjb_print_error();
+        ivi_print_error();
         DestroyImages(im_image);
-        kjb_exit( EXIT_FAILURE );
+        ivi_exit( EXIT_FAILURE );
     }
 
-    kjb_memcpy(im_image->packed_pixels, ip->pixels[ 0 ], num_bytes);
+    ivi_memcpy(im_image->packed_pixels, ip->pixels[ 0 ], num_bytes);
 
     im_image->class = DirectClass;
     im_image->compression = NoCompression;
@@ -640,19 +640,19 @@ IM_displayed_image* im_display_byte_image
 
     if (status == False)
     {
-        kjb_fprintf(stderr, "Unable to decode ImageMagick image.\n");
-        kjb_print_error();
+        ivi_fprintf(stderr, "Unable to decode ImageMagick image.\n");
+        ivi_print_error();
 
         DestroyImages(im_image);
 
-        kjb_exit( EXIT_FAILURE );
+        ivi_exit( EXIT_FAILURE );
     }
 
     im_display(im_image, &image_info);
 
     DestroyImages(im_image);
 
-    kjb_exit ( EXIT_SUCCESS );
+    ivi_exit ( EXIT_SUCCESS );
 
     /*NOTREACHED*/
 
@@ -675,11 +675,11 @@ IM_displayed_image* im_display_byte_image
     return NULL;
 }
 
-#endif   /* KJB_HAVE_X11  */
+#endif   /* IVI_HAVE_X11  */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 int im_fork_close(IM_displayed_image* displayed_image_ptr)
 {
@@ -690,7 +690,7 @@ int im_fork_close(IM_displayed_image* displayed_image_ptr)
     kill(pid, SIGTERM);
     waitpid(pid, NULL, 0);
 
-    kjb_free(displayed_image_ptr);
+    ivi_free(displayed_image_ptr);
 
     return NO_ERROR;
 }
@@ -704,12 +704,12 @@ int im_fork_close(IM_displayed_image* dummy_displayed_image_ptr)
     return ERROR;
 }
 
-#endif   /* KJB_HAVE_X11  */
+#endif   /* IVI_HAVE_X11  */
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 int im_fork_close_all(void)
 {
@@ -736,7 +736,7 @@ int im_fork_close_all(void)
     return ERROR;
 }
 
-#endif   /* KJB_HAVE_X11  */
+#endif   /* IVI_HAVE_X11  */
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

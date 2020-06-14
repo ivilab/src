@@ -26,7 +26,7 @@
 #include <set>
 #include <boost/foreach.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -105,7 +105,7 @@ void Traj_set::trajectories(const Data& data, OutIt output) const
     }
 }
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_TRAJ_SET_H */
 

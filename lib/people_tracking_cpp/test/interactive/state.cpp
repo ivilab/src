@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: state.cpp 20375 2016-02-15 20:33:07Z jguan1 $ */
+/* $Id: state.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_complete_state.h>
 #include <people_tracking_cpp/pt_body_2d.h>
@@ -27,7 +27,7 @@
 #include <detector_cpp/d_bbox.h>
 #include <st_cpp/st_perspective_camera.h>
 #include <gr_cpp/gr_opengl.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <gr_cpp/gr_primitive.h>
@@ -35,9 +35,9 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
 
 const double win_width = 500;
 const double win_height = 500;
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
         camera.set_pitch(M_PI/15.0);
 
         // GL stuff
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         Glut_window win(win_width, win_height);
 
         win.set_display_callback(display);
@@ -99,7 +99,7 @@ int main(int argc, char** argv)
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;
@@ -281,7 +281,7 @@ void display()
         render_arrow(bbox.get_center(),
                      bbox.get_center() + 20*body.model_dir);
     }
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutSwapBuffers();
 #endif
 }
@@ -460,7 +460,7 @@ void handle_key(unsigned char key, int, int)
             exit(EXIT_SUCCESS);
         }
     }
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

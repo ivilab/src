@@ -8,12 +8,12 @@
  * Copyright (C) 2012 Vojtech Franc, Michal Uricar
  */
 
-#ifndef KJB_FLANKMARK_LIBLBP_H
-#define KJB_FLANKMARK_LIBLBP_H
+#ifndef IVI_FLANKMARK_LIBLBP_H
+#define IVI_FLANKMARK_LIBLBP_H
 
 #include <wrap_flandmark_cpp/msvc-compat.h>
 
-namespace kjb {
+namespace ivi {
 namespace flandmark {
 
 #define LIBLBP_INDEX(ROW,COL,NUM_ROWS) ((COL)*(NUM_ROWS)+(ROW))
@@ -29,6 +29,6 @@ extern void liblbp_pyr_addvec(int64_t *vec, uint32_t vec_nDim, uint32_t *img, ui
 extern void liblbp_pyr_subvec(int64_t *vec, uint32_t vec_nDim, uint32_t *img, uint16_t img_nRows, uint16_t img_nCols);
 extern uint32_t liblbp_pyr_get_dim(uint16_t img_nRows, uint16_t img_nCols, uint16_t nPyramids);
 
-}} //namespace kjb::flandmark
+}} //namespace ivi::flandmark
 
 #endif

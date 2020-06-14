@@ -1,4 +1,4 @@
-/* $Id: gui_selectable.h 11209 2011-11-22 06:07:10Z ksimek $ */
+/* $Id: gui_selectable.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,12 +19,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_LISTENER_H
-#define KJB_CPP_GUI_LISTENER_H
+#ifndef IVI_CPP_GUI_LISTENER_H
+#define IVI_CPP_GUI_LISTENER_H
 
 #include <gr_cpp/gr_renderable.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -42,7 +42,7 @@ namespace gui
  * Objects implementing this interface can be attached to a Viewer by calling
  * Viewer::add_selection_listener
  */
-class Selectable : public kjb::Renderable
+class Selectable : public ivi::Renderable
 {
 public:
     /**

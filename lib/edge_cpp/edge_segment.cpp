@@ -1,4 +1,4 @@
-/* $Id: edge_segment.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: edge_segment.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -50,17 +50,17 @@
 
 #define PI_TIMES_1_POINT_5  M_PI*1.5
 #define VERTICAL_THRESHOLD 1
-#define KJB_LS_MAX_RGB_VALUE 255
+#define IVI_LS_MAX_RGB_VALUE 255
 #define OVERLAPPING_COLLINEARITY_THRESHOLD 0.12
 #define OVERLAPPING_MAX_DIST 10 
 
-using namespace kjb;
+using namespace ivi;
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 Edge_segment::Edge_segment(
-    const kjb::Edge & iedge,
+    const ivi::Edge & iedge,
     std::istream& in
 )
 :   Line_segment(),
@@ -79,14 +79,14 @@ Edge_segment::Edge_segment(
  */
 void Edge_segment::fit_to_edge_points_with_least_squares
 (
-    const kjb::Edge &      edge,
+    const ivi::Edge &      edge,
     bool use_num_pts_as_length
 )
 {
 
     if(edge.get_num_points() == 0)
     {
-        throw kjb::Illegal_argument("Invalid edge with zero points");
+        throw ivi::Illegal_argument("Invalid edge with zero points");
     }
 
     double avg_x = 0;
@@ -117,12 +117,12 @@ void Edge_segment::fit_to_edge_points_with_least_squares
     }
 
     Matrix AA = A*A.transpose();
-    kjb_c::Matrix * E_mp = 0;
-    kjb_c::Vector * D_vp = 0;
+    ivi_c::Matrix * E_mp = 0;
+    ivi_c::Vector * D_vp = 0;
 
-    if( kjb_c::diagonalize(AA.get_c_matrix(), &E_mp, &D_vp) != kjb_c::NO_ERROR)
+    if( ivi_c::diagonalize(AA.get_c_matrix(), &E_mp, &D_vp) != ivi_c::NO_ERROR)
     {
-        throw KJB_error("Line segment fitting, matrix diagonalization failed");
+        throw IVI_error("Line segment fitting, matrix diagonalization failed");
     }
 
     double denominator = E_mp->elements[1][1];
@@ -179,8 +179,8 @@ void Edge_segment::fit_to_edge_points_with_least_squares
         error /= num_points;
     }
 
-    kjb_c::free_matrix(E_mp);
-    kjb_c::free_vector(D_vp);
+    ivi_c::free_matrix(E_mp);
+    ivi_c::free_vector(D_vp);
 
     least_squares_fitting_error = error;
     strength /= num_points;
@@ -201,25 +201,25 @@ void Edge_segment::read(std::istream& in)
 
     if (!(field_value = read_field_value(in, "strength")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Edge segment strength");
+        IVI_THROW_2(Illegal_argument, "Missing Edge segment strength");
     }
     istringstream ist(field_value);
     ist >> strength;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line segment strength");
+        IVI_THROW_2(Illegal_argument, "Invalid line segment strength");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "least_squares_fitting_error")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing least squares fitting error");
+        IVI_THROW_2(Illegal_argument, "Missing least squares fitting error");
     }
     ist.str(field_value);
     ist >> least_squares_fitting_error;
     if (ist.fail() || (least_squares_fitting_error < 0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid least squares fitting error");
+        IVI_THROW_2(Illegal_argument, "Invalid least squares fitting error");
     }
     ist.clear(std::ios_base::goodbit);
 }
@@ -253,8 +253,8 @@ bool Edge_segment::is_overlapping
     double overlapping_threshold 
 ) const
 {
-    kjb::Vector v1(3,0.0);
-    kjb::Vector v2(3,0.0);
+    ivi::Vector v1(3,0.0);
+    ivi::Vector v2(3,0.0);
     get_direction(v1);
     es.get_direction(v2);
 
@@ -310,7 +310,7 @@ bool Edge_segment::is_overlapping
     return true;*/
 }
 
-std::ostream& kjb::operator<<(std::ostream& out, const Edge_segment& es)
+std::ostream& ivi::operator<<(std::ostream& out, const Edge_segment& es)
 {
     out << "Least squares error: " << es.least_squares_fitting_error << std::endl;
     out << "Strength: " << es.strength << std::endl;

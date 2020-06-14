@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: lss_set.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_LSS_SET_H
-#define KJB_TIES_LSS_SET_H
+#ifndef IVI_TIES_LSS_SET_H
+#define IVI_TIES_LSS_SET_H
 
 #include <map>
 #include <vector>
@@ -32,7 +32,7 @@
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/typedefs.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /** 
@@ -286,14 +286,14 @@ public:
     /** @brief    Return the gp scales. */
     const Double_v& gp_scales() const
     {
-        //KJB(ASSERT(lss_vec_[0].allow_drift()));
+        //IVI(ASSERT(lss_vec_[0].allow_drift()));
         return lss_vec_[0].gp_scales();
     }
 
     /** @brief    Return the gp signal variances. */
     const Double_v& gp_sigvars() const
     {
-        //KJB(ASSERT(lss_vec_[0].allow_drift()));
+        //IVI(ASSERT(lss_vec_[0].allow_drift()));
         return lss_vec_[0].gp_sigvars();
     }
 

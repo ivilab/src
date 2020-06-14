@@ -1,4 +1,4 @@
-/* $Id: psi_visualize.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: psi_visualize.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_PSI_VISUALIZE_V1_H
-#define KJB_PSI_VISUALIZE_V1_H
+#ifndef IVI_PSI_VISUALIZE_V1_H
+#define IVI_PSI_VISUALIZE_V1_H
 
 
 #include <l_cpp/l_exception.h>
@@ -43,12 +43,12 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 class Track_visualizer : public Video_player
 {
 
@@ -80,7 +80,7 @@ public:
     /// render a set of trajectories, using the colors provided.
     /// @param colors A vector of colors to use at each frame.  Must have size() == trajectories.duration() or 1.  If size is 1, the same color is used for the entire track.
     void render(
-            const kjb::pt::Trajectory_map& trajectories,
+            const ivi::pt::Trajectory_map& trajectories,
             const std::map<pt::Entity_id,
             std::vector<Vector3> >& colors) const;
 
@@ -224,13 +224,13 @@ public:
         init_animate_callback_();
     }
 
-    void set_frames(const std::vector<kjb::opengl::Sprite>& sprites, size_t thinning)
+    void set_frames(const std::vector<ivi::opengl::Sprite>& sprites, size_t thinning)
     {
         frame_sprites_ = sprites;
         frame_thinning_ = thinning;
     }
 
-    void set_camera(const kjb::Perspective_camera& cam)
+    void set_camera(const ivi::Perspective_camera& cam)
     {
         cam_ = cam;
     }
@@ -270,11 +270,11 @@ protected:
     {
         using namespace boost;
 
-        kjb::opengl::Glut::add_timer_callback(sample_period_, bind(&Self::animate, this));
+        ivi::opengl::Glut::add_timer_callback(sample_period_, bind(&Self::animate, this));
     }
 
 protected:
-    kjb::Perspective_camera cam_;
+    ivi::Perspective_camera cam_;
     std::vector<std::vector<std::vector<Entity_state> > > entities_frames_;
     size_t num_frames_;
 //    std::vector<std::vector<Cuboid> > cuboids_frames_;
@@ -283,10 +283,10 @@ protected:
     size_t cur_frame_;
     double width_;
     double height_;
-    kjb::opengl::Glut_window wnd_;
+    ivi::opengl::Glut_window wnd_;
     bool animating_;
 
-    std::vector<kjb::opengl::Sprite> frame_sprites_;
+    std::vector<ivi::opengl::Sprite> frame_sprites_;
     size_t frame_thinning_;
 
     std::vector<std::vector<std::vector<Bbox> > > frames_boxes_;
@@ -298,6 +298,6 @@ protected:
 void render_ground_plane();
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 
 #endif

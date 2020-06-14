@@ -18,12 +18,12 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set_sampler.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: lss_set_sampler.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_LSS_SAMPLER_H
-#define KJB_TIES_LSS_SAMPLER_H
+#ifndef IVI_TIES_LSS_SAMPLER_H
+#define IVI_TIES_LSS_SAMPLER_H
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/record.h>
 #else 
@@ -43,7 +43,7 @@
 
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 typedef Shared_gradient<Lss_set_posterior, Shared_param_adapter> Shared_param_gradient;
@@ -298,7 +298,7 @@ ergo::hmc_step<Lss_set> Lss_set_sampler::shared_hmc_step
     return shared_hmc;
 }
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
-#endif // KJB_TIES_LSS_SAMPLER_H
+#endif // IVI_TIES_LSS_SAMPLER_H
 

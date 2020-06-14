@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief implementation of wrapper on KJB_Image
+ * @brief implementation of wrapper on IVI_Image
  *
  * @author Ernesto Brau
  * @author Sumin Byeon
@@ -10,7 +10,7 @@
  * @author Kyle Simek
  */
 
-/* $Id: i_image.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: i_image.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "i/i_float_io.h"
 #include "l_cpp/l_exception.h"
@@ -22,7 +22,7 @@
 #include <string>
 #include <cmath>
 
-namespace kjb {
+namespace ivi {
 
 
 #ifdef YES_WE_WANT_GARBAGE_POLICE
@@ -35,21 +35,21 @@ const char* Image::BAD_CHANNEL = "Invalid channel number";
 Image::Image(int rows, int cols)
     : m_image( 0 )
 {
-    ETX( kjb_c::get_target_image( &m_image, rows, cols ) );
+    ETX( ivi_c::get_target_image( &m_image, rows, cols ) );
     call_me_in_every_ctor();
 }
 
-Image::Image( const kjb_c::Matrix& src ) :
+Image::Image( const ivi_c::Matrix& src ) :
     m_image(0)
 {
-    ETX( kjb_c::matrix_to_bw_image(&src, &m_image) );
+    ETX( ivi_c::matrix_to_bw_image(&src, &m_image) );
     call_me_in_every_ctor();
 }
 
 Image::Image( const Matrix& src ) :
     m_image(0)
 {
-    ETX( kjb_c::matrix_to_bw_image(src.get_c_matrix(), &m_image) );
+    ETX( ivi_c::matrix_to_bw_image(src.get_c_matrix(), &m_image) );
     call_me_in_every_ctor();
 }
 
@@ -59,14 +59,14 @@ Image::Image( const Image& src )
         , info( std::string("(COPY-OF") + src.info + std::string(")") )
         #endif
 {
-    ETX( kjb_c::kjb_copy_image( &m_image, src.m_image ) );
+    ETX( ivi_c::ivi_copy_image( &m_image, src.m_image ) );
     call_me_in_every_ctor();
 }
 
 Image::Image(const std::string& fname)
     : m_image(0)
 {
-    ETX(kjb_read_image_2(&m_image, fname.c_str()));
+    ETX(ivi_read_image_2(&m_image, fname.c_str()));
     call_me_in_every_ctor();
 }
 
@@ -79,7 +79,7 @@ Image::Image( Impl_type* wrap_me )
 Image::Image(int num_rows, int num_cols, int r, int g, int b) :
     m_image(0)
 {
-    ETX(kjb_c::get_initialized_image_2(&m_image, num_rows, num_cols, r, g, b));
+    ETX(ivi_c::get_initialized_image_2(&m_image, num_rows, num_cols, r, g, b));
     call_me_in_every_ctor();
 }
 
@@ -89,7 +89,7 @@ Image Image::create_initialized_image( int rows, int cols, int r, int g, int b )
     Image result( rows, cols );
     if ( 0 < rows && 0 < cols )
     {
-        ETX( kjb_c::get_initialized_image_2( &result.m_image, rows, cols, r, g, b ) );
+        ETX( ivi_c::get_initialized_image_2( &result.m_image, rows, cols, r, g, b ) );
     }
     return result;
 }
@@ -97,15 +97,15 @@ Image Image::create_initialized_image( int rows, int cols, int r, int g, int b )
 /**
  * @brief Write to a file
  * @param fname Filename to write to.  Include a format suffix, please!
- * @throws KJB_error, if anything goes wrong in kjb_write_image().
+ * @throws IVI_error, if anything goes wrong in ivi_write_image().
  *
- * This wraps C function kjb_c::kjb_write_image(), and infers the proper
+ * This wraps C function ivi_c::ivi_write_image(), and infers the proper
  * output format from the filename suffix; or it uses a Sun format if no suffix
  * is recognized.
  */
 void Image::write(const std::string& fname) const
 {
-    ETX(kjb_c::kjb_write_image(m_image, fname.c_str()));
+    ETX(ivi_c::ivi_write_image(m_image, fname.c_str()));
 }
 
 /// @brief Crop this image.
@@ -119,18 +119,18 @@ Image& Image::crop(int r, int c, int num_rows, int num_cols)
     }
 
     Impl_type* im = NULL;
-    ETX(kjb_c::get_image_window(&im, m_image, r, c, num_rows, num_cols));
+    ETX(ivi_c::get_image_window(&im, m_image, r, c, num_rows, num_cols));
     Image i(im);
     swap(i);
     return *this;
 }
 
 /// @brief Deep copy assignment from C-type image.
-Image& Image::operator=(const kjb_c::KJB_image& src)
+Image& Image::operator=(const ivi_c::IVI_image& src)
 {
     if (m_image != & src)
     {
-        ETX(kjb_c::kjb_copy_image(&m_image, &src));
+        ETX(ivi_c::ivi_copy_image(&m_image, &src));
     }
 
     return *this;
@@ -145,14 +145,14 @@ Image& Image::operator=(const Image& src)
 /// @brief Add an image to this image, in place
 Image& Image::operator+=(const Image& op2)
 {
-    ETX(kjb_c::ow_add_images(m_image, op2.m_image));
+    ETX(ivi_c::ow_add_images(m_image, op2.m_image));
     return *this;
 }
 
 /// @brief Subtract an image from this image, in place
 Image& Image::operator-=(const Image& op2)
 {
-    ETX(kjb_c::ow_subtract_images(m_image, op2.m_image));
+    ETX(ivi_c::ow_subtract_images(m_image, op2.m_image));
     return *this;
 }
 
@@ -163,7 +163,7 @@ Image& Image::operator-=(const Image& op2)
  */
 Image& Image::operator*=(double op2)
 {
-    ETX(kjb_c::ow_scale_image(m_image, op2));
+    ETX(ivi_c::ow_scale_image(m_image, op2));
     return *this;
 }
 
@@ -177,7 +177,7 @@ Image& Image::operator/=(double op2)
 {
     if( 0 == op2 )
     {
-        KJB_THROW(Divide_by_zero);
+        IVI_THROW(Divide_by_zero);
     }
 
     return operator*=( 1.0 / op2 );
@@ -274,7 +274,7 @@ void Image::from_color_matrix(const Int_matrix& m)
     int rows = m.get_num_rows();
     int cols = m.get_num_cols();
 
-    ETX( kjb_c::get_initialized_image_2( &m_image, rows, cols, 0, 0, 0 ) );
+    ETX( ivi_c::get_initialized_image_2( &m_image, rows, cols, 0, 0, 0 ) );
 
     for(int i=0; i < rows; ++i )
     {
@@ -303,7 +303,7 @@ void Image::from_color_matrix(const Int_matrix& m)
 /// @brief Access rvalue at row-major index, without bounds-checking.
 const Image::Pixel_type& Image::operator()( int index ) const
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     int row, col;
     compute_row_col( index, &row, &col );
     return operator()( row, col );
@@ -311,21 +311,21 @@ const Image::Pixel_type& Image::operator()( int index ) const
 
 void Image::invert()
 {
-    ETX(kjb_c::ow_invert_image(m_image));
+    ETX(ivi_c::ow_invert_image(m_image));
 }
 
 Matrix Image::get_channel(int index) const
 {
-    kjb_c::Matrix *r = 0, *g = 0, *b = 0;
-    KJB(ETX(image_to_rgb_matrices(m_image, &r, &g, &b)));
-    kjb::Matrix wrapped_r(r), wrapped_g(g), wrapped_b(b);
+    ivi_c::Matrix *r = 0, *g = 0, *b = 0;
+    IVI(ETX(image_to_rgb_matrices(m_image, &r, &g, &b)));
+    ivi::Matrix wrapped_r(r), wrapped_g(g), wrapped_b(b);
 
     switch(index)
     {
         case RED:   return wrapped_r;
         case GREEN: return wrapped_g;
         case BLUE:  return wrapped_b;
-        default:    KJB_THROW_2(Illegal_argument, "Channel index must be "
+        default:    IVI_THROW_2(Illegal_argument, "Channel index must be "
                                     "0, 1, or 2 (or RED, GREEN, or BLUE).");
     }
 }
@@ -333,13 +333,13 @@ Matrix Image::get_channel(int index) const
 
 void Image::check_bounds( int row, int col ) const
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     // No need to test whether m_image equals NULL; this will catch it.
     if (        row < 0 || get_num_rows() <= row
             ||  col < 0 || get_num_cols() <= col )
     {
-        // hit KJB(UNTESTED_CODE());
-        KJB_THROW(Index_out_of_bounds);
+        // hit IVI(UNTESTED_CODE());
+        IVI_THROW(Index_out_of_bounds);
     }
 }
 
@@ -350,7 +350,7 @@ void Image::check_bounds( int row, int col ) const
  */
 float& Image::at(int row, int col, int channel)
 {
-    //hit KJB(UNTESTED_CODE());
+    //hit IVI(UNTESTED_CODE());
     check_bounds( row, col );
     return operator()(row, col, channel);
 }
@@ -362,7 +362,7 @@ float& Image::at(int row, int col, int channel)
  */
 float Image::at(int row, int col, int channel) const
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     check_bounds( row, col );
     return operator()(row, col, channel);
 }
@@ -374,7 +374,7 @@ float Image::at(int row, int col, int channel) const
  */
 Image::Pixel_type& Image::at( int row, int col )
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     check_bounds( row, col );
     return operator()( row, col );
 }
@@ -386,7 +386,7 @@ Image::Pixel_type& Image::at( int row, int col )
  */
 const Image::Pixel_type& Image::at( int row, int col ) const
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     check_bounds( row, col );
     return operator()( row, col );
 }
@@ -396,7 +396,7 @@ const Image::Pixel_type& Image::at( int row, int col ) const
  */
 const Image::Pixel_type& Image::at( int index ) const
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     int row, col;
     compute_row_col_carefully( index, &row, &col );
     check_bounds( row, col );
@@ -408,7 +408,7 @@ const Image::Pixel_type& Image::at( int index ) const
  */
 Image::Pixel_type& Image::at( int index )
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     int row, col;
     compute_row_col_carefully( index, &row, &col );
     check_bounds( row, col );
@@ -423,15 +423,15 @@ const Image::Impl_type* Image::c_ptr() const
 
 Matrix Image::to_grayscale_matrix() const
 {
-    kjb_c::Matrix* mat = NULL;
-    ETX(kjb_c::image_to_matrix(m_image, &mat));
+    ivi_c::Matrix* mat = NULL;
+    ETX(ivi_c::image_to_matrix(m_image, &mat));
     return Matrix(mat);
 }
 
 Matrix Image::to_grayscale_matrix(double r_w, double g_w, double b_w) const
 {
-    kjb_c::Matrix* mat = NULL;
-    ETX(kjb_c::image_to_matrix_2(m_image, r_w, g_w, b_w, &mat));
+    ivi_c::Matrix* mat = NULL;
+    ETX(ivi_c::image_to_matrix_2(m_image, r_w, g_w, b_w, &mat));
     return Matrix(mat);
 }
 
@@ -459,7 +459,7 @@ void Image::draw_point(
     Image::Pixel_type p  ///< Pixel (color) with which to fill
 )
 {
-    ETX( kjb_c::image_draw_point_2(
+    ETX( ivi_c::image_draw_point_2(
                 m_image,
                 row,
                 col,
@@ -479,7 +479,7 @@ void Image::draw_line_segment(
     Pixel_type p  ///< Pixel (color) with which to fill
 )
 {
-    ETX( kjb_c::image_draw_segment_2(
+    ETX( ivi_c::image_draw_segment_2(
                 m_image,
                 row_from,
                 col_from,
@@ -500,7 +500,7 @@ void Image::draw_circle(
     Pixel_type p        ///< Pixel (color) with which to fill
 )
 {
-    kjb_c::image_draw_circle_2(m_image, center_row, center_col, radius, line_width, p.r, p.g, p.b);
+    ivi_c::image_draw_circle_2(m_image, center_row, center_col, radius, line_width, p.r, p.g, p.b);
 }
 
 void Image::draw_disk(
@@ -521,7 +521,7 @@ int Image::draw_text_center(
     const std::string& font_file
 )
 {
-    return kjb_c::image_draw_text_center(m_image, text.c_str(),
+    return ivi_c::image_draw_text_center(m_image, text.c_str(),
                                                   row, col, font_file.c_str());
 }
 
@@ -532,18 +532,18 @@ int Image::draw_text_top_left(
     const std::string& font_file
 )
 {
-    return kjb_c::image_draw_text_top_left(m_image, text.c_str(),
+    return ivi_c::image_draw_text_top_left(m_image, text.c_str(),
                                                   row, col, font_file.c_str());
 }
 
 void Image::draw_image(
-    const kjb_c::KJB_image* overlay,
+    const ivi_c::IVI_image* overlay,
     int row,
     int col,
     int scale
 )
 {
-    ETX( kjb_c::image_draw_image( m_image, overlay, row, col, scale ) );
+    ETX( ivi_c::image_draw_image( m_image, overlay, row, col, scale ) );
 }
 
 void Image::draw_image(
@@ -560,9 +560,9 @@ int Image::display( const std::string& title ) const
 {
     if ( m_image->num_rows == 0 || m_image->num_cols == 0 )
     {
-        KJB_THROW_2( Illegal_argument, "An empty image cannot be displayed" );
+        IVI_THROW_2( Illegal_argument, "An empty image cannot be displayed" );
     }
-    return kjb_c::kjb_display_image( m_image, title.c_str() );
+    return ivi_c::ivi_display_image( m_image, title.c_str() );
 }
 
 
@@ -604,8 +604,8 @@ Image scale_image(const Image& i, double factor)
 {
     if(std::fabs(factor - 1.0) < 0.0001) return i;
 
-    kjb_c::KJB_image* c_image = NULL;
-    ETX(kjb_c::scale_image_size(&c_image, i.c_ptr(), factor));
+    ivi_c::IVI_image* c_image = NULL;
+    ETX(ivi_c::scale_image_size(&c_image, i.c_ptr(), factor));
     return Image(c_image);
 }
 
@@ -613,11 +613,11 @@ Image scale_image(const Image& i, double factor)
 /**
  * @brief Contruct an image from three matrices representing red, green,
  *        blue channels.
- * @throws KJB_error, possibly, if matrices not the same size (see below).
+ * @throws IVI_error, possibly, if matrices not the same size (see below).
  *
- * This just wraps a call to kjb_c::rgb_matrices_to_image().
+ * This just wraps a call to ivi_c::rgb_matrices_to_image().
  * If the inputs are not all identically sized, the bug handler is called.
- * If the bug handler returns, a KJB_error is thrown.
+ * If the bug handler returns, a IVI_error is thrown.
  *
  * Note that if you want your Image to behave like with 8-bit channel values,
  * then you are obliged to scale the input matrices to the range
@@ -629,8 +629,8 @@ Image rgb_matrices_to_image(
     const Matrix& blue_channel
 )
 {
-    kjb_c::KJB_image* ip = 0;
-    int rc = kjb_c::rgb_matrices_to_image(
+    ivi_c::IVI_image* ip = 0;
+    int rc = ivi_c::rgb_matrices_to_image(
         red_channel.get_c_matrix(),
         green_channel.get_c_matrix(),
         blue_channel.get_c_matrix(),

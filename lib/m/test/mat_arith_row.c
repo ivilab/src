@@ -1,5 +1,5 @@
 
-/* $Id: mat_arith_row.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: mat_arith_row.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -21,14 +21,14 @@ int main(int argc, char **argv)
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
         EPETE(ss1pi(argv[ 1 ], &test_factor)); 
     }
 
-    num_loops = kjb_rint((double)num_loops * pow((double)test_factor, 1.0/3.0));
+    num_loops = ivi_rint((double)num_loops * pow((double)test_factor, 1.0/3.0));
 
     for (num_first_rows=1; num_first_rows<=num_loops; num_first_rows++)
     {

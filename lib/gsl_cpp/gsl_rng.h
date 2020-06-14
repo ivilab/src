@@ -4,18 +4,18 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: gsl_rng.h 17393 2014-08-23 20:19:14Z predoehl $
+ * $Id: gsl_rng.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef GSL_RNG_H_INCLUDED_LIBKJB_UOFARIZONAVISION
-#define GSL_RNG_H_INCLUDED_LIBKJB_UOFARIZONAVISION
+#ifndef GSL_RNG_H_INCLUDED_LIBIVI_UOFARIZONAVISION
+#define GSL_RNG_H_INCLUDED_LIBIVI_UOFARIZONAVISION
 
 #include <l_cpp/l_exception.h>
 #include <gsl_cpp/gsl_util.h>
 #include <vector>
 #include <string>
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #include "gsl/gsl_rng.h"    /* this is a GSL header, not our wrapper */
 #else
 #warning "Compiling GNU GSL wrapper without GNU GSL; it will not run properly"
@@ -34,7 +34,7 @@ gsl_rng_type    *gsl_rng_mt19937,
 #endif
 
 
-namespace kjb {
+namespace ivi {
 
 
 /**
@@ -58,7 +58,7 @@ enum {
 };
 
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 std::string gsl_rng_serialize_implementation( const gsl_rng* );
 
 void gsl_rng_deserialize_implementation( gsl_rng*, const std::string& );
@@ -97,27 +97,27 @@ public:
 
     /// @brief ctor defines type -- not meant to be called directly by users.
     Gsl_rng_basic( const gsl_rng_type* type )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_rng( gsl_rng_alloc( type ) )
     {
         ETX_2( 00 == m_rng, "Gsl_rng_basic ctor: bad_alloc" );
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
     /// @brief copy ctor of an RNG of the same kind
     Gsl_rng_basic< KIND >( const Gsl_rng_basic< KIND >& rng )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_rng( gsl_rng_clone( rng.m_rng ) )
     {
         ETX_2( 00 == m_rng, "Gsl_rng_basic copy ctor: bad_alloc" );
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -126,7 +126,7 @@ public:
     {
         if ( this != &that )
         {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
             gsl_rng_memcpy( m_rng, that.m_rng );
 #endif
         }
@@ -136,7 +136,7 @@ public:
     /// @brief seed the generator to determine its future values
     void seed( unsigned long seed_val ) const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         gsl_rng_set( m_rng, seed_val );
 #endif
     }
@@ -144,7 +144,7 @@ public:
     /// @brief take a snapshot of the generator state right now
     std::string serialize() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_rng_serialize_implementation( m_rng ) + kind();
 #endif
     }
@@ -153,12 +153,12 @@ public:
      * @brief return generator to the state "snapshot" from serialize().
      * @param state Output from method serialize() from a RNG of the same type
      *              as this one.
-     * @throws KJB_error corresponding to GSL_EFAILED if input is from an
+     * @throws IVI_error corresponding to GSL_EFAILED if input is from an
      *         invalid string.
      */
     void deserialize( const std::string& state ) const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( state.size() < 2 || state[ state.size() - 1 ] != kind() )
         {
             GSL_ETX( GSL_EFAILED );
@@ -176,7 +176,7 @@ public:
      */
     unsigned long get() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_rng_get( m_rng );
 #endif
     }
@@ -184,7 +184,7 @@ public:
     /// @brief return C-style string of the name of the generator algorithm.
     const char* name() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_rng_name( m_rng );
 #endif
     }
@@ -192,7 +192,7 @@ public:
     /// @brief maximum possible value that get() can potentially return.
     unsigned long max() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_rng_max( m_rng );
 #endif
     }
@@ -200,7 +200,7 @@ public:
     /// @brief minimum possible value that get() can potentially return.
     unsigned long min() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_rng_min( m_rng );
 #endif
     }
@@ -208,7 +208,7 @@ public:
     /// @brief Sample uniformly distributed float in interval [0,1)
     double uniform() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_rng_uniform( m_rng );
 #endif
     }
@@ -216,7 +216,7 @@ public:
     /// @brief Sample uniformly distributed positive float in interval (0,1)
     double uniform_pos() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_rng_uniform_pos( m_rng );
 #endif
     }
@@ -224,11 +224,11 @@ public:
     /**
      * @brief Sample uniformly dist. non-neg. integers less than end_value
      * @warning end_value must not be too big:  see GSL documentation
-     * @throws KJB_error corresponding to GSL_EINVAL if end_value is invalid.
+     * @throws IVI_error corresponding to GSL_EINVAL if end_value is invalid.
      */
     unsigned long uniform_int( unsigned long end_value ) const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         unsigned long dev = gsl_rng_uniform_int( m_rng, end_value );
 
         if ( 0 == dev && end_value > max() )
@@ -246,7 +246,7 @@ public:
         return m_rng;
     }
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     /// @brief dtor releases memory allocated by generator
     ~Gsl_rng_basic()
     {
@@ -396,6 +396,6 @@ Gsl_rng_template(   Gsl_rng_gfsr4,      gsl_rng_gfsr4,      GSL_RNG_GFSR4   );
  */
 typedef Gsl_rng_mt19937 Gsl_rng_default;
 
-} // end ns kjb
+} // end ns ivi
 
-#endif /* GSL_RNG_H_INCLUDED_LIBKJB_UOFARIZONAVISION */
+#endif /* GSL_RNG_H_INCLUDED_LIBIVI_UOFARIZONAVISION */

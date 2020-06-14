@@ -27,7 +27,7 @@ compute_orientationmap
 #include "g/g_geometry.h"
 #include <edge_cpp/features_manager.h>
 
-namespace kjb
+namespace ivi
 {
 
 class Omap_segment{ 
@@ -36,7 +36,7 @@ class Omap_segment{
 
         //variables
         double n_sample;//the "length" of the line
-        std::vector<kjb::Vector> sample;//A vector of spacings on the line (linspace)
+        std::vector<ivi::Vector> sample;//A vector of spacings on the line (linspace)
         int lineclass;//which vanishing point the line is associated with (0-2)
         Vanishing_point vp;
 
@@ -60,10 +60,10 @@ class Omap_segment{
         void set_vp(const Vanishing_point & vanishingp);
         //getters
         double get_n_sample(){ return n_sample; }
-        std::vector<kjb::Vector> get_sample(){ return sample; } 
+        std::vector<ivi::Vector> get_sample(){ return sample; } 
         int get_lineclass(){ return lineclass; } 
-        kjb::Vector get_start_point(){ return startpoint; }
-        kjb::Vector get_end_point(){ return endpoint; }
+        ivi::Vector get_start_point(){ return startpoint; }
+        ivi::Vector get_end_point(){ return endpoint; }
         double get_start_x();
         double get_start_y();
         double get_end_x();
@@ -105,13 +105,13 @@ public:
     std::vector<Omap_segment> lines_at_3;
 
     //for extend_line
-    //  std::vector<kjb::Vector> get_sample(){ return sample; } 
-    std::vector<kjb::Vector> mastersamples;
+    //  std::vector<ivi::Vector> get_sample(){ return sample; } 
+    std::vector<ivi::Vector> mastersamples;
     std::vector<int> mastersamplelc;
-    std::vector<kjb::Vector> samples_at_0; //samples of lines associated with vp 0
-    std::vector<kjb::Vector> samples_at_1;
-    std::vector<kjb::Vector> samples_at_2;
-    std::vector<kjb::Vector> samples_at_3;
+    std::vector<ivi::Vector> samples_at_0; //samples of lines associated with vp 0
+    std::vector<ivi::Vector> samples_at_1;
+    std::vector<ivi::Vector> samples_at_2;
+    std::vector<ivi::Vector> samples_at_3;
 
     unsigned sample_rate;
 
@@ -162,7 +162,7 @@ public:
         Omap_segment line,
         Vanishing_point vp,
         int toward_or_away,
-        std::vector<kjb::Vector> sample,
+        std::vector<ivi::Vector> sample,
         int imgheight,
         int imgwidth
     );
@@ -273,8 +273,8 @@ public:
     std::vector<Omap_segment> get_lines();
     std::vector<Vanishing_point>  get_vpts();
     double get_imgsize();
-    kjb::Vector get_n_samples();
-    std::vector<kjb::Vector> get_samples();
+    ivi::Vector get_n_samples();
+    std::vector<ivi::Vector> get_samples();
     std::vector<int> get_lineclasses();
 
     void set_lines_at_1(std::vector<Omap_segment> lineset);
@@ -286,11 +286,11 @@ public:
     std::vector<Omap_segment> get_lines_at_2();
     std::vector<Omap_segment> get_lines_at_3();
 
-    std::vector<kjb::Vector> get_samples_at_vp(int vp);
-    std::vector<kjb::Vector> get_samples_at_0();
-    std::vector<kjb::Vector> get_samples_at_1();
-    std::vector<kjb::Vector> get_samples_at_2();
-    std::vector<kjb::Vector> get_samples_at_3();
+    std::vector<ivi::Vector> get_samples_at_vp(int vp);
+    std::vector<ivi::Vector> get_samples_at_0();
+    std::vector<ivi::Vector> get_samples_at_1();
+    std::vector<ivi::Vector> get_samples_at_2();
+    std::vector<ivi::Vector> get_samples_at_3();
 
     //constructor asisstants
     std::vector<Omap_segment> read_matlab_line_file(const char* linepath);

@@ -1,4 +1,4 @@
-/* $Id: gui_viewer_modes.h 18301 2014-11-26 19:17:13Z ksimek $ */
+/* $Id: gui_viewer_modes.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -20,14 +20,14 @@
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
 
-#ifdef KJB_HAVE_OPENGL 
-#ifndef KJB_CPP_GUI_VIEWER_MODES_H
-#define KJB_CPP_GUI_VIEWER_MODES_H
+#ifdef IVI_HAVE_OPENGL 
+#ifndef IVI_CPP_GUI_VIEWER_MODES_H
+#define IVI_CPP_GUI_VIEWER_MODES_H
 
 #include <gui_cpp/gui_viewer.h>
 #include <l_cpp/l_index.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -38,10 +38,10 @@ namespace gui
  *
  * At present, adding or removing renderables after this is called isn't robustly supported.
  */
-void enable_exclusive_display_mode(kjb::gui::Viewer& viewer, const kjb::Index_range& items);
+void enable_exclusive_display_mode(ivi::gui::Viewer& viewer, const ivi::Index_range& items);
  
-} // namespace kjb
+} // namespace ivi
 } // namespace gui
 
 #endif
-#endif /* KJB_HAVE_OPENGL  */
+#endif /* IVI_HAVE_OPENGL  */

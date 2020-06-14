@@ -17,22 +17,22 @@
 |
 * =========================================================================== */
 
-/* $Id: gr_plot.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_plot.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_CPP_GR_PLOT_H
-#define KJB_CPP_GR_PLOT_H
+#ifndef IVI_CPP_GR_PLOT_H
+#define IVI_CPP_GR_PLOT_H
 
 #include <string>
 #include <iterator>
 #include <vector>
 #include <m_cpp/m_vector.h>
 
-namespace kjb {
+namespace ivi {
 namespace opengl {
 
 
-#ifdef KJB_HAVE_GLUT
-#warning "[Code police] Put KJB_HAVE_* guards inside functions"
+#ifdef IVI_HAVE_GLUT
+#warning "[Code police] Put IVI_HAVE_* guards inside functions"
 class Glut_window;
 
 class Glut_plot_window
@@ -92,7 +92,7 @@ private:
 };
 #endif    
 
-}} //namespace kjb::opengl
+}} //namespace ivi::opengl
 
-#endif /*KJB_CPP_GR_PLOT_H */
+#endif /*IVI_CPP_GR_PLOT_H */
 

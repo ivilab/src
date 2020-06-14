@@ -4,7 +4,7 @@
  * @brief unit test for Temporary_Directory class
  */
 /*
- * $Id: test_tempdir.cpp 21356 2017-03-30 05:34:45Z kobus $
+ * $Id: test_tempdir.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_lib.h>
@@ -22,32 +22,32 @@ int main2()
     std::string name, filenam = "funnybunny";
     if (1)
     {
-        kjb::Temporary_Directory td;
+        ivi::Temporary_Directory td;
         name = td.get_pathname();
-        KJB( ASSERT( is_directory( name.c_str() ) ) );
+        IVI( ASSERT( is_directory( name.c_str() ) ) );
     }
-    KJB( ASSERT( ! is_directory( name.c_str() ) ) );
+    IVI( ASSERT( ! is_directory( name.c_str() ) ) );
 
     // test the remove method
     if (1)
     {
-        kjb::Temporary_Directory td;
+        ivi::Temporary_Directory td;
         name = td.get_pathname();
-        KJB( ASSERT( is_directory( name.c_str() ) ) );
-        KJB( EPETE( td.remove() ) );
-        KJB( ASSERT( ! is_directory( name.c_str() ) ) );
+        IVI( ASSERT( is_directory( name.c_str() ) ) );
+        IVI( EPETE( td.remove() ) );
+        IVI( ASSERT( ! is_directory( name.c_str() ) ) );
     }
-    KJB( ASSERT( ! is_directory( name.c_str() ) ) );
+    IVI( ASSERT( ! is_directory( name.c_str() ) ) );
 
     // test that it cannot destroy a nonempty directory
     if (1)
     {
-        kjb::Temporary_Directory td;
+        ivi::Temporary_Directory td;
         name = td.get_pathname();
-        KJB( ASSERT( is_directory( name.c_str() ) ) );
-        kjb::File_Ptr_Write fp( name + DIR_STR + filenam );
-        kjb_c::kjb_fputs( fp, "hello dolly" );
-        if (kjb_c::is_interactive())
+        IVI( ASSERT( is_directory( name.c_str() ) ) );
+        ivi::File_Ptr_Write fp( name + DIR_STR + filenam );
+        ivi_c::ivi_fputs( fp, "hello dolly" );
+        if (ivi_c::is_interactive())
         {
             TEST_PSE(("PLEASE DISREGARD THE FOLLOWING ERROR MESSAGE!\n"));
         }
@@ -56,54 +56,54 @@ int main2()
             td.set_silence_flag();
         }
     }
-    KJB( ASSERT( is_directory( name.c_str() ) ) );
+    IVI( ASSERT( is_directory( name.c_str() ) ) );
     // ok we've proved our point, so clean it up manually
-    KJB( EPETE( kjb_unlink( (name + DIR_STR + filenam).c_str() ) ) );
-    KJB( EPETE( kjb_rmdir( name.c_str() ) ) );
+    IVI( EPETE( ivi_unlink( (name + DIR_STR + filenam).c_str() ) ) );
+    IVI( EPETE( ivi_rmdir( name.c_str() ) ) );
 
     // test that the nuke option destroys even a nonempty directory
     if (1)
     {
-        kjb::Temporary_Directory td;
+        ivi::Temporary_Directory td;
         name = td.get_pathname();
-        KJB( ASSERT( is_directory( name.c_str() ) ) );
-        kjb::File_Ptr_Write fp( name + DIR_STR + filenam );
-        kjb_c::kjb_fputs( fp, "hello dolly" );
-        KJB( ASSERT( is_directory( name.c_str() ) ) );
-        KJB( EPETE( td.recursively_remove() ) );
-        KJB( ASSERT( ! is_directory( name.c_str() ) ) );
+        IVI( ASSERT( is_directory( name.c_str() ) ) );
+        ivi::File_Ptr_Write fp( name + DIR_STR + filenam );
+        ivi_c::ivi_fputs( fp, "hello dolly" );
+        IVI( ASSERT( is_directory( name.c_str() ) ) );
+        IVI( EPETE( td.recursively_remove() ) );
+        IVI( ASSERT( ! is_directory( name.c_str() ) ) );
     }
-    KJB( ASSERT( ! is_directory( name.c_str() ) ) );
+    IVI( ASSERT( ! is_directory( name.c_str() ) ) );
 
     // test self-nuking
     if (1)
     {
-        kjb::Temporary_Recursively_Removing_Directory td;
+        ivi::Temporary_Recursively_Removing_Directory td;
         name = td.get_pathname();
-        KJB( ASSERT( is_directory( name.c_str() ) ) );
-        kjb::File_Ptr_Write fp( name + DIR_STR + filenam );
-        kjb_c::kjb_fputs( fp, "hello dolly" );
+        IVI( ASSERT( is_directory( name.c_str() ) ) );
+        ivi::File_Ptr_Write fp( name + DIR_STR + filenam );
+        ivi_c::ivi_fputs( fp, "hello dolly" );
     }
-    KJB( ASSERT( ! is_directory( name.c_str() ) ) );
+    IVI( ASSERT( ! is_directory( name.c_str() ) ) );
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 }
 
 int main ( int argc, char** argv )
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     try {
-        KJB( EPETE( main2() ) );
+        IVI( EPETE( main2() ) );
     }
-    catch( kjb::Exception& e )
+    catch( ivi::Exception& e )
     {
         e.print_details_exit();
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return EXIT_SUCCESS;
 }
 

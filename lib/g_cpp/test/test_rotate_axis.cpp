@@ -8,13 +8,13 @@
 #include "m_cpp/m_vector.h"
 
 
-using namespace::kjb;
+using namespace::ivi;
 
 void test_corners();
 
 int main(int argc, char *argv[])
 {
-    kjb::Vector axis(3);
+    ivi::Vector axis(3);
     axis(0) = 0.1733;
     axis(1) = 0.9847;
     axis(2) = -0.017;
@@ -24,16 +24,16 @@ int main(int argc, char *argv[])
 
     Matrix rotation = q.get_rotation_matrix();
 
-    kjb::Vector input(4);
+    ivi::Vector input(4);
 
     input(0) = 985.4755;
     input(1) = -170.6889;
     input(2) =  156.3985;
     input(3) = 1.0000;
 
-    kjb::Vector output = rotation*input;
+    ivi::Vector output = rotation*input;
 
-    kjb::Vector expected_output(4);
+    ivi::Vector expected_output(4);
     expected_output(0) = 9.22945971e+02;
     expected_output(1) = -1.68944295e+02;
     expected_output(2) = -3.79981200e+02;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     double diff = expected_output.get_max_abs_difference(output);
     if(fabs(diff) >  0.0001)
     {
-        KJB_THROW_2(KJB_error,"FAILED");
+        IVI_THROW_2(IVI_error,"FAILED");
     }
 
     axis(0) = -0.9888;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     diff = expected_output.get_max_abs_difference(output);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error,"FAILED");
+        IVI_THROW_2(IVI_error,"FAILED");
     }
 
     axis(0) = 0.4016;
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     diff = expected_output.get_max_abs_difference(output);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error,"FAILED");
+        IVI_THROW_2(IVI_error,"FAILED");
     }
 
     axis(0) =  -0.0538;
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     diff = expected_output.get_max_abs_difference(output);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error,"FAILED");
+        IVI_THROW_2(IVI_error,"FAILED");
     }
 
     axis(0) = 0.2781;
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
     diff = expected_output.get_max_abs_difference(output);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error,"FAILED");
+        IVI_THROW_2(IVI_error,"FAILED");
     }
 
     test_corners();
@@ -147,16 +147,16 @@ int main(int argc, char *argv[])
 
 void test_corners()
 {
-    kjb::Vector corner3D_1;
-    kjb::Vector corner3D_2;
-    kjb::Vector corner3D_3;
+    ivi::Vector corner3D_1;
+    ivi::Vector corner3D_2;
+    ivi::Vector corner3D_3;
     unsigned int epsilon = 1;
     double focal_length = 387;
-    kjb::Vector corner2D_1(3);
-    kjb::Vector corner2D_2(3);
-    kjb::Vector corner2D_3(3);
-    kjb::Vector position_2D(3);
-    kjb::Vector position_3D(3);
+    ivi::Vector corner2D_1(3);
+    ivi::Vector corner2D_2(3);
+    ivi::Vector corner2D_3(3);
+    ivi::Vector position_2D(3);
+    ivi::Vector position_3D(3);
 
     corner2D_1(0) = -48.6290;
     corner2D_1(1) = 15.2430;
@@ -178,7 +178,7 @@ void test_corners()
     position_2D(1) =  16.9759;
     position_2D(2) = 1.0;
 
-    kjb::get_3D_corner_orientation_from_2D_corner_lines
+    ivi::get_3D_corner_orientation_from_2D_corner_lines
     (
         corner2D_1,
         corner2D_2,
@@ -199,7 +199,7 @@ void test_corners()
     corner3D_2 = corner3D_2.normalize();
     corner3D_3 = corner3D_3.normalize();
 
-    kjb::Vector expected_out(4, 0.0);
+    ivi::Vector expected_out(4, 0.0);
     expected_out(0) = 9.11705282e-01;
     expected_out(1) = -1.66898378e-01;
     expected_out(2) = -3.75417647e-01;
@@ -207,7 +207,7 @@ void test_corners()
     double diff = expected_out.get_max_abs_difference(corner3D_1);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = 4.13860560e-02;
@@ -216,7 +216,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_2);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = -4.08771455e-01;
@@ -225,7 +225,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_3);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     corner2D_1(0) = 32.5870;
@@ -251,7 +251,7 @@ void test_corners()
     epsilon = 1;
     focal_length = 772;
 
-    kjb::get_3D_corner_orientation_from_2D_corner_lines
+    ivi::get_3D_corner_orientation_from_2D_corner_lines
     (
         corner2D_1,
         corner2D_2,
@@ -279,7 +279,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_1);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = -1.69833548e-03;
@@ -288,7 +288,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_2);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = -9.52180848e-01;
@@ -297,7 +297,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_3);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
 }

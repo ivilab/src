@@ -1,4 +1,4 @@
-/* $Id: test_learned_discrete_prior2.cpp 15736 2013-10-19 05:44:01Z predoehl $ */
+/* $Id: test_learned_discrete_prior2.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /*=========================================================================== *
   |
   | Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -25,7 +25,7 @@
 
 #include <likelihood_cpp/learned_discrete_prior.h>
 
-using namespace kjb;
+using namespace ivi;
 
 
 // Takes list of objects to create histograms for as arguments.
@@ -34,7 +34,7 @@ using namespace kjb;
 //     subcategories
 int main(int argc, char* argv[])
 {
-    if (! kjb_c::is_interactive()) return EXIT_SUCCESS;
+    if (! ivi_c::is_interactive()) return EXIT_SUCCESS;
 
     std::string in_file_name(argv[1]);
     Learned_discrete_prior dp(40, 1.0, 0.0,

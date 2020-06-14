@@ -1,4 +1,4 @@
-/* $Id: gpu_opencl.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: gpu_opencl.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -19,12 +19,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GPU_OPENCL_H
-#define KJB_CPP_GPU_OPENCL_H
+#ifndef IVI_CPP_GPU_OPENCL_H
+#define IVI_CPP_GPU_OPENCL_H
 
 #include <l_cpp/l_exception.h>
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
     #ifdef MAC_OSX
         #include <OpenCL/opencl.h>
     #else
@@ -37,7 +37,7 @@
     cl_int __err = a; \
     if(__err) \
     { \
-        throw ::kjb::gpu::Opencl_error(__err, __FILE__, __LINE__); \
+        throw ::ivi::gpu::Opencl_error(__err, __FILE__, __LINE__); \
     } \
 }
 
@@ -46,7 +46,7 @@
     cl_int __err = a; \
     if(__err) \
     { \
-        throw ::kjb::gpu::Opencl_error(__err, msg, __FILE__, __LINE__); \
+        throw ::ivi::gpu::Opencl_error(__err, msg, __FILE__, __LINE__); \
     } \
 }
 
@@ -56,12 +56,12 @@
     cl_int __err = a; \
     if(__err) \
     { \
-        std::cerr << "OpenCL error: " << kjb::gpu::get_opencl_error_string(__err) << std::endl; \
+        std::cerr << "OpenCL error: " << ivi::gpu::get_opencl_error_string(__err) << std::endl; \
         abort(); \
     } \
 }
 
-namespace kjb
+namespace ivi
 {
 namespace gpu
 {
@@ -69,7 +69,7 @@ namespace gpu
 
 const char* get_opencl_error_string(cl_int err);
 
-class Opencl_error : public kjb::Runtime_error 
+class Opencl_error : public ivi::Runtime_error 
 {
 public:
     Opencl_error(cl_int code, const char* file, int line) :
@@ -98,5 +98,5 @@ private:
 
 }
 }
-#endif /* KJB_HAVE_OPENCL */
+#endif /* IVI_HAVE_OPENCL */
 #endif

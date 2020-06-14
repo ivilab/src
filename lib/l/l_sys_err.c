@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_err.c 24704 2019-12-13 22:58:29Z kobus $ */
+/* $Id: l_sys_err.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -108,7 +108,7 @@ void push_error_action(Error_action error_action)
 
     if (save_error_action_ptr == NULL)
     {
-        kjb_print_error();
+        ivi_print_error();
         set_bug("Unable to push error action onto stack.");
         return;
     }
@@ -131,7 +131,7 @@ void push_error_action(Error_action error_action)
 
     if (result == ERROR)
     {
-        kjb_print_error();
+        ivi_print_error();
         set_bug("Unable to push error action onto stack.");
     }
 
@@ -173,7 +173,7 @@ void pop_error_action(void)
 
     if (cur_elem == NULL)
     {
-        kjb_print_error();
+        ivi_print_error();
         set_bug("Unable to pop error action from stack.");
         return;
     }
@@ -181,7 +181,7 @@ void pop_error_action(void)
     set_error_action(*((Error_action*)(cur_elem->contents)));
 
     SKIP_HEAP_CHECK_2();
-    free_queue_element(cur_elem, kjb_free);
+    free_queue_element(cur_elem, ivi_free);
     CONTINUE_HEAP_CHECK_2();
 }
 
@@ -197,7 +197,7 @@ void pop_error_action(void)
 static void free_error_action_stack(void)
 {
     free_queue(&fs_error_action_stack_head, (Queue_element**)NULL,
-               kjb_free);
+               ivi_free);
 
     fs_error_action_stack_head = NULL; 
 }
@@ -213,7 +213,7 @@ static void free_error_action_stack(void)
  * Modifies the behaviour of error storing routines
  *
  * This routine modifies the behaviour of error storing routines. Normally,
- * errors are stored until either kjb_print_error() or kjb_get_error() is called
+ * errors are stored until either ivi_print_error() or ivi_get_error() is called
  * (error_action==SET_ERROR_ON_ERROR). This routine can be used to change this
  * behaviour. For example, if we do not want the errors incurred while some
  * routine is being executed to overwrite current errors, we may
@@ -271,10 +271,10 @@ Error_action get_error_action(void)
 
 void set_bug_handler(void (*bug_handler)(const char*))
 {
-    IMPORT void (*kjb_bug_handler)(const char*);
+    IMPORT void (*ivi_bug_handler)(const char*);
 
 
-    kjb_bug_handler = bug_handler;
+    ivi_bug_handler = bug_handler;
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -309,15 +309,15 @@ void set_bug_handler(void (*bug_handler)(const char*))
 #endif
 void default_bug_handler(const char* message)
 {
-    static int kjb_guard_bug_routines = FALSE;
+    static int ivi_guard_bug_routines = FALSE;
 
 
-    if (kjb_guard_bug_routines)
+    if (ivi_guard_bug_routines)
     {
 #ifdef HANDLE_BUGS
-        kjb_signal(SIGABRT, SIG_DFL);
+        ivi_signal(SIGABRT, SIG_DFL);
         fputs("Re-entry into bug handler. Going for dirty abort\n", stderr);
-        abort();   /* Don't use kjb_abort(), here ! */
+        abort();   /* Don't use ivi_abort(), here ! */
         /*NOTREACHED*/
 #else
         fputs("\n", stderr);
@@ -328,9 +328,9 @@ void default_bug_handler(const char* message)
 #endif
     }
 
-    kjb_guard_bug_routines = TRUE;
+    ivi_guard_bug_routines = TRUE;
 
-#ifdef KJB_HAVE_NATIVE_FFLUSH_NULL
+#ifdef IVI_HAVE_NATIVE_FFLUSH_NULL
     fflush((FILE*)NULL);
 #endif
 
@@ -340,7 +340,7 @@ void default_bug_handler(const char* message)
     fputs(message, stderr);
     fputs("\n", stderr);
 
-    kjb_abort();
+    ivi_abort();
     /*NOTREACHED*/
 #else
     fputs("\n", stderr);
@@ -365,7 +365,7 @@ void default_bug_handler(const char* message)
 #endif
 
     fs_error_message_count = 0;
-    kjb_guard_bug_routines = FALSE;
+    ivi_guard_bug_routines = FALSE;
 }
 
 #ifndef TEST
@@ -399,14 +399,14 @@ static void log_error_and_input(const char* mess)
         _exit(EXIT_FAILURE);
     }
 
-    if (KJB_IS_SET(my_pid))
+    if (IVI_IS_SET(my_pid))
     {
-        ER(kjb_sprintf(debug_file_name, sizeof(debug_file_name),
+        ER(ivi_sprintf(debug_file_name, sizeof(debug_file_name),
                        "bug_command_log.%ld", my_pid));
     }
     else
     {
-        ER(kjb_sprintf(debug_file_name, sizeof(debug_file_name),
+        ER(ivi_sprintf(debug_file_name, sizeof(debug_file_name),
                        "bug_command_log"));
     }
 
@@ -417,7 +417,7 @@ static void log_error_and_input(const char* mess)
             debug_file_name);
     fprintf(stderr, "Please send this file to the program author.\n");
 
-    if (KJB_IS_SET(my_pid))
+    if (IVI_IS_SET(my_pid))
     {
         fprintf(fp, "# Internal error %d logged for process %ld.\n", count,
                 my_pid);
@@ -452,17 +452,17 @@ static void log_error_and_input(const char* mess)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_print_error
+ *                                ivi_print_error
  *
  * Prints stored error if there is one.
  *
  * This routine prints the error information which is stored by the routines
  * set_error(3), add_error(3), cat_error(), and insert_error(). If there is no
  * error, then nothing is done. (If you are using the development version of the
- * library, then a message is printed saying that kjb_print_error was called
- * with no message to print).   there is one. By convention, all KJB library
+ * library, then a message is printed saying that ivi_print_error was called
+ * with no message to print).   there is one. By convention, all IVI library
  * routines will set an error if they returned an error. (Some routines probably
- * break this convention.).  Once a message is printed with kjb_print_error,
+ * break this convention.).  Once a message is printed with ivi_print_error,
  * then the current message is cleared.
  *
  * Index: error handling
@@ -470,7 +470,7 @@ static void log_error_and_input(const char* mess)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_print_error(void)
+void ivi_print_error(void)
 {
 
 
@@ -486,7 +486,7 @@ void kjb_print_error(void)
         int count;
 
 
-        kjb_fputs(stderr, "\n");
+        ivi_fputs(stderr, "\n");
 
         set_high_light(stderr);
 
@@ -495,28 +495,28 @@ void kjb_print_error(void)
             /*
             // Print something generic to scan for.
             */
-            kjb_fputs(stderr, "Error reported during non-interactive run.\n");
+            ivi_fputs(stderr, "Error reported during non-interactive run.\n");
         }
 
         for (count=0; count<fs_error_message_count; count++)
         {
-            kjb_fputs(stderr, fs_error_messages[count]);
-            kjb_fputs(stderr, "\n");
+            ivi_fputs(stderr, fs_error_messages[count]);
+            ivi_fputs(stderr, "\n");
         }
 
         unset_high_light(stderr);
 
-        kjb_fputs(stderr, "\n");
+        ivi_fputs(stderr, "\n");
     }
 #ifdef TEST
     else
     {
-        TEST_PSE(("Call to kjb_print_error with nothing to print.\n"));
+        TEST_PSE(("Call to ivi_print_error with nothing to print.\n"));
     }
 #endif
 
     /*
-    // Prevent double printing. Copy the code from kjb_clear_error, rather
+    // Prevent double printing. Copy the code from ivi_clear_error, rather
     // than calling it, in order to simplify the re-entry guarding.
     */
 
@@ -528,11 +528,11 @@ void kjb_print_error(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_get_error
+ *                                ivi_get_error
  *
  * Puts the stored error into a buffer.
  *
- * This routine is similar to kjb_print_error, but the message is copied into a
+ * This routine is similar to ivi_print_error, but the message is copied into a
  * buffer instead.
  *
  * Index: error handling
@@ -540,7 +540,7 @@ void kjb_print_error(void)
  * -----------------------------------------------------------------------------
 */
 
-void kjb_get_error(char* buff, size_t buff_len)
+void ivi_get_error(char* buff, size_t buff_len)
 {
     int count;
 
@@ -554,7 +554,7 @@ void kjb_get_error(char* buff, size_t buff_len)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -573,15 +573,15 @@ void kjb_get_error(char* buff, size_t buff_len)
 #if 0 /* was ifdef HOW_IT_WAS */
         if (count > 0)
         {
-            kjb_strncat(buff, "\n", buff_len);
+            ivi_strncat(buff, "\n", buff_len);
         }
-        kjb_strncat(buff, fs_error_messages[count], buff_len);
+        ivi_strncat(buff, fs_error_messages[count], buff_len);
 #else
-        kjb_strncat(buff, fs_error_messages[count], buff_len);
+        ivi_strncat(buff, fs_error_messages[count], buff_len);
 
         if (count < fs_error_message_count - 1)
         {
-            kjb_strncat(buff, "\n", buff_len);
+            ivi_strncat(buff, "\n", buff_len);
         }
 #endif
     }
@@ -594,11 +594,11 @@ void kjb_get_error(char* buff, size_t buff_len)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_get_strlen_error
+ *                                ivi_get_strlen_error
  *
  * Returns the string length of the error message.
  *
- * This routine is a complement to kjb_get_error, which requires a buffer
+ * This routine is a complement to ivi_get_error, which requires a buffer
  * length.  What should that buffer length be so that no error messages are
  * truncated?  This function helps you figure it out:  it returns the number
  * of non-null characters in the error string.  Like strlen(), it does not
@@ -613,7 +613,7 @@ void kjb_get_error(char* buff, size_t buff_len)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_get_strlen_error( void )
+int ivi_get_strlen_error( void )
 {
     int count, err_strlen = 0;
 
@@ -643,23 +643,23 @@ int kjb_get_strlen_error( void )
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_clear_error
+ *                                ivi_clear_error
  *
- * Clears the KJB library error indicator.
+ * Clears the IVI library error indicator.
  *
  * Index: error handling
  *
  * -----------------------------------------------------------------------------
 */
 
-void kjb_clear_error(void)
+void ivi_clear_error(void)
 {
 
 
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -668,7 +668,7 @@ void kjb_clear_error(void)
     }
 
     /*
-    // If we need to add any KJB library calls.
+    // If we need to add any IVI library calls.
     //
     // fs_guard_error_routines = TRUE;
     */
@@ -676,7 +676,7 @@ void kjb_clear_error(void)
     fs_error_message_count = 0;
 
     /*
-    // If we need to add any KJB library calls.
+    // If we need to add any IVI library calls.
     //
     // fs_guard_error_routines = FALSE;
     */
@@ -690,17 +690,17 @@ void kjb_clear_error(void)
  *
  * Sets an error message
  *
- * This routine generally sets the kjb_error message, but the action can be
+ * This routine generally sets the ivi_error message, but the action can be
  * modified using set_error_action. When it sets the error message, it
  * overwrites the previous message. To build upon the previous messages, use
  * either add_error(), insert_error(), or cat_error().
  *
  * The argmuents to set_error is a format string followed by zero or more
- * corresponding arguments. See kjb_fprintf for some of the non-standard options
+ * corresponding arguments. See ivi_fprintf for some of the non-standard options
  * useful for error messages like %S, %F, %D. (%S is particularly helpful---it
  * accesses the error messages from the last unsuccessful system call).
  *
- * kjb_print_error can be used to print the message when needed. It adds the
+ * ivi_print_error can be used to print the message when needed. It adds the
  * return for every message string, so in general, message strings should not
  * have returns in them.
  *
@@ -719,7 +719,7 @@ void set_error(const char* format_str, ...)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -733,7 +733,7 @@ void set_error(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    kjb_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
+    ivi_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
 
     va_end(ap);
 
@@ -769,10 +769,10 @@ void set_error(const char* format_str, ...)
  * This routine is similar to set_error, except that the line is added to the
  * set of message strings, each of which corresponds to a line on output. It is
  * valid to use add_error without a corresponding set_error, but doing so in
- * such a way that makes sense normally requires kjb_clear_error.
+ * such a way that makes sense normally requires ivi_clear_error.
  *
  * The argmuents to add_error is a format string followed by zero or more
- * corresponding arguments. See kjb_fprintf for some of the non-standard options
+ * corresponding arguments. See ivi_fprintf for some of the non-standard options
  * useful for error messages like %S, %F, %D. (%S is particularly helpful---it
  * accesses the error messages from the last unsuccessful system call).
  *
@@ -791,7 +791,7 @@ void add_error(const char* format_str, ...)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -805,7 +805,7 @@ void add_error(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    kjb_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
+    ivi_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
 
     va_end(ap);
 
@@ -840,7 +840,7 @@ void add_error(const char* format_str, ...)
  * line as opposed to becomming a new line.
  *
  * The argmuents to cat_error is a format string followed by zero or more
- * corresponding arguments. See kjb_fprintf for some of the non-standard options
+ * corresponding arguments. See ivi_fprintf for some of the non-standard options
  * useful for error messages like %S, %F, %D. (%S is particularly helpful---it
  * accesses the error messages from the last unsuccessful system call).
  *
@@ -859,7 +859,7 @@ void cat_error(const char* format_str, ...)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -873,7 +873,7 @@ void cat_error(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    kjb_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
+    ivi_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
 
     va_end(ap);
 
@@ -903,7 +903,7 @@ void cat_error(const char* format_str, ...)
  * begining of the error lines, not at the end.
  *
  * The argmuents to insert_error is a format string followed by zero or more
- * corresponding arguments. See kjb_fprintf for some of the non-standard options
+ * corresponding arguments. See ivi_fprintf for some of the non-standard options
  * useful for error messages like %S, %F, %D. (%S is particularly helpful---it
  * accesses the error messages from the last unsuccessful system call).
  *
@@ -923,7 +923,7 @@ void insert_error(const char* format_str, ...)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -937,7 +937,7 @@ void insert_error(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    kjb_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
+    ivi_vsprintf(error_mess_buff, sizeof(error_mess_buff), format_str, ap);
 
     va_end(ap);
 
@@ -992,7 +992,7 @@ void str_set_error(const char* str)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens a lot. For example, when we do a kjb_print_error(), some
+         * This happens a lot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -1049,7 +1049,7 @@ void str_add_error(const char* str)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -1104,7 +1104,7 @@ void str_cat_error(const char* str)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -1154,7 +1154,7 @@ void str_insert_error(const char* str)
     if (fs_guard_error_routines)
     {
         /*
-         * This happens alot. For example, when we do a kjb_print_error(), some
+         * This happens alot. For example, when we do a ivi_print_error(), some
          * fo the file opens will fail. But we are not interested in those
          * messages, let alone having them overwrite the one that we are trying
          * to print.
@@ -1224,7 +1224,7 @@ void str_insert_error(const char* str)
 /*PRINTFLIKE1*/
 void set_bug(const char* format_str, ...)
 {
-    IMPORT void (*kjb_bug_handler)(const char*);
+    IMPORT void (*ivi_bug_handler)(const char*);
     va_list ap;
     char error_mess_buff[ ERROR_MESS_BUFF_SIZE ];
     int message_creation_result;
@@ -1232,7 +1232,7 @@ void set_bug(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    message_creation_result = kjb_vsprintf(error_mess_buff,
+    message_creation_result = ivi_vsprintf(error_mess_buff,
                                            sizeof(error_mess_buff),
                                            format_str, ap);
 
@@ -1244,10 +1244,10 @@ void set_bug(const char* format_str, ...)
         BUFF_CAT(error_mess_buff, "Original message is lost.");
     }
 
-    if (kjb_bug_handler != NULL)
+    if (ivi_bug_handler != NULL)
     {
         fs_error_message_count = 0;
-        (*kjb_bug_handler)(error_mess_buff);
+        (*ivi_bug_handler)(error_mess_buff);
     }
     else
     {

@@ -17,7 +17,7 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #ifdef MAC_OSX
 #    include <OpenGL/glu.h>
 #    include <GLUT/glut.h>
@@ -30,11 +30,11 @@
 	#    include <GL/glut.h>       
 	#endif
 #endif 
-#endif // KJB_HAVE_OPENGL
+#endif // IVI_HAVE_OPENGL
 #include <gr_cpp/gr_primitive.h>
 #include <unistd.h>
 
-using namespace kjb;
+using namespace ivi;
 
 void draw();
 void idle();
@@ -94,7 +94,7 @@ void idle()
 
 }
 
-void render(const kjb::Generic_renderable& renderable)
+void render(const ivi::Generic_renderable& renderable)
 {
     switch(mode)
     {
@@ -112,7 +112,7 @@ void render(const kjb::Generic_renderable& renderable)
 
 void draw()
 {
-    using namespace kjb::opengl;
+    using namespace ivi::opengl;
 
     glClearColor(1.0, 1.0, 1.0, 0.0);
 

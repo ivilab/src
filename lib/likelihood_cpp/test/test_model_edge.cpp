@@ -1,4 +1,4 @@
-/* $Id: test_model_edge.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: test_model_edge.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "likelihood_cpp/model_edge.h"
@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     Model_edge m1(10, 3, 20 ,5);
     ASSERT( fabs(m1.get_dx() - 10) < DBL_EPSILON );

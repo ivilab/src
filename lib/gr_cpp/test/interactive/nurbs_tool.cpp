@@ -8,8 +8,8 @@
 #include <ostream>
 #include <algorithm>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 using namespace std;
 
 struct Point

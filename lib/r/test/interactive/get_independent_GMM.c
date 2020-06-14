@@ -1,5 +1,5 @@
 
-/* $Id: get_independent_GMM.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: get_independent_GMM.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -77,9 +77,9 @@ int main(int argc, char** argv)
     int cluster; 
     double p; 
     int i,j;
-    IMPORT int kjb_debug_level;
+    IMPORT int ivi_debug_level;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -88,8 +88,8 @@ int main(int argc, char** argv)
         return EXIT_CANNOT_TEST;
     }
     
-    kjb_set_verbose_level(5);
-    kjb_debug_level = 10;
+    ivi_set_verbose_level(5);
+    ivi_debug_level = 10;
 
     EPETE(get_target_matrix(&data_mp, NUM_POINTS, NUM_FEATURES));
 
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 
     for (i = 0; i < NUM_POINTS; i++)
     {
-        cluster = NUM_CLUSTERS * kjb_rand(); 
+        cluster = NUM_CLUSTERS * ivi_rand(); 
 
         for (j = 0; j < NUM_FEATURES; j++)
         {
@@ -118,8 +118,8 @@ int main(int argc, char** argv)
         }
     }
 
-    kjb_seed_rand(0,0);
-    kjb_seed_rand_2(0);
+    ivi_seed_rand(0,0);
+    ivi_seed_rand_2(0);
 
     EPETE(get_independent_GMM(NUM_CLUSTERS, data_mp, 
                               (Vector**)NULL,
@@ -151,8 +151,8 @@ int main(int argc, char** argv)
     db_rv(a_vp); 
     */
 
-    kjb_seed_rand(0,0);
-    kjb_seed_rand_2(0);
+    ivi_seed_rand(0,0);
+    ivi_seed_rand_2(0);
 
     EPETE(old_do_fixed_ind_con_em(NUM_CLUSTERS, data_mp, &P_mp , &est_mean_mp, 
                                   &est_var_mp, &a_vp)); 
@@ -190,7 +190,7 @@ int main(int argc, char** argv)
     free_matrix(P_mp); 
     free_vector(P_vp); 
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 

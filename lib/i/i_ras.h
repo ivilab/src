@@ -1,5 +1,5 @@
 
-/* $Id: i_ras.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_ras.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -45,14 +45,14 @@ namespace kjb_c {
 
 typedef struct Sun_header
 {
-    kjb_int32 magic;
-    kjb_int32 width;
-    kjb_int32 height;
-    kjb_int32 depth;
-    kjb_int32 length;
-    kjb_int32 type;
-    kjb_int32 maptype;
-    kjb_int32 maplength;
+    ivi_int32 magic;
+    ivi_int32 width;
+    ivi_int32 height;
+    ivi_int32 depth;
+    ivi_int32 length;
+    ivi_int32 type;
+    ivi_int32 maptype;
+    ivi_int32 maplength;
 }
 Sun_header;
 

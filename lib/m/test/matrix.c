@@ -1,5 +1,5 @@
 
-/* $Id: matrix.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     int  test_factor = 1;
     Bool  verify_failure = FALSE;
 
-    kjb_init(); 
+    ivi_init(); 
 
     /* Test corner cases: 0 x 0 matrix, n x 0 matrix, or 0 x n */
     EPETE(get_target_matrix(&first_mp, 0, 0));
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         num_tries *= test_factor;
     }
 
-    kjb_set_debug_level(2);
+    ivi_set_debug_level(2);
 
     for (count=0; count<num_tries; count++)
     {
@@ -57,8 +57,8 @@ int main(int argc, char **argv)
         double  diff_2;
         int     i, j; 
 
-        num_rows = 1 + MAX_NUM_ROWS * kjb_rand();
-        num_cols = 1 + MAX_NUM_ROWS * kjb_rand();
+        num_rows = 1 + MAX_NUM_ROWS * ivi_rand();
+        num_cols = 1 + MAX_NUM_ROWS * ivi_rand();
 
 
 #ifdef VERBOSE
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
         EPETE(get_zero_matrix(&first_mp, num_rows, num_cols)); 
         verify_matrix(first_mp, &verify_failure); 
-        if (verify_failure) { kjb_exit(EXIT_BUG); }
+        if (verify_failure) { ivi_exit(EXIT_BUG); }
 
         for (i=0; i<first_mp->num_rows; i++)
         {
@@ -88,18 +88,18 @@ int main(int argc, char **argv)
         }
 
         verify_matrix(second_mp, &verify_failure); 
-        if (verify_failure) { kjb_exit(EXIT_BUG); }
+        if (verify_failure) { ivi_exit(EXIT_BUG); }
 
         EPETE(multiply_matrix_by_scalar(&third_mp, second_mp, 
                                         (double)count)); 
         verify_matrix(third_mp, &verify_failure); 
-        if (verify_failure) { kjb_exit(EXIT_BUG); }
+        if (verify_failure) { ivi_exit(EXIT_BUG); }
 
         EPETE(get_target_matrix(&fourth_mp, num_rows, num_cols)); 
 
         EPETE(ow_set_matrix(fourth_mp, (double)count));
         verify_matrix(fourth_mp, &verify_failure); 
-        if (verify_failure) { kjb_exit(EXIT_BUG); }
+        if (verify_failure) { ivi_exit(EXIT_BUG); }
 
 #ifdef REALLY_VERBOSE 
         db_mat(first_mp);

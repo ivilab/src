@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: target.cpp 18677 2015-03-19 19:15:14Z jguan1 $ */
+/* $Id: target.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_target.h>
 #include <people_tracking_cpp/pt_detection_box.h>
@@ -30,7 +30,7 @@
 #include <vector>
 #include <utility>
 
-using namespace kjb;
+using namespace ivi;
 using namespace pt;
 using namespace std;
 const double noise_sigma = 1e-3;

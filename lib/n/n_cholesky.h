@@ -1,5 +1,5 @@
 
-/* $Id: n_cholesky.h 17895 2014-10-24 23:38:49Z ksimek $ */
+/* $Id: n_cholesky.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

@@ -1,5 +1,5 @@
 
-/* $Id: dynamics_moves.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: dynamics_moves.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -23,12 +23,12 @@
 
 #define DYNAMICS_NUM_PP_DIMENSIONS 3
 
-namespace kjb {
+namespace ivi {
 
 Parapiped_camera_dynamics::Parapiped_camera_dynamics
 (
-    const kjb::Vector & ideltas,
-    const kjb::Vector & ietas,
+    const ivi::Vector & ideltas,
+    const ivi::Vector & ietas,
     double  (*icompute_likelihood)(Parametric_parapiped & pp, Perspective_camera & c),
     void  (*get_pp_and_camera)(Parametric_parapiped & pp, Perspective_camera & c),
     void  (*log_results)(const Parametric_parapiped & pp, const Perspective_camera & c, double ll),
@@ -50,11 +50,11 @@ Parapiped_camera_dynamics::Parapiped_camera_dynamics
 
     if(ideltas.size() != (PCD_CAMERA_ROLL + 1) )
     {
-        KJB_THROW_2(Illegal_argument, "Wrong number of delta updates for sampling camera and parapiped, expected 9");
+        IVI_THROW_2(Illegal_argument, "Wrong number of delta updates for sampling camera and parapiped, expected 9");
     }
     if(ietas.size() != (PCD_CAMERA_ROLL + 1) )
     {
-        KJB_THROW_2(Illegal_argument, "Wrong number of eta updates for sampling camera and parapiped, expected 9");
+        IVI_THROW_2(Illegal_argument, "Wrong number of eta updates for sampling camera and parapiped, expected 9");
     }
 
     unsigned int counter = 0;
@@ -173,8 +173,8 @@ double Parapiped_camera_dynamics::compute_likelihood()
 
 Parapiped_stretch_dynamics::Parapiped_stretch_dynamics
 (
-    const kjb::Vector & ideltas,
-    const kjb::Vector & ietas,
+    const ivi::Vector & ideltas,
+    const ivi::Vector & ietas,
     double  (*icompute_likelihood)(Parametric_parapiped & pp,Perspective_camera & c),
     void  (*get_pp_and_camera)(Parametric_parapiped & pp, Perspective_camera & c),
     void  (*log_results)(const Parametric_parapiped & pp, const Perspective_camera & c, double ll),
@@ -192,11 +192,11 @@ Parapiped_stretch_dynamics::Parapiped_stretch_dynamics
 
     if(ideltas.size() != (DYNAMICS_NUM_PP_DIMENSIONS) )
     {
-        KJB_THROW_2(Illegal_argument, "Wrong number of delta updates for stretching parapiped, expected 9");
+        IVI_THROW_2(Illegal_argument, "Wrong number of delta updates for stretching parapiped, expected 9");
     }
     if(ietas.size() != (DYNAMICS_NUM_PP_DIMENSIONS) )
     {
-        KJB_THROW_2(Illegal_argument, "Wrong number of eta updates for stretching parapiped, expected 9");
+        IVI_THROW_2(Illegal_argument, "Wrong number of eta updates for stretching parapiped, expected 9");
     }
 
     direction1 = idirection1;
@@ -276,8 +276,8 @@ double Parapiped_stretch_dynamics::compute_likelihood()
 
 Focal_scale_dynamics::Focal_scale_dynamics
 (
-    const kjb::Vector & ideltas,
-    const kjb::Vector & ietas,
+    const ivi::Vector & ideltas,
+    const ivi::Vector & ietas,
     double  (*icompute_likelihood)(Parametric_parapiped & pp,Perspective_camera & c),
     void  (*get_pp_and_camera)(Parametric_parapiped & pp, Perspective_camera & c),
     void  (*log_results)(const Parametric_parapiped & pp, const Perspective_camera & c, double ll),
@@ -289,11 +289,11 @@ Focal_scale_dynamics::Focal_scale_dynamics
 
     if(ideltas.size() != (1) )
     {
-        KJB_THROW_2(Illegal_argument, "Wrong number of delta updates for sampling focal length over scale, expected 9");
+        IVI_THROW_2(Illegal_argument, "Wrong number of delta updates for sampling focal length over scale, expected 9");
     }
     if(ietas.size() != (1) )
     {
-        KJB_THROW_2(Illegal_argument, "Wrong number of eta updates for sampling focal length over scale, expected 9");
+        IVI_THROW_2(Illegal_argument, "Wrong number of eta updates for sampling focal length over scale, expected 9");
     }
 
     unsigned int counter = 0;
@@ -315,7 +315,7 @@ Focal_scale_dynamics::Focal_scale_dynamics
 
 void Focal_scale_dynamics::update_focal_with_position(double ifocal)
 {
-    ::kjb::update_focal_with_position(local_camera, ifocal, local_pp);
+    ::ivi::update_focal_with_position(local_camera, ifocal, local_pp);
 }
 
 void Focal_scale_dynamics::run(unsigned int iterations)
@@ -408,5 +408,5 @@ double Discrete_change_size::compute_likelihood()
     return likelihood(local_pp, local_camera);
 }
 
-} // namespace kjb 
+} // namespace ivi 
 

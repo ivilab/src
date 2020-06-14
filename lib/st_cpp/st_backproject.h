@@ -18,10 +18,10 @@
 
 /* $Id$ */
 
-#ifndef KJB_CPP_ST_BACKPROJECT
-#define KJB_CPP_ST_BACKPROJECT
+#ifndef IVI_CPP_ST_BACKPROJECT
+#define IVI_CPP_ST_BACKPROJECT
 
 #include <camera_cpp/camera_backproject.h>
 
-#endif /*KJB_CPP_ST_BACKPROJECT */
+#endif /*IVI_CPP_ST_BACKPROJECT */
 

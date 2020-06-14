@@ -32,7 +32,7 @@
 
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /**
@@ -164,7 +164,7 @@ Trajectory sample(const Trajectory_prior& prior)
     return trajectory;
 }
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_TRAJECTORY_PRIOR_H */
 

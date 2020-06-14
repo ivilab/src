@@ -1,5 +1,5 @@
 
-/* $Id: complex_phase.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: complex_phase.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -9,7 +9,7 @@
 int main(int argc, char **argv)
 {
     double im, re, phase;
-    KJB_complex z; 
+    IVI_complex z; 
 
     check_num_args(argc, 2, 2, NULL);
 

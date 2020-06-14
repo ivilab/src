@@ -1,5 +1,5 @@
 
-/* $Id: i_metric.c 8780 2011-02-27 23:42:02Z predoehl $ */
+/* $Id: i_metric.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -49,8 +49,8 @@ extern "C" {
 
 int compute_rms_image_difference
 (
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     double*          rms_diff_ptr
 )
 {
@@ -121,9 +121,9 @@ int compute_rms_image_difference
 */
 int compute_image_difference
 (
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
-    KJB_image** diff_ipp
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
+    IVI_image** diff_ipp
 )
 {
 

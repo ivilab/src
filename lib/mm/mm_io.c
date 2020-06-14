@@ -1,5 +1,5 @@
 
-/* $Id: mm_io.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: mm_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -227,16 +227,16 @@ static int read_multi_modal_model_2
      * and thus will have no direct effect in annotation (the model itself may
      * be different, which may indirectly affect the results).
     */
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, MODEL_OPTION_FILE));
-    NRE(model_option_fp = kjb_fopen(file_name, "r"));
+    NRE(model_option_fp = ivi_fopen(file_name, "r"));
 
     /*
      * Request for a dry run. Checks that there is a model directory.
     */
     if (model_pp == NULL)
     {
-        (void)kjb_fclose(model_option_fp);
+        (void)ivi_fclose(model_option_fp);
         return NO_ERROR;
     }
 
@@ -620,7 +620,7 @@ static int read_multi_modal_model_2
 
     /* Only reading, so close errors are not interesting.*/
     push_error_action(FORCE_ADD_ERROR_ON_ERROR); 
-    (void)kjb_fclose(model_option_fp);
+    (void)ivi_fclose(model_option_fp);
     pop_error_action(); 
 
     if (result == ERROR)
@@ -635,7 +635,7 @@ static int read_multi_modal_model_2
     // notion of level to start at 0), we change the conceptial understanding
     // of what is counted.
     */
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, NUM_LEVELS_TO_SKIP_FILE));
 
     if (read_int_vector(&temp_level_parameter_vp, file_name) != ERROR)
@@ -656,7 +656,7 @@ static int read_multi_modal_model_2
         warn_pso("Using 0 instead.\n");
     }
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, FAN_OUT_FILE));
 
     ERE(read_int_vector(&(model_ptr->topology_ptr->fan_out_vp), file_name));
@@ -664,7 +664,7 @@ static int read_multi_modal_model_2
 
     num_levels = model_ptr->topology_ptr->fan_out_vp->length + 1;
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, LAST_LEVEL_FILE));
 
     if ( ! is_file(file_name))
@@ -710,14 +710,14 @@ static int read_multi_modal_model_2
                        fan_out_vp, first_level, last_level_num));
     model_ptr->num_clusters = model_ptr->topology_ptr->num_clusters;
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, CLUSTER_PRIORS_FILE));
     (void)read_vector(&(model_ptr->a_vp), file_name);
 
     ASSERT_IS_EQUAL_INT(model_ptr->num_clusters,
                         model_ptr->a_vp->length);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, AVERAGE_VERTICAL_WEIGHT_FILE));
     read_vector(&(model_ptr->V_vp), file_name);
 
@@ -727,17 +727,17 @@ static int read_multi_modal_model_2
     */
     if (model_ptr->V_vp == NULL)
     {
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, CLUSTER_AVERAGE_VERTICAL_WEIGHT_FILE));
         ERE(read_matrix(&(model_ptr->V_mp), file_name));
     }
     else
     {
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, AVERAGE_CON_VERTICAL_WEIGHT_FILE));
         (void)read_matrix(&(model_ptr->con_V_mp), file_name);
 
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, AVERAGE_DIS_VERTICAL_WEIGHT_FILE));
         (void)read_matrix(&(model_ptr->dis_V_mp), file_name);
 
@@ -749,23 +749,23 @@ static int read_multi_modal_model_2
         }
     }
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, DOCUMENT_CLUSTER_FILE));
     /* OK if file is not there--computing some things do not require it. */
     (void)read_matrix(&(model_ptr->P_c_p_mp), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, DOCUMENT_FIT_FILE));
     (void)read_vector(&(model_ptr->fit_vp), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR,
                     CLUSTER_DEPENDENT_VERTICAL_WEIGHT_FILE));
     /* OK if file is not there--model_ptr->P_l_p_c_mvp can be NULL. */
     (void)read_matrix_vector(&(model_ptr->P_l_p_c_mvp), file_name);
     dbx(model_ptr->P_l_p_c_mvp);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, VERTICAL_WEIGHT_FILE));
     /* OK if file is not there--model_ptr->P_l_p_c_mvp can be NULL. */
     (void)read_matrix(&(model_ptr->P_l_p_mp), file_name);
@@ -773,7 +773,7 @@ static int read_multi_modal_model_2
 
     dbi(model_ptr->topology_ptr->num_levels_per_category);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, NUM_LEVELS_PER_CATEGORY));
     (void)read_int_from_file(&(model_ptr->topology_ptr->num_levels_per_category), 
                              file_name);
@@ -797,7 +797,7 @@ static int read_multi_modal_model_2
     }
     else
     {
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, WORD_PROBABILITIES_FILE));
         /* OK if file is not there--model_ptr->P_i_n_mvp can be NULL. */
         (void)read_matrix_vector(&(model_ptr->P_i_n_mvp), file_name);
@@ -809,7 +809,7 @@ static int read_multi_modal_model_2
         }
     }
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, MEAN_FILE));
     /* OK if file is not there--model_ptr->mean_mvp can be NULL. */
     (void)read_matrix(&(model_ptr->mean_mp), file_name);
@@ -817,11 +817,11 @@ static int read_multi_modal_model_2
     /* If we have means, then we need the variances, and friends. */
     if (model_ptr->mean_mp != NULL)
     {
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, VARIANCE_FILE));
         ERE(read_matrix(&(model_ptr->var_mp), file_name));
 
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, LOG_SQRT_DET_FILE));
         ERE(read_vector(&(model_ptr->con_log_sqrt_det_vp), file_name));
 
@@ -855,7 +855,7 @@ static int read_multi_modal_model_2
     */
     if (model_ptr->mean_mp == NULL)
     {
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, CLUSTER_MEAN_FILE));
         /* OK if file is not there--model_ptr->mean_mvp can be NULL. */
         (void)read_matrix_vector(&(model_ptr->mean_mvp), file_name);
@@ -863,11 +863,11 @@ static int read_multi_modal_model_2
         /* If we have means, then we need the variances, and friends. */
         if (model_ptr->mean_mvp != NULL)
         {
-            ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+            ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                             model_dir, DIR_STR, CLUSTER_VARIANCE_FILE));
             ERE(read_matrix_vector(&(model_ptr->var_mvp), file_name));
 
-            ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+            ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                             model_dir, DIR_STR, CLUSTER_LOG_SQRT_DET_FILE));
             ERE(read_vector_vector(&(model_ptr->con_log_sqrt_det_vvp), file_name));
 
@@ -885,7 +885,7 @@ static int read_multi_modal_model_2
 
     }
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, CON_FEATURE_ENABLE_FILE));
     (void)read_int_vector(&(model_ptr->con_feature_enable_vp), file_name);
 
@@ -906,59 +906,59 @@ static int read_multi_modal_model_2
         }
     }
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, CON_FEATURE_GROUP_FILE));
     (void)read_int_vector(&(model_ptr->con_feature_group_vp), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, CON_FEATURE_WEIGHT_FILE));
     (void)read_vector(&(model_ptr->con_feature_weight_vp), file_name);
 
 
     if ((model_ptr->mean_mp != NULL) || (model_ptr->mean_mvp != NULL))
     {
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, CON_LOG_NORM_FILE));
         ERE(read_double(&(model_ptr->con_log_norm), file_name));
 
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, CON_SCORE_CUTOFF_FILE));
         model_ptr->con_score_cutoff = DBL_MOST_NEGATIVE;
         EPE(read_double(&(model_ptr->con_score_cutoff), file_name));
         dbe(model_ptr->con_score_cutoff);
 
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, MIN_CON_LOG_PROB_FILE));
         (void)read_double(&(model_ptr->min_con_log_prob), file_name);
 
-        ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+        ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                         model_dir, DIR_STR, MAX_CON_NORM_VAR_FILE));
         EPE(read_double(&(model_ptr->max_con_norm_var), file_name));
         dbe(model_ptr->max_con_norm_var);
     }
 
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, RAW_LOG_LIKELIHOOD_FILE));
     (void)read_double(&(model_ptr->raw_log_likelihood), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, MDL_LOG_LIKELIHOOD_FILE));
     (void)read_double(&(model_ptr->mdl_log_likelihood), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, AIC_FILE));
     (void)read_double(&(model_ptr->aic), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, EXTRA_DIS_PROB_FILE));
     (void)read_double(&(model_ptr->extra_dis_prob), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, EXTRA_CON_PROB_FILE));
     (void)read_double(&(model_ptr->extra_con_prob), file_name);
 
-    ERE(kjb_sprintf(file_name, sizeof(file_name), "%s%s%s",
+    ERE(ivi_sprintf(file_name, sizeof(file_name), "%s%s%s",
                     model_dir, DIR_STR, NUM_PARAMETERS_FILE));
     (void)read_int_from_file(&(model_ptr->num_parameters), file_name);
 
@@ -1003,105 +1003,105 @@ int output_multi_modal_model
     BUFF_CPY(option_file_name, output_dir);
     BUFF_CAT(option_file_name, DIR_STR);
     BUFF_CAT(option_file_name, MODEL_OPTION_FILE);
-    NRE(option_fp = kjb_fopen(option_file_name, "w"));
+    NRE(option_fp = ivi_fopen(option_file_name, "w"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     WEIGHT_CON_ITEMS_OPTION,
                     (model_ptr->weight_con_items) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     DISCRETE_TIE_COUNT,
                     model_ptr->discrete_tie_count));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     NORM_DEPEND_OPTION,
                     (model_ptr->norm_depend) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %.5f\n",
+    ERE(ivi_fprintf(option_fp, "%s = %.5f\n",
                     IGNORE_DIS_PROB_FRACTION_OPTION,
                     model_ptr->ignore_dis_prob_fraction));
 
-    ERE(kjb_fprintf(option_fp, "%s = %.5f\n",
+    ERE(ivi_fprintf(option_fp, "%s = %.5f\n",
                     IGNORE_CON_PROB_FRACTION_OPTION,
                     model_ptr->ignore_con_prob_fraction));
 
-    ERE(kjb_fprintf(option_fp, "%s = %.5f\n",
+    ERE(ivi_fprintf(option_fp, "%s = %.5f\n",
                     DIS_PROB_BOOST_FACTOR_OPTION,
                     model_ptr->dis_prob_boost_factor));
 
-    ERE(kjb_fprintf(option_fp, "%s = %.5f\n",
+    ERE(ivi_fprintf(option_fp, "%s = %.5f\n",
                     CON_PROB_BOOST_FACTOR_OPTION,
                     model_ptr->con_prob_boost_factor));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     NORM_ITEMS_OPTION,
                     model_ptr->norm_items));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     NORM_CONTINUOUS_FEATURES_OPTION,
                     model_ptr->norm_continuous_features));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_ONE_SAMPLE_MATCHES_OPTION,
                     (model_ptr->phase_one_sample_matches) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_TWO_SAMPLE_MATCHES_OPTION,
                     (model_ptr->phase_two_sample_matches) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     PHASE_ONE_MODEL_CORRESPONDENCE_OPTION,
                     model_ptr->phase_one_model_correspondence));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     PHASE_TWO_MODEL_CORRESPONDENCE_OPTION,
                     model_ptr->phase_two_model_correspondence));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_ONE_SHARE_MATCHES_OPTION,
                     (model_ptr->phase_one_share_matches) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_TWO_SHARE_MATCHES_OPTION,
                     (model_ptr->phase_two_share_matches) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     PHASE_ONE_LAST_SAMPLE_OPTION,
                     model_ptr->phase_one_last_sample));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     PHASE_TWO_LAST_SAMPLE_OPTION,
                     model_ptr->phase_two_last_sample));
 
-    ERE(kjb_fprintf(option_fp, "%s = %.5e\n",
+    ERE(ivi_fprintf(option_fp, "%s = %.5e\n",
                     VAR_OFFSET_OPTION,
                     model_ptr->var_offset));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     PHASE_ONE_NUM_ITERATIONS_OPTION,
                     model_ptr->phase_one_num_iterations));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_ONE_UNIFORM_VERTICAL_DIST_OPTION,
                     (model_ptr->phase_one_uniform_vertical_dist) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_ONE_CLUSTER_DEPENDENT_VERTICAL_DIST_OPTION,
                     (model_ptr->phase_one_cluster_dependent_vertical_dist) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %d\n",
+    ERE(ivi_fprintf(option_fp, "%s = %d\n",
                     PHASE_TWO_NUM_ITERATIONS_OPTION,
                     model_ptr->phase_two_num_iterations));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_TWO_UNIFORM_VERTICAL_DIST_OPTION,
                     (model_ptr->phase_two_uniform_vertical_dist) ? "t" : "f"));
 
-    ERE(kjb_fprintf(option_fp, "%s = %s\n",
+    ERE(ivi_fprintf(option_fp, "%s = %s\n",
                     PHASE_TWO_CLUSTER_DEPENDENT_VERTICAL_DIST_OPTION,
                     (model_ptr->phase_two_cluster_dependent_vertical_dist) ? "t" : "f"));
 
-    ERE(kjb_fclose(option_fp));
+    ERE(ivi_fclose(option_fp));
 
     if (model_ptr->con_feature_enable_vp)
     {
@@ -1141,7 +1141,7 @@ int output_multi_modal_model
     */
     if ((V_mp != NULL) && (V_vp == NULL))
     {
-        (void)kjb_unlink_2(output_dir, AVERAGE_VERTICAL_WEIGHT_FILE);
+        (void)ivi_unlink_2(output_dir, AVERAGE_VERTICAL_WEIGHT_FILE);
     }
 
     /*
@@ -1150,7 +1150,7 @@ int output_multi_modal_model
     */
     if ((V_mp == NULL) && (V_vp != NULL))
     {
-        (void)kjb_unlink_2(output_dir, CLUSTER_AVERAGE_VERTICAL_WEIGHT_FILE);
+        (void)ivi_unlink_2(output_dir, CLUSTER_AVERAGE_VERTICAL_WEIGHT_FILE);
     }
 
     ERE(output_matrix_fn(output_dir, CLUSTER_AVERAGE_VERTICAL_WEIGHT_FILE, V_mp));
@@ -1177,10 +1177,10 @@ int output_multi_modal_model
 
     if (model_ptr->topology_ptr->num_levels_per_category > 0)
     {
-        (void)kjb_unlink_2(output_dir, WORD_PROBABILITIES_FILE);
-        (void)kjb_unlink_2(output_dir, CLUSTER_MEAN_FILE);
-        (void)kjb_unlink_2(output_dir, CLUSTER_VARIANCE_FILE);
-        (void)kjb_unlink_2(output_dir, CLUSTER_LOG_SQRT_DET_FILE);
+        (void)ivi_unlink_2(output_dir, WORD_PROBABILITIES_FILE);
+        (void)ivi_unlink_2(output_dir, CLUSTER_MEAN_FILE);
+        (void)ivi_unlink_2(output_dir, CLUSTER_VARIANCE_FILE);
+        (void)ivi_unlink_2(output_dir, CLUSTER_LOG_SQRT_DET_FILE);
 
         ERE(output_int(output_dir, NUM_LEVELS_PER_CATEGORY,
                        model_ptr->topology_ptr->num_levels_per_category));
@@ -1191,10 +1191,10 @@ int output_multi_modal_model
     }
     else
     {
-        (void)kjb_unlink_2(output_dir, NUM_LEVELS_PER_CATEGORY);
-        (void)kjb_unlink_2(output_dir, MEAN_FILE);
-        (void)kjb_unlink_2(output_dir, VARIANCE_FILE);
-        (void)kjb_unlink_2(output_dir, LOG_SQRT_DET_FILE);
+        (void)ivi_unlink_2(output_dir, NUM_LEVELS_PER_CATEGORY);
+        (void)ivi_unlink_2(output_dir, MEAN_FILE);
+        (void)ivi_unlink_2(output_dir, VARIANCE_FILE);
+        (void)ivi_unlink_2(output_dir, LOG_SQRT_DET_FILE);
 
         ERE(output_matrix_vector_fn(output_dir, WORD_PROBABILITIES_FILE, W_mvp));
         ERE(output_matrix_vector_fn(output_dir, CLUSTER_MEAN_FILE, model_ptr->mean_mvp));

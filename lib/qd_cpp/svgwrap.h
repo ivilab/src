@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: svgwrap.h 20160 2015-12-08 23:36:20Z predoehl $
+ * $Id: svgwrap.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef SVGWRAP_H_UOFARIZONAVISION
@@ -17,7 +17,7 @@
 #include <sstream>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -139,10 +139,10 @@ public:
         return *this;
     }
 
-    /// @brief see overload of same name, but this takes a struct kjb_c::Pixel.
-    SvgWrap& set_color( const kjb_c::Pixel& color )
+    /// @brief see overload of same name, but this takes a struct ivi_c::Pixel.
+    SvgWrap& set_color( const ivi_c::Pixel& color )
     {
-        return set_color( kjb::pixel_as_hex_triplet_string( color ) );
+        return set_color( ivi::pixel_as_hex_triplet_string( color ) );
     }
 
     /// @brief can opt in/out of making this a filled polygon
@@ -181,10 +181,10 @@ public:
         return *this;
     }
 
-    /// @brief see overload of same name, but this takes a struct kjb_c::Pixel.
-    SvgWrap& set_fill_color( const kjb_c::Pixel& color )
+    /// @brief see overload of same name, but this takes a struct ivi_c::Pixel.
+    SvgWrap& set_fill_color( const ivi_c::Pixel& color )
     {
-        return set_fill_color( kjb::pixel_as_hex_triplet_string( color ) );
+        return set_fill_color( ivi::pixel_as_hex_triplet_string( color ) );
     }
 
     SvgWrap& set_id( const std::string& );

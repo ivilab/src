@@ -61,8 +61,8 @@
  * =========================================================================== */
 
 
-#ifndef KJB_EDGE_H 
-#define KJB_EDGE_H 
+#ifndef IVI_EDGE_H 
+#define IVI_EDGE_H 
 
 #include "i/i_float.h"
 #include "m/m_matrix.h"
@@ -70,7 +70,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -138,7 +138,7 @@ int get_target_edge_set(
 int detect_image_edge_set
 (
     Edge_set**   edges_out,
-    const KJB_image* img,
+    const IVI_image* img,
     float          sigma, 
     float          begin_thresh, 
     float          end_thresh,
@@ -199,8 +199,8 @@ int sample_edge_set
 /** @brief Colors single precision set of edges in an image. */
 int color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges, 
     const Pixel*    pxl
 );
@@ -213,8 +213,8 @@ int color_edge_set
  */
 int randomly_color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges
 );
 
@@ -223,8 +223,8 @@ int randomly_color_edge_set
 /** @brief Colors edge points in an image. */
 int color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts, 
     uint32_t            num_pts,
     const Pixel*      pxl
@@ -233,8 +233,8 @@ int color_edge_points
 /** @brief Colors an edge point in an image. */
 int color_edge_point
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pt,
     const Pixel*      pxl
 );
@@ -245,8 +245,8 @@ int color_edge_point
  */
 int randomly_color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts, 
     uint32_t            num_pts
 );

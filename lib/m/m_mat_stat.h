@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_stat.h 4884 2009-11-24 22:43:59Z ernesto $ */
+/* $Id: m_mat_stat.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

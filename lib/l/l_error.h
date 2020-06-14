@@ -1,5 +1,5 @@
 
-/* $Id: l_error.h 22177 2018-07-14 18:38:32Z kobus $ */
+/* $Id: l_error.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -56,9 +56,9 @@ namespace kjb_c {
 
 #define NOTE_ERROR() \
              {                                                         \
-                  /* extern int kjb_debug_level; */                    \
+                  /* extern int ivi_debug_level; */                    \
                                                                        \
-                  if (kjb_debug_level > 0)                             \
+                  if (ivi_debug_level > 0)                             \
                   {                                                    \
                       add_error("Error noted on line %d of %s.",       \
                                 __LINE__, __FILE__);                   \
@@ -113,9 +113,9 @@ namespace kjb_c {
                   {                                                           \
                       if ((x) != 0)                                            \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(EGC on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
@@ -135,7 +135,7 @@ namespace kjb_c {
  * (MACRO) Returns ERROR if its argument is ERROR.
  *
  * This macro becomes an ERROR return if its argument is ERROR. It is a
- * convenient quick return that makes sense in the KJB library, but be careful
+ * convenient quick return that makes sense in the IVI library, but be careful
  * about cleanup! Often code with ERE()'s will leak memory on failure which is
  * acceptable if the failure is rare, but this should be documented. 
  *
@@ -154,9 +154,9 @@ namespace kjb_c {
 
 #define ERE(x)        if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(ERE on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
@@ -178,7 +178,7 @@ namespace kjb_c {
  * (MACRO) Returns NULL if its argument is ERROR.
  *
  * This macro becomes a NULL return if its argument is ERROR. It is a convenient
- * quick return that makes sense in the KJB library, but be careful about
+ * quick return that makes sense in the IVI library, but be careful about
  * cleanup! Often code with ERN()'s will leak memory on failure which is
  * acceptable if the failure is rare, but this should be documented. 
  *
@@ -197,9 +197,9 @@ namespace kjb_c {
 
 #define ERN(x)        if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(ERN on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
@@ -221,7 +221,7 @@ namespace kjb_c {
  * (MACRO) Returns (void) if its argument is ERROR.
  *
  * This macro becomes a simple return if its argument is ERROR. It is a
- * convenient quick return that makes sense in the KJB library, but be careful
+ * convenient quick return that makes sense in the IVI library, but be careful
  * about cleanup! Often code with ERE()'s will leak memory on failure which is
  * acceptable if the failure is rare, but this should be documented. 
  *
@@ -240,9 +240,9 @@ namespace kjb_c {
 
 #define ER(x)         if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(ER on line %d of %s.)",              \
                                         __LINE__, __FILE__);                   \
@@ -279,14 +279,14 @@ namespace kjb_c {
 
 #define EPE(x)        if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(EPE on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
+                          ivi_print_error();                                   \
                       }                                                        \
                       else                                                     \
                       {                                                        \
@@ -320,14 +320,14 @@ namespace kjb_c {
 
 #define ETE(x)        if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(ETE on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_exit(EXIT_FAILURE);                              \
+                          ivi_exit(EXIT_FAILURE);                              \
                       }                                                        \
                       else                                                     \
                       {                                                        \
@@ -361,15 +361,15 @@ namespace kjb_c {
 
 #define EPETE(x)      if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(EPETE on line %d of %s.)",           \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
-                          kjb_exit(EXIT_FAILURE);                              \
+                          ivi_print_error();                                   \
+                          ivi_exit(EXIT_FAILURE);                              \
                       }                                                        \
                       else                                                     \
                       {                                                        \
@@ -403,15 +403,15 @@ namespace kjb_c {
 
 #define EPETB(x)      if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(EPETB on line %d of %s.)",           \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
-                          kjb_exit(EXIT_BUG);                              \
+                          ivi_print_error();                                   \
+                          ivi_exit(EXIT_BUG);                              \
                       }                                                        \
                       else                                                     \
                       {                                                        \
@@ -442,7 +442,7 @@ namespace kjb_c {
 
 #define ESBRE(x)      if ((x) == ERROR)                                        \
                       {                                                        \
-                          kjb_print_error();                                   \
+                          ivi_print_error();                                   \
                           set_bug("Treating error return on line %d "          \
                                   "of %s as a bug.)", __LINE__, __FILE__);     \
                           return ERROR;                                        \
@@ -489,18 +489,18 @@ namespace kjb_c {
 #define BATCH_EPETE(x) \
                       if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(BATCH_EPETE on line %d of %s.)",     \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
+                          ivi_print_error();                                   \
                                                                                \
                           if ( ! is_interactive())                             \
                           {                                                    \
-                              kjb_exit(EXIT_FAILURE);                          \
+                              ivi_exit(EXIT_FAILURE);                          \
                           }                                                    \
                       }                                                        \
                       else                                                     \
@@ -518,7 +518,7 @@ namespace kjb_c {
  * (MACRO) Returns ERROR if its argument is NULL.
  *
  * This macro becomes an ERROR return if its argument is NULL. It is a
- * convenient quick return that makes sense in the KJB library, but be careful
+ * convenient quick return that makes sense in the IVI library, but be careful
  * about cleanup! Often code with NRE()'s will leak memory on failure which is
  * acceptable if the failure is rare, but this should be documented. 
  *
@@ -537,9 +537,9 @@ namespace kjb_c {
 
 #define NRE(x)        if ((x) == NULL)                                         \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(NRE on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
@@ -576,9 +576,9 @@ namespace kjb_c {
  * |     (* . . . work with those arrays . . . *)
  * |     result = NO_ERROR;
  * |cleanup:
- * |     kjb_free(r);
- * |     kjb_free(q);
- * |     kjb_free(p);
+ * |     ivi_free(r);
+ * |     ivi_free(q);
+ * |     ivi_free(p);
  * |     return result;
  * |}
  *
@@ -601,7 +601,7 @@ namespace kjb_c {
                  {                                                            \
                      if (NULL == (x))                                         \
                      {                                                        \
-                         if (kjb_debug_level > 0)                             \
+                         if (ivi_debug_level > 0)                             \
                          {                                                    \
                              add_error("(NGC on line %d of %s.)",             \
                                         __LINE__, __FILE__);                  \
@@ -621,7 +621,7 @@ namespace kjb_c {
  * (MACRO) Returns NULL if its argument is NULL.
  *
  * This macro becomes a NULL return if its argument is ERROR. It is a convenient
- * quick return that makes sense in the KJB library, but be careful about
+ * quick return that makes sense in the IVI library, but be careful about
  * cleanup! Often code with NRN()'s will leak memory on failure which is
  * acceptable if the failure is rare, but this should be documented. 
  *
@@ -640,9 +640,9 @@ namespace kjb_c {
 
 #define NRN(x)        if ((x) == NULL)                                         \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(NRN on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
@@ -663,7 +663,7 @@ namespace kjb_c {
  * (MACRO) Returns (void) if its argument is NULL.
  *
  * This macro becomes a simple return if its argument is NULL. It is a
- * convenient quick return that makes sense in the KJB library, but be careful
+ * convenient quick return that makes sense in the IVI library, but be careful
  * about cleanup! Often code with NR()'s will leak memory on failure which is
  * acceptable if the failure is rare, but this should be documented. 
  *
@@ -682,9 +682,9 @@ namespace kjb_c {
 
 #define NR(x)         if ((x) == NULL)                                         \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(NR on line %d of %s.)",              \
                                         __LINE__, __FILE__);                   \
@@ -722,14 +722,14 @@ namespace kjb_c {
 
 #define NPE(x)        if ((x) == NULL)                                         \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(NPE on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
+                          ivi_print_error();                                   \
                       }                                                        \
                       else                                                     \
                       {                                                        \
@@ -763,14 +763,14 @@ namespace kjb_c {
 
 #define NTE(x)        if ((x) == NULL)                                         \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(NTE on line %d of %s.)",             \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_exit(EXIT_FAILURE);                              \
+                          ivi_exit(EXIT_FAILURE);                              \
                       }                                                        \
                       else                                                     \
                       {                                                        \
@@ -804,15 +804,15 @@ namespace kjb_c {
 
 #define NPETE(x)      if ((x) == NULL)                                         \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(NPETE on line %d of %s.)",           \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
-                          kjb_exit(EXIT_FAILURE);                              \
+                          ivi_print_error();                                   \
+                          ivi_exit(EXIT_FAILURE);                              \
                       }                                                        \
                       else                                                     \
                       {                                                        \
@@ -845,15 +845,15 @@ namespace kjb_c {
 
 #define NPETB(x)      if ((x) == NULL)                                         \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(NPETB on line %d of %s.)",           \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
-                          kjb_exit(EXIT_BUG);                              \
+                          ivi_print_error();                                   \
+                          ivi_exit(EXIT_BUG);                              \
                       }                                                        \
                       else                                                     \
                       {                                                        \

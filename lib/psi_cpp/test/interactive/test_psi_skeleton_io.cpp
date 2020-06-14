@@ -2,8 +2,8 @@
 #include <psi_cpp/psi_trajectory.h>
 #include <string>
 
-using namespace kjb;
-using namespace kjb::psi;
+using namespace ivi;
+using namespace ivi::psi;
 using namespace std;
 
 int main(int argc, char** argv)

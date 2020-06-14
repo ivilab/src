@@ -1,4 +1,4 @@
-/* $Id: test_convolve.cpp 15114 2013-08-04 22:36:36Z predoehl $ */
+/* $Id: test_convolve.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -28,7 +28,7 @@
 
 int main(int argc, char** argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     Image img("../input/smile.jpg");
     Matrix mat = img.to_grayscale_matrix();
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     size_t mask_size = sigma * 6 + 0.5;
 
     std::cout << "Initializing Fftw_convolution_2d: " << std::endl;
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     Fftw_convolution_2d conv(
             mat.get_num_rows(),
             mat.get_num_cols(),
@@ -45,28 +45,28 @@ int main(int argc, char** argv)
             mask_size,
             FFTW_MEASURE);
 //            FFTW_ESTIMATE);
-    kjb_c::display_real_time();
+    ivi_c::display_real_time();
 
     conv.set_gaussian_mask(sigma);
     conv.execute(mat, out);
     Image img_out(out);
     img_out.write("smile_blurred.jpg");
 
-    kjb::Matrix mask(mask_size, mask_size);
+    ivi::Matrix mask(mask_size, mask_size);
 
     if(argc == 1)  return 0;
 
     // do time trials
     std::cout << "50 runs of Fftw_convolution_2d: " << std::endl;
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     for(size_t i = 0; i < 50; ++i)
     {
         conv.execute(mat, out);
     }
-    kjb_c::display_real_time();
+    ivi_c::display_real_time();
 
-    std::cout << "50 runs of kjb_c::fourier_convolve_matrix: " << std::endl;
-    kjb_c::init_real_time();
+    std::cout << "50 runs of ivi_c::fourier_convolve_matrix: " << std::endl;
+    ivi_c::init_real_time();
     for(size_t i = 0; i < 50; ++i)
     {
         fourier_convolve_matrix(
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
                 mat.get_c_matrix(),
                 mask.get_c_matrix());
     }
-    kjb_c::display_real_time();
+    ivi_c::display_real_time();
 
 
     return 0;

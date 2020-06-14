@@ -11,7 +11,7 @@
  * thread via macro symbol STREAM_CT.  The output size is proportional to the
  * product of these values.  They each have defaults as you can see below.
  *
- * $Id: test_random_streams.c 21491 2017-07-20 13:19:02Z kobus $
+ * $Id: test_random_streams.c 25499 2020-06-14 13:26:04Z kobus $
  */
 #include "l/l_sys_io.h"
 #include "l/l_sys_debug.h"
@@ -30,7 +30,7 @@
 /* You can increase THREAD_CT or STREAM_CT.  Biggest test so far:
    THREAD_CT of 100, STREAM_CT of 1000000 (a million).
    All outputs are PAIRWISE UNIQUE, when tested on v11 and bayes01.
-   That means at least the first million outputs of kjb_rand() and kjb_rand_2()
+   That means at least the first million outputs of ivi_rand() and ivi_rand_2()
    for 100 threads contain no duplications at all.  Hopefully it's adequate!
 
    If you want to save the output, to demonstrate repeatability, you can put
@@ -59,15 +59,15 @@
 
 #define ERROR_INJECTION 0 /* Want to inject seed duplication? 1=yes, 0=no. */
 
-#define SEED_PAIR_SIZE 6  /* do not adjust; see kjb_pthread_read_prng_seeds */
+#define SEED_PAIR_SIZE 6  /* do not adjust; see ivi_pthread_read_prng_seeds */
 
 
 
 struct Seed
 {
-    int lag, stream_id; /* stream id LSB: 0==kjb_rand, 1==kjb_rand_2. */
+    int lag, stream_id; /* stream id LSB: 0==ivi_rand, 1==ivi_rand_2. */
                         /* thread id occupies the upper bits. */
-    kjb_uint16 s[SEED_PAIR_SIZE/2]; /* seed of just one stream, not a pair */
+    ivi_uint16 s[SEED_PAIR_SIZE/2]; /* seed of just one stream, not a pair */
 };
 
 #define BLOCK_BSIZE 12
@@ -108,7 +108,7 @@ static void db_print_seed(const struct Seed* s)
 static int seed_cmp(const void* s1, const void* s2)
 {
     int i;
-    const kjb_uint16 *p, *q;
+    const ivi_uint16 *p, *q;
     ASSERT(s1);
     ASSERT(s2);
     p = ((const struct Seed*) s1) -> s;
@@ -143,7 +143,7 @@ static int ow_sort_sblock(struct S_block* b, size_t size)
 {
     NRE(b);
     size = MIN_OF(size, BLOCK_SIZE); /* trim size to something valid */
-    return kjb_sort(b -> b, size, sizeof(struct Seed), &seed_cmp,
+    return ivi_sort(b -> b, size, sizeof(struct Seed), &seed_cmp,
                                                 USE_CURRENT_ATN_HANDLING);
 }
 
@@ -193,7 +193,7 @@ static int sls_get_reserve(struct S_list* d)
     {
         /* must use multi-threaded version here! */
         NRE(d -> reserve
-                = (struct S_block*) kjb_mt_malloc(sizeof(struct S_block)));
+                = (struct S_block*) ivi_mt_malloc(sizeof(struct S_block)));
         d -> reserve -> next = NULL;
     }
     return NO_ERROR;
@@ -312,7 +312,7 @@ static void sls_destroy(struct S_list* d)
     {
         struct S_block* p = d -> reserve;
         d -> reserve = d -> reserve -> next;
-        kjb_mt_free(p); /* actually we do not need the multithread version,
+        ivi_mt_free(p); /* actually we do not need the multithread version,
                            because sls_destroy() is not called by threads, but
                            let's use it anyway in an abundance of caution. */
     }
@@ -510,18 +510,18 @@ cleanup:
 static int is_interacto(void)
 {
     int ii, len;
-    if ((len = kjb_get_strlen_error()))
+    if ((len = ivi_get_strlen_error()))
     {
         char buf[4096];
         ASSERT(len < (int) sizeof buf);
-        kjb_get_error(buf, sizeof buf);
+        ivi_get_error(buf, sizeof buf);
         ii = is_interactive();
         set_error("%s", buf);
     }
     else
     {
         ii = is_interactive();
-        kjb_clear_error();
+        ivi_clear_error();
     }
     return ii;
 }
@@ -543,13 +543,13 @@ static void* work_fun(void* arg)
 {
     int i;
     struct S_list* l = (struct S_list*) arg;
-    kjb_uint16 b[SEED_PAIR_SIZE];
+    ivi_uint16 b[SEED_PAIR_SIZE];
     struct Seed seed1, seed2;
     NRN(l);
     ASSERT(1 == l -> total_size);
     seed1 = seed2 = sls_back(l);
     ERN(sls_pop_back(l));
-    seed2.stream_id |= 1; /* low bit indicates kjb_rand() or kjb_rand_2() */
+    seed2.stream_id |= 1; /* low bit indicates ivi_rand() or ivi_rand_2() */
 
     /* Verify correctness of stream_id.  The off-by-one term is because the
        creation numbering starts from zero; whereas the wrapper considers the
@@ -557,32 +557,32 @@ static void* work_fun(void* arg)
        =================
        NOTE: if this error message IS ever seen in practice or in regression
        testing, that will be strong evidence that the order of calls to
-       kjb_pthread_create can occur in a different order than the internals
+       ivi_pthread_create can occur in a different order than the internals
        of the implementation finish.  In other words, that test_thread_id
        (another test in this directory) is NOT a waste of time.  If that
-       occurs, you should only trust get_kjb_pthread_number() to help you tell
+       occurs, you should only trust get_ivi_pthread_number() to help you tell
        which random stream is which, because it will be repeatable even if
        the creation numbering is not.  Also in that case you should revise
        this test not to bother receiving a thread number from the S_list, but
-       instead just get it from get_kjb_pthread_number().
+       instead just get it from get_ivi_pthread_number().
 
        If this error message is NEVER seen, then it does not matter where you
        get the pthread numbering from.  The weird stuff I saw earlier must
        have been due to some other unexplained bug.
      */
-    if (1 + (seed1.stream_id >> 1) != get_kjb_pthread_number())
+    if (1 + (seed1.stream_id >> 1) != get_ivi_pthread_number())
     {
         set_error("Thread ID is number %d from creation, %d to wrapper.",
-                    seed1.stream_id >> 1, get_kjb_pthread_number());
+                    seed1.stream_id >> 1, get_ivi_pthread_number());
         NOTE_ERROR();
         return NULL;
     }
 
     /* Main loop: read each random stream a lot, and store in a queue. */
-    for (i = 0; i < STREAM_CT; ++i, kjb_rand(), kjb_rand_2())
+    for (i = 0; i < STREAM_CT; ++i, ivi_rand(), ivi_rand_2())
     {
         int k;
-        ERN(kjb_pthread_read_prng_seeds(b, SEED_PAIR_SIZE));
+        ERN(ivi_pthread_read_prng_seeds(b, SEED_PAIR_SIZE));
         seed1.lag = seed2.lag = i;
         for (k = 0; k < SEED_PAIR_SIZE/2; ++k)
         {
@@ -606,7 +606,7 @@ static int fp_write_sblock(const struct S_block* b, size_t size, FILE* fp)
     {
         long ct;
         NRE(b -> b);
-        ct = kjb_fwrite(fp, b -> b[j].s, sizeof b -> b[j].s);
+        ct = ivi_fwrite(fp, b -> b[j].s, sizeof b -> b[j].s);
         if (ERROR == ct || ct != (int) sizeof b -> b[j].s)
         {
             int tid = b -> b[0].stream_id >> 1;
@@ -627,7 +627,7 @@ static int maybe_save(struct S_list stream[])
     if (NULL == fn || 0 == strlen(fn)) return NO_ERROR; /* trivial case */
 
     NRE(stream);
-    NRE(fp = kjb_fopen(fn, "w"));
+    NRE(fp = ivi_fopen(fn, "w"));
     for (i = 0; i < THREAD_CT; ++i)
     {
         const struct S_block* b;
@@ -649,7 +649,7 @@ static int maybe_save(struct S_list stream[])
     result = NO_ERROR;
 
 cleanup:
-    kjb_fclose(fp);
+    ivi_fclose(fp);
     return result;
 }
 
@@ -685,15 +685,15 @@ static int test_sls(void)
     for (i = 0; i < 10000; ++i)
     {
         struct Seed s;
-        s.lag = kjb_rand() * 100;
-        s.stream_id = kjb_rand() * 100;
-        s.s[0] = kjb_rand() * 100;
-        s.s[1] = kjb_rand() * 100;
-        s.s[2] = kjb_rand() * 100;
+        s.lag = ivi_rand() * 100;
+        s.stream_id = ivi_rand() * 100;
+        s.s[0] = ivi_rand() * 100;
+        s.s[1] = ivi_rand() * 100;
+        s.s[2] = ivi_rand() * 100;
         EPETE(sls_push_back(&l, &s));
     }
 #endif
-    kjb_disable_paging();
+    ivi_disable_paging();
     db_print_sls(&l);
     ERE(sls_sort(&l));
     TEST_PSE(("................. sorted? .................\n"));
@@ -786,7 +786,7 @@ static int scan_seeds_for_duplicates(
 
     if (0 == x)
     {
-        kjb_printf("Seed duplication detected.\n");
+        ivi_printf("Seed duplication detected.\n");
         db_print_seed(r);
         db_print_seed(s);
     }
@@ -861,9 +861,9 @@ static int test_thread_prngs(void)
     int i;
     int status = EXIT_FAILURE;
     struct S_list thread_out_arr[THREAD_CT];
-    kjb_pthread_t tid[THREAD_CT];
+    ivi_pthread_t tid[THREAD_CT];
 
-    EPETE(kjb_init()); /* no EGC allowed yet */
+    EPETE(ivi_init()); /* no EGC allowed yet */
 
     if (is_interacto()) TEST_PSE(("Starting threads and sampling PRNGs.\n"));
 
@@ -884,14 +884,14 @@ static int test_thread_prngs(void)
     /* generate threads, each to fill one list */
     for (i = 0; i < THREAD_CT; ++i)
     {
-        EGC(kjb_pthread_create(tid+i, NULL, &work_fun, thread_out_arr + i));
+        EGC(ivi_pthread_create(tid+i, NULL, &work_fun, thread_out_arr + i));
     }
 
     /* join all threads and verify that each died happy */
     for (i = 0; i < THREAD_CT; ++i)
     {
         void* p;
-        EGC(kjb_pthread_join(tid[i], &p));
+        EGC(ivi_pthread_join(tid[i], &p));
         NGC(p);
     }
 
@@ -926,8 +926,8 @@ cleanup:
         sls_destroy(thread_out_arr + i);
     }
 
-    if (kjb_get_strlen_error() && is_interacto()) kjb_print_error();
-    kjb_cleanup();
+    if (ivi_get_strlen_error() && is_interacto()) ivi_print_error();
+    ivi_cleanup();
 
     return status;
 }

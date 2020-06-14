@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_fft.cpp 20088 2015-11-16 23:51:39Z predoehl $
+ * $Id: test_fft.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 /*
@@ -38,7 +38,7 @@ double NOISE_TOL = 1e-6; // this is a conservative value; could be 1e-10.
  * @param S2 size (edge length) of square matrix of other convo arg, the filter
  * @param take_your_time if false, abbreviate the test, namely, skip the slow
  *                       direct convolution step.  It's a better test if true.
- * @return kjb_c::ERROR or kjb_c::NO_ERROR as appropriate
+ * @return ivi_c::ERROR or ivi_c::NO_ERROR as appropriate
  *
  * The class Fftw_convolution_2d emulates the behavior of two C-library 
  * functions (which do not emulate each other -- there are slight differences).
@@ -53,12 +53,12 @@ double NOISE_TOL = 1e-6; // this is a conservative value; could be 1e-10.
  */
 int trial(size_t S1, size_t S2, bool take_your_time=true)
 {
-    const kjb::Matrix   m1(kjb::create_random_matrix(S1, S1)),  // "data"
-                        m2(kjb::create_random_matrix(S2, S2));  // "filter"
-    kjb::Matrix m_cpp_fft_reflect, m_cpp_fft_zeropad;
+    const ivi::Matrix   m1(ivi::create_random_matrix(S1, S1)),  // "data"
+                        m2(ivi::create_random_matrix(S2, S2));  // "filter"
+    ivi::Matrix m_cpp_fft_reflect, m_cpp_fft_zeropad;
 
     // fancy fft convolution
-    kjb::Fftw_convolution_2d convo(S1, S1, S2, S2);
+    ivi::Fftw_convolution_2d convo(S1, S1, S2, S2);
     convo.set_mask(m2);
     convo.reflect_and_convolve(m1, m_cpp_fft_reflect);
     convo.convolve(m1, m_cpp_fft_zeropad);
@@ -67,29 +67,29 @@ int trial(size_t S1, size_t S2, bool take_your_time=true)
     double dr = 0;
     if (take_your_time)
     {
-        kjb_c::Matrix *cm4 = 00;
-        KJB(ERE(convolve_matrix(&cm4, m1.get_c_matrix(), m2.get_c_matrix())));
-        kjb::Matrix m4(cm4);
-        dr = kjb::max_abs_difference(m4, m_cpp_fft_reflect);
+        ivi_c::Matrix *cm4 = 00;
+        IVI(ERE(convolve_matrix(&cm4, m1.get_c_matrix(), m2.get_c_matrix())));
+        ivi::Matrix m4(cm4);
+        dr = ivi::max_abs_difference(m4, m_cpp_fft_reflect);
     }
 
     // C lib FFT convolution with zeropad
-    kjb_c::Matrix *cm5 = 00;
-    KJB(ERE(fourier_convolve_matrix(&cm5,
+    ivi_c::Matrix *cm5 = 00;
+    IVI(ERE(fourier_convolve_matrix(&cm5,
                                     m1.get_c_matrix(), m2.get_c_matrix())));
-    kjb::Matrix m5(cm5);
-    const double dz = kjb::max_abs_difference(m5, m_cpp_fft_zeropad);
+    ivi::Matrix m5(cm5);
+    const double dz = ivi::max_abs_difference(m5, m_cpp_fft_zeropad);
 
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
-        KJB(TEST_PSE((  "max abs difference, reflection = %e\n"
+        IVI(TEST_PSE((  "max abs difference, reflection = %e\n"
                         "max abs difference, zero pad = %e\n", dr, dz)));
     }
 
     TEST_TRUE(dr < NOISE_TOL);   // error in reflect_and_convolve() method
     TEST_TRUE(dz < NOISE_TOL);   // error in convolve() method
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 }
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 {
     int time = 0;
 
-    KJB(EPETE(scan_time_factor(argv[1], &time)));
+    IVI(EPETE(scan_time_factor(argv[1], &time)));
 
     /* The even/odd combinations here have shaken out bugs previously, but I
      * think that has to do more with the prime/composite variation than the
@@ -109,18 +109,18 @@ int main(int argc, char** argv)
     try 
     {
         // basic, quick test (not as effective)
-        if (0 == time) KJB(EPETE(trial(500, 100, 0)));
+        if (0 == time) IVI(EPETE(trial(500, 100, 0)));
 
         // better quality test, about 60x slower.
         for( ; time > 0; --time)
         {
-            KJB(EPETE(trial(500, 100)));
-            KJB(EPETE(trial(501, 100)));
-            KJB(EPETE(trial(500, 101)));
-            KJB(EPETE(trial(501, 101)));
+            IVI(EPETE(trial(500, 100)));
+            IVI(EPETE(trial(501, 100)));
+            IVI(EPETE(trial(500, 101)));
+            IVI(EPETE(trial(501, 101)));
         }
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details_exit();
     }

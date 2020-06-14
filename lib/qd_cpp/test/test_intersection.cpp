@@ -4,7 +4,7 @@
  * @brief unit test for Bentley-Ottman algorithm
  */
 /*
- * $Id: test_intersection.cpp 20160 2015-12-08 23:36:20Z predoehl $
+ * $Id: test_intersection.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -30,18 +30,18 @@
 
 namespace
 {
-using kjb::qd::RatPoint;
-using kjb::qd::RatPoint_line_segment;
-using kjb::qd::i_numerator;
-using kjb::qd::i_denominator;
-using kjb::qd::dbl_ratio;
+using ivi::qd::RatPoint;
+using ivi::qd::RatPoint_line_segment;
+using ivi::qd::i_numerator;
+using ivi::qd::i_denominator;
+using ivi::qd::dbl_ratio;
 
 const bool VERBOSE = 0;
 
 
-RatPoint quasirandom_pt(kjb::Gsl_Qrng_Sobol& qrng)
+RatPoint quasirandom_pt(ivi::Gsl_Qrng_Sobol& qrng)
 {
-    kjb::Vector v( 2 );
+    ivi::Vector v( 2 );
     v = qrng.read();
     const long GRANULARITY = 100;
     RatPoint a(RatPoint::Rat(long(v[0] * GRANULARITY), GRANULARITY),
@@ -60,21 +60,21 @@ std::ostream& operator<<(std::ostream& os, const RatPoint_line_segment& s)
 #if VISUALIZATION
 const int IMG_MAG=900;
 
-void draw_thin_white_line(kjb::Image* i, const RatPoint_line_segment& s,int j)
+void draw_thin_white_line(ivi::Image* i, const RatPoint_line_segment& s,int j)
 {
-    const kjb::qd::PixPoint
+    const ivi::qd::PixPoint
         p1(s.a.x.numerator()*IMG_MAG/double(s.a.x.denominator()),
             s.a.y.numerator()*IMG_MAG/double(s.a.y.denominator())),
         p2(s.b.x.numerator()*IMG_MAG/double(s.b.x.denominator()),
             s.b.y.numerator()*IMG_MAG/double(s.b.y.denominator())),
         pmin = std::min(p1, p2);
 
-    i-> draw_line_segment(p1.y,p1.x, p2.y,p2.x, 1, kjb::PixelRGBA(250,250,50));
+    i-> draw_line_segment(p1.y,p1.x, p2.y,p2.x, 1, ivi::PixelRGBA(250,250,50));
 
     std::ostringstream label;
     label << j;
     // next line blows up if the font files are missing
-    KJB(EPETE(i -> draw_text_top_left(pmin.y, pmin.x, label.str())));
+    IVI(EPETE(i -> draw_text_top_left(pmin.y, pmin.x, label.str())));
 }
 
 
@@ -83,7 +83,7 @@ void draw_setup(
     const std::string& name
 )
 {
-    kjb::Image iii(IMG_MAG, IMG_MAG, 0,0,0);
+    ivi::Image iii(IMG_MAG, IMG_MAG, 0,0,0);
 
     for (size_t i = 0; i < sl.size(); ++i)
     {
@@ -113,16 +113,16 @@ int test_this_set(const std::vector< RatPoint_line_segment >& sl)
     }
 
     const std::vector< std::pair< size_t, size_t > >
-        r2 = kjb::qd::get_intersections(sl),
-        r4 = kjb::qd::get_interior_intersections(sl);
+        r2 = ivi::qd::get_intersections(sl),
+        r4 = ivi::qd::get_interior_intersections(sl);
     const STSET r3(r2.begin(), r2.end()), r5(r4.begin(), r4.end());
 
     for (STSET::const_iterator i = r5.begin(); i != r5.end(); ++i)
     {
         if (r3.end() == r3.find(*i))
         {
-            kjb_c::set_error("r5 is not a subset of r3.");
-            return kjb_c::ERROR;
+            ivi_c::set_error("r5 is not a subset of r3.");
+            return ivi_c::ERROR;
         }
     }
 
@@ -131,7 +131,7 @@ int test_this_set(const std::vector< RatPoint_line_segment >& sl)
         if (r3.end() == r3.find(*i))
         {
             RatPoint_line_segment overlap(sl[0]);
-            bool hit = kjb::qd::segment_intersection(sl[i->first],
+            bool hit = ivi::qd::segment_intersection(sl[i->first],
                                                      sl[i->second], &overlap);
             std::cerr << "Unique to r1: " << i->first << ',' << i->second
                       << "\n\t" << sl[i->first] << "\n\t" << sl[i->second]
@@ -139,7 +139,7 @@ int test_this_set(const std::vector< RatPoint_line_segment >& sl)
             if (hit)
             {
                 std::cerr << " overlap: ";
-                if (kjb::qd::is_degenerate(overlap))
+                if (ivi::qd::is_degenerate(overlap))
                 {
                     std::cerr << overlap.a;
                 }
@@ -149,8 +149,8 @@ int test_this_set(const std::vector< RatPoint_line_segment >& sl)
                 }
             }
             std::cerr << '\n';
-            kjb_c::set_error("r1 contains spurious result: bug in unit test");
-            return kjb_c::ERROR;
+            ivi_c::set_error("r1 contains spurious result: bug in unit test");
+            return ivi_c::ERROR;
         }
     }
     for (STSET::const_iterator i = r3.begin(); i != r3.end(); ++i)
@@ -168,35 +168,35 @@ int test_this_set(const std::vector< RatPoint_line_segment >& sl)
         {
             // this is ok if either segment's interior is touched.
             RatPoint_line_segment overlap(sl[0]);
-            bool hit = kjb::qd::segment_intersection(sl[i->first],
+            bool hit = ivi::qd::segment_intersection(sl[i->first],
                                                      sl[i->second], &overlap);
             TEST_TRUE(hit); // otherwise *i is a spurious result
 
-            if (! kjb::qd::is_degenerate(overlap))
+            if (! ivi::qd::is_degenerate(overlap))
             {
-                kjb_c::set_error("parallel overlap missing from r5");
-                return kjb_c::ERROR;
+                ivi_c::set_error("parallel overlap missing from r5");
+                return ivi_c::ERROR;
             }
             // hitting interior of first would mean a failure
             if (overlap.a != sl[i->first].a && overlap.a != sl[i->first].b)
             {
-                kjb_c::set_error("first interior intersection %u, %u "
+                ivi_c::set_error("first interior intersection %u, %u "
                                 "missing from r5", i -> first, i -> second);
-                return kjb_c::ERROR;
+                return ivi_c::ERROR;
             }
             // hitting interior of second would mean a failure
             if (overlap.a != sl[i->second].a && overlap.a != sl[i->second].b)
             {
-                kjb_c::set_error("second interior intersection %u, %u "
+                ivi_c::set_error("second interior intersection %u, %u "
                                 "missing from r5", i -> first, i -> second);
-                return kjb_c::ERROR;
+                return ivi_c::ERROR;
             }
         }
     }
 
     TEST_TRUE(r1 == r3);
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -206,7 +206,7 @@ std::vector< RatPoint_line_segment > setup13(
 )
 {
     std::vector< RatPoint_line_segment > sl1, sl2;
-    kjb::Gsl_Qrng_Sobol qq( 2 );
+    ivi::Gsl_Qrng_Sobol qq( 2 );
 
     for (size_t i = 0; i < take_me.size(); ++i)
     {
@@ -248,7 +248,7 @@ int test13(const std::vector<bool> &take_me)
 // Trying to simulate the flaw of test13 without all the chaos.
 int test14()
 {
-    using kjb::qd::PixPoint;
+    using ivi::qd::PixPoint;
     std::vector< RatPoint_line_segment > sl;
     sl.push_back(RatPoint_line_segment(PixPoint(0,0), PixPoint(4,4)));
     sl.push_back(RatPoint_line_segment(PixPoint(1,1), PixPoint(5,5)));
@@ -257,8 +257,8 @@ int test14()
     sl.push_back(RatPoint_line_segment(PixPoint(1,5), PixPoint(5,1)));
 
     const std::vector< std::pair< size_t, size_t > >
-        r = kjb::qd::get_intersections(sl),
-        t = kjb::qd::get_interior_intersections(sl);
+        r = ivi::qd::get_intersections(sl),
+        t = ivi::qd::get_interior_intersections(sl);
     TEST_TRUE(10 == r.size());
     TEST_TRUE(0 == r[0].first && 1 == r[0].second);
     TEST_TRUE(0 == r[1].first && 2 == r[1].second);
@@ -279,7 +279,7 @@ int test14()
 // easy peasy variation of test14
 int test15()
 {
-    using kjb::qd::PixPoint;
+    using ivi::qd::PixPoint;
     std::vector< RatPoint_line_segment > sl;
     sl.push_back(RatPoint_line_segment(PixPoint(0,0), PixPoint(4,4)));
     sl.push_back(RatPoint_line_segment(PixPoint(0,1), PixPoint(4,5)));
@@ -288,7 +288,7 @@ int test15()
     sl.push_back(RatPoint_line_segment(PixPoint(2,5), PixPoint(6,1)));
 
     const std::vector< std::pair< size_t, size_t > >
-        r = kjb::qd::get_intersections(sl);
+        r = ivi::qd::get_intersections(sl);
     TEST_TRUE(6 == r.size());
     TEST_TRUE(0 == r[0].first && 3 == r[0].second);
     TEST_TRUE(0 == r[1].first && 4 == r[1].second);
@@ -349,23 +349,23 @@ int test17(int alot)
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
 
     // update the number of test iterations based on the optional argument
     int test_factor = 1, ALOT = 10;
-    KJB(EPETE(scan_time_factor(argv[1], &test_factor)));
+    IVI(EPETE(scan_time_factor(argv[1], &test_factor)));
     while (test_factor--> 0)
     {
         ALOT *= 10;
     }
 
     /* Tests for get_intersection() -- you have to be harsh with this one. */
-    KJB(EPETE(test13(std::vector<bool>(ALOT, true))));
-    KJB(EPETE(test14()));
-    KJB(EPETE(test15()));
-    KJB(EPETE(test16(ALOT)));
-    KJB(EPETE(test17(ALOT)));
+    IVI(EPETE(test13(std::vector<bool>(ALOT, true))));
+    IVI(EPETE(test14()));
+    IVI(EPETE(test15()));
+    IVI(EPETE(test16(ALOT)));
+    IVI(EPETE(test17(ALOT)));
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }

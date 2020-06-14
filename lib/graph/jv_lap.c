@@ -1,5 +1,5 @@
 
-/* $Id: jv_lap.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: jv_lap.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
 // I have hacked this to fit better with my stuff, and  to make it work better
@@ -476,7 +476,7 @@ int int_jv_lap(const Int_matrix* cost_mp, Int_vector** row_assignment_vpp, int* 
 
       result = int_checklap(dim, assigncost, rowsol, colsol, u, v);
 
-      kjb_free(u);
+      ivi_free(u);
 
       /* End TEST */
 
@@ -495,14 +495,14 @@ int int_jv_lap(const Int_matrix* cost_mp, Int_vector** row_assignment_vpp, int* 
       }
   }
 
-  kjb_free(rowsol);
-  kjb_free(colsol);
-  kjb_free(pred);
-  kjb_free(free);
-  kjb_free(collist);
-  kjb_free(matches);
-  kjb_free(d);
-  kjb_free(v);
+  ivi_free(rowsol);
+  ivi_free(colsol);
+  ivi_free(pred);
+  ivi_free(free);
+  ivi_free(collist);
+  ivi_free(matches);
+  ivi_free(d);
+  ivi_free(v);
   free_int_matrix(assigncost_mp);
 
   if (result == ERROR) return ERROR;
@@ -553,7 +553,7 @@ static int int_checklap
             {
                 if (result != ERROR)
                 {
-                    kjb_clear_error();
+                    ivi_clear_error();
                 }
 
                 add_error("negative reduced cost i %d j %d redcost %d",
@@ -573,7 +573,7 @@ static int int_checklap
         {
             if (result != ERROR)
             {
-                kjb_clear_error();
+                ivi_clear_error();
             }
 
             add_error("non-null reduced cost i %d soli %d redcost %d",
@@ -596,7 +596,7 @@ static int int_checklap
         {
             if (result != ERROR)
             {
-                kjb_clear_error();
+                ivi_clear_error();
             }
 
             add_error("column matched more than once - i %d soli %d", i, rowsol[i]);
@@ -616,7 +616,7 @@ static int int_checklap
         {
             if (result != ERROR)
             {
-                kjb_clear_error();
+                ivi_clear_error();
             }
 
             add_error("error in row solution i %d soli %d solsoli %d", i, rowsol[i], colsol[rowsol[i]]);
@@ -632,7 +632,7 @@ static int int_checklap
         {
             if (result != ERROR)
             {
-                kjb_clear_error();
+                ivi_clear_error();
             }
 
             add_error("error in col solution j %d solj %d solsolj %d", j, colsol[j], rowsol[colsol[j]]);
@@ -642,7 +642,7 @@ static int int_checklap
         }
     }
 
-    kjb_free(matched);
+    ivi_free(matched);
 
     return result;
 }
@@ -1055,7 +1055,7 @@ int dbl_jv_lap(const Matrix* cost_mp, Int_vector** row_assignment_vpp, double* c
 
       result = dbl_checklap(dim, assigncost, rowsol, colsol, u, v);
 
-      kjb_free(u);
+      ivi_free(u);
 
       /* End TEST */
 
@@ -1075,14 +1075,14 @@ int dbl_jv_lap(const Matrix* cost_mp, Int_vector** row_assignment_vpp, double* c
   }
 
   /* free reserved memory. */
-  kjb_free(rowsol);
-  kjb_free(colsol);
-  kjb_free(pred);
-  kjb_free(free);
-  kjb_free(collist);
-  kjb_free(matches);
-  kjb_free(d);
-  kjb_free(v);
+  ivi_free(rowsol);
+  ivi_free(colsol);
+  ivi_free(pred);
+  ivi_free(free);
+  ivi_free(collist);
+  ivi_free(matches);
+  ivi_free(d);
+  ivi_free(v);
   free_matrix(assigncost_mp);
 
   if (result == ERROR) return ERROR;
@@ -1160,7 +1160,7 @@ static int dbl_checklap
     {
       set_error("column matched more than once - i %d soli %d", i, rowsol[i]);
       cat_error(" dim %5d ", dim);
-      kjb_free(matched);
+      ivi_free(matched);
       return ERROR;
     }
     else
@@ -1176,7 +1176,7 @@ static int dbl_checklap
     {
       set_error("error in row solution i %d soli %d solsoli %d", i, rowsol[i], colsol[rowsol[i]]);
       cat_error(" dim %5d ", dim);
-      kjb_free(matched);
+      ivi_free(matched);
       return ERROR;
     }
   }
@@ -1187,12 +1187,12 @@ static int dbl_checklap
     {
       set_error("error in col solution j %d solj %d solsolj %d", j, colsol[j], rowsol[colsol[j]]);
       cat_error(" dim %5d", dim);
-      kjb_free(matched);
+      ivi_free(matched);
       return ERROR;
     }
   }
 
-  kjb_free(matched);
+  ivi_free(matched);
 
   return NO_ERROR;
 }

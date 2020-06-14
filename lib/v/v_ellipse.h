@@ -1,5 +1,5 @@
 
-/* $Id: v_ellipse.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: v_ellipse.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -20,7 +20,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -45,11 +45,11 @@ Ellipse* fit_ellipse
     double  max_rel_radial_error
 );
 
-int image_draw_ellipse(KJB_image* out_ip, Ellipse* ellipse_ptr);
+int image_draw_ellipse(IVI_image* out_ip, Ellipse* ellipse_ptr);
 
 int image_draw_ellipse_2
 (
-    KJB_image* out_ip,
+    IVI_image* out_ip,
     Ellipse*   ellipse_ptr,
     int        r,
     int        g,

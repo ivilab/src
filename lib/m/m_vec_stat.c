@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_stat.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_vec_stat.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -407,7 +407,7 @@ void free_vector_stat(Vector_stat* vector_stat_ptr)
         free_vector(vector_stat_ptr->max_vp);
         free_vector(vector_stat_ptr->stdev_vp);
 
-        kjb_free(vector_stat_ptr);
+        ivi_free(vector_stat_ptr);
     }
 }
 

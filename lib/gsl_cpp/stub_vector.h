@@ -22,13 +22,13 @@
  */
 
 /*
- * $Id: stub_vector.h 19607 2015-07-17 00:11:07Z predoehl $
+ * $Id: stub_vector.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef GSL_STUB_VECTOR_H_KJBLIB_UARIZONAVISION
-#define GSL_STUB_VECTOR_H_KJBLIB_UARIZONAVISION
+#ifndef GSL_STUB_VECTOR_H_IVILIB_UARIZONAVISION
+#define GSL_STUB_VECTOR_H_IVILIB_UARIZONAVISION
 
-#ifndef KJB_HAVE_GSL
+#ifndef IVI_HAVE_GSL
 
 /* This is a fake vector that is a standin for GSL vector when GSL is 
  * unavailable.  It might not be necessary, but at one point it seemed to
@@ -73,4 +73,4 @@ struct gsl_matrix { size_t size1, size2; };
 
 
 #endif
-#endif /* GSL_STUB_VECTOR_H_KJBLIB_UARIZONAVISION */
+#endif /* GSL_STUB_VECTOR_H_IVILIB_UARIZONAVISION */

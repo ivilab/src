@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: test_matrix_graphics.cpp 13617 2013-01-14 22:41:05Z predoehl $ */
+/* $Id: test_matrix_graphics.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "m_cpp/m_matrix.h"
 #include "m_cpp/m_vector.h"
@@ -30,8 +30,8 @@
 
 int main(int /* argc */, char ** /* argv */)
 {
-    using kjb::Matrix;
-    using kjb::Vector;
+    using ivi::Matrix;
+    using ivi::Vector;
 
     const double CLOSE_ENOUGH = 5e-10;
 
@@ -69,20 +69,20 @@ int main(int /* argc */, char ** /* argv */)
 
     std::auto_ptr<Matrix> m( new  Matrix() );
     m->convert_to_euler_rotation_matrix(0.5,-0.7,1.4);
-    TEST_TRUE( kjb::max_abs_difference( *m, *m_right ) < CLOSE_ENOUGH );
+    TEST_TRUE( ivi::max_abs_difference( *m, *m_right ) < CLOSE_ENOUGH );
 
     Matrix m2 = Matrix::create_euler_rotation_matrix(0.5,-0.7,1.4);
     m2.convert_to_euler_rotation_matrix(0.5,0.7,1.4);
-    TEST_TRUE( kjb::max_abs_difference( m2, m_right2 ) < CLOSE_ENOUGH );
+    TEST_TRUE( ivi::max_abs_difference( m2, m_right2 ) < CLOSE_ENOUGH );
 
 
     Matrix m3 = Matrix(2,2,1);
     m3.convert_to_euler_rotation_matrix(0.5,0.7,1.4);
-    TEST_TRUE( kjb::max_abs_difference( m3, m_right2 ) < CLOSE_ENOUGH );
+    TEST_TRUE( ivi::max_abs_difference( m3, m_right2 ) < CLOSE_ENOUGH );
 
     Matrix m4 = Matrix(3,3,1.2);
     m4.convert_to_euler_rotation_matrix(0.5,0.7,1.4);
-    TEST_TRUE( kjb::max_abs_difference( m4, m_right2 ) < CLOSE_ENOUGH );
+    TEST_TRUE( ivi::max_abs_difference( m4, m_right2 ) < CLOSE_ENOUGH );
 
     Matrix m5 = Matrix::create_3d_rotation_matrix(0.8, 5, 2, 1);
 
@@ -112,13 +112,13 @@ int main(int /* argc */, char ** /* argv */)
     #endif
 
 #warning "[Code police] the following test does NOT work (1 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m5, *m_3d ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m5, *m_3d ) < CLOSE_ENOUGH );
 
     Matrix m6 = Matrix(1,1,2.0);
     TEST_FAIL( m6.convert_to_3d_rotation_matrix(0.8, 0,0,0 ) );
     m6.convert_to_3d_rotation_matrix(0.8, 5, 2, 1);
 #warning "[Code police] the following test does NOT work (2 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m6, *m_3d ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m6, *m_3d ) < CLOSE_ENOUGH );
 
     Vector vec = Vector(3,1.0);
     vec[0] = 5;
@@ -126,14 +126,14 @@ int main(int /* argc */, char ** /* argv */)
     vec[2] = 1;
     Matrix m7 = Matrix::create_3d_rotation_matrix_from_vector(0.8,vec);
 #warning "[Code police] the following test does NOT work (3 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m7, *m_3d ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m7, *m_3d ) < CLOSE_ENOUGH );
 
     Matrix m8 = Matrix(1,1,2.0);
 #warning "[Code police] the following test does NOT work (4 of 9)"
     //TEST_FAIL( m8.convert_to_3d_rotation_matrix_from_vector(0.8, Vector(4)) );
     m8.convert_to_3d_rotation_matrix_from_vector(0.8, vec);
 #warning "[Code police] the following test does NOT work (5 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m8, *m_3d ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m8, *m_3d ) < CLOSE_ENOUGH );
 
     Matrix m9 = Matrix::create_3d_homo_rotation_matrix(0.8, 5, 2, 1);
 
@@ -178,24 +178,24 @@ int main(int /* argc */, char ** /* argv */)
     #endif
 
 #warning "[Code police] the following test does NOT work (6 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m9, *m_3dh ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m9, *m_3dh ) < CLOSE_ENOUGH );
 
     Matrix m10 = Matrix(1,1,2.0);
     TEST_FAIL( m10.convert_to_3d_homo_rotation_matrix(0.8, 0, 0, 0) );
     m10.convert_to_3d_homo_rotation_matrix(0.8, 5, 2, 1);
 #warning "[Code police] the following test does NOT work (7 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m10, *m_3dh ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m10, *m_3dh ) < CLOSE_ENOUGH );
 
     Matrix m11 = Matrix::create_3d_homo_rotation_matrix_from_vector(0.8,vec);
 #warning "[Code police] the following test does NOT work (8 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m11, *m_3dh ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m11, *m_3dh ) < CLOSE_ENOUGH );
 
     Matrix m12 = Matrix(1,1,2.0);
     TEST_FAIL( m12.convert_to_3d_homo_rotation_matrix_from_vector(0.8,
                                                                 Vector(2)) );
     m12.convert_to_3d_homo_rotation_matrix_from_vector(0.8, vec);
 #warning "[Code police] the following test does NOT work (9 of 9)"
-    //TEST_TRUE( kjb::max_abs_difference( m12, *m_3dh ) < CLOSE_ENOUGH );
+    //TEST_TRUE( ivi::max_abs_difference( m12, *m_3dh ) < CLOSE_ENOUGH );
 
     Matrix m13 = Matrix::create_3d_scaling_matrix(0.1, 2, 0.8);
     std::auto_ptr<Matrix> m_3ds( new Matrix(3,3,1) );
@@ -318,10 +318,10 @@ int main(int /* argc */, char ** /* argv */)
 
     Matrix m25 = Matrix(1,1,2.0);
     m25.convert_to_euler_homo_rotation_matrix(0.5,-0.7,1.4);
-    TEST_TRUE( kjb::max_abs_difference( m25, *m_heuler ) < CLOSE_ENOUGH );
+    TEST_TRUE( ivi::max_abs_difference( m25, *m_heuler ) < CLOSE_ENOUGH );
 
     Matrix m26 = Matrix::create_euler_homo_rotation_matrix(0.5, -0.7, 1.4);
-    TEST_TRUE( kjb::max_abs_difference( m26, *m_heuler ) < CLOSE_ENOUGH );
+    TEST_TRUE( ivi::max_abs_difference( m26, *m_heuler ) < CLOSE_ENOUGH );
 
     RETURN_VICTORIOUSLY();
 }

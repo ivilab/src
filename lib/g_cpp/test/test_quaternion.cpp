@@ -1,5 +1,5 @@
 
-/* $Id: test_quaternion.cpp 9250 2011-04-09 00:12:25Z ksimek $ */
+/* $Id: test_quaternion.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <iostream>
 #include <cmath>
@@ -15,7 +15,7 @@
 
 #define DB(x) std::cout << #x << ": \n" << x << std::endl;
 
-using namespace::kjb;
+using namespace::ivi;
 
 int gimbal_lock_counter = 0;
 int time_factor = 1;
@@ -553,11 +553,11 @@ int main(int argc, char *argv[])
                     print_1 = print_axis_angle;
                     compare_func = compare_axis_angle;
 
-                    kjb_c::Vector* u_c = NULL;
+                    ivi_c::Vector* u_c = NULL;
                     ETX(get_random_unit_vector(&u_c, 3));
                     Vector axis(u_c);
 
-                    double angle = kjb_c::sample_from_uniform_distribution(-M_PI, M_PI);
+                    double angle = ivi_c::sample_from_uniform_distribution(-M_PI, M_PI);
                     q1 = Quaternion(axis, angle);
                     break;
                 }

@@ -1,5 +1,5 @@
 
-/* $Id: big_endian_and_shift.c 21664 2017-08-05 17:53:40Z kobus $ */
+/* $Id: big_endian_and_shift.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -28,14 +28,14 @@ int main(void)
     int base_oid = 0;
     int base_otype = 0;
 
-    if(! kjb_is_bigendian())
+    if(! ivi_is_bigendian())
     {
-        kjb_printf("Little endian\n");
+        ivi_printf("Little endian\n");
         /*bswap_u32((uint32_t *) &(swapped));*/
     }
     else
     {
-        kjb_printf("Big endian\n");
+        ivi_printf("Big endian\n");
     }
 
     for(edge_id = 0; edge_id < 3000; edge_id++)
@@ -50,7 +50,7 @@ int main(void)
                 for(base = 0; base < 32; base++)
                 {
                     swapped = base;
-                    if(! kjb_is_bigendian())
+                    if(! ivi_is_bigendian())
                     {
                         /*bswap_u32((uint32_t *) &(swapped));*/
                     }
@@ -60,13 +60,13 @@ int main(void)
                     for(j = 0; j < 8; j++)
                     {
                         swapped_j = j;
-                        if(! kjb_is_bigendian())
+                        if(! ivi_is_bigendian())
                         {
                             /*bswap_u32((uint32_t *) &(swapped_j));*/
                         }
                         /*printf("Experiment:%d\n", full_base);*/
                         full_base = temp_full_base | swapped_j;
-                        if(! kjb_is_bigendian())
+                        if(! ivi_is_bigendian())
                         {
                             /*bswap_u32((uint32_t *) &(full_base));*/
                         }
@@ -83,7 +83,7 @@ int main(void)
                         restored_object_id = restored_object_id&0x1f;
                         /*printf("Experimentr:%d\n", restored_edge);*/
                         /*printf("reshifted:%d\n", restored);*/
-                        if(! kjb_is_bigendian())
+                        if(! ivi_is_bigendian())
                         {
                             /*bswap_u32((uint32_t *) &(restored));
                             bswap_u32((uint32_t *) &(restored_j));*/

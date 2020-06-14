@@ -47,7 +47,7 @@
 #define VPD_MAX_PRINCIPAL_POINT_POSITION_TOLERANCE 18  /* vero: 30 //16 // 80 */
 #define VPD_LOOSE_VPTS_TOLERANCE 60
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -77,10 +77,10 @@ class Vanishing_point_detector
                   decomposition(0), inverse(0)
         {
             init_from_edge_segment_set(iset, vertical_threshold, max_line_segment_fitting_error );
-            kjb_c::get_target_matrix( &E_mp, 4, 4 );
-            kjb_c::get_target_matrix( &Atranspose, 4, 3 );
-            kjb_c::get_target_matrix( &AA, 4, 4 );
-            kjb_c::get_target_vector( &D_vp, 4);
+            ivi_c::get_target_matrix( &E_mp, 4, 4 );
+            ivi_c::get_target_matrix( &Atranspose, 4, 3 );
+            ivi_c::get_target_matrix( &AA, 4, 4 );
+            ivi_c::get_target_vector( &D_vp, 4);
         }
 
         Vanishing_point_detector(const Line_segment_set & iset,
@@ -92,10 +92,10 @@ class Vanishing_point_detector
                   decomposition(0), inverse(0)
         {
             init_from_edge_segment_set(iset, vertical_threshold);
-            kjb_c::get_target_matrix( &E_mp, 4, 4 );
-            kjb_c::get_target_matrix( &Atranspose, 4, 3 );
-            kjb_c::get_target_matrix( &AA, 4, 4 );
-            kjb_c::get_target_vector( &D_vp, 4);
+            ivi_c::get_target_matrix( &E_mp, 4, 4 );
+            ivi_c::get_target_matrix( &Atranspose, 4, 3 );
+            ivi_c::get_target_matrix( &AA, 4, 4 );
+            ivi_c::get_target_vector( &D_vp, 4);
         }
 
         Vanishing_point_detector(const Vanishing_point_detector & src)
@@ -105,12 +105,12 @@ class Vanishing_point_detector
                  A(src.A), Atranspose(0), AA(0), absolute_conic(src.absolute_conic), E_mp(0), D_vp(0),
                  decomposition(0), inverse(0)
         {
-            kjb_c::copy_matrix( &E_mp, src.E_mp);
-            kjb_c::copy_vector( &D_vp, src.D_vp);
-            kjb_c::copy_matrix( &decomposition, src.decomposition);
-            kjb_c::copy_matrix( &inverse, src.inverse);
-            kjb_c::copy_matrix( &Atranspose, src.Atranspose);
-            kjb_c::copy_matrix( &AA, src.AA);
+            ivi_c::copy_matrix( &E_mp, src.E_mp);
+            ivi_c::copy_vector( &D_vp, src.D_vp);
+            ivi_c::copy_matrix( &decomposition, src.decomposition);
+            ivi_c::copy_matrix( &inverse, src.inverse);
+            ivi_c::copy_matrix( &Atranspose, src.Atranspose);
+            ivi_c::copy_matrix( &AA, src.AA);
 
         }
 
@@ -124,23 +124,23 @@ class Vanishing_point_detector
             vpts_tolerance = src.vpts_tolerance;
             A = src.A;
             absolute_conic = src.absolute_conic;
-            kjb_c::copy_matrix( &E_mp, src.E_mp);
-            kjb_c::copy_vector( &D_vp, src.D_vp);
-            kjb_c::copy_matrix( &decomposition, src.decomposition);
-            kjb_c::copy_matrix( &inverse, src.inverse);
-            kjb_c::copy_matrix( &Atranspose, src.Atranspose);
-            kjb_c::copy_matrix( &AA, src.AA);
+            ivi_c::copy_matrix( &E_mp, src.E_mp);
+            ivi_c::copy_vector( &D_vp, src.D_vp);
+            ivi_c::copy_matrix( &decomposition, src.decomposition);
+            ivi_c::copy_matrix( &inverse, src.inverse);
+            ivi_c::copy_matrix( &Atranspose, src.Atranspose);
+            ivi_c::copy_matrix( &AA, src.AA);
             return (*this);
         }
 
         ~Vanishing_point_detector()
         {
-            kjb_c::free_matrix(Atranspose);
-            kjb_c::free_matrix(AA);
-            kjb_c::free_matrix(E_mp);
-            kjb_c::free_vector(D_vp);
-            kjb_c::free_matrix(decomposition);
-            kjb_c::free_matrix(inverse);
+            ivi_c::free_matrix(Atranspose);
+            ivi_c::free_matrix(AA);
+            ivi_c::free_matrix(E_mp);
+            ivi_c::free_vector(D_vp);
+            ivi_c::free_matrix(decomposition);
+            ivi_c::free_matrix(inverse);
         }
 
         /** @brief Inits the edge segment that will be used to estimate the vanishing points*/
@@ -153,7 +153,7 @@ class Vanishing_point_detector
          * the line through the vanishing point and the line
          * segment mid point
          */
-        static double compute_alpha(const kjb::Vanishing_point & vp, const Line_segment * line);
+        static double compute_alpha(const ivi::Vanishing_point & vp, const Line_segment * line);
 
 
         /** @brief Computes the RANSAC penalty for the horizontal
@@ -377,14 +377,14 @@ class Vanishing_point_detector
          *  that we don't have to reallocate them at every RANSAC iteration
          */
         Matrix A;
-        kjb_c::Matrix * Atranspose;
-        kjb_c::Matrix * AA;
+        ivi_c::Matrix * Atranspose;
+        ivi_c::Matrix * AA;
         Matrix absolute_conic;
 
-        kjb_c::Matrix * E_mp;
-        kjb_c::Vector * D_vp;
-        kjb_c::Matrix * decomposition;
-        kjb_c::Matrix * inverse;
+        ivi_c::Matrix * E_mp;
+        ivi_c::Vector * D_vp;
+        ivi_c::Matrix * decomposition;
+        ivi_c::Matrix * inverse;
 
 };
 
@@ -399,7 +399,7 @@ bool robustly_estimate_vanishing_points
 (
     std::vector<Vanishing_point> & vpts,
     double & focal_length,
-    const kjb::Image & img,
+    const ivi::Image & img,
     double success_probability = VPD_RANSAC_ROBUST_SUCCESS_PROBABILITY,
     bool jointly_estimate = false,
     std::vector<Vanishing_point> right_ones = std::vector<Vanishing_point>(0)
@@ -408,7 +408,7 @@ bool robustly_estimate_vanishing_points
 bool robustly_estimate_vertical_vanishing_point
 (
     Vanishing_point & vertical,
-    const kjb::Image & img,
+    const ivi::Image & img,
     double success_probability = VPD_RANSAC_ROBUST_SUCCESS_PROBABILITY
 );
 
@@ -421,7 +421,7 @@ bool relaxed_vanishing_point_estimation
 (
     std::vector<Vanishing_point> & vpts,
     double & focal_length,
-    const kjb::Image & img,
+    const ivi::Image & img,
     double success_probability
 );
 

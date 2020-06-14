@@ -4,11 +4,11 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: i_pixel.h 17393 2014-08-23 20:19:14Z predoehl $
+ * $Id: i_pixel.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef KJB_CPP_PIXEL_H
-#define KJB_CPP_PIXEL_H
+#ifndef IVI_CPP_PIXEL_H
+#define IVI_CPP_PIXEL_H
 
 #include <l/l_sys_std.h>
 #include <l/l_debug.h>
@@ -19,15 +19,15 @@
 #include <sstream>
 #include <iomanip>
 
-namespace kjb 
+namespace ivi 
 {
 
 /**
- * @addtogroup kjbImageProc
+ * @addtogroup iviImageProc
  * @{
  */
 
-std::string pixel_as_hex_triplet_string( const kjb_c::Pixel* );
+std::string pixel_as_hex_triplet_string( const ivi_c::Pixel* );
 
 /**
  * @brief Wrapped version of the C struct Pixel, with Alpha (opacity).
@@ -52,29 +52,29 @@ std::string pixel_as_hex_triplet_string( const kjb_c::Pixel* );
  * to ow_clamp() after an add or scale operation, otherwise alpha could go
  * overrange.
  *
- * [CODE POLICE] TODO: Rename this class to follow kjb standard for type names (No camelcase Only first letter may be capitalized): Pixel_rgba
+ * [CODE POLICE] TODO: Rename this class to follow ivi standard for type names (No camelcase Only first letter may be capitalized): Pixel_rgba
  */
-struct PixelRGBA : public kjb_c::Pixel
+struct PixelRGBA : public ivi_c::Pixel
 {
     /**
      * @brief Default ctor, which leaves all fields uninitialized.
      * @warning "Uninitialized" often means "bug-causing" and "troublesome."
      */
     PixelRGBA()
-        : kjb_c::Pixel()
+        : ivi_c::Pixel()
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
     }
 
     /**
      * @brief This builds a valid pixel from another.
      *
-     * Build a pixel from another. It receives a kjb_c::Pixel so as to
+     * Build a pixel from another. It receives a ivi_c::Pixel so as to
      * work with PixelRGBA as well.
      */
-    PixelRGBA(const kjb_c::Pixel& p)
+    PixelRGBA(const ivi_c::Pixel& p)
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         r = p.r;
         g = p.g;
         b = p.b;
@@ -92,7 +92,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA( float rr, float gg, float bb, float aa = 255.0f )
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         r = rr;
         g = gg;
         b = bb;
@@ -103,7 +103,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     static PixelRGBA create_gray( float f )
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         return PixelRGBA( f, f, f );
     }
 
@@ -118,7 +118,7 @@ struct PixelRGBA : public kjb_c::Pixel
     static
     void ow_clamp_channel( float* chan )
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         *chan = std::min( 255.0f, std::max( 0.0f, *chan ) );
     }
 
@@ -128,7 +128,7 @@ struct PixelRGBA : public kjb_c::Pixel
     static
     void ow_clamp_channel( float* chan, float minval, float maxval )
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         *chan = std::min( maxval, std::max( minval, *chan ) );
     }
 
@@ -142,7 +142,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA& ow_clamp()
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         ow_clamp_channel( & this -> r );
         ow_clamp_channel( & this -> g );
         ow_clamp_channel( & this -> b );
@@ -156,7 +156,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA& ow_clamp( float minval, float maxval )
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         ow_clamp_channel( & this -> r, minval, maxval );
         ow_clamp_channel( & this -> g, minval, maxval );
         ow_clamp_channel( & this -> b, minval, maxval );
@@ -172,7 +172,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA clamp() const
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         PixelRGBA clamped( *this );
         clamped.ow_clamp();
         return clamped;
@@ -183,7 +183,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA clamp( float minval, float maxval ) const
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         PixelRGBA clamped( *this );
         clamped.ow_clamp( minval, maxval );
         return clamped;
@@ -195,7 +195,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA& ow_floor()
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         r = floorf( r );
         g = floorf( g );
         b = floorf( b );
@@ -208,7 +208,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA floor() const
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         PixelRGBA floored( *this );
         floored.ow_floor();
         return floored;
@@ -219,9 +219,9 @@ struct PixelRGBA : public kjb_c::Pixel
      *
      * @warning Don't forget to ow_clamp() if you think you might need to.
      */
-    PixelRGBA& operator+=( const kjb_c::Pixel& p )
+    PixelRGBA& operator+=( const ivi_c::Pixel& p )
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         r += p.r;
         g += p.g;
         b += p.b;
@@ -234,9 +234,9 @@ struct PixelRGBA : public kjb_c::Pixel
      *
      * @warning Don't forget to clamp() if you think you might need to.
      */
-    PixelRGBA operator+( const kjb_c::Pixel& p ) const
+    PixelRGBA operator+( const ivi_c::Pixel& p ) const
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         PixelRGBA sum( *this );
         sum += p;
         return sum;
@@ -251,7 +251,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA& operator*=(const PixelRGBA& p)
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         r *= p.r;
         g *= p.g;
         b *= p.b;
@@ -266,7 +266,7 @@ struct PixelRGBA : public kjb_c::Pixel
      */
     PixelRGBA& operator*=( float k )
     {
-        // hit KJB(UNTESTED_CODE());
+        // hit IVI(UNTESTED_CODE());
         r *= k;
         g *= k;
         b *= k;
@@ -279,9 +279,9 @@ struct PixelRGBA : public kjb_c::Pixel
      * @warning Pixel stores channel values as floating point numbers!
      *          So instead of p==q you might want p.floor()==q.floor()
      */
-    bool operator==( const kjb_c::Pixel& p ) const
+    bool operator==( const ivi_c::Pixel& p ) const
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         return r==p.r && g==p.g && b==p.b && extra.alpha==p.extra.alpha;
     }
 
@@ -290,9 +290,9 @@ struct PixelRGBA : public kjb_c::Pixel
      * @warning Pixel stores channel values as floating point numbers!
      *          So instead of p != q you might want p.floor() != q.floor()
      */
-    bool operator!=( const kjb_c::Pixel& p ) const
+    bool operator!=( const ivi_c::Pixel& p ) const
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         return ! operator==( p );
     }
 
@@ -314,7 +314,7 @@ struct PixelRGBA : public kjb_c::Pixel
 inline
 PixelRGBA operator*(const PixelRGBA& p, const PixelRGBA& q)
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     PixelRGBA product = p;
     product *= q;
     return product;
@@ -328,7 +328,7 @@ PixelRGBA operator*(const PixelRGBA& p, const PixelRGBA& q)
 inline
 PixelRGBA operator*( const PixelRGBA& p, double k )
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     PixelRGBA scaled = p;
     scaled *= k;
     return scaled;
@@ -342,18 +342,18 @@ PixelRGBA operator*( const PixelRGBA& p, double k )
 inline
 PixelRGBA operator*( double k, const PixelRGBA& p )
 {
-    // hit KJB(UNTESTED_CODE());
+    // hit IVI(UNTESTED_CODE());
     return p*k;
 }
 
 
 /**
- * @brief Take the channel-wise absolute value of a kjb_c::Pixel.
+ * @brief Take the channel-wise absolute value of a ivi_c::Pixel.
  */
 inline
-kjb_c::Pixel abs(const kjb_c::Pixel& p)
+ivi_c::Pixel abs(const ivi_c::Pixel& p)
 {
-    kjb_c::Pixel q;
+    ivi_c::Pixel q;
     q.r = fabsf(p.r);
     q.g = fabsf(p.g);
     q.b = fabsf(p.b);
@@ -363,9 +363,9 @@ kjb_c::Pixel abs(const kjb_c::Pixel& p)
 
 /// @brief express color as HTML-style hex triplet, e.g., "#FFCC00," of pointer
 inline
-std::string pixel_as_hex_triplet_string( const kjb_c::Pixel* p )
+std::string pixel_as_hex_triplet_string( const ivi_c::Pixel* p )
 {
-    kjb::PixelRGBA q( *p );
+    ivi::PixelRGBA q( *p );
     q.ow_clamp();
     std::ostringstream trip;
     trip    << "#" << std::hex << std::setfill('0')
@@ -377,13 +377,13 @@ std::string pixel_as_hex_triplet_string( const kjb_c::Pixel* p )
 
 /// @brief express color as HTML-style hex triplet, e.g., "#FFCC00," reference
 inline
-std::string pixel_as_hex_triplet_string( const kjb_c::Pixel& p )
+std::string pixel_as_hex_triplet_string( const ivi_c::Pixel& p )
 {
     return pixel_as_hex_triplet_string( &p );
 }
 
 /// @}
 
-} //namespace kjb
+} //namespace ivi
 
 #endif

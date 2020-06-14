@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: linear_state_space.cpp 22573 2019-06-09 23:34:58Z adarsh $ */
+/* $Id: linear_state_space.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l/l_sys_debug.h>
 #include <l_cpp/l_filesystem.h>
@@ -51,8 +51,8 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 Linear_state_space::Linear_state_space
 (
@@ -204,7 +204,7 @@ void Linear_state_space::read
 
     // Read in the polynomial coefs 
     string poly_fname(indir + "/polynomial_coefs.txt");
-    if(kjb_c::is_file(poly_fname.c_str()))
+    if(ivi_c::is_file(poly_fname.c_str()))
     {
         polynomial_coefs_.clear();
         ifstream poly_ifs(poly_fname.c_str());
@@ -226,7 +226,7 @@ void Linear_state_space::read
 
     // Read in outcomes 
     string outcome_fname(indir + "/outcomes.txt");
-    if(kjb_c::is_file(outcome_fname.c_str())) 
+    if(ivi_c::is_file(outcome_fname.c_str())) 
     {
         ifstream outcome_ifs(outcome_fname.c_str());
         IFTD(outcome_ifs.is_open(), IO_error, "Can't open file %s\n", 
@@ -302,7 +302,7 @@ void Linear_state_space::read
 
     // parse in the gp params
     string gp_fname(indir + "/gp_params.txt");
-    if(kjb_c::is_file(gp_fname.c_str()))
+    if(ivi_c::is_file(gp_fname.c_str()))
     {
         gp_scales_.clear();
         gp_sigvars_.clear();
@@ -350,7 +350,7 @@ void Linear_state_space::read
 
     // Read in the observation noise sigmas
     string obs_noise_fname(indir + "/obs_noise_sigmas.txt");
-    if(kjb_c::is_file(obs_noise_fname.c_str()))
+    if(ivi_c::is_file(obs_noise_fname.c_str()))
     {
         obs_noise_sigmas_.clear();
         ifstream obs_noise_ifs(obs_noise_fname.c_str());
@@ -364,7 +364,7 @@ void Linear_state_space::read
     }
     // group index
     string group_index_fp(indir + "/group_index.txt");
-    if(kjb_c::is_file(group_index_fp.c_str()))
+    if(ivi_c::is_file(group_index_fp.c_str()))
     {
         ifstream group_ifs(group_index_fp.c_str());
         IFTD(group_ifs.is_open(), IO_error, "Can't open file %s\n",
@@ -451,7 +451,7 @@ void Linear_state_space::init_predictors
             const std::string& name = mod_names[c][i];
             if(moderators.find(name) == moderators.end())
             {
-                KJB_THROW_3(Illegal_argument, "data does not have moderator %s", 
+                IVI_THROW_3(Illegal_argument, "data does not have moderator %s", 
                                                                 (name.c_str()));
             }
             const Double_v& mod_values = moderators.at(name);
@@ -525,11 +525,11 @@ void Linear_state_space::compute_obs_states
         // only consider the state, the second half are first deriviatives 
         if(!polynomial_coefs_.empty())
         {
-            KJB(ASSERT(pred.size() == num_oscillators_));
+            IVI(ASSERT(pred.size() == num_oscillators_));
         }
         else
         {
-            KJB(ASSERT(pred.size() == num_oscillators_ * 2));
+            IVI(ASSERT(pred.size() == num_oscillators_ * 2));
         }
         // compare the true observable conditioned on the real hidden states
         // to the observed observables 
@@ -659,7 +659,7 @@ void Linear_state_space::write(const std::string& outpath) const
 {
     using namespace std;
     // output the parameter of the coupled oscillator models
-    ETX(kjb_c::kjb_mkdir(outpath.c_str()));
+    ETX(ivi_c::ivi_mkdir(outpath.c_str()));
     string param_fname(outpath + "/com_params.txt");
     ofstream param_ofs(param_fname.c_str());
     IFTD(param_ofs.is_open(), IO_error, "Can't open file %s", 
@@ -725,7 +725,7 @@ void Linear_state_space::write(const std::string& outpath) const
     obs_st_ofs.close();
 
     // output the observation names
-    KJB(ASSERT(obs_names_.size() == obs_coefs_.size()));
+    IVI(ASSERT(obs_names_.size() == obs_coefs_.size()));
     string obs_fname(outpath + "/obs.txt");
     ofstream obs_ofs(obs_fname.c_str());
     IFTD(obs_ofs.is_open(), IO_error, "Can't open file %s", (obs_fname.c_str()));
@@ -959,7 +959,7 @@ void Linear_state_space::parse_obs_coef(const std::string& obs_fname) const
     {
         if(obs_names.find(obs_names_[j]) == obs_names.end())
         {
-            KJB_THROW_3(IO_error, "observable %s is not specified in the file ",
+            IVI_THROW_3(IO_error, "observable %s is not specified in the file ",
                     (obs_names_[j].c_str()));
         }
     }

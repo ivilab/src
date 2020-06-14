@@ -1,5 +1,5 @@
 
-/* $Id: m_vector.h 21448 2017-06-28 22:00:33Z kobus $ */
+/* $Id: m_vector.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -49,7 +49,7 @@ namespace kjb_c {
  *
  * Vector type
  *
- * This type is the vector type for the KJB library and is used by many
+ * This type is the vector type for the IVI library and is used by many
  * routines.
  *
  * Related:

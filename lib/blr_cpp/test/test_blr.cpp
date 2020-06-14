@@ -6,7 +6,7 @@
 
 #include <boost/random.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 void test_blr

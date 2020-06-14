@@ -17,9 +17,9 @@
 |
 * =========================================================================== */
 
-/* $Id: gr_plot.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_plot.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include "gr_cpp/gr_plot.h"
 #include "gr_cpp/gr_opengl.h"
 #include "gr_cpp/gr_opengl_headers.h"
@@ -35,8 +35,8 @@
 #include <string>
 #include <iostream>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 const boost::array<Vector3, 7> PLOT_COLORS_ = boost::assign::list_of
     (Vector3(0.0, 0.0, 1.0))

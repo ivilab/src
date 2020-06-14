@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: mcmcda_proposer.cpp.bak 16928 2014-05-30 00:05:48Z ernesto $ */
+/* $Id: mcmcda_proposer.cpp.bak 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <stracking_cpp/stracking_mcmcda_proposer.h>
 #include <people_tracking_cpp/pt_association.h>
@@ -47,10 +47,10 @@
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
-using namespace kjb::stracking;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
+using namespace ivi::stracking;
 using namespace std;
 using namespace boost;
 
@@ -149,7 +149,7 @@ int main(int argc, char** argv)
         vector<Integral_flow> flows_y;
         vector<Integral_flow> back_flows_x;
         vector<Integral_flow> back_flows_y;
-        KJB(ASSERT(x_of_fps.size() == y_of_fps.size()));
+        IVI(ASSERT(x_of_fps.size() == y_of_fps.size()));
         assert(back_flows_x.size() == back_flows_y.size());
         assert(back_flows_x.size() == flows_x.size());
         size_t num_frames = x_of_fps.size();

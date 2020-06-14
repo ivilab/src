@@ -16,12 +16,12 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_object_detect.h 21062 2017-01-13 18:54:05Z kobus $ */
+/* $Id: cv_object_detect.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef CV_OBJECT_DETECT_H_
 #define CV_OBJECT_DEFECT_H_
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <wrap_opencv_cpp/cv.h>
 
 /* Kobus: Added Jan 13, 2017, but not sure if this right. */
@@ -34,11 +34,11 @@
 
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 /**
  * @class The cascade classifier class for object detection.
  */
@@ -85,7 +85,7 @@ private:
 #endif
 
 } //namespace cv
-} //namespace kjb
+} //namespace ivi
 #endif /* CV_OBJECT_DETECT_H_ */
 
 

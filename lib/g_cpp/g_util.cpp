@@ -23,7 +23,7 @@
 #include <m_cpp/m_matrix.h>
 #include <l_cpp/l_exception.h>
 
-namespace kjb { 
+namespace ivi { 
 namespace geometry { 
 
 Matrix get_translation_matrix(const Vector& v)
@@ -258,7 +258,7 @@ Matrix polygon_to_mask(Matrix poly,int height, int width){
         if(poly(i,1)>ymax){ ymax = poly(i,1); } 
     }
 
-    kjb::Vector point(0.0,0.0);
+    ivi::Vector point(0.0,0.0);
 
     //int xdif = xmax-xmin;
     //int ydif = ymax-ymin;
@@ -273,5 +273,5 @@ Matrix polygon_to_mask(Matrix poly,int height, int width){
 
 }//end polygon_to_mask
 
-}}//namespace geometry, namespace kjb
+}}//namespace geometry, namespace ivi
 

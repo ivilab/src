@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: proposer.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: proposer.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_PROPOSER_H
-#define KJB_TIES_PROPOSER_H
+#ifndef IVI_TIES_PROPOSER_H
+#define IVI_TIES_PROPOSER_H
 
 #include <prob_cpp/prob_distribution.h>
 #include "dbn_cpp/lss_set.h"
@@ -30,12 +30,12 @@
 #include "cluster_cpp/cluster_gaussian_mixtures.h"
 #include "cluster_cpp/cluster_gaussian_mixtures_gibbs.h"
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #include <ergo/record.h>
 #endif
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /**
@@ -451,6 +451,6 @@ private:
     mutable size_t obs_index_;
 };
 
-}} // namespace kjb::ties
-#endif //KJB_TIES_PROPOSER_H
+}} // namespace ivi::ties
+#endif //IVI_TIES_PROPOSER_H
 

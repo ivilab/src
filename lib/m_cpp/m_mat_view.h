@@ -1,4 +1,4 @@
-/* $Id: m_mat_view.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_mat_view.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,17 +17,17 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_M_CPP_MAT_VIEW
-#define KJB_M_CPP_MAT_VIEW
+#ifndef IVI_M_CPP_MAT_VIEW
+#define IVI_M_CPP_MAT_VIEW
 
 #include "l_cpp/l_exception.h"
 #include "l_cpp/l_index.h"
 
-namespace kjb
+namespace ivi
 {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -347,7 +347,7 @@ protected:
         if(mat.get_num_rows() != NUM_ROWS ||
            mat.get_num_cols() != NUM_COLS )
         {
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         for(int row = 0; row < get_num_rows(); row++)
@@ -376,7 +376,7 @@ protected:
         if(mat.get_num_rows() != NUM_ROWS ||
            mat.get_num_cols() != NUM_COLS )
         {
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         for(int row = 0; row < get_num_rows(); row++)
@@ -408,7 +408,7 @@ protected:
 
             if(NUM_ROWS != 1)
             {
-                KJB_THROW(Dimension_mismatch);
+                IVI_THROW(Dimension_mismatch);
             }
         }
 
@@ -416,14 +416,14 @@ protected:
         {
             if(v.size() != NUM_ROWS)
             {
-                KJB_THROW(Dimension_mismatch);
+                IVI_THROW(Dimension_mismatch);
             }
         }
         else
         {
             if(v.size() != NUM_COLS)
             {
-                KJB_THROW(Dimension_mismatch);
+                IVI_THROW(Dimension_mismatch);
             }
         }
 
@@ -455,7 +455,7 @@ protected:
         if(NUM_ROWS != mat.get_num_rows() ||
            NUM_COLS != mat.get_num_cols())
         {
-            KJB_THROW( Dimension_mismatch );
+            IVI_THROW( Dimension_mismatch );
         }
 
         for(int row = 0; row < NUM_ROWS; row++)
@@ -483,7 +483,7 @@ protected:
         if(NUM_ROWS != mat.get_num_rows() ||
            NUM_COLS != mat.get_num_cols())
         {
-            KJB_THROW( Dimension_mismatch );
+            IVI_THROW( Dimension_mismatch );
         }
 
         for(int row = 0; row < NUM_ROWS; row++)
@@ -516,6 +516,6 @@ struct Generic_const_matrix_view
 
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

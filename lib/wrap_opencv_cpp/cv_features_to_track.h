@@ -16,12 +16,12 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_features_to_track.h 21172 2017-01-30 09:21:24Z kobus $ */
+/* $Id: cv_features_to_track.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef CV_FEATURES_TO_TRACK_DETECTOR_H_
 #define CV_FEATURES_TO_TRACK_DETECTOR_H_
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core.hpp>
 #endif
@@ -35,7 +35,7 @@
 #define DEFAULT_K_VALUE 0.04
 //#define DEFAULT_MAX_CORNERS 500
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
@@ -119,7 +119,7 @@ private:
 
 
 } //namespace opencv
-} // namespace kjb
+} // namespace ivi
 
 
 

@@ -11,13 +11,13 @@
  * Originally from TopoFusion code.
  */
 /*
- * $Id: layer.h 17606 2014-09-26 01:09:51Z predoehl $
+ * $Id: layer.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef LAYER_H_INCLUDED_UOFARIZONAVISION
 #define LAYER_H_INCLUDED_UOFARIZONAVISION
 
-namespace kjb
+namespace ivi
 {
 
 /// @brief this namespace hold structures and code written by Scott Morris.
@@ -104,7 +104,7 @@ void initTrack (track *t);
 void initWaypoint (waypoint *w);
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi
 
 #endif  /* LAYER_H_INCLUDED_UOFARIZONAVISION */
 

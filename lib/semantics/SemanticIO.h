@@ -1,4 +1,4 @@
-/* $Id: SemanticIO.h 17350 2014-08-21 20:30:43Z cdawson $ */
+/* $Id: SemanticIO.h 25499 2020-06-14 13:26:04Z kobus $ */
    
 #ifndef SEMANTIC_IO_H_
 #define SEMANTIC_IO_H_
@@ -63,7 +63,7 @@ namespace semantics
 	    NUM_STEPS     //7
 	};
 
-	typedef kjb::Weight_array<NUM_STEPS> Weights;
+	typedef ivi::Weight_array<NUM_STEPS> Weights;
 	typedef boost::array<Code, NUM_STEPS> Val_array;
 	typedef Weights::Filter Filter_array;
 

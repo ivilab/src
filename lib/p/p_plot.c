@@ -1,5 +1,5 @@
 
-/* $Id: p_plot.c 16078 2013-11-23 21:01:35Z kobus $ */
+/* $Id: p_plot.c 25499 2020-06-14 13:26:04Z kobus $ */
 
  
 /* =========================================================================== *
@@ -285,7 +285,7 @@ int pop_display_plot_flag(void)
 
     fs_display_plot_flag = *((int*)(cur_elem->contents));
 
-    free_queue_element(cur_elem, kjb_free);
+    free_queue_element(cur_elem, ivi_free);
 
     return NO_ERROR;
 }
@@ -468,7 +468,7 @@ static Plot* pp_plot_open
     }
 
     ERN(get_plot_temp_file_dir(dir_buff, sizeof(dir_buff), plot_num + 1));
-    ERN(kjb_mkdir(dir_buff));
+    ERN(ivi_mkdir(dir_buff));
 
     if ((pipe(plot_pipe) == EOF) || (pipe(error_pipe) == EOF))
     {
@@ -484,9 +484,9 @@ static Plot* pp_plot_open
     */
 
     verbose_pso(2, "Verbose level before fork for plotting is %d.\n", 
-                kjb_get_verbose_level());
+                ivi_get_verbose_level());
 
-    plot_pid = kjb_fork();
+    plot_pid = ivi_fork();
 
     if (plot_pid < 0)
     {
@@ -501,14 +501,14 @@ static Plot* pp_plot_open
         if (dup2(plot_pipe[READ_END],fileno(stdin)) == -1)
         {
             set_bug("Can't duplicate read end of plot pipe as stdin.%S");
-            kjb_print_error();
+            ivi_print_error();
             _exit(EXIT_FAILURE);
         }
 
         if (close(error_pipe[READ_END]) == -1)
         {
             set_bug("Can't close read end of plot error pipe.%S");
-            kjb_print_error();
+            ivi_print_error();
             _exit(EXIT_FAILURE);
         }
 
@@ -516,23 +516,23 @@ static Plot* pp_plot_open
         {
             if (fs_colour_plot_flag)
             {
-                if (kjb_sprintf(system_command, sizeof(system_command),
+                if (ivi_sprintf(system_command, sizeof(system_command),
                                 "gnuplot -geometry %dx%d+%d+%d",
                                 x_size, y_size, x_tlc, y_tlc) == ERROR)
                 {
                     close(error_pipe[WRITE_END]); 
-                    kjb_print_error();
+                    ivi_print_error();
                     _exit(EXIT_FAILURE);
                 }
             }
             else
             {
-                if (kjb_sprintf(system_command, sizeof(system_command),
+                if (ivi_sprintf(system_command, sizeof(system_command),
                                 "gnuplot -geometry %dx%d+%d+%d -mono",
                                 x_size, y_size, x_tlc, y_tlc) == ERROR)
                 {
                     close(error_pipe[WRITE_END]); 
-                    kjb_print_error();
+                    ivi_print_error();
                     _exit(EXIT_FAILURE);
                 }
             }
@@ -541,21 +541,21 @@ static Plot* pp_plot_open
         {
             if (fs_colour_plot_flag)
             {
-                if (kjb_sprintf(system_command, sizeof(system_command),
+                if (ivi_sprintf(system_command, sizeof(system_command),
                                 "gnuplot") == ERROR)
                 {
                     close(error_pipe[WRITE_END]); 
-                    kjb_print_error();
+                    ivi_print_error();
                     _exit(EXIT_FAILURE);
                 }
             }
             else
             {
-                if (kjb_sprintf(system_command, sizeof(system_command),
+                if (ivi_sprintf(system_command, sizeof(system_command),
                                 "gnuplot -mono") == ERROR)
                 {
                     close(error_pipe[WRITE_END]); 
-                    kjb_print_error();
+                    ivi_print_error();
                     _exit(EXIT_FAILURE);
                 }
             }
@@ -564,7 +564,7 @@ static Plot* pp_plot_open
         if (close(plot_pipe[WRITE_END]) == -1)
         {
             set_bug("Can't close write end of plot pipe.%S");
-            kjb_print_error();
+            ivi_print_error();
             /*
              * Give time for the error message to stderr which may go through
              * a pipe to the parent to be read on some systems. 
@@ -584,20 +584,20 @@ static Plot* pp_plot_open
         if (dup2(error_pipe[WRITE_END], fileno(stderr)) == -1)
         {
             set_bug("Can't duplicate write end of plot error pipe as stderr.");
-            kjb_print_error();
+            ivi_print_error();
             _exit(EXIT_FAILURE);
         }
 
-        if (kjb_exec(system_command) == ERROR)
+        if (ivi_exec(system_command) == ERROR)
         {
             /*
-             * We cannot use KJB library routines here because if stderr is a
+             * We cannot use IVI library routines here because if stderr is a
              * terminal, then we write to the terminal instead. But we must
              * have the file descriptor to be that of stderr in all cases.
             */
             char buff[ LARGE_IO_BUFF_SIZE ]; 
 
-            kjb_get_error(buff, sizeof(buff)); 
+            ivi_get_error(buff, sizeof(buff)); 
             fputs(buff, stderr); 
             fflush(stderr); 
         }
@@ -725,7 +725,7 @@ static Plot* pp_plot_open
 
         BUFF_CPY(plot_ptr->plot_dir_path, dir_buff); 
 
-        ERN(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+        ERN(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                         "cd \"%s\"\n", dir_buff));
 
         ERN(pp_plot_write(plot_ptr, plot_command_buff));
@@ -960,11 +960,11 @@ int save_plot(int plot_id, const char* file_name)
         BUFF_CAT(fixed_file_name, "-fixed");
     }
 
-    NRE(fp = kjb_fopen(file_name, "w"));
-    ERE(kjb_fclose(fp));
+    NRE(fp = ivi_fopen(file_name, "w"));
+    ERE(ivi_fclose(fp));
 
-    NRE(fp = kjb_fopen(fixed_file_name, "w"));
-    ERE(kjb_fclose(fp));
+    NRE(fp = ivi_fopen(fixed_file_name, "w"));
+    ERE(ivi_fclose(fp));
 
     BUFF_REAL_PATH(file_name, file_name_path);
     BUFF_REAL_PATH(fixed_file_name, fixed_file_name_path);
@@ -1003,7 +1003,7 @@ int save_plot(int plot_id, const char* file_name)
     BUFF_CAT(fix_command, " ");
     BUFF_CAT(fix_command, file_name_path);
 
-    ERE(kjb_system(fix_command));
+    ERE(ivi_system(fix_command));
 
     fix_command[ 0 ] = '\0';
 
@@ -1012,7 +1012,7 @@ int save_plot(int plot_id, const char* file_name)
         if (i != 0) BUFF_CAT(fix_command, " | ");
         BUFF_CAT(fix_command, "sed ");
 
-        ERE(kjb_sprintf(fix_substitute, sizeof(fix_substitute),
+        ERE(ivi_sprintf(fix_substitute, sizeof(fix_substitute),
                         " 's/LT%d\\(.*\\)%s DL/LT%d\\1%s DL/' ",
                         i, substitute_strings[ i ].in,
                         i, substitute_strings[ i ].out));
@@ -1027,9 +1027,9 @@ int save_plot(int plot_id, const char* file_name)
 
     verbose_pso(200, "\n%s\n\n", fix_command);
 
-    ERE(kjb_system(fix_command));
+    ERE(ivi_system(fix_command));
 
-    EPE(kjb_unlink(temp_file_name_path));
+    EPE(ivi_unlink(temp_file_name_path));
 
     return NO_ERROR;
 }
@@ -1128,19 +1128,19 @@ int save_plot_dir(int plot_id, const char* dir_name)
     char command_buff[ 2000 ];
 
 
-    ERE(kjb_sprintf(command_buff, sizeof(command_buff), 
+    ERE(ivi_sprintf(command_buff, sizeof(command_buff), 
                     "/bin/rm -r -f %s", dir_name));
 
-    ERE(kjb_system(command_buff));
+    ERE(ivi_system(command_buff));
 
     NRE(plot_ptr = get_plot_ptr(plot_id));
 
-    ERE(kjb_sprintf(command_buff, sizeof(command_buff), 
+    ERE(ivi_sprintf(command_buff, sizeof(command_buff), 
                     "/bin/cp -r %s %s",
                     plot_ptr->plot_dir_path,
                     dir_name));
 
-    ERE(kjb_system(command_buff));
+    ERE(ivi_system(command_buff));
 
     verbose_pso(1, "Information for plot %d has been copied to %s.\n",
                 plot_id, dir_name);
@@ -1262,10 +1262,10 @@ int plot_set_title
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(offset_string, sizeof(offset_string), "%d,%d",
+    ERE(ivi_sprintf(offset_string, sizeof(offset_string), "%d,%d",
                     x_offset, y_offset));
 #else 
-    ERE(kjb_sprintf(offset_string, sizeof(offset_string), "offset %d,%d",
+    ERE(ivi_sprintf(offset_string, sizeof(offset_string), "offset %d,%d",
                     x_offset, y_offset));
 #endif 
 
@@ -1325,7 +1325,7 @@ int plot_set_x_legend(int plot_id, const char* legend)
     /*
      * Position is tricky because it gets jerked around with the range. Try the
      * default for a while.
-    ERE(kjb_sprints(temp_buff, sizeof(temp_buff),
+    ERE(ivi_sprints(temp_buff, sizeof(temp_buff),
                     "% 0,%.3f \n",
                     expression_based on range.
 
@@ -1415,7 +1415,7 @@ int plot_add_label(int plot_id, const char* label, double x, double y)
     char temp_buff [ 256 ];
 
 
-    ERE(kjb_sprintf(coord_buff, sizeof(coord_buff), "%f,%f", x, y));
+    ERE(ivi_sprintf(coord_buff, sizeof(coord_buff), "%f,%f", x, y));
     BUFF_CPY(plot_command_buff, "set label \"");
 
     BUFF_CPY(temp_buff, label);
@@ -1463,7 +1463,7 @@ int plot_add_label_2(int plot_id, const char* label, double x, double y)
 
     NRE(plot_ptr = get_plot_ptr(plot_id));
 
-    ERE(kjb_sprintf(coord_buff, sizeof(coord_buff), "%f,%f",
+    ERE(ivi_sprintf(coord_buff, sizeof(coord_buff), "%f,%f",
                     plot_ptr->x_min + (plot_ptr->x_max - plot_ptr->x_min) * x,
                     plot_ptr->y_min + (plot_ptr->y_max - plot_ptr->y_min) * y));
 
@@ -1532,7 +1532,7 @@ int plot_set_range
                 plot_ptr->x_min = x_min;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",x_min));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",x_min));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1545,7 +1545,7 @@ int plot_set_range
                 plot_ptr->x_max = x_max;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",x_max));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",x_max));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1565,7 +1565,7 @@ int plot_set_range
                 plot_ptr->y_min = y_min;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",y_min));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",y_min));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1578,7 +1578,7 @@ int plot_set_range
                 plot_ptr->y_max = y_max;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",y_max));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",y_max));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1605,7 +1605,7 @@ int plot_set_range
  * Gets the range of the plot
  *
  * If you need to query the system for the plot range, you can use this routine.
- * Note that this is the kjb library interfaces understanding of the range. The
+ * Note that this is the ivi library interfaces understanding of the range. The
  * exact range plotted can be different.
  *
  * Any of the 4 range parameter pointers can be NULL if you are not interesed in
@@ -1708,7 +1708,7 @@ int plot_set_range3
                 plot_ptr->x_min = x_min;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",x_min));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",x_min));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1721,7 +1721,7 @@ int plot_set_range3
                 plot_ptr->x_max = x_max;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",x_max));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",x_max));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1741,7 +1741,7 @@ int plot_set_range3
                 plot_ptr->y_min = y_min;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",y_min));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",y_min));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1754,7 +1754,7 @@ int plot_set_range3
                 plot_ptr->y_max = y_max;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",y_max));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",y_max));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1772,7 +1772,7 @@ int plot_set_range3
                 plot_ptr->z_min = z_min;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",z_min));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",z_min));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1785,7 +1785,7 @@ int plot_set_range3
                 plot_ptr->z_max = z_max;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",z_max));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",z_max));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1865,8 +1865,8 @@ int plot_function_string
     ERE(get_plot_temp_file_name(temp_file_name, sizeof(temp_file_name),
                                 plot_ptr->num_temp_files));
     NRE(temp_fp = open_plot_temp_file(plot_ptr->plot_id, temp_file_name));
-    ERE(kjb_fprintf(temp_fp,"%s\n", function_string));
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fprintf(temp_fp,"%s\n", function_string));
+    ERE(ivi_fclose(temp_fp));
 
     if (plot_ptr->num_temp_files == 1)
     {
@@ -1889,7 +1889,7 @@ int plot_function_string
                 plot_ptr->x_min = x_min;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",x_min));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",x_min));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1902,7 +1902,7 @@ int plot_function_string
                 plot_ptr->x_max = x_max;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",x_max));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",x_max));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1920,7 +1920,7 @@ int plot_function_string
                 plot_ptr->y_min = y_min;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",y_min));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",y_min));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1933,7 +1933,7 @@ int plot_function_string
                 plot_ptr->y_max = y_max;
             }
 
-            ERE(kjb_sprintf(num_buff, sizeof(num_buff), "%f",y_max));
+            ERE(ivi_sprintf(num_buff, sizeof(num_buff), "%f",y_max));
             BUFF_CAT(plot_command_buff, num_buff);
         }
 
@@ -1945,7 +1945,7 @@ int plot_function_string
 
     if (width > 1)
     {
-        ERE(kjb_sprintf(temp_buff, sizeof(temp_buff), 
+        ERE(ivi_sprintf(temp_buff, sizeof(temp_buff), 
                         " with lines linewidth %d ", width)); 
     }
 
@@ -2541,14 +2541,14 @@ int plot_bars_2
     {
         if (bar_width > 0.0)
         {
-            ERE(kjb_fprintf(temp_fp,"%e %e %e\n",
+            ERE(ivi_fprintf(temp_fp,"%e %e %e\n",
                             (x_vp->elements)[i],
                             (y_vp->elements)[i],
                             bar_width));
         }
         else
         {
-            ERE(kjb_fprintf(temp_fp,"%e %e\n",
+            ERE(ivi_fprintf(temp_fp,"%e %e\n",
                             (x_vp->elements)[i],
                             (y_vp->elements)[i]));
 
@@ -2557,7 +2557,7 @@ int plot_bars_2
 
     if (stripe_width > 0)
     {
-        ERE(kjb_fprintf(temp_fp,"#\n#Extra bars for horizontal stripes.\n#\n"));
+        ERE(ivi_fprintf(temp_fp,"#\n#Extra bars for horizontal stripes.\n#\n"));
 
         for (i=0; i<x_vp->length; i++)
         {
@@ -2567,13 +2567,13 @@ int plot_bars_2
             {
                 if (bar_width > 0.0)
                 {
-                    ERE(kjb_fprintf(temp_fp,"%e %e %e\n",
+                    ERE(ivi_fprintf(temp_fp,"%e %e %e\n",
                                     (x_vp->elements)[i],
                                     y, bar_width));
                 }
                 else
                 {
-                    ERE(kjb_fprintf(temp_fp,"%e %e\n",
+                    ERE(ivi_fprintf(temp_fp,"%e %e\n",
                                     (x_vp->elements)[i], y));
                 }
 
@@ -2583,7 +2583,7 @@ int plot_bars_2
     }
 
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * min_vector_element(x_vp);
     temp_x_max = 1.1 * max_vector_element(x_vp);
@@ -2599,7 +2599,7 @@ int plot_bars_2
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -2649,10 +2649,10 @@ int plot_bars_2
     BUFF_CAT(plot_command_buff, "\" w boxes ");
 
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -2727,11 +2727,11 @@ int plot_vector
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(temp_fp,"%e %e\n",x_offset+i*x_step,
+        ERE(ivi_fprintf(temp_fp,"%e %e\n",x_offset+i*x_step,
                         (vp->elements)[i]));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = x_offset;
     temp_x_max = x_offset + x_step * vp->length;
@@ -2747,7 +2747,7 @@ int plot_vector
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
 
@@ -2769,7 +2769,7 @@ int plot_vector
 
     if ((name == NULL) || (*name == '\0'))
     {
-        ERE(kjb_sprintf(plot_num_str, sizeof(plot_num_str), "%d",
+        ERE(ivi_sprintf(plot_num_str, sizeof(plot_num_str), "%d",
                         (plot_ptr->num_temp_files)));
         BUFF_CAT(plot_command_buff, plot_num_str);
     }
@@ -2790,10 +2790,10 @@ int plot_vector
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -2880,7 +2880,7 @@ int plot_point_list(int plot_id, const Matrix* point_mp, char** names)
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -2907,11 +2907,11 @@ int plot_point_list(int plot_id, const Matrix* point_mp, char** names)
         NRE(temp_fp = open_plot_temp_file(plot_ptr->plot_id,
                                           temp_file_name));
 
-        ERE(kjb_fprintf(temp_fp,"%e %e\n",
+        ERE(ivi_fprintf(temp_fp,"%e %e\n",
                         (point_mp->elements)[i][0],
                         (point_mp->elements)[i][1]));
 
-        ERE(kjb_fclose(temp_fp));
+        ERE(ivi_fclose(temp_fp));
 
         BUFF_CAT(plot_command_buff, "\"");
         BUFF_CAT(plot_command_buff, temp_file_name);
@@ -2923,7 +2923,7 @@ int plot_point_list(int plot_id, const Matrix* point_mp, char** names)
         }
 
         BUFF_CAT(plot_command_buff, "\" w points ");
-        ERE(kjb_sprintf(point_type, sizeof(point_type), "%d\n",
+        ERE(ivi_sprintf(point_type, sizeof(point_type), "%d\n",
                         plot_ptr->num_temp_files));
         BUFF_CAT(plot_command_buff, point_type);
 
@@ -2993,9 +2993,9 @@ int plot_vector_point
 
     NRE(temp_fp = open_plot_temp_file(plot_ptr->plot_id, temp_file_name));
 
-    ERE(kjb_fprintf(temp_fp,"%e %e\n",x,y));
+    ERE(ivi_fprintf(temp_fp,"%e %e\n",x,y));
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * x;
     temp_x_max = 1.1 * y;
@@ -3011,7 +3011,7 @@ int plot_vector_point
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -3042,7 +3042,7 @@ int plot_vector_point
     }
 
     BUFF_CAT(plot_command_buff, "\" w points ");
-    ERE(kjb_sprintf(point_type, sizeof(point_type), "%d",
+    ERE(ivi_sprintf(point_type, sizeof(point_type), "%d",
                     plot_ptr->num_temp_files));
     BUFF_CAT(plot_command_buff, point_type);
     BUFF_CAT(plot_command_buff, "\n");
@@ -3102,9 +3102,9 @@ int plot_point(int plot_id, double x, double y, const char* name)
 
     NRE(temp_fp = open_plot_temp_file(plot_ptr->plot_id, temp_file_name));
 
-    ERE(kjb_fprintf(temp_fp,"%e %e\n",x,y));
+    ERE(ivi_fprintf(temp_fp,"%e %e\n",x,y));
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * x;
     temp_x_max =1.1 *  y;
@@ -3120,7 +3120,7 @@ int plot_point(int plot_id, double x, double y, const char* name)
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -3152,7 +3152,7 @@ int plot_point(int plot_id, double x, double y, const char* name)
     }
 
     BUFF_CAT(plot_command_buff, "\" w points ");
-    ERE(kjb_sprintf(point_type, sizeof(point_type), "%d",
+    ERE(ivi_sprintf(point_type, sizeof(point_type), "%d",
                     plot_ptr->num_temp_files));
     BUFF_CAT(plot_command_buff, point_type);
     BUFF_CAT(plot_command_buff, "\n");
@@ -3331,11 +3331,11 @@ static int pp_plot_points
 
     for (i=0; i<x_vp->length; i++)
     {
-        ERE(kjb_fprintf(temp_fp,"%e %e\n",(x_vp->elements)[i],
+        ERE(ivi_fprintf(temp_fp,"%e %e\n",(x_vp->elements)[i],
                         (y_vp->elements)[i]));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * min_vector_element(x_vp);
     temp_x_max = 1.1 * max_vector_element(x_vp);
@@ -3351,7 +3351,7 @@ static int pp_plot_points
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -3373,7 +3373,7 @@ static int pp_plot_points
         y_max = MAX_OF(temp_y_max, plot_ptr->y_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set yrange [%f:%f]\n", y_min, y_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -3404,7 +3404,7 @@ static int pp_plot_points
     }
 
     BUFF_CAT(plot_command_buff, "\" w points pt ");
-    ERE(kjb_sprintf(point_type, sizeof(point_type), "%d",
+    ERE(ivi_sprintf(point_type, sizeof(point_type), "%d",
                     plot_ptr->num_temp_files));
     BUFF_CAT(plot_command_buff, point_type);
     BUFF_CAT(plot_command_buff, "\n");
@@ -3483,11 +3483,11 @@ int plot_curve
 
     for (i=0; i<x_vp->length; i++)
     {
-        ERE(kjb_fprintf(temp_fp,"%e %e\n",(x_vp->elements)[i],
+        ERE(ivi_fprintf(temp_fp,"%e %e\n",(x_vp->elements)[i],
                         (y_vp->elements)[i]));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * min_vector_element(x_vp);
     temp_x_max = 1.1 * max_vector_element(x_vp);
@@ -3503,7 +3503,7 @@ int plot_curve
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -3558,10 +3558,10 @@ int plot_curve
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -3633,8 +3633,8 @@ int plot_line
     ERE(get_plot_temp_file_name(temp_file_name, sizeof(temp_file_name),
                                 plot_ptr->num_temp_files));
     NRE(temp_fp = open_plot_temp_file(plot_ptr->plot_id, temp_file_name));
-    ERE(kjb_fprintf(temp_fp,"%e %e\n%e %e\n", x1, y1, x2, y2));
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fprintf(temp_fp,"%e %e\n%e %e\n", x1, y1, x2, y2));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * MIN_OF(x1, x2);
     temp_x_max = 1.1 * MAX_OF(x1, x2);
@@ -3650,7 +3650,7 @@ int plot_line
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -3705,10 +3705,10 @@ int plot_line
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -3815,12 +3815,12 @@ int plot_multi_segment_curve
                 temp_y_max = y;
             }
 
-            kjb_fprintf(temp_fp,"%e %e\n",x, y);
+            ivi_fprintf(temp_fp,"%e %e\n",x, y);
         }
-        kjb_fprintf(temp_fp, "\n");
+        ivi_fprintf(temp_fp, "\n");
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min *= 0.9;
     temp_x_max *= 1.1;
@@ -3853,7 +3853,7 @@ int plot_multi_segment_curve
     plot_ptr->y_min = y_min;
     plot_ptr->y_max = y_max;
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -3891,10 +3891,10 @@ int plot_multi_segment_curve
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -4155,13 +4155,13 @@ static int pp_plot_segments
 
     for (seg_count=0; seg_count<num_segments; seg_count++)
     {
-        ERE(kjb_fprintf(temp_fp,"%e %e\n",(x1_vp->elements)[seg_count],
+        ERE(ivi_fprintf(temp_fp,"%e %e\n",(x1_vp->elements)[seg_count],
                         (y1_vp->elements)[seg_count]));
-        ERE(kjb_fprintf(temp_fp,"%e %e\n\n",(x2_vp->elements)[seg_count],
+        ERE(ivi_fprintf(temp_fp,"%e %e\n\n",(x2_vp->elements)[seg_count],
                         (y2_vp->elements)[seg_count]));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x1_min = min_vector_element(x1_vp);
     temp_x1_max = max_vector_element(x1_vp);
@@ -4185,7 +4185,7 @@ static int pp_plot_segments
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -4248,10 +4248,10 @@ static int pp_plot_segments
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -4337,7 +4337,7 @@ int plot_matrix_cols
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
 
@@ -4364,13 +4364,13 @@ int plot_matrix_cols
 
         for (i=0; i<mp->num_rows; i++)
         {
-            ERE(kjb_fprintf(temp_fp,"%e %e\n",x_offset+i*x_step,
+            ERE(ivi_fprintf(temp_fp,"%e %e\n",x_offset+i*x_step,
                             (mp->elements)[ i ][ j ]));
         }
 
-        ERE(kjb_fclose(temp_fp));
+        ERE(ivi_fclose(temp_fp));
 
-        ERE(kjb_sprintf(temp_file_name, sizeof(temp_file_name), "%d",
+        ERE(ivi_sprintf(temp_file_name, sizeof(temp_file_name), "%d",
                         plot_ptr->num_temp_files));
 
         BUFF_CAT(plot_command_buff, "\"");
@@ -4379,7 +4379,7 @@ int plot_matrix_cols
 
         if ((name_list == NULL) || (name_list[ j ] == NULL))
         {
-            ERE(kjb_sprintf(plot_num_str, sizeof(plot_num_str), "%d",
+            ERE(ivi_sprintf(plot_num_str, sizeof(plot_num_str), "%d",
                             plot_ptr->num_temp_files));
             BUFF_CAT(plot_command_buff, plot_num_str);
         }
@@ -4405,9 +4405,9 @@ int plot_matrix_cols
          * does not work now. 
         */
 #ifdef OLDER_GNUPLOTS
-        ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d", line_type));
+        ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d", line_type));
 #else
-        ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d", line_type));
+        ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d", line_type));
 #endif 
 
         BUFF_CAT(plot_command_buff, line_type_str);
@@ -4501,7 +4501,7 @@ int plot_matrix_rows
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
 
@@ -4529,11 +4529,11 @@ int plot_matrix_rows
 
         for (j=0; j<mp->num_cols; j++)
         {
-            ERE(kjb_fprintf(temp_fp,"%e %e\n",x_offset+j*x_step,
+            ERE(ivi_fprintf(temp_fp,"%e %e\n",x_offset+j*x_step,
                             (mp->elements)[ i ][ j ]));
         }
 
-        ERE(kjb_fclose(temp_fp));
+        ERE(ivi_fclose(temp_fp));
 
         BUFF_CAT(plot_command_buff, "\"");
         BUFF_CAT(plot_command_buff, temp_file_name);
@@ -4541,7 +4541,7 @@ int plot_matrix_rows
 
         if ((name_list == NULL) || (name_list[ i ] == NULL))
         {
-            ERE(kjb_sprintf(plot_num_str, sizeof(plot_num_str), "%d",
+            ERE(ivi_sprintf(plot_num_str, sizeof(plot_num_str), "%d",
                             plot_ptr->num_temp_files));
             BUFF_CAT(plot_command_buff, plot_num_str);
         }
@@ -4567,9 +4567,9 @@ int plot_matrix_rows
          * does not work now. 
         */
 #ifdef OLDER_GNUPLOTS
-        ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d", line_type));
+        ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d", line_type));
 #else
-        ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d", line_type));
+        ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d", line_type));
 #endif 
 
         BUFF_CAT(plot_command_buff, line_type_str);
@@ -4642,13 +4642,13 @@ int plot_multi_matrix_rows
     {
         for (j=0; j<mp->num_cols; j++)
         {
-            ERE(kjb_fprintf(temp_fp, "%e %e\n", x_offset+j*x_step,
+            ERE(ivi_fprintf(temp_fp, "%e %e\n", x_offset+j*x_step,
                             (mp->elements)[i][j]));
         }
-        ERE(kjb_fprintf(temp_fp,"\n\n"));
+        ERE(ivi_fprintf(temp_fp,"\n\n"));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = x_offset;
     temp_x_max = x_offset + x_step * mp->num_cols;
@@ -4664,7 +4664,7 @@ int plot_multi_matrix_rows
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
 
@@ -4701,10 +4701,10 @@ int plot_multi_matrix_rows
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "%d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
+    ERE(ivi_sprintf(line_type_str, sizeof(line_type_str), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -4826,11 +4826,11 @@ int plot_matrix_values_2
 
 
     ERE(pp_plot_write(plot_ptr, "set parametric\n"));
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set yrange [%f:%f]\n", y_min, y_max));
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
 
@@ -4848,14 +4848,14 @@ int plot_matrix_values_2
     {
         for (j=0; j<mp->num_cols; j++)
         {
-            ERE(kjb_fprintf(temp_fp,"%e %e %e\n",
+            ERE(ivi_fprintf(temp_fp,"%e %e %e\n",
                             x_min + (i * x_step), y_min + (j * y_step),
                             (mp->elements)[ i ][ j ]));
         }
-        ERE(kjb_fprintf(temp_fp,"\n"));
+        ERE(ivi_fprintf(temp_fp,"\n"));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     BUFF_CAT(plot_command_buff, temp_file_name);
     BUFF_CAT(plot_command_buff, "' notitle with lines\n");
@@ -5046,7 +5046,7 @@ int plot_close(int plot_id)
 static int pp_plot_close(Plot* plot_ptr)
 {
 #ifdef UNIX
-    IMPORT int  kjb_debug_level;
+    IMPORT int  ivi_debug_level;
     const char* plot_command;
     int         plot_index;
     int         result;
@@ -5066,9 +5066,9 @@ static int pp_plot_close(Plot* plot_ptr)
     */
     result = pp_plot_write(plot_ptr, plot_command);
 
-    if ((result == ERROR) && (kjb_debug_level > 0))
+    if ((result == ERROR) && (ivi_debug_level > 0))
     {
-        kjb_print_error();
+        ivi_print_error();
     }
 
     /*
@@ -5085,7 +5085,7 @@ static int pp_plot_close(Plot* plot_ptr)
     {
         result = ERROR;
     }
-    else if (kjb_rmdir(dir_buff) == ERROR)
+    else if (ivi_rmdir(dir_buff) == ERROR)
     {
         result = ERROR;
     }
@@ -5099,7 +5099,7 @@ static int pp_plot_close(Plot* plot_ptr)
     close(plot_ptr->plot_read_des);
     close(plot_ptr->plot_write_des);
 
-    kjb_free(plot_ptr);
+    ivi_free(plot_ptr);
 
     return result;
 
@@ -5143,7 +5143,7 @@ void plot_close_all(void)
 
         fs_max_plot_num = 0;
 
-        kjb_free(fs_plot_info_array);
+        ivi_free(fs_plot_info_array);
         fs_plot_info_array = NULL;
     }
 #endif 
@@ -5199,7 +5199,7 @@ static int pp_plot_write(Plot* plot_ptr, const char* buff)
         TEST_PSO(("\nPlot child process status is PROCESS_IS_DEAD\n"));
         TEST_PSO(("Output from execution of \"ps -eaf\" follows.\n\n"));
         TEST_PSO(("----------------------------------------------------------------------\n\n"));
-        EPE(kjb_system("ps -eaf"));
+        EPE(ivi_system("ps -eaf"));
         TEST_PSO(("\n----------------------------------------------------------------------\n\n"));
 #endif
         set_error("Plot process (pid=%d) is no longer alive.",
@@ -5326,7 +5326,7 @@ static FILE* open_plot_temp_file(int plot_id, const char* file_name)
     ERN(get_plot_temp_file_path(file_path, sizeof(file_path), plot_id,
                                 file_name));
 
-    return kjb_fopen(file_path, "w");
+    return ivi_fopen(file_path, "w");
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -5350,7 +5350,7 @@ static int get_plot_temp_file_path
 
     ERE(get_plot_temp_file_dir(dir_buff, sizeof(dir_buff), plot_id));
 
-    ERE(kjb_sprintf(file_path_buff, file_path_buff_size, "%s/%s", dir_buff,
+    ERE(ivi_sprintf(file_path_buff, file_path_buff_size, "%s/%s", dir_buff,
                     file_name));
 
     return NO_ERROR;
@@ -5377,15 +5377,15 @@ static int get_plot_temp_file_dir
 
     ERE(get_user_id(user_id, sizeof(user_id)));
 
-    ERE(kjb_sprintf(user_dir_buff, sizeof(user_dir_buff), "%s%s%s",
+    ERE(ivi_sprintf(user_dir_buff, sizeof(user_dir_buff), "%s%s%s",
                     TEMP_DIR, DIR_STR, user_id));
 
     if (get_path_type(user_dir_buff) != PATH_IS_DIRECTORY)
     {
-        ERE(kjb_mkdir(user_dir_buff));
+        ERE(ivi_mkdir(user_dir_buff));
     }
 
-    ERE(kjb_sprintf(dir_buff, dir_buff_size, "%s%s%ld-%d-plots",
+    ERE(ivi_sprintf(dir_buff, dir_buff_size, "%s%s%ld-%d-plots",
                     user_dir_buff, DIR_STR, (long)MY_PID, plot_id));
 
     return NO_ERROR;
@@ -5408,7 +5408,7 @@ static int get_plot_temp_file_name
 {
 
 
-    return kjb_sprintf(file_name_buff, file_name_buff_size, "%d", file_num);
+    return ivi_sprintf(file_name_buff, file_name_buff_size, "%d", file_num);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -5443,7 +5443,7 @@ static int plot_remove_data_files(Plot* plot_ptr)
 
         if (temp_result != ERROR)
         {
-            EPE(temp_result = kjb_unlink(temp_file_path));
+            EPE(temp_result = ivi_unlink(temp_file_path));
         }
 
         if (temp_result == ERROR) result = ERROR;
@@ -5466,7 +5466,7 @@ static void free_display_plot_flag_stack(void)
     /* Dont free fs_plot_info_array here, as it is free'd in plot_close_all.*/
 
     free_queue(&fs_display_plot_flag_stack_head, (Queue_element**)NULL,
-               kjb_free);
+               ivi_free);
 }
 
 #endif
@@ -5570,12 +5570,12 @@ static int pp_plot3_points
 
     for (i=0; i<x_vp->length; i++)
     {
-        ERE(kjb_fprintf(temp_fp,"%e %e %e\n",(x_vp->elements)[i],
+        ERE(ivi_fprintf(temp_fp,"%e %e %e\n",(x_vp->elements)[i],
                         (y_vp->elements)[i],
                         (z_vp->elements)[i]));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * min_vector_element(x_vp);
     temp_x_max = 1.1 * max_vector_element(x_vp);
@@ -5591,7 +5591,7 @@ static int pp_plot3_points
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -5613,7 +5613,7 @@ static int pp_plot3_points
         y_max = MAX_OF(temp_y_max, plot_ptr->y_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set yrange [%f:%f]\n", y_min, y_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -5635,7 +5635,7 @@ static int pp_plot3_points
         z_max = MAX_OF(temp_z_max, plot_ptr->z_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set zrange [%f:%f]\n", z_min, z_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -5666,7 +5666,7 @@ static int pp_plot3_points
     }
 
     BUFF_CAT(plot_command_buff, "\" w points ");
-    ERE(kjb_sprintf(point_type, sizeof(point_type), "%d",
+    ERE(ivi_sprintf(point_type, sizeof(point_type), "%d",
                     plot_ptr->num_temp_files));
     BUFF_CAT(plot_command_buff, point_type);
     BUFF_CAT(plot_command_buff, "\n");
@@ -5778,12 +5778,12 @@ static int pp_plot3_curve
 
     for (i=0; i<x_vp->length; i++)
     {
-        ERE(kjb_fprintf(temp_fp,"%e %e %e\n",(x_vp->elements)[i],
+        ERE(ivi_fprintf(temp_fp,"%e %e %e\n",(x_vp->elements)[i],
                         (y_vp->elements)[i],
                         (z_vp->elements)[i]));
     }
 
-    ERE(kjb_fclose(temp_fp));
+    ERE(ivi_fclose(temp_fp));
 
     temp_x_min = 0.9 * min_vector_element(x_vp);
     temp_x_max = 1.1 * max_vector_element(x_vp);
@@ -5799,7 +5799,7 @@ static int pp_plot3_curve
         x_max = MAX_OF(temp_x_max, plot_ptr->x_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set xrange [%f:%f]\n", x_min, x_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -5821,7 +5821,7 @@ static int pp_plot3_curve
         y_max = MAX_OF(temp_y_max, plot_ptr->y_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set yrange [%f:%f]\n", y_min, y_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -5843,7 +5843,7 @@ static int pp_plot3_curve
         z_max = MAX_OF(temp_z_max, plot_ptr->z_max);
     }
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "set zrange [%f:%f]\n", z_min, z_max));
 
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
@@ -5881,10 +5881,10 @@ static int pp_plot3_curve
      * does not work now. 
     */
 #ifdef OLDER_GNUPLOTS
-    ERE(kjb_sprintf(point_type, sizeof(point_type), "%d",
+    ERE(ivi_sprintf(point_type, sizeof(point_type), "%d",
                     plot_ptr->num_temp_files));
 #else
-    ERE(kjb_sprintf(point_type, sizeof(point_type), "lt %d",
+    ERE(ivi_sprintf(point_type, sizeof(point_type), "lt %d",
                     plot_ptr->num_temp_files));
 #endif 
 
@@ -5909,7 +5909,7 @@ static int wait_for_plot(Plot* plot_ptr)
 
     BUFF_GET_TEMP_FILE_NAME(temp_name);
 
-    ERE(kjb_sprintf(plot_command_buff, sizeof(plot_command_buff),
+    ERE(ivi_sprintf(plot_command_buff, sizeof(plot_command_buff),
                     "!touch %s\n", temp_name));
     ERE(pp_plot_write(plot_ptr, plot_command_buff));
 
@@ -5936,11 +5936,11 @@ static int wait_for_plot(Plot* plot_ptr)
             }
         }
 
-        if (kjb_isatty(fileno(stdout)))
+        if (ivi_isatty(fileno(stdout)))
         {
             char mess[ 1000 ];
 
-            ERE(kjb_sprintf(mess, sizeof(mess),
+            ERE(ivi_sprintf(mess, sizeof(mess),
                             "Waiting for lock file %s (%04d)\r",
                             temp_name, lock_wait_count));
             term_puts(mess);
@@ -5951,7 +5951,7 @@ static int wait_for_plot(Plot* plot_ptr)
 
     if (is_file(temp_name))
     {
-        EPE(kjb_unlink(temp_name));
+        EPE(ivi_unlink(temp_name));
     }
     else 
     {

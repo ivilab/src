@@ -1,5 +1,5 @@
 
-/* $Id: i2_draw_text.h 12793 2012-08-03 21:19:40Z kobus $ */
+/* $Id: i2_draw_text.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,14 +29,14 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int image_draw_text_top_left
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const char* text,
     int         i,
     int         j,
@@ -45,7 +45,7 @@ int image_draw_text_top_left
 
 int image_draw_wrapped_text_top_left
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const char* text,
     int         i,
     int         j,
@@ -55,7 +55,7 @@ int image_draw_wrapped_text_top_left
 
 int image_draw_text_center
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const char* text,
     int         i,
     int         j,
@@ -64,7 +64,7 @@ int image_draw_text_center
 
 int get_wrapped_text_block_image
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* text_in,
     int         width,
     const char* font_str

@@ -1,5 +1,5 @@
 
-/* $Id: i_map.h 10922 2011-10-28 00:22:05Z kobus $ */
+/* $Id: i_map.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,38 +29,38 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int pre_map_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          map_mp
 );
 
 int post_map_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          map_mp
 );
 
 int post_map_projected_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     Matrix*          map_mp
 );
 
 
-int scale_image_by_max(KJB_image** ipp, const KJB_image* ip);
+int scale_image_by_max(IVI_image** ipp, const IVI_image* ip);
 
-int ow_scale_image_by_max(KJB_image* ip);
+int ow_scale_image_by_max(IVI_image* ip);
 
-int adjust_image_range(KJB_image** ipp, const KJB_image* ip);
+int adjust_image_range(IVI_image** ipp, const IVI_image* ip);
 
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE

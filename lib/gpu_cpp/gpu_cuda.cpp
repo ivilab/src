@@ -1,4 +1,4 @@
-/* $Id: gpu_cuda.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gpu_cuda.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -29,13 +29,13 @@
 
 #include <sstream>
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 #include <cuda.h>
 //#endif
 
 using namespace std;
 
-namespace kjb
+namespace ivi
 {
 namespace gpu
 {
@@ -50,7 +50,7 @@ static boost::shared_array<char> read_file(const std::string& fname)
 
     if(!fp)
     {
-        KJB_THROW_3(IO_error, "Couldn't read file: %s", (fname.c_str()));
+        IVI_THROW_3(IO_error, "Couldn't read file: %s", (fname.c_str()));
     }
 
     fseek(fp, 0, SEEK_END);
@@ -312,7 +312,7 @@ const char* get_cuda_error_string(const CUresult& err)
 
 static float* to_float_array(const Matrix& m, bool flip_y)
 {
-    return ::kjb::gpu::to_pitch<Matrix, float>(m, m.get_num_cols() * sizeof(float), flip_y);
+    return ::ivi::gpu::to_pitch<Matrix, float>(m, m.get_num_cols() * sizeof(float), flip_y);
 }
 
 CUarray create_cuda_array(const Matrix& m, bool flip_y)
@@ -522,8 +522,8 @@ double Cuda_reduce_module::tex_count(CUarray da_in, int width, int height)
 double Cuda_reduce_module::chamfer_reduce(CUdeviceptr d_in_1, CUdeviceptr d_in_2, int N, bool square)
 {
     using boost::scoped_array;
-    using kjb_c::kjb_debug_level;
-    using kjb_c::add_error;
+    using ivi_c::ivi_debug_level;
+    using ivi_c::add_error;
 
     CUcontext ctx;
     cuCtxAttach(&ctx, 0);
@@ -638,8 +638,8 @@ cleanup:
 
 double Cuda_reduce_module::chamfer_reduce(CUarray texture_1, CUarray texture_2, int width, int height)
 {
-    using kjb_c::kjb_debug_level;
-    using kjb_c::add_error;
+    using ivi_c::ivi_debug_level;
+    using ivi_c::add_error;
 
     double result;
 
@@ -676,8 +676,8 @@ double Cuda_reduce_module::tex_function(CUarray da_in, int width, int height, CU
 
     // TODO merge identical parts with reduce()
     using boost::scoped_array;
-    using kjb_c::kjb_debug_level;
-    using kjb_c::add_error;
+    using ivi_c::ivi_debug_level;
+    using ivi_c::add_error;
 
     CUcontext ctx;
     cuCtxAttach(&ctx, 0);
@@ -807,7 +807,7 @@ int Cuda_reduce_module::get_function_index_(int type_index_, int threads, bool i
         case 128: thread_i = 7; break; 
         case 256: thread_i = 8; break; 
         case 512: thread_i = 9; break; 
-        default:  KJB_THROW(Runtime_error);
+        default:  IVI_THROW(Runtime_error);
     }
 
     int i = thread_i * (2 * NUM_TYPES) + 2 * type_index_ + (is_pow_2_ ? 1 : 0);
@@ -882,7 +882,7 @@ int Cuda_reduce_module::type_index<unsigned char>() { return 1; }
 
 
 } // namespace gpu
-} // namespace kjb
+} // namespace ivi
 
 #endif
 

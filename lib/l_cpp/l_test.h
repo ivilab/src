@@ -36,7 +36,7 @@ void print_victory(const char*);
  * Typical use:
  * @code
  * int time_factor = 1;
- * KJB(ERE(scan_time_factor(argv[1], &time_factor)));
+ * IVI(ERE(scan_time_factor(argv[1], &time_factor)));
  * @endcode
  */
 int scan_time_factor(const char* argv1, int* tf);
@@ -99,7 +99,7 @@ int scan_time_factor(const char* argv1, int* tf);
     do {                                                    \
         bool assert_fail_failed = false;                    \
         try { line; }                                       \
-        catch( kjb::Index_out_of_bounds& iob )              \
+        catch( ivi::Index_out_of_bounds& iob )              \
         {                                                   \
             /*  std::cout <<"Correctly caught: "; */        \
             /*  iob.print( std::cout );           */        \

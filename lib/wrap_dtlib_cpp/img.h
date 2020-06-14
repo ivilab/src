@@ -25,7 +25,7 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
@@ -33,7 +33,7 @@
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
 using namespace std;
 #warning "[Code police] Do not put 'using namespace' in global scope of header."
-using namespace kjb_c;
+using namespace ivi_c;
 
 
 namespace DTLib {
@@ -463,7 +463,7 @@ namespace DTLib {
         float L2Norm();
 
         // Returns the number of non-zero elements in ROI
-        kjb_int32 nNonZeros();
+        ivi_int32 nNonZeros();
 
         // sqrt all values of image pixels in ROI
         void Sqrt();
@@ -1573,7 +1573,7 @@ namespace DTLib {
     template <> inline float CImg<BYTE>::SumAbs()
     {
         BYTE* pROI = m_pROI;
-        kjb_int32 Sum;
+        ivi_int32 Sum;
         for (int yy = m_ROIStartY; yy < m_ROIEndY;
              yy++, pROI += m_ROISkipCols)
             for (int xx = m_ROIStartX; xx < m_ROIEndX; xx++, pROI++)
@@ -1581,7 +1581,7 @@ namespace DTLib {
                 /* Kobus. Before 06/11/18, there was no "*" in front of pROI.
                  * This looks like a latent bug. so I added the "*".
                 */
-                Sum += (kjb_int32)(*pROI);
+                Sum += (ivi_int32)(*pROI);
             }
                                      
         return (float)Sum;
@@ -2239,11 +2239,11 @@ namespace DTLib {
     template <> inline float CImg<BYTE>::L2Norm()
     {
         BYTE* pROI = m_pROI;
-        kjb_int32 sumofsquares = 0;
+        ivi_int32 sumofsquares = 0;
         for (int y = m_ROIStartY; y < m_ROIEndY;
              y++, pROI += m_ROISkipCols)
             for (int x = m_ROIStartX; x < m_ROIEndX; x++, pROI++) {
-                const kjb_int32 Val = (kjb_int32)*pROI;
+                const ivi_int32 Val = (ivi_int32)*pROI;
                 sumofsquares += Val*Val;
             }
         return (float)sqrt((float)sumofsquares);
@@ -2266,12 +2266,12 @@ namespace DTLib {
     ///////////////////////////////////////////////////////////////////////////
 
     template <class T>
-    kjb_int32 CImg<T>::nNonZeros()
+    ivi_int32 CImg<T>::nNonZeros()
     {
         const int StartX = m_ROIStartX, EndX = m_ROIEndX,
             StartY = m_ROIStartY, EndY = m_ROIEndY, sk = m_ROISkipCols;
         T* pBuffer = m_pBuffer;
-        kjb_int32 nPoints = 0;
+        ivi_int32 nPoints = 0;
         for (int y = StartY; y < EndY; y++, pBuffer += sk)
             for (int x = StartX; x < EndX; x++, pBuffer++)
                 if (*pBuffer  != (T)0) nPoints++;
@@ -2511,17 +2511,17 @@ namespace DTLib {
     ///////////////////////////////////////////////////////////////////////////
 
     typedef CImg<BYTE>* ByteCImgPtr;
-    typedef CImg<kjb_int32>* LongCImgPtr;
+    typedef CImg<ivi_int32>* LongCImgPtr;
     typedef CImg<float>* FloatCImgPtr;
     typedef CImg<int>* IntCImgPtr;
 
     typedef CImgVec<BYTE>* ByteCImgVecPtr;
-    typedef CImgVec<kjb_int32>* LongCImgVecPtr;
+    typedef CImgVec<ivi_int32>* LongCImgVecPtr;
     typedef CImgVec<float>* FloatCImgVecPtr;
     typedef CImg<int>* IntCImgPtr;
 
     typedef vector<CImg<BYTE>*>::iterator ByteImgVecIter;
-    typedef vector<CImg<kjb_int32>*>::iterator LongImgVecIter;
+    typedef vector<CImg<ivi_int32>*>::iterator LongImgVecIter;
     typedef vector<CImg<float>*>::iterator FloatImgVecIter;
     typedef vector<CImg<int>*>::iterator IntImgVecIter;
 

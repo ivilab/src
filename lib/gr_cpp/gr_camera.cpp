@@ -80,12 +80,12 @@
 #warning "[Code police] Please don't start identifiers with underscore."
 #warning "[Code police] (multiple places in this file)"
 
-using namespace kjb_c;
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi_c;
+using namespace ivi;
+using namespace ivi::opengl;
 
-#define KJB_DEG_TO_RAD 0.01745329251994
-#define KJB_RAD_TO_DEG 57.29577951308232
+#define IVI_DEG_TO_RAD 0.01745329251994
+#define IVI_RAD_TO_DEG 57.29577951308232
 
 
 
@@ -95,15 +95,15 @@ using namespace kjb::opengl;
  */
 Base_gl_interface::Base_gl_interface(double inear, double ifar)
 {
-    using namespace kjb;
+    using namespace ivi;
     if(inear <= 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Negative near clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Negative near clipping plane");
     }
 
     if(inear >= ifar)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Near clipping plane is farther than far clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Near clipping plane is farther than far clipping plane");
     }
 
     near = inear;
@@ -129,22 +129,22 @@ Base_gl_interface::Base_gl_interface(const Matrix & mv, const Matrix & pj, doubl
 {
     if( (mv.get_num_rows() != 4 )   || (mv.get_num_cols() != 4) )
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Wrong dimensions of gl_modelview_matrix");
+        IVI_THROW_2(ivi::Illegal_argument, "Wrong dimensions of gl_modelview_matrix");
     }
 
     if( (pj.get_num_rows() != 4 )   || (pj.get_num_cols() != 4) )
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Wrong dimensions of gl_projection_matrix");
+        IVI_THROW_2(ivi::Illegal_argument, "Wrong dimensions of gl_projection_matrix");
     }
 
     if(inear <= 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Negative near clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Negative near clipping plane");
     }
 
     if(inear >= ifar)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Near clipping plane is farther than far clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Near clipping plane is farther than far clipping plane");
     }
 
     /** We check that input planes and input projection matrix are consistent
@@ -153,12 +153,12 @@ Base_gl_interface::Base_gl_interface(const Matrix & mv, const Matrix & pj, doubl
     double epsilon = 0.00000001;
     if( fabs(pj(2,2) - (near + far)) > epsilon )
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Near and far clipping planes are not consistent with projection matrix");
+        IVI_THROW_2(ivi::Illegal_argument, "Near and far clipping planes are not consistent with projection matrix");
     }
 
     if( fabs(pj(2,3) - (near*far)) > epsilon )
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Near and far clipping planes are not consistent with projection matrix");
+        IVI_THROW_2(ivi::Illegal_argument, "Near and far clipping planes are not consistent with projection matrix");
     }
 
     near = inear;
@@ -196,12 +196,12 @@ void Base_gl_interface::set_near_clipping_plane(double inear)
 {
     if(inear <= 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Negative near clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Negative near clipping plane");
     }
 
     if(inear >= far)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Near clipping plane is farther than far clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Near clipping plane is farther than far clipping plane");
     }
 
     near = inear;
@@ -218,7 +218,7 @@ void Base_gl_interface::set_far_clipping_plane(double ifar)
 {
     if(near >= ifar)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Near clipping plane is farther than far clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Near clipping plane is farther than far clipping plane");
     }
 
     far = ifar;
@@ -236,12 +236,12 @@ void Base_gl_interface::set_clipping_planes(double inear, double ifar)
 {
     if(inear <= 0)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Negative near clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Negative near clipping plane");
     }
 
     if(inear >= ifar)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Near clipping plane is farther than far clipping plane");
+        IVI_THROW_2(ivi::Illegal_argument, "Near clipping plane is farther than far clipping plane");
     }
 
     near = inear;
@@ -252,7 +252,7 @@ void Base_gl_interface::set_clipping_planes(double inear, double ifar)
     projection_matrix(2,3) = near*far;
 }
 
-kjb::Matrix Base_gl_interface::get_gl_projection_matrix() const 
+ivi::Matrix Base_gl_interface::get_gl_projection_matrix() const 
 {
     // previous implmentation didn't pre-multiply the matrix by glortho.
     // New implementation returns exactly what is passed to opengl
@@ -260,9 +260,9 @@ kjb::Matrix Base_gl_interface::get_gl_projection_matrix() const
     get_gl_viewport_size(&width, &height);
 
     // this converts from screen coordinates to normalized device coordinates
-    kjb::Matrix state = create_identity_matrix(4);
+    ivi::Matrix state = create_identity_matrix(4);
 
-    kjb::opengl::glOrtho(state,
+    ivi::opengl::glOrtho(state,
             -width/2,
             width/2,
             -height/2,
@@ -276,13 +276,13 @@ kjb::Matrix Base_gl_interface::get_gl_projection_matrix() const
 /** @return The aspect ration of width to height for the GL viewport. */
 double Base_gl_interface::get_gl_viewport_aspect()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLdouble viewport[4] = {0};
 
     glGetDoublev(GL_VIEWPORT, viewport);
     return viewport[2] / viewport[3];
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -290,13 +290,13 @@ double Base_gl_interface::get_gl_viewport_aspect()
 /** @return The viewport width in the GL. */
 double Base_gl_interface::get_gl_viewport_width()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLdouble viewport[4] = {0};
 
     glGetDoublev(GL_VIEWPORT, viewport);
     return viewport[2];
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -304,27 +304,27 @@ double Base_gl_interface::get_gl_viewport_width()
 /** @return The viewport height in the GL. */
 double Base_gl_interface::get_gl_viewport_height()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLdouble viewport[4] = {0};
 
     glGetDoublev(GL_VIEWPORT, viewport);
     return viewport[3];
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
 /** @return The viewport height in the GL. */
 void Base_gl_interface::get_gl_viewport_size(double *w, double *h)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLdouble viewport[4] = {0};
 
     glGetDoublev(GL_VIEWPORT, viewport);
     *w= viewport[2];
     *h = viewport[3];
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -336,7 +336,7 @@ void Base_gl_interface::get_gl_viewport_size(double *w, double *h)
  */
 void Base_gl_interface::get_gl_viewport(double * x, double * y, double * w, double *h)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLdouble viewport[4] = {0};
 
     glGetDoublev(GL_VIEWPORT, viewport);
@@ -345,7 +345,7 @@ void Base_gl_interface::get_gl_viewport(double * x, double * y, double * w, doub
     *w= viewport[2];
     *h = viewport[3];
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -355,13 +355,13 @@ void Base_gl_interface::get_gl_viewport(double * x, double * y, double * w, doub
  */
 void Base_gl_interface::set_gl_viewport_size(double w, double h)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLdouble viewport[4] = {0};
 
     glGetDoublev(GL_VIEWPORT, viewport);
     glViewport(viewport[0], viewport[1], w, h);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -373,10 +373,10 @@ void Base_gl_interface::set_gl_viewport_size(double w, double h)
  */
 void Base_gl_interface::set_gl_viewport(double x, double y, double w, double h)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glViewport( (GLint)x, (GLint)y, (GLsizei) w, (GLsizei) h);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -384,33 +384,33 @@ void Base_gl_interface::set_gl_viewport(double x, double y, double w, double h)
  * @param  img_out  Result parameter. If @em *img_out is 0, an image is
  *                  allocated; otherwise its space is re-used.
  *
- * @throw  kjb::IO_error
+ * @throw  ivi::IO_error
  */
-void Base_gl_interface::capture_gl_view(kjb_c::KJB_image** img_out)
+void Base_gl_interface::capture_gl_view(ivi_c::IVI_image** img_out)
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb_c;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi_c;
 
     unsigned int num_cols = (unsigned int)get_gl_viewport_width();
     unsigned int num_rows = (unsigned int)get_gl_viewport_height();
 
-    float* img_buf = (float*)kjb_malloc(3*num_cols*num_rows*sizeof(float));
+    float* img_buf = (float*)ivi_malloc(3*num_cols*num_rows*sizeof(float));
     ASSERT(img_buf);
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
     glReadPixels(0, 0, num_cols, num_rows, GL_RGB, GL_FLOAT, img_buf);
 
-    //(*img_out) = kjb_create_image(num_rows, num_cols);
-    if (kjb_c::get_initialized_image_2(img_out, num_rows, num_cols, 0, 0, 0 ) != kjb_c::NO_ERROR)
+    //(*img_out) = ivi_create_image(num_rows, num_cols);
+    if (ivi_c::get_initialized_image_2(img_out, num_rows, num_cols, 0, 0, 0 ) != ivi_c::NO_ERROR)
     {
-        throw KJB_error("Could not allocate memory to read content of the GL buffer");
+        throw IVI_error("Could not allocate memory to read content of the GL buffer");
     }
 
-    KJB_image * img = *img_out;
+    IVI_image * img = *img_out;
 
     /** In the OpenGL coordinate system, (0,0) is the bottom left corner
-     * of the buffer. In KJB_images, (0,0) is the top left corner.
+     * of the buffer. In IVI_images, (0,0) is the top left corner.
      * Therefore we have to swap the rows to store the gl buffer in an
      * image correctly
      */
@@ -430,9 +430,9 @@ void Base_gl_interface::capture_gl_view(kjb_c::KJB_image** img_out)
         }
     }
 
-    kjb_free(img_buf);
+    ivi_free(img_buf);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -443,31 +443,31 @@ void Base_gl_interface::capture_gl_view(kjb_c::KJB_image** img_out)
  * frame buffer will be copied into this image, freeing the
  * previous memory area pointed by this image
  *
- * @throw  kjb::IO_error
+ * @throw  ivi::IO_error
  */
 void Base_gl_interface::capture_gl_view(Image & img_out)
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb_c;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi_c;
 
-    KJB_image * img = 0;
+    IVI_image * img = 0;
     unsigned int num_cols = (unsigned int)get_gl_viewport_width();
     unsigned int num_rows = (unsigned int)get_gl_viewport_height();
 
-    float* img_buf = (float*)kjb_malloc(3*num_cols*num_rows*sizeof(float));
+    float* img_buf = (float*)ivi_malloc(3*num_cols*num_rows*sizeof(float));
     ASSERT(img_buf);
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
     glReadPixels(0, 0, num_cols, num_rows, GL_RGB, GL_FLOAT, img_buf);
 
-    if (kjb_c::get_initialized_image_2(&img, num_rows, num_cols, 0, 0, 0 ) != kjb_c::NO_ERROR)
+    if (ivi_c::get_initialized_image_2(&img, num_rows, num_cols, 0, 0, 0 ) != ivi_c::NO_ERROR)
     {
-        throw KJB_error("Could not allocate memory to read content of the GL buffer");
+        throw IVI_error("Could not allocate memory to read content of the GL buffer");
     }
 
     /** In the OpenGL coordinate system, (0,0) is the bottom left corner
-     * of the buffer. In KJB_images, (0,0) is the top left corner.
+     * of the buffer. In IVI_images, (0,0) is the top left corner.
      * Therefore we have to swap the rows to store the gl buffer in an
      * image correctly
      */
@@ -487,10 +487,10 @@ void Base_gl_interface::capture_gl_view(Image & img_out)
         }
     }
 
-    kjb_free(img_buf);
+    ivi_free(img_buf);
     img_out.set_c_ptr(img);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -500,12 +500,12 @@ void Base_gl_interface::capture_gl_view(Image & img_out)
  *                 represent the four channels (R,G,B,A) are packaged into
  *                 a single integer.
  *
- * @throw  kjb::IO_error
+ * @throw  ivi::IO_error
  */
-void Base_gl_interface::capture_gl_view(kjb::Int_matrix & matrix)
+void Base_gl_interface::capture_gl_view(ivi::Int_matrix & matrix)
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb_c;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi_c;
 
     int num_cols = get_gl_viewport_width();
     int num_rows = get_gl_viewport_height();
@@ -525,7 +525,7 @@ void Base_gl_interface::capture_gl_view(kjb::Int_matrix & matrix)
             *(matrix.ptr_to_storage_area()) );
 
     /** In the OpenGL coordinate system, (0,0) is the bottom left corner
-     *  of the buffer. In KJB_images, (0,0) is the top left corner.
+     *  of the buffer. In IVI_images, (0,0) is the top left corner.
      *  Therefore we have to swap the rows to store the gl buffer in an
      *  image correctly
      */
@@ -545,7 +545,7 @@ void Base_gl_interface::capture_gl_view(kjb::Int_matrix & matrix)
     }
 
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -556,17 +556,17 @@ void Base_gl_interface::capture_gl_view(kjb::Int_matrix & matrix)
  *  @param im the image to be initialized from the matrix
  *  @param m  the matrix to create the image from
  */
-void Base_gl_interface::construct_image_from_int_matrix(kjb::Image & im, kjb::Int_matrix & m)
+void Base_gl_interface::construct_image_from_int_matrix(ivi::Image & im, ivi::Int_matrix & m)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
     im = Image::create_zero_image(m.get_num_rows(), m.get_num_cols());
-    kjb_c::KJB_image * cimg = im.non_const_c_ptr();
+    ivi_c::IVI_image * cimg = im.non_const_c_ptr();
     for(int i = 0; i < m.get_num_rows(); i++)
     {
         for(int j = 0; j < m.get_num_cols(); j++)
         {
             int _value = m(i,j);
-            if(! kjb_is_bigendian())
+            if(! ivi_is_bigendian())
             {
                 bswap_u32((uint32_t *) &(_value));
             }
@@ -584,20 +584,20 @@ void Base_gl_interface::construct_image_from_int_matrix(kjb::Image & im, kjb::In
 /**
  * @param  fname  File name to write the captured view image to.
  *
- * @throw  kjb::IO_error
+ * @throw  ivi::IO_error
  */
 void Base_gl_interface::capture_gl_view(const char* fname) 
 {
-    using namespace kjb_c;
-    KJB_image * img = 0;
+    using namespace ivi_c;
+    IVI_image * img = 0;
     capture_gl_view(&img);
 
-    if ((kjb_write_image(img, fname)) != kjb_c::NO_ERROR)
+    if ((ivi_write_image(img, fname)) != ivi_c::NO_ERROR)
     {
-        KJB_THROW_2(IO_error, "Could not write image");
+        IVI_THROW_2(IO_error, "Could not write image");
     }
 
-    kjb_free_image(img);
+    ivi_free_image(img);
 }
 
 
@@ -610,7 +610,7 @@ void Base_gl_interface::capture_gl_view(const char* fname)
  *                     conversion for the file number.
  * @param  N           Number of the captured image.
  *
- * @throw  kjb::IO_error
+ * @throw  ivi::IO_error
  */
 void Base_gl_interface::capture_gl_view(const char* fname_fmt, uint32_t N)
 {
@@ -627,27 +627,27 @@ void Base_gl_interface::capture_gl_view(const char* fname_fmt, uint32_t N)
  * @param  img_in  The input image
  *
  */
-void Base_gl_interface::set_gl_view(const kjb::Image & img_in)
+void Base_gl_interface::set_gl_view(const ivi::Image & img_in)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glDisable(GL_DEPTH_TEST);
     int num_cols = get_gl_viewport_width();
     int num_rows = get_gl_viewport_height();
 
-    float* img_buf = (float*)kjb_malloc(3*num_cols*num_rows*sizeof(float));
+    float* img_buf = (float*)ivi_malloc(3*num_cols*num_rows*sizeof(float));
     if(!img_buf)
     {
-        throw KJB_error("Could not allocate buffer to store image in GL frame buffer");
+        throw IVI_error("Could not allocate buffer to store image in GL frame buffer");
     }
 
     if( (num_cols != img_in.get_num_cols() ) || ( num_rows != img_in.get_num_rows() ) )
     {
-        throw KJB_error("Input image is smaller than viewport size");
+        throw IVI_error("Input image is smaller than viewport size");
     }
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
-    const kjb_c::KJB_image * cimg = img_in.c_ptr();
+    const ivi_c::IVI_image * cimg = img_in.c_ptr();
 
     for (int row = 0; row < num_rows; row++)
     {
@@ -663,10 +663,10 @@ void Base_gl_interface::set_gl_view(const kjb::Image & img_in)
 
     glDrawPixels(num_cols, num_rows, GL_RGB, GL_FLOAT, img_buf);
 
-    kjb_free(img_buf);
+    ivi_free(img_buf);
     glEnable(GL_DEPTH_TEST);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -676,20 +676,20 @@ void Base_gl_interface::set_gl_view(const kjb::Image & img_in)
  */
 void Base_gl_interface::set_gl_projection() const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     mult_gl_projection();
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 
 }
 
 void Base_gl_interface::mult_gl_projection() const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     double width, height;
     get_gl_viewport_size(&width, &height);
 
@@ -700,7 +700,7 @@ void Base_gl_interface::mult_gl_projection() const
     glMultMatrix(projection_matrix);
     glMatrixMode(GL_MODELVIEW);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -709,12 +709,12 @@ void Base_gl_interface::mult_gl_projection() const
  */
 void Base_gl_interface::set_gl_modelview() const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glMultMatrix(modelview_matrix);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
@@ -728,7 +728,7 @@ void Base_gl_interface::set_gl_modelview() const
  */
 void Base_gl_interface::prepare_for_rendering(bool clean_buffers) const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     if(clean_buffers)
     {
         glClearColor(0, 0, 0, 0);
@@ -737,7 +737,7 @@ void Base_gl_interface::prepare_for_rendering(bool clean_buffers) const
     set_gl_modelview();
     set_gl_projection();
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 /**
@@ -751,19 +751,19 @@ void Base_gl_interface::scale_modelview(double xscale, double yscale, double zsc
 {
     if((xscale <= 0.0) || (yscale <= 0.0) || (zscale <= 0.0))
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Scale modelview, scaling factors must be all positive");
+        IVI_THROW_2(ivi::Illegal_argument, "Scale modelview, scaling factors must be all positive");
     }
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glMatrixMode(GL_MODELVIEW);
     glScaled(xscale, yscale, zscale);
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 
-void Base_gl_interface::project_point(double & x, double & y, double &z, const kjb::Vector & point3D, double img_height) const
+void Base_gl_interface::project_point(double & x, double & y, double &z, const ivi::Vector & point3D, double img_height) const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLdouble mv[16];
     GLdouble pj[16];
     GLint vp[4];
@@ -803,7 +803,7 @@ void Base_gl_interface::project_point(double & x, double & y, double &z, const k
     }
     else
     {
-        KJB_THROW_2(Illegal_argument, "Point 3D vector size should be 3 or 4 (if homogeneous)");
+        IVI_THROW_2(Illegal_argument, "Point 3D vector size should be 3 or 4 (if homogeneous)");
     }
 #endif
     y = img_height - y;
@@ -818,10 +818,10 @@ void Base_gl_interface::project_point(double & x, double & y, double &z, const k
  * @param p the polygon to test
  * @param epsilon the constant to compare the dot product with (default = 0)
  */
-bool Base_gl_interface::Polygon_visibility_test(const kjb::Polygon & p, double epsilon) const 
+bool Base_gl_interface::Polygon_visibility_test(const ivi::Polygon & p, double epsilon) const 
 {
-    const kjb::Vector & centroid = p.get_centroid();
-    const kjb::Vector & normal = p.get_normal();
+    const ivi::Vector & centroid = p.get_centroid();
+    const ivi::Vector & normal = p.get_normal();
 
     double x = modelview_matrix(0,3) - centroid(0);
     double y = modelview_matrix(1,3) - centroid(1);
@@ -992,7 +992,7 @@ void Parametric_camera_gl_interface::set_intrinsic_parameters(double focal_lengt
 /*
  * @param center the new camera center (optionally in homogeneous coordinates)
  */
-void Parametric_camera_gl_interface::set_camera_center(const kjb::Vector & center) 
+void Parametric_camera_gl_interface::set_camera_center(const ivi::Vector & center) 
 {
 
     if(center.size() == 4)
@@ -1012,7 +1012,7 @@ void Parametric_camera_gl_interface::set_camera_center(const kjb::Vector & cente
     }
     else
     {
-        KJB_THROW_2(KJB_error, "Camera center vector has wrong dimensions");
+        IVI_THROW_2(IVI_error, "Camera center vector has wrong dimensions");
     }
 
     /*
@@ -1029,7 +1029,7 @@ void Parametric_camera_gl_interface::set_camera_center(const kjb::Vector & cente
 
 
 /** @brief Sets the world origin in camera coordinates (the "t" vector in Forsyth) */
-void Parametric_camera_gl_interface::set_world_origin(const kjb::Vector & t)
+void Parametric_camera_gl_interface::set_world_origin(const ivi::Vector & t)
 {
     Vector t_tmp = t;
 
@@ -1046,7 +1046,7 @@ void Parametric_camera_gl_interface::set_world_origin(const kjb::Vector & t)
 
     if (t_tmp.size() != 4)
     {
-        KJB_THROW_2(KJB_error, "Camera center vector has wrong dimensions");
+        IVI_THROW_2(IVI_error, "Camera center vector has wrong dimensions");
     }
 
     set_modelview_entry(0,3,t_tmp(0));
@@ -1059,12 +1059,12 @@ void Parametric_camera_gl_interface::set_world_origin(const kjb::Vector & t)
 /*
  * @param rotation_matrix the new rotation_matrix
  */
-void Parametric_camera_gl_interface::set_rotation_matrix(const kjb::Matrix & rotation_matrix) 
+void Parametric_camera_gl_interface::set_rotation_matrix(const ivi::Matrix & rotation_matrix) 
 {
 
     if((rotation_matrix.get_num_rows() < 3) || (rotation_matrix.get_num_cols() < 3))
     {
-        KJB_THROW_2(KJB_error, "Camera rotation matrix has wrong dimensions");
+        IVI_THROW_2(IVI_error, "Camera rotation matrix has wrong dimensions");
     }
 
     for(unsigned int i = 0; i < 3; i++)
@@ -1112,7 +1112,7 @@ void Parametric_camera_gl_interface::set_rotation_angles(double pitch, double ya
  * @param M the 3X3 upper left is used as the new rotation matrix,
  * whereas the leftmost column is interpreted as a translation vector
  */
-void Parametric_camera_gl_interface::transform(const kjb::Matrix & M)
+void Parametric_camera_gl_interface::transform(const ivi::Matrix & M)
 {
     set_rotation_matrix(M);
     if( (fabs(M(0,3)) > DBL_EPSILON) || (fabs(M(1,3)) > DBL_EPSILON) || (fabs(M(2,3)) > DBL_EPSILON) )
@@ -1128,7 +1128,7 @@ void Parametric_camera_gl_interface::transform(const kjb::Matrix & M)
  */
 void Parametric_camera_gl_interface::translate(double dx, double dy, double dz)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     Vector new_center = camera_center_in_world_coordinates;
     new_center(0) += dx;
     new_center(1) += dy;
@@ -1152,7 +1152,7 @@ void Parametric_camera_gl_interface::translate(double dx, double dy, double dz)
  */
 void Parametric_camera_gl_interface::set_rotations_and_translate(double pitch, double yaw, double roll, double dx, double dy, double dz)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
     set_rotation_angles(pitch, yaw, roll);
     translate(dx, dy, dz);
 }
@@ -1162,15 +1162,15 @@ void Parametric_camera_gl_interface::set_rotations_and_translate(double pitch, d
  *
  * @param point the point to transform. Must be in homogeneous coordinates
  */
-void Parametric_camera_gl_interface::transform_point_to_camera_frame(kjb::Vector & point) const
+void Parametric_camera_gl_interface::transform_point_to_camera_frame(ivi::Vector & point) const
 {
     try{
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         point = get_rotations()*point;
         point = point - camera_center_in_world_coordinates;
-    } catch(kjb::KJB_error ex)
+    } catch(ivi::IVI_error ex)
     {
-        KJB_THROW_2(KJB_error, "Transform point to eye frame, the input point must be in homogeneous coordinates");
+        IVI_THROW_2(IVI_error, "Transform point to eye frame, the input point must be in homogeneous coordinates");
     }
 }
 
@@ -1179,30 +1179,30 @@ void Parametric_camera_gl_interface::transform_point_to_camera_frame(kjb::Vector
  *
  * @param point the point to transform. Must be in homogeneous coordinates
  */
-void Parametric_camera_gl_interface::rotate_point_to_camera_frame(kjb::Vector & point) const
+void Parametric_camera_gl_interface::rotate_point_to_camera_frame(ivi::Vector & point) const
 {
     try{
         point = get_rotations()*point;
-    } catch(kjb::KJB_error ex)
+    } catch(ivi::IVI_error ex)
     {
-        KJB_THROW_2(KJB_error, "Transform point to eye frame, the input point must be in homogeneous coordinates");
+        IVI_THROW_2(IVI_error, "Transform point to eye frame, the input point must be in homogeneous coordinates");
     }
 }
 
 /** Transforms a point in camera coordinates to world coordinates */
 void Parametric_camera_gl_interface::get_point_in_world_coordinates
 (
-    const kjb::Vector & point_in_camera_coordinates,
-    kjb::Vector & point_in_world_coordinates
+    const ivi::Vector & point_in_camera_coordinates,
+    ivi::Vector & point_in_world_coordinates
 ) const
 {
     if(point_in_camera_coordinates.size() != 4)
     {
-        KJB_THROW_2(Illegal_argument,"Point in camera coordinates must be in homogeneous coordinates");
+        IVI_THROW_2(Illegal_argument,"Point in camera coordinates must be in homogeneous coordinates");
     }
     if( fabs(point_in_camera_coordinates(3)) < DBL_EPSILON)
     {
-        KJB_THROW_2(Illegal_argument,"Point in camera coordinates has homogeneous coordinate = 0");
+        IVI_THROW_2(Illegal_argument,"Point in camera coordinates has homogeneous coordinate = 0");
     }
 
     point_in_world_coordinates = (get_rotations().transpose() )* (point_in_camera_coordinates/point_in_camera_coordinates(3))
@@ -1218,10 +1218,10 @@ void Parametric_camera_gl_interface::get_point_in_world_coordinates
  * @param p the polygon to test
  * @param epsilon the constant to compare the dot product with (default = 0)
  */
-bool Parametric_camera_gl_interface::Polygon_visibility_test(const kjb::Polygon & p, double epsilon) const
+bool Parametric_camera_gl_interface::Polygon_visibility_test(const ivi::Polygon & p, double epsilon) const
 {
-    const kjb::Vector & centroid = p.get_centroid();
-    const kjb::Vector & normal = p.get_normal();
+    const ivi::Vector & centroid = p.get_centroid();
+    const ivi::Vector & normal = p.get_normal();
 
     double x = (camera_center_in_world_coordinates(0) - centroid(0) );
     double y = (camera_center_in_world_coordinates(1) - centroid(1) );
@@ -1245,14 +1245,14 @@ bool Parametric_camera_gl_interface::Polygon_visibility_test(const kjb::Polygon 
  */
 bool Parametric_camera_gl_interface::is_point_in_camera_frustum
 (
-    const kjb::Vector & point_in_world_coordinates,
+    const ivi::Vector & point_in_world_coordinates,
     double & ox_,
     double & oy_,
     unsigned int num_rows,
     unsigned int num_cols
 ) const
 {
-    kjb::Vector point_in_camera_coordinates = point_in_world_coordinates;
+    ivi::Vector point_in_camera_coordinates = point_in_world_coordinates;
     transform_point_to_camera_frame(point_in_camera_coordinates);
 
     double _x, _y, _z;

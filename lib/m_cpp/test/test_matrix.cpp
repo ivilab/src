@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: test_matrix.cpp 20369 2016-02-14 18:17:27Z jguan1 $ */
+/* $Id: test_matrix.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_io.h"
 #include "m/m_matrix.h"
@@ -25,12 +25,13 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <vector>
 #include <list>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #endif
@@ -38,22 +39,22 @@
 //#define NOW_I_AM_HERE() std::cout << "At line " << __LINE__ << '\n'
 
 // **** UTILITY FUNCTIONS ****
-int rand_int() { return kjb_c::kjb_rand() * INT_MAX - INT_MAX/2; }
+int rand_int() { return ivi_c::ivi_rand() * INT_MAX - INT_MAX/2; }
 
 template <class T>
 T random_matrix(int r, int c)
 {}
 
 template <>
-inline kjb::Matrix random_matrix<kjb::Matrix>(int r, int c)
+inline ivi::Matrix random_matrix<ivi::Matrix>(int r, int c)
 {
-    return kjb::create_random_matrix(r, c);
+    return ivi::create_random_matrix(r, c);
 }
 
 template <>
-inline kjb::Int_matrix random_matrix<kjb::Int_matrix>(int r, int c)
+inline ivi::Int_matrix random_matrix<ivi::Int_matrix>(int r, int c)
 {
-    kjb::Int_matrix m(r,c);
+    ivi::Int_matrix m(r,c);
     std::generate(&m(0,0), &m(0,0) + m.get_length(), rand_int);
     return m;
 }
@@ -62,7 +63,7 @@ inline kjb::Int_matrix random_matrix<kjb::Int_matrix>(int r, int c)
 // **** TEST FUNCTIONS ****
 
 // Reference function for zxz euler rotations, taken from Alternaria project code.
-void get_euler_matrix_zxz_reference(kjb_c::Matrix** m_out, float phi, float theta, float psi)
+void get_euler_matrix_zxz_reference(ivi_c::Matrix** m_out, float phi, float theta, float psi)
 {
     using std::cos;
     using std::sin;
@@ -78,7 +79,7 @@ void get_euler_matrix_zxz_reference(kjb_c::Matrix** m_out, float phi, float thet
     cos_psi   = (float)cos(psi);
     sin_psi   = (float)sin(psi);
 
-    kjb_c::get_target_matrix(m_out, 3, 3);
+    ivi_c::get_target_matrix(m_out, 3, 3);
     (*m_out)->elements[0][0] = cos_psi*cos_phi - cos_theta*sin_phi*sin_psi;
     (*m_out)->elements[0][1] = cos_psi*sin_phi + cos_theta*cos_phi*sin_psi;
     (*m_out)->elements[0][2] = sin_psi*sin_theta;
@@ -97,15 +98,15 @@ void test_resize(){
 }
 
 template <>
-void test_resize<kjb::Int_matrix>()
+void test_resize<ivi::Int_matrix>()
 {
     // Not implemented
 }
 
 template <>
-void test_resize<kjb::Matrix>()
+void test_resize<ivi::Matrix>()
 {
-    typedef kjb::Matrix MAT_T;
+    typedef ivi::Matrix MAT_T;
 
     // is resize reusing storage?
     MAT_T test_1 = random_matrix<MAT_T>(6,6);
@@ -138,11 +139,11 @@ void test_resize<kjb::Matrix>()
     
     for(size_t i = 0; i < MAX_IT; ++i)
     {
-        MAT_T::Value_type padding = INT_MAX * kjb_c::kjb_rand();
-        int old_rows = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int old_cols = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int new_rows = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int new_cols = kjb_c::kjb_rand() * MAX_DIM + 1;
+        MAT_T::Value_type padding = INT_MAX * ivi_c::ivi_rand();
+        int old_rows = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int old_cols = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int new_rows = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int new_cols = ivi_c::ivi_rand() * MAX_DIM + 1;
         int min_rows = std::min(old_rows, new_rows);
         int min_cols = std::min(old_cols, new_cols);
 
@@ -167,11 +168,11 @@ void test_resize<kjb::Matrix>()
     // Test resizing the same matrix multiple times
     for(size_t i = 0; i < MAX_IT; ++i)
     {
-        MAT_T::Value_type padding = INT_MAX * kjb_c::kjb_rand();
-        int nrows = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int dim1 = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int dim2 = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int dim3 = kjb_c::kjb_rand() * MAX_DIM + 1;
+        MAT_T::Value_type padding = INT_MAX * ivi_c::ivi_rand();
+        int nrows = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int dim1 = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int dim2 = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int dim3 = ivi_c::ivi_rand() * MAX_DIM + 1;
         if(dim1 > dim2)
             std::swap(dim1, dim2);
         if(dim2 > dim3)
@@ -233,10 +234,10 @@ void test_resize<kjb::Matrix>()
     // resize to (nrow,ncol+1), delete column i, resize to (nrow,ncol+1)
     for(size_t i = 0; i < MAX_IT; ++i)
     {
-        MAT_T::Value_type padding = INT_MAX * kjb_c::kjb_rand();
-        int nrows = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int ncols = kjb_c::kjb_rand() * MAX_DIM + 1;
-        int delete_i = kjb_c::kjb_rand() * MAX_DIM + 1;
+        MAT_T::Value_type padding = INT_MAX * ivi_c::ivi_rand();
+        int nrows = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int ncols = ivi_c::ivi_rand() * MAX_DIM + 1;
+        int delete_i = ivi_c::ivi_rand() * MAX_DIM + 1;
         if(delete_i > ncols)
             std::swap(delete_i, ncols);
         if(delete_i == ncols)
@@ -337,18 +338,18 @@ void test_max_abs( VALUE_T v1, VALUE_T v2 )
     MAT_T mat4( 10, 5, VALUE_T(0) );
     MAT_T mat5( 5, 10, VALUE_T(0) );
 
-    TEST_FAIL( kjb::max_abs_difference( mat1, mat4 ) );
-    TEST_FAIL( kjb::max_abs_difference( mat1, mat5 ) );
-    TEST_TRUE( 0 == kjb::max_abs_difference( mat1, mat1 ) );
-    TEST_TRUE( 0 == kjb::max_abs_difference( mat1, mat2 ) );
-    TEST_TRUE( VALUE_T(1) == kjb::max_abs_difference( mat1, mat3 ) );
+    TEST_FAIL( ivi::max_abs_difference( mat1, mat4 ) );
+    TEST_FAIL( ivi::max_abs_difference( mat1, mat5 ) );
+    TEST_TRUE( 0 == ivi::max_abs_difference( mat1, mat1 ) );
+    TEST_TRUE( 0 == ivi::max_abs_difference( mat1, mat2 ) );
+    TEST_TRUE( VALUE_T(1) == ivi::max_abs_difference( mat1, mat3 ) );
 
     mat1( 4, 8 ) = v1;
     mat2( 7, 1 ) = v2;
-    TEST_TRUE( MAX_OF(ABS_OF(v1),ABS_OF(v2)) == kjb::max_abs_difference(mat1, mat2));
+    TEST_TRUE( MAX_OF(ABS_OF(v1),ABS_OF(v2)) == ivi::max_abs_difference(mat1, mat2));
     mat2( 7, 1 ) = 0;
     mat2( 4, 8 ) = v2;
-    TEST_TRUE( ABS_OF(v1-v2) == kjb::max_abs_difference( mat1, mat2 ) );
+    TEST_TRUE( ABS_OF(v1-v2) == ivi::max_abs_difference( mat1, mat2 ) );
 }
 
 
@@ -361,8 +362,8 @@ void test_some_int_mat_properties()
      * init_identity
      */
     const int foodat[] = {-481, 1167, -436, 555, -741, 324, -7474, 7432, 7400};
-    kjb::Int_matrix foo( 3, 3, foodat );
-    const kjb::Int_matrix FOO( foo );
+    ivi::Int_matrix foo( 3, 3, foodat );
+    const ivi::Int_matrix FOO( foo );
 
     const int* foop = foodat;
     int val, index = 0;
@@ -391,23 +392,23 @@ void test_some_int_mat_properties()
     TEST_TRUE( min(foo) == -7474 );
     TEST_TRUE( max(foo) == 7432 );
     TEST_TRUE( foo == FOO );
-    const kjb::Int_matrix foosix = 6 * foo;
+    const ivi::Int_matrix foosix = 6 * foo;
     TEST_FALSE( foosix == FOO );
     const int sixdat[] = { -2886,  7002, -2616,
                             3330, -4446,  1944,
                           -44844, 44592, 44400 };
 
-    TEST_TRUE( foosix == kjb::Int_matrix( 3, 3, sixdat ) );
-    TEST_TRUE( FOO == kjb::Int_matrix( 3, 3, foodat ) );
-    TEST_TRUE( foosix.get_row(1) == kjb::Int_vector( 3, 3+sixdat ) );
+    TEST_TRUE( foosix == ivi::Int_matrix( 3, 3, sixdat ) );
+    TEST_TRUE( FOO == ivi::Int_matrix( 3, 3, foodat ) );
+    TEST_TRUE( foosix.get_row(1) == ivi::Int_vector( 3, 3+sixdat ) );
 
-    kjb::Int_vector col_2nd = foosix.get_col(1);
+    ivi::Int_vector col_2nd = foosix.get_col(1);
     TEST_TRUE( 3 == col_2nd.get_length() );
     TEST_TRUE(  7002 == col_2nd.at(0) );
     TEST_TRUE( -4446 == col_2nd.at(1) );
     TEST_TRUE( 44592 == col_2nd.at(2) );
 
-    kjb::Int_matrix another_foo6( foo ), and_another;
+    ivi::Int_matrix another_foo6( foo ), and_another;
     another_foo6.multiply( 6 );
     TEST_TRUE( foosix == another_foo6 );
 
@@ -425,10 +426,10 @@ void test_some_int_mat_properties()
     TEST_TRUE( and_another == -foosix );
 
     const int bazdat[] = { -7, 18, -6, 8, -11, 4, -115, 114, 114 };
-    const kjb::Int_matrix baz_1 = foosix / 389;
-    TEST_TRUE( baz_1 == kjb::Int_matrix( 3, 3, bazdat ) );
+    const ivi::Int_matrix baz_1 = foosix / 389;
+    TEST_TRUE( baz_1 == ivi::Int_matrix( 3, 3, bazdat ) );
 
-    kjb::Int_matrix baz_2( foosix );
+    ivi::Int_matrix baz_2( foosix );
     baz_2.divide( 389 );
     TEST_TRUE( baz_2 == baz_1 );
 
@@ -444,11 +445,11 @@ void test_some_int_mat_properties()
                     "            -115             114             114\n"
                 );
 
-    kjb::Int_matrix eye( kjb::create_identity_int_matrix(3) );
+    ivi::Int_matrix eye( ivi::create_identity_int_matrix(3) );
     TEST_TRUE( eye * foosix == foosix );
     TEST_TRUE( foosix * eye == foosix );
 
-    kjb::Int_matrix zer0( kjb::create_zero_int_matrix(3) );
+    ivi::Int_matrix zer0( ivi::create_zero_int_matrix(3) );
     TEST_TRUE( zer0 + foosix == foosix );
     TEST_TRUE( foosix + zer0 == foosix );
     TEST_TRUE( baz_2.zero_out() + foosix == foosix );
@@ -459,16 +460,16 @@ void test_some_int_mat_properties()
     TEST_TRUE( baz_2.zero_out(3,3) + foosix == foosix );
     TEST_TRUE( foosix + baz_2 == foosix );
 
-    TEST_TRUE( kjb::create_identity_int_matrix(3).multiply(6).multiply(FOO) == foosix );
+    TEST_TRUE( ivi::create_identity_int_matrix(3).multiply(6).multiply(FOO) == foosix );
 }
 
 
 template< typename MAT_T >
 void test_file_io( const MAT_T& mat )
 {
-    kjb::Temporary_File tf;
+    ivi::Temporary_File tf;
     int rc2 = mat.write( tf.get_filename().c_str() );
-    TEST_TRUE( rc2 == kjb_c::NO_ERROR );
+    TEST_TRUE( rc2 == ivi_c::NO_ERROR );
     MAT_T approx2( tf.get_filename() );
     TEST_TRUE( mat == approx2 );
     MAT_T fail;
@@ -478,9 +479,9 @@ void test_file_io( const MAT_T& mat )
 template< typename MAT_T >
 void test_serialization( const MAT_T& mat )
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     
-    kjb::Temporary_File tf;
+    ivi::Temporary_File tf;
 
     MAT_T new_mat;
 
@@ -521,13 +522,13 @@ void test_ctors_rc()
     row123.push_back( row2 );
     row123.push_back( row3 );
 
-    MAT_T row_matrix = kjb::create_matrix_from_rows( row123 );
+    MAT_T row_matrix = ivi::create_matrix_from_rows( row123 );
 
     TEST_TRUE(row_matrix(0, 0) == 0 &&  row_matrix(0, 1) == 1 &&  row_matrix(0, 2) == 2 && 
             row_matrix(1, 0) == 3   &&  row_matrix(1, 1) == 4 &&  row_matrix(1, 2) == 5 && 
             row_matrix(2, 0) == 6   &&  row_matrix(2, 1) == 7 &&  row_matrix(2, 2) == 8);
 
-    MAT_T col_matrix = kjb::create_matrix_from_columns( row123 );
+    MAT_T col_matrix = ivi::create_matrix_from_columns( row123 );
 
     TEST_TRUE(col_matrix(0, 0) == 0 &&  col_matrix(0, 1) == 3 &&  col_matrix(0, 2) == 6 && 
             col_matrix(1, 0) == 1   &&  col_matrix(1, 1) == 4 &&  col_matrix(1, 2) == 7 && 
@@ -542,13 +543,13 @@ void test_ctors_rc()
     stl_row_123.push_back(stl_row2);
     stl_row_123.push_back(stl_row3);
 
-    MAT_T stl_row_matrix = kjb::create_matrix_from_rows(stl_row_123);
+    MAT_T stl_row_matrix = ivi::create_matrix_from_rows(stl_row_123);
 
     TEST_TRUE(stl_row_matrix(0, 0) == 0 &&  stl_row_matrix(0, 1) == 1 &&  stl_row_matrix(0, 2) == 2 && 
             stl_row_matrix(1, 0) == 3   &&  stl_row_matrix(1, 1) == 4 &&  stl_row_matrix(1, 2) == 5 && 
             stl_row_matrix(2, 0) == 6   &&  stl_row_matrix(2, 1) == 7 &&  stl_row_matrix(2, 2) == 8);
 
-    MAT_T stl_col_matrix = kjb::create_matrix_from_columns(stl_row_123);
+    MAT_T stl_col_matrix = ivi::create_matrix_from_columns(stl_row_123);
 
     TEST_TRUE(stl_col_matrix(0, 0) == 0 &&  stl_col_matrix(0, 1) == 3 &&  stl_col_matrix(0, 2) == 6 && 
             stl_col_matrix(1, 0) == 1   &&  stl_col_matrix(1, 1) == 4 &&  stl_col_matrix(1, 2) == 7 && 
@@ -604,35 +605,35 @@ void test_mapcar()
 {
     const double vals[]={ -2, -1, 0, 1, 2, 3, };
     const double expvals[]={ 1/M_E/M_E, 1/M_E, 1, M_E, M_E*M_E, M_E*M_E*M_E };
-    kjb::Matrix m(2,3,vals);
-    kjb::Vector v(6,vals);
-    const kjb::Matrix em(2,3,expvals);
-    const kjb::Vector ev(6,expvals);
-    TEST_TRUE( kjb::max_abs_difference( em, m.mapcar( exp ) ) < 1e-10 );
-    TEST_TRUE( kjb::max_abs_difference( ev, v.mapcar( exp ) ) < 1e-10 );
+    ivi::Matrix m(2,3,vals);
+    ivi::Vector v(6,vals);
+    const ivi::Matrix em(2,3,expvals);
+    const ivi::Vector ev(6,expvals);
+    TEST_TRUE( ivi::max_abs_difference( em, m.mapcar( exp ) ) < 1e-10 );
+    TEST_TRUE( ivi::max_abs_difference( ev, v.mapcar( exp ) ) < 1e-10 );
 
     const int vals2[] = { -2, -1, 0, 1, 2, 3 };
     const int exp2vals[] = { 0, 0, 1, 2, 4, 8 };
-    kjb::Int_matrix m2(2,3,vals2);
-    kjb::Int_vector v2(6,vals2);
-    const kjb::Int_matrix em2(2,3,exp2vals);
-    const kjb::Int_vector ev2(6,exp2vals);
+    ivi::Int_matrix m2(2,3,vals2);
+    ivi::Int_vector v2(6,vals2);
+    const ivi::Int_matrix em2(2,3,exp2vals);
+    const ivi::Int_vector ev2(6,exp2vals);
     TEST_TRUE( em2 == m2.mapcar( exp2 ) );
     TEST_TRUE( ev2 == v2.mapcar( exp2 ) );
 }
 
 void test_serialization()
 {
-    using namespace kjb;
+    using namespace ivi;
     const char* fname = "tmp_matrix.txt";
     Matrix m = create_random_matrix(100, 100);
 
-    // save/load will test the generic kjb::serialize template function
+    // save/load will test the generic ivi::serialize template function
     save(m, fname);
     Matrix m2;
     load(m2, fname);
 
-    kjb_c::kjb_unlink(fname);
+    ivi_c::ivi_unlink(fname);
 
     TEST_TRUE(max_abs_difference(m, m2) < FLT_EPSILON);
 
@@ -640,7 +641,7 @@ void test_serialization()
 
 void test_stl_view()
 {
-    using namespace kjb;
+    using namespace ivi;
     Matrix mat = create_random_matrix(100, 200);
     Matrix_stl_view view = get_matrix_stl_view(mat);
 
@@ -656,11 +657,11 @@ void test_stl_view()
 
 void test_stream_io()
 {
-    using namespace kjb;
+    using namespace ivi;
     const char* fname = "tmp_matrix.txt";
     Matrix m1 = create_random_matrix(100, 100);
 
-    // save/load will test the generic kjb::serialize template function
+    // save/load will test the generic ivi::serialize template function
     std::ofstream ofs(fname);
     stream_write_matrix(ofs, m1);
     Matrix m2 = create_random_matrix(100, 100);
@@ -671,7 +672,7 @@ void test_stream_io()
     Matrix m4;
     stream_read_matrix(ifs, m4);
 
-    kjb_c::kjb_unlink(fname);
+    ivi_c::ivi_unlink(fname);
 
     TEST_TRUE(max_abs_difference(m1, m3) < FLT_EPSILON);
     TEST_TRUE(max_abs_difference(m2, m4) < FLT_EPSILON);
@@ -679,21 +680,21 @@ void test_stream_io()
 
 int main(int /* argc */, char ** /* argv */)
 {
-    using kjb::Matrix;
-    using kjb::Vector;
-    using kjb::create_zero_matrix;
+    using ivi::Matrix;
+    using ivi::Vector;
+    using ivi::create_zero_matrix;
 
     try {
     Matrix test_2;
-    kjb::Int_matrix itest_2;
+    ivi::Int_matrix itest_2;
     Matrix* ref_1;
     Matrix ref_2;
 
     test_ctors_1< Matrix >();
-    test_ctors_1< kjb::Int_matrix >();
+    test_ctors_1< ivi::Int_matrix >();
 
     test_resize<Matrix>();
-    test_resize<kjb::Int_matrix>();
+    test_resize<ivi::Int_matrix>();
 
     const double count_matrix[3][3] = {
         {1, 2, 3},
@@ -711,28 +712,28 @@ int main(int /* argc */, char ** /* argv */)
     // initializing constructor
     test_2 = Matrix(3, 3, M_PI);
 
-    kjb_c::Matrix* nassty( 0 );
-    kjb_c::get_initialized_matrix( &nassty, 3, 3, M_PI );
+    ivi_c::Matrix* nassty( 0 );
+    ivi_c::get_initialized_matrix( &nassty, 3, 3, M_PI );
     TEST_TRUE( *nassty == test_2 );
     TEST_FALSE( *nassty == Matrix() );
     TEST_FALSE( *nassty != test_2 );
     TEST_TRUE( *nassty != Matrix() );
-    kjb_c::free_matrix( nassty );
+    ivi_c::free_matrix( nassty );
 
     // same as above but now using Int_matrix
-    { using kjb::Int_matrix;
-    kjb_c::Int_matrix *inassty( 0 );
-    kjb_c::get_initialized_int_matrix( &inassty, 3, 3, 741 );
+    { using ivi::Int_matrix;
+    ivi_c::Int_matrix *inassty( 0 );
+    ivi_c::get_initialized_int_matrix( &inassty, 3, 3, 741 );
     Int_matrix widlar = Int_matrix( 3, 3, 702 ) + Int_matrix( 3, 3, 39 );
     TEST_TRUE( *inassty == widlar );
     TEST_FALSE( *inassty == Int_matrix() );
     TEST_FALSE( *inassty != widlar );
     TEST_TRUE( *inassty != Int_matrix() );
-    kjb::Int_matrix deepinassty( *inassty );
+    ivi::Int_matrix deepinassty( *inassty );
     TEST_TRUE( *inassty == deepinassty );
     ++deepinassty.at(5);
     TEST_FALSE( *inassty == deepinassty );
-    kjb_c::free_int_matrix( inassty );
+    ivi_c::free_int_matrix( inassty );
 
     TEST_TRUE( widlar == widlar );      // identical objects (ints)
     TEST_FALSE( widlar != widlar );     // identical objects (ints)
@@ -740,7 +741,7 @@ int main(int /* argc */, char ** /* argv */)
 
     // test the int-to-double conversion ctor
     {
-        kjb::Int_matrix im(5,6);
+        ivi::Int_matrix im(5,6);
         Matrix ref_m(5,6), test_m(5,6);
 
         for( int iii = 0; iii < 30; ++iii )
@@ -769,9 +770,9 @@ int main(int /* argc */, char ** /* argv */)
     test_u_ctor <Matrix, unsigned, double> ( test_2, M_PI );
     test_u_ctor <Matrix, unsigned long, double> ( test_2, M_PI );
 
-    kjb::Int_matrix test_2int( 3, 3, -17 );
-    test_u_ctor <kjb::Int_matrix, unsigned, int> ( test_2int, -17 );
-    test_u_ctor <kjb::Int_matrix, unsigned long, int> ( test_2int, -17 );
+    ivi::Int_matrix test_2int( 3, 3, -17 );
+    test_u_ctor <ivi::Int_matrix, unsigned, int> ( test_2int, -17 );
+    test_u_ctor <ivi::Int_matrix, unsigned long, int> ( test_2int, -17 );
 
     // constructor: double[]
     ref_1 = new Matrix(3, 3, &pi_matrix[0][0]);
@@ -791,8 +792,8 @@ int main(int /* argc */, char ** /* argv */)
     TEST_TRUE( !(ref_2 == test_2) );
 
     // converting constructor: Matrix
-    kjb_c::Matrix* src_matrix2 = NULL;
-    kjb_c::get_target_matrix(&src_matrix2, 3, 3);
+    ivi_c::Matrix* src_matrix2 = NULL;
+    ivi_c::get_target_matrix(&src_matrix2, 3, 3);
     src_matrix2->elements[0][0] = 1.;
     src_matrix2->elements[0][1] = 2.;
     src_matrix2->elements[0][2] = 3.;
@@ -812,7 +813,7 @@ int main(int /* argc */, char ** /* argv */)
     test_2 = *src_matrix2;
     TEST_TRUE( *test_1 == test_2 );
 
-    kjb_c::free_matrix(src_matrix2);
+    ivi_c::free_matrix(src_matrix2);
     delete test_1;
 
     // test copy constructor
@@ -820,18 +821,18 @@ int main(int /* argc */, char ** /* argv */)
     TEST_TRUE( *test_1 == test_2);
 
     {
-        kjb_c::Matrix *not_really_a_leak = 0;
+        ivi_c::Matrix *not_really_a_leak = 0;
         Matrix gc1( not_really_a_leak );    // if nil we ignore the argument
         TEST_TRUE( 0 == not_really_a_leak );
-        kjb_c::get_target_matrix( &not_really_a_leak, 1000, 1000 );
+        ivi_c::get_target_matrix( &not_really_a_leak, 1000, 1000 );
         Matrix gc2( not_really_a_leak );
         // can't check this well, but notice that the test program does
         // not leak memory -- the program terminates without scolding you.
 
-        kjb_c::Int_matrix *not_really_a_leak_2 = 0;
-        kjb::Int_matrix gc3( not_really_a_leak_2 ); // if nil we ignore the arg
-        kjb_c::get_target_int_matrix( &not_really_a_leak_2, 1000, 1000 );
-        kjb::Int_matrix gc4( not_really_a_leak_2 );
+        ivi_c::Int_matrix *not_really_a_leak_2 = 0;
+        ivi::Int_matrix gc3( not_really_a_leak_2 ); // if nil we ignore the arg
+        ivi_c::get_target_int_matrix( &not_really_a_leak_2, 1000, 1000 );
+        ivi::Int_matrix gc4( not_really_a_leak_2 );
         // ditto -- program ends without scolding you.
 
         /*
@@ -847,8 +848,8 @@ int main(int /* argc */, char ** /* argv */)
         const int MTSZ = 4;
         double monkey_typist[MTSZ] = { 29.65, 564.563, -521.707, -1e-33 };
         Vector victor( MTSZ, monkey_typist );
-        Matrix rowvic( kjb::create_row_matrix( victor ) );
-        Matrix colvic( kjb::create_column_matrix( victor ) );
+        Matrix rowvic( ivi::create_row_matrix( victor ) );
+        Matrix colvic( ivi::create_column_matrix( victor ) );
         TEST_TRUE( MTSZ == colvic.get_num_rows() );
         TEST_TRUE( MTSZ == rowvic.get_num_cols() );
         TEST_TRUE( 1 == rowvic.get_num_rows() );
@@ -860,7 +861,7 @@ int main(int /* argc */, char ** /* argv */)
     }
 
     test_ctors_rc< Matrix >();
-    test_ctors_rc< kjb::Int_matrix >();
+    test_ctors_rc< ivi::Int_matrix >();
 
     // get_row, get_col
     {
@@ -876,7 +877,7 @@ int main(int /* argc */, char ** /* argv */)
     }
 
     test_set_row< Matrix >();
-    test_set_row< kjb::Int_matrix >();
+    test_set_row< ivi::Int_matrix >();
 
     // self assignment
     test_2 = test_2;
@@ -885,29 +886,29 @@ int main(int /* argc */, char ** /* argv */)
     // zero size assignment for Matrix
     {
         Matrix::Impl_type * mevil = 0;
-        int rc1 = kjb_c::get_target_matrix( &mevil, 0, 0 );
-        assert( kjb_c::NO_ERROR == rc1 );
+        int rc1 = ivi_c::get_target_matrix( &mevil, 0, 0 );
+        assert( ivi_c::NO_ERROR == rc1 );
         Matrix dut( 2, 3 );
         TEST_TRUE( 2 == dut.get_num_rows() );
         TEST_TRUE( 3 == dut.get_num_cols() );
         dut = *mevil;
         TEST_TRUE( 0 == dut.get_num_rows() );
         TEST_TRUE( 0 == dut.get_num_cols() );
-        kjb_c::free_matrix( mevil );
+        ivi_c::free_matrix( mevil );
     }
 
     // zero size assignment for Int_matrix
     {
-        kjb::Int_matrix::Impl_type * mevil = 0;
-        int rc1 = kjb_c::get_target_int_matrix( &mevil, 0, 0 );
-        assert( kjb_c::NO_ERROR == rc1 );
-        kjb::Int_matrix dut( 2, 3 );
+        ivi::Int_matrix::Impl_type * mevil = 0;
+        int rc1 = ivi_c::get_target_int_matrix( &mevil, 0, 0 );
+        assert( ivi_c::NO_ERROR == rc1 );
+        ivi::Int_matrix dut( 2, 3 );
         TEST_TRUE( 2 == dut.get_num_rows() );
         TEST_TRUE( 3 == dut.get_num_cols() );
         dut = *mevil;
         TEST_TRUE( 0 == dut.get_num_rows() );
         TEST_TRUE( 0 == dut.get_num_cols() );
-        kjb_c::free_int_matrix( mevil );
+        ivi_c::free_int_matrix( mevil );
     }
 
     // non-self assignment
@@ -939,7 +940,7 @@ int main(int /* argc */, char ** /* argv */)
     Matrix ref_result;
 
     test_max_abs <Matrix, double> ( M_PI, M_E );
-    test_max_abs <kjb::Int_matrix, int> ( -123, 741 );
+    test_max_abs <ivi::Int_matrix, int> ( -123, 741 );
 
     // MATRIX MULTIPLICATION
     {
@@ -954,18 +955,18 @@ int main(int /* argc */, char ** /* argv */)
         result = *test_1 * test_2;
 
         //TEST_TRUE(result == ref_result);
-        TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-4 );
+        TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-4 );
 
         // try that resizing code a bit more
         Matrix too_big( ref_result );
         too_big.resize( 10, 10, -666 );
         Matrix just_right( too_big );
         just_right.resize( 3, 3, -666 );
-        TEST_FAIL( kjb::max_abs_difference( too_big, ref_result ) < 1e-4 );
-        TEST_TRUE( kjb::max_abs_difference( just_right, ref_result ) < 1e-4 );
+        TEST_FAIL( ivi::max_abs_difference( too_big, ref_result ) < 1e-4 );
+        TEST_TRUE( ivi::max_abs_difference( just_right, ref_result ) < 1e-4 );
 
         // The (multiplicative) identity matrix -- does it work?
-        Matrix id1( kjb::create_identity_matrix(3) );
+        Matrix id1( ivi::create_identity_matrix(3) );
         Matrix product1 = ref_result * id1;
         TEST_TRUE( product1 == ref_result);
         Matrix product2 = id1 * ref_result;
@@ -982,12 +983,12 @@ int main(int /* argc */, char ** /* argv */)
     result = *test_1;
     result *= test_2;
     //TEST_TRUE(result == ref_result);
-    TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-4 );
+    TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-4 );
 
     result = *test_1;
     result.multiply(test_2);
     //TEST_TRUE(result == ref_result);
-    TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-4 );
+    TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-4 );
 
     test_2 = Matrix(3,3);
     test_2(0,0) = 19;
@@ -1000,7 +1001,7 @@ int main(int /* argc */, char ** /* argv */)
     test_2(2,1) = 12;
     test_2(2,2) = 11;
 
-    itest_2 = kjb::floor(test_2);
+    itest_2 = ivi::floor(test_2);
 
     // try out the row-major, one-dimensional indexing, and the const indexing
     const Matrix& clone_t2 = test_2;
@@ -1027,10 +1028,10 @@ int main(int /* argc */, char ** /* argv */)
         };
 
         ref_result = Matrix(3, 3, &result_matrix[0][0]);
-        kjb::Int_matrix iref = kjb::create_int_matrix_from_matrix_floor( ref_result );
-        kjb::Int_matrix iref_2 = kjb::create_int_matrix_from_matrix_ceil( ref_result );
+        ivi::Int_matrix iref = ivi::create_int_matrix_from_matrix_floor( ref_result );
+        ivi::Int_matrix iref_2 = ivi::create_int_matrix_from_matrix_ceil( ref_result );
         TEST_TRUE( iref == iref_2 );
-        kjb::Int_matrix factor1 = test_1 -> floor(),    // eq. to count_matrix
+        ivi::Int_matrix factor1 = test_1 -> floor(),    // eq. to count_matrix
                         factor2 = test_2.floor(),       // see line 443
                         prod = factor1 * factor2;
 
@@ -1038,10 +1039,10 @@ int main(int /* argc */, char ** /* argv */)
 
         TEST_TRUE(result == ref_result);
         TEST_TRUE( prod == result.floor() );
-        TEST_FAIL( prod = factor1 * kjb::Int_matrix(4,3,0) );
+        TEST_FAIL( prod = factor1 * ivi::Int_matrix(4,3,0) );
         TEST_TRUE( prod == factor1.multiply( factor2 ) );
 
-        Matrix eye4( kjb::create_identity_matrix( 4 ) ), fail;
+        Matrix eye4( ivi::create_identity_matrix( 4 ) ), fail;
         TEST_FAIL( fail = result * eye4 );
 
         TEST_FAIL(create_zero_matrix(100) * result);
@@ -1054,11 +1055,11 @@ int main(int /* argc */, char ** /* argv */)
 
  
     {
-        kjb_c::Matrix* c_m = NULL;
-        kjb_c::get_random_matrix(&c_m, 100, 100);
-        kjb::Matrix m(c_m);
+        ivi_c::Matrix* c_m = NULL;
+        ivi_c::get_random_matrix(&c_m, 100, 100);
+        ivi::Matrix m(c_m);
 
-        kjb::Int_matrix im = kjb::floor(m);
+        ivi::Int_matrix im = ivi::floor(m);
 
         test_serialization( m );
         test_serialization( im );
@@ -1084,7 +1085,7 @@ int main(int /* argc */, char ** /* argv */)
         const
         int mceil[]     = {-10,    -9,   -8,  0,    1,     2,    3,    3, 5  };
         const Matrix mm( 3, 3, mfloat );
-        const kjb::Int_matrix floor_m( mm.floor() ), ceil_m( mm.ceil() );
+        const ivi::Int_matrix floor_m( mm.floor() ), ceil_m( mm.ceil() );
         for( int iii = 0; iii < 9; ++iii ) {
             TEST_TRUE( floor_m(iii) == mfloor[iii] );
             TEST_TRUE( ceil_m(iii) == mceil[iii] );
@@ -1100,17 +1101,17 @@ int main(int /* argc */, char ** /* argv */)
         Matrix bam = matrix_inverse( mab );
         Matrix eye1 = bam * mab;
         Matrix eye2 = mab * bam;
-        Matrix eye3( kjb::create_identity_matrix( 3 ) );
+        Matrix eye3( ivi::create_identity_matrix( 3 ) );
         // lazy way to check for inverse (assumes mul. works already).
-        TEST_TRUE( kjb::max_abs_difference( eye1, eye3 ) < 1e-9 );
-        TEST_TRUE( kjb::max_abs_difference( eye2, eye3 ) < 1e-9 );
+        TEST_TRUE( ivi::max_abs_difference( eye1, eye3 ) < 1e-9 );
+        TEST_TRUE( ivi::max_abs_difference( eye2, eye3 ) < 1e-9 );
         /* Here is a slightly more "pure" inverse test:  the array below holds
          * approximate values of the inverse, correct to half a unit.
          */
         double abinv[] = { -1366,2456,37,1507,-2748,13,-128.8,238,-2 };
         Matrix sloppyabinv( 3, 3, abinv );
         sloppyabinv /= 1e7;
-        TEST_TRUE( kjb::max_abs_difference( sloppyabinv, bam ) < 5e-8 );
+        TEST_TRUE( ivi::max_abs_difference( sloppyabinv, bam ) < 5e-8 );
     }
 
     result = *test_1;
@@ -1168,15 +1169,15 @@ int main(int /* argc */, char ** /* argv */)
         result = *test_1 + test_2;
 
         //TEST_TRUE(result == ref_result);
-        TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-5 );
+        TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-5 );
 
         result = *test_1;
         result += test_2;
         //TEST_TRUE(result == ref_result);
-        TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-5 );
+        TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-5 );
 
         // The additive identity -- do it work?
-        Matrix id1( kjb::create_zero_matrix(3) );
+        Matrix id1( ivi::create_zero_matrix(3) );
         Matrix sum1( id1 + ref_result );
         TEST_TRUE( sum1 == ref_result );
         Matrix sum2( ref_result + id1 );
@@ -1210,16 +1211,16 @@ int main(int /* argc */, char ** /* argv */)
         result = *test_1 - test_2;
 
         //TEST_TRUE(result == ref_result);
-        TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-5 );
+        TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-5 );
 
         result = *test_1;
         result -= test_2;
         //TEST_TRUE(result == ref_result);
-        TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-5 );
+        TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-5 );
 
         result = *test_1;
         result.subtract( test_2 );
-        TEST_TRUE( kjb::max_abs_difference( result, ref_result ) < 1e-5 );
+        TEST_TRUE( ivi::max_abs_difference( result, ref_result ) < 1e-5 );
 
         TEST_FAIL(create_zero_matrix(100) - result);
         TEST_FAIL(result -= create_zero_matrix(100));
@@ -1246,8 +1247,8 @@ int main(int /* argc */, char ** /* argv */)
     }
 
     // min, max
-    TEST_TRUE(kjb::min(*test_1) == 1);
-    TEST_TRUE(kjb::max(*test_1) == 9);
+    TEST_TRUE(ivi::min(*test_1) == 1);
+    TEST_TRUE(ivi::max(*test_1) == 9);
 
 
     test_mapcar();
@@ -1259,7 +1260,7 @@ int main(int /* argc */, char ** /* argv */)
 
     src_matrix2 = NULL;
     get_euler_matrix_zxz_reference(&src_matrix2, M_PI_2., M_PI/3., M_PI_4.);
-    *test_1 = (kjb::Matrix) *src_matrix2;
+    *test_1 = (ivi::Matrix) *src_matrix2;
 
     TEST_TRUE(*test_1 == test_2);
 
@@ -1275,12 +1276,12 @@ int main(int /* argc */, char ** /* argv */)
     test_1->init_identity(3);
     TEST_TRUE(test_2 == *test_1 * test_2);
 
-    kjb_c::free_matrix(src_matrix2);
+    ivi_c::free_matrix(src_matrix2);
 #endif
 
     // init_indentity
     delete test_1;
-    test_1 = new Matrix(kjb::create_identity_matrix(3));
+    test_1 = new Matrix(ivi::create_identity_matrix(3));
 
     // VECTOR MULTIPLICATION
     Vector v = Vector(3);
@@ -1294,7 +1295,7 @@ int main(int /* argc */, char ** /* argv */)
 #endif
     TEST_TRUE(v == *test_1 * v);
     Vector fail;
-    TEST_FAIL( fail = kjb::create_identity_matrix(4) * v );
+    TEST_FAIL( fail = ivi::create_identity_matrix(4) * v );
 
     delete ref_1;
     delete test_1;
@@ -1304,7 +1305,7 @@ int main(int /* argc */, char ** /* argv */)
 
     }
     
-    catch(kjb::Exception& e)
+    catch(ivi::Exception& e)
     {
         e.print_details();
         DOWN_IN_FLAMES("unexpected err 1","(everything)");

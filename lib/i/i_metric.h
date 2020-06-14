@@ -1,5 +1,5 @@
 
-/* $Id: i_metric.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_metric.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,23 +29,23 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 int compute_rms_image_difference
 (
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     double*          rms_diff_ptr
 );
 
 int compute_image_difference
 (
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
-    KJB_image**      diff_ipp
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
+    IVI_image**      diff_ipp
 );
 
 

@@ -1,7 +1,7 @@
 /*
  * Test program for the concat functions
  *
- * $Id: mat_cat.c 21491 2017-07-20 13:19:02Z kobus $
+ * $Id: mat_cat.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <m/m_mat_vector.h>
@@ -12,7 +12,7 @@
 int fail(int);
 int fail(int line)
 {
-    kjb_fprintf(stderr, "failure line %d\n", line);
+    ivi_fprintf(stderr, "failure line %d\n", line);
     return EXIT_BUG;
 }
 
@@ -48,9 +48,9 @@ int main(void)
 
     if (is_interactive())
     {
-        kjb_puts("Vertical concatention:\n");
+        ivi_puts("Vertical concatention:\n");
         EPETE(fp_write_matrix(mv, stdout));
-        kjb_puts("Horizontal concatention:\n");
+        ivi_puts("Horizontal concatention:\n");
         EPETE(fp_write_matrix(mh, stdout));
     }
 

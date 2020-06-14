@@ -1,4 +1,4 @@
-/* $Id: gr_glew.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_glew.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,11 +23,11 @@
 #include <gr_cpp/gr_glew.h>
 #include <iostream>
 
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
 #include <GL/glew.h>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
@@ -38,14 +38,14 @@ bool Glew::warnings_ = true;
 void Glew::init()
 {
     using namespace std;
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_GLEW
     if(!initialized_)
     {
         GLenum err = glewInit();
         if (GLEW_OK != err)
         {
            /* Problem: glewInit failed, something is seriously wrong. */
-           KJB_THROW_3(kjb::Runtime_error, "Error: %s", (glewGetErrorString(err)));
+           IVI_THROW_3(ivi::Runtime_error, "Error: %s", (glewGetErrorString(err)));
         }
 
         initialized_ = true;
@@ -64,7 +64,7 @@ void Glew::test_initialized(const std::string& obj_name)
         std::cerr << "<<TEST>> WARNING: GLEW appears to be uninitialized.\n";
         std::cerr << "<<TEST>>     Constructing a(n) " << obj_name << " will fail if GLEW isn't initialized.\n";
         std::cerr << "<<TEST>>     To solve this, either:\n";
-        std::cerr << "<<TEST>>       (a) Call kjb::opengl::Glew::init() before constructing a " << obj_name << ".\n";
+        std::cerr << "<<TEST>>       (a) Call ivi::opengl::Glew::init() before constructing a " << obj_name << ".\n";
         std::cerr << "<<TEST>>       (b) Use Glut_window, which calls Glew::init() automatically.\n";
         std::cerr << "<<TEST>>       (c) Call the native GLEW function, init_glew().\n";
         std::cerr << "<<TEST>>     If using method (c), calling Glew::disable_warnings() will suppress this message.\n";
@@ -74,4 +74,4 @@ void Glew::test_initialized(const std::string& obj_name)
 }
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi

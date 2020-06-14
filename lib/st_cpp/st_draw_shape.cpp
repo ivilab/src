@@ -1,4 +1,4 @@
-/* $Id: st_draw_shape.cpp 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: st_draw_shape.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -58,8 +58,8 @@
 #include <iostream>
 //#include <gr_cpp/gr_camera.h>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 
 /**
@@ -73,7 +73,7 @@ using namespace kjb::opengl;
  * @param angle_x  The angle to rotate the cylinder vector (given by top - bottom)
  *                 around the x-axis to move it from the yz-plane onto the z-axis.
  */
-void kjb::compute_cylinder_rotation_angles(const Vector& p1, const Vector& p2, Vector& top, Vector& bottom, double& magnitude, double& angle_y, double& angle_x)
+void ivi::compute_cylinder_rotation_angles(const Vector& p1, const Vector& p2, Vector& top, Vector& bottom, double& magnitude, double& angle_y, double& angle_x)
 {
     if(p1 <= p2)
     {
@@ -94,7 +94,7 @@ void kjb::compute_cylinder_rotation_angles(const Vector& p1, const Vector& p2, V
     magnitude = a.magnitude();
     if(magnitude < DBL_EPSILON) // magnitude == 0
     {
-        throw KJB_error("Error: height of cylinder is 0\n");
+        throw IVI_error("Error: height of cylinder is 0\n");
     }
     a = a / magnitude;
 
@@ -145,9 +145,9 @@ void kjb::compute_cylinder_rotation_angles(const Vector& p1, const Vector& p2, V
  * @param radius  The radius of the cylinder to be drawn.
  * @param magnitude  The height of the cylinder to be drawn.
  */
-void kjb::draw_translated_and_rotated_cylinder(GLUquadricObj* myQuadric, const Vector& bottom, const double angle_y, const double angle_x, const double radius, const double magnitude)
+void ivi::draw_translated_and_rotated_cylinder(GLUquadricObj* myQuadric, const Vector& bottom, const double angle_y, const double angle_x, const double radius, const double magnitude)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 //    int slices = 5;     // Number of subdivisions around the z-axis.
 //    int stacks = 64;    // Number of subdivisions along the z-axis.
     int slices = 16;     // Number of subdivisions around the z-axis.
@@ -168,9 +168,9 @@ void kjb::draw_translated_and_rotated_cylinder(GLUquadricObj* myQuadric, const V
     glRotatef(-1*angle_x * rad_to_deg, 1, 0, 0);
     glRotatef(-1*angle_y * rad_to_deg, 0, 1, 0);
     glTranslatef(-bottom(0), -bottom(1), -bottom(2));
-#else // ! KJB_HAVE_OPENGL
-    KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif // KJB_HAVE_OPENGL
+#else // ! IVI_HAVE_OPENGL
+    IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif // IVI_HAVE_OPENGL
 }
 
 
@@ -179,9 +179,9 @@ void kjb::draw_translated_and_rotated_cylinder(GLUquadricObj* myQuadric, const V
  * @param  p2  A vector representing the center point of the bottom of the cylinder
  * @param  radius  A double representing the radius of the cylinder to be drawn
  */
-int kjb::draw_cylinder(GLUquadricObj* myQuadric, const Vector& p1, const Vector& p2, double radius)
+int ivi::draw_cylinder(GLUquadricObj* myQuadric, const Vector& p1, const Vector& p2, double radius)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     Vector top;
     Vector bottom;
     
@@ -200,8 +200,8 @@ int kjb::draw_cylinder(GLUquadricObj* myQuadric, const Vector& p1, const Vector&
 
     return 0;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 
@@ -211,23 +211,23 @@ int kjb::draw_cylinder(GLUquadricObj* myQuadric, const Vector& p1, const Vector&
  * @param  p2  A vector representing the center point of the bottom of the cylinder
  * @param  radius  A double representing the radius of the cylinder to be drawn
  */
-int kjb::draw_cylinder(Perspective_camera& c, GLUquadricObj* myQuadric, const Vector& p1, const Vector& p2, double radius)
+int ivi::draw_cylinder(Perspective_camera& c, GLUquadricObj* myQuadric, const Vector& p1, const Vector& p2, double radius)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     c.prepare_for_rendering(true);
 
     draw_cylinder(myQuadric, p1, p2, radius);
 
     return 0;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 
-int kjb::draw_cylinder(GLUquadricObj* myQuadric, const Cylinder cyl)
+int ivi::draw_cylinder(GLUquadricObj* myQuadric, const Cylinder cyl)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     Vector p1 = cyl.get_p1();
     Vector p2 = cyl.get_p2();
     double radius = cyl.get_radius();
@@ -236,14 +236,14 @@ int kjb::draw_cylinder(GLUquadricObj* myQuadric, const Cylinder cyl)
 
     return 0;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 
-int kjb::draw_cylinder(Perspective_camera& c, GLUquadricObj* myQuadric, const std::vector<Cylinder> cylinders)
+int ivi::draw_cylinder(Perspective_camera& c, GLUquadricObj* myQuadric, const std::vector<Cylinder> cylinders)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     c.prepare_for_rendering(true);
 
     glColor3f(0,255,0);
@@ -254,8 +254,8 @@ int kjb::draw_cylinder(Perspective_camera& c, GLUquadricObj* myQuadric, const st
     }
     return 0;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 
@@ -269,9 +269,9 @@ int kjb::draw_cylinder(Perspective_camera& c, GLUquadricObj* myQuadric, const st
  * @param  MY_CLIP_PLANE
  * @param  MY_CLIP_PLANE1
  */
-int kjb::draw_cylinder_section(GLUquadricObj* myQuadric, const Vector& p1, const Vector& p2, double radius, double angle, const Vector& angleStartpt, const Vector& angleEndpt, GLuint& MY_CLIP_PLANE, GLuint& MY_CLIP_PLANE1)
+int ivi::draw_cylinder_section(GLUquadricObj* myQuadric, const Vector& p1, const Vector& p2, double radius, double angle, const Vector& angleStartpt, const Vector& angleEndpt, GLuint& MY_CLIP_PLANE, GLuint& MY_CLIP_PLANE1)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 //    GLuint MY_CLIP_PLANE = GL_CLIP_PLANE0;
 //    GLuint MY_CLIP_PLANE1 = GL_CLIP_PLANE1;
 
@@ -510,14 +510,14 @@ glColor3f(0,255,0);
 
     return 0;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 
-int kjb::draw_cylinder_section(Perspective_camera& c, GLUquadricObj* myQuadric, const std::vector<Cylinder_section> cylinders)
+int ivi::draw_cylinder_section(Perspective_camera& c, GLUquadricObj* myQuadric, const std::vector<Cylinder_section> cylinders)
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     c.prepare_for_rendering(true);
 
     GLuint MY_CLIP_PLANE = GL_CLIP_PLANE0;
@@ -536,8 +536,8 @@ int kjb::draw_cylinder_section(Perspective_camera& c, GLUquadricObj* myQuadric, 
     }
     return 0;
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -553,7 +553,7 @@ int kjb::draw_cylinder_section(Perspective_camera& c, GLUquadricObj* myQuadric, 
  * @param radius  The radius of the cylinder.
  * @param length  The height of the cylinder.
  */
-void kjb::build_cylinder(std::vector<Vector>& vlist, std::vector<Vector>& nlist, int facets, int ribs, float radius, float length)
+void ivi::build_cylinder(std::vector<Vector>& vlist, std::vector<Vector>& nlist, int facets, int ribs, float radius, float length)
 {
     double angle;
     int facet, rib;
@@ -598,7 +598,7 @@ void kjb::build_cylinder(std::vector<Vector>& vlist, std::vector<Vector>& nlist,
  * @param radius_top  The radius of the top surface of the frustum.
  * @param length  The height of the frustum.
  */
-void kjb::build_frustum(std::vector<Vector>& vlist, std::vector<Vector>& nlist, int facets, int ribs, float radius_bottom, float radius_top, float length)
+void ivi::build_frustum(std::vector<Vector>& vlist, std::vector<Vector>& nlist, int facets, int ribs, float radius_bottom, float radius_top, float length)
 {
     double angle;
     int facet, rib;
@@ -652,7 +652,7 @@ void kjb::build_frustum(std::vector<Vector>& vlist, std::vector<Vector>& nlist, 
  *                 around the x-axis to move it from the yz-plane onto the z-axis.
  * @param vlist_tr  The list of transformed points.
  */
-void kjb::untransform_points(std::vector<Vector>& vlist, const Vector& bottom, const double angle_y, const double angle_x, std::vector<Vector>& vlist_tr)
+void ivi::untransform_points(std::vector<Vector>& vlist, const Vector& bottom, const double angle_y, const double angle_x, std::vector<Vector>& vlist_tr)
 {
     vlist_tr.clear();
 
@@ -752,12 +752,12 @@ void kjb::untransform_points(std::vector<Vector>& vlist, const Vector& bottom, c
  *                 around the x-axis to move it from the yz-plane onto the z-axis.
  * @param camera  Pointer to a Perspective_camera.
  */
-void kjb::draw_cylinder_edges(std::vector<Vector>& vlist, int facets, int ribs, const Vector& bottom, const double angle_y, const double angle_x, const Perspective_camera* camera)
+void ivi::draw_cylinder_edges(std::vector<Vector>& vlist, int facets, int ribs, const Vector& bottom, const double angle_y, const double angle_x, const Perspective_camera* camera)
 {
     int facet, rib;
     int i, j, next;
     int p;
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // Draws top and bottom circles of cylinder.
     glBegin(GL_LINES);
     i = 0;
@@ -843,8 +843,8 @@ void kjb::draw_cylinder_edges(std::vector<Vector>& vlist, int facets, int ribs, 
     }
     glEnd();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 
@@ -855,12 +855,12 @@ void kjb::draw_cylinder_edges(std::vector<Vector>& vlist, int facets, int ribs, 
  * @param facets  The number of subdivisions around the z-axis.
  * @param ribs  The number of subdivisions along the z-axis.
  */
-void kjb::draw_cylinder_facets(std::vector<Vector>& vlist, int facets, int ribs)
+void ivi::draw_cylinder_facets(std::vector<Vector>& vlist, int facets, int ribs)
 {
     int rib, facet;
     int i, j, next;
     float height;
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     for(rib = 0; rib < ribs; rib++)
     {
         i = rib * facets;
@@ -896,8 +896,8 @@ void kjb::draw_cylinder_facets(std::vector<Vector>& vlist, int facets, int ribs)
     }
     glEnd();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 
@@ -905,7 +905,7 @@ void kjb::draw_cylinder_facets(std::vector<Vector>& vlist, int facets, int ribs)
  * @param polymesh  Pointer to a Parapiped.
  * @param camera  Pointer to a Perspective_camera.
  */
-void kjb::render_cylinder_silhouette(const Polymesh* polymesh, const Perspective_camera* camera)
+void ivi::render_cylinder_silhouette(const Polymesh* polymesh, const Perspective_camera* camera)
 {
     std::vector<Vector> vlist;
     std::vector<Vector> nlist;
@@ -958,7 +958,7 @@ void kjb::render_cylinder_silhouette(const Polymesh* polymesh, const Perspective
         std::cout << "ERROR: size of Vector bottom is less than 3\n";
         return;
     }
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // Draw cylinder.
     glTranslatef(bottom(0), bottom(1), bottom(2));
     glRotatef(angle_y * rad_to_deg, 0, 1, 0);
@@ -971,15 +971,15 @@ void kjb::render_cylinder_silhouette(const Polymesh* polymesh, const Perspective
     glRotatef(-1*angle_y * rad_to_deg, 0, 1, 0);
     glTranslatef(-bottom(0), -bottom(1), -bottom(2));
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /**
  * @param polymesh  Pointer to a Parapiped.
  * @param camera  Pointer to a Perspective_camera.
  */
-void kjb::render_occlude_cylinder_silhouette(const Polymesh* polymesh, const Perspective_camera* camera)
+void ivi::render_occlude_cylinder_silhouette(const Polymesh* polymesh, const Perspective_camera* camera)
 {
     std::vector<Vector> vlist;
     std::vector<Vector> nlist;
@@ -1032,7 +1032,7 @@ void kjb::render_occlude_cylinder_silhouette(const Polymesh* polymesh, const Per
         std::cout << "ERROR: size of Vector 'bottom' is less than 3\n";
         return;
     }
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // Draw cylinder.
     glTranslatef(bottom(0), bottom(1), bottom(2));
     glRotatef(angle_y * rad_to_deg, 0, 1, 0);
@@ -1063,15 +1063,15 @@ void kjb::render_occlude_cylinder_silhouette(const Polymesh* polymesh, const Per
     glRotatef(-1*angle_y * rad_to_deg, 0, 1, 0);
     glTranslatef(-bottom(0), -bottom(1), -bottom(2));
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /**
  * @param polymesh  Pointer to a Frustum.
  * @param camera  Pointer to a Perspective_camera.
  */
-void kjb::render_frustum_silhouette(const Polymesh* polymesh, Perspective_camera* camera)
+void ivi::render_frustum_silhouette(const Polymesh* polymesh, Perspective_camera* camera)
 {
     std::vector<Vector> vlist;
     std::vector<Vector> nlist;
@@ -1122,7 +1122,7 @@ void kjb::render_frustum_silhouette(const Polymesh* polymesh, Perspective_camera
         std::cout << "ERROR: size of Vector 'bottom' is less than 3\n";
         return;
     }
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // Draw cylinder.
     glTranslatef(bottom(0), bottom(1), bottom(2));
     glRotatef(angle_y * rad_to_deg, 0, 1, 0);
@@ -1135,15 +1135,15 @@ void kjb::render_frustum_silhouette(const Polymesh* polymesh, Perspective_camera
     glRotatef(-1*angle_y * rad_to_deg, 0, 1, 0);
     glTranslatef(-bottom(0), -bottom(1), -bottom(2));
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }
 
 /**
  * @param polymesh  Pointer to a Frustum.
  * @param camera  Pointer to a Perspective_camera.
  */
-void kjb::render_occlude_frustum_silhouette(const Polymesh* polymesh, Perspective_camera* camera)
+void ivi::render_occlude_frustum_silhouette(const Polymesh* polymesh, Perspective_camera* camera)
 {
     std::vector<Vector> vlist;
     std::vector<Vector> nlist;
@@ -1193,7 +1193,7 @@ void kjb::render_occlude_frustum_silhouette(const Polymesh* polymesh, Perspectiv
         std::cout << "ERROR: size of Vector 'bottom' is less than 3\n";
         return;
     }
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // Draw cylinder.
     glTranslatef(bottom(0), bottom(1), bottom(2));
     glRotatef(angle_y * rad_to_deg, 0, 1, 0);
@@ -1224,6 +1224,6 @@ void kjb::render_occlude_frustum_silhouette(const Polymesh* polymesh, Perspectiv
     glRotatef(-1*angle_y * rad_to_deg, 0, 1, 0);
     glTranslatef(-bottom(0), -bottom(1), -bottom(2));
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
-#endif /* KJB_HAVE_OPENGL */
+    IVI_THROW_2(Missing_dependency, "opengl");
+#endif /* IVI_HAVE_OPENGL */
 }

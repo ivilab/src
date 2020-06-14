@@ -1,4 +1,4 @@
-/* $Id: psi_likelihood.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -34,7 +34,7 @@
 #include "psi_cpp/psi_bbox.h"
 #include "psi_cpp/psi_util.h"
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 #include <Control/CapsuleState.h>
 #include <Control/SimulationInterface.h>
 #include <Control/ExtendedAction.h>
@@ -47,7 +47,7 @@
 #include <vector>
 #include <cmath>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -67,9 +67,9 @@ public:
     double operator()(const Bbox& data, const Bbox& model) const;
 
 private:
-    kjb::Normal_distribution xy_prob_;
-    kjb::Normal_distribution width_prob_;
-    kjb::Normal_distribution height_prob_;
+    ivi::Normal_distribution xy_prob_;
+    ivi::Normal_distribution width_prob_;
+    ivi::Normal_distribution height_prob_;
 };
 
 class Bbox_noise_likelihood
@@ -92,11 +92,11 @@ public:
     double operator()(const Bbox& data) const;
 private:
 
-    kjb::Uniform_distribution x_prob_;
-    kjb::Uniform_distribution y_prob_;
+    ivi::Uniform_distribution x_prob_;
+    ivi::Uniform_distribution y_prob_;
 
-    kjb::Exponential_distribution width_prob_;
-    kjb::Exponential_distribution height_prob_;
+    ivi::Exponential_distribution width_prob_;
+    ivi::Exponential_distribution height_prob_;
 };
 
 class Frame_likelihood
@@ -115,7 +115,7 @@ public:
         p_noise_(p_noise),
         pair_likelihood_(pairwise_box_likelihood),
         noise_likelihood_(noise_box_likelihood),
-        frame_bounds_(kjb::Vector(0.0, 0.0), (double) width, (double) height),
+        frame_bounds_(ivi::Vector(0.0, 0.0), (double) width, (double) height),
         marginalize_out_noise_(true)
     {}
 
@@ -132,7 +132,7 @@ public:
     // TODO Somehow cache this and only update values that change with each iteration
         const std::vector<double> m_p_missing = get_p_missing(model_boxes);
 
-        kjb::Matrix affinities = get_affinity(data_boxes, model_boxes, m_p_missing);
+        ivi::Matrix affinities = get_affinity(data_boxes, model_boxes, m_p_missing);
 
 
         std::vector<size_t> correspondences = get_correspondence_greedily(affinities);
@@ -159,10 +159,10 @@ public:
     {
         if(visibility < 0 || visibility > 1.0)
         {
-            KJB_THROW_2(kjb::Illegal_argument, "Visibility must be in [0,1].");
+            IVI_THROW_2(ivi::Illegal_argument, "Visibility must be in [0,1].");
         }
 
-        using kjb::cdf;
+        using ivi::cdf;
 
         // this is all hacked, and hand-tuned.  Maybe we can fit a function from data at some point?
        
@@ -171,7 +171,7 @@ public:
         const double mean = P_MISSING_SWITCH_POINT;
         const double sigma = P_MISSING_SMOOTHNESS;
 
-        const kjb::Normal_distribution normal_dist(mean, sigma);
+        const ivi::Normal_distribution normal_dist(mean, sigma);
 
         const double min = P_MISSING_BASE_PROB; // when no occlusion, miss detection 1% of the time, due to detector failure, or random occlusion from unmodelled objects
 
@@ -192,14 +192,14 @@ public:
      */
     std::vector<double> get_p_missing( const std::vector<Bbox>& model) const;
 
-    kjb::Matrix get_affinity(
+    ivi::Matrix get_affinity(
         const std::vector<Bbox>& data,
         const std::vector<Bbox>& model) const
     {
         return get_affinity(data, model, get_p_missing(model));
     }
 
-    std::vector<size_t> get_correspondence_greedily( const kjb::Matrix& affinities) const;
+    std::vector<size_t> get_correspondence_greedily( const ivi::Matrix& affinities) const;
 
     /**
      * You'll almost never call this.  This sets  a little flag that lets
@@ -218,11 +218,11 @@ protected:
     double operator()(
             const std::vector<Bbox>& data_boxes,
             const std::vector<Bbox>& models,
-            const kjb::Matrix& affinities,
+            const ivi::Matrix& affinities,
             const std::vector<size_t>& correspondences,
             const std::vector<double>& m_p_missing) const;
 
-    kjb::Matrix get_affinity(
+    ivi::Matrix get_affinity(
             const std::vector<Bbox>& data,
             const std::vector<Bbox>& model,
             const std::vector<double>& m_p_missing
@@ -260,8 +260,8 @@ public:
     virtual double operator()(const Model& m) const = 0;
 };
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
-class Cartwheel_likelihood : public kjb::psi::Model_evaluator
+#ifdef IVI_HAVE_UA_CARTWHEEL
+class Cartwheel_likelihood : public ivi::psi::Model_evaluator
 {
 public:
     /**
@@ -274,7 +274,7 @@ public:
      */
     Cartwheel_likelihood(
             const std::vector<std::vector<Bbox> >& data,
-            const kjb::Perspective_camera& cam,
+            const ivi::Perspective_camera& cam,
             const Frame_likelihood& frame_likelihood,
             InterfacePtr interface,
 //            size_t width,
@@ -295,7 +295,7 @@ public:
 //        noise_prob_(data_.size(), p_noise),
 //        pair_likelihood_(pairwise_box_likelihood),
 //        noise_likelihood_(noise_box_likelihood),
-//        frame_bounds_(kjb::Vector(0.0, 0.0), (double) width, (double) height)
+//        frame_bounds_(ivi::Vector(0.0, 0.0), (double) width, (double) height)
 //
     { }
 
@@ -325,17 +325,17 @@ public:
 
 private:
     const std::vector<std::vector<Bbox> >& data_;
-    kjb::Perspective_camera cam_;
+    ivi::Perspective_camera cam_;
     mutable InterfacePtr interface_;
 
     Frame_likelihood frame_likelihood_;
 
     // penalty for requesting too many or too few frames
-    kjb::Geometric_distribution frame_count_penalty_;
+    ivi::Geometric_distribution frame_count_penalty_;
 };
 #endif
 
-class Cylinder_world_likelihood : public kjb::psi::Model_evaluator
+class Cylinder_world_likelihood : public ivi::psi::Model_evaluator
 {
 public:
     /**
@@ -348,7 +348,7 @@ public:
      */
     Cylinder_world_likelihood(
             boost::shared_ptr<std::vector<std::vector<std::vector<Bbox> > > > data,
-            const kjb::Perspective_camera& cam,
+            const ivi::Perspective_camera& cam,
             const Frame_likelihood& frame_likelihood,
             const Simple_simulator& sim,
             double p_frame_count /// probability of each extra frame
@@ -370,7 +370,7 @@ public:
             else
             {
                 if(num_frames_ != (*data_).size())
-                    KJB_THROW_2(Illegal_argument, "Number of data frames must be equal for all object types.");
+                    IVI_THROW_2(Illegal_argument, "Number of data frames must be equal for all object types.");
             }
         }
 
@@ -387,13 +387,13 @@ public:
 
 private:
     boost::shared_ptr<std::vector<std::vector<std::vector<Bbox> > > > data_;
-    kjb::Perspective_camera cam_;
+    ivi::Perspective_camera cam_;
     mutable Simple_simulator simulator_;
 
     Frame_likelihood frame_likelihood_;
 
     // penalty for requesting too many or too few frames
-    kjb::Geometric_distribution frame_count_penalty_;
+    ivi::Geometric_distribution frame_count_penalty_;
     size_t num_frames_;
 };
 
@@ -401,5 +401,5 @@ private:
 inline std::vector<Bbox> sort_by_depth(std::vector<std::pair<double, Bbox> >& boxes);
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 #endif

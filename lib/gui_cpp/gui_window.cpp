@@ -1,4 +1,4 @@
-/* $Id: gui_window.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_window.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,14 +19,14 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <gui_cpp/gui_window.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
 #include <boost/bind.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -196,7 +196,7 @@ void Window::set_clicked_callback(const boost::function0<void>& callback)
  */
 bool Window::mouse_event(int button, int state, int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     bool consumed = mouse_dispatch_(button, state, x, y);
 
     if(consumed)
@@ -208,13 +208,13 @@ bool Window::mouse_event(int button, int state, int x, int y)
     else
         return false;
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
 bool Window::mouse_double_event(int button, int state, int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 
     if(!point_inside_window_(x, y))
         return false;
@@ -228,14 +228,14 @@ bool Window::mouse_double_event(int button, int state, int x, int y)
 
     return true;
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
 
 bool Window::motion_event(int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     // TODO: handle clipping
     if(click_state_ == click_move)
     {
@@ -255,13 +255,13 @@ bool Window::motion_event(int x, int y)
     }
 
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
 bool Window::passive_motion_event(int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     // set resize cursors if necessary
     if(cursor_on_left_border(x,y))
     {
@@ -319,13 +319,13 @@ bool Window::passive_motion_event(int x, int y)
     return true;
 
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
 bool Window::keyboard_event(unsigned int key, int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(!listener_) return false;
 
     // TODO: handle focus
@@ -334,13 +334,13 @@ bool Window::keyboard_event(unsigned int key, int x, int y)
     return false;
 
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
 bool Window::special_event(int key, int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(!listener_) return false;
 
     // TODO: handle focus
@@ -349,7 +349,7 @@ bool Window::special_event(int key, int x, int y)
     return false;
 
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
@@ -382,7 +382,7 @@ void Window::set_position(int x, int y)
 
 void Window::redisplay()
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }
@@ -526,7 +526,7 @@ void Window::render_border_() const
 
 bool Window::mouse_dispatch_(int button, int state, int x, int y)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     if(resize_click_(button, state, x, y))
         return true;
 
@@ -562,7 +562,7 @@ bool Window::mouse_dispatch_(int button, int state, int x, int y)
 
     return false;
 #else
-    KJB_THROW_2(Missing_dependency, "glut");
+    IVI_THROW_2(Missing_dependency, "glut");
 #endif
 }
 
@@ -576,13 +576,13 @@ void Window::close()
     if(close_callback_)
         close_callback_();
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }
 
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 bool Window::title_bar_click_(int button, int state, int cursor_x, int cursor_y)
 {
     if(!show_titlebar_)
@@ -622,7 +622,7 @@ bool Window::title_bar_click_(int button, int state, int cursor_x, int cursor_y)
 #endif
 
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 bool Window::resize_click_(int button, int state, int cursor_x, int cursor_y)
 {
     if(button != GLUT_LEFT_BUTTON)
@@ -751,7 +751,7 @@ void Window::drag_resize_(int cursor_x, int cursor_y)
             break;
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: m_matrix_stream_io.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: m_matrix_stream_io.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /**
  * @file
@@ -17,7 +17,7 @@
  * @author Luca Del Pero
  * @brief Declare functions to read and write matrix classes with iostream.
  *
- * The format is compatible with kjb matrices' raw
+ * The format is compatible with ivi matrices' raw
  * format at c level (see l/l_int_mat_io.h).
  */
 
@@ -26,14 +26,14 @@
 
 #include <iosfwd>
 
-namespace kjb {
+namespace ivi {
 
 class Matrix;
 class Int_matrix;
 
 /**
  * @brief static functions to read and write matrix classes with iostream.
- * @ingroup kjbLinearAlgebra
+ * @ingroup iviLinearAlgebra
  */
 class Matrix_stream_io
 {

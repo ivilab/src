@@ -1,5 +1,5 @@
 
-/* $Id: mat_stat.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: mat_stat.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     Vector*      col_sum_vp   = NULL;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         num_tries *= test_factor;
     }
 
-    kjb_set_debug_level(2);
+    ivi_set_debug_level(2);
 
     for (count=0; count<num_tries; count++)
     {

@@ -1,5 +1,5 @@
 
-/* $Id: i2_draw_text.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: i2_draw_text.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -32,7 +32,7 @@ extern "C" {
 
 static int get_text_block_image
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* text_in,
     const char* font_str
 );
@@ -59,14 +59,14 @@ static int get_text_block_image
 
 int image_draw_text_top_left
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const char* text,
     int         i,
     int         j,
     const char* font_str
 )
 {
-    KJB_image* text_block_ip = NULL;
+    IVI_image* text_block_ip = NULL;
     int result;
 
 
@@ -74,7 +74,7 @@ int image_draw_text_top_left
 
     result = image_draw_image(ip, text_block_ip, i, j, 1);
 
-    kjb_free_image(text_block_ip);
+    ivi_free_image(text_block_ip);
 
     return result;
 }
@@ -112,7 +112,7 @@ int image_draw_text_top_left
 
 int image_draw_wrapped_text_top_left
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const char* text,
     int         i,
     int         j,
@@ -120,7 +120,7 @@ int image_draw_wrapped_text_top_left
     const char* font_str
 )
 {
-    KJB_image* text_block_ip = NULL;
+    IVI_image* text_block_ip = NULL;
     int result;
 
 
@@ -128,7 +128,7 @@ int image_draw_wrapped_text_top_left
 
     result = image_draw_image(ip, text_block_ip, i, j, 1);
 
-    kjb_free_image(text_block_ip);
+    ivi_free_image(text_block_ip);
 
     return result;
 }
@@ -155,14 +155,14 @@ int image_draw_wrapped_text_top_left
 
 int image_draw_text_center
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const char* text,
     int         i,
     int         j,
     const char* font_str
 )
 {
-    KJB_image* text_block_ip = NULL;
+    IVI_image* text_block_ip = NULL;
     int result;
     int tb_num_rows;
     int tb_num_cols;
@@ -178,7 +178,7 @@ int image_draw_text_center
                               j - tb_num_cols / 2,
                               1);
 
-    kjb_free_image(text_block_ip);
+    ivi_free_image(text_block_ip);
 
     return result;
 }
@@ -187,7 +187,7 @@ int image_draw_text_center
 
 static int get_text_block_image
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* text_in,
     const char* font_str
 )
@@ -248,7 +248,7 @@ static int get_text_block_image
         result = ERROR;
     }
 
-    kjb_fclose(font_fp);
+    ivi_fclose(font_fp);
 
     if (result != ERROR)
     {
@@ -320,7 +320,7 @@ static int get_text_block_image
         }
     }
 
-    if ((KJB_IS_SET(bitmap)) && (bitmap != -1))
+    if ((IVI_IS_SET(bitmap)) && (bitmap != -1))
     {
         cd_freebitmap(bitmap);
     }
@@ -332,7 +332,7 @@ static int get_text_block_image
 
 int get_wrapped_text_block_image
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* text_in,
     int         width,
     const char* font_str
@@ -344,9 +344,9 @@ int get_wrapped_text_block_image
     int          result       = NO_ERROR;
     char         text[ 10000 ];
     char         font_file_name[ 1000 ];
-    KJB_image*   word_ip = NULL;
-    KJB_image*   blank_ip = NULL;
-    KJB_image*   ip = NULL;
+    IVI_image*   word_ip = NULL;
+    IVI_image*   blank_ip = NULL;
+    IVI_image*   ip = NULL;
     int          blank_width = NOT_SET;
     char         line_buff[ 100000 ];
     char         word_buff[ 1000 ];
@@ -400,7 +400,7 @@ int get_wrapped_text_block_image
         result = ERROR;
     }
 
-    kjb_fclose(font_fp);
+    ivi_fclose(font_fp);
 
     if (result != ERROR)
     {
@@ -478,8 +478,8 @@ int get_wrapped_text_block_image
         }
     }
 
-    kjb_free_image(blank_ip);
-    kjb_free_image(word_ip);
+    ivi_free_image(blank_ip);
+    ivi_free_image(word_ip);
 
     return result;
 }

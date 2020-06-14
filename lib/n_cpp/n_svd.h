@@ -1,8 +1,8 @@
-/* $Id: n_svd.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: n_svd.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * @file
  * @author Andrew Predoehl
- * @brief definition for class kjb::svd
+ * @brief definition for class ivi::svd
  */
 
 /* {{{======================================================================= *
@@ -25,20 +25,20 @@
 #include <m_cpp/m_matrix.h>
 #include <m_cpp/m_vector.h>
 
-#ifndef KJB_CPP_N_SVD_H_UOFARIZONAVISION
-#define KJB_CPP_N_SVD_H_UOFARIZONAVISION
+#ifndef IVI_CPP_N_SVD_H_UOFARIZONAVISION
+#define IVI_CPP_N_SVD_H_UOFARIZONAVISION
 
-namespace kjb {
+namespace ivi {
 
 
 /**
  * @brief a tuple that computes a singular value decomposition of a matrix
- * @see kjb_c::do_svd
+ * @see ivi_c::do_svd
  *
  * This class is just a convenience tuple of two matrices, a vector, and an int
  * that gathers the results of a singular value decomposition (SVD) of some
  * matrix.  For details about the SVD particulars, see the man page of function
- * kjb_c::do_svd(), which this class relies upon.
+ * ivi_c::do_svd(), which this class relies upon.
  *
  * The standard way to use this class is to construct it on a matrix that you
  * wish to decompose.  The ctor will launch the analysis, and then the object
@@ -48,7 +48,7 @@ namespace kjb {
  * The reconstruction() method will ideally return you the original matrix
  * from which the SVD was generated, modulo numerical noise.  In other words,
  * Your_input_matrix == mat_u * create_diagonal_matrix( vec_d ) * mat_vt
- * at least approximately.  Again, see the man page for kjb_c::do_svd() for
+ * at least approximately.  Again, see the man page for ivi_c::do_svd() for
  * more details.
  */
 struct Svd {
@@ -71,10 +71,10 @@ struct Svd {
      * time-savings are small, but inside a critical loop it could be worth
      * it.)
      */
-    void compute_svd( const kjb_c::Matrix* pa );
+    void compute_svd( const ivi_c::Matrix* pa );
     
 
-    /// @brief overload of compute_svd( kjb_c::Matrix* ) for a wrapped Matrix.
+    /// @brief overload of compute_svd( ivi_c::Matrix* ) for a wrapped Matrix.
     void compute_svd( const Matrix& mat_a );
     
 
@@ -83,7 +83,7 @@ struct Svd {
     
 
     /// @brief ctor for tuple calls the library function on a C-style Matrix
-    Svd( const kjb_c::Matrix* pa );
+    Svd( const ivi_c::Matrix* pa );
 
     /// @brief swap the representations of two SVD tuples
     void swap( Svd& other );
@@ -105,6 +105,6 @@ struct Svd {
 };
 
 
-} // namespace kjb
+} // namespace ivi
 
 #endif 

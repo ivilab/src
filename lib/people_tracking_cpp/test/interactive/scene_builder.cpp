@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: scene_builder.cpp 18808 2015-04-08 17:04:54Z jguan1 $ */
+/* $Id: scene_builder.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_association.h>
 #include <mcmcda_cpp/mcmcda_proposer.h>
@@ -28,7 +28,7 @@
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_complete_trajectory.h>
 #include <gr_cpp/gr_opengl.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <gr_cpp/gr_opengl_headers.h>
@@ -47,10 +47,10 @@
 #include <boost/lexical_cast.hpp>
 
 #define NUM_STR 6
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opengl;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opengl;
+using namespace ivi::mcmcda;
 using namespace std;
 using namespace boost;
 
@@ -113,8 +113,8 @@ string input_dp;
 string img_out_dp;
 string scene_out_dp;
 
-// global pointers (to avoid memory issues of KJB+OPENGL)
-#ifdef KJB_HAVE_GLUT
+// global pointers (to avoid memory issues of IVI+OPENGL)
+#ifdef IVI_HAVE_GLUT
 const Glut_window* wnd_p;
 #endif
 const Box_data* data_p;
@@ -235,7 +235,7 @@ int main(int argc, char** argv)
             empty_tg);
 
         // create GL environment
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         Glut_window wnd(img_width, img_height, "MCMCDA growth");
         wnd.set_reshape_callback(reshape_window);
         wnd.set_display_callback(display_scene);
@@ -245,7 +245,7 @@ int main(int argc, char** argv)
 
 
         // global pointers
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         wnd_p = &wnd;
 #endif
         data_p = &data;
@@ -262,7 +262,7 @@ int main(int argc, char** argv)
         cur_tg_p = w_p->end();
         cur_tg_q = w_p->end();
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutMainLoop();
 #endif
     }
@@ -379,7 +379,7 @@ void display_scene()
     }
 
     //bitmap_string("Mode: " + mode_names[cur_mode], info_x, info_y);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutSwapBuffers();
 #endif
 }
@@ -596,7 +596,7 @@ void process_key(unsigned char key, int /*x*/, int /*y*/)
             else
             {
                 // screen shot counter 
-                kjb_c::kjb_mkdir(img_out_dp.c_str());
+                ivi_c::ivi_mkdir(img_out_dp.c_str());
                 img.write((img_out_fmt % cur_frame).str());
             }
             break;
@@ -637,7 +637,7 @@ void process_key(unsigned char key, int /*x*/, int /*y*/)
         {
             if(scene_out_dp != "")
             {
-                kjb_c::kjb_mkdir(scene_out_dp.c_str());
+                ivi_c::ivi_mkdir(scene_out_dp.c_str());
                 write_scene(*scene_p, scene_out_dp + "/tracks/");
                 cout << "Wrote scene in " << scene_out_dp << endl;
             }
@@ -660,7 +660,7 @@ void process_key(unsigned char key, int /*x*/, int /*y*/)
             return;
         }
     }
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     wnd_p->redisplay();
 #endif
 }
@@ -839,7 +839,7 @@ void process_key_growing(unsigned char key)
     update_visibilities(*scene_p);
 
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     wnd_p->redisplay();
 #endif
 }
@@ -903,7 +903,7 @@ void process_key_merge(unsigned char key)
         }
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     wnd_p->redisplay();
 #endif
 }

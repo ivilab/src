@@ -4,7 +4,7 @@
  * @brief check that DCEL adds a new vertex when merging crossing segments
  */
 /*
- * $Id: dcel_merge_1.cpp 20166 2015-12-09 21:50:27Z predoehl $
+ * $Id: dcel_merge_1.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -16,7 +16,7 @@
 
 namespace
 {
-using namespace kjb::qd;
+using namespace ivi::qd;
 
 const char *ref2 =
     "<?xml version='1.0' ?>"
@@ -18901,13 +18901,13 @@ int test1()
     TEST_TRUE(2 == e.get_vertex_table().size());
 
     /* Two vertices merged with two vertices equals five vertices. */
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         std::cout << f.get_vertex_table().size() << '\n';
     }
     TEST_TRUE(5 == f.get_vertex_table().size());
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -18931,7 +18931,7 @@ int test2()
         ref(Doubly_connected_edge_list::ctor_xml_stream(sref));
     TEST_TRUE(is_isomorphic(e, ref, 00));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -18947,7 +18947,7 @@ int test3()
 
     TEST_TRUE(is_isomorphic(c_ref, c_test, 00));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -18956,13 +18956,13 @@ int test3()
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
 
-    KJB(EPETE(test1()));
-    KJB(EPETE(test2()));
-    KJB(EPETE(test3()));
+    IVI(EPETE(test1()));
+    IVI(EPETE(test2()));
+    IVI(EPETE(test3()));
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

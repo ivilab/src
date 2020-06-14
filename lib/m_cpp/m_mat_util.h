@@ -1,4 +1,4 @@
-/* $Id: m_mat_util.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_mat_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_M_CPP_M_MAT_UTIL_H
-#define KJB_M_CPP_M_MAT_UTIL_H
+#ifndef IVI_M_CPP_M_MAT_UTIL_H
+#define IVI_M_CPP_M_MAT_UTIL_H
 
 #include "m_cpp/m_matrix.h"
 #include "l_cpp/l_int_matrix.h"
@@ -32,15 +32,15 @@
 
 /**
  * @file  General-purpose matrix utility functions.
- * @note some of these functions exist here because they rely on kjb:Vector being 
+ * @note some of these functions exist here because they rely on ivi:Vector being 
  *       defined, and Vector is an incomplete type in m_matrix.h
  */
 
-namespace kjb
+namespace ivi
 {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -55,7 +55,7 @@ struct Matrix_traits
 template<>
 struct Matrix_traits<int>
 {
-    typedef kjb::Int_matrix Matrix_type;
+    typedef ivi::Int_matrix Matrix_type;
 };
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -63,7 +63,7 @@ struct Matrix_traits<int>
 template<>
 struct Matrix_traits<double>
 {
-    typedef kjb::Matrix Matrix_type;
+    typedef ivi::Matrix Matrix_type;
 };
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -100,7 +100,7 @@ create_matrix_from_columns(const Iterator& begin, const Iterator& end)
     typedef typename Matrix_traits<Value_type>::Matrix_type Matrix_type;
     typedef typename Vector_type::size_type Size_type;
 
-    BOOST_CONCEPT_ASSERT((kjb::SimpleVector<Vector_type>));
+    BOOST_CONCEPT_ASSERT((ivi::SimpleVector<Vector_type>));
 
     if ( begin == end  )
     {
@@ -115,7 +115,7 @@ create_matrix_from_columns(const Iterator& begin, const Iterator& end)
         const Vector_type& column = *it;
         if ( column.size() != NUM_ROWS )
         {
-            KJB_THROW_2( Dimension_mismatch,
+            IVI_THROW_2( Dimension_mismatch,
                                         "Input vectors differ in length" );
         }
     }
@@ -178,10 +178,10 @@ typedef boost::multi_array_ref<double, 2> Matrix_stl_view;
  * This is a lightweight operation: no copy is made, only metadata is allocated; Naturally, caller is responsible for ensuring that the returned
  * view is outlived by this Matrix.
  */
-Matrix_stl_view get_matrix_stl_view(kjb::Matrix& mat);
+Matrix_stl_view get_matrix_stl_view(ivi::Matrix& mat);
 
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

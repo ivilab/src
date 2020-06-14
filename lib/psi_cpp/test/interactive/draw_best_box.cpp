@@ -16,9 +16,9 @@
 
 #include <psi_cpp/psi_human_box.h>
 
-using namespace kjb::psi;
+using namespace ivi::psi;
 
-void draw_boxes(kjb::Image& img, const std::vector<kjb::Bounding_Box2D>& boxes)
+void draw_boxes(ivi::Image& img, const std::vector<ivi::Bounding_Box2D>& boxes)
 {
     for(size_t i = 0; i < boxes.size(); i++)
     {
@@ -41,7 +41,7 @@ void print_usage(const char* cmd_name)
 int main(int argc, char* argv[])
 {
     using std::string;
-    using kjb::Image;
+    using ivi::Image;
     using std::vector;
     // image filename, boxes filename
     // output image with boxes
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     
     double best_score = -100.0;
     int best_frame = 0;
-    kjb::psi::Human_boxes best_box;
+    ivi::psi::Human_boxes best_box;
 
     int j_index = 0;
 
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
     	std::string frame_name = str(fmt % (i + 1));
         std::cout << frame_name << std::endl;
     	std::ifstream ifs(frame_name.c_str());
-    	std::vector<kjb::psi::Human_boxes> hbs = parse_human_boxes(ifs);
+    	std::vector<ivi::psi::Human_boxes> hbs = parse_human_boxes(ifs);
     	for(unsigned int j = 0; j < hbs.size(); j++)
     	{
     		if(hbs[j].get_score() > best_score)
@@ -91,14 +91,14 @@ int main(int argc, char* argv[])
 
     double best_score_2 = -100.0;
     int best_frame2 = 0;
-    kjb::psi::Human_boxes best_box2;
+    ivi::psi::Human_boxes best_box2;
 
     for(unsigned int i = 0; i < num_frames; i++)
     {
 	    std::string frame_name = str(fmt % (i + 1));
 	    std::cout << frame_name << std::endl;
 	    std::ifstream ifs(frame_name.c_str());
-	    std::vector<kjb::psi::Human_boxes> hbs = parse_human_boxes(ifs);
+	    std::vector<ivi::psi::Human_boxes> hbs = parse_human_boxes(ifs);
 	    for(unsigned int j = 0; j < hbs.size(); j++)
 	    {
 		   if((i == best_frame) && (j == j_index) )
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
 		img_fname2.append("00");
 		img_fname2.append(frame_number_string2);
 		img_fname2.append(".jpg");
-    } catch(kjb::KJB_error e)
+    } catch(ivi::IVI_error e)
     {
     	img_fname = img_try;
     	img_fname.append("0");

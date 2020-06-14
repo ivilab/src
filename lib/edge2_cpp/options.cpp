@@ -1,4 +1,4 @@
-/* $Id: options.cpp 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: options.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,10 +23,10 @@
 
 #include <boost/assign/list_of.hpp>
 
-namespace kjb
+namespace ivi
 {
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 namespace po = boost::program_options;
 
 boost::program_options::options_description
@@ -56,7 +56,7 @@ Canny_edge_detector make_canny_edge_detector(const boost::program_options::varia
     for(size_t i = 0; i < required.size(); i++)
     {
         if(options.count(required[i]) == 0)
-            KJB_THROW_2(Missing_option, required[i]);
+            IVI_THROW_2(Missing_option, required[i]);
     }
 
     const float sigma = options["sigma"].as<float>();
@@ -66,6 +66,6 @@ Canny_edge_detector make_canny_edge_detector(const boost::program_options::varia
     return Canny_edge_detector(sigma, begin_threshold, end_threshold);
 
 }
-#endif /* KJB_HAVE_BST_POPTIONS */
+#endif /* IVI_HAVE_BST_POPTIONS */
 
 }

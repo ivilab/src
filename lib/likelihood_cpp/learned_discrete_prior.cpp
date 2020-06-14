@@ -65,7 +65,7 @@
 #define ONE_D_SOFT_BIN_RESOLUTION   (10)
 #define SOFT_BINNING_SIGMA 1.0
 
-using namespace kjb;
+using namespace ivi;
 
 /** 
  * @param numBins  Number of bins in the histogram.
@@ -93,7 +93,7 @@ Learned_discrete_prior::Learned_discrete_prior
     histo_max = max;
     histo_min = min;
 
-    kjb_c::Vector* gauss_vp = NULL;
+    ivi_c::Vector* gauss_vp = NULL;
     double sigma = SOFT_BINNING_SIGMA;
     int half_mask_width = MAX_OF(1, (int)(6.0*ONE_D_SOFT_BIN_RESOLUTION*sigma));
 
@@ -106,7 +106,7 @@ Learned_discrete_prior::Learned_discrete_prior
     	// Check point is within max and min bounds.
         if(point < histo_min || point > histo_max)
         {
-            KJB_THROW_3(Illegal_argument, "Error: the value %d doesn't fall "
+            IVI_THROW_3(Illegal_argument, "Error: the value %d doesn't fall "
                    "within the provided maximum and minimum bounds.", (point));
         }
         
@@ -134,7 +134,7 @@ Learned_discrete_prior::Learned_discrete_prior
         {
             // Create a gaussian mask with length 123 where the peak is located
             // at index 61.
-            ETX(kjb_c::get_1D_gaussian_mask(&gauss_vp, 
+            ETX(ivi_c::get_1D_gaussian_mask(&gauss_vp, 
                                             3 + 2 * half_mask_width, 
                                             ONE_D_SOFT_BIN_RESOLUTION * sigma));
 
@@ -181,7 +181,7 @@ Learned_discrete_prior::Learned_discrete_prior
 
     histo_bins = tmp_bins;
 
-    kjb_c::free_vector(gauss_vp);
+    ivi_c::free_vector(gauss_vp);
     file.close();
 }
 
@@ -225,8 +225,8 @@ Learned_discrete_prior& Learned_discrete_prior::operator=(
     return *this;
 }
 
-void Learned_discrete_prior::read(std::istream& in) throw (kjb::Illegal_argument,
-        kjb::IO_error)
+void Learned_discrete_prior::read(std::istream& in) throw (ivi::Illegal_argument,
+        ivi::IO_error)
 {
     using std::ostringstream;
     using std::istringstream;
@@ -306,7 +306,7 @@ void Learned_discrete_prior::read(std::istream& in) throw (kjb::Illegal_argument
 
 /** Writes this learn_discrete_prior to a file. */
 void Learned_discrete_prior::write(std::ostream& out) const
-       throw (kjb::IO_error)
+       throw (ivi::IO_error)
 {
     out << "num_bins: " << num_bins << '\n'
     << "histo_max: " << histo_max << '\n'
@@ -363,17 +363,17 @@ int Learned_discrete_prior::plot_histogram(const char* name) const
 {
     double step;
     int result;
-    kjb_c::Vector* hist_vp = NULL;
+    ivi_c::Vector* hist_vp = NULL;
     int plot_id;
     
-    hist_vp = kjb_c::create_zero_vector(num_bins);
+    hist_vp = ivi_c::create_zero_vector(num_bins);
 
     step = (histo_max - histo_min) / num_bins;
     
     if (step < 1.0e2 * DBL_MIN)
     {
-        kjb_c::set_error("Bin size is too small for histogram plot.");
-        return kjb_c::ERROR;
+        ivi_c::set_error("Bin size is too small for histogram plot.");
+        return ivi_c::ERROR;
     }
 
     for(int i = 0; i < num_bins; i++)
@@ -384,15 +384,15 @@ int Learned_discrete_prior::plot_histogram(const char* name) const
 
     double plot_min = histo_min + (step / 2.0);
 
-    plot_id = kjb_c::plot_open();
+    plot_id = ivi_c::plot_open();
     std::cout << "Plot_id is:" << result << std::endl;
-    result = kjb_c::plot_bars(plot_id, hist_vp, plot_min, step, name);
+    result = ivi_c::plot_bars(plot_id, hist_vp, plot_min, step, name);
     std::cout << "Result is:" << result << std::endl;
 
-    kjb_c::save_plot(plot_id, name);
-    kjb_c::plot_close(plot_id);
+    ivi_c::save_plot(plot_id, name);
+    ivi_c::plot_close(plot_id);
 
-    kjb_c::free_vector(hist_vp);
+    ivi_c::free_vector(hist_vp);
 
     return result;
 }

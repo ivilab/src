@@ -11,7 +11,7 @@
 #include <boost/progress.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {

@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_hsv.cpp 9333 2011-04-20 03:52:13Z predoehl $
+ * $Id: test_hsv.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <i_cpp/i_cpp_incl.h>
@@ -12,9 +12,9 @@
 int main()
 {
     const int CHUNK = 100, NUMCHUNK = 10;
-    kjb::Image circles( 6 + CHUNK * NUMCHUNK, 1 + CHUNK * NUMCHUNK );
+    ivi::Image circles( 6 + CHUNK * NUMCHUNK, 1 + CHUNK * NUMCHUNK );
 
-    const kjb::PixelRGBA gray( kjb::PixelRGBA::create_gray( 150 ) );
+    const ivi::PixelRGBA gray( ivi::PixelRGBA::create_gray( 150 ) );
     circles.draw_aa_rectangle( 0,0,5+CHUNK*NUMCHUNK,CHUNK*NUMCHUNK, gray );
 
     float value = 0;
@@ -36,7 +36,7 @@ int main()
 
                     circles.draw_aa_rectangle( rr+rorigin, cc+corigin,
                                         rr+rorigin+5, cc+corigin+5, 
-                                        kjb::PixelHSVA( hh, ss, value ) );
+                                        ivi::PixelHSVA( hh, ss, value ) );
                 }
             }
         }

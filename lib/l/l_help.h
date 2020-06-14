@@ -1,5 +1,5 @@
 
-/* $Id: l_help.h 8927 2011-03-14 22:35:25Z predoehl $ */
+/* $Id: l_help.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -72,7 +72,7 @@ Help_request;
 /* ------------------------------------------------------------------------- */
 
 int set_help_file       (const char* file_name);
-int kjb_help            (const char* program_name, const char* topic);
+int ivi_help            (const char* program_name, const char* topic);
 int local_get_help_topic(FILE*, const char*, char*, size_t);
 int local_get_topic_list(FILE*, char*, size_t);
 int man_print_heading   (FILE*, const char* topic);

@@ -1,4 +1,4 @@
-/* $Id: color_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: color_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -24,7 +24,7 @@
 
 #include <iostream>
 
-namespace kjb {
+namespace ivi {
 
 std::map<int, Region_vector> get_regions_from_mask(const Int_matrix& mask, int region_length)
 {
@@ -64,8 +64,8 @@ double Color_likelihood::operator()(const std::map<int, Region_vector>& object_r
     for(std::map<int, Region_vector>::const_iterator rv_p = object_regions.begin(); rv_p != object_regions.end(); rv_p++)
     {
         const Region_vector& rv = rv_p->second;
-        std::vector<kjb::Vector> histograms(rv.size());
-        std::vector<kjb::Vector>::iterator hist_p = histograms.begin();
+        std::vector<ivi::Vector> histograms(rv.size());
+        std::vector<ivi::Vector>::iterator hist_p = histograms.begin();
 
         for(Region_vector::const_iterator region_p = rv.begin(); region_p != rv.end(); region_p++)
         {
@@ -87,7 +87,7 @@ double Color_likelihood::operator()(const std::map<int, Region_vector>& object_r
                     if(!rv[j].empty())
                     {
                         double chi_sq_st = chi_square_statistic(histograms[i].begin(), histograms[i].end(), histograms[j].begin());
-                        double p = kjb::pdf(Chi_square_distribution(2), chi_sq_st);
+                        double p = ivi::pdf(Chi_square_distribution(2), chi_sq_st);
                         logp += log(p);
                     }
                 }
@@ -98,5 +98,5 @@ double Color_likelihood::operator()(const std::map<int, Region_vector>& object_r
     return logp;
 }
 
-} // namespace kjb
+} // namespace ivi
 

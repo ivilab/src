@@ -1,5 +1,5 @@
 
-/* $Id: copy_matrix.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: copy_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     int status = EXIT_SUCCESS;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -48,8 +48,8 @@ int main(int argc, char **argv)
         num_tries *= test_factor;
     }
 
-    kjb_l_set("debug", "2");
-    kjb_l_set("page", "off");
+    ivi_l_set("debug", "2");
+    ivi_l_set("page", "off");
 
     /* Test corner case first with empty matrices. */
     EPETE(get_random_matrix(&mp, 0, 0));
@@ -61,17 +61,17 @@ int main(int argc, char **argv)
         int    c;
         int    m;
         double diff;
-        int    num_rows = 1 + MAX_NUM_ROWS * kjb_rand();
-        int    num_cols = 1 + MAX_NUM_COLS * kjb_rand();
+        int    num_rows = 1 + MAX_NUM_ROWS * ivi_rand();
+        int    num_cols = 1 + MAX_NUM_COLS * ivi_rand();
 
-        kjb_l_set("use-memcpy", "f");
+        ivi_l_set("use-memcpy", "f");
 
         EPETE(get_random_matrix(&mp, num_rows, num_cols));
 
-        r = kjb_rint((double)num_rows * kjb_rand());
+        r = ivi_rint((double)num_rows * ivi_rand());
         r = MIN_OF(r, num_rows - 1);
 
-        c = kjb_rint((double)num_cols * kjb_rand());
+        c = ivi_rint((double)num_cols * ivi_rand());
         c = MIN_OF(c , num_cols - 1);
 
         ASSERT_IS_LESS_INT(r, num_rows);
@@ -91,12 +91,12 @@ int main(int argc, char **argv)
             status = EXIT_BUG;
         }
 
-        kjb_l_set("use-memcpy", "t");
+        ivi_l_set("use-memcpy", "t");
 
-        r = kjb_rint((double)num_rows * kjb_rand());
+        r = ivi_rint((double)num_rows * ivi_rand());
         r = MIN_OF(r, num_rows - 1);
 
-        c = kjb_rint((double)num_cols * kjb_rand());
+        c = ivi_rint((double)num_cols * ivi_rand());
         c = MIN_OF(c , num_cols - 1);
 
         ASSERT_IS_LESS_INT(r, num_rows);
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
         ERE(get_initialized_int_vector(&select_cols_vp, num_cols, FALSE));
         for (c = 0; c < num_cols; c++)
         {
-            if (kjb_rand() < 0.3)
+            if (ivi_rand() < 0.3)
             {
                 select_cols_vp->elements[ c ] = TRUE;
             }
@@ -151,13 +151,13 @@ int main(int argc, char **argv)
             }
         }
 
-        matrix_vector_len = kjb_rint(MAX_MATRIX_VECTOR_LEN * kjb_rand());
+        matrix_vector_len = ivi_rint(MAX_MATRIX_VECTOR_LEN * ivi_rand());
 
         ERE(get_target_matrix_vector(&mvp, matrix_vector_len));
 
         for (m = 0; m <matrix_vector_len; m++)
         {
-            if (kjb_rand() > 0.5) 
+            if (ivi_rand() > 0.5) 
             {
                 if(r > 0 && c > 0)
                 {

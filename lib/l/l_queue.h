@@ -1,5 +1,5 @@
 
-/* $Id: l_queue.h 15908 2013-10-26 20:23:11Z kobus $ */
+/* $Id: l_queue.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -46,7 +46,7 @@ namespace kjb_c {
  *
  * Linked list type
  *
- * This type is linked list type for the KJB library.
+ * This type is linked list type for the IVI library.
  *
  * Index: queues, stacks, linked lists
  *

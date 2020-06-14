@@ -1,5 +1,5 @@
 
-/* $Id: s2_def.h 24335 2019-08-03 21:49:40Z ivilab-sync $ */
+/* $Id: s2_def.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -33,7 +33,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

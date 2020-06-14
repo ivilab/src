@@ -1,4 +1,4 @@
-/* $Id: test_solve.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: test_solve.c 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -49,7 +49,7 @@ int main()
      * default random seed? 
     */
     for(i = 0; i < 100; ++i) 
-        kjb_rand();
+        ivi_rand();
 
     for(i = 0; i < NUM_TRIES; ++i)
     {

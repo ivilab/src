@@ -1,5 +1,5 @@
 
-/* $Id: i_ave.c 21712 2017-08-20 18:21:41Z kobus $ */
+/* $Id: i_ave.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -97,13 +97,13 @@ int set_image_average_options(const char* option, const char* value)
 
 int magnify_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count
 )
 {
-    KJB_image*       out_ip;
+    IVI_image*       out_ip;
     int              num_in_rows;
     int              num_in_cols;
     int              num_out_rows;
@@ -171,15 +171,15 @@ int magnify_image
 
 int ave_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count
 )
 {
-    KJB_image*       out_ip;
-    KJB_image*       no_dark_in_ip = NULL;
-    const KJB_image* derived_in_ip;
+    IVI_image*       out_ip;
+    IVI_image*       no_dark_in_ip = NULL;
+    const IVI_image* derived_in_ip;
     int              num_in_rows;
     int              num_in_cols;
     int              num_out_rows;
@@ -213,7 +213,7 @@ int ave_image
     {
         UNTESTED_CODE();
 
-        ERE(kjb_copy_image(&no_dark_in_ip, in_ip));
+        ERE(ivi_copy_image(&no_dark_in_ip, in_ip));
         ERE(unmark_dark_pixels(no_dark_in_ip));
         derived_in_ip = no_dark_in_ip;
     }
@@ -281,8 +281,8 @@ int ave_image
         }
     }
 
-    kjb_free_image(no_dark_in_ip);
-    kjb_free(temp_row);
+    ivi_free_image(no_dark_in_ip);
+    ivi_free(temp_row);
 
     if (fs_average_dark_pixels)
     {
@@ -326,17 +326,17 @@ int ave_image
 
 int ave_image_without_invalid
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count,
     int              min_good_pixels
 )
 {
     int              cell_size;
-    KJB_image*       no_dark_in_ip    = NULL;
-    const KJB_image* derived_in_ip;
-    KJB_image*       out_ip;
+    IVI_image*       no_dark_in_ip    = NULL;
+    const IVI_image* derived_in_ip;
+    IVI_image*       out_ip;
     int              num_in_rows = in_ip->num_rows;
     int              num_in_cols = in_ip->num_cols;
     int              num_out_rows;
@@ -381,7 +381,7 @@ int ave_image_without_invalid
 
     if (fs_average_dark_pixels)
     {
-        ERE(kjb_copy_image(&no_dark_in_ip, in_ip));
+        ERE(ivi_copy_image(&no_dark_in_ip, in_ip));
         ERE(unmark_dark_pixels(no_dark_in_ip));
         derived_in_ip = no_dark_in_ip;
     }
@@ -399,9 +399,9 @@ int ave_image_without_invalid
          || (ave_count_array == NULL)
        )
     {
-        kjb_free(temp_row);
-        kjb_free(temp_invalid_row);
-        kjb_free(ave_count_array);
+        ivi_free(temp_row);
+        ivi_free(temp_invalid_row);
+        ivi_free(ave_count_array);
         return ERROR;
     }
 
@@ -522,11 +522,11 @@ int ave_image_without_invalid
         }
     }
 
-    kjb_free_image(no_dark_in_ip);
+    ivi_free_image(no_dark_in_ip);
 
-    kjb_free(temp_row);
-    kjb_free(temp_invalid_row);
-    kjb_free(ave_count_array);
+    ivi_free(temp_row);
+    ivi_free(temp_invalid_row);
+    ivi_free(ave_count_array);
 
     if (fs_average_dark_pixels)
     {
@@ -544,15 +544,15 @@ int ave_image_without_invalid
 
 int ave_image_where_uniform
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count,
     int              min_good_pixels,
     double           thresh
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols;
     Pixel*     in_pos;
     int        i, j, m, n;
@@ -733,8 +733,8 @@ int ave_image_where_uniform
 
 int sample_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              row_count,
     int              col_count
 )
@@ -746,7 +746,7 @@ int sample_image
     Pixel*     in_pos;
     Pixel*     out_pos;
     int        i, j;
-    KJB_image* out_ip;
+    IVI_image* out_ip;
 
 
     UNTESTED_CODE();
@@ -803,12 +803,12 @@ int sample_image
 
 int median_filter_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              block_size
 )
 {
-    KJB_image*      out_ip;
+    IVI_image*      out_ip;
     int             num_rows, num_cols;
     Pixel*          in_pos;
     Pixel*          out_pos;
@@ -923,12 +923,12 @@ int median_filter_image
 
 int median_filter_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              block_size
 )
 {
-    KJB_image*       out_ip;
+    IVI_image*       out_ip;
     int              num_in_rows;
     int              num_in_cols;
     int              num_out_rows;

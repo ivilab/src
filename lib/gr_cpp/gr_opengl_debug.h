@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_debug.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_opengl_debug.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,19 +19,19 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GR_OPENGL_DEBUG
-#define KJB_CPP_GR_OPENGL_DEBUG
+#ifndef IVI_CPP_GR_OPENGL_DEBUG
+#define IVI_CPP_GR_OPENGL_DEBUG
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
 
 // Note: These files are _intentionally_ in the global namespace to simplify calling from gdb.
-// Function name prefixes mimick actual KJB namespaces
+// Function name prefixes mimick actual IVI namespaces
 
 /** @brief Pop up a window displaying the opengl color buffer */
-void kjb_opengl_debug_display_buffer();
+void ivi_opengl_debug_display_buffer();
 
 }
 }

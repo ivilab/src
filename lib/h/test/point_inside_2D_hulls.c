@@ -1,5 +1,5 @@
 
-/* $Id: point_inside_2D_hulls.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: point_inside_2D_hulls.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     int            test_factor         = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -55,13 +55,13 @@ int main(int argc, char **argv)
 
     for (i=0; i<num_tries; i++)
     {
-        num_hulls = 50.0 * kjb_rand() + 1;
+        num_hulls = 50.0 * ivi_rand() + 1;
 
         verbose_pso(1, "Test %d with %d hulls.\n", i + 1, num_hulls); 
 
         for (j=0; j<num_hulls; j++)
         {
-            num_points = 5 + 50.0 * kjb_rand();
+            num_points = 5 + 50.0 * ivi_rand();
 
             EPETE(get_random_matrix(&point_mp, num_points, 2));
 

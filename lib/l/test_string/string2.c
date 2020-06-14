@@ -90,14 +90,14 @@ int main(int argc, char **argv)
 
         BUFF_CPY(line, line_copy);
         put_line("Lets add 12345 but suppose the buffer size is 8");
-        kjb_strncat(line, "12345", 8);
+        ivi_strncat(line, "12345", 8);
         pso("The trim_len of that is %d.\n", trim_len(line));
         pso("Line is ->%s<-\n", line);
         put_line("");
 
         BUFF_CPY(line, line_copy);
         put_line("Lets add 12345 but suppose the buffer size is 8");
-        if( kjb_strncmp(line,"12345",8)==0){
+        if( ivi_strncmp(line,"12345",8)==0){
         pso("Line is equal to 12345\n");
         }
         pso("The trim_len of that is %d.\n", trim_len(line));

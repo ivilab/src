@@ -61,8 +61,8 @@
  */
 
 
-#ifndef KJB_POLYMESH_H
-#define KJB_POLYMESH_H
+#ifndef IVI_POLYMESH_H
+#define IVI_POLYMESH_H
 
 #include <inttypes.h>
 
@@ -75,7 +75,7 @@
 #include "l_cpp/l_readable.h"
 #include "l_cpp/l_writeable.h"
 
-namespace kjb{
+namespace ivi{
 
 
 class Base_gl_interface;
@@ -86,10 +86,10 @@ class Base_gl_interface;
  * We assume that each edge is shared between exactly two faces, that is to say the
  * mesh has to be fully connected
  */
-class Polymesh: public kjb::Abstract_renderable,
-                public kjb::Rigid_object,
-                public kjb::Readable,
-                public kjb::Writeable
+class Polymesh: public ivi::Abstract_renderable,
+                public ivi::Rigid_object,
+                public ivi::Readable,
+                public ivi::Writeable
 {
     public:
 
@@ -105,11 +105,11 @@ class Polymesh: public kjb::Abstract_renderable,
 
 
         /** @brief Reads a triangular mesh from an input file. */
-        Polymesh(const char* fname) throw (kjb::Illegal_argument, kjb::IO_error);
+        Polymesh(const char* fname) throw (ivi::Illegal_argument, ivi::IO_error);
 
 
         /** @brief Reads a triangular mesh from an input file. */
-        Polymesh(std::istream& in) throw (kjb::Illegal_argument, kjb::IO_error);
+        Polymesh(std::istream& in) throw (ivi::Illegal_argument, ivi::IO_error);
 
 
         /** @brief Copy constructor. */
@@ -130,7 +130,7 @@ class Polymesh: public kjb::Abstract_renderable,
         unsigned int num_faces() const;
 
         /** @brief Returns the faces of this mesh. */
-        const std::vector<kjb::Polygon>& get_faces() const;
+        const std::vector<ivi::Polygon>& get_faces() const;
         
         /** 
          * @brief Returns an indexed face.
@@ -139,9 +139,9 @@ class Polymesh: public kjb::Abstract_renderable,
          *
          * @return The specified face.
          *
-         * @throw  kjb::Illegal_argument  Invalid face index.
+         * @throw  ivi::Illegal_argument  Invalid face index.
          */
-         const kjb::Polygon& get_face(unsigned int i) const throw (kjb::Index_out_of_bounds);
+         const ivi::Polygon& get_face(unsigned int i) const throw (ivi::Index_out_of_bounds);
 
         /**
         * @brief Returns an indexed face.
@@ -150,29 +150,29 @@ class Polymesh: public kjb::Abstract_renderable,
         *
         * @return The specified face.
         *
-        * @throw  kjb::Illegal_argument  Invalid face index.
+        * @throw  ivi::Illegal_argument  Invalid face index.
         */
-        kjb::Polygon& get_face_ref(unsigned int i) throw (kjb::Index_out_of_bounds);
+        ivi::Polygon& get_face_ref(unsigned int i) throw (ivi::Index_out_of_bounds);
 
-        //virtual void add_face(const Polygon & face, uint32_t id) throw (kjb::Illegal_argument);
+        //virtual void add_face(const Polygon & face, uint32_t id) throw (ivi::Illegal_argument);
 
-        virtual void add_face(const Polygon & face) throw (kjb::Illegal_argument);
+        virtual void add_face(const Polygon & face) throw (ivi::Illegal_argument);
 
          /** @brief Reads this polymesh from an input stream. */
         virtual void read(std::istream & in)
-        throw(kjb::IO_error,kjb::Illegal_argument);
+        throw(ivi::IO_error,ivi::Illegal_argument);
 
 
         /** @brief Writes this mesh to an output stream. */
         virtual void write(std::ostream & ost)
-        const throw(kjb::IO_error);
+        const throw(ivi::IO_error);
 
         /** @brief Writes this mesh to an output stream. */
         virtual void write(const char *filename) const throw (IO_error);
 
 
         /** @brief Applies a linear transformation to this parallelepiped. */
-        virtual void transform(const kjb::Matrix &) throw(kjb::Illegal_argument);
+        virtual void transform(const ivi::Matrix &) throw(ivi::Illegal_argument);
 
         /* @brief Translates this mesh */
         virtual void translate(double x, double y, double z);
@@ -195,7 +195,7 @@ class Polymesh: public kjb::Abstract_renderable,
          *  Not thoroughly tested
          */
         virtual unsigned int adjacent_face(unsigned int f, unsigned int e) const
-                       throw (Index_out_of_bounds,KJB_error);
+                       throw (Index_out_of_bounds,IVI_error);
 
         void get_faces(std::vector<const Polygon *> & ifaces) const;
 
@@ -233,7 +233,7 @@ class Polymesh: public kjb::Abstract_renderable,
         virtual void solid_render() const;
 
         /** @ brief Renders the silhouette of this mesh */
-        virtual void silhouette_render(const kjb::Base_gl_interface & camera, double iwidth = 1.0) const;
+        virtual void silhouette_render(const ivi::Base_gl_interface & camera, double iwidth = 1.0) const;
 
         /*
          * @brief Projects all the polygons in this mesh using
@@ -269,7 +269,7 @@ class Polymesh: public kjb::Abstract_renderable,
          * @brief  Returns the center point of the mesh based on the
          *         midpoint of the smallest and largest bounds.
          */
-        kjb::Vector get_center();
+        ivi::Vector get_center();
 
         /*
          * @brief  Returns the largest z-value of the points in the 
@@ -280,22 +280,22 @@ class Polymesh: public kjb::Abstract_renderable,
         /*
          * @brief  Returns the largest x, y, and z bounds in the polymesh.
          */
-        kjb::Vector get_largest_bounds() const;
+        ivi::Vector get_largest_bounds() const;
 
         /*
          * @brief  Returns the smallest x, y, and z bounds in the polymesh.
          */
-        kjb::Vector get_smallest_bounds() const;
+        ivi::Vector get_smallest_bounds() const;
 
 
     protected:
        /** @brief Polygons defining the mesh. */
-       std::vector<kjb::Polygon> _faces;
+       std::vector<ivi::Polygon> _faces;
        Vector smallest_bounds;
        Vector largest_bounds;
 
        /** @brief Compares two points*/
-       inline bool is_same_vertex(const kjb::Vector& p1,const kjb::Vector& p2) const
+       inline bool is_same_vertex(const ivi::Vector& p1,const ivi::Vector& p2) const
        {
            return p1 == p2;
        }

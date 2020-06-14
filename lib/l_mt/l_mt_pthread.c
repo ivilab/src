@@ -6,7 +6,7 @@
  * generally not call it unless one serializes access by holding the
  * 'thread_master_lock' mutex.
  *
- * $Id: l_mt_pthread.c 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: l_mt_pthread.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"
@@ -37,14 +37,14 @@
 
 /* The SCRAMBLE macro below requires an int of size at least 27 bits, sorry. */
 #ifdef INT_IS_16_BITS
-#error "KJB threads are not supported on 16-bit integer systems."
+#error "IVI threads are not supported on 16-bit integer systems."
 #endif
 
 /* Constants below are from Press et al., Numerical Recipes in C (1988)
    1st ed., section 7.1, "Portable Random Number Generators," p. 211.
    Product 421m needs just 27 bits, including the sign bit.
  */
-#define SCRAMBLE(m) (((kjb_uint16)(m) * 421 + 17117) % 81000 & 0xFFFF)
+#define SCRAMBLE(m) (((ivi_uint16)(m) * 421 + 17117) % 81000 & 0xFFFF)
 
 
 #ifdef __cplusplus
@@ -54,22 +54,22 @@ extern "C" {
 
 /* This mutex is used to protect all static structures in lib/l_mt.
  */
-static kjb_pthread_mutex_t thread_master_lock = KJB_PTHREAD_MUTEX_INITIALIZER;
+static ivi_pthread_mutex_t thread_master_lock = IVI_PTHREAD_MUTEX_INITIALIZER;
 
 /* This thing is like a combination mutex and boolean flag, packaged together
    to make first-time initialization very easy. */
-static kjb_pthread_once_t fs_kjb_pthreads_set_up = KJB_PTHREAD_ONCE_INIT;
+static ivi_pthread_once_t fs_ivi_pthreads_set_up = IVI_PTHREAD_ONCE_INIT;
 
 /* The flag below is set JUST ONCE to true in a serial manner, when you create
    a thread.  It is nevermore written to, but afterwards it is READ
    without any serialization.  I think that should be safe. */
-static int fs_kjb_pthreads_active = FALSE;
+static int fs_ivi_pthreads_active = FALSE;
 
-static kjb_pthread_key_t fs_kjb_pthread_props_key;
+static ivi_pthread_key_t fs_ivi_pthread_props_key;
 
-static kjb_pthread_t fs_primal_tid;
+static ivi_pthread_t fs_primal_tid;
 
-static int fs_kjb_pthread_counter = 0;
+static int fs_ivi_pthread_counter = 0;
 
 #define SEED_CT 3 /* Number of 16-bit words needed to hold a PRNG seed (48b).*/
 
@@ -81,8 +81,8 @@ static int fs_kjb_pthread_counter = 0;
  */
 struct Thread_props
 {
-    kjb_uint16 seed1[SEED_CT]; /* seed used by calls to kjb_rand()           */
-    kjb_uint16 seed2[SEED_CT]; /* seed used by calls to kjb_rand_2()         */
+    ivi_uint16 seed1[SEED_CT]; /* seed used by calls to ivi_rand()           */
+    ivi_uint16 seed2[SEED_CT]; /* seed used by calls to ivi_rand_2()         */
     int thread_counter;        /* one-based serial number of this thread     */
     void* (*pfun)(void*);      /* pointer to the program the user wants to   */
                                /* run in a thread                            */
@@ -93,11 +93,11 @@ struct Thread_props
    only works on UNIX but not on NeXT.
  */
 #ifdef NeXT
-#error "KJB threads are not supported on NeXT systems."
+#error "IVI threads are not supported on NeXT systems."
 #endif
 
 #ifndef UNIX
-#error "KJB threads are not supported on non-Unix systems."
+#error "IVI threads are not supported on non-Unix systems."
 #endif
 
 /* NAN is defined in C99, but this is potentially C89, so we define it here. */
@@ -107,12 +107,12 @@ struct Thread_props
 
 
 
-#ifdef KJB_HAVE_PTHREAD
+#ifdef IVI_HAVE_PTHREAD
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- * STATIC                      kjb_random_multithread
+ * STATIC                      ivi_random_multithread
  * ----------------------------------------------------------------------------
 */
 /* Generate a random number
@@ -131,27 +131,27 @@ struct Thread_props
  * ----------------------------------------------------------------------------
 */
 
-static double kjb_random_multithread(int generator_ix)
+static double ivi_random_multithread(int generator_ix)
 {
-    kjb_pthread_t tid;
+    ivi_pthread_t tid;
     struct Thread_props* p;
 
     if (generator_ix < 0 || 1 < generator_ix) goto cleanup;
-    EGC(get_kjb_pthread_self(&tid));
+    EGC(get_ivi_pthread_self(&tid));
 
-    if (kjb_pthread_equal(tid, fs_primal_tid))
+    if (ivi_pthread_equal(tid, fs_primal_tid))
     {
         /* primal thread runs the standard code */
-        return generator_ix ? kjb_rand_st() : kjb_rand_2_st();
+        return generator_ix ? ivi_rand_st() : ivi_rand_2_st();
     }
 
     /* all other threads use erand48() based on their respective seeds. */
-    p=(struct Thread_props*) kjb_pthread_getspecific(fs_kjb_pthread_props_key);
+    p=(struct Thread_props*) ivi_pthread_getspecific(fs_ivi_pthread_props_key);
     NGC(p);
     return erand48(generator_ix ? p -> seed1 : p -> seed2);
 
 cleanup:
-    add_error("Invalid behavior in kjb_random_multithread");
+    add_error("Invalid behavior in ivi_random_multithread");
     SET_CANT_HAPPEN_BUG();
     return NAN; /* This line generates a warning sometimes, but it is ok. */
 }
@@ -160,23 +160,23 @@ cleanup:
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- * STATIC                      kjb_rand_multithread
+ * STATIC                      ivi_rand_multithread
  * ----------------------------------------------------------------------------
 */
 /* Generate a random number from the thread's first stream
  *
- * This implements the action of 'kjb_rand()' for a multithreaded program
- * using the kjb_pthreads wrapper.  In other words, once multithreading is set
- * up, a call to kjb_rand() is redirected (using a function pointer) hither.
+ * This implements the action of 'ivi_rand()' for a multithreaded program
+ * using the ivi_pthreads wrapper.  In other words, once multithreading is set
+ * up, a call to ivi_rand() is redirected (using a function pointer) hither.
  *
  * Returns:
  *     Uniform-distributed real sample in the range [0, 1).
  * ----------------------------------------------------------------------------
 */
 
-static double kjb_rand_multithread()
+static double ivi_rand_multithread()
 {
-    return kjb_random_multithread(0);
+    return ivi_random_multithread(0);
 }
 
 
@@ -184,23 +184,23 @@ static double kjb_rand_multithread()
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- * STATIC                      kjb_rand_2_multithread
+ * STATIC                      ivi_rand_2_multithread
  * ----------------------------------------------------------------------------
 */
 /* Generate a random number from the thread's second stream
  *
- * This implements the action of 'kjb_rand_2()' for a multithreaded program
- * using the kjb_pthreads wrapper.  In other words, once multithreading is set
- * up, a call to kjb_rand() is redirected (using a function pointer) hither.
+ * This implements the action of 'ivi_rand_2()' for a multithreaded program
+ * using the ivi_pthreads wrapper.  In other words, once multithreading is set
+ * up, a call to ivi_rand() is redirected (using a function pointer) hither.
  *
  * Returns:
  *     Uniform-distributed real sample in the range [0, 1).
  * ----------------------------------------------------------------------------
 */
 
-static double kjb_rand_2_multithread()
+static double ivi_rand_2_multithread()
 {
-    return kjb_random_multithread(1);
+    return ivi_random_multithread(1);
 }
 
 
@@ -253,7 +253,7 @@ static int generate_pthread_create_error_message(int pthread_result)
  *
  * The input argument is a pointer to the thread's individual
  * struct Thread_props object.  This object needs to be freed.
- * Also, since libkjb uses static resource tracking, calls to kjb_free
+ * Also, since libivi uses static resource tracking, calls to ivi_free
  * must be serialized using the thread_master_lock.
  *
  * LOCK STATUS:  yes, this locks/unlocks the thread_master_lock.
@@ -264,9 +264,9 @@ static void do_thread_cleanup(void* v)
 {
     if (v)
     {
-        EPETE(kjb_pthread_mutex_lock(&thread_master_lock));
-        kjb_free(v);
-        EPETE(kjb_pthread_mutex_unlock(&thread_master_lock));
+        EPETE(ivi_pthread_mutex_lock(&thread_master_lock));
+        ivi_free(v);
+        EPETE(ivi_pthread_mutex_unlock(&thread_master_lock));
     }
 }
 
@@ -286,7 +286,7 @@ static void* launchpad(void* v)
     struct Thread_props* p = (struct Thread_props*) v;
 
     NPETE(p);
-    EPETE(kjb_pthread_setspecific(fs_kjb_pthread_props_key, p));
+    EPETE(ivi_pthread_setspecific(fs_ivi_pthread_props_key, p));
 
     /* run the user's function -- it might not return. */
     return (* p -> pfun)(p -> arg);
@@ -311,9 +311,9 @@ static void* launchpad(void* v)
  * the seeds we generate and support "un-generate" functionality, like ungetc()
  * of stdio.h.  It is not even difficult, but still it's probably too paranoid.
  * If it turns out you want that, the untested code is there below; you would
- * also need to add the "un-generate" call in kjb_pthread_create_unsafe().
+ * also need to add the "un-generate" call in ivi_pthread_create_unsafe().
  *
- * This implementation gets its seeds from kjb_rand_2_st and then shuffles the
+ * This implementation gets its seeds from ivi_rand_2_st and then shuffles the
  * bits further using an auxiliary linear congruential generator whose
  * coefficients were found in Numerical Recipes.  The idea is that we want to
  * make sure we get the new seeds far apart in the sequence generated by
@@ -323,9 +323,9 @@ static void* launchpad(void* v)
  * is insignificant compared with the setup time of creating a new thread.
  *
  * Future maintainers should appreciate what is going on here:  this is a
- * transformation from the kjb_rand_2 seed to new seeds for each thread.
+ * transformation from the ivi_rand_2 seed to new seeds for each thread.
  * This transformation must be "good."  A bad transformation is one that takes
- * the current location in the kjb_rand_2 sequence (a huge cycle), and hops
+ * the current location in the ivi_rand_2 sequence (a huge cycle), and hops
  * a small (e.g., a few thousand) sequential places away, for some thread.
  * An ideal transformation would enable you to generate enough (say, a hundred)
  * threads, each with a seed that is far apart (ideally, CYCLE_LENGTH/200) from
@@ -346,13 +346,13 @@ static void generate_prng_seeds_unsafe(struct Thread_props* tr)
     /* generate seed 1 */
     for (i = 0; i < 3; ++i)
     {
-        tr -> seed1[i] = SCRAMBLE( kjb_rand_2_st() * UINT16_MAX );
+        tr -> seed1[i] = SCRAMBLE( ivi_rand_2_st() * UINT16_MAX );
     }
 
     /* generate seed 2 */
     for (i = 0; i < 3; ++i)
     {
-        tr -> seed2[i] = SCRAMBLE( kjb_rand_2_st() * UINT16_MAX );
+        tr -> seed2[i] = SCRAMBLE( ivi_rand_2_st() * UINT16_MAX );
     }
 
 #else /* SUPPORT FOR "UN-GENERATE" -- TOO ELABORATE. */
@@ -374,14 +374,14 @@ static void generate_prng_seeds_unsafe(struct Thread_props* tr)
             for (i = 0; i < 3; ++i)
             {
                 tr -> seed1[i] = storage.seed1[i]
-                               = SCRAMBLE( kjb_rand_2_st() * UINT16_MAX );
+                               = SCRAMBLE( ivi_rand_2_st() * UINT16_MAX );
             }
 
             /* generate seed 2 */
             for (i = 0; i < 3; ++i)
             {
                 tr -> seed2[i] = storage.seed2[i]
-                               = SCRAMBLE( kjb_rand_2_st() * UINT16_MAX );
+                               = SCRAMBLE( ivi_rand_2_st() * UINT16_MAX );
             }
 #ifdef TEST
             generated_seeds_already = TRUE;
@@ -418,7 +418,7 @@ static void generate_prng_seeds_unsafe(struct Thread_props* tr)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- * STATIC                      kjb_pthread_create_unsafe
+ * STATIC                      ivi_pthread_create_unsafe
  * ----------------------------------------------------------------------------
 */
 /* Launch a new thread
@@ -439,9 +439,9 @@ static void generate_prng_seeds_unsafe(struct Thread_props* tr)
  * ----------------------------------------------------------------------------
 */
 
-static int kjb_pthread_create_unsafe(
-    kjb_pthread_t* newthread,
-    const kjb_pthread_attr_t* attr,
+static int ivi_pthread_create_unsafe(
+    ivi_pthread_t* newthread,
+    const ivi_pthread_attr_t* attr,
     void* (*pfun)(void*),
     void* arg
 )
@@ -455,13 +455,13 @@ static int kjb_pthread_create_unsafe(
 
     /* build the Thread_props structure */
     generate_prng_seeds_unsafe(p);
-    p -> thread_counter = ++fs_kjb_pthread_counter;
+    p -> thread_counter = ++fs_ivi_pthread_counter;
     p -> pfun = pfun;
     p -> arg = arg;
 
     if ((rc = pthread_create(newthread, attr, &launchpad, p)))
     {
-        kjb_free(p);
+        ivi_free(p);
         return generate_pthread_create_error_message(rc);
     }
     return NO_ERROR;
@@ -492,20 +492,20 @@ static int kjb_pthread_create_unsafe(
 */
 static void first_time_setup_unsafe()
 {
-    ASSERT(!fs_kjb_pthreads_active);
+    ASSERT(!fs_ivi_pthreads_active);
 
     /* create key, which we will use to store struct Thread_props per thread */
-    EPETE(kjb_pthread_key_create(&fs_kjb_pthread_props_key,do_thread_cleanup));
+    EPETE(ivi_pthread_key_create(&fs_ivi_pthread_props_key,do_thread_cleanup));
 
     /* hook into the random number generators */
-    EPETE(kjb_set_rand_function(& kjb_rand_multithread));
-    EPETE(kjb_set_rand_2_function(& kjb_rand_2_multithread));
+    EPETE(ivi_set_rand_function(& ivi_rand_multithread));
+    EPETE(ivi_set_rand_2_function(& ivi_rand_2_multithread));
 
     /* cache the calling thread's TID */
-    EPETE(get_kjb_pthread_self(&fs_primal_tid));
+    EPETE(get_ivi_pthread_self(&fs_primal_tid));
 
     /* set the active flag */
-    fs_kjb_pthreads_active = TRUE;
+    fs_ivi_pthreads_active = TRUE;
 }
 
 
@@ -526,18 +526,18 @@ static void first_time_setup_unsafe()
  */
 static int is_a_child_thread(void)
 {
-    kjb_pthread_t tid;
+    ivi_pthread_t tid;
 
     /* Determine whether a second (or later) thread has ever been launched. */
-    if (! fs_kjb_pthreads_active)
+    if (! fs_ivi_pthreads_active)
     {
         return FALSE;
     }
 
     /* Determine whether this is thread zero.  (precondition:  active) */
-    EPETE(get_kjb_pthread_self(&tid));
+    EPETE(get_ivi_pthread_self(&tid));
 
-    if (kjb_pthread_equal(tid, fs_primal_tid))
+    if (ivi_pthread_equal(tid, fs_primal_tid))
     {
         return FALSE;
     }
@@ -558,7 +558,7 @@ static int is_a_child_thread(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_create
+ *                             ivi_pthread_create
  *
  * Create a new additional thread
  *
@@ -596,14 +596,14 @@ static int is_a_child_thread(void)
  * ----------------------------------------------------------------------------
 */
 
-int kjb_pthread_create(
-    kjb_pthread_t* newthread,       /* (for output) thread ID created     */
-    const kjb_pthread_attr_t* attr, /* optional attributes for new thread */
+int ivi_pthread_create(
+    ivi_pthread_t* newthread,       /* (for output) thread ID created     */
+    const ivi_pthread_attr_t* attr, /* optional attributes for new thread */
     void* (*start_routine)(void*),  /* function the new thread will run   */
     void* arg                       /* optional argument to start routine */
 )
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("create thread");
 
 #else
@@ -612,14 +612,14 @@ int kjb_pthread_create(
     NRE(newthread);
     NRE(start_routine);
 
-    ERE(kjb_pthread_mutex_lock(&thread_master_lock));
+    ERE(ivi_pthread_mutex_lock(&thread_master_lock));
 
     /* Must do extra setup for the very first time (or the equivalent). */
-    ERE(kjb_pthread_once(&fs_kjb_pthreads_set_up, &first_time_setup_unsafe));
+    ERE(ivi_pthread_once(&fs_ivi_pthreads_set_up, &first_time_setup_unsafe));
 
     /* Now let's try to fulfill the user's request. */
-    result1 = kjb_pthread_create_unsafe(newthread, attr, start_routine, arg);
-    result2 = kjb_pthread_mutex_unlock(&thread_master_lock);
+    result1 = ivi_pthread_create_unsafe(newthread, attr, start_routine, arg);
+    result2 = ivi_pthread_mutex_unlock(&thread_master_lock);
 
     /* If unlock fails, we probably ought to panic (debatable).  Not ERE! */
     EPETE(result2);
@@ -633,7 +633,7 @@ int kjb_pthread_create(
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_mutex_lock
+ *                             ivi_pthread_mutex_lock
  *
  * Lock a mutex
  *
@@ -657,9 +657,9 @@ int kjb_pthread_create(
  * ----------------------------------------------------------------------------
 */
 
-int kjb_pthread_mutex_lock(kjb_pthread_mutex_t* mutex)
+int ivi_pthread_mutex_lock(ivi_pthread_mutex_t* mutex)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("lock mutex");
 
 #else
@@ -688,7 +688,7 @@ int kjb_pthread_mutex_lock(kjb_pthread_mutex_t* mutex)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_mutex_trylock
+ *                             ivi_pthread_mutex_trylock
  *
  * Nonblocking attempt to lock a mutex
  *
@@ -717,9 +717,9 @@ int kjb_pthread_mutex_lock(kjb_pthread_mutex_t* mutex)
  * ----------------------------------------------------------------------------
 */
 
-int kjb_pthread_mutex_trylock(kjb_pthread_mutex_t* mutex)
+int ivi_pthread_mutex_trylock(ivi_pthread_mutex_t* mutex)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("trylock mutex");
 
 #else
@@ -731,7 +731,7 @@ int kjb_pthread_mutex_trylock(kjb_pthread_mutex_t* mutex)
             result = NO_ERROR;
             break;
         case EBUSY:
-            result = WOULD_BLOCK; /* this is a libkjb-specific code */
+            result = WOULD_BLOCK; /* this is a libivi-specific code */
             break;
         case EINVAL:
             set_error("Cannot trylock mutex:  EINVAL, mutex not initialized");
@@ -748,7 +748,7 @@ int kjb_pthread_mutex_trylock(kjb_pthread_mutex_t* mutex)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_mutex_unlock
+ *                             ivi_pthread_mutex_unlock
  *
  * Release a mutex
  *
@@ -769,9 +769,9 @@ int kjb_pthread_mutex_trylock(kjb_pthread_mutex_t* mutex)
  * ----------------------------------------------------------------------------
 */
 
-int kjb_pthread_mutex_unlock(kjb_pthread_mutex_t* mutex)
+int ivi_pthread_mutex_unlock(ivi_pthread_mutex_t* mutex)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("unlock mutex");
 
 #else
@@ -800,7 +800,7 @@ int kjb_pthread_mutex_unlock(kjb_pthread_mutex_t* mutex)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_equal
+ *                             ivi_pthread_equal
  *
  * Test whether two thread IDs are the same
  *
@@ -822,9 +822,9 @@ int kjb_pthread_mutex_unlock(kjb_pthread_mutex_t* mutex)
  * ----------------------------------------------------------------------------
 */
 
-int kjb_pthread_equal(kjb_pthread_t tid1, kjb_pthread_t tid2)
+int ivi_pthread_equal(ivi_pthread_t tid1, ivi_pthread_t tid2)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("test thread identity");
 
 #else
@@ -836,7 +836,7 @@ int kjb_pthread_equal(kjb_pthread_t tid1, kjb_pthread_t tid2)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             get_kjb_pthread_self
+ *                             get_ivi_pthread_self
  *
  * Find this thread's own identity structure
  *
@@ -860,9 +860,9 @@ int kjb_pthread_equal(kjb_pthread_t tid1, kjb_pthread_t tid2)
  * ----------------------------------------------------------------------------
 */
 
-int get_kjb_pthread_self(kjb_pthread_t* tid)
+int get_ivi_pthread_self(ivi_pthread_t* tid)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("find this thread's self-identity");
 
 #else
@@ -876,7 +876,7 @@ int get_kjb_pthread_self(kjb_pthread_t* tid)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_exit
+ *                             ivi_pthread_exit
  *
  * End this thread's execution
  *
@@ -899,9 +899,9 @@ int get_kjb_pthread_self(kjb_pthread_t* tid)
  * ----------------------------------------------------------------------------
 */
 
-void kjb_pthread_exit(void* rval_p)
+void ivi_pthread_exit(void* rval_p)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     /* 
      * Kobus. This does not return! 
      *
@@ -916,7 +916,7 @@ void kjb_pthread_exit(void* rval_p)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_join
+ *                             ivi_pthread_join
  *
  * Merge some other thread's execution into this one
  *
@@ -940,9 +940,9 @@ void kjb_pthread_exit(void* rval_p)
  * ----------------------------------------------------------------------------
 */
 
-int kjb_pthread_join(kjb_pthread_t tid, void** rval_p)
+int ivi_pthread_join(ivi_pthread_t tid, void** rval_p)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("join thread");
 
 #else
@@ -973,7 +973,7 @@ int kjb_pthread_join(kjb_pthread_t tid, void** rval_p)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_cancel
+ *                             ivi_pthread_cancel
  *
  * Try to cancel some thread
  *
@@ -997,9 +997,9 @@ int kjb_pthread_join(kjb_pthread_t tid, void** rval_p)
  * ----------------------------------------------------------------------------
 */
 
-int kjb_pthread_cancel(kjb_pthread_t tid)
+int ivi_pthread_cancel(ivi_pthread_t tid)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("cancel thread");
 
 #else
@@ -1026,7 +1026,7 @@ int kjb_pthread_cancel(kjb_pthread_t tid)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_mutex_init
+ *                             ivi_pthread_mutex_init
  *
  * Initialize a mutex object
  *
@@ -1047,12 +1047,12 @@ int kjb_pthread_cancel(kjb_pthread_t tid)
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_mutex_init(
-    kjb_pthread_mutex_t* mutex,
-    kjb_pthread_mutexattr_t* attr
+int ivi_pthread_mutex_init(
+    ivi_pthread_mutex_t* mutex,
+    ivi_pthread_mutexattr_t* attr
 )
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("initialize mutex");
 
 #else
@@ -1074,7 +1074,7 @@ int kjb_pthread_mutex_init(
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_mutex_destroy
+ *                             ivi_pthread_mutex_destroy
  *
  * Destroy a mutex object
  *
@@ -1096,9 +1096,9 @@ int kjb_pthread_mutex_init(
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_mutex_destroy(kjb_pthread_mutex_t* mutex)
+int ivi_pthread_mutex_destroy(ivi_pthread_mutex_t* mutex)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("destroy mutex");
 
 #else
@@ -1126,7 +1126,7 @@ int kjb_pthread_mutex_destroy(kjb_pthread_mutex_t* mutex)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_multithread_wrapper_serialization_lock
+ *                             ivi_multithread_wrapper_serialization_lock
  *
  * Lock the thread master lock
  *
@@ -1150,9 +1150,9 @@ int kjb_pthread_mutex_destroy(kjb_pthread_mutex_t* mutex)
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_multithread_wrapper_serialization_lock()
+int ivi_multithread_wrapper_serialization_lock()
 {
-    return kjb_pthread_mutex_lock(&thread_master_lock);
+    return ivi_pthread_mutex_lock(&thread_master_lock);
 }
 
 
@@ -1161,7 +1161,7 @@ int kjb_multithread_wrapper_serialization_lock()
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_multithread_wrapper_serialization_unlock
+ *                             ivi_multithread_wrapper_serialization_unlock
  *
  * Unlock the thread master lock
  *
@@ -1183,9 +1183,9 @@ int kjb_multithread_wrapper_serialization_lock()
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_multithread_wrapper_serialization_unlock()
+int ivi_multithread_wrapper_serialization_unlock()
 {
-    return kjb_pthread_mutex_unlock(&thread_master_lock);
+    return ivi_pthread_mutex_unlock(&thread_master_lock);
 }
 
 
@@ -1195,7 +1195,7 @@ int kjb_multithread_wrapper_serialization_unlock()
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_key_create
+ *                             ivi_pthread_key_create
  *
  * Create a key for thread-specific data
  *
@@ -1207,9 +1207,9 @@ int kjb_multithread_wrapper_serialization_unlock()
  *
  * For example, very often the associated void pointer is a blob of memory
  * used by the thread, and the destr_function is equal to &free or
- * &kjb_mt_free.
+ * &ivi_mt_free.
  *
- * The total number of allowable keys is limited to KJB_PTHREAD_KEYS_MAX.
+ * The total number of allowable keys is limited to IVI_PTHREAD_KEYS_MAX.
  * This is less than PTHREAD_KEYS_MAX because the wrapper itself uses one key.
  *
  * LOCK STATUS:  no, this does not block
@@ -1217,8 +1217,8 @@ int kjb_multithread_wrapper_serialization_unlock()
  * Returns:
  *      NO_ERROR, if successful.  Otherwise, ERROR and a message is generated.
  *
- * Related:  kjb_pthread_getspecific, kjb_pthread_setspecific
- *           kjb_pthread_key_delete, kjb_mt_free
+ * Related:  ivi_pthread_getspecific, ivi_pthread_setspecific
+ *           ivi_pthread_key_delete, ivi_mt_free
  *
  * Index: threads
  *
@@ -1228,12 +1228,12 @@ int kjb_multithread_wrapper_serialization_unlock()
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_key_create(
-    kjb_pthread_key_t *key,
+int ivi_pthread_key_create(
+    ivi_pthread_key_t *key,
     void (*destr_function) (void *)
 )
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("create TSD key");
 
 #else
@@ -1259,7 +1259,7 @@ int kjb_pthread_key_create(
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_key_delete
+ *                             ivi_pthread_key_delete
  *
  * Delete a key for thread-specific data
  *
@@ -1273,8 +1273,8 @@ int kjb_pthread_key_create(
  *
  * Index: threads
  *
- * Related:  kjb_pthread_getspecific, kjb_pthread_setspecific
- *           kjb_pthread_key_create
+ * Related:  ivi_pthread_getspecific, ivi_pthread_setspecific
+ *           ivi_pthread_key_create
  *
  * Author:  Andrew Predoehl
  *
@@ -1282,9 +1282,9 @@ int kjb_pthread_key_create(
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_key_delete(kjb_pthread_key_t key)
+int ivi_pthread_key_delete(ivi_pthread_key_t key)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("delete TSD key");
 
 #else
@@ -1311,7 +1311,7 @@ int kjb_pthread_key_delete(kjb_pthread_key_t key)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_setspecific
+ *                             ivi_pthread_setspecific
  *
  * Associate data to a thread-specific key
  *
@@ -1326,8 +1326,8 @@ int kjb_pthread_key_delete(kjb_pthread_key_t key)
  * Returns:
  *      NO_ERROR, if successful.  Otherwise, ERROR and a message is generated.
  *
- * Related:  kjb_pthread_getspecific,
- *           kjb_pthread_key_create, kjb_pthread_key_delete
+ * Related:  ivi_pthread_getspecific,
+ *           ivi_pthread_key_create, ivi_pthread_key_delete
  *
  * Index: threads
  *
@@ -1337,9 +1337,9 @@ int kjb_pthread_key_delete(kjb_pthread_key_t key)
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_setspecific(kjb_pthread_key_t key, const void *pointer)
+int ivi_pthread_setspecific(ivi_pthread_key_t key, const void *pointer)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("associate data to a TSD key");
 
 #else
@@ -1353,7 +1353,7 @@ int kjb_pthread_setspecific(kjb_pthread_key_t key, const void *pointer)
             set_error("Cannot set thread-specific data:  EINVAL, invalid key");
             break;
         default:
-            set_error("Cannot do kjb_pthread_setspecific:  code %d", rc);
+            set_error("Cannot do ivi_pthread_setspecific:  code %d", rc);
             break;
     }
     return result;
@@ -1367,12 +1367,12 @@ int kjb_pthread_setspecific(kjb_pthread_key_t key, const void *pointer)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_getspecific
+ *                             ivi_pthread_getspecific
  *
  * Fetch data for a thread-specific key
  *
  * This function provides read access to thread-specific data that you have
- * associated with a key.  Please see the notes for kjb_pthread_setspecific.
+ * associated with a key.  Please see the notes for ivi_pthread_setspecific.
  *
  * LOCK STATUS:  no, this does not block
  *
@@ -1380,8 +1380,8 @@ int kjb_pthread_setspecific(kjb_pthread_key_t key, const void *pointer)
  *      The associated pointer, if successful.  Otherwise, NULL, and an
  *      error message is set.
  *
- * Related:  kjb_pthread_setspecific,
- *           kjb_pthread_key_create, kjb_pthread_key_delete
+ * Related:  ivi_pthread_setspecific,
+ *           ivi_pthread_key_create, ivi_pthread_key_delete
  *
  * Index: threads
  *
@@ -1391,16 +1391,16 @@ int kjb_pthread_setspecific(kjb_pthread_key_t key, const void *pointer)
  *
  * ----------------------------------------------------------------------------
 */
-void* kjb_pthread_getspecific(kjb_pthread_key_t key)
+void* ivi_pthread_getspecific(ivi_pthread_key_t key)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     set_error("Cannot look up TSD key: program linked without libpthread."); 
     return NULL;                   
 #else
     void* p = pthread_getspecific(key);
     if (NULL == p)
     {
-        set_error("kjb_pthread_getspecific key lookup failed");
+        set_error("ivi_pthread_getspecific key lookup failed");
     }
     return p;
 #endif
@@ -1413,13 +1413,13 @@ void* kjb_pthread_getspecific(kjb_pthread_key_t key)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_once
+ *                             ivi_pthread_once
  *
  * Perform some kind of initialization just once
  *
- * This works with a kjb_pthread_once_t flag as an atomic flip-binary-flag
+ * This works with a ivi_pthread_once_t flag as an atomic flip-binary-flag
  * routine, useful for initializing things.  The 'once_control' pointer must
- * point to a static or external variable initialized to KJB_PTHREAD_ONCE_INIT
+ * point to a static or external variable initialized to IVI_PTHREAD_ONCE_INIT
  * and will execute (*init_routine)() just one time.  Subsequent invocations
  * with the same 'once_control' pointer will do nothing.
  *
@@ -1436,12 +1436,12 @@ void* kjb_pthread_getspecific(kjb_pthread_key_t key)
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_once(
-    kjb_pthread_once_t* once_control,
+int ivi_pthread_once(
+    ivi_pthread_once_t* once_control,
     void (*init_routine)(void)
 )
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("do one-time initialization");
 
 #else
@@ -1458,11 +1458,11 @@ int kjb_pthread_once(
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_read_prng_seeds
+ *                             ivi_pthread_read_prng_seeds
  *
  * Read PRNG seeds for this thread
  *
- * When called from a thread started with kjb_pthread_create,
+ * When called from a thread started with ivi_pthread_create,
  * this writes the current state of the pseudo-random number generators (PRNGs)
  * into the buffer indicated by input pointer 's' (which is expected not to
  * equal NULL).  Parameter 'buf_length'
@@ -1485,8 +1485,8 @@ int kjb_pthread_once(
  * This routine is very low-level and not intended to be used
  * except for library introspection and self-testing.
  * To get repeatable random numbers from library code, you need only
- * call set_random_options(), or kjb_seed_rand() and kjb_seed_rand_2().
- * The seeds for the subsequent threads are all derived from the kjb_rand_2()
+ * call set_random_options(), or ivi_seed_rand() and ivi_seed_rand_2().
+ * The seeds for the subsequent threads are all derived from the ivi_rand_2()
  * stream of thread zero.
  *
  * Informally, as of Fall 2013, the library uses two PRNGs each with 48 bits
@@ -1500,8 +1500,8 @@ int kjb_pthread_once(
  *
  * Index: threads, random
  *
- * Related:  set_random_options, kjb_seed_rand, kjb_seed_rand_2,
- *           kjb_seed_rand_with_tod, kjb_seed_rand_2_with_tod,
+ * Related:  set_random_options, ivi_seed_rand, ivi_seed_rand_2,
+ *           ivi_seed_rand_with_tod, ivi_seed_rand_2_with_tod,
  *           get_rand_seed
  *
  * Author:  Andrew Predoehl
@@ -1510,9 +1510,9 @@ int kjb_pthread_once(
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_read_prng_seeds(kjb_uint16* s, size_t buf_length)
+int ivi_pthread_read_prng_seeds(ivi_uint16* s, size_t buf_length)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("read prng seeds");
 
 #else
@@ -1530,7 +1530,7 @@ int kjb_pthread_read_prng_seeds(kjb_uint16* s, size_t buf_length)
     }
     buf_length = MIN_OF(buf_length, 2*SEED_CT);
 
-    ERE(kjb_pthread_mutex_lock(&thread_master_lock));
+    ERE(ivi_pthread_mutex_lock(&thread_master_lock));
 
     if (!is_a_child_thread())
     {
@@ -1540,17 +1540,17 @@ int kjb_pthread_read_prng_seeds(kjb_uint16* s, size_t buf_length)
     }
 
     /* all other threads use erand48() based on their respective seeds. */
-    p=(struct Thread_props*) kjb_pthread_getspecific(fs_kjb_pthread_props_key);
+    p=(struct Thread_props*) ivi_pthread_getspecific(fs_ivi_pthread_props_key);
     NGC(p);
 
     /* copy seed bits */
-    kjb_memcpy((char*) s, (char*) p -> seed1, SEED_CT * sizeof(kjb_uint16));
+    ivi_memcpy((char*) s, (char*) p -> seed1, SEED_CT * sizeof(ivi_uint16));
     s += SEED_CT;
-    kjb_memcpy((char*) s, (char*) p -> seed2, SEED_CT * sizeof(kjb_uint16));
+    ivi_memcpy((char*) s, (char*) p -> seed2, SEED_CT * sizeof(ivi_uint16));
     result = NO_ERROR;
 
 cleanup:
-    ERE(kjb_pthread_mutex_unlock(&thread_master_lock));
+    ERE(ivi_pthread_mutex_unlock(&thread_master_lock));
     return result;
 #endif
 }
@@ -1561,7 +1561,7 @@ cleanup:
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_attr_init
+ *                             ivi_pthread_attr_init
  *
  * Initialize an attribute object
  *
@@ -1572,7 +1572,7 @@ cleanup:
  * longer needed; and absent an intervening destruction, this function should
  * not be called twice on the same object.
  *
- * C++ developers: consider using class kjb::pthread_attr instead.
+ * C++ developers: consider using class ivi::pthread_attr instead.
  *
  * LOCK STATUS:  no, this does not block
  *
@@ -1582,7 +1582,7 @@ cleanup:
  * Index: threads
  *
  * Related:
- *      kjb_pthread_attr_destroy
+ *      ivi_pthread_attr_destroy
  *
  * Author:  Andrew Predoehl
  *
@@ -1590,9 +1590,9 @@ cleanup:
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_attr_init(kjb_pthread_attr_t* attr_p)
+int ivi_pthread_attr_init(ivi_pthread_attr_t* attr_p)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("initialize thread attribute");
 
 #else
@@ -1621,14 +1621,14 @@ int kjb_pthread_attr_init(kjb_pthread_attr_t* attr_p)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_attr_destroy
+ *                             ivi_pthread_attr_destroy
  *
  * Destroy an attribute object
  *
  * This destroys an attribute object for a thread.  This is needed because
  * attributes may, on any platform, use dynamic resources that must be freed.
  *
- * C++ developers: consider using class kjb::pthread_attr instead.
+ * C++ developers: consider using class ivi::pthread_attr instead.
  *
  * LOCK STATUS:  no, this does not block
  *
@@ -1638,7 +1638,7 @@ int kjb_pthread_attr_init(kjb_pthread_attr_t* attr_p)
  * Index: threads
  *
  * Related:
- *      kjb_pthread_attr_init
+ *      ivi_pthread_attr_init
  *
  * Author:  Andrew Predoehl
  *
@@ -1646,9 +1646,9 @@ int kjb_pthread_attr_init(kjb_pthread_attr_t* attr_p)
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_attr_destroy(kjb_pthread_attr_t* attr_p)
+int ivi_pthread_attr_destroy(ivi_pthread_attr_t* attr_p)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("destroy thread attribute");
 
 #else
@@ -1675,15 +1675,15 @@ int kjb_pthread_attr_destroy(kjb_pthread_attr_t* attr_p)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_attr_setdetachstate
+ *                             ivi_pthread_attr_setdetachstate
  *
  * Set the detach state of a thread attribute
  *
  * This controls the "detach" state (i.e., joinable or detached) of a
  * thread attribute object.  Valid values for 'state' are
  *
- * | KJB_PTHREAD_CREATE_JOINABLE
- * | KJB_PTHREAD_CREATE_DETACHED
+ * | IVI_PTHREAD_CREATE_JOINABLE
+ * | IVI_PTHREAD_CREATE_DETACHED
  *
  * . . . with the first being the default (at least, as of this writing).
  *
@@ -1696,7 +1696,7 @@ int kjb_pthread_attr_destroy(kjb_pthread_attr_t* attr_p)
  * Index: threads
  *
  * Related:
- *      kjb_pthread_attr_getdetachstate
+ *      ivi_pthread_attr_getdetachstate
  *
  * Author:  Andrew Predoehl
  *
@@ -1704,9 +1704,9 @@ int kjb_pthread_attr_destroy(kjb_pthread_attr_t* attr_p)
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_attr_setdetachstate(kjb_pthread_attr_t* attr_p, int state)
+int ivi_pthread_attr_setdetachstate(ivi_pthread_attr_t* attr_p, int state)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("set thread attribute");
 
 #else
@@ -1733,7 +1733,7 @@ int kjb_pthread_attr_setdetachstate(kjb_pthread_attr_t* attr_p, int state)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             kjb_pthread_attr_getdetachstate
+ *                             ivi_pthread_attr_getdetachstate
  *
  * Get the detach state of a thread attribute
  *
@@ -1748,7 +1748,7 @@ int kjb_pthread_attr_setdetachstate(kjb_pthread_attr_t* attr_p, int state)
  * Index: threads
  *
  * Related:
- *      kjb_pthread_attr_setdetachstate
+ *      ivi_pthread_attr_setdetachstate
  *
  * Author:  Andrew Predoehl
  *
@@ -1756,9 +1756,9 @@ int kjb_pthread_attr_setdetachstate(kjb_pthread_attr_t* attr_p, int state)
  *
  * ----------------------------------------------------------------------------
 */
-int kjb_pthread_attr_getdetachstate(kjb_pthread_attr_t* attr_p, int* state)
+int ivi_pthread_attr_getdetachstate(ivi_pthread_attr_t* attr_p, int* state)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("get thread attribute");
 
 #else
@@ -1783,7 +1783,7 @@ int kjb_pthread_attr_getdetachstate(kjb_pthread_attr_t* attr_p, int* state)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             get_kjb_pthread_number
+ *                             get_ivi_pthread_number
  *
  * Get this thread's identity index
  *
@@ -1791,20 +1791,20 @@ int kjb_pthread_attr_getdetachstate(kjb_pthread_attr_t* attr_p, int* state)
  * identity info of this thread?
  *
  * The native Pthreads way to answer to this question
- * is available via our wrapped function get_kjb_pthread_self().
- * Unfortunately it only returns a kjb_pthread_t object, which is
+ * is available via our wrapped function get_ivi_pthread_self().
+ * Unfortunately it only returns a ivi_pthread_t object, which is
  * disappointing, because it cannot be printed, and it can only be compared
- * to that of other threads with kjb_pthread_equal().  You cannot order
+ * to that of other threads with ivi_pthread_equal().  You cannot order
  * these structures in a portable way.
  *
  * As an alternative, you can use this function to get an integer that
  * identifies this thread.  The original, primal thread that started the
  * program always and only gets value 0.  All threads created with
- * kjb_pthread_create() get a positive integer identity.  Unless the counter
+ * ivi_pthread_create() get a positive integer identity.  Unless the counter
  * is reset, the threads will all get identity integers increasing by one in
  * the order that they were created (with the caveat below).
  *
- * Use reset_kjb_pthread_counter() to re-start the identity values at one.
+ * Use reset_ivi_pthread_counter() to re-start the identity values at one.
  *
  * Caveat:
  * I've observed some funny situations with threads that suggest
@@ -1822,7 +1822,7 @@ int kjb_pthread_attr_getdetachstate(kjb_pthread_attr_t* attr_p, int* state)
  * Index: threads
  *
  * Related:
- *      get_kjb_pthread_self, reset_kjb_pthread_counter
+ *      get_ivi_pthread_self, reset_ivi_pthread_counter
  *
  * Author:  Andrew Predoehl
  *
@@ -1830,9 +1830,9 @@ int kjb_pthread_attr_getdetachstate(kjb_pthread_attr_t* attr_p, int* state)
  *
  * ----------------------------------------------------------------------------
 */
-int get_kjb_pthread_number(void)
+int get_ivi_pthread_number(void)
 {
-#ifndef KJB_HAVE_PTHREAD
+#ifndef IVI_HAVE_PTHREAD
     SET_MSG_RETURN_ERROR("get thread number");
 
 #else
@@ -1840,7 +1840,7 @@ int get_kjb_pthread_number(void)
 
     if (!is_a_child_thread()) return 0;
 
-    p=(struct Thread_props*) kjb_pthread_getspecific(fs_kjb_pthread_props_key);
+    p=(struct Thread_props*) ivi_pthread_getspecific(fs_ivi_pthread_props_key);
     NPETE(p);
     return p -> thread_counter;
 #endif
@@ -1850,14 +1850,14 @@ int get_kjb_pthread_number(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
 
 /* ============================================================================
- *                             reset_kjb_pthread_counter
+ *                             reset_ivi_pthread_counter
  *
  * Reset the thread identity indices back to one.
  *
- * Please see the documentation for get_kjb_pthread_number().
+ * Please see the documentation for get_ivi_pthread_number().
  *
  * After calling this function, the next thread to be created with
- * kjb_pthread_create() will have a thread identity integer of one,
+ * ivi_pthread_create() will have a thread identity integer of one,
  * the next will be two, and so on,
  * even if they are not the first, second, etc. threads to be spawned.  
  * In other words, the counter starts over again.
@@ -1870,7 +1870,7 @@ int get_kjb_pthread_number(void)
  * Index: threads
  *
  * Related:
- *      get_kjb_pthread_self, get_kjb_pthread_number
+ *      get_ivi_pthread_self, get_ivi_pthread_number
  *
  * Author:  Andrew Predoehl
  *
@@ -1878,9 +1878,9 @@ int get_kjb_pthread_number(void)
  *
  * ----------------------------------------------------------------------------
 */
-void reset_kjb_pthread_counter(void)
+void reset_ivi_pthread_counter(void)
 {
-    fs_kjb_pthread_counter = 0;
+    fs_ivi_pthread_counter = 0;
 }
 
 

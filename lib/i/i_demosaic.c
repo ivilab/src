@@ -1,5 +1,5 @@
 
-/* $Id: i_demosaic.c 8780 2011-02-27 23:42:02Z predoehl $ */
+/* $Id: i_demosaic.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -131,7 +131,7 @@ int set_demosaic_options(const char* option, const char* value)
  * -----------------------------------------------------------------------------
 */
 
-int ow_demosaic(KJB_image* ip)
+int ow_demosaic(IVI_image* ip)
 {
     if (fs_demosaic_method == DONT_DEMOSAIC)
     {
@@ -175,7 +175,7 @@ int ow_demosaic(KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int ow_dumb_demosaic(KJB_image* ip)
+int ow_dumb_demosaic(IVI_image* ip)
 {
     int   num_rows, num_cols, i, j, m, n;
     float r, g1, g2, b;

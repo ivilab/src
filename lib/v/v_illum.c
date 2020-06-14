@@ -1,5 +1,5 @@
 
-/* $Id: v_illum.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: v_illum.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
      Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -130,7 +130,7 @@ int is_possible_illum_ratio(double r_ratio, double g_ratio)
 
     if (fs_illum_jumps == NULL)
     {
-        valid_jump_fp = kjb_fopen(ILLUM_JUMP_FILE, "r");
+        valid_jump_fp = ivi_fopen(ILLUM_JUMP_FILE, "r");
 
         dbx(valid_jump_fp);
 
@@ -144,7 +144,7 @@ int is_possible_illum_ratio(double r_ratio, double g_ratio)
             if (read_res == EOF)
             {
                 set_error("Unexpected EOF reading %F.\n", valid_jump_fp);
-                kjb_fclose(valid_jump_fp);
+                ivi_fclose(valid_jump_fp);
                 return ERROR;
             }
             ERE(ss1pi(line, &num_jump_steps));
@@ -175,13 +175,13 @@ int is_possible_illum_ratio(double r_ratio, double g_ratio)
                     if (read_res == EOF)
                     {
                         set_error("Unexpected EOF reading %F.\n", valid_jump_fp);
-                        kjb_fclose(valid_jump_fp);
+                        ivi_fclose(valid_jump_fp);
                         return ERROR;
                     }
                     ERE(ss1pi(line, &(fs_illum_jumps[i][j])));
                 }
             }
-            kjb_fclose(valid_jump_fp);
+            ivi_fclose(valid_jump_fp);
         }
         else
         {
@@ -191,7 +191,7 @@ int is_possible_illum_ratio(double r_ratio, double g_ratio)
             Vector* rg_vp = NULL;
             double r1, g1;
             int illum_rg_count = 0;
-            const int max_num_illum_rg = kjb_rint(1.0 + 1.0 / (ILLUM_RG_STEP * ILLUM_RG_STEP));
+            const int max_num_illum_rg = ivi_rint(1.0 + 1.0 / (ILLUM_RG_STEP * ILLUM_RG_STEP));
             int c1, c2;
             double max_r_ratio = 0.0, max_g_ratio = 0.0;
 
@@ -240,8 +240,8 @@ int is_possible_illum_ratio(double r_ratio, double g_ratio)
                     double r2 = illum_rg_mp->elements[ c2 ][ 0 ];
                     double g2 = illum_rg_mp->elements[ c2 ][ 1 ];
 
-                    i = kjb_rint(num_jump_steps * r1 / (r2 * ILLUM_R_FACTOR));
-                    j = kjb_rint(num_jump_steps * g1 / (g2 * ILLUM_G_FACTOR));
+                    i = ivi_rint(num_jump_steps * r1 / (r2 * ILLUM_R_FACTOR));
+                    j = ivi_rint(num_jump_steps * g1 / (g2 * ILLUM_G_FACTOR));
 
                     if (i >= num_jump_steps) i = num_jump_steps - 1;
                     if (j >= num_jump_steps) j = num_jump_steps - 1;
@@ -256,24 +256,24 @@ int is_possible_illum_ratio(double r_ratio, double g_ratio)
             dbf(max_r_ratio);
             dbf(max_g_ratio);
 
-            NRE(valid_jump_fp = kjb_fopen(ILLUM_JUMP_FILE, "w"));
+            NRE(valid_jump_fp = ivi_fopen(ILLUM_JUMP_FILE, "w"));
 
-            ERE(kjb_fprintf(valid_jump_fp, "%d\n", num_jump_steps));
+            ERE(ivi_fprintf(valid_jump_fp, "%d\n", num_jump_steps));
 
             for (i=0; i<num_jump_steps; i++)
             {
                 for (j=0; j<num_jump_steps; j++)
                 {
-                    ERE(kjb_fprintf(valid_jump_fp, "%d\n", fs_illum_jumps[i][j]));
+                    ERE(ivi_fprintf(valid_jump_fp, "%d\n", fs_illum_jumps[i][j]));
                 }
             }
 
-            ERE(kjb_fclose(valid_jump_fp));
+            ERE(ivi_fclose(valid_jump_fp));
         }
     }
 
-    i = kjb_rint(r_ratio * num_jump_steps);
-    j = kjb_rint(g_ratio * num_jump_steps);
+    i = ivi_rint(r_ratio * num_jump_steps);
+    j = ivi_rint(g_ratio * num_jump_steps);
 
     if (i >= num_jump_steps) i = num_jump_steps - 1;
     if (j >= num_jump_steps) j = num_jump_steps - 1;
@@ -390,7 +390,7 @@ int is_possible_shadow_ratio
 
     if (fs_shadow_jumps == NULL)
     {
-        valid_jump_fp = kjb_fopen(SHADOW_JUMP_FILE, "r");
+        valid_jump_fp = ivi_fopen(SHADOW_JUMP_FILE, "r");
 
         dbx(valid_jump_fp);
 
@@ -404,7 +404,7 @@ int is_possible_shadow_ratio
             if (read_res == EOF)
             {
                 set_error("Unexpected EOF reading %F.\n", valid_jump_fp);
-                kjb_fclose(valid_jump_fp);
+                ivi_fclose(valid_jump_fp);
                 return ERROR;
             }
             ERE(ss1pi(line, &num_jump_steps));
@@ -438,14 +438,14 @@ int is_possible_shadow_ratio
                         if (read_res == EOF)
                         {
                             set_error("Unexpected EOF reading %F.\n", valid_jump_fp);
-                            kjb_fclose(valid_jump_fp);
+                            ivi_fclose(valid_jump_fp);
                             return ERROR;
                         }
                         ERE(ss1pi(line, &(fs_shadow_jumps[i][j][k])));
                     }
                 }
             }
-            kjb_fclose(valid_jump_fp);
+            ivi_fclose(valid_jump_fp);
         }
         else
         {
@@ -455,7 +455,7 @@ int is_possible_shadow_ratio
             Vector* rg_vp = NULL;
             double r1, g1, b1;
             int illum_rg_count = 0;
-            const int max_num_illum_rg = kjb_rint(1.0 + 1.0 / (SHADOW_RG_STEP * SHADOW_RG_STEP));
+            const int max_num_illum_rg = ivi_rint(1.0 + 1.0 / (SHADOW_RG_STEP * SHADOW_RG_STEP));
             int c1, c2;
 
             for (i=0; i<num_jump_steps; i++)
@@ -518,9 +518,9 @@ int is_possible_shadow_ratio
                     */
                     for (count = 0; count < 5 * NUM_SHADOW_LUM_STEPS; count++)
                     {
-                        i = kjb_rint(num_jump_steps * r1 / (f * r2 + r1));
-                        j = kjb_rint(num_jump_steps * g1 / (f * g2 + g1));
-                        k = kjb_rint(num_jump_steps * b1 / (f * b2 + b1));
+                        i = ivi_rint(num_jump_steps * r1 / (f * r2 + r1));
+                        j = ivi_rint(num_jump_steps * g1 / (f * g2 + g1));
+                        k = ivi_rint(num_jump_steps * b1 / (f * b2 + b1));
 
                         if (i >= num_jump_steps) i = num_jump_steps - 1;
                         if (j >= num_jump_steps) j = num_jump_steps - 1;
@@ -533,9 +533,9 @@ int is_possible_shadow_ratio
                 }
             }
 
-            NRE(valid_jump_fp = kjb_fopen(SHADOW_JUMP_FILE, "w"));
+            NRE(valid_jump_fp = ivi_fopen(SHADOW_JUMP_FILE, "w"));
 
-            ERE(kjb_fprintf(valid_jump_fp, "%d\n", num_jump_steps));
+            ERE(ivi_fprintf(valid_jump_fp, "%d\n", num_jump_steps));
 
             for (i=0; i<num_jump_steps; i++)
             {
@@ -543,18 +543,18 @@ int is_possible_shadow_ratio
                 {
                     for (k=0; k<num_jump_steps; k++)
                     {
-                        ERE(kjb_fprintf(valid_jump_fp, "%d\n", fs_shadow_jumps[i][j][k]));
+                        ERE(ivi_fprintf(valid_jump_fp, "%d\n", fs_shadow_jumps[i][j][k]));
                     }
                 }
             }
 
-            ERE(kjb_fclose(valid_jump_fp));
+            ERE(ivi_fclose(valid_jump_fp));
         }
     }
 
-    i = kjb_rint(R_ratio * SHADOW_JUMP_STEPS);
-    j = kjb_rint(G_ratio * SHADOW_JUMP_STEPS);
-    k = kjb_rint(B_ratio * SHADOW_JUMP_STEPS);
+    i = ivi_rint(R_ratio * SHADOW_JUMP_STEPS);
+    j = ivi_rint(G_ratio * SHADOW_JUMP_STEPS);
+    k = ivi_rint(B_ratio * SHADOW_JUMP_STEPS);
 
     if (i == SHADOW_JUMP_STEPS) i--;
     if (j == SHADOW_JUMP_STEPS) j--;

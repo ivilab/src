@@ -1,5 +1,5 @@
 
-/* $Id: query.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: query.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     term_puts(line); 
     term_puts("\n"); 
 
-    kjb_query("KJB-Q: Now you see it ..... (enter a line)> ", line, 100);
+    ivi_query("IVI-Q: Now you see it ..... (enter a line)> ", line, 100);
     term_puts("Now you don't.\n");
     term_puts(line); 
     term_puts("\n"); 

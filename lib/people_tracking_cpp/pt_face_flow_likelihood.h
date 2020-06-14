@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_face_flow_likelihood.h 16018 2013-11-15 05:31:53Z jguan1 $ */
+/* $Id: pt_face_flow_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_FACE_FLOW_LIKELIHOOD_H
 #define PT_FACE_FLOW_LIKELIHOOD_H
@@ -30,7 +30,7 @@
 #include <people_tracking_cpp/pt_visibility.h>
 #include <prob_cpp/prob_distribution.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -86,7 +86,7 @@ private:
 
 };  // class Face_flow_likelihood
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif
 

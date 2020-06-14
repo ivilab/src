@@ -25,7 +25,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb::opengl;
+using namespace ivi::opengl;
 
 
 float x = 0;
@@ -37,7 +37,7 @@ float sy = 1;
 float theta = 0;
 float dtheta = 0.05;
 
-kjb::opengl::Sprite smile;
+ivi::opengl::Sprite smile;
 
 const int HEIGHT = 300;
 const int WIDTH = 300;
@@ -81,7 +81,7 @@ void key_handler(unsigned char k, int x, int y)
 
 int main()
 {
-    kjb::opengl::Glut::set_init_window_size(WIDTH, HEIGHT);
+    ivi::opengl::Glut::set_init_window_size(WIDTH, HEIGHT);
     Glut_window wnd;
     wnd.set_size(WIDTH, HEIGHT);
 
@@ -93,7 +93,7 @@ int main()
 
     // Initialize displayables
 //    try{
-        smile = Sprite(kjb::Image(string("input/smile.png")));
+        smile = Sprite(ivi::Image(string("input/smile.png")));
 //    }
 //    catch(Opengl_error& err)
 //    {

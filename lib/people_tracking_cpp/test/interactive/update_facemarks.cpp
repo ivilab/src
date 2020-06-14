@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: update_facemarks.cpp 19002 2015-05-05 14:23:57Z jguan1 $ */
+/* $Id: update_facemarks.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /**
  * @file Test update_facemarks function
@@ -41,8 +41,8 @@
 #include <boost/array.hpp>
 #include <boost/assign.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace std;
 
 const boost::array<Vector3, 7> COLOR_ORDER_ = boost::assign::list_of
@@ -54,8 +54,8 @@ const boost::array<Vector3, 7> COLOR_ORDER_ = boost::assign::list_of
     (Vector3(0.75, 0.75, 0.0))
     (Vector3(0.25, 0.25, 0.25));
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace std;
 
 void draw_point
@@ -161,9 +161,9 @@ void draw_face
 int main(int argc, char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    //kjb_c::kjb_l_set("heap-checking", "off");
-    //kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    //ivi_c::ivi_l_set("heap-checking", "off");
+    //ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     if(argc != 5)
     {
@@ -205,7 +205,7 @@ int main(int argc, char** argv)
     //vector<vector<const Deva_facemark*> > noise_faces 
     update_facemarks(scene.association, all_faces);
 
-    kjb_c::kjb_mkdir(outdir.c_str());
+    ivi_c::ivi_mkdir(outdir.c_str());
     boost::format out_img_fmt(outdir + "/%05d.jpg");
 
     // visualize the results
@@ -244,7 +244,7 @@ int main(int argc, char** argv)
     //std::cout << " num of noise_face: " << num_noise_faces << std::endl;
 
 #ifdef TEST
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
 #endif
     return EXIT_SUCCESS;
 }

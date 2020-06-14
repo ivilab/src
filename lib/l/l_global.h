@@ -1,5 +1,5 @@
 
-/* $Id: l_global.h 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_global.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -37,7 +37,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -62,27 +62,27 @@ namespace kjb_c {
 /* Kobus---moved here from l_bits.h, so we can compile.
  * Predoehl:  unfortunately we cannot make this const int; that confuses g++.
  */
-GLOBAL_DEF int kjb_endian_test GLOBAL_INIT( = 1);
+GLOBAL_DEF int ivi_endian_test GLOBAL_INIT( = 1);
 
 
 /*
- * kjb_debug_level >= 2;  ---> Standard. "db" macros print via "kjb" routines.
+ * ivi_debug_level >= 2;  ---> Standard. "db" macros print via "ivi" routines.
  *
- * kjb_debug_level == 1;  ---> "db" macros print via system routines (used when
- *                             "kjb" routines can't be used - IE, when they
+ * ivi_debug_level == 1;  ---> "db" macros print via system routines (used when
+ *                             "ivi" routines can't be used - IE, when they
  *                             are being debugged!)
  *
- * kjb_debug_level == 0;  ---> Messages are blocked.
+ * ivi_debug_level == 0;  ---> Messages are blocked.
  */
 
 #ifdef TEST
-    GLOBAL_DEF int kjb_debug_level  GLOBAL_INIT( = 2 );
+    GLOBAL_DEF int ivi_debug_level  GLOBAL_INIT( = 2 );
 #else
-    GLOBAL_DEF int kjb_debug_level  GLOBAL_INIT( = 0 );
+    GLOBAL_DEF int ivi_debug_level  GLOBAL_INIT( = 0 );
 #endif
 
 #ifdef TEST
-    GLOBAL_DEF int kjb_suppress_test_messages  GLOBAL_INIT( = 0 );
+    GLOBAL_DEF int ivi_suppress_test_messages  GLOBAL_INIT( = 0 );
 #endif 
 
 
@@ -90,22 +90,22 @@ GLOBAL_DEF int kjb_endian_test GLOBAL_INIT( = 1);
  * This global currently has the single purpose of switching the action
  * of debug print statements to NOT use the library.
 */
-GLOBAL_DEF int kjb_cleanup_started  GLOBAL_INIT( = 0 );
+GLOBAL_DEF int ivi_cleanup_started  GLOBAL_INIT( = 0 );
 
-GLOBAL_DEF int kjb_fork_depth       GLOBAL_INIT( = 0 );
+GLOBAL_DEF int ivi_fork_depth       GLOBAL_INIT( = 0 );
 
-GLOBAL_DEF int kjb_program_major_version        GLOBAL_INIT( = 0 );
-GLOBAL_DEF int kjb_program_minor_version        GLOBAL_INIT( = 0 );
-GLOBAL_DEF int kjb_program_patch_level          GLOBAL_INIT( = 0 );
+GLOBAL_DEF int ivi_program_major_version        GLOBAL_INIT( = 0 );
+GLOBAL_DEF int ivi_program_minor_version        GLOBAL_INIT( = 0 );
+GLOBAL_DEF int ivi_program_patch_level          GLOBAL_INIT( = 0 );
 
 #ifdef TEST
 #ifdef PROGRAMMER_is_kobus
-GLOBAL_DEF int kjb_use_memcpy                  GLOBAL_INIT( = FALSE);
+GLOBAL_DEF int ivi_use_memcpy                  GLOBAL_INIT( = FALSE);
 #else
-GLOBAL_DEF int kjb_use_memcpy                  GLOBAL_INIT( = TRUE);
+GLOBAL_DEF int ivi_use_memcpy                  GLOBAL_INIT( = TRUE);
 #endif 
 #else
-GLOBAL_DEF int kjb_use_memcpy                  GLOBAL_INIT( = TRUE);
+GLOBAL_DEF int ivi_use_memcpy                  GLOBAL_INIT( = TRUE);
 #endif 
 
 #ifdef TEST
@@ -115,7 +115,7 @@ GLOBAL_DEF int kjb_use_memcpy                  GLOBAL_INIT( = TRUE);
 #endif
 
 /* Shared by l_sys_err.c and l_sys_sig.c */
-GLOBAL_DEF void (*kjb_bug_handler)(const char*) GLOBAL_INIT( = default_bug_handler );
+GLOBAL_DEF void (*ivi_bug_handler)(const char*) GLOBAL_INIT( = default_bug_handler );
 
 GLOBAL_DEF volatile Bool halt_all_output        GLOBAL_INIT( = FALSE );
 GLOBAL_DEF volatile Bool halt_term_output       GLOBAL_INIT( = FALSE );
@@ -132,8 +132,8 @@ GLOBAL_DEF volatile Bool term_no_block_flag     GLOBAL_INIT( = FALSE );
 GLOBAL_DEF volatile int num_term_lines         GLOBAL_INIT( = 0 );
 GLOBAL_DEF volatile int num_term_chars         GLOBAL_INIT( = 0 );
 GLOBAL_DEF volatile Bool pause_on_next          GLOBAL_INIT( = FALSE );
-GLOBAL_DEF volatile int kjb_tty_rows           GLOBAL_INIT( = 24 );
-GLOBAL_DEF volatile int kjb_tty_cols           GLOBAL_INIT( = 80 );
+GLOBAL_DEF volatile int ivi_tty_rows           GLOBAL_INIT( = 24 );
+GLOBAL_DEF volatile int ivi_tty_cols           GLOBAL_INIT( = 80 );
 
 GLOBAL_DEF volatile int term_io_since_last_input_attempt GLOBAL_INIT( = FALSE );
 
@@ -141,7 +141,7 @@ GLOBAL_DEF volatile int term_io_since_last_input_attempt GLOBAL_INIT( = FALSE );
     GLOBAL_DEF jmp_buf timer_interupt_env;
 #endif
 
-GLOBAL_DEF volatile Bool kjb_timed_out GLOBAL_INIT( = FALSE );
+GLOBAL_DEF volatile Bool ivi_timed_out GLOBAL_INIT( = FALSE );
 
 GLOBAL_DEF volatile int recorded_signal;
 
@@ -155,8 +155,8 @@ GLOBAL_DEF volatile Bool io_atn_flag                GLOBAL_INIT( = FALSE );
 GLOBAL_DEF volatile Bool iteration_atn_flag         GLOBAL_INIT( = FALSE );
 GLOBAL_DEF volatile Bool sort_atn_flag              GLOBAL_INIT( = FALSE );
 
-GLOBAL_DEF int kjb_comment_char                    GLOBAL_INIT( = '#' );
-GLOBAL_DEF int kjb_header_char                     GLOBAL_INIT( = '!' );
+GLOBAL_DEF int ivi_comment_char                    GLOBAL_INIT( = '#' );
+GLOBAL_DEF int ivi_header_char                     GLOBAL_INIT( = '!' );
 
 
 #undef GLOBAL_DEF

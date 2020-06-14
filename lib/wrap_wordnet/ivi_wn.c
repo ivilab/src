@@ -51,14 +51,14 @@
 |
 * =========================================================================== */
 
-#include "wrap_wordnet/kjb_wn.h"
+#include "wrap_wordnet/ivi_wn.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 
 SynsetPtr find_synset(const char * word, int pos, int query_type, int word_sense)
 {

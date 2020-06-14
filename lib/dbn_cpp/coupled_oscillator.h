@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: coupled_oscillator.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: coupled_oscillator.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_COUPLED_OSCILLATOR_H_
-#define KJB_TIES_COUPLED_OSCILLATOR_H_
+#ifndef IVI_TIES_COUPLED_OSCILLATOR_H_
+#define IVI_TIES_COUPLED_OSCILLATOR_H_
 
 #include <m_cpp/m_vector.h>
 #include <boost/numeric/odeint.hpp>
@@ -29,7 +29,7 @@
 
 #include "dbn_cpp/typedefs.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 static const double DEFAULT_PERIOD = 5.0;
@@ -392,7 +392,7 @@ struct Integrator_observer
  */
 /*void integrate_states
 (
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
 std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> > clos,
 #else
@@ -413,7 +413,7 @@ std::vector<Coupled_oscillator,
  */
 void integrate_states_matrix_exp
 (
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
     std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> >& clos,
 #else
@@ -457,7 +457,7 @@ State_type get_state_matrix_exp
 
 void integrate_states_modal
 (
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
     std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> >& clos,
 #else
@@ -474,7 +474,7 @@ void integrate_states_modal
 
 void integrate_states
 (
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
     std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> >& clos,
 #else

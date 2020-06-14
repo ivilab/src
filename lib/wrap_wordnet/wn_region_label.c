@@ -53,7 +53,7 @@
 
 #include "wrap_wordnet/wn_region_label.h"
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 #include "wn.h"
 #else 
 #include "wrap_wordnet/wn_dont_have.h"
@@ -626,7 +626,7 @@ int parse_word_sense_from_str
     Word_sense **word_wpp
 )
 {
-#ifdef KJB_HAVE_WN 
+#ifdef IVI_HAVE_WN 
     char copied_str[MAX_WORD_LENGTH] ;
     char word_str[MAX_WORD_LENGTH] ;
     char new_word_str[MAX_WORD_LENGTH] ;
@@ -769,7 +769,7 @@ int merge_word_occurrence
     Int_matrix       **new_occurrence_mpp
 )
 {
-#ifdef KJB_HAVE_WN 
+#ifdef IVI_HAVE_WN 
     int i, k1, k2;
     int index;
     int length;
@@ -1329,7 +1329,7 @@ int relabel_images
                                            label_array_ptr,
                                            &newlabel_array_ptr) == ERROR)
          {
-             kjb_print_error();
+             ivi_print_error();
              res = ERROR;
              break;
          }
@@ -1547,7 +1547,7 @@ int replace_plurals_with_singulars
     Array *words_array_ptr
 )
 {
-#ifdef KJB_HAVE_WN 
+#ifdef IVI_HAVE_WN 
     int num_words;
     int i;
     char *morphed_word;

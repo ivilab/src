@@ -36,10 +36,10 @@
 
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
-void kjb::pt::update_scene_state
+void ivi::pt::update_scene_state
 (
     const Scene& scene,
     const Facemark_data& fmdata,
@@ -79,7 +79,7 @@ void kjb::pt::update_scene_state
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::refine_scene_state
+void ivi::pt::refine_scene_state
 (
     const Scene& scene,
     const Scene_posterior& post
@@ -115,7 +115,7 @@ void kjb::pt::refine_scene_state
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-//void kjb::pt::refine_target_state
+//void ivi::pt::refine_target_state
 //(
 //    const Target& target,
 //    const Perspective_camera& cam,
@@ -205,7 +205,7 @@ void kjb::pt::refine_scene_state
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::refine_target_state
+void ivi::pt::refine_target_state
 (
     const Target& target,
     const Perspective_camera& cam,

@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: pixpoint.h 21448 2017-06-28 22:00:33Z kobus $
+ * $Id: pixpoint.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef PIXPOINT_H_UOFARIZONAVISION
@@ -21,7 +21,7 @@
 
 //define HERE std::cout <<"!!!! Control at "<< __FILE__ <<':'<< __LINE__ <<'\n'
 
-namespace kjb
+namespace ivi
 {
 
 /// @brief support for the path algorithm I call the quasi-Dijkstra method.
@@ -61,10 +61,10 @@ struct PixPoint
     typedef int Integer;    ///< any signed integer valued type is fine
 
     /// @brief exception thrown if the PixPoint is used while uninitialized
-    struct Unused : public kjb::Result_error
+    struct Unused : public ivi::Result_error
     {
         Unused( const std::string& m, const char* f, int l )
-        :   kjb::Result_error( m, f, l )
+        :   ivi::Result_error( m, f, l )
         {}
     };
 
@@ -73,7 +73,7 @@ struct PixPoint
     {
         if ( TEST_PIXPOINT_UNUSED && b )
         {
-            KJB_THROW_2( Unused, "Unused PixPoint" );
+            IVI_THROW_2( Unused, "Unused PixPoint" );
         }
     }
 
@@ -397,15 +397,15 @@ struct PixPoint::Is_inbounds : public std::unary_function< PixPoint, bool >
 
 
 /// @brief convert the PixPoint to a floating point format
-inline kjb::Vector2 to_vector2(const PixPoint& p)
+inline ivi::Vector2 to_vector2(const PixPoint& p)
 {
     PixPoint::fault_if(p.is_unused());
-    return kjb::Vector2(p.x, p.y);
+    return ivi::Vector2(p.x, p.y);
 }
 
 
 /// @brief round to near integers, disregarding overrange values
-inline PixPoint reckless_round(const kjb::Vector2& v)
+inline PixPoint reckless_round(const ivi::Vector2& v)
 {
     // It is reckless because the value might not fit in an integer,
     // and we don't even bother to check.
@@ -414,7 +414,7 @@ inline PixPoint reckless_round(const kjb::Vector2& v)
 }
 
 /// @brief truncate towards negative infinity, disregarding overrange values
-inline PixPoint reckless_floor(const kjb::Vector2& v)
+inline PixPoint reckless_floor(const ivi::Vector2& v)
 {
     // It is reckless because the value might not fit in an integer,
     // and we don't even bother to check.
@@ -423,7 +423,7 @@ inline PixPoint reckless_floor(const kjb::Vector2& v)
 }
 
 /// @brief round the vector contents to integers, disregarding overrange values
-inline PixPoint reckless_ceil(const kjb::Vector2& v)
+inline PixPoint reckless_ceil(const ivi::Vector2& v)
 {
     // It is reckless because the value might not fit in an integer,
     // and we don't even bother to check.
@@ -446,7 +446,7 @@ PixPoint str_to_PixPoint( const std::string& spp, const std::string& sep="," )
 }
 
 }   /* End of namespace qd block. */
-}   /* End of namespace kjb block. */
+}   /* End of namespace ivi block. */
 
 namespace std
 {
@@ -455,8 +455,8 @@ namespace std
     /// @brief swap representations of two integer-valued XY pairs
     template<>
     inline void swap(
-        kjb::qd::PixPoint& p1,
-        kjb::qd::PixPoint& p2
+        ivi::qd::PixPoint& p1,
+        ivi::qd::PixPoint& p2
     )
     {
         p1.swap( p2 );

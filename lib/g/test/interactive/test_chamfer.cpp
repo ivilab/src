@@ -39,7 +39,7 @@
 #include <unistd.h> /* for usleep() */
 
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 /*
  * Sometimes glu.h includes glut.h--sometimes not.
  */
@@ -57,7 +57,7 @@
 #endif
 #endif
 
-using namespace kjb;
+using namespace ivi;
 
 struct Point { float x; float y;};
 Point mouse_pt = {0,0};
@@ -77,10 +77,10 @@ void reshape(int width, int height);
 void key_cb(unsigned char _key, int x, int y);
 
 
-kjb_c::Edge_point_DEPRECATED* edges = 0;
+ivi_c::Edge_point_DEPRECATED* edges = 0;
 size_t num_rows, num_cols;
-kjb_c::Matrix* distance_map = 0;
-kjb_c::Edge_point_DEPRECATED const*** edge_map = 0;
+ivi_c::Matrix* distance_map = 0;
+ivi_c::Edge_point_DEPRECATED const*** edge_map = 0;
 
 Image img;
 Image chamfer_img;
@@ -96,10 +96,10 @@ void init()
 
 
     // find edges
-    kjb_c::detect_edge_points_DEPRECATED(&edges, NULL, img.c_ptr(), 1, 10, 10);
+    ivi_c::detect_edge_points_DEPRECATED(&edges, NULL, img.c_ptr(), 1, 10, 10);
 
     // do transform
-    kjb_c::chamfer_transform_2(edges, num_rows, num_cols, 3, &distance_map, &edge_map);
+    ivi_c::chamfer_transform_2(edges, num_rows, num_cols, 3, &distance_map, &edge_map);
 
     chamfer_img = Image(*distance_map);
 
@@ -109,9 +109,9 @@ void init()
 
 int main (int argc, char *argv[])
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
-    kjb_c::kjb_l_set("page", "off");
+    ivi_c::ivi_l_set("page", "off");
     
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -151,7 +151,7 @@ void mouse_passive_motion(int x, int y)
 {
     // look up edge in edge map
     if(x >= num_cols || y >= num_rows) return;
-    const kjb_c::Edge_point_DEPRECATED* edge = edge_map[y][x];
+    const ivi_c::Edge_point_DEPRECATED* edge = edge_map[y][x];
 
     // draw line to nearest edge
     const Point p = {x, y};
@@ -224,10 +224,10 @@ void idle()
 
 void cleanup()
 {
-    kjb_c::free_matrix(distance_map);
+    ivi_c::free_matrix(distance_map);
 
-    kjb_c::free_edge_points_DEPRECATED(edges);
-    kjb_c::free_2D_ptr_array((void ***) edge_map);
+    ivi_c::free_edge_points_DEPRECATED(edges);
+    ivi_c::free_2D_ptr_array((void ***) edge_map);
 }
 
 void key_cb(unsigned char _key, int x, int y) 

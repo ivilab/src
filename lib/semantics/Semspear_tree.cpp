@@ -2,7 +2,7 @@
  * @file Semspear_tree.cpp
  *
  * @author Colin Dawson 
- * $Id: Semspear_tree.cpp 21596 2017-07-30 23:33:36Z kobus $ 
+ * $Id: Semspear_tree.cpp 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "l/l_sys_debug.h"
@@ -67,10 +67,10 @@ namespace semantics
     /*------------------------------------------------------------
      * DEFINITION OF EXTERNAL FREE FUNCTIONS
      *------------------------------------------------------------*/
-    boost::tuple<Semspear_tree::Self_ptr, kjb::Vector>
+    boost::tuple<Semspear_tree::Self_ptr, ivi::Vector>
     propose_new_tree(const Semspear_tree::Self_ptr source)
     {
-	typedef kjb::Vector Forward_reverse_probs;
+	typedef ivi::Vector Forward_reverse_probs;
 	ASSERT(source->head() != NULL);
 
 	bool tree_is_altered = false;
@@ -479,7 +479,7 @@ namespace semantics
 
 /* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */ 
 
-    kjb::Vector Semspear_tree::propose_new_associations(
+    ivi::Vector Semspear_tree::propose_new_associations(
 	const Self_ptr                source,
 	Self_ptr&                     dest,
 	const Elab_ptr_const          source_semantic_parent,
@@ -487,7 +487,7 @@ namespace semantics
 	const bool                    tree_is_altered
 	)
     {
-	typedef kjb::Vector Result;
+	typedef ivi::Vector Result;
 	bool altered = tree_is_altered;
 	Result result(0.0, 0.0);
 	if(source->role_ == UNARY || source->role_ == DEPENDENCY)

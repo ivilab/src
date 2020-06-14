@@ -5,22 +5,22 @@
 
 static int back_project_image
 (
-   const KJB_image *ip,
+   const IVI_image *ip,
    const Matrix    *H_mp,
    int             fitting_model,
-   KJB_image       **bp_ipp,
+   IVI_image       **bp_ipp,
    Int_matrix      **mask_impp
 );
 
 static int transform_scaled_image
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix    *t_mp,
     int             width,
     int             height,
     const Matrix     *trans_rect_mp,
     int             inter_method,
-    KJB_image       **target_ipp,
+    IVI_image       **target_ipp,
     Int_matrix      **mask_impp
 );
 
@@ -32,8 +32,8 @@ static int transform_scaled_image
 int main()
 {
     int        result = NO_ERROR;
-    KJB_image  *src_ip = NULL;
-    KJB_image  *target_ip = NULL;
+    IVI_image  *src_ip = NULL;
+    IVI_image  *target_ip = NULL;
     Matrix     *H_mp = NULL;
     Matrix     *inv_tmp_mp = NULL;
     Matrix     *tmp_mp = NULL;
@@ -79,7 +79,7 @@ int main()
     Matrix *coord_mp = NULL;
     Matrix *scale_mp = NULL;
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (! is_interactive()) 
     {
@@ -171,7 +171,7 @@ int main()
     /*db_mat( result_mp );*/
  
     pso( "Reading the source image: %s\n", src_filename);
-    result = kjb_read_image( &src_ip, src_filename );
+    result = ivi_read_image( &src_ip, src_filename );
     if (result == ERROR) { EGC(result); }
 
     /* compute the offset O */
@@ -245,15 +245,15 @@ int main()
     if (result == ERROR) { EGC(result); }
 
     pso( "Saving the backprojected image: %s\n", result_filename);
-    result = kjb_write_image( target_ip, result_filename );
+    result = ivi_write_image( target_ip, result_filename );
     if (result == ERROR) { EGC(result); }
 
 cleanup:
     EPE(result);
 
     pso("Cleaning up.\n");
-    kjb_free_image( src_ip );
-    kjb_free_image( target_ip );
+    ivi_free_image( src_ip );
+    ivi_free_image( target_ip );
     free_matrix( H_mp );
     free_matrix( inv_tmp_mp );
     free_matrix( tmp_mp );
@@ -283,10 +283,10 @@ cleanup:
 
 int back_project_image
 (
- const KJB_image *ip,
+ const IVI_image *ip,
  const Matrix    *H_mp,
  int             fitting_model,
- KJB_image       **bp_ipp,
+ IVI_image       **bp_ipp,
  Int_matrix      **mask_impp
  )
 { 

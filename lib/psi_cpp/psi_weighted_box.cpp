@@ -1,4 +1,4 @@
-/* $Id: psi_weighted_box.cpp 18331 2014-12-02 04:30:55Z ksimek $ */
+/* $Id: psi_weighted_box.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -55,8 +55,8 @@ std::vector<Vector> get_corners(const Cuboid& c)
 
 void render(const Cuboid& c)
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb::opengl;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi::opengl;
     const Vector& center = c.get_center();
     const Vector& size = c.get_size();
 
@@ -121,9 +121,9 @@ void render(const Cuboid& c)
 
     glPopMatrix();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

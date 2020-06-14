@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: deva_detection.cpp 21293 2017-03-07 02:32:04Z jguan1 $ */
+/* $Id: deva_detection.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <detector_cpp/d_deva_detection.h>
 #include <l_cpp/l_test.h>
@@ -25,7 +25,7 @@
 #include <fstream>
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 int main(int argc, char** argv)

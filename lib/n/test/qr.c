@@ -19,14 +19,14 @@
 
 #define EPEAE(x)      if ((x) == ERROR)                                        \
                       {                                                        \
-                          /* extern int kjb_debug_level; */                    \
+                          /* extern int ivi_debug_level; */                    \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(EPEAE on line %d of %s.)",           \
                                         __LINE__, __FILE__);                   \
                           }                                                    \
-                          kjb_print_error();                                   \
+                          ivi_print_error();                                   \
                           abort();                                             \
                       }                                                        \
                       else                                                     \
@@ -67,7 +67,7 @@ int status = EXIT_SUCCESS;
 /*ARGSUSED*/
 int main(int argc, char **argv)
 {
-    kjb_init();
+    ivi_init();
 
 
     if (argc > 1)

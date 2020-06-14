@@ -10,7 +10,7 @@
  */
 
 /*
- * $Id: index.c 22174 2018-07-01 21:49:18Z kobus $
+ * $Id: index.c 25499 2020-06-14 13:26:04Z kobus $
  *
  * Recommended tab width:  4
  */
@@ -80,7 +80,7 @@ static FILE **mapFiles=NULL;            /**< Arr. of ptrs for MapXX.dat files*/
 
 static void gen_map_fn( char* buf, size_t bsz, int index )
 {
-    kjb_sprintf( buf, bsz, "%s%sMaps%d.dat", gTheFileName, DIR_STR, index );
+    ivi_sprintf( buf, bsz, "%s%sMaps%d.dat", gTheFileName, DIR_STR, index );
 }
 
 #define GEN_MAP_FN(buf, index) gen_map_fn((buf), sizeof(buf), index)
@@ -95,14 +95,14 @@ static int initialize_existing_index(void)
     char buf[8], mapFileName[4096];
 
     int i=0, STAMP_SIZE = signed_strlen(VERSION_STAMP);
-    size_t ct = kjb_fread(theIndexFile, buf, sizeof(buf));
+    size_t ct = ivi_fread(theIndexFile, buf, sizeof(buf));
 
     ASSERT(STAMP_SIZE + 1 == sizeof(buf));
     if ( ct != sizeof(buf) ) return ERROR;
     buf[STAMP_SIZE] = '\0';
 
     /* Check if the index is the old kind. */
-    if (kjb_strcmp(buf, VERSION_STAMP) != EQUAL_STRINGS)
+    if (ivi_strcmp(buf, VERSION_STAMP) != EQUAL_STRINGS)
     {
         /* need to convert */
         add_error("Index file has the wrong prefix (it might be corrupt).");
@@ -127,13 +127,13 @@ static int initialize_existing_index(void)
     {
         /* Force file to be a multiple of sizeof(IndexEntry). */
         indexEntry dummy = { -1, -1, 0, 0, 0, '\0', '\0' };
-        ERE(kjb_fseek(theIndexFile,
+        ERE(ivi_fseek(theIndexFile,
                 STAMP_SIZE + numIndexEntries * sizeof(indexEntry), SEEK_SET));
-        ERE(kjb_fwrite(theIndexFile, &dummy, sizeof(indexEntry)));
+        ERE(ivi_fwrite(theIndexFile, &dummy, sizeof(indexEntry)));
     }
 
     /* Seek to the front of the payload (just beyond the version stamp). */
-    ERE(kjb_fseek(theIndexFile, STAMP_SIZE, SEEK_SET));
+    ERE(ivi_fseek(theIndexFile, STAMP_SIZE, SEEK_SET));
 
     /* Make a sequential index. */
     indexLimit = numIndexEntries*2;
@@ -145,14 +145,14 @@ static int initialize_existing_index(void)
     NRE( fileIndex = N_TYPE_MALLOC( indexEntry, indexLimit ));
 
     /* Read the entire index in one fread, plus error-checking. */
-    rsize = kjb_fread( theIndexFile, fileIndex,
+    rsize = ivi_fread( theIndexFile, fileIndex,
                                 sizeof(indexEntry) * numIndexEntries );
     if (rsize != (long)sizeof(indexEntry) * numIndexEntries)
     {
         TEST_PSE(("initIndexFile: rsize != numIndexEntries"));
         add_error("fread failure reading index: requested %ld, received %ld",
                 (long)sizeof(indexEntry) * numIndexEntries, rsize);
-        kjb_free( fileIndex );
+        ivi_free( fileIndex );
         fileIndex=NULL;
         return ERROR;
     }
@@ -172,7 +172,7 @@ static int initialize_existing_index(void)
     mapFiles = N_TYPE_MALLOC( FILE*, numMapFiles );
     if ( NULL == mapFiles )
     {
-        kjb_free( fileIndex );
+        ivi_free( fileIndex );
         fileIndex=NULL;
         add_error("unable to malloc file ptrs for DOQ tile index.");
         NRE(mapFiles);
@@ -187,9 +187,9 @@ static int initialize_existing_index(void)
         GEN_MAP_FN( mapFileName, i );
         if (! is_file(mapFileName))
         {
-            kjb_free( mapFiles );
+            ivi_free( mapFiles );
             mapFiles = NULL;
-            kjb_free( fileIndex );
+            ivi_free( fileIndex );
             fileIndex = NULL;
             return ERROR;
         }
@@ -199,14 +199,14 @@ static int initialize_existing_index(void)
     for (i=0; i<numMapFiles; ++i)
     {
         GEN_MAP_FN( mapFileName, i );
-        if ((mapFiles[i] = kjb_fopen(mapFileName, "ab+")) == NULL)
+        if ((mapFiles[i] = ivi_fopen(mapFileName, "ab+")) == NULL)
         {
             TEST_PSE(("Error opening %s for appending", mapFileName));
             add_error("Error opening %s for appending", mapFileName);
-            while( i ) kjb_fclose( mapFiles[--i] );
-            kjb_free( mapFiles );
+            while( i ) ivi_fclose( mapFiles[--i] );
+            ivi_free( mapFiles );
             mapFiles = NULL;
-            kjb_free( fileIndex );
+            ivi_free( fileIndex );
             fileIndex = NULL;
             return ERROR;
         }
@@ -237,7 +237,7 @@ static int initialize_new_index(void)
     if (NULL == (mapFiles = TYPE_MALLOC(FILE*)))
     {
         add_error("Bad malloc opening map files' pointer array");
-        kjb_free( fileIndex );
+        ivi_free( fileIndex );
         fileIndex = NULL;
         return ERROR;
     }
@@ -245,21 +245,21 @@ static int initialize_new_index(void)
     GEN_MAP_FN( mapFileName, 0 );
 
     /* Create a new index file, initialize it, and open the map file. */
-    if (    NULL == (theIndexFile = kjb_fopen(gTheIndexFileName, "wb"))
-         || kjb_fputs(theIndexFile, VERSION_STAMP) != strlen(VERSION_STAMP)
-         || NULL == (mapFiles[0] = kjb_fopen(mapFileName, "ab+"))
+    if (    NULL == (theIndexFile = ivi_fopen(gTheIndexFileName, "wb"))
+         || ivi_fputs(theIndexFile, VERSION_STAMP) != strlen(VERSION_STAMP)
+         || NULL == (mapFiles[0] = ivi_fopen(mapFileName, "ab+"))
        )
     {
         TEST_PSE(("Error opening map cache\n", gTheIndexFileName));
         add_error("Error opening map cache");
         numMapFiles = 0;
-        kjb_free( mapFiles );
+        ivi_free( mapFiles );
         mapFiles = NULL;
-        kjb_free( fileIndex );
+        ivi_free( fileIndex );
         fileIndex = NULL;
-        EPE(kjb_fclose(theIndexFile)); /* ok to do this, even if NULL */
+        EPE(ivi_fclose(theIndexFile)); /* ok to do this, even if NULL */
         theIndexFile = NULL;
-        EPE(kjb_unlink(gTheIndexFileName));
+        EPE(ivi_unlink(gTheIndexFileName));
         return ERROR;
     }
 
@@ -310,14 +310,14 @@ int initIndexFile( void )
      * implicitly testing its existence.
      * If it does not exist, we will create a fresh one.
      */
-    theIndexFile = kjb_fopen( gTheIndexFileName, "rb+" );
+    theIndexFile = ivi_fopen( gTheIndexFileName, "rb+" );
 
     rc = theIndexFile ? initialize_existing_index() : initialize_new_index();
 
     if (ERROR == rc)
     {
         /* It is safe, and simpler, to assume theIndexFile isn't NULL here. */
-        kjb_fclose(theIndexFile);
+        ivi_fclose(theIndexFile);
         theIndexFile = NULL;
         add_error("Unable to initialize the index file");
         ERE(rc);
@@ -359,23 +359,23 @@ void closeIndexFile( void )
         ASSERT( mapFiles );
         for( iii = 0; iii < numMapFiles; ++iii )
         {
-            EPE( kjb_fclose( mapFiles[ iii ] ) );
+            EPE( ivi_fclose( mapFiles[ iii ] ) );
         }
-        kjb_free( mapFiles );
+        ivi_free( mapFiles );
         mapFiles = NULL;
         numMapFiles = 0;
     }
 
     if ( theIndexFile )
     {
-        EPE( kjb_fclose( theIndexFile ) );
+        EPE( ivi_fclose( theIndexFile ) );
         theIndexFile = NULL;
     }
 
-    kjb_free( fileIndex );
+    ivi_free( fileIndex );
     fileIndex = NULL;
 #if 0
-    kjb_free( sortedIndex );
+    ivi_free( sortedIndex );
     sortedIndex = NULL;
 #endif
 }
@@ -430,8 +430,8 @@ int addIndexEntry(
         indexEntry *temp = fileIndex;
         fileIndex = N_TYPE_MALLOC( indexEntry, indexLimit*2 );
         ASSERT( fileIndex );
-        kjb_memcpy(fileIndex, temp, sizeof(indexEntry)*indexLimit);
-        kjb_free(temp);
+        ivi_memcpy(fileIndex, temp, sizeof(indexEntry)*indexLimit);
+        ivi_free(temp);
         indexLimit*=2;
     }
 
@@ -442,8 +442,8 @@ int addIndexEntry(
     fileIndex[numIndexEntries].typ = typ;
     fileIndex[numIndexEntries].zone = zone;
 
-    kjb_fseek(mapFiles[numMapFiles-1],0,SEEK_END);
-    offset = kjb_ftell(mapFiles[numMapFiles-1]);
+    ivi_fseek(mapFiles[numMapFiles-1],0,SEEK_END);
+    offset = ivi_ftell(mapFiles[numMapFiles-1]);
     ASSERT( offset < INT_MAX );
 
     EPE( offset );
@@ -457,12 +457,12 @@ int addIndexEntry(
         TEST_PSE(("Maps.dat over 625MB, making new one\n"));
         numMapFiles++;
         mapFiles = N_TYPE_MALLOC( FILE*, numMapFiles );
-        kjb_memcpy(mapFiles, temp, sizeof(FILE *)*(numMapFiles-1));
-        kjb_free(temp);
+        ivi_memcpy(mapFiles, temp, sizeof(FILE *)*(numMapFiles-1));
+        ivi_free(temp);
 
         GEN_MAP_FN( mapFileName, numMapFiles-1 );
 
-        if ((mapFiles[numMapFiles-1] = kjb_fopen(mapFileName,"ab+")) == NULL)
+        if ((mapFiles[numMapFiles-1] = ivi_fopen(mapFileName,"ab+")) == NULL)
         {
             TEST_PSE(("Error opening %s",mapFileName));
             return -1;
@@ -478,11 +478,11 @@ int addIndexEntry(
 /*  TEST_PSE(("fileIndex[%d].offset=%d\n",numIndexEntries,offset)); */
 
     /* write file index header, first to a string and then to the file */
-    hsize1 = kjb_sprintf(header, sizeof(header),
+    hsize1 = ivi_sprintf(header, sizeof(header),
                         "BEGIN TILE x=%d y=%d z=%d s=%d ", x, y, zone, typ);
     EPE( hsize1 );
     if ( ERROR == hsize1 ) return -1;
-    hsize2 = kjb_fputs( mapFiles[ numMapFiles-1 ], header );
+    hsize2 = ivi_fputs( mapFiles[ numMapFiles-1 ], header );
     EPE( hsize2 );
     if ( ERROR == hsize2 || hsize1 != hsize2 ) return -1;
     ASSERT( 0 < hsize1 && hsize1 < INT_MAX );
@@ -510,15 +510,15 @@ int addIndexEntry(
     buflen -= (int) hsize1;
 
     /* write the front-trimmed buf contents to the file */
-    wsize = kjb_fwrite(mapFiles[numMapFiles-1], buf, buflen);
+    wsize = ivi_fwrite(mapFiles[numMapFiles-1], buf, buflen);
     if (wsize != buflen)
     {
         TEST_PSE(("Unable to write to Maps.dat!\n"));
         return -1;
     }
 
-    kjb_fseek(theIndexFile,0,SEEK_END);
-    wsize = kjb_fwrite( theIndexFile, &fileIndex[numIndexEntries],
+    ivi_fseek(theIndexFile,0,SEEK_END);
+    wsize = ivi_fwrite( theIndexFile, &fileIndex[numIndexEntries],
                                                         sizeof(indexEntry));
     if (wsize != sizeof(indexEntry))
     {
@@ -632,7 +632,7 @@ int getTileFromDisk(
            )
         {
             size_t readsize = 0, fiisize = 0;
-            kjb_fseek(mapFiles[fileIndex[i].file],fileIndex[i].offset,SEEK_SET);
+            ivi_fseek(mapFiles[fileIndex[i].file],fileIndex[i].offset,SEEK_SET);
 
             /* found it at position 'i' */
             fiisize = fileIndex[i].size;
@@ -642,7 +642,7 @@ int getTileFromDisk(
                 return 0;
             }
 
-            readsize = kjb_fread(mapFiles[fileIndex[i].file], buf, fiisize);
+            readsize = ivi_fread(mapFiles[fileIndex[i].file], buf, fiisize);
 
             if (readsize != fiisize)
             {
@@ -710,9 +710,9 @@ int invalidateEntry(
             fileIndex[i].y = -fileIndex[i].y;
             fileIndex[i].zone = -fileIndex[i].zone;
 
-            ERE( kjb_fseek(theIndexFile,
+            ERE( ivi_fseek(theIndexFile,
                  7+((numSortedIndexEntries+i)*sizeof(indexEntry)), SEEK_SET) );
-            nbytes=kjb_fwrite(theIndexFile, &fileIndex[i], sizeof(indexEntry));
+            nbytes=ivi_fwrite(theIndexFile, &fileIndex[i], sizeof(indexEntry));
 
             if ((long)sizeof(indexEntry) != nbytes)
             {

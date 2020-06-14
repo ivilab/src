@@ -16,17 +16,17 @@
    |  Author:  Kyle Simek, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_type.h 14240 2013-04-11 08:13:35Z jguan1 $ */
+/* $Id: d_type.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_D_TYPE_H
-#define KJB_D_TYPE_H
+#ifndef IVI_D_TYPE_H
+#define IVI_D_TYPE_H
 
 #include <string>
 #include <vector>
 #include <istream>
 #include <ostream>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @file Structs and functions for representing, reading, and 
@@ -53,6 +53,6 @@ std::ostream& operator<<(std::ostream& ost, Detection_type type);
 /** @brief  Stream in an detection. */
 std::istream& operator>>(std::istream& ist, Detection_type& type);
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

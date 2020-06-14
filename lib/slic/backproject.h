@@ -5,7 +5,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -15,32 +15,32 @@ namespace kjb_c {
 
 int back_project_frame_slide_to_slide
  (
-  const KJB_image *frame_ip,
+  const IVI_image *frame_ip,
   int slide_width,
   int slide_height,
   const Matrix    *H_mp,
   int             fitting_model,
-  KJB_image       **bp_ipp,
+  IVI_image       **bp_ipp,
   Int_matrix      **mask_impp
    );
 
 /* int back_project_frame_slide_to_slide_enlarged */
 /*  ( */
-/*   const KJB_image *frame_ip, */
+/*   const IVI_image *frame_ip, */
 /*   int slide_width, */
 /*   int slide_height, */
 /*   int enlarged_slide_width, */
 /*   int enlarged_slide_height, */
 /*   const Matrix    *H_mp, */
 /*   int             fitting_model, */
-/*   KJB_image       **bp_ipp, */
+/*   IVI_image       **bp_ipp, */
 /*   Int_matrix      **mask_impp */
 /*    ); */
 
 
 int back_project_frame_slide_to_slide_enlarged
  (
-  const KJB_image *frame_ip,
+  const IVI_image *frame_ip,
   int slide_width,
   int slide_height,
   int enlarged_slide_width,
@@ -49,7 +49,7 @@ int back_project_frame_slide_to_slide_enlarged
   int frame_height,
   const Matrix    *H_mp,
   int             fitting_model,
-  KJB_image       **bp_ipp,
+  IVI_image       **bp_ipp,
   Int_matrix      **mask_impp
    );
 
@@ -63,10 +63,10 @@ int back_project_frame_slide_to_slide_enlarged
 */
 int back_project_image
 (
- const KJB_image *ip,
+ const IVI_image *ip,
  const Matrix    *H_mp,
  int             fitting_model,
- KJB_image       **bp_ipp,
+ IVI_image       **bp_ipp,
  Int_matrix      **mask_impp
  );
 

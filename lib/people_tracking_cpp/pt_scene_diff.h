@@ -33,7 +33,7 @@
 #include <vector>
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /** @brief  Wrapper for generic gradient function. */
@@ -230,7 +230,7 @@ size_t make_max
     bool infer_head
 );
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif // PT_SCENE_DIFF_H
 

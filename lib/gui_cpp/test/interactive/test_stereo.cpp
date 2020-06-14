@@ -5,7 +5,7 @@
 void display()
 {
 
-    kjb::opengl::Teapot teapot;
+    ivi::opengl::Teapot teapot;
 
     glPushMatrix();
     glScalef(0.1, 0.1, 0.1);
@@ -22,9 +22,9 @@ int main()
 {
     try
     {
-        kjb::opengl::Glut_window wnd;
-        kjb::gui::Viewer viewer(500, 500);
-        //kjb::gui::Viewer viewer();
+        ivi::opengl::Glut_window wnd;
+        ivi::gui::Viewer viewer(500, 500);
+        //ivi::gui::Viewer viewer();
         viewer.attach(wnd);
 
 
@@ -39,7 +39,7 @@ int main()
 
         glutMainLoop();
     }
-    catch(kjb::Exception& ex)
+    catch(ivi::Exception& ex)
     {
         std::cout << ex.get_msg() << std::endl;
         return 1;

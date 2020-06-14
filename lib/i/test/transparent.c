@@ -25,13 +25,13 @@
 
 int main (int argc, char *argv[])
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
     const int NUM_ROWS = 256;
     const int NUM_COLS = 256;
     const float RADIUS = MIN_OF(NUM_ROWS, NUM_COLS) / 2.0;
     int row, col;
 
-    kjb_init();
+    ivi_init();
 
     EPETE(get_target_image(&ip, NUM_ROWS, NUM_COLS));
     ip->flags = HAS_ALPHA_CHANNEL;
@@ -58,7 +58,7 @@ int main (int argc, char *argv[])
         }
     }
 
-    EPETE(kjb_write_image(ip, "transparent.png"));
+    EPETE(ivi_write_image(ip, "transparent.png"));
 
     
     return EXIT_SUCCESS;

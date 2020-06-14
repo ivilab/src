@@ -1,4 +1,4 @@
-/* $Id: psi_util.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -30,42 +30,42 @@
 #include "people_tracking_cpp/pt_util.h"
 
 #include "l/l_word_list.h"
-#include "l/l_sys_io.h" /* for kjb_glob */
+#include "l/l_sys_io.h" /* for ivi_glob */
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 #include <MathLib/Point3d.h>
 #include <MathLib/Vector3d.h>
 #include <Core/Visualization.h>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
 
-typedef kjb::Axis_aligned_rectangle_2d Bbox;
+typedef ivi::Axis_aligned_rectangle_2d Bbox;
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
-inline kjb::Vector to_kjb(const CartWheel::Math::Point3d& pt)
+#ifdef IVI_HAVE_UA_CARTWHEEL
+inline ivi::Vector to_ivi(const CartWheel::Math::Point3d& pt)
 {
-    return kjb::Vector(pt.x, pt.y, pt.z);
+    return ivi::Vector(pt.x, pt.y, pt.z);
 }
 
-inline kjb::Vector to_kjb(const CartWheel::Math::Vector3d& vec)
+inline ivi::Vector to_ivi(const CartWheel::Math::Vector3d& vec)
 {
-    return kjb::Vector(vec.x, vec.y, vec.z);
+    return ivi::Vector(vec.x, vec.y, vec.z);
 }
 
-inline kjb::Quaternion to_kjb(const CartWheel::Math::Quaternion& q)
+inline ivi::Quaternion to_ivi(const CartWheel::Math::Quaternion& q)
 {
     CartWheel::Math::Vector3d imag = q.getV();
     double real = q.getS();
-    return kjb::Quaternion(imag.x, imag.y, imag.z, real);
+    return ivi::Quaternion(imag.x, imag.y, imag.z, real);
 }
 #endif
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
-inline CartWheel::Math::Point3d to_cw_pt_3d(const kjb::Vector& pt)
+#ifdef IVI_HAVE_UA_CARTWHEEL
+inline CartWheel::Math::Point3d to_cw_pt_3d(const ivi::Vector& pt)
 {
     ASSERT(pt.size() == 3);
     return CartWheel::Math::Point3d(pt[0], pt[1], pt[2]);
@@ -73,8 +73,8 @@ inline CartWheel::Math::Point3d to_cw_pt_3d(const kjb::Vector& pt)
 }
 #endif
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
-inline CartWheel::Math::Vector3d to_cw_vec_3d(const kjb::Vector& vec)
+#ifdef IVI_HAVE_UA_CARTWHEEL
+inline CartWheel::Math::Vector3d to_cw_vec_3d(const ivi::Vector& vec)
 {
     ASSERT(vec.size() == 3);
     return CartWheel::Math::Vector3d(vec[0], vec[1], vec[2]);
@@ -82,25 +82,25 @@ inline CartWheel::Math::Vector3d to_cw_vec_3d(const kjb::Vector& vec)
 }
 #endif
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 /**
- * Pass a kjb perspective camera to a cartwheel visualization context
+ * Pass a ivi perspective camera to a cartwheel visualization context
  *
  * @note Camera focal length is defined in units of screen pixels,
  * so we need screen size to convert it to fovy angle.
  */
-void set_camera(CartWheel::Visualization& vis, const kjb::Perspective_camera& cam, double WIDTH, double HEIGHT);
+void set_camera(CartWheel::Visualization& vis, const ivi::Perspective_camera& cam, double WIDTH, double HEIGHT);
 #endif
 
 /** /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ **/
-inline kjb::Perspective_camera make_camera(
+inline ivi::Perspective_camera make_camera(
         double height,
         double tilt,
         double focal_length)
 {
-    kjb::Perspective_camera cam(0.1, 100);
-    cam.set_camera_centre(kjb::Vector(0.0,height,0.0));
-    cam.set_orientation(kjb::Quaternion(tilt, 0.0,0.0, kjb::Quaternion::XYZR));
+    ivi::Perspective_camera cam(0.1, 100);
+    cam.set_camera_centre(ivi::Vector(0.0,height,0.0));
+    cam.set_orientation(ivi::Quaternion(tilt, 0.0,0.0, ivi::Quaternion::XYZR));
     cam.set_focal_length(focal_length);
 
     return cam;
@@ -143,5 +143,5 @@ void prune_by_height
 );
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 #endif

@@ -1,4 +1,4 @@
-/* $Id: sample_sampler.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: sample_sampler.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -413,13 +413,13 @@ protected:
     virtual const Step& choose_step() const
     {
         assert(m_steps.size() > 0);
-        std::vector<size_t> indices = kjb::Index_range(0, m_steps.size() - 1).expand();
+        std::vector<size_t> indices = ivi::Index_range(0, m_steps.size() - 1).expand();
 
         // TODO: make this object a member to avoid constructing every time
-        kjb::Categorical_distribution<size_t> P(
+        ivi::Categorical_distribution<size_t> P(
                 indices, 
                 m_probabilities);
-        size_t s = kjb::sample(P);
+        size_t s = ivi::sample(P);
         return m_step_callbacks[s];
     }
 

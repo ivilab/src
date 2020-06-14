@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: mat_to_img.c 14806 2013-06-28 02:10:02Z predoehl $
+ * $Id: mat_to_img.c 25499 2020-06-14 13:26:04Z kobus $
  */
 #include <i/i_matrix.h>
 #include <m/m_matrix.h>
@@ -12,7 +12,7 @@
 int main()
 {
     Matrix *mp = NULL;
-    KJB_image *ip = NULL;
+    IVI_image *ip = NULL;
 
     EPETE(get_target_matrix(&mp, 2, 2));
 
@@ -29,11 +29,11 @@ int main()
     ASSERT(255  == ip -> pixels[1][1].r);
 
     free_matrix(mp);
-    kjb_free_image(ip);
+    ivi_free_image(ip);
 
     if (is_interactive())
     {
-        kjb_puts("Success!\n");
+        ivi_puts("Success!\n");
     }
 
     return 0;

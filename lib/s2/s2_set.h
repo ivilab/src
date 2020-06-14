@@ -1,5 +1,5 @@
 
-/* $Id: s2_set.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: s2_set.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,12 +24,12 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-int kjb_s2_set(const char* option, const char* value);
+int ivi_s2_set(const char* option, const char* value);
 
 
 #ifdef __cplusplus

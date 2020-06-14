@@ -80,7 +80,7 @@
 #define ST_PARAPIPED_ROLL 2
 #define ST_PARAPIPED_DISTANCE_FROM_THE_FLOOR 0.002
 
-namespace kjb
+namespace ivi
 {
 
 class Perspective_camera;
@@ -101,36 +101,36 @@ class Parametric_parapiped : public Renderable_model, public Readable, public Wr
 public:
 
     Parametric_parapiped(double ix = 0.0, double iy = 0.0, double iz = 0.0, double iw = 1.0, double ih = 1.0, double il = 1.0,
-                         double ipitch = 0.0, double iyaw = 0.0, double iroll = 0.0) throw(kjb::Illegal_argument);
+                         double ipitch = 0.0, double iyaw = 0.0, double iroll = 0.0) throw(ivi::Illegal_argument);
 
     /** @brief Constructs a parametric_parapiped from an input file. */
-    Parametric_parapiped(const char* fname) throw (kjb::Illegal_argument,
-                kjb::IO_error);
+    Parametric_parapiped(const char* fname) throw (ivi::Illegal_argument,
+                ivi::IO_error);
 
     /** @brief Constructs a parametric_parapiped from an input stream. */
-    Parametric_parapiped(std::istream& in) throw (kjb::Illegal_argument,
-            kjb::IO_error);
+    Parametric_parapiped(std::istream& in) throw (ivi::Illegal_argument,
+            ivi::IO_error);
 
     Parametric_parapiped(const Parametric_parapiped & src);
     virtual Parametric_parapiped & operator = (const Parametric_parapiped & src);
 
     /** @brief Reads this parametric_parapiped from an input stream. */
-    virtual void read(std::istream& in) throw (kjb::Illegal_argument,
-            kjb::IO_error);
+    virtual void read(std::istream& in) throw (ivi::Illegal_argument,
+            ivi::IO_error);
 
     /** @brief Reads this parametric_parapiped from a file */
-    virtual void read(const char * fname) throw (kjb::IO_error,  kjb::Illegal_argument)
+    virtual void read(const char * fname) throw (ivi::IO_error,  ivi::Illegal_argument)
     {
         Readable::read(fname);
     }
 
     /** @brief Writes this parametric_parapiped to a file. */
     virtual void write(std::ostream& out) const
-       throw (kjb::IO_error);
+       throw (ivi::IO_error);
 
     /** @brief Writes this parametric_parapiped to an output stream. */
     virtual void write(const char * fname) const
-       throw (kjb::IO_error)
+       throw (ivi::IO_error)
     {
         Writeable::write(fname);
     }
@@ -149,7 +149,7 @@ public:
      * the current values of the parameters. This is not done
      * any time a parameter changes for efficiency reasons
      */
-    virtual void update_rendering_representation() const throw(kjb::KJB_error);
+    virtual void update_rendering_representation() const throw(ivi::IVI_error);
 
     virtual Parametric_parapiped * clone() const;
     virtual ~Parametric_parapiped() { }
@@ -178,11 +178,11 @@ public:
     inline double get_centre_z() const {return centre(2); }
 
     /** @brief Sets the width of this parametric_parapiped */
-    void set_width(double iwidth) throw(kjb::Illegal_argument);
+    void set_width(double iwidth) throw(ivi::Illegal_argument);
     /** @brief Sets the height of this parametric_parapiped */
-    void set_height(double iheight) throw(kjb::Illegal_argument);
+    void set_height(double iheight) throw(ivi::Illegal_argument);
     /** @brief Sets the length of this parametric_parapiped */
-    void set_length(double ilength)throw(kjb::Illegal_argument);
+    void set_length(double ilength)throw(ivi::Illegal_argument);
 
     /** @brief Sets the pitch of this parametric_parapiped */
     void set_pitch(double ip);
@@ -204,19 +204,19 @@ public:
     virtual void rotate_around_parapiped_axes(double thetax, double thetay, double thetaz);
 
     /** @brief Sets the centre of this parametric_parapiped */
-    void set_centre(const kjb::Vector & icentre) throw(kjb::Illegal_argument);
+    void set_centre(const ivi::Vector & icentre) throw(ivi::Illegal_argument);
     /** @brief Sets the x coordinate of the centre of this parametric_parapiped */
-    void set_centre_x(double ix) throw(kjb::Illegal_argument);
+    void set_centre_x(double ix) throw(ivi::Illegal_argument);
     /** @brief Sets the y coordinate of the centre of this parametric_parapiped */
-    void set_centre_y(double iy) throw(kjb::Illegal_argument);
+    void set_centre_y(double iy) throw(ivi::Illegal_argument);
     /** @brief Sets the z coordinate of the centre of this parametric_parapiped */
-    void set_centre_z(double iz) throw(kjb::Illegal_argument);
+    void set_centre_z(double iz) throw(ivi::Illegal_argument);
 
     /** @brief sets the rotation angles from an input quaternion */
-    virtual void set_angles_from_quaternion(const kjb::Quaternion & q);
+    virtual void set_angles_from_quaternion(const ivi::Quaternion & q);
 
     /** @brief returns the rotations of this parapiped as a quaternion */
-    inline const kjb::Quaternion & get_rotations_as_a_quaternion() const
+    inline const ivi::Quaternion & get_rotations_as_a_quaternion() const
     {
         update_rendering_representation();
         return rendering_interface.get_orientation();
@@ -230,9 +230,9 @@ public:
      * and roll as Euler angle 3. This function (except for
      * standard mode XYZR) is not adequately tested
      */
-    void set_rotation_mode(kjb::Quaternion::Euler_mode imode)
+    void set_rotation_mode(ivi::Quaternion::Euler_mode imode)
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         rendering_interface.set_rotation_mode(imode);
     }
 
@@ -243,16 +243,16 @@ public:
      *  axes are defined by the parapiped axes */
     void get_point_in_parapiped_coordinates
     (
-        const kjb::Vector & point_in_world_coordinates,
-        kjb::Vector & point_in_parapiped_coordinates
+        const ivi::Vector & point_in_world_coordinates,
+        ivi::Vector & point_in_parapiped_coordinates
     ) const;
 
     /** @brief Transforms a point in parapiped coordinates to
      *  world coordinates */
     void get_point_in_world_coordinates
     (
-        const kjb::Vector & point_in_parapiped_coordinates,
-        kjb::Vector & point_in_world_coordinates
+        const ivi::Vector & point_in_parapiped_coordinates,
+        ivi::Vector & point_in_world_coordinates
     ) const;
 
     void draw_orientation_map() const;
@@ -293,12 +293,12 @@ private:
     double height;
     double length;
 
-    kjb::Vector centre;
+    ivi::Vector centre;
 
     /* The rotation angle around the object's x axis (pitch), the
      * object's y axis (yaw) and the object's z axis (roll). Stored
      * in this order */
-    kjb::Vector rotation_angles;
+    ivi::Vector rotation_angles;
 
     /**
      * The interface to the representation used for rendering this parametric_parapiped
@@ -309,9 +309,9 @@ private:
 
 double propose_parapiped_and_camera_from_orthogonal_corner_good
 (
-    kjb::Parametric_parapiped &pp,
-    kjb::Perspective_camera & camera,
-    const kjb::Manhattan_corner & corner,
+    ivi::Parametric_parapiped &pp,
+    ivi::Perspective_camera & camera,
+    const ivi::Manhattan_corner & corner,
     double focal_length,
     unsigned int num_rows,
     unsigned int num_cols,
@@ -323,15 +323,15 @@ double propose_parapiped_and_camera_from_orthogonal_corner_good
 
 bool propose_parapiped_inside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
@@ -340,32 +340,32 @@ bool propose_parapiped_inside_parapiped_from_orthogonal_corner
 
 bool propose_frame_inside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     unsigned int & face_number,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & idesired_dimensions,
+    const ivi::Vector & idesired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols
 );
 
 bool propose_frame_inside_parapiped_from_orthogonal_corner_good
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     unsigned int & face_number,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & idesired_dimensions,
+    const ivi::Vector & idesired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     bool wall_x,
@@ -376,15 +376,15 @@ bool propose_frame_inside_parapiped_from_orthogonal_corner_good
  * The height of the support planes are chosen from feasible ranges */
 bool propose_parapiped_at_different_depth_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
@@ -393,32 +393,32 @@ bool propose_parapiped_at_different_depth_from_orthogonal_corner
 
 bool propose_parapiped_onside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
     bool expand_sp_obj, // if it is allowed to expand the supporting object
-    kjb::Vector & sp_obj_centre, // centre of the supporting object
-    kjb::Vector & sp_obj_dimensions // dimensions of the supporting object
+    ivi::Vector & sp_obj_centre, // centre of the supporting object
+    ivi::Vector & sp_obj_dimensions // dimensions of the supporting object
 );
 
 bool propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    //kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    //ivi::Vector & expansion_deltas,
     //st::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
@@ -426,21 +426,21 @@ bool propose_supported_parapiped_inside_parapiped_from_orthogonal_corner
     /*bool expand_right,
     bool expand_z_up,
     bool expand_towards_camera,*/
-    kjb::Vector & sp_obj_centre, // centre of the supporting object
-    kjb::Vector & sp_obj_dimensions // dimensions of the supporting object
+    ivi::Vector & sp_obj_centre, // centre of the supporting object
+    ivi::Vector & sp_obj_dimensions // dimensions of the supporting object
 );
 
 bool propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
@@ -452,9 +452,9 @@ bool propose_parapiped_inside_parapiped_from_orthogonal_corner_against_wall
 
 bool propose_supported_parapiped_inside_parapiped_from_three_corners
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -470,9 +470,9 @@ bool propose_supported_parapiped_inside_parapiped_from_three_corners
 
 bool propose_parapiped_inside_parapiped_from_three_corners_on_the_floor
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -487,9 +487,9 @@ bool propose_parapiped_inside_parapiped_from_three_corners_on_the_floor
 
 bool propose_parapiped_inside_parapiped_from_two_corners_on_the_floor
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -507,26 +507,26 @@ bool propose_parapiped_inside_parapiped_from_two_corners_on_the_floor
 
     bool propose_parapiped_onside_parapiped_from_one_corner_in_the_center
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     const Manhattan_corner & corner,
-    const kjb::Vector & imin_desired_dimensions,
+    const ivi::Vector & imin_desired_dimensions,
     unsigned int num_rows,
     unsigned int num_cols,
     double distance_from_camera,
     bool expand_sp_obj, // if it is allowed to expand the supporting object
-    kjb::Vector & sp_obj_centre, // centre of the supporting object
-    kjb::Vector & sp_obj_dimensions // dimensions of the supporting object
+    ivi::Vector & sp_obj_centre, // centre of the supporting object
+    ivi::Vector & sp_obj_dimensions // dimensions of the supporting object
 );
 
 bool propose_parapiped_inside_parapiped_from_one_corner_in_the_centre_on_the_floor // one peg in the centre
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
-    kjb::Vector & expansion_deltas,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
+    ivi::Vector & expansion_deltas,
     std::vector<bool> & expansion_directions,
     Parametric_parapiped & new_pp,
     const Parametric_parapiped &pp,
@@ -542,15 +542,15 @@ bool propose_parapiped_inside_parapiped_from_one_corner_in_the_centre_on_the_flo
 
 //bool propose_frustum_inside_parapiped_from_bounding_box_on_the_supporter // eg., the table lamp
 //(
-//    kjb::Vector & centre,
-//    kjb::Vector & dimensions,
-//    kjb::Vector & expansion_deltas,
+//    ivi::Vector & centre,
+//    ivi::Vector & dimensions,
+//    ivi::Vector & expansion_deltas,
 //    std::vector<bool> & expansion_directions,
 //    Parametric_parapiped & new_pp,
 //    const Parametric_parapiped &pp,
 //    const Perspective_camera & camera,
-//    const kjb::Vector & bottom_center, // bottom center of the bounding box in the image plane
-//    const kjb::Vector & top_center,
+//    const ivi::Vector & bottom_center, // bottom center of the bounding box in the image plane
+//    const ivi::Vector & top_center,
 //    const int supporter_height           // the height of the supporter relative to the room box
 //);
 
@@ -568,8 +568,8 @@ void expand_towards_camera
 
 double propose_parapiped_and_camera_from_vanishing_points
 (
-    kjb::Parametric_parapiped & pp,
-    kjb::Perspective_camera & camera,
+    ivi::Parametric_parapiped & pp,
+    ivi::Perspective_camera & camera,
     const std::vector<Vanishing_point> & vpts,
     double focal_length,
     unsigned int num_rows,
@@ -589,17 +589,17 @@ bool find_height_from_two_corners
 
 bool shift_parapiped_to_match_corner
 (
-    kjb::Parametric_parapiped & pp,
-    kjb::Perspective_camera & camera,
+    ivi::Parametric_parapiped & pp,
+    ivi::Perspective_camera & camera,
     unsigned int num_rows,
     unsigned int num_cols,
-    const kjb::Vector & corner
+    const ivi::Vector & corner
 );
 
 bool propose_frame_inside_parapiped_from_three_corners_on_the_wall
 (
-    kjb::Vector & centre,
-    kjb::Vector & dimensions,
+    ivi::Vector & centre,
+    ivi::Vector & dimensions,
     const Parametric_parapiped &pp,
     const Perspective_camera & camera,
     unsigned int & face_number,
@@ -612,9 +612,9 @@ bool propose_frame_inside_parapiped_from_three_corners_on_the_wall
 
 bool backproject_point_to_plane // find out the intersection between the view line and a plane in room coordinate
 (
-    kjb::Vector & intersection,
-    kjb::Vector point2D,
-    kjb::Vector plane,
+    ivi::Vector & intersection,
+    ivi::Vector point2D,
+    ivi::Vector plane,
     const Parametric_parapiped & pp,
     const Perspective_camera & camera,
     int num_rows,

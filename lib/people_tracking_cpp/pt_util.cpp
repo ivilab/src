@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_util.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_util.h"
@@ -42,10 +42,10 @@
 #include <boost/optional.hpp>
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
-void kjb::pt::standardize
+void ivi::pt::standardize
 (
     Deva_facemark& face,
     double cam_width,
@@ -125,7 +125,7 @@ void kjb::pt::standardize
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::unstandardize
+void ivi::pt::unstandardize
 (
     Deva_facemark& face,
     double cam_width,
@@ -205,7 +205,7 @@ void kjb::pt::unstandardize
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Ascn kjb::pt::make_gt_association
+Ascn ivi::pt::make_gt_association
 (
     const Box_data& data,
     const Box_trajectory_map& gt_btrajs,
@@ -326,7 +326,7 @@ Ascn kjb::pt::make_gt_association
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Box_data kjb::pt::make_gt_data
+Box_data ivi::pt::make_gt_data
 (
     const Box_trajectory_map& gt_btrajs,
     double width,
@@ -354,7 +354,7 @@ Box_data kjb::pt::make_gt_data
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::map<int, std::vector<Propagated_2d_info> > kjb::pt::propagate_boxes_by_flow
+std::map<int, std::vector<Propagated_2d_info> > ivi::pt::propagate_boxes_by_flow
 (
     const Target& target,
     const std::vector<Integral_flow>& x_flows,
@@ -633,7 +633,7 @@ std::vector<double> Feature_score::operator()
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::pt::average_box_flow
+Vector ivi::pt::average_box_flow
 (
     const Integral_flow& flx,
     const Integral_flow& fly,
@@ -681,7 +681,7 @@ Vector kjb::pt::average_box_flow
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::prune_by_height
+void ivi::pt::prune_by_height
 (
     std::vector<Deva_detection>& deva_boxes,
     double image_width,
@@ -703,7 +703,7 @@ void kjb::pt::prune_by_height
         double min_height = average_height/2.0;
         if(box_height <= max_height && box_height >= min_height)
         {
-            kjb::Vector pt3d = back_project(sbox.get_bottom_center()[0],
+            ivi::Vector pt3d = back_project(sbox.get_bottom_center()[0],
                                             sbox.get_bottom_center()[1]);
             if(pt3d.empty())
             {
@@ -723,7 +723,7 @@ void kjb::pt::prune_by_height
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::update_facemarks(const Ascn& ascn, const Facemark_data& fms)
+void ivi::pt::update_facemarks(const Ascn& ascn, const Facemark_data& fms)
 {
     size_t num_frames = fms.size();
     //size_t num_noise_faces = 0;
@@ -913,14 +913,14 @@ void kjb::pt::update_facemarks(const Ascn& ascn, const Facemark_data& fms)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-/*void kjb::pt::update_facemarks(const Scene& scene, const Facemark_data& fms)
+/*void ivi::pt::update_facemarks(const Scene& scene, const Facemark_data& fms)
 {
     scene.ns_faces = update_facemarks(scene.association, fms);
 }*/
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::clear_facemarks(const Ascn& ascn)
+void ivi::pt::clear_facemarks(const Ascn& ascn)
 {
     BOOST_FOREACH(const Target& tg, ascn)
     {
@@ -938,7 +938,7 @@ void kjb::pt::clear_facemarks(const Ascn& ascn)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::find_looking_subjects(const Scene& scene, double thresh)
+void ivi::pt::find_looking_subjects(const Scene& scene, double thresh)
 {
     BOOST_FOREACH(const Target& target, scene.association)
     {
@@ -995,7 +995,7 @@ void kjb::pt::find_looking_subjects(const Scene& scene, double thresh)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::pt::locations_3d(const Scene& scene, double thresh)
+std::vector<Vector> ivi::pt::locations_3d(const Scene& scene, double thresh)
 {
     // check the X range in images 
     std::vector<Vector> pts;

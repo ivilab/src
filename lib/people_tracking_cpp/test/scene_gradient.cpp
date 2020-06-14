@@ -45,8 +45,8 @@
 const bool VERBOSE = true;
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Main -- all the magic happens here. */
 int main(int argc, char** argv)
@@ -57,9 +57,9 @@ int main(int argc, char** argv)
     const size_t num_threads = 6;
 
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
@@ -128,37 +128,37 @@ int main(int argc, char** argv)
         Scene_posterior_ind ind_post(posterior);
 
         // generic gradient
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         //Vector g = gradient_cfd(posterior, scene, step_sizes, adapter);
-        long t = kjb_c::get_real_time();
+        long t = ivi_c::get_real_time();
         adapter.reset();
 
         // generic independent gradient
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         Vector g_i = gradient_ind_cfd(ind_post, scene, step_sizes, adapter);
-        long t_i = kjb_c::get_real_time();
+        long t_i = ivi_c::get_real_time();
         adapter.reset();
         ind_post.reset();
 
         // MT generic gradient
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         Vector g_mt = gradient_cfd_mt(
                         posterior, scene, step_sizes, adapter, num_threads);
-        long t_mt = kjb_c::get_real_time();
+        long t_mt = ivi_c::get_real_time();
         adapter.reset();
 
         // generic independent gradient
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         Vector g_imt = gradient_ind_cfd_mt(
                           ind_post, scene, step_sizes, adapter, num_threads);
-        long t_imt = kjb_c::get_real_time();
+        long t_imt = ivi_c::get_real_time();
         adapter.reset();
         ind_post.reset();
 
         // specialized gradient
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         Vector g_s = grad(scene);
-        long t_s = kjb_c::get_real_time();
+        long t_s = ivi_c::get_real_time();
 
         Vector g = g_s;
         if(VERBOSE)
@@ -186,7 +186,7 @@ int main(int argc, char** argv)
         TEST_TRUE(vector_distance(g_s, g_mt) <= eps_lax);
         TEST_TRUE(vector_distance(g_s, g_imt) <= eps);
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

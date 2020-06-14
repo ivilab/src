@@ -1,4 +1,4 @@
-/* $Id: psi_deva_skeleton.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: psi_deva_skeleton.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -24,7 +24,7 @@
 #include <iostream>
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -108,6 +108,6 @@ std::vector<std::vector<Deva_skeleton_boxes> > parse_deva_skeleton_tracks
 /// @brief move coordinate ssystem origin to center of image
 void standardize(Deva_skeleton_boxes& boxes, double cam_width, double cam_height);
 
-}} //namespace kjb::psi
+}} //namespace ivi::psi
 
 #endif /* PSI_DEVA_SKELETON_H */

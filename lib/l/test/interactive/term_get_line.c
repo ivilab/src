@@ -1,5 +1,5 @@
 
-/* $Id: term_get_line.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: term_get_line.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     while ((res=BUFF_STDIN_GET_LINE("abc>",line)) != EOF)
     {
         EPETE(res);
-        kjb_fprintf(stderr, "%s\n", line);
+        ivi_fprintf(stderr, "%s\n", line);
     }
 
     return EXIT_SUCCESS; 

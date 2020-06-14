@@ -1,5 +1,5 @@
 
-/* $Id: l_2D_arr.c 25493 2020-06-12 02:04:25Z ivilab-sync $ */
+/* $Id: l_2D_arr.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -44,7 +44,7 @@ extern "C" {
  * debug_allocate_2D_byte_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_byte_array should be used to dispose of the storage once
@@ -91,20 +91,20 @@ unsigned char** debug_allocate_2D_byte_array(int num_rows, int num_cols,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(unsigned char*);
-    NRN(array = (unsigned char **)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (unsigned char **)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     if (num_cols > 0)
     {
         num_bytes = num_rows * num_cols;
-        col_ptr = (unsigned char*)debug_kjb_malloc(num_bytes, file_name, line_number);
+        col_ptr = (unsigned char*)debug_ivi_malloc(num_bytes, file_name, line_number);
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -156,7 +156,7 @@ unsigned char** allocate_2D_byte_array(int num_rows, int num_cols)
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -202,8 +202,8 @@ void free_2D_byte_array(unsigned char** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -225,7 +225,7 @@ void free_2D_byte_array(unsigned char** array)
  * debug_allocate_2D_short_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_short_array should be used to dispose of the storage once
@@ -272,20 +272,20 @@ short **debug_allocate_2D_short_array(int num_rows, int num_cols,
 
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(short*);
-    NRN(array = (short **)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (short **)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     if (num_cols > 0)
     {
         num_bytes = num_rows * num_cols * sizeof(short);
-        col_ptr = (short*)debug_kjb_malloc(num_bytes, file_name, line_number);
+        col_ptr = (short*)debug_ivi_malloc(num_bytes, file_name, line_number);
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -336,7 +336,7 @@ short **allocate_2D_short_array(int num_rows, int num_cols)
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -382,8 +382,8 @@ void free_2D_short_array(short int** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -405,7 +405,7 @@ void free_2D_short_array(short int** array)
  * debug_allocate_2D_int_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_int_array should be used to dispose of the storage once
@@ -451,20 +451,20 @@ int** debug_allocate_2D_int_array(int num_rows, int num_cols,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(int*);
-    NRN(array = (int **)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (int **)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     if (num_cols > 0)
     {
         num_bytes = num_rows * num_cols * sizeof(int);
-        col_ptr = (int*)debug_kjb_malloc(num_bytes, file_name, line_number);
+        col_ptr = (int*)debug_ivi_malloc(num_bytes, file_name, line_number);
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -515,7 +515,7 @@ int** allocate_2D_int_array(int num_rows, int num_cols)
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -561,8 +561,8 @@ void free_2D_int_array(int** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -584,7 +584,7 @@ void free_2D_int_array(int** array)
  * debug_allocate_2D_long_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_long_array should be used to dispose of the storage once
@@ -630,19 +630,19 @@ long **debug_allocate_2D_long_array(int num_rows, int num_cols,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(long*);
-    NRN(array = (long **)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (long **)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     if (num_cols > 0)
     {
         num_bytes = num_rows * num_cols * sizeof(long);
-        col_ptr = (long*)debug_kjb_malloc(num_bytes, file_name, line_number);
+        col_ptr = (long*)debug_ivi_malloc(num_bytes, file_name, line_number);
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -693,7 +693,7 @@ long **allocate_2D_long_array(int num_rows, int num_cols)
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -739,8 +739,8 @@ void free_2D_long_array(long **array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 
 }
 
@@ -763,7 +763,7 @@ void free_2D_long_array(long **array)
  * debug_allocate_2D_float_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_float_array should be used to dispose of the storage once
@@ -809,20 +809,20 @@ float** debug_allocate_2D_float_array(int num_rows, int num_cols,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(float*);
-    NRN(array = (float **)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (float **)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     if (num_cols > 0)
     {
         num_bytes = num_rows * num_cols * sizeof(float);
-        col_ptr = (float*)debug_kjb_malloc(num_bytes, file_name, line_number);
+        col_ptr = (float*)debug_ivi_malloc(num_bytes, file_name, line_number);
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -874,7 +874,7 @@ float** allocate_2D_float_array(int num_rows, int num_cols)
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -920,8 +920,8 @@ void free_2D_float_array(float** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 
 }
 
@@ -944,7 +944,7 @@ void free_2D_float_array(float** array)
  * debug_allocate_2D_double_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_double_array should be used to dispose of the storage
@@ -991,20 +991,20 @@ double** debug_allocate_2D_double_array(int num_rows, int num_cols,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(double*);
-    NRN(array = (double **)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (double **)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     if (num_cols > 0)
     {
         num_bytes = num_rows * num_cols * sizeof(double);
-        col_ptr = (double*)debug_kjb_malloc(num_bytes, file_name, line_number);
+        col_ptr = (double*)debug_ivi_malloc(num_bytes, file_name, line_number);
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -1055,7 +1055,7 @@ double** allocate_2D_double_array(int num_rows, int num_cols)
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -1102,8 +1102,8 @@ void free_2D_double_array(double** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 
 }
 
@@ -1126,7 +1126,7 @@ void free_2D_double_array(double** array)
  * debug_allocate_2D_ptr_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_ptr_array should be used to dispose of the storage
@@ -1173,20 +1173,20 @@ void*** debug_allocate_2D_ptr_array(int num_rows, int num_cols,
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(void**);
-    NRN(array = (void* **)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (void* **)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     if (num_cols > 0)
     {
         num_bytes = num_rows * num_cols * sizeof(void*);
-        col_ptr = (void**)debug_kjb_malloc(num_bytes, file_name, line_number);
+        col_ptr = (void**)debug_ivi_malloc(num_bytes, file_name, line_number);
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -1238,7 +1238,7 @@ void*** allocate_2D_ptr_array(int num_rows, int num_cols)
 
         if (col_ptr == NULL)
         {
-            kjb_free(array);
+            ivi_free(array);
             return NULL;
         }
     }
@@ -1284,8 +1284,8 @@ void free_2D_ptr_array(void*** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 
 }
 

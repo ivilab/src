@@ -27,7 +27,7 @@
 #include <boost/thread.hpp>
 #include <boost/ref.hpp>
 
-namespace kjb {
+namespace ivi {
 
 /** @brief  Helper function for hessian_ind_mt */
 template<class Func, class Model, class Adapter>
@@ -515,7 +515,7 @@ Vector hessian_ind_diagonal_mt
     return hessian_ind_diagonal_mt(f, x, dx, Vector_adapter<Vec>(), is, ie, nt);
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_HESSIAN_H_IND */
 

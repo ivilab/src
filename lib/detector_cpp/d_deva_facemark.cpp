@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_deva_facemark.cpp 21296 2017-03-07 06:00:29Z jguan1 $ */
+/* $Id: d_deva_facemark.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <detector_cpp/d_deva_facemark.h>
@@ -30,7 +30,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 void Deva_facemark::compute_marks()
 {
@@ -251,7 +251,7 @@ Deva_facemark::Deva_facemark
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Deva_facemark> kjb::parse_deva_facemark
+std::vector<Deva_facemark> ivi::parse_deva_facemark
 (
     std::istream& is
 )
@@ -270,7 +270,7 @@ std::vector<Deva_facemark> kjb::parse_deva_facemark
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Deva_facemark kjb::parse_deva_facemark_line
+Deva_facemark ivi::parse_deva_facemark_line
 (
     const std::string& line
 )
@@ -310,7 +310,7 @@ Deva_facemark kjb::parse_deva_facemark_line
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::write_deva_facemark
+void ivi::write_deva_facemark
 (
     const std::vector<Deva_facemark>& faces,
     std::ostream& os
@@ -324,7 +324,7 @@ void kjb::write_deva_facemark
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::write_deva_facemark_line
+void ivi::write_deva_facemark_line
 (
     const Deva_facemark& face,
     std::ostream& os

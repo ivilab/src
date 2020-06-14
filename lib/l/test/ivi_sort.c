@@ -1,5 +1,5 @@
 
-/* $Id: kjb_sort.c 15999 2013-11-13 23:49:08Z kobus $ */
+/* $Id: ivi_sort.c 15999 2013-11-13 23:49:08Z kobus $ */
 
 
 
@@ -30,7 +30,7 @@ Thing_two;
 static int thing_one_cmp_field_three(const void *p1, const void *p2)
 {
 
-    return kjb_strcmp(((const Thing_one*)p1)->str, 
+    return ivi_strcmp(((const Thing_one*)p1)->str, 
                       ((const Thing_one*)p2)->str); 
 }
 
@@ -38,7 +38,7 @@ static int thing_one_cmp_field_three(const void *p1, const void *p2)
 static int thing_two_cmp_field_one(const void *p1, const void *p2)
 {
 
-    return kjb_strcmp(((const Thing_two*)p1)->str,
+    return ivi_strcmp(((const Thing_two*)p1)->str,
                       ((const Thing_two*)p2)->str); 
 }
 
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     Indexed_vector* ivp = NULL;
     int is_sorted;
 
-    kjb_disable_paging();
+    ivi_disable_paging();
 
     for (i = 0; i < 100; i ++)
     {
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
     
     if (argc <= 1) 
     {
-        kjb_exit(EXIT_SUCCESS);
+        ivi_exit(EXIT_SUCCESS);
     }
 
 
@@ -167,7 +167,7 @@ int main(int argc, char **argv)
     disable_heap_checking();
 #endif 
 
-    NPETE(fp = kjb_fopen(argv[ 1 ], "r"));
+    NPETE(fp = ivi_fopen(argv[ 1 ], "r"));
 
     NPETE(thing_one_ptr = N_TYPE_MALLOC(Thing_one, MAX_COUNT));
 
@@ -185,10 +185,10 @@ int main(int argc, char **argv)
                 exit( EXIT_BUG );
             }
 
-            NPETE(thing_one.str = kjb_strdup(word));
-            thing_one.a = 10000 * kjb_rand();
-            thing_one.b = 10000 * kjb_rand();
-            thing_one.c = 10000 * kjb_rand();
+            NPETE(thing_one.str = ivi_strdup(word));
+            thing_one.a = 10000 * ivi_rand();
+            thing_one.b = 10000 * ivi_rand();
+            thing_one.c = 10000 * ivi_rand();
 
             EPETE(insert_into_sorted_array(thing_one_ptr, &count, 
                                            sizeof(Thing_one), 
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
         if (thing_one_cmp_field_three(thing_one_ptr+i-1, thing_one_ptr + i) > 0)
         {
             p_stderr("Check on sort 1 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
@@ -234,7 +234,7 @@ int main(int argc, char **argv)
         if (thing_one_ptr[i - 1].a > thing_one_ptr[ i ].a)
         {
             p_stderr("Check on sort 2 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
@@ -256,12 +256,12 @@ int main(int argc, char **argv)
         if (thing_one_ptr[i - 1].b > thing_one_ptr[ i ].b)
         {
             p_stderr("Check on sort 3 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
 
-    EPETE(sort_result = kjb_sort(thing_one_ptr, count, sizeof(Thing_one), 
+    EPETE(sort_result = ivi_sort(thing_one_ptr, count, sizeof(Thing_one), 
                                  thing_one_cmp_field_three,
                                  USE_CURRENT_ATN_HANDLING));
 
@@ -285,7 +285,7 @@ int main(int argc, char **argv)
         if (thing_one_cmp_field_three(thing_one_ptr + i - 1,thing_one_ptr + i)> 0)
         {
             p_stderr("Check on sort 4 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
@@ -356,10 +356,10 @@ int main(int argc, char **argv)
                 exit( EXIT_BUG );
             }
 
-            NPETE(thing_two.str = kjb_strdup(word));
-            thing_two.a = 10000 * kjb_rand();
-            thing_two.b = 10000 * kjb_rand();
-            thing_two.c = 10000 * kjb_rand();
+            NPETE(thing_two.str = ivi_strdup(word));
+            thing_two.a = 10000 * ivi_rand();
+            thing_two.b = 10000 * ivi_rand();
+            thing_two.c = 10000 * ivi_rand();
 
             EPETE(insert_into_sorted_array(thing_two_ptr, &count, 
                                            sizeof(Thing_two), 
@@ -382,7 +382,7 @@ int main(int argc, char **argv)
         if (thing_two_cmp_field_one(thing_two_ptr + i - 1, thing_two_ptr + i) > 0)
         {
             p_stderr("Check on sort 5 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
@@ -404,7 +404,7 @@ int main(int argc, char **argv)
         if (thing_two_ptr[i - 1].a > thing_two_ptr[ i ].a)
         {
             p_stderr("Check on sort 6 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
@@ -428,11 +428,11 @@ int main(int argc, char **argv)
         if (thing_two_ptr[i - 1].b > thing_two_ptr[ i ].b)
         {
             p_stderr("Check on sort 7 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
-    EPETE(sort_result = kjb_sort(thing_two_ptr, count, sizeof(Thing_two), 
+    EPETE(sort_result = ivi_sort(thing_two_ptr, count, sizeof(Thing_two), 
                                  thing_two_cmp_field_one, 
                                  USE_CURRENT_ATN_HANDLING));
 
@@ -455,7 +455,7 @@ int main(int argc, char **argv)
         if (thing_two_cmp_field_one(thing_two_ptr + i - 1, thing_two_ptr + i) > 0)
         {
             p_stderr("Check on sort 8 failed.\n");
-            kjb_exit(EXIT_BUG);
+            ivi_exit(EXIT_BUG);
         }
     }
 
@@ -508,9 +508,9 @@ int main(int argc, char **argv)
         pso("\n");
     }
 
-    kjb_free(thing_one_ptr);
-    kjb_free(thing_two_ptr);
-    kjb_fclose(fp);
+    ivi_free(thing_one_ptr);
+    ivi_free(thing_two_ptr);
+    ivi_fclose(fp);
 
     return EXIT_SUCCESS; 
 

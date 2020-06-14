@@ -27,7 +27,7 @@
 #include <i_cpp/i_image.h>
 #include <edge_cpp/line_segment.h>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Vanishing_point
@@ -60,11 +60,11 @@ class Vanishing_point : public Readable, public Writeable
             _point(1) = y;
         }
 
-        Vanishing_point(const kjb::Vector & position) :  Readable(), Writeable(), _point(2,0.0)
+        Vanishing_point(const ivi::Vector & position) :  Readable(), Writeable(), _point(2,0.0)
         {
             if(position.size() != 2)
             {
-                throw kjb::Illegal_argument("Vanishing point vector size must be 2");
+                throw ivi::Illegal_argument("Vanishing point vector size must be 2");
             }
              _type = REGULAR;
             _point = position;
@@ -150,11 +150,11 @@ class Vanishing_point : public Readable, public Writeable
         }
 
         /** @brief Sets the position of this Vanishing point */
-        void set_position(const kjb::Vector & position)
+        void set_position(const ivi::Vector & position)
         {
             if(position.size() != 2)
             {
-                throw kjb::Illegal_argument("Vanishing point vector size must be 2");
+                throw ivi::Illegal_argument("Vanishing point vector size must be 2");
             }
              _type = REGULAR;
             _point = position;
@@ -172,7 +172,7 @@ class Vanishing_point : public Readable, public Writeable
         /** The coordinates (x,y) of this vanishing point. This field is meaningful only
          * if the vanishing point has finite coordinates (_type = REGULAR)
          */
-        kjb::Vector _point;
+        ivi::Vector _point;
 
         /** The type of this vanishing point. It can have finite coordinates stored
          * in _point, or be at infinity in four different directions (UP, DOWN, LEFT, RIGHT)
@@ -192,7 +192,7 @@ void read_CMU_vanishing_points
 
 void draw_mid_point_to_vanishing_point
 (
-    kjb::Image & img,
+    ivi::Image & img,
     const Line_segment & segment,
     const Vanishing_point & vpt,
     double ir,
@@ -203,7 +203,7 @@ void draw_mid_point_to_vanishing_point
 
 bool find_vanishing_point_given_one_and_line
 (
-    const kjb::Vanishing_point & vp1,
+    const ivi::Vanishing_point & vp1,
     double focal,
     unsigned int img_cols,
     unsigned int img_rows,
@@ -213,8 +213,8 @@ bool find_vanishing_point_given_one_and_line
 
 bool find_third_vanishing_point
 (
-    const kjb::Vanishing_point & vp1,
-    const kjb::Vanishing_point & vp2,
+    const ivi::Vanishing_point & vp1,
+    const ivi::Vanishing_point & vp2,
     double focal,
     unsigned int img_rows,
     unsigned int img_cols,

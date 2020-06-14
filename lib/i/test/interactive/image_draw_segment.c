@@ -1,5 +1,5 @@
 
-/* $Id: image_draw_segment.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: image_draw_segment.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -23,9 +23,9 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -102,11 +102,11 @@ int main(int argc, char** argv)
     EPETE(image_draw_gradient_2(ip, 200, 200, 750, 0,    0, 255, 255, 255, 0, 0, 200));
     EPETE(image_draw_gradient_2(ip, 200, 200, 250, 0,    0, 255, 255, 255, 0, 0, 200));
 
-    EPETE(kjb_display_image(ip, NULL));
+    EPETE(ivi_display_image(ip, NULL));
 
     prompt_to_continue();
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
     
     return EXIT_SUCCESS; 
 } 

@@ -353,8 +353,8 @@ int chamfer_transform_2(
     for(i = 0; i < points->total_num_pts; i++)
     {
         Edge_point* cur_pt = &points->edges[0].points[i];
-        int row = kjb_rintf(cur_pt->row);
-        int col = kjb_rintf(cur_pt->col);
+        int row = ivi_rintf(cur_pt->row);
+        int col = ivi_rintf(cur_pt->col);
         edge_img->elements[row][col] = 0.0;
         (*edge_map)[row][col] = cur_pt;
 

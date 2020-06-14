@@ -15,7 +15,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_target.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_target.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_target.h"
@@ -41,8 +41,8 @@
 #include <boost/bind.hpp>
 #include <boost/optional.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
@@ -721,7 +721,7 @@ double Target::closest_angle(double prev, double cur) const
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::sync_state(const Target& tg)
+void ivi::pt::sync_state(const Target& tg)
 {
     for(size_t f = 0; f < tg.get_start_time() - 1; ++f)
     {

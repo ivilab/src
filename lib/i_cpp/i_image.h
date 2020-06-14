@@ -1,15 +1,15 @@
 /**
  * @file
- * @brief Code for a wrapper class around the C struct KJB_Image.
+ * @brief Code for a wrapper class around the C struct IVI_Image.
  * @author Kyle Simek
  * @author Andrew Predoehl
  */
 /*
- * $Id: i_image.h 19820 2015-09-24 20:56:35Z predoehl $
+ * $Id: i_image.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef KJB_CPP_IMAGE_H
-#define KJB_CPP_IMAGE_H
+#ifndef IVI_CPP_IMAGE_H
+#define IVI_CPP_IMAGE_H
 
 //#include "m_cpp/m_concept.h"
 #include "i/i_matrix.h"
@@ -38,14 +38,14 @@
 #include <sstream>
 #endif
 
-namespace kjb
+namespace ivi
 {
     class Matrix;
     class Int_matrix;
     class Vector;
 
 /**
- * @defgroup kjbImageProc Image Processing
+ * @defgroup iviImageProc Image Processing
  *
  * This group include the Image class and all closely-related classes and
  * functions pertaining to low-level operations on and manipulation of images.
@@ -63,21 +63,21 @@ Image rgb_matrices_to_image(const Matrix&, const Matrix&, const Matrix&);
 
 
 /**
- * @brief Wrapped version of the C struct KJB_image
+ * @brief Wrapped version of the C struct IVI_image
  *
- * Due to memory leaks associated with the kjb_display_image function -- leaks
+ * Due to memory leaks associated with the ivi_display_image function -- leaks
  * that are still unresolved -- this class has some %debug features I've
  * wrapped up under the heading "Garbage Police."  Look for the above macro.
  * If the Garbage Police are turned off, then this is a very thin wrapper on
- * the KJB_image class.  Otherwise there is some static tracking of the number
+ * the IVI_image class.  Otherwise there is some static tracking of the number
  * of instances of this class.  This class does not seem to leak; the leaks
  * must be elsewhere (i.e., not my fault).
  */
 class Image
 {
 public:
-    typedef kjb_c::KJB_image    Impl_type;
-    typedef kjb_c::Pixel        Pixel_type;
+    typedef ivi_c::IVI_image    Impl_type;
+    typedef ivi_c::Pixel        Pixel_type;
 
 protected:
     Impl_type* m_image;
@@ -143,7 +143,7 @@ public:
     Image(int rows = 0, int cols = 0);
 
     /// @brief Construct grayscale image from c-style matrix
-    explicit Image( const kjb_c::Matrix& src );
+    explicit Image( const ivi_c::Matrix& src );
 
     /// @brief Construct grayscale image from matrix
     explicit Image( const Matrix& src );
@@ -151,7 +151,7 @@ public:
     /// @brief Copy ctor, performs a deep copy (use sparingly)
     Image( const Image& src );
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
     /**
      * @brief   Move ctor
      */
@@ -161,15 +161,15 @@ public:
         m_image = src.m_image;
         src.m_image = 0;
     }
-#endif /* KJB_HAVE_CXX11 */
+#endif /* IVI_HAVE_CXX11 */
 
 
 
     /**
      * @brief Read image from a named file
      *
-     * This wraps C-library function kjb_read_image_2().
-     * @throws KJB_error if the underlying C function returns an error.
+     * This wraps C-library function ivi_read_image_2().
+     * @throws IVI_error if the underlying C function returns an error.
      */
     explicit Image(const std::string& fname);
 
@@ -205,7 +205,7 @@ public:
     /* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 
-    /// @brief Dtor simply wraps kjb_free_image()
+    /// @brief Dtor simply wraps ivi_free_image()
     virtual ~Image()
     {
         #ifdef YES_WE_WANT_GARBAGE_POLICE
@@ -213,7 +213,7 @@ public:
         --live_object_counter;
         #endif
 
-        kjb_c::kjb_free_image(m_image);
+        ivi_c::ivi_free_image(m_image);
     }
 
     /// @brief Swap the implementation of two images
@@ -223,7 +223,7 @@ public:
         swap( m_image, other.m_image );
     }
 
-    friend void swap(kjb::Image& a, kjb::Image& b)
+    friend void swap(ivi::Image& a, ivi::Image& b)
     {
         a.swap(b);
     }
@@ -271,12 +271,12 @@ public:
     }
 
     /// @brief Deep copy assignment from C-type image.
-    Image& operator=(const kjb_c::KJB_image& src);
+    Image& operator=(const ivi_c::IVI_image& src);
 
     /// @brief Deep copy assignment.
     Image& operator=(const Image& src);
 
-#ifdef KJB_HAVE_CXX11
+#ifdef IVI_HAVE_CXX11
     /**
      * @brief   Move assignment
      */
@@ -285,12 +285,12 @@ public:
         if(this == &other)
             return *this;
 
-        kjb_c::kjb_free_image( m_image );
+        ivi_c::ivi_free_image( m_image );
         m_image = other.m_image;
         other.m_image = 0;
         return *this;
     }
-#endif /* KJB_HAVE_CXX11 */
+#endif /* IVI_HAVE_CXX11 */
 
     /// @brief Add an image from this image, in place
     Image& operator+=(const Image& op2);
@@ -384,14 +384,14 @@ public:
     const Pixel_type& operator()( int index ) const;
 
     /// @brief Invert this image; i.e., dark becomes light and vice-versa.
-    /// @note This simply wraps a call to kjb_c::ow_invert_image().
+    /// @note This simply wraps a call to ivi_c::ow_invert_image().
     void invert();
 
     /// @brief Generate an inverted version of this image (deprecated).
     /// @deprecated use non-member function get_inverted(const Image&) instead.
     Image get_inverted() const
     {
-        return kjb::get_inverted(*this);
+        return ivi::get_inverted(*this);
     }
 
     /**
@@ -470,7 +470,7 @@ public:
        --live_object_counter;
 #endif
 
-       kjb_c::kjb_free_image(m_image);
+       ivi_c::ivi_free_image(m_image);
        m_image = iimage;
     }
 
@@ -518,7 +518,7 @@ public:
     /**
      * @brief Contruct an image from three matrices representing red, green,
      *        blue channels.
-     * @throws KJB_error (possibly) if matrices not the same size (see below).
+     * @throws IVI_error (possibly) if matrices not the same size (see below).
      * @deprecated Use rgb_matrices_to_image in new code.
      */
     void from_color_matrices(
@@ -582,8 +582,8 @@ public:
      *
      * Sequence is provided as an iterator range, which points to vectors
      * representing (u,v) coordinates (i.e., (col, row) coordinates).
-     * Suitable vector types are any that implement the kjb::SimpleVector
-     * concept.  This includes kjb::Vector and std::vector<double>.
+     * Suitable vector types are any that implement the ivi::SimpleVector
+     * concept.  This includes ivi::Vector and std::vector<double>.
      */
     template <class Iterator>
     void draw_polyline(
@@ -595,7 +595,7 @@ public:
     {
         /*
         typedef typename std::iterator_traits<Iterator>::value_type value_type;
-        BOOST_CONCEPT_ASSERT((kjb::SimpleVector<value_type>));
+        BOOST_CONCEPT_ASSERT((ivi::SimpleVector<value_type>));
         */
         if(begin == end) return; // empty range
         for (Iterator it2 = begin, it = it2++; it2 != end; ++it, ++it2)
@@ -677,8 +677,8 @@ public:
 
     /**
      * @brief Draw the text on the image
-     * @see kjb_c::image_draw_text_center
-     * @returns kjb_c::ERROR or kjb_c::NO_ERROR to indicate success or failure.
+     * @see ivi_c::image_draw_text_center
+     * @returns ivi_c::ERROR or ivi_c::NO_ERROR to indicate success or failure.
      *
      * Draws the text on the image with the center at location (row, col).
      */
@@ -691,8 +691,8 @@ public:
 
     /**
      * @brief Draw the text on the image
-     * @see kjb_c::image_draw_text_top_left
-     * @returns kjb_c::ERROR or kjb_c::NO_ERROR to indicate success or failure.
+     * @see ivi_c::image_draw_text_top_left
+     * @returns ivi_c::ERROR or ivi_c::NO_ERROR to indicate success or failure.
      *
      * Draws the text on the image with the top-left at location (row, col)
      */
@@ -706,7 +706,7 @@ public:
     /**
      * @brief Overlay another image on this image, with an optional offset
      *
-     * This just forwards a call to kjb_c::image_draw_image().
+     * This just forwards a call to ivi_c::image_draw_image().
      *
      * @param overlay   Points to an image that will be drawn onto this image
      * @param row       Index of the row of this image where the top of the
@@ -723,7 +723,7 @@ public:
      * could crop the top edge of overlay by using a negative value for row.
      */
     void draw_image(
-        const kjb_c::KJB_image* overlay,
+        const ivi_c::IVI_image* overlay,
         int row = 0,
         int col = 0,
         int scale = 1
@@ -752,13 +752,13 @@ public:
      */
     int display( const std::string& title = std::string() ) const;
 
-    /// @brief return copy of the "flags" field of underlying KJB_image object
+    /// @brief return copy of the "flags" field of underlying IVI_image object
     int get_flags() const
     {
         return m_image -> flags;
     }
 
-    /// @brief set "flags" field of underlying KJB_image; return previous flags
+    /// @brief set "flags" field of underlying IVI_image; return previous flags
     int set_flags(int new_flags)
     {
         int old_flags = m_image -> flags;
@@ -779,7 +779,7 @@ typedef boost::shared_ptr<Image> Image_ptr;
  * @param factor the enlargement factor to apply, e.g., 2 means to double the
  *               width and height.  0.5 means to halve the width and height.
  * @return The scaled image.
- * @throws KJB_error if the scaling fails
+ * @throws IVI_error if the scaling fails
  *
  * If the enlargement factor is in the range 0.9999 to 1.0001, this function
  * just returns a copy of the input, without any scaling.
@@ -896,6 +896,6 @@ Vector Image::intensity_histogram(InputIterator first, InputIterator last) const
 
 /// @}
 
-} //namespace kjb
+} //namespace ivi
 
-#endif /*KJB_CPP_IMAGE_H */
+#endif /*IVI_CPP_IMAGE_H */

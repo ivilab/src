@@ -32,7 +32,7 @@
 #include <vector>
 #include <algorithm>
 
-using namespace kjb;
+using namespace ivi;
 using namespace pt;
 using namespace std;
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
         // create output directory
         string outdir = "output/box_data_cpp";
-        kjb_c::kjb_mkdir(outdir.c_str());
+        ivi_c::ivi_mkdir(outdir.c_str());
 
         // create data
         Box_data data(img_width, img_height);
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
             if(VERBOSE) cout << endl;
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

@@ -28,7 +28,7 @@
 
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 
 Triangular_mesh create_cylinder_polymesh(std::vector<Polygon>& faces)
 {

@@ -39,11 +39,11 @@ extern const double gp_svar_fdir;
 void make_typical_scene
 (
     size_t num_frames,
-    kjb::pt::Scene& scene,
-    kjb::pt::Box_data& box_data,
-    kjb::pt::Facemark_data& fm_data,
-    std::vector<kjb::Integral_flow>& flows_x,
-    std::vector<kjb::Integral_flow>& flows_y,
+    ivi::pt::Scene& scene,
+    ivi::pt::Box_data& box_data,
+    ivi::pt::Facemark_data& fm_data,
+    std::vector<ivi::Integral_flow>& flows_x,
+    std::vector<ivi::Integral_flow>& flows_y,
     size_t max_tracks = 0
 );
 
@@ -55,11 +55,11 @@ std::vector<std::string> create_or_read_scene
     size_t& num_frames,
     double& img_width,
     double& img_height,
-    kjb::pt::Box_data& box_data,
-    kjb::pt::Facemark_data& fm_data,
-    std::vector<kjb::Integral_flow>& flows_x,
-    std::vector<kjb::Integral_flow>& flows_y,
-    kjb::pt::Scene& scene,
+    ivi::pt::Box_data& box_data,
+    ivi::pt::Facemark_data& fm_data,
+    std::vector<ivi::Integral_flow>& flows_x,
+    std::vector<ivi::Integral_flow>& flows_y,
+    ivi::pt::Scene& scene,
     size_t max_tracks = 0,
     bool read_frame = false
 );

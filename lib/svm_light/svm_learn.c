@@ -1,5 +1,5 @@
 
-/* $Id: svm_learn.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: svm_learn.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__
 
@@ -23,7 +23,7 @@
 
 #include "l/l_incl.h"
 
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 #    define class c_class
 #endif
 

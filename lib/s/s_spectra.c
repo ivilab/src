@@ -1,5 +1,5 @@
 
-/* $Id: s_spectra.c 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: s_spectra.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -70,7 +70,7 @@ Spectra* debug_create_spectra
 
     if (sp->spectra_mp == NULL)
     {
-        kjb_free(sp);
+        ivi_free(sp);
         sp = NULL;
     }
     else
@@ -108,7 +108,7 @@ Spectra* create_spectra
 
     if (sp->spectra_mp == NULL)
     {
-        kjb_free(sp);
+        ivi_free(sp);
         sp = NULL;
     }
     else
@@ -148,7 +148,7 @@ void free_spectra(Spectra* spectra_ptr)
     if (spectra_ptr != NULL)
     {
         free_matrix(spectra_ptr->spectra_mp);
-        kjb_free(spectra_ptr);
+        ivi_free(spectra_ptr);
     }
 }
 
@@ -159,7 +159,7 @@ void free_spectra(Spectra* spectra_ptr)
  *
  * Gets target spectra for "building block" routines
  *
- * This routine implements the creation/over-writing g used in the KJB
+ * This routine implements the creation/over-writing g used in the IVI
  * library. If *target_sp_ptr is NULL, then this routine creates the spectra. If
  * it is not null, and it is the right size, then this routine does nothing. If
  * it is the wrong size, then it is resized.

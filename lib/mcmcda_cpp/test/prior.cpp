@@ -24,8 +24,8 @@
 #include <mcmcda_cpp/mcmcda_prior.h>
 #include <mcmcda_cpp/mcmcda_association.h>
 
-using namespace kjb;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::mcmcda;
 using namespace std;
 
 typedef Generic_track<Vector> Track;

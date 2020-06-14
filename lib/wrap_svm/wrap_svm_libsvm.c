@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_libsvm.c 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: wrap_svm_libsvm.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -30,7 +30,7 @@
  *     This file was cobbled together largely be Ranjini Swaminathan from code
  *     in the libsvm example files svm-predict.c, svm-train., and svm-scale.c.
  *
- *     Some of the code has been modfied to follow KJB library conventions.
+ *     Some of the code has been modfied to follow IVI library conventions.
  *     However, it is a confusing blend of what libsvm does and what we do.
 */
 
@@ -46,7 +46,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
 #    include "svm.h"
 #endif
 
@@ -61,9 +61,9 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
 /* -----------------------------------------------------------------------------
-|                              KJB_HAVE_LIBSVM
+|                              IVI_HAVE_LIBSVM
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -110,7 +110,7 @@ static char *libsvm_readline( FILE *);
 int set_libsvm_options(const char* option, const char* value)
 {
     int  result         = NOT_FOUND;
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
     char lc_option[ 100 ];
     int  temp_int_value;
     double temp_double_value;
@@ -198,7 +198,7 @@ int set_libsvm_options(const char* option, const char* value)
 }
 
 
-#ifndef KJB_HAVE_LIBSVM
+#ifndef IVI_HAVE_LIBSVM
 /* -----------------------------------------------------------------------------
 |                              no LIBSVM
 |                                  ||
@@ -223,7 +223,7 @@ static void set_dont_have_libsvm_error(void)
 
 int have_libsvm(void)
 {
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
     return TRUE;
 #else
     return FALSE;
@@ -239,9 +239,9 @@ int have_libsvm(void)
  * -----------------------------------------------------------------------------
 */
 
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
 /* -----------------------------------------------------------------------------
-|                              KJB_HAVE_LIBSVM
+|                              IVI_HAVE_LIBSVM
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -284,7 +284,7 @@ int do_libsvm_svm_computation
     if(fs_libsvm_scale_data == TRUE)
     {
 
-        ERE(kjb_sprintf(scaled_training_file, sizeof(scaled_training_file),
+        ERE(ivi_sprintf(scaled_training_file, sizeof(scaled_training_file),
                         "%s%s", training_file_name,"_scaled"));
 
 
@@ -325,7 +325,7 @@ int do_libsvm_svm_computation
 |                                  /\
 |                                 /||\
 |                                  ||
-|                              KJB_HAVE_LIBSVM
+|                              IVI_HAVE_LIBSVM
 ----------------------------------------------------------------------------- */
 #else
 /* -----------------------------------------------------------------------------
@@ -366,9 +366,9 @@ int do_libsvm_svm_computation
  * -----------------------------------------------------------------------------
 */
 
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
 /* -----------------------------------------------------------------------------
-|                              KJB_HAVE_LIBSVM
+|                              IVI_HAVE_LIBSVM
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -395,18 +395,18 @@ int do_libsvm_svm_prediction
     if(fs_libsvm_scale_data == TRUE)
     {
 
-        ERE(kjb_sprintf(scaled_input_file, sizeof(scaled_input_file),"%s%s", input_file_name,"_scaled"));
+        ERE(ivi_sprintf(scaled_input_file, sizeof(scaled_input_file),"%s%s", input_file_name,"_scaled"));
 
         result =  libsvm_scale_data(input_file_name, scaled_input_file,scale_path, 0);
         if(result != NO_ERROR)
         {
             return result;
         }
-        NRE(input = kjb_fopen(scaled_input_file,"r"));
+        NRE(input = ivi_fopen(scaled_input_file,"r"));
     }
     else
     {
-        NRE(input = kjb_fopen(input_file_name,"r"));
+        NRE(input = ivi_fopen(input_file_name,"r"));
     }
     if(input == NULL)
     {
@@ -414,7 +414,7 @@ int do_libsvm_svm_prediction
         exit(1);
     }
 
-    NRE(output = kjb_fopen(prediction_file_name,"w"));
+    NRE(output = ivi_fopen(prediction_file_name,"w"));
     if(output == NULL)
     {
         pso("can't open output file %s\n",prediction_file_name);
@@ -427,7 +427,7 @@ int do_libsvm_svm_prediction
         exit(1);
     }
 
-    NRE(line = (char *) kjb_malloc(fs_libsvm_max_line_len*sizeof(char)));
+    NRE(line = (char *) ivi_malloc(fs_libsvm_max_line_len*sizeof(char)));
     x = (struct svm_node *) malloc(fs_libsvm_max_nr_attr*sizeof(struct svm_node));
 
     if(predict_probability)
@@ -438,12 +438,12 @@ int do_libsvm_svm_prediction
         }
     libsvm_predict(input,output,model,&x);
     svm_destroy_model(model);
-    kjb_free(line);
+    ivi_free(line);
 
     free(x);
 
-    ERE(kjb_fclose(input));
-    ERE(kjb_fclose(output));
+    ERE(ivi_fclose(input));
+    ERE(ivi_fclose(output));
 
     return result;
 }
@@ -451,7 +451,7 @@ int do_libsvm_svm_prediction
 |                                  /\
 |                                 /||\
 |                                  ||
-|                              KJB_HAVE_LIBSVM
+|                              IVI_HAVE_LIBSVM
 ----------------------------------------------------------------------------- */
 #else
 /* -----------------------------------------------------------------------------
@@ -484,9 +484,9 @@ int do_libsvm_svm_prediction
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
 /* -----------------------------------------------------------------------------
-|                              KJB_HAVE_LIBSVM
+|                              IVI_HAVE_LIBSVM
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -503,7 +503,7 @@ static int libsvm_read_problem
     int elements, max_index, i, j;
     FILE *fp ;
 
-    NRE(fp= kjb_fopen(filename,"r"));
+    NRE(fp= ivi_fopen(filename,"r"));
 
     if(fp == NULL)
     {
@@ -566,7 +566,7 @@ out2:
     if(param->gamma == 0)
         param->gamma = 1.0/max_index;
 
-    ERE(kjb_fclose(fp));
+    ERE(ivi_fclose(fp));
 
     return NO_ERROR;
 }
@@ -594,7 +594,7 @@ static int libsvm_predict
     struct svm_node *x = *(x_node_pp);
 
 
-    NRE(labels=(int *) kjb_malloc(nr_class*sizeof(int)));
+    NRE(labels=(int *) ivi_malloc(nr_class*sizeof(int)));
     if(fs_libsvm_prob_estimate)
     {
         if (svm_type==NU_SVR || svm_type==EPSILON_SVR)
@@ -602,15 +602,15 @@ static int libsvm_predict
         else
         {
             svm_get_labels(model,labels);
-            NRE(prob_estimates = (double *) kjb_malloc(nr_class*sizeof(double)));
+            NRE(prob_estimates = (double *) ivi_malloc(nr_class*sizeof(double)));
             /* Ranjini :
             // Commented this line out so that the predictions file has only blob labels
             // and no other text
              */
-            /* kjb_fprintf(output,"labels");      
+            /* ivi_fprintf(output,"labels");      
                for(j=0;j<nr_class;j++)
-               kjb_fprintf(output," %d",labels[j]);
-               kjb_fprintf(output,"\n");*/
+               ivi_fprintf(output," %d",labels[j]);
+               ivi_fprintf(output,"\n");*/
         }
     }
     while(1)
@@ -646,20 +646,20 @@ out2:
         if (fs_libsvm_prob_estimate && (svm_type==C_SVC || svm_type==NU_SVC))
         {
             v = svm_predict_probability(model,x,prob_estimates);
-            ERE(kjb_fprintf(output,"%g ",v));
-            ERE(kjb_fflush(output));
+            ERE(ivi_fprintf(output,"%g ",v));
+            ERE(ivi_fflush(output));
             for(j=0;j<nr_class;j++)
             {
-                ERE(kjb_fprintf(output,"%g ",prob_estimates[j]));
-                ERE(kjb_fflush(output));
+                ERE(ivi_fprintf(output,"%g ",prob_estimates[j]));
+                ERE(ivi_fflush(output));
             }
-            ERE(kjb_fprintf(output,"\n"));
-            ERE(kjb_fflush(output));
+            ERE(ivi_fprintf(output,"\n"));
+            ERE(ivi_fflush(output));
         }
         else
         {
             v = svm_predict(model,x);
-            ERE(kjb_fprintf(output,"%g\n",v));
+            ERE(ivi_fprintf(output,"%g\n",v));
         }
 
         if(v == target)
@@ -682,8 +682,8 @@ out2:
 
     if(fs_libsvm_prob_estimate)
     {
-        kjb_free(prob_estimates);
-        kjb_free(labels);
+        ivi_free(prob_estimates);
+        ivi_free(labels);
     }
 
     *(x_node_pp) = x;
@@ -730,7 +730,7 @@ static int libsvm_scale_data
     FILE *input_fp;
     FILE *output_fp;
 
-    NRE(input_fp = kjb_fopen(input_file_name,"r"));
+    NRE(input_fp = ivi_fopen(input_file_name,"r"));
 
     if(input_fp == NULL)
     {
@@ -738,10 +738,10 @@ static int libsvm_scale_data
         return ERROR;
     }
 
-    ERE(kjb_sprintf(scale_restore_file, sizeof(scale_restore_file),"%s%s%s", scale_path,DIR_STR,"scale_file"));
+    ERE(ivi_sprintf(scale_restore_file, sizeof(scale_restore_file),"%s%s%s", scale_path,DIR_STR,"scale_file"));
     /*  ERE(get_base_name(input_file_name,dir_str,sizeof(dir_str),base_name,sizeof(base_name),suffix,sizeof(suffix),suffixes));
 
-        ERE(kjb_sprintf(scale_restore_file, sizeof(scale_restore_file),
+        ERE(ivi_sprintf(scale_restore_file, sizeof(scale_restore_file),
         "%s%s%s",dir_str,DIR_STR,"scale_file"));
      */
 
@@ -776,8 +776,8 @@ static int libsvm_scale_data
 
     }
 
-    feature_max = (double *)kjb_malloc((max_index+1)* sizeof(double));
-    feature_min = (double *)kjb_malloc((max_index+1)* sizeof(double));
+    feature_max = (double *)ivi_malloc((max_index+1)* sizeof(double));
+    feature_min = (double *)ivi_malloc((max_index+1)* sizeof(double));
 
 
     for(i = 0; i <= max_index; i++)
@@ -835,7 +835,7 @@ static int libsvm_scale_data
     if(!write_restore_file)
     {
 
-        NRE(fp = kjb_fopen(scale_restore_file,"r"));
+        NRE(fp = ivi_fopen(scale_restore_file,"r"));
 
 
         if(fp == NULL)
@@ -865,13 +865,13 @@ static int libsvm_scale_data
                     }
                 }
             }
-            ERE(kjb_fclose(fp));
+            ERE(ivi_fclose(fp));
         }
     }
 
     if(write_restore_file)
     {
-        NRE(fp = kjb_fopen(scale_restore_file,"w"));
+        NRE(fp = ivi_fopen(scale_restore_file,"w"));
         if(fp==NULL)
         {
             pso("Cannot open file( save_file for scales)\n");
@@ -879,26 +879,26 @@ static int libsvm_scale_data
         }
         if(fs_libsvm_y_scaling)
         {
-            ERE(kjb_fprintf(fp, "y\n"));
-            ERE( kjb_fprintf(fp, "%.16g %.16g\n", fs_libsvm_y_lower, fs_libsvm_y_upper));
-            ERE(kjb_fprintf(fp, "%.16g %.16g\n", fs_libsvm_y_min, fs_libsvm_y_max));
+            ERE(ivi_fprintf(fp, "y\n"));
+            ERE( ivi_fprintf(fp, "%.16g %.16g\n", fs_libsvm_y_lower, fs_libsvm_y_upper));
+            ERE(ivi_fprintf(fp, "%.16g %.16g\n", fs_libsvm_y_min, fs_libsvm_y_max));
         }
-        ERE(kjb_fprintf(fp, "x\n"));
-        ERE(kjb_fprintf(fp, "%.16g %.16g\n", fs_libsvm_lower, fs_libsvm_upper));
+        ERE(ivi_fprintf(fp, "x\n"));
+        ERE(ivi_fprintf(fp, "%.16g %.16g\n", fs_libsvm_lower, fs_libsvm_upper));
 
         for(i = 1; i <= max_index; i++)
         {
             if(feature_min[i] != feature_max[i])
             {
-                ERE(kjb_fprintf(fp,"%d %.16g %.16g\n",i,feature_min[i],feature_max[i]));
+                ERE(ivi_fprintf(fp,"%d %.16g %.16g\n",i,feature_min[i],feature_max[i]));
             }
         }
-        ERE(kjb_fclose(fp));
+        ERE(ivi_fclose(fp));
     }
 
     /* pass 3: scale */
 
-    NRE(output_fp = kjb_fopen(scaled_input_file_name,"w"));
+    NRE(output_fp = ivi_fopen(scaled_input_file_name,"w"));
 
     if(output_fp == NULL)
     {
@@ -941,14 +941,14 @@ static int libsvm_scale_data
             libsvm_output(i,0, feature_max, feature_min, output_fp);
         }
 
-        ERE(kjb_fprintf(output_fp,"\n"));
+        ERE(ivi_fprintf(output_fp,"\n"));
     }
 
     free(fs_libsvm_scale_line);
-    kjb_free(feature_max);
-    kjb_free(feature_min);
-    kjb_fclose(input_fp);
-    kjb_fclose(output_fp);
+    ivi_free(feature_max);
+    ivi_free(feature_min);
+    ivi_fclose(input_fp);
+    ivi_fclose(output_fp);
 
     return result;
 }
@@ -992,7 +992,7 @@ static int libsvm_output_target(double value, FILE* fp)
             (value - fs_libsvm_y_min)/(fs_libsvm_y_max - fs_libsvm_y_min);
     }
     
-    ERE( kjb_fprintf(fp,"%g ",value));
+    ERE( ivi_fprintf(fp,"%g ",value));
     
     return NO_ERROR;
 }
@@ -1030,7 +1030,7 @@ static void libsvm_output
 
     if(value != 0)
     {
-        if(kjb_fprintf(fp, "%d:%g ",index, value)== ERROR)
+        if(ivi_fprintf(fp, "%d:%g ",index, value)== ERROR)
         {
             pso("Error encountered in file wrap_svm_libsvm.c ,routine libsvm_output\n");
             exit(1);

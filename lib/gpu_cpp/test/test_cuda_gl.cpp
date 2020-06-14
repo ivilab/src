@@ -22,7 +22,7 @@
 #include <l/l_incl.h>
 #include <iostream>
 
-#ifndef KJB_HAVE_CUDA
+#ifndef IVI_HAVE_CUDA
 int main()
 {
     std::cout << "Test requires cuda\n";
@@ -32,7 +32,7 @@ int main()
 
 
 
-#if defined(KJB_HAVE_OPENGL) && !defined(KJB_HAVE_GLUT)
+#if defined(IVI_HAVE_OPENGL) && !defined(IVI_HAVE_GLUT)
 #error "glut not found"
 #endif
 
@@ -51,9 +51,9 @@ int main()
 #include <time.h>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::opengl;
-using namespace kjb::gpu;
+using namespace ivi;
+using namespace ivi::opengl;
+using namespace ivi::gpu;
 
 Framebuffer_object* fbo;
 Buffer* pbo;

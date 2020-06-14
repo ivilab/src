@@ -1,4 +1,4 @@
-/* $Id: gui_slider.h 18034 2014-11-03 05:56:44Z ksimek $ */
+/* $Id: gui_slider.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -19,17 +19,17 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 //
-#ifndef KJB_CPP_GUI_SLIDER_H
-#define KJB_CPP_GUI_SLIDER_H
+#ifndef IVI_CPP_GUI_SLIDER_H
+#define IVI_CPP_GUI_SLIDER_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <gr_cpp/gr_opengl.h>
 #include <gui_cpp/gui_overlay.h>
 #include <gui_cpp/gui_event_listener.h>
 #include <boost/function.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -39,9 +39,9 @@ namespace gui
  * two extremes.
  */
 template <class Real>
-class Slider : public kjb::gui::Interactive_overlay
+class Slider : public ivi::gui::Interactive_overlay
 {
-typedef kjb::gui::Interactive_overlay Base;
+typedef ivi::gui::Interactive_overlay Base;
 public:
     Slider() :
         Base(),
@@ -53,7 +53,7 @@ public:
         grabbed_(false)
     {
         if(value_ < min_ || value_ > max_)
-            KJB_THROW_2(kjb::Illegal_argument, "initial value is out of bounds");
+            IVI_THROW_2(ivi::Illegal_argument, "initial value is out of bounds");
     }
 
     Slider(int x, int y,
@@ -87,10 +87,10 @@ public:
         int bar_bottom = bar_center - BAR_HEIGHT/2;
         int bar_top = bar_center + BAR_HEIGHT/2;
 
-        static const kjb::Vector3 bar_color(248.0/255.0);
-        static const kjb::Vector3 outline_color(221.0/255.0);
-//        static const kjb::Vector3 outline_color(0);
-        kjb::opengl::glColor(bar_color);
+        static const ivi::Vector3 bar_color(248.0/255.0);
+        static const ivi::Vector3 outline_color(221.0/255.0);
+//        static const ivi::Vector3 outline_color(0);
+        ivi::opengl::glColor(bar_color);
 
         glBegin(GL_QUADS);
 
@@ -104,7 +104,7 @@ public:
             glEnd();
             if(i == 0)
             {
-                kjb::opengl::glColor(outline_color);
+                ivi::opengl::glColor(outline_color);
                 glBegin(GL_LINE_LOOP);
             }
 
@@ -118,7 +118,7 @@ public:
             int indicator_right = current_x + INDICATOR_HEIGHT / 2;
             int indicator_bottom = bar_center - INDICATOR_HEIGHT / 2;
             int indicator_top = bar_center + INDICATOR_HEIGHT / 2;
-            kjb::opengl::glColor(bar_color);
+            ivi::opengl::glColor(bar_color);
             glBegin(GL_QUADS);
             for(size_t i = 0; i < 2; ++i)
             {
@@ -130,7 +130,7 @@ public:
                 glEnd();
                 if(i == 0)
                 {
-                    kjb::opengl::glColor(outline_color);
+                    ivi::opengl::glColor(outline_color);
                     glBegin(GL_LINE_LOOP);
                 }
             }
@@ -142,7 +142,7 @@ public:
 
     virtual bool mouse_event(int button, int state, int u, int v)
     {
-        kjb::Vector2 pos(u, v);
+        ivi::Vector2 pos(u, v);
 
         if(!has_valid_state_()) return false;
 
@@ -152,7 +152,7 @@ public:
         if(state == GLUT_DOWN)
         {
                 grabbed_ = true;
-//            kjb::Vector2 slider_pos(position_from_value_(value_), bar_center_());
+//            ivi::Vector2 slider_pos(position_from_value_(value_), bar_center_());
 ////
 //            // if down: (1) on slider?  (2) on timeline?
 //            if((slider_pos - pos).magnitude() <= height() / 2.0)
@@ -251,7 +251,7 @@ public:
 
     void redisplay() const
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutPostRedisplay();
 #endif
     }
@@ -274,7 +274,7 @@ private:
         double delta = v - min_;
         delta /= (max_ - min_);
         if(delta < 0 || delta > 1.0)
-            KJB_THROW_3(kjb::Illegal_argument, "value must be between %f and %f", (min_)(max_));
+            IVI_THROW_3(ivi::Illegal_argument, "value must be between %f and %f", (min_)(max_));
         return x() + delta * width();
     }
 
@@ -309,7 +309,7 @@ template <class T>
 const int Slider<T>::BAR_HEIGHT = 10;
 
 } // namespace gui
-} // namespace kjb
+} // namespace ivi
 
 #endif /* HAVE_OPENGL */
 #endif

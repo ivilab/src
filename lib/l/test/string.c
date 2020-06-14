@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     char *buff_pos; 
 
 
-    kjb_l_set("debug_level", "2"); 
+    ivi_l_set("debug_level", "2"); 
 
     buff_pos = buff; 
 

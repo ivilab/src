@@ -1,4 +1,4 @@
-/* $Id: l_index.cpp 12793 2012-08-03 21:19:40Z kobus $ */
+/* $Id: l_index.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,7 +20,7 @@
 #include <l_cpp/l_index.h>
 #include <l_cpp/l_int_vector.h>
 
-namespace kjb {
+namespace ivi {
 const Index_range Index_range::ALL = Index_range(true);
 
 Index_range::Index_range(const Int_vector& v) :

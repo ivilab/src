@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_deva_detection.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: d_deva_detection.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #ifndef D_DEVA_DETECTION_H
@@ -29,7 +29,7 @@
 #include <vector>
 #include <iostream>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -68,7 +68,7 @@ public:
     { 
         if( i > 8)
         {
-            KJB_THROW_2(Index_out_of_bounds, 
+            IVI_THROW_2(Index_out_of_bounds, 
                     "Index out of bound in Deva_detection ");
         }
         return boxes_[i];
@@ -87,7 +87,7 @@ public:
     { 
         if( i > 8)
         {
-            KJB_THROW_2(Index_out_of_bounds, 
+            IVI_THROW_2(Index_out_of_bounds, 
                     "Index out of bound in Deva_detection ");
         }
         return boxes_[i];
@@ -165,6 +165,6 @@ private:
     Vector compared_center;
 };
 
-} // namespace kjb
+} // namespace ivi
 
 #endif /* D_DEVA_DETECTION_H */

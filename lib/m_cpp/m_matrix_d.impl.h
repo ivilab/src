@@ -1,4 +1,4 @@
-/* $Id: m_matrix_d.impl.h 24606 2019-12-07 22:02:46Z kobus $ */
+/* $Id: m_matrix_d.impl.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_MATRIX_D_IMPL_H
-#define KJB_M_MATRIX_D_IMPL_H
+#ifndef IVI_M_MATRIX_D_IMPL_H
+#define IVI_M_MATRIX_D_IMPL_H
 
 #include <iostream>
 #include <numeric>
@@ -32,7 +32,7 @@
 #include "l_cpp/l_functors.h"
 #include "l_cpp/l_cxx11.h"
 
-namespace kjb {
+namespace ivi {
 
 template <size_t NROWS, size_t NCOLS, bool TRANSPOSED>
 Matrix_d<NROWS,NCOLS,TRANSPOSED>::Matrix_d() :
@@ -86,7 +86,7 @@ Matrix_d<NROWS,NCOLS,TRANSPOSED>& Matrix_d<NROWS,NCOLS,TRANSPOSED>::operator=(co
              other.get_num_rows() != (Matrix::Size_type) get_num_rows() ||
              other.get_num_cols() != (Matrix::Size_type) get_num_cols() )
     {
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
     return assignment_dispatch_(other);
@@ -98,7 +98,7 @@ Matrix_d<NROWS,NCOLS,TRANSPOSED>& Matrix_d<NROWS,NCOLS,TRANSPOSED>::operator-=(c
     if (second.get_num_rows() != (Matrix::Size_type) get_num_rows() ||
         second.get_num_cols() != (Matrix::Size_type) get_num_cols())
     {
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
     return minus_equals_dispatch_(second);
@@ -124,7 +124,7 @@ Matrix_d<NROWS,NCOLS,TRANSPOSED>& Matrix_d<NROWS,NCOLS,TRANSPOSED>::operator+=(c
     if (second.get_num_rows() != (Matrix::Size_type) get_num_rows() ||
        second.get_num_cols() != (Matrix::Size_type) get_num_cols())
     {
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
     return plus_equals_dispatch_(second);
@@ -151,7 +151,7 @@ template <size_t NROWS, size_t NCOLS, bool TRANSPOSED>
 template <size_t D>
 void Matrix_d<NROWS,NCOLS,TRANSPOSED>::set_row(size_t r, const Vector_d<D>& row)
 {
-    KJB_STATIC_ASSERT((D == Matrix_d<NROWS,NCOLS,TRANSPOSED>::num_cols), "Dimension mismatch");
+    IVI_STATIC_ASSERT((D == Matrix_d<NROWS,NCOLS,TRANSPOSED>::num_cols), "Dimension mismatch");
     for(size_t c = 0; c < num_cols; ++c)
     {
         if(!TRANSPOSED)
@@ -169,7 +169,7 @@ template <size_t NROWS, size_t NCOLS, bool TRANSPOSED>
 template <size_t D>
 void Matrix_d<NROWS,NCOLS,TRANSPOSED>::set_col(size_t c, const Vector_d<D>& col)
 {
-    KJB_STATIC_ASSERT((D == Matrix_d<NROWS,NCOLS,TRANSPOSED>::num_rows), "Dimension mismatch");
+    IVI_STATIC_ASSERT((D == Matrix_d<NROWS,NCOLS,TRANSPOSED>::num_rows), "Dimension mismatch");
     for(size_t r = 0; r < num_rows; ++r)
     {
         if(!TRANSPOSED)
@@ -257,7 +257,7 @@ Matrix_d<NROWS,NCOLS,TRANSPOSED>& Matrix_d<NROWS,NCOLS,TRANSPOSED>::minus_equals
 template <class Matrix_type_1,  class Matrix_type_2>
 Matrix_d<Matrix_type_1::num_rows, Matrix_type_2::num_cols> matrix_multiply_dispatch_(const Matrix_type_1& m1, const Matrix_type_2& m2)
 {
-    KJB_STATIC_ASSERT(Matrix_type_1::num_cols == Matrix_type_2::num_rows, "Dimension mismatch");
+    IVI_STATIC_ASSERT(Matrix_type_1::num_cols == Matrix_type_2::num_rows, "Dimension mismatch");
 
     static const size_t OUT_ROWS = Matrix_type_1::num_rows;
     static const size_t IN_ROWS = Matrix_type_1::num_cols;
@@ -301,7 +301,7 @@ Matrix matrix_multiply_dynamic_dispatch_(const Matrix_1& m1, const Matrix_2& m2)
 {
     if ((Matrix::Size_type) m1.get_num_cols() != (Matrix::Size_type) m2.get_num_rows())
     {
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
     static size_t OUT_ROWS = m1.get_num_rows();
@@ -340,7 +340,7 @@ inline Matrix operator*(const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op1, const Mat
 }
 
 template<std::size_t NROWS, std::size_t NCOLS, bool TRANSPOSED>
-inline Matrix operator*(const kjb::Matrix& op1, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op2)
+inline Matrix operator*(const ivi::Matrix& op1, const Matrix_d<NROWS, NCOLS, TRANSPOSED>& op2)
 {
     return matrix_multiply_dynamic_dispatch_(op1, op2);
 }
@@ -461,15 +461,15 @@ double max_abs_difference( const Matrix_d<R,C,false>& op1, const Matrix_d<R,C,fa
 template <std::size_t R, std::size_t C, bool T>
 inline double max(const Matrix_d<R,C, T>& mat)
 {
-    return accumulate(mat, DBL_MIN, kjb::maximum<double>());
+    return accumulate(mat, DBL_MIN, ivi::maximum<double>());
 }
 
 template <std::size_t R, std::size_t C, bool T>
 inline double min(const Matrix_d<R,C, T>& mat)
 {
-    return accumulate(mat, DBL_MAX, kjb::minimum<double>());
+    return accumulate(mat, DBL_MAX, ivi::minimum<double>());
 }
 
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_M_MATRIX_D_IMPL_H */
+#endif /* IVI_M_MATRIX_D_IMPL_H */

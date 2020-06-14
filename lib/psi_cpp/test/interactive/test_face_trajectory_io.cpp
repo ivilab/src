@@ -1,7 +1,7 @@
 #include <psi_cpp/psi_trajectory.h>
 #include <l_cpp/l_exception.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace psi;
 using namespace std;
 
@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 
         trajectories.write("face_trajectories");
     }
-    catch(kjb::Exception kex)
+    catch(ivi::Exception kex)
     {
         kex.print_details();
     }

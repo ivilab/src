@@ -4,7 +4,7 @@
  * @brief test program for wrapper on GSL random num. generators
  */
 /*
- * $Id: test_rng.cpp 9821 2011-06-27 00:52:55Z predoehl $
+ * $Id: test_rng.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_incl.h>
@@ -62,8 +62,8 @@ void test()
     // Not surprising, since we are doing over 100 such conf. interval tests!
     for( int iii = 0; iii < BINS; ++iii ) {
         /*
-        if ( kjb_c::is_interactive() )
-            kjb_c::kjb_printf( "%d\n", bins.at( iii ) );
+        if ( ivi_c::is_interactive() )
+            ivi_c::ivi_printf( "%d\n", bins.at( iii ) );
         */
         we_expect_that( abs( bins.at( iii ) - mean ) / sigma < 3 );
     }
@@ -71,20 +71,20 @@ void test()
 
 int main()
 {
-    test< kjb::Gsl_rng_mt19937 >();
-    test< kjb::Gsl_rng_ranlxs0 >();
-    test< kjb::Gsl_rng_ranlxs1 >();
-    test< kjb::Gsl_rng_ranlxs2 >();
-    test< kjb::Gsl_rng_ranlxd1 >();
-    test< kjb::Gsl_rng_ranlxd2 >();
-    test< kjb::Gsl_rng_cmrg >();
-    test< kjb::Gsl_rng_mrg >();
-    test< kjb::Gsl_rng_taus2 >();
-    test< kjb::Gsl_rng_gfsr4 >();
+    test< ivi::Gsl_rng_mt19937 >();
+    test< ivi::Gsl_rng_ranlxs0 >();
+    test< ivi::Gsl_rng_ranlxs1 >();
+    test< ivi::Gsl_rng_ranlxs2 >();
+    test< ivi::Gsl_rng_ranlxd1 >();
+    test< ivi::Gsl_rng_ranlxd2 >();
+    test< ivi::Gsl_rng_cmrg >();
+    test< ivi::Gsl_rng_mrg >();
+    test< ivi::Gsl_rng_taus2 >();
+    test< ivi::Gsl_rng_gfsr4 >();
 
-    if ( kjb_c::is_interactive() ) {
-        kjb_c::kjb_puts( __FILE__ );
-        kjb_c::kjb_puts( ": success!\n" );
+    if ( ivi_c::is_interactive() ) {
+        ivi_c::ivi_puts( __FILE__ );
+        ivi_c::ivi_puts( ": success!\n" );
     }
 
     return EXIT_SUCCESS;

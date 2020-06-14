@@ -22,7 +22,7 @@
  *      * Matrix_camera class
  *-----------------------------------------------------------------------------*/
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #ifdef MAC_OSX
 #    include <OpenGL/glu.h>
 #    include <GLUT/glut.h>
@@ -35,7 +35,7 @@
 	#    include <GL/glut.h>       
 	#endif
 #endif 
-#endif // KJB_HAVE_OPENGL
+#endif // IVI_HAVE_OPENGL
 
 #include <unistd.h>
 #include <m_cpp/m_cpp_incl.h>
@@ -44,7 +44,7 @@
 
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using std::cout;
 
 void print_projection_matrix();
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
     size_t width = img.get_num_cols();
     size_t height = img.get_num_rows();
 
-    kjb_c::kjb_l_set("page", "off");
+    ivi_c::ivi_l_set("page", "off");
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);

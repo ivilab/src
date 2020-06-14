@@ -1,5 +1,5 @@
 
-/* $Id: geom.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: geom.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -168,9 +168,9 @@ void qh_distplane (pointT *point, facetT *facet, realT *dist) {
       qh RANDOMfactor * qh maxmaxcoord;
   }
   if (qh IStracing >= 4) {
-    kjb_fprintf (qh ferr, "qh_distplane: ");
-    kjb_fprintf (qh ferr, qh_REAL_1, *dist);
-    kjb_fprintf (qh ferr, "from p%d to f%d\n", qh_pointid(point), facet->id);
+    ivi_fprintf (qh ferr, "qh_distplane: ");
+    ivi_fprintf (qh ferr, qh_REAL_1, *dist);
+    ivi_fprintf (qh ferr, "from p%d to f%d\n", qh_pointid(point), facet->id);
   }
   return;
 } /* distplane */
@@ -233,15 +233,15 @@ facetT *qh_findbest (pointT *point, facetT *facet, boolT bestoutside,
   boolT testhorizon = ispartition && (bestoutside || qh APPROXhull || qh MERGING);
 
   if (!ischeckmax && !ispartition && !isfindfacet) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_findbest): unknown combination of arguments\n");
+    ivi_fprintf (qh ferr, "qhull internal error (qh_findbest): unknown combination of arguments\n");
     qh_errexit (qh_ERRqhull, facet, (ridgeT*)NULL);
   }
   if (qh TRACEpoint >= 0 && qh TRACEpoint == qh_pointid (point)) {
     qh IStracing= qh TRACElevel;
-    kjb_fprintf (qh ferr, "qh_findbest: point p%d starting at f%d bestoutside? %d newfacets %d\n",
+    ivi_fprintf (qh ferr, "qh_findbest: point p%d starting at f%d bestoutside? %d newfacets %d\n",
 	     qh TRACEpoint, facet->id, bestoutside, newfacets);
-    kjb_fprintf (qh ferr, "  Last point added to hull was p%d.", qh furthest_id);
-    kjb_fprintf(qh ferr, "  Last merge was #%d.\n", zzval_(Ztotmerge));
+    ivi_fprintf (qh ferr, "  Last point added to hull was p%d.", qh furthest_id);
+    ivi_fprintf(qh ferr, "  Last merge was #%d.\n", zzval_(Ztotmerge));
   }
   if (isoutside)
     *isoutside= True;
@@ -380,9 +380,9 @@ facetT *qh_findbestnew (pointT *point, facetT *startfacet,
 
   if (!startfacet) {
     if (qh MERGING)
-      kjb_fprintf(qh ferr, "qhull precision error (qh_findbestnew): merging has formed and deleted an independent cycle of facets.  Can not continue.\n");
+      ivi_fprintf(qh ferr, "qhull precision error (qh_findbestnew): merging has formed and deleted an independent cycle of facets.  Can not continue.\n");
     else
-      kjb_fprintf(qh ferr, "qhull internal error (qh_findbestnew): no new facets for point p%d\n",
+      ivi_fprintf(qh ferr, "qhull internal error (qh_findbestnew): no new facets for point p%d\n",
       	      qh furthest_id);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -394,10 +394,10 @@ facetT *qh_findbestnew (pointT *point, facetT *startfacet,
     distoutside= qh MINoutside;
   if (qh TRACEpoint >= 0 && qh TRACEpoint == qh_pointid (point)) {
     qh IStracing= qh TRACElevel;
-    kjb_fprintf(qh ferr, "qh_findbestnew: point p%d facet f%d. Stop if dist > %2.2g\n",
+    ivi_fprintf(qh ferr, "qh_findbestnew: point p%d facet f%d. Stop if dist > %2.2g\n",
 	     qh TRACEpoint, startfacet->id, distoutside);
-    kjb_fprintf(qh ferr, "  Last point added to hull was p%d.", qh furthest_id);
-    kjb_fprintf(qh ferr, "  Last merge was #%d.\n", zzval_(Ztotmerge));
+    ivi_fprintf(qh ferr, "  Last point added to hull was p%d.", qh furthest_id);
+    ivi_fprintf(qh ferr, "  Last merge was #%d.\n", zzval_(Ztotmerge));
   }
   if (isoutside)
     *isoutside= True;
@@ -494,7 +494,7 @@ void qh_gausselim(realT **rows, int numrow, int numcol, boolT *sign, boolT *near
       *nearzero= True;
       if (pivot_abs == 0.0) {   /* remainder of column == 0 */
 	if (qh IStracing >= 4) {
-	  kjb_fprintf (qh ferr, "qh_gausselim: 0 pivot at column %d. (%2.2g < %2.2g)\n", k, pivot_abs, qh DISTround);
+	  ivi_fprintf (qh ferr, "qh_gausselim: 0 pivot at column %d. (%2.2g < %2.2g)\n", k, pivot_abs, qh DISTround);
 	  qh_printmatrix (qh ferr, "Matrix:", rows, numrow, numcol);
 	}
 	zzinc_(Zgauss0);
@@ -549,7 +549,7 @@ pointT *qh_getcenter(setT *vertices) {
   int count= qh_setsize(vertices);
 
   if (count < 2) {
-    kjb_fprintf (qh ferr, "qhull internal error (qh_getcenter): not defined for %d points\n", count);
+    ivi_fprintf (qh ferr, "qhull internal error (qh_getcenter): not defined for %d points\n", count);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
   center= (pointT *)qh_memalloc(qh normal_size);
@@ -757,11 +757,11 @@ void qh_setfacetplane(facetT *facet) {
   if (facet == qh tracefacet) {
     oldtrace= qh IStracing;
     qh IStracing= 5;
-    kjb_fprintf (qh ferr, "qh_setfacetplane: facet f%d created.\n", facet->id);
-    kjb_fprintf (qh ferr, "  Last point added to hull was p%d.", qh furthest_id);
+    ivi_fprintf (qh ferr, "qh_setfacetplane: facet f%d created.\n", facet->id);
+    ivi_fprintf (qh ferr, "  Last point added to hull was p%d.", qh furthest_id);
     if (zzval_(Ztotmerge))
-      kjb_fprintf(qh ferr, "  Last merge was #%d.", zzval_(Ztotmerge));
-    kjb_fprintf (qh ferr, "\n\nCurrent summary is:\n");
+      ivi_fprintf(qh ferr, "  Last merge was #%d.", zzval_(Ztotmerge));
+    ivi_fprintf (qh ferr, "\n\nCurrent summary is:\n");
       qh_printsummary (qh ferr);
   }
   if (qh hull_dim <= 4) {
@@ -838,7 +838,7 @@ void qh_setfacetplane(facetT *facet) {
 	}else if (-dist > qh TRACEdist)
 	  istrace= True;
 	if (istrace) {
-	  kjb_fprintf (qh ferr, "qh_setfacetplane: ====== vertex p%d (v%d) increases max_outside to %2.2g for new facet f%d last p%d\n",
+	  ivi_fprintf (qh ferr, "qh_setfacetplane: ====== vertex p%d (v%d) increases max_outside to %2.2g for new facet f%d last p%d\n",
 	        qh_pointid(vertex->point), vertex->id, dist, facet->id, qh furthest_id);
 	  qh_errprint ("DISTANT", facet, NULL, NULL, NULL);
 	}
@@ -846,11 +846,11 @@ void qh_setfacetplane(facetT *facet) {
     }
   }
   if (qh IStracing >= 3) {
-    kjb_fprintf (qh ferr, "qh_setfacetplane: f%d offset %2.2g normal: ",
+    ivi_fprintf (qh ferr, "qh_setfacetplane: f%d offset %2.2g normal: ",
 	     facet->id, facet->offset);
     for (k=0; k<qh hull_dim; k++)
-      kjb_fprintf (qh ferr, "%2.2g ", facet->normal[k]);
-    kjb_fprintf (qh ferr, "\n");
+      ivi_fprintf (qh ferr, "%2.2g ", facet->normal[k]);
+    ivi_fprintf (qh ferr, "\n");
   }
   if (facet == qh tracefacet)
     qh IStracing= oldtrace;

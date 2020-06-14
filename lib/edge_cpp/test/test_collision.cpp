@@ -29,7 +29,7 @@ using namespace std;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
     int dir;
     double delta;

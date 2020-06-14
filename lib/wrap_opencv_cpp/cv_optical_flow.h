@@ -16,7 +16,7 @@
    |  Author:  Denis Gorbunov, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_optical_flow.h 21062 2017-01-13 18:54:05Z kobus $ */
+/* $Id: cv_optical_flow.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef CV_OPTICAL_FLOW_H_
 #define CV_OPTICAL_FLOW_H_
@@ -26,7 +26,7 @@
 #include <m_cpp/m_matrix.h>
 #include <i_cpp/i_image.h>
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 
 #include <wrap_opencv_cpp/cv_util.h>
 
@@ -34,7 +34,7 @@
 #include <opencv2/video.hpp>
 
 #endif
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
@@ -55,7 +55,7 @@ namespace opencv
  *
  * @brief A wrapper class for calcOpticalFlowPyrLK() function 
  */
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 
 struct CV_optical_flow_feature
 {
@@ -169,6 +169,6 @@ private:
 
 
 } // namespace opencv
-} // namespace kjb
+} // namespace ivi
 
 #endif /* OPTICAL_FLOW_H_ */

@@ -1,5 +1,5 @@
 
-/* $Id: i_video.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_video.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,9 +27,9 @@
 #include "i/i_float.h"
 
 
-#ifdef KJB_HAVE_VIDEO
-#    ifndef USE_KJB
-#        define USE_KJB
+#ifdef IVI_HAVE_VIDEO
+#    ifndef USE_IVI
+#        define USE_IVI
 #    endif
 
 #    include "mike/libMBvg-big1.h"
@@ -38,7 +38,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -68,7 +68,7 @@ int get_capture_frame_count(void);
 int start_video_grabber(void);
 int stop_video_grabber(void);
 
-int capture_image(KJB_image** ipp, Image_window* image_window_ptr);
+int capture_image(IVI_image** ipp, Image_window* image_window_ptr);
 
 
 #ifdef __cplusplus

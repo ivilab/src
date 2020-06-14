@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: real_data_parser.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: real_data_parser.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_io.h"
 #include "l/l_init.h"
@@ -30,7 +30,7 @@
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -50,10 +50,10 @@
 
 #define GROUP_HASH 59393925
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
-std::vector<Data> kjb::ties::parse_real_data
+std::vector<Data> ivi::ties::parse_real_data
 (
     const std::vector<std::string>& moderators,
     const std::vector<std::string>& observables,
@@ -98,18 +98,18 @@ std::vector<Data> kjb::ties::parse_real_data
         if(header_map.find("Dyad") == header_map.end() 
                 && header_map.find("dyad") == header_map.end())
         {
-            KJB_THROW_2(Runtime_error, "Please provide couple's ID "
+            IVI_THROW_2(Runtime_error, "Please provide couple's ID "
                     "(column with \"Dyad\" or \"dyad\" as header in your .csv file\n");
         }
         if(header_map.find("Time") == header_map.end() 
                 && header_map.find("time") == header_map.end())
         {
-            KJB_THROW_2(Runtime_error, "Please provide time counter "
+            IVI_THROW_2(Runtime_error, "Please provide time counter "
                     "(column with \"Time\" or \"time\" as header in your .csv file\n");
         }
         if(header_map.find(distinguisher) == header_map.end())
         {
-            KJB_THROW_3(Illegal_argument, 
+            IVI_THROW_3(Illegal_argument, 
                     "distinguisher %s is not provided in the file.",
                     (distinguisher.c_str())); 
         }
@@ -119,7 +119,7 @@ std::vector<Data> kjb::ties::parse_real_data
         {
             if(header_map.find(grouping_var) == header_map.end())
             {
-                KJB_THROW_3(Illegal_argument, 
+                IVI_THROW_3(Illegal_argument, 
                             "The provided grouping-variable %s "
                             " is not present in data",
                             (grouping_var.c_str()));
@@ -161,7 +161,7 @@ std::vector<Data> kjb::ties::parse_real_data
             std::map<string, size_t>::const_iterator it = header_map.find(name);
             if(it == header_map.end())
             {
-                KJB_THROW_3(Illegal_argument,
+                IVI_THROW_3(Illegal_argument,
                         "the observable %s is not provided in the file.",
                         (name.c_str()));
             }
@@ -176,7 +176,7 @@ std::vector<Data> kjb::ties::parse_real_data
             std::map<string, size_t>::const_iterator it = header_map.find(name);
             if(it == header_map.end())
             {
-                KJB_THROW_3(Illegal_argument, 
+                IVI_THROW_3(Illegal_argument, 
                         "moderator %s is not provided in the file.", 
                         (name.c_str())); 
             }
@@ -635,7 +635,7 @@ std::vector<Data> kjb::ties::parse_real_data
     }
     catch(Exception& e)
     {
-        cerr << "KJB Exception: " << e.get_msg() << endl;
+        cerr << "IVI Exception: " << e.get_msg() << endl;
         exit(1);
     }
     catch(exception& e)
@@ -658,7 +658,7 @@ std::vector<Data> kjb::ties::parse_real_data
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::parse_outcome_data
+void ivi::ties::parse_outcome_data
 (
     std::vector<Data>& data,
     const std::string& input_file,
@@ -702,14 +702,14 @@ void kjb::ties::parse_outcome_data
         if(header_map.find("Dyad") == header_map.end() 
                 && header_map.find("dyad") == header_map.end())
         {
-            KJB_THROW_2(Runtime_error, "Please provide couple's ID "
+            IVI_THROW_2(Runtime_error, "Please provide couple's ID "
                 "(column with \"Dyad\" or \"dyad\" as header "
                 "in your outcome .csv file\n");
         }
         // Make sure the .csv file has the distinguisher 
         if(header_map.find(distinguisher) == header_map.end())
         {
-            KJB_THROW_3(Illegal_argument, 
+            IVI_THROW_3(Illegal_argument, 
                     "distinguisher %s is not provided in the file.",
                     (distinguisher.c_str())); 
         }
@@ -735,7 +735,7 @@ void kjb::ties::parse_outcome_data
             std::map<string, size_t>::const_iterator it = header_map.find(name);
             if(it == header_map.end())
             {
-                KJB_THROW_3(Illegal_argument,
+                IVI_THROW_3(Illegal_argument,
                         "the outcome %s is not provided in the outcome .csv file. ",
                         (name.c_str()));
             }
@@ -836,7 +836,7 @@ void kjb::ties::parse_outcome_data
     }
     catch(Exception& e)
     {
-        cerr << "KJB exception: " << e.get_msg() << endl;
+        cerr << "IVI exception: " << e.get_msg() << endl;
         exit(1);
     }
     catch(exception& e)
@@ -854,7 +854,7 @@ void kjb::ties::parse_outcome_data
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Data_group kjb::ties::get_data_group
+Data_group ivi::ties::get_data_group
 (
     const std::vector<Data>& data_all, 
     const std::string& output_dir,

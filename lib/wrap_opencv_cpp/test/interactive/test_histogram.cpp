@@ -10,20 +10,20 @@
 #include <vector>
 #include <fstream>
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <opencv2/opencv.hpp>
 #else
 #error "Need OpenCV2 library"
 #endif
 
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::opencv;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::opencv;
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
     if(argc != 4)
     {
         std::cout << " Usuage: " << argv[0] << " image-fp boxes-dp out-fp\n";

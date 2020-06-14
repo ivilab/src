@@ -68,7 +68,7 @@
 
 #include <gr_cpp/gr_opengl.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -87,7 +87,7 @@ enum { GLUT_PM_TRANSLATE_X, GLUT_PM_TRANSLATE_Y, GLUT_PM_TRANSLATE_Z, GLUT_PM_PI
 #include <gr_cpp/gr_polymesh.h>
 #include <g_cpp/g_quaternion.h>
 
-namespace kjb{
+namespace ivi{
 
 
     /** @class GLUT_polymesh This class provides an easy way to add a glut
@@ -183,8 +183,8 @@ namespace kjb{
         static Polymesh * polymesh;
         static unsigned char increment_character;
         static unsigned char decrement_character;
-        static kjb::Vector increment_steps;
-        static kjb::Vector _angles;
+        static ivi::Vector increment_steps;
+        static ivi::Vector _angles;
     };
 }
 

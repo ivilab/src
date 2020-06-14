@@ -8,7 +8,7 @@
  * header declarations.
  */
 /*
- * $Id: l_mt_mutexlock.cpp 15738 2013-10-19 06:28:50Z predoehl $
+ * $Id: l_mt_mutexlock.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_lib.h>
@@ -21,14 +21,14 @@ namespace
 
 void print_string_and_abort(const char* msg)
 {
-    kjb_c::kjb_mt_fprintf(stderr, "%s: aborting.\n", msg);
-    kjb_c::kjb_abort();
+    ivi_c::ivi_mt_fprintf(stderr, "%s: aborting.\n", msg);
+    ivi_c::ivi_abort();
 }
 
 }
 
 
-namespace kjb
+namespace ivi
 {
 
 void Mutex_lock::fp_abort(const char* s)

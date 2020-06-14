@@ -1,6 +1,6 @@
 /* $Id$
  */
-#if defined(KJB_HAVE_GLUT) && defined(TEST)
+#if defined(IVI_HAVE_GLUT) && defined(TEST)
 
 #include <iostream>
 
@@ -21,8 +21,8 @@
  */
 using namespace std;
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_X11
 #ifdef MAC_OSX
 #include <OpenGL/OpenGL.h>
 #else
@@ -45,12 +45,12 @@ using namespace std;
 
 #define WRITE_PARAPIPED 9
 #define EXIT_ID 10
-static kjb::Offscreen_buffer* offscreen2 = 0;
-static kjb::Perspective_camera * camera = 0;
-static kjb::Parametric_parapiped * pp = 0;
-static kjb::Parametric_parapiped * best_pp = 0;
-static kjb::Edge_set * edge_set = 0;
-static kjb::Independent_edge_points_likelihood * likelihood = 0;
+static ivi::Offscreen_buffer* offscreen2 = 0;
+static ivi::Perspective_camera * camera = 0;
+static ivi::Parametric_parapiped * pp = 0;
+static ivi::Parametric_parapiped * best_pp = 0;
+static ivi::Edge_set * edge_set = 0;
+static ivi::Independent_edge_points_likelihood * likelihood = 0;
 static float gwidth = 400;
 static float gheight = 300;
 static uint32_t _current_action = 0;
@@ -68,10 +68,10 @@ boost::mutex _mutex;
 void init_onscreen_buffer(int argc, char **argv);
 
 
-kjb::Int_matrix model_map;
-std::vector<kjb::Int_vector> edge_indexes;
+ivi::Int_matrix model_map;
+std::vector<ivi::Int_vector> edge_indexes;
 
-namespace kjb
+namespace ivi
 {
 
 /** Template specialization for computing the likelihood from
@@ -94,7 +94,7 @@ double Independent_edge_points_likelihood::compute_likelihood
 {
 	if(mode != FROM_MAP_AND_EDGES)
 	{
-		KJB_THROW_2(Illegal_argument, "Likelihood computation mode not supported for camera and parapiped");
+		IVI_THROW_2(Illegal_argument, "Likelihood computation mode not supported for camera and parapiped");
 	}
 
 	/** We update the camera and the parapiped so that their
@@ -106,7 +106,7 @@ double Independent_edge_points_likelihood::compute_likelihood
     /** We compute the model map and prepare the model edges needed for
      * the likelihood computation */
 	const Polymesh & polymesh = pp.get_polymesh();
-    kjb::prepare_model_map(model_map,polymesh);
+    ivi::prepare_model_map(model_map,polymesh);
     std::vector<Model_edge> model_edges;
     prepare_model_edges(model_edges, polymesh, camera.get_rendering_interface());
 
@@ -133,7 +133,7 @@ double Independent_edge_points_likelihood::compute_likelihood
 
 }
 
-using namespace kjb;
+using namespace ivi;
 
 
 double compute_likelihood(Parametric_parapiped & ipp,Perspective_camera & ic)
@@ -178,7 +178,7 @@ static void display_glut()
     //std::cout << "GLUT:" << pp->get_centre_x() << std::endl;
     _mutex.unlock();
 
-    kjb::Image image;
+    ivi::Image image;
     glFlush();
     camera->get_rendering_interface().capture_gl_view(image);
     edge_set->draw(image, 255.0, 0.0, 0.0);
@@ -197,14 +197,14 @@ void dynamics_function()
 	try{
 
 
-	offscreen2 = kjb::create_and_initialize_offscreen_buffer(gwidth, gheight);
+	offscreen2 = ivi::create_and_initialize_offscreen_buffer(gwidth, gheight);
 
 
 	std::cout << "Created offscreen buffer" << std::endl;
-	kjb::Vector deltas(10);
+	ivi::Vector deltas(10);
 	deltas(PCD_PARAPIPED_X) = 0.003;
 	/*deltas(PCD_PARAPIPED_X) = 0.1;*/
-	kjb::Vector etas(10);
+	ivi::Vector etas(10);
 	etas(PCD_PARAPIPED_X) = 0.5;
 
 	Parapiped_camera_dynamics dynamics
@@ -302,7 +302,7 @@ static void timer_glut(int ignored)
 
 static void main_menu_glut(int id)
 {
-    using namespace kjb;
+    using namespace ivi;
 	_current_action = id;
 
 	if(id == EXIT_ID)
@@ -326,7 +326,7 @@ void init_onscreen_buffer(int argc, char **argv)
     glutKeyboardFunc(keyboard_glut);
     glutTimerFunc(10, timer_glut, 0);
 
-    kjb::opengl::default_init_opengl(gwidth, gheight);
+    ivi::opengl::default_init_opengl(gwidth, gheight);
 
     int camera_menu = Glut_perspective_camera::create_glut_perspective_camera_submenu(camera_callback, camera);
     Glut_perspective_camera::update_width_increment(29);
@@ -363,7 +363,7 @@ int main(int argc, char** argv)
 {
 	_argc = argc;
 	_argv = argv;
-	 kjb_c::kjb_l_set("heap-checking","off");
+	 ivi_c::ivi_l_set("heap-checking","off");
 
 	edge_indexes.resize(20000, Int_vector(2, 0));
 
@@ -373,7 +373,7 @@ int main(int argc, char** argv)
 	camera->set_focal_length(1000);
 	camera->set_camera_centre_z(300);
 
-	kjb::Image testimg("data_edges.tiff");
+	ivi::Image testimg("data_edges.tiff");
 	Canny_edge_detector canny(1.0, 10, 5, 20, true);
 	edge_set =  canny.detect_edges(testimg, true);
 	edge_set->break_edges_at_corners(0.9, 7);
@@ -423,7 +423,7 @@ int main(int argc, char **argv)
 #ifdef TEST
 	std::cout << "It was compiled in development mode, so it cannot run.\n";
 #endif
-#ifndef KJB_HAVE_GLUT
+#ifndef IVI_HAVE_GLUT
 	std::cout << "It was compiled without GLUT, so it cannot run.\n";
 #endif
     return 0;

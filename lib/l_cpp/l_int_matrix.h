@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: l_int_matrix.h 19162 2015-05-26 18:43:28Z cdawson $ */
+/* $Id: l_int_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef L_CPP_INT_MATRIX_WRAP_H
 #define L_CPP_INT_MATRIX_WRAP_H
@@ -20,7 +20,7 @@
  * @author Andrew Predoehl
  * @author Ernesto Brau
  *
- * @brief Definition for the Int_matrix class, a thin wrapper on the KJB
+ * @brief Definition for the Int_matrix class, a thin wrapper on the IVI
  *        Int_matrix struct and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -41,7 +41,7 @@
 #include <vector>
 #include <ostream>
 
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/access.hpp>
 #endif
 
@@ -49,10 +49,10 @@
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
 
-namespace kjb {
+namespace ivi {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -66,11 +66,11 @@ class Matrix;
  * Value_type typedef, instead of referring to 'int' directly.
  *
  * Most methods of this class are implemented in the C language portion of the
- * KJB library, with this class forming a thin (usually inlined) layer.
+ * IVI library, with this class forming a thin (usually inlined) layer.
  */
 class Int_matrix
 {
-#ifdef KJB_HAVE_BST_SERIAL
+#ifdef IVI_HAVE_BST_SERIAL
     friend class boost::serialization::access;
 #endif
 public:
@@ -82,7 +82,7 @@ public:
 
     typedef int                 Value_type; ///< data type of the elements
     typedef int                 Size_type;   ///< 
-    typedef kjb_c::Int_matrix   Impl_type;  ///< the underlying implementation
+    typedef ivi_c::Int_matrix   Impl_type;  ///< the underlying implementation
     typedef Int_matrix          Mat_type;   ///< the associated matrix type
     typedef Int_vector          Vec_type;   ///< the associated vector type
     typedef Value_type (*Mapper)(Value_type);   ///< element transformer fun
@@ -152,7 +152,7 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_int_matrix( &m_matrix, 0, 0 ) );
+        ETX( ivi_c::get_target_int_matrix( &m_matrix, 0, 0 ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -164,7 +164,7 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_target_int_matrix( &m_matrix, rows, cols ) );
+        ETX( ivi_c::get_target_int_matrix( &m_matrix, rows, cols ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -232,7 +232,7 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_initialized_int_matrix( &m_matrix, rows, cols, num ) );
+        ETX( ivi_c::get_initialized_int_matrix( &m_matrix, rows, cols, num ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -254,7 +254,7 @@ public:
      * @brief   Conversion ctor:  claim ownership of an existing int matrix
      *          pointer (i.e., make a shallow copy).
      *
-     * This method is the proper way to say, ''Here is a kjb_c::Int_matrix
+     * This method is the proper way to say, ''Here is a ivi_c::Int_matrix
      * struct that I am responsible for deleting, and I must make sure that it
      * gets destroyed when it goes out of scope.''  This is a good way to wrap
      * a matrix "dynamically," after it has already been created.
@@ -274,7 +274,7 @@ public:
         if ( 0 == mat_ptr )
         {
             // Test program was HERE.
-            ETX( kjb_c::get_target_int_matrix( &m_matrix, 0, 0 ) );
+            ETX( ivi_c::get_target_int_matrix( &m_matrix, 0, 0 ) );
         }
         //else
         //{
@@ -287,7 +287,7 @@ public:
     /**
      * @brief   Ctor copies contents (i.e., a deep copy) of an existing
      *          C-struct matrix.
-     * @warning This method should be seldom used:  kjb_c::Int_matrix objects
+     * @warning This method should be seldom used:  ivi_c::Int_matrix objects
      *          should rarely be left in an unwrapped state.
      *
      * This kind of conversion is relatively expensive, thus we restrict its
@@ -297,14 +297,14 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::copy_int_matrix( &m_matrix, &mat_ref ) );
+        ETX( ivi_c::copy_int_matrix( &m_matrix, &mat_ref ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
      * @brief   Read matrix from file
-     * @see     kjb_c::read_matrix
+     * @see     ivi_c::read_matrix
      */
     Int_matrix(const std::string& file_name);
 
@@ -317,7 +317,7 @@ public:
         : m_matrix( 0 )
     {
         // Test program was HERE.
-        ETX( kjb_c::copy_int_matrix( &m_matrix, mat_ref.m_matrix ) );
+        ETX( ivi_c::copy_int_matrix( &m_matrix, mat_ref.m_matrix ) );
     }
 
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -326,7 +326,7 @@ public:
     ~Int_matrix()
     {
         // Test program was HERE.
-        kjb_c::free_int_matrix( m_matrix );
+        ivi_c::free_int_matrix( m_matrix );
     }
 
 
@@ -343,7 +343,7 @@ public:
     /* Int_matrix& init_identity( int rank )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_int_identity_matrix( &m_matrix, rank ) );
+        ETX( ivi_c::get_int_identity_matrix( &m_matrix, rank ) );
         return *this;
     } */
 
@@ -359,7 +359,7 @@ public:
     Int_matrix& zero_out( int num_rows, int num_cols )
     {
         // Test program was HERE.
-        ETX( kjb_c::get_zero_int_matrix( &m_matrix, num_rows, num_cols ) );
+        ETX( ivi_c::get_zero_int_matrix( &m_matrix, num_rows, num_cols ) );
         return *this;
     }
 
@@ -412,7 +412,7 @@ public:
      * ------------------------------------------------------------------ */
 
     /**
-     * @brief   Assign contents from a kjb_c::Int_matrix, a C struct;
+     * @brief   Assign contents from a ivi_c::Int_matrix, a C struct;
      *          make a deep copy.
      * @note    Consider using a shallow copy and swap() instead of
      *          assignment, to prevent unnecessary deep copying.
@@ -427,7 +427,7 @@ public:
         if ( m_matrix != &mat_ref )
         {
             // Test program was HERE.
-            ETX( kjb_c::copy_int_matrix( &m_matrix, &mat_ref ) );
+            ETX( ivi_c::copy_int_matrix( &m_matrix, &mat_ref ) );
         }
         //else
         //{
@@ -439,14 +439,14 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
-     * @brief   Assign contents from a kjb::Int_matrix, a C++ object.
+     * @brief   Assign contents from a ivi::Int_matrix, a C++ object.
      * @note    Consider using swap() instead of assignment, to prevent
      *          unnecessary deep copying.
      */
     Int_matrix& operator=(const Int_matrix& src)
     {
         // Test program was HERE.
-        // call assignment operator for kjb_c::Int_matrix
+        // call assignment operator for ivi_c::Int_matrix
         return operator=( *src.m_matrix );
     }
 
@@ -499,7 +499,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
-     * @brief   Get const pointer to the underlying kjb_c::Int_matrix C struct.
+     * @brief   Get const pointer to the underlying ivi_c::Int_matrix C struct.
      */
     const Impl_type* get_c_matrix() const
     {
@@ -510,7 +510,7 @@ public:
     /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
 
     /**
-     * @brief   Get pointer to the underlying kjb_c::Matrix C struct.
+     * @brief   Get pointer to the underlying ivi_c::Matrix C struct.
      * @warning:  This should only be used if you know what you're doing.  generally, it should only be used to write wrapper functions for c functions.
      */
     Impl_type* get_underlying_representation_with_guilt()
@@ -524,7 +524,7 @@ public:
     {
         if(!m_matrix)
         {
-            KJB_THROW_2(KJB_error,"Trying to access an integer matrix that has not been allocated");
+            IVI_THROW_2(IVI_error,"Trying to access an integer matrix that has not been allocated");
         }
         return m_matrix->elements;
     }
@@ -549,7 +549,7 @@ public:
         int new_rows,
         int new_cols)
     {
-        ETX(kjb_c::get_target_int_matrix(&m_matrix, new_rows, new_cols));
+        ETX(ivi_c::get_target_int_matrix(&m_matrix, new_rows, new_cols));
 
         return *this;
     }
@@ -562,8 +562,8 @@ public:
     Int_matrix transpose()
     {
         // Test program was HERE.
-        kjb_c::Int_matrix* result = 0;
-        ETX(kjb_c::get_int_transpose( &result, m_matrix ) );
+        ivi_c::Int_matrix* result = 0;
+        ETX(ivi_c::get_int_transpose( &result, m_matrix ) );
         return Int_matrix(result);
     }
 
@@ -803,7 +803,7 @@ public:
 
     /**
      * @brief   Writes the matrix contents to a file specified by name.
-     * @see     kjb_c::write_int_matrix()
+     * @see     ivi_c::write_int_matrix()
      *
      *
      * If filename is NULL or the first character is null, then the output
@@ -812,7 +812,7 @@ public:
     int write( const char* filename = 0 ) const
     {
         // Test program was HERE.
-        return kjb_c::write_int_matrix( m_matrix, filename );
+        return ivi_c::write_int_matrix( m_matrix, filename );
     }
 
 
@@ -864,7 +864,7 @@ public:
     Int_matrix& operator*= (Value_type op2)
     {
         // Test program was HERE.
-        ETX(kjb_c::ow_multiply_int_matrix_by_int_scalar(m_matrix, op2));
+        ETX(ivi_c::ow_multiply_int_matrix_by_int_scalar(m_matrix, op2));
         return *this;
     }
 
@@ -914,7 +914,7 @@ public:
     Int_matrix& operator+= (const Int_matrix& op2)
     {
         // Test program was HERE.
-        ETX(kjb_c::ow_add_int_matrices(m_matrix, op2.m_matrix));
+        ETX(ivi_c::ow_add_int_matrices(m_matrix, op2.m_matrix));
         return *this;
     }
 
@@ -937,7 +937,7 @@ public:
     Int_matrix& operator-= (const Int_matrix& op2)
     {
         // Test program was HERE.
-        ETX(kjb_c::ow_subtract_int_matrices(m_matrix, op2.m_matrix));
+        ETX(ivi_c::ow_subtract_int_matrices(m_matrix, op2.m_matrix));
         return *this;
     }
 
@@ -982,7 +982,7 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-        return kjb_serialize(ar, *this, version);
+        return ivi_serialize(ar, *this, version);
     }
 };
 
@@ -1016,7 +1016,7 @@ void Int_matrix::set_row( int row, Iterator begin, Iterator end )
         if(it == end)
         {
             // range too short
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         operator()(row, col) = *it;
@@ -1026,7 +1026,7 @@ void Int_matrix::set_row( int row, Iterator begin, Iterator end )
     if(it != end)
     {
         // range too long 
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 }
 
@@ -1058,7 +1058,7 @@ void Int_matrix::set_col(int col, Iterator begin, Iterator end)
         if(it == end)
         {
             // range is too short
-            KJB_THROW(Dimension_mismatch);
+            IVI_THROW(Dimension_mismatch);
         }
 
         operator()(row, col) = *it;
@@ -1068,7 +1068,7 @@ void Int_matrix::set_col(int col, Iterator begin, Iterator end)
     if(it != end)
     {
         // range is too short
-        KJB_THROW(Dimension_mismatch);
+        IVI_THROW(Dimension_mismatch);
     }
 
 }
@@ -1089,8 +1089,8 @@ inline
 Int_matrix create_identity_int_matrix( int rank )
 {
     // Test program was HERE.
-    kjb_c::Int_matrix* result = 0;
-    ETX( kjb_c::get_int_identity_matrix( &result, rank ) );
+    ivi_c::Int_matrix* result = 0;
+    ETX( ivi_c::get_int_identity_matrix( &result, rank ) );
     return Int_matrix(result);
 }
 
@@ -1103,8 +1103,8 @@ inline
 Int_matrix create_zero_int_matrix( int rows, int columns )
 {
     // Test program was HERE.
-    kjb_c::Int_matrix* result = 0;
-    ETX( kjb_c::get_zero_int_matrix( &result, rows, columns ) );
+    ivi_c::Int_matrix* result = 0;
+    ETX( ivi_c::get_zero_int_matrix( &result, rows, columns ) );
     return Int_matrix(result);
 }
 
@@ -1330,9 +1330,9 @@ bool operator!=( const Int_matrix::Impl_type& op1, const Int_matrix& op2 )
 inline
 Int_matrix matrix_transpose( const Int_matrix& op1 )
 {
-    kjb_c::Int_matrix* kjb_matrix = 0;
-    ETX( kjb_c::get_int_transpose( &kjb_matrix, op1.get_c_matrix() ) );
-    return Int_matrix(kjb_matrix);
+    ivi_c::Int_matrix* ivi_matrix = 0;
+    ETX( ivi_c::get_int_transpose( &ivi_matrix, op1.get_c_matrix() ) );
+    return Int_matrix(ivi_matrix);
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -1344,8 +1344,8 @@ inline
 Int_matrix abs(const Int_matrix& mat)
 {
     // Test program was HERE.
-    kjb_c::Int_matrix* result = 0;
-    ETX( kjb_c::get_abs_of_int_matrix( &result, mat.get_c_matrix() ) );
+    ivi_c::Int_matrix* result = 0;
+    ETX( ivi_c::get_abs_of_int_matrix( &result, mat.get_c_matrix() ) );
     return Int_matrix(result);
 }
 
@@ -1367,13 +1367,13 @@ Int_matrix::Value_type max_abs_difference( const Int_matrix& op1, const Int_matr
          || op1.get_num_cols() != op2.get_num_cols() )
     {
         // Test program was HERE.
-        KJB_THROW( Dimension_mismatch );
+        IVI_THROW( Dimension_mismatch );
     }
     //else
     //{
     //    // Test program was HERE.
     //}
-    return kjb_c::max_abs_int_matrix_difference( op1.get_c_matrix(), op2.get_c_matrix() );
+    return ivi_c::max_abs_int_matrix_difference( op1.get_c_matrix(), op2.get_c_matrix() );
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -1385,7 +1385,7 @@ inline
 Int_matrix::Value_type min(const Int_matrix& mat)
 {
     // Test program was HERE.
-    return kjb_c::min_int_matrix_element(mat.get_c_matrix());
+    return ivi_c::min_int_matrix_element(mat.get_c_matrix());
 }
 
 /* /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ */
@@ -1397,7 +1397,7 @@ inline
 Int_matrix::Value_type max(const Int_matrix& mat)
 {
     // Test program was HERE.
-    return kjb_c::max_int_matrix_element(mat.get_c_matrix());
+    return ivi_c::max_int_matrix_element(mat.get_c_matrix());
 }
 
 
@@ -1408,7 +1408,7 @@ Int_matrix::Value_type max(const Int_matrix& mat)
  * @brief   Display matrix contents in an ASCII format.
  *
  * This routine is mostly for debugging; consider one of the many
- * KJB output routines for more output in a more standardized form.
+ * IVI output routines for more output in a more standardized form.
  */
 std::ostream& operator<<(std::ostream& out, const Int_matrix& m);
 
@@ -1420,12 +1420,12 @@ std::ostream& operator<<(std::ostream& out, const Int_matrix& m);
  * @return A vector of length m.get_num_cols() whose ith element is
  *          m(0,i) + m(1,i) + ... 
  *
- * This is a thin wrapper around kjb_c::sum_matrix_rows.
+ * This is a thin wrapper around ivi_c::sum_matrix_rows.
  */
 Int_matrix::Vec_type sum_int_matrix_rows( const Int_matrix& m );
     
 /** @} */
 
-} // namespace kjb
+} // namespace ivi
 #endif
 

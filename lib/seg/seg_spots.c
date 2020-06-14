@@ -1,5 +1,5 @@
 
-/* $Id: seg_spots.c 17796 2014-10-21 04:17:21Z predoehl $ */
+/* $Id: seg_spots.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* ========================================================================== *
 |
@@ -119,7 +119,7 @@ static int get_connected_components
 
 int find_bright_spots_in_image
 (
-    const KJB_image*    img,            /* image to be scanned               */
+    const IVI_image*    img,            /* image to be scanned               */
     const Matrix*       background,     /* pixelwise non-bright baseline     */
     const Matrix*       thresholds,     /* used to qualify brightest pixel B */
     int                 min_brightness, /* also qualifies brightest pixel B  */
@@ -231,7 +231,7 @@ int find_bright_spots_in_image_sequence
 (
     V_v_v**                    points,
     Int_matrix_vector_vector** blobs,
-    const KJB_image_sequence*  images,
+    const IVI_image_sequence*  images,
     int                        min_brightness,
     int                        min_blob_size,
     int                        max_blob_size,
@@ -300,7 +300,7 @@ static int get_connected_components
 )
 {
     Int_matrix* temp_int_mat = NULL;
-    KJB_region_list* region_list = NULL;
+    IVI_region_list* region_list = NULL;
     int return_val = ERROR;
     int cur_comp_lbl = 0;
     int cur_comp_idx = 0;
@@ -320,7 +320,7 @@ static int get_connected_components
     /* Count the valid regions (not background, and size within constraints) */
     for (i = 0; i <= max_label; ++i)
     {
-        const KJB_region *r = region_list -> regions + i;
+        const IVI_region *r = region_list -> regions + i;
         if (    r->label == r->root_label  &&  r->root_label != 0
             &&  min_size <= r->moment_00  &&  r->moment_00 <= max_size)
         {
@@ -347,7 +347,7 @@ static int get_connected_components
     /* Scan all connected components meeting size constraints. */
     for (i = 0; i <= max_label; ++i)
     {
-        const KJB_region *r = region_list -> regions + i;
+        const IVI_region *r = region_list -> regions + i;
         if (r->label == r->root_label  &&  r->root_label != 0)
         {
             double rm00 = r -> moment_00; /* num. pixels in component */

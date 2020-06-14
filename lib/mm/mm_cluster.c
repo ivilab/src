@@ -1,5 +1,5 @@
 
-/* $Id: mm_cluster.c 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: mm_cluster.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -3746,8 +3746,8 @@ static int do_multi_modal_clustering_2
         Cluster_data*       subset_held_out_data_ptr = NULL;
         const Cluster_data* used_held_out_data_ptr;
         Indexed_vector*     point_key_vp             = NULL;
-        int                 train_count              = kjb_rint((double)num_points * fs_phase_one_train_fraction);
-        int                 held_out_count           = kjb_rint((double)num_points * fs_phase_one_held_out_fraction);
+        int                 train_count              = ivi_rint((double)num_points * fs_phase_one_train_fraction);
+        int                 held_out_count           = ivi_rint((double)num_points * fs_phase_one_held_out_fraction);
         int                 point;
 
 
@@ -4923,7 +4923,7 @@ static int do_multi_modal_clustering_4
     /* Value for initialization. Later this variable holds the current number
     // of limited clusters.
     */
-    if (KJB_IS_SET(options_ptr->num_limited_clusters))
+    if (IVI_IS_SET(options_ptr->num_limited_clusters))
     {
         if (options_ptr->initial_model_is_subset)
         {
@@ -6747,7 +6747,7 @@ once_more:
                     {
                         c = sub_ratio * sub_cluster + i;
 
-                        temp_double = kjb_rand();
+                        temp_double = ivi_rand();
 
 #ifdef HOW_IT_WAS_NOON_JULY_6_02
 
@@ -6880,9 +6880,9 @@ once_more:
                         for (level = temp_first_level; level < last_level_num; level++)
                         {
 #ifdef HOW_IT_WAS_NOON_JULY_6_02
-                            p = kjb_rand() + 0.1;
+                            p = ivi_rand() + 0.1;
 #else
-                            p = kjb_rand();
+                            p = ivi_rand();
 
                             if (fs_initialize_method <= 0)
                             {
@@ -6943,9 +6943,9 @@ once_more:
                         for (level = temp_first_level; level < last_level_num; level++)
                         {
 #ifdef HOW_IT_WAS_NOON_JULY_6_02
-                            p = kjb_rand() + 0.1;
+                            p = ivi_rand() + 0.1;
 #else
-                            p = kjb_rand();
+                            p = ivi_rand();
 
                             if (fs_initialize_method <= 0)
                             {
@@ -7012,14 +7012,14 @@ once_more:
                                     p += level_indicators_ppp[ level ][ cluster ][ max_num_dis_items + con_item ];
                                 }
 
-                                p *= (1.0 + 0.01 * kjb_rand());
+                                p *= (1.0 + 0.01 * ivi_rand());
                             }
                             else
                             {
 #ifdef HOW_IT_WAS_NOON_JULY_6_02
-                                p = kjb_rand() + 0.1;
+                                p = ivi_rand() + 0.1;
 #else
-                                p = kjb_rand();
+                                p = ivi_rand();
 
                                 if (fs_initialize_method <= 0)
                                 {
@@ -7095,9 +7095,9 @@ once_more:
                     /* Underlying small bit of uniform distribution for
                      * stability.
                      */
-                    P_c_p_vp->elements[ c ] = (0.0001 + kjb_rand()) / ((double)num_clusters);
+                    P_c_p_vp->elements[ c ] = (0.0001 + ivi_rand()) / ((double)num_clusters);
 
-                    if (kjb_rand() < (1.0 / sqrt((double)num_clusters)))
+                    if (ivi_rand() < (1.0 / sqrt((double)num_clusters)))
                     {
                          P_c_p_vp->elements[ c ] = 1.0;
                     }
@@ -11066,7 +11066,7 @@ once_more:
                     */
                     for (con_item = 0; con_item < num_con_items; con_item++)
                     {
-                        if (KJB_IS_SET(dis_item_for_con_item_vp->elements[ con_item ]))
+                        if (IVI_IS_SET(dis_item_for_con_item_vp->elements[ con_item ]))
                         {
                             continue;
                         }
@@ -11158,7 +11158,7 @@ once_more:
                         {
                             for (con_item = 0; con_item < num_con_items; con_item++)
                             {
-                                if (KJB_IS_SET(dis_item_for_con_item_vp->elements[ con_item ]))
+                                if (IVI_IS_SET(dis_item_for_con_item_vp->elements[ con_item ]))
                                 {
                                     continue;
                                 }
@@ -11702,7 +11702,7 @@ once_more:
 
                 for (count = 0; count < fs_sample_count; count++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
 
                     for (i = 0; i < num_clusters; i++)
                     {
@@ -14347,7 +14347,7 @@ loop_cleanup:
                 }
 
                 pso("\n");
-                kjb_flush();
+                ivi_flush();
             }
         }
 
@@ -14374,12 +14374,12 @@ loop_cleanup:
                     }
                     min_ll_diff_exp = ll_diff_exp;
 
-                    result = kjb_sprintf(output_sub_dir, sizeof(output_sub_dir),
+                    result = ivi_sprintf(output_sub_dir, sizeof(output_sub_dir),
                                          "%s%s%02d", output_dir, DIR_STR,
                                          -ll_diff_exp);
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
-                    result = kjb_mkdir(output_sub_dir);
+                    result = ivi_mkdir(output_sub_dir);
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     result = copy_multi_modal_model(&intermediate_model_ptr,
@@ -14424,12 +14424,12 @@ loop_cleanup:
                         it + 1);
                 }
 
-                result = kjb_sprintf(output_sub_dir, sizeof(output_sub_dir),
+                result = ivi_sprintf(output_sub_dir, sizeof(output_sub_dir),
                                      "%s%s%d", output_dir, DIR_STR,
                                      1 + it);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = kjb_mkdir(output_sub_dir);
+                result = ivi_mkdir(output_sub_dir);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
                 result = copy_multi_modal_model(&intermediate_model_ptr,
@@ -14472,14 +14472,14 @@ loop_cleanup:
         else if (iteration_atn_flag)
         {
             pso("Stopping iterating because of halt request via signal.\n");
-            kjb_flush();
+            ivi_flush();
             break;
         }
         else if (is_file(halt_file_name))
         {
             pso("Stopping iterating because of halt request via file.\n");
-            kjb_flush();
-            EPE(kjb_unlink(halt_file_name));
+            ivi_flush();
+            EPE(ivi_unlink(halt_file_name));
             break;
         }
         else if (
@@ -14559,7 +14559,7 @@ loop_cleanup:
         verify_matrix_vector(P_l_p_c_mvp, NULL);
         verify_matrix(P_l_p_mp, NULL);
 
-        kjb_fflush((FILE*)NULL);
+        ivi_fflush((FILE*)NULL);
 
 #ifdef XXX_LIMIT_MIN_CON_PROB
         if (    (fs_min_con_log_prob_cutoff > 0.0)
@@ -15531,7 +15531,7 @@ static int do_fixed_discrete_multi_modal_clustering
 
                         for (i = 0; i < num_levels_per_category; i++)
                         {
-                            double p = kjb_rand();
+                            double p = ivi_rand();
 
                             /* Uniform: For debugging. */
                             if (fs_initialize_method == 0)
@@ -16551,7 +16551,7 @@ loop_cleanup:
                 }
 
                 pso("\n");
-                kjb_flush();
+                ivi_flush();
             }
         }
 
@@ -16578,12 +16578,12 @@ loop_cleanup:
                         it + 1);
                 }
 
-                result = kjb_sprintf(output_sub_dir, sizeof(output_sub_dir),
+                result = ivi_sprintf(output_sub_dir, sizeof(output_sub_dir),
                                      "%s%s%d", output_dir, DIR_STR,
                                      1 + it);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = kjb_mkdir(output_sub_dir);
+                result = ivi_mkdir(output_sub_dir);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
                 result = copy_multi_modal_model(&intermediate_model_ptr,
@@ -16655,7 +16655,7 @@ loop_cleanup:
         verify_vector(V_vp, NULL);
         verify_matrix(P_l_p_mp, NULL);
 
-        kjb_fflush((FILE*)NULL);
+        ivi_fflush((FILE*)NULL);
 
     }  /* End of main EM loop. */
 
@@ -16715,7 +16715,7 @@ loop_cleanup:
     free_matrix(new_var_mp);
     free_vector(new_V_vp);
 
-    kjb_free(level_index_array);
+    ivi_free(level_index_array);
 
     free_2D_double_array(level_indicators_pp);
 
@@ -16802,7 +16802,7 @@ loop_cleanup:
 
 #endif
 
-    kjb_fflush((FILE*)NULL);
+    ivi_fflush((FILE*)NULL);
 
     return result;
 }
@@ -16867,8 +16867,8 @@ int get_cluster_membership
 
     TEST_PSO(("Level prior not implemented. \n"));
 
-    ASSERT(KJB_IS_SET(norm_continuous_features));
-    ASSERT(KJB_IS_SET(norm_items));
+    ASSERT(IVI_IS_SET(norm_continuous_features));
+    ASSERT(IVI_IS_SET(norm_items));
 
 
     /* -------------------   Verify input --------------------------------  */
@@ -17552,7 +17552,7 @@ static int get_cluster_membership_2
                                 // Not valid if features are limited, or if we
                                 // are selectively disabling features.
                                 */
-                                kjb_abort();
+                                ivi_abort();
 
                                 log_prob /= num_con_features;
                             }
@@ -17649,7 +17649,7 @@ static int get_cluster_membership_2
                 dbe(con_score_cutoff);
                 dbp("--------------------------------------");
 
-                kjb_abort();
+                ivi_abort();
 
 #ifdef XXX_NOT_SURE_WHAT_IT_IS_DOING
 XXX                  ERE(ow_zero_int_vector(con_score_counts_vp));
@@ -18495,7 +18495,7 @@ XXX                          }
             }
 
 #ifdef TEST
-            ASSERT(KJB_IS_SET(max_index));
+            ASSERT(IVI_IS_SET(max_index));
             ASSERT_IS_EQUAL_DBL(P_c_p_mp->elements[ point ][ max_index ], 0.0);
 #endif
 
@@ -18818,7 +18818,7 @@ XXX                          }
             pso(" %.3e | %.3e\n", rms_diff, max_diff);
         }
 
-        kjb_fflush((FILE*)NULL);
+        ivi_fflush((FILE*)NULL);
 
         if (iteration_atn_flag)
         {
@@ -18828,7 +18828,7 @@ XXX                          }
         else if (is_file(halt_file_name))
         {
             pso("Stopping because of halt request via file.\n");
-            EPE(kjb_unlink(halt_file_name));
+            EPE(ivi_unlink(halt_file_name));
             break;
         }
         /*
@@ -19490,7 +19490,7 @@ static void free_allocated_static_data(void)
     free_int_vector(fs_level_counts_vp);
     fs_level_counts_vp              = NULL;
 
-    kjb_free(fs_vector_feature_counts_ptr);
+    ivi_free(fs_vector_feature_counts_ptr);
     fs_vector_feature_counts_ptr    = NULL;
     fs_vector_feature_counts_set    = FALSE;
 }

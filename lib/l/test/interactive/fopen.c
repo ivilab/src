@@ -1,5 +1,5 @@
 
-/* $Id: fopen.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: fopen.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     FILE* fp;
 
 
-    kjb_l_set("debug_level", "1"); 
+    ivi_l_set("debug_level", "1"); 
 
     while ((res=BUFF_STDIN_GET_LINE("file> ",line)) != EOF) 
     {
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
         if (do_it) 
         {
-            NPE(fp = kjb_fopen(line, mode));
+            NPE(fp = ivi_fopen(line, mode));
         }
 
         if (fp != NULL) 

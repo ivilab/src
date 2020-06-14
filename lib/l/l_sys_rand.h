@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -35,26 +35,26 @@ namespace kjb_c {
 /* -------------------------------------------------------------------------- */
 
 int    set_random_options        (const char* option, const char* value);
-double kjb_rand_st               (void); /* single threaded random function */
-double kjb_rand                  (void); /* standard U(0,1)-samp interface */
-void   kjb_seed_rand_with_tod    (void);
+double ivi_rand_st               (void); /* single threaded random function */
+double ivi_rand                  (void); /* standard U(0,1)-samp interface */
+void   ivi_seed_rand_with_tod    (void);
 
-void   kjb_seed_rand
+void   ivi_seed_rand
 (
-    kjb_int32 first_seed_value,
-    kjb_int32 second_seed_value
+    ivi_int32 first_seed_value,
+    ivi_int32 second_seed_value
 );
 
-void   kjb_seed_rand_with_3_short(unsigned short buff[ 3 ]);
+void   ivi_seed_rand_with_3_short(unsigned short buff[ 3 ]);
 int    get_rand_seed             (unsigned short buff[ 3 ]);
-double kjb_rand_2_st             (void); /* experts-only rand function */
-double kjb_rand_2                (void); /* internal U(0,1)-samp interface */
-void   kjb_seed_rand_2_with_tod  (void);
-void   kjb_seed_rand_2           (long seed);
+double ivi_rand_2_st             (void); /* experts-only rand function */
+double ivi_rand_2                (void); /* internal U(0,1)-samp interface */
+void   ivi_seed_rand_2_with_tod  (void);
+void   ivi_seed_rand_2           (long seed);
 
 /* multithreaded interface:  we can change the function that is called. */
-int    kjb_set_rand_function     (double (*f)(void));
-int    kjb_set_rand_2_function   (double (*f)(void));
+int    ivi_set_rand_function     (double (*f)(void));
+int    ivi_set_rand_2_function   (double (*f)(void));
 
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE

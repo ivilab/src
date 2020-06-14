@@ -1,5 +1,5 @@
 
-/* $Id: h_misc.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: h_misc.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -182,7 +182,7 @@ int get_interior_distance_to_hull
 
     if (multiply_matrix_and_vector(&n_dot_x_vp, normal_mp, test_vp)==ERROR)
     {
-        kjb_print_error();
+        ivi_print_error();
         set_bug("Unable to multiply matrix and vector in interior_distance.");
         return ERROR;
     }
@@ -329,7 +329,7 @@ static int get_distance_to_2D_hull
 
     if (multiply_matrix_and_vector(&n_dot_x_vp, normal_mp, test_vp)==ERROR)
     {
-        kjb_print_error();
+        ivi_print_error();
         set_bug("Unable to multiply matrix and vector in get_distance_to_2D_hull.");
         return ERROR;
     }
@@ -486,7 +486,7 @@ static int get_distance_to_3D_hull
 
     if (multiply_matrix_and_vector(&n_dot_x_vp, normal_mp, test_vp)==ERROR)
     {
-        kjb_print_error();
+        ivi_print_error();
         set_bug("Unable to multiply matrix and vector in get_distance_to_3D_hull.");
         return ERROR;
     }

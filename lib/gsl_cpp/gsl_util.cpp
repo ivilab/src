@@ -7,7 +7,7 @@
  */
 
 /*
- * $Id: gsl_util.cpp 21357 2017-03-30 05:35:22Z kobus $
+ * $Id: gsl_util.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_io.h>
@@ -17,21 +17,21 @@
 
 #include <sstream>
 
-namespace kjb {
+namespace ivi {
 
-void report_gsl_failure_and_throw_kjb_error(
+void report_gsl_failure_and_throw_ivi_error(
     int gsl_code,
     const char* file,
     unsigned line_no
 )
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     if ( gsl_code != GSL_SUCCESS )
     {
         std::ostringstream oss;
         oss << "GSL Error E" << gsl_code << ", "
                                         << gsl_strerror( gsl_code ) << '\n';
-        kjb::throw_kjb_error( oss.str().c_str(), file, line_no );
+        ivi::throw_ivi_error( oss.str().c_str(), file, line_no );
     }
 #endif
 }
@@ -39,10 +39,10 @@ void report_gsl_failure_and_throw_kjb_error(
 
 void gsl_iterate_EPE(int gsl_error_code)
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     if (gsl_error_code != GSL_SUCCESS)
     {
-        kjb_c::p_stderr("iterate failure E%d: %s\n", gsl_error_code,
+        ivi_c::p_stderr("iterate failure E%d: %s\n", gsl_error_code,
                                                      gsl_strerror(gsl_error_code));
     }
 #endif

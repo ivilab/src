@@ -10,7 +10,7 @@
  *             -n C for positive integer C, number of trajectories, default 25.
  */
 /*
- * $Id: test_spq.cpp 20310 2016-02-01 11:32:25Z predoehl $
+ * $Id: test_spq.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef _GNU_SOURCE
@@ -41,9 +41,9 @@ extern "C" {
 
 namespace {
 
-using kjb::qd::PixPoint;
-using kjb::qd::PixPath;
-using kjb::Vector2;
+using ivi::qd::PixPoint;
+using ivi::qd::PixPath;
+using ivi::Vector2;
 
 const int   GRW = 250,  ///< width of grid
             GRH = GRW,  ///< height of grid
@@ -91,7 +91,7 @@ private:
         compass.assign( NORTHWEST,  PixPoint(-1, 1) );
         compass.assign( SOUTHEAST,  PixPoint( 1,-1) );
         compass.assign( SOUTHWEST,  PixPoint(-1,-1) );
-        KJB(ASSERT( ! compass.hits( PixPoint(0,0) ) ));
+        IVI(ASSERT( ! compass.hits( PixPoint(0,0) ) ));
         return compass;
     }
 
@@ -180,11 +180,11 @@ public:
 // weight is pure geometric distance
 void get_weight_0( const PixPoint&, std::vector< float >* weight )
 {
-    KJB(ASSERT( weight ));
+    IVI(ASSERT( weight ));
 
     for( size_t iii = Compass::C8MIN; iii < Compass::C8MAX; ++iii )
 	{
-        KJB(ASSERT( 0 < compass[ iii ].dist2() ));
+        IVI(ASSERT( 0 < compass[ iii ].dist2() ));
         // geometric distance as baseline
         weight -> at( iii ) = compass[ iii ].dist();
     }
@@ -218,7 +218,7 @@ void get_weight_1( const PixPoint& ppp, std::vector< float >* weight )
 // hill in the center of the grid
 void get_weight_2( const PixPoint& ppp, std::vector< float >* weight )
 {
-    const Vector2 qqq( kjb::qd::to_vector2(ppp - PixPoint( GRW/2, GRH/2 ) ) );
+    const Vector2 qqq( ivi::qd::to_vector2(ppp - PixPoint( GRW/2, GRH/2 ) ) );
     const double qm2 = qqq.magnitude_squared(),
                  mahald = qm2 / (sigma * sigma),
                  pdf = exp( -0.5 * mahald ), // but not a real pdf, that's cruel
@@ -229,24 +229,24 @@ void get_weight_2( const PixPoint& ppp, std::vector< float >* weight )
 
     for( size_t iii = Compass::C8MIN; iii < Compass::C8MAX; ++iii )
 	{
-        KJB(ASSERT( 0 < compass[ iii ].dist2() ));
+        IVI(ASSERT( 0 < compass[ iii ].dist2() ));
 #if 0
         // compute magnitude of gradient in this direction
-        double hill_effect = kjb::dot(grad, kjb::qd::to_vector2(compass[iii]));
+        double hill_effect = ivi::dot(grad, ivi::qd::to_vector2(compass[iii]));
         // reduce the effect for going downhill (equiv. to penalty for uphill)
         if ( hill_effect < 0 ) hill_effect *= 0.8;
         weight -> at( iii ) += hill_effect;
 #else
         // unit vector version of qqq (except it is zero at exact center point)
         const Vector2 uq = qm2 > 0 ? qqq/sqrt(qm2) : qqq;
-        double hill_effect = mag_dpdf * kjb::dot(uq, kjb::qd::to_vector2(compass[iii]));
-        //KJB(ASSERT(       1==compass[iii].dist2() ||  2==compass[iii].dist2() ));
+        double hill_effect = mag_dpdf * ivi::dot(uq, ivi::qd::to_vector2(compass[iii]));
+        //IVI(ASSERT(       1==compass[iii].dist2() ||  2==compass[iii].dist2() ));
         hill_effect *= sqrt(compass[iii].dist2() );
         hill_effect *= 0.8; // shrink the effect, it might be too strong.
         weight -> at( iii ) += hill_effect;
 #endif
         // combine hill effect with mere geometric distance
-        KJB(ASSERT( 0 < weight -> at( iii ) ));
+        IVI(ASSERT( 0 < weight -> at( iii ) ));
     }
 }
 
@@ -261,7 +261,7 @@ void get_weight( const PixPoint& ppp, std::vector< float >* weight )
     else if ( HILL == g_params.weight_flavor )
         get_weight_2( ppp, weight );
     else
-        KJB(ASSERT( false ));
+        IVI(ASSERT( false ));
 }
 
 
@@ -272,7 +272,7 @@ void HokieGraph< PQ >::ft_adj8_neighbs(
     VNeighb* neighbs
 )
 {
-    KJB(ASSERT( neighbs ));
+    IVI(ASSERT( neighbs ));
     neighbs -> clear();
     const PixPoint ppp( to_xy( rm ) );
     const bool  firstrow = ( ppp.y <= 0 ),
@@ -349,7 +349,7 @@ void HokieGraph< PQ >::single_source_shortest_path()
             loc = pq.ins_max_key( iii );
 		}
         rm_to_loc[ iii ] = loc;
-        KJB(ASSERT( loc != NO_LOC ));
+        IVI(ASSERT( loc != NO_LOC ));
     }
 
     VNeighb neighbs;
@@ -357,14 +357,14 @@ void HokieGraph< PQ >::single_source_shortest_path()
 	{
         // extract min elt
         const Loc_tp lowloc = pq.Dijkstra_extraction();
-        KJB(ASSERT( lowloc != NO_LOC ));
+        IVI(ASSERT( lowloc != NO_LOC ));
         int vert_rm = NO_PIX;
         Key_tp energy;
         pq.access_loc( lowloc, & energy, & vert_rm );
-        KJB(ASSERT( vert_rm != NO_PIX ));
+        IVI(ASSERT( vert_rm != NO_PIX ));
         bool hit = pq.erase_loc( lowloc );
-        KJB(ASSERT( hit ));
-        KJB(ASSERT( lowloc == rm_to_loc.at( vert_rm ) )); // loc records shd be ok
+        IVI(ASSERT( hit ));
+        IVI(ASSERT( lowloc == rm_to_loc.at( vert_rm ) )); // loc records shd be ok
         /*
          * We have to erase this vertex's locator to keep track of the fact
          * that it is no longer a member of the priority queue.
@@ -384,7 +384,7 @@ void HokieGraph< PQ >::single_source_shortest_path()
             Key_tp neighb_key;
             int nrm = neighb_rm + 1; // fill with a wrong value
             bool hit2 = pq.access_loc( neighb_loc, & neighb_key, & nrm );
-            KJB(ASSERT( hit2 ));
+            IVI(ASSERT( hit2 ));
             // propose a new route to the neighbor: via vert_rm! Great eh?
             const Key_tp d_new = rm_to_dist.at( vert_rm ) + qqq -> second;
             // if that is great, then update (otherwise, awkwardly ignore)
@@ -392,7 +392,7 @@ void HokieGraph< PQ >::single_source_shortest_path()
                 // decrease key
                 rm_to_dist.at( neighb_rm ) = d_new;
                 bool itsok = pq.rekey_loc( neighb_loc, d_new );
-                KJB(ASSERT( itsok ));
+                IVI(ASSERT( itsok ));
                 // update parent array
                 m_parent.at( neighb_rm ) = vert_rm;
             }
@@ -410,7 +410,7 @@ PixPath HokieGraph< PQ >::get_a_route_to( const PixPoint& destination ) const
     for( PixPoint ppp = destination; ppp != m_source;
                                 ppp = to_xy( m_parent.at( to_rm( ppp ) ) ) )
         course.push_back( ppp );
-    KJB(ASSERT( course.back() != m_source ));
+    IVI(ASSERT( course.back() != m_source ));
     course.push_back( m_source );
     return course.ow_reverse();
 }
@@ -429,7 +429,7 @@ int fail( const char* msg )
 std::string generate_svg_preamble()
 {
     std::ostringstream intro;
-    intro   << kjb::qd::SvgWrap::xml_header()
+    intro   << ivi::qd::SvgWrap::xml_header()
             <<  "<svg xmlns=\"http://www.w3.org/2000/svg\" "
                 "xmlns:xlink=\"http://www.w3.org/1999/xlink\" "
                 "width=\"" << GRW*3 << "px\" "
@@ -457,7 +457,7 @@ std::string generate_svg_preamble()
                     "r=\"" << 1*sigma << "\" fill=\"aliceblue\" />\n"*/;
     else
 	{
-        KJB(ASSERT( UNIFORM == g_params.weight_flavor ));
+        IVI(ASSERT( UNIFORM == g_params.weight_flavor ));
 	}
 
     return intro.str();
@@ -467,9 +467,9 @@ std::string generate_svg_preamble()
 
 int path_test( std::ostream& df, std::ostream& sf, const PixPath& termini )
 {
-    using kjb::qd::Redblack_subtree_sum;
-    using kjb::qd::StochasticPriorityQueue;
-    using kjb::qd::SvgWrap;
+    using ivi::qd::Redblack_subtree_sum;
+    using ivi::qd::StochasticPriorityQueue;
+    using ivi::qd::SvgWrap;
 
     const PixPoint source( DELTA/2, GRH/2 ) /*, terminus( 225,125 )*/;
 
@@ -480,10 +480,10 @@ int path_test( std::ostream& df, std::ostream& sf, const PixPath& termini )
     const std::string preamble( generate_svg_preamble() );
 
     // build a color table
-    std::vector< kjb_c::Pixel > colortab;
+    std::vector< ivi_c::Pixel > colortab;
     for( size_t iii = 0; iii < termini.size(); ++iii )
 	{
-        const kjb::PixelHSVA ppp( iii / ( 1.1 * termini.size() ), // hue
+        const ivi::PixelHSVA ppp( iii / ( 1.1 * termini.size() ), // hue
                                     0.8, 0.8 ); // saturation, value
         colortab.push_back( ppp );
     }
@@ -628,7 +628,7 @@ int read_options( int argc, char** argv )
 int main( int argc, char** argv )
 {
     // assume the program was invoked with at least its own filename
-    KJB(ASSERT( 0 < argc ));
+    IVI(ASSERT( 0 < argc ));
     g_params.whoami = argv[ 0 ];
 
     // Read options and filenames

@@ -20,8 +20,8 @@
 
 /* $Id */
 
-#ifndef KJB_TIES_BASE_LINE_MODELS_H
-#define KJB_TIES_BASE_LINE_MODELS_H
+#ifndef IVI_TIES_BASE_LINE_MODELS_H
+#define IVI_TIES_BASE_LINE_MODELS_H
 
 #include <m_cpp/m_vector.h>
 #include <g_cpp/g_line.h>
@@ -33,7 +33,7 @@
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/lss_set.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties{
 
 /**
@@ -167,6 +167,6 @@ std::vector<double> line_fitting_outcome
     std::vector<Line>& lines
 );
 
-}} //namespace kjb::ties
-#endif //KJB_TIES_BASE_LINE_MODELS_H
+}} //namespace ivi::ties
+#endif //IVI_TIES_BASE_LINE_MODELS_H
 

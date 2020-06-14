@@ -1,5 +1,5 @@
 
-/* $Id: mem.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: mem.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -84,7 +84,7 @@ void    qh_errexit(int exitcode, void *, void *);
 */
 
 #ifdef __cplusplus
-namespace kjb_c {
+namespace ivi_c {
 #endif
 
 qhmemT qhmem= {0};     /* remove "= {0}" if this causes a compiler error */
@@ -142,14 +142,14 @@ void *qh_memalloc(int insize) {
         qhmem.totshort += bufsize;
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-	if (!(newbuffer= KJB_MALLOC(bufsize))) {
+#ifdef USE_IVI_MALLOC
+	if (!(newbuffer= IVI_MALLOC(bufsize))) {
 #else
 	if (!(newbuffer= malloc(bufsize))) {
 #endif
 /* END kobus */
 
-	  kjb_fprintf(qhmem.ferr, "qhull error (qh_memalloc): insufficient memory\n");
+	  ivi_fprintf(qhmem.ferr, "qhull error (qh_memalloc): insufficient memory\n");
 	  qh_errexit (qhmem_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
 	}
 	*((void **)newbuffer)= qhmem.curbuffer;  /* prepend newbuffer to curbuffer
@@ -166,7 +166,7 @@ void *qh_memalloc(int insize) {
     }
   }else {                     /* long allocation */
     if (!qhmem.indextable) {
-      kjb_fprintf (qhmem.ferr, "qhull internal error (qh_memalloc): qhmem has not been initialized.\n");
+      ivi_fprintf (qhmem.ferr, "qhull internal error (qh_memalloc): qhmem has not been initialized.\n");
       qh_errexit (qhmem_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
     }
     outsize= insize;
@@ -177,18 +177,18 @@ void *qh_memalloc(int insize) {
       qhmem.maxlong= qhmem.totlong;
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    if (!(object= KJB_MALLOC(outsize))) {
+#ifdef USE_IVI_MALLOC
+    if (!(object= IVI_MALLOC(outsize))) {
 #else
     if (!(object= malloc(outsize))) {
 #endif
 /* END kobus */
 
-      kjb_fprintf(qhmem.ferr, "qhull error (qh_memalloc): insufficient memory\n");
+      ivi_fprintf(qhmem.ferr, "qhull error (qh_memalloc): insufficient memory\n");
       qh_errexit (qhmem_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
     }
     if (qhmem.IStracing >= 5)
-      kjb_fprintf (qhmem.ferr, "qh_memalloc long: %d bytes at %p\n", outsize, object);
+      ivi_fprintf (qhmem.ferr, "qh_memalloc long: %d bytes at %p\n", outsize, object);
   }
   return (object);
 } /* memalloc */
@@ -215,15 +215,15 @@ void qh_memfree(void *object, int size) {
     qhmem .totlong -= size;
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    kjb_free (object);
+#ifdef USE_IVI_MALLOC
+    ivi_free (object);
 #else
     free (object);
 #endif
 /* END kobus */
 
     if (qhmem.IStracing >= 5)
-      kjb_fprintf (qhmem.ferr, "qh_memfree long: %d bytes at %p\n", size, object);
+      ivi_fprintf (qhmem.ferr, "qh_memfree long: %d bytes at %p\n", size, object);
   }
 } /* memfree */
 
@@ -241,8 +241,8 @@ void qh_memfreeshort (int *curlong, int *totlong) {
     nextbuffer= *((void **) buffer);
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    kjb_free(buffer);
+#ifdef USE_IVI_MALLOC
+    ivi_free(buffer);
 #else
     free(buffer);
 #endif
@@ -253,10 +253,10 @@ void qh_memfreeshort (int *curlong, int *totlong) {
   if (qhmem .LASTsize) {
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    kjb_free (qhmem .indextable);
-    kjb_free (qhmem .freelists);
-    kjb_free (qhmem .sizetable);
+#ifdef USE_IVI_MALLOC
+    ivi_free (qhmem .indextable);
+    ivi_free (qhmem .freelists);
+    ivi_free (qhmem .sizetable);
 #else
     free (qhmem .indextable);
     free (qhmem .freelists);
@@ -277,7 +277,7 @@ void qh_meminit (FILE *ferr) {
   memset((char *)&qhmem, 0, sizeof qhmem);  /* every field is 0, FALSE, NULL */
   qhmem.ferr= ferr;
   if (sizeof(void*) < sizeof(int)) {
-    kjb_fprintf (ferr, "qhull internal error (qh_meminit): sizeof(void*) < sizeof(int).  set.c will not work\n");
+    ivi_fprintf (ferr, "qhull internal error (qh_meminit): sizeof(void*) < sizeof(int).  set.c will not work\n");
     exit (1);  /* can not use qh_errexit() */
   }
 } /* meminit */
@@ -293,14 +293,14 @@ void qh_meminitbuffers (int tracelevel, int alignment, int numsizes, int bufsize
   qhmem.BUFinit= bufinit;
   qhmem.ALIGNmask= alignment-1;
   if (qhmem.ALIGNmask & ~qhmem.ALIGNmask) {
-    kjb_fprintf (qhmem.ferr, "qhull internal error (qh_meminit): memory alignment %d is not a power of 2\n", alignment);
+    ivi_fprintf (qhmem.ferr, "qhull internal error (qh_meminit): memory alignment %d is not a power of 2\n", alignment);
     qh_errexit (qhmem_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-  qhmem.sizetable= (int *) KJB_CALLOC (numsizes, sizeof(int));
-  qhmem.freelists= (void **) KJB_CALLOC (numsizes, sizeof(void *));
+#ifdef USE_IVI_MALLOC
+  qhmem.sizetable= (int *) IVI_CALLOC (numsizes, sizeof(int));
+  qhmem.freelists= (void **) IVI_CALLOC (numsizes, sizeof(void *));
 #else
   qhmem.sizetable= (int *) calloc (numsizes, sizeof(int));
   qhmem.freelists= (void **) calloc (numsizes, sizeof(void *));
@@ -308,11 +308,11 @@ void qh_meminitbuffers (int tracelevel, int alignment, int numsizes, int bufsize
 /* END kobus */
 
   if (!qhmem.sizetable || !qhmem.freelists) {
-    kjb_fprintf(qhmem.ferr, "qhull error (qh_meminit): insufficient memory\n");
+    ivi_fprintf(qhmem.ferr, "qhull error (qh_meminit): insufficient memory\n");
     qh_errexit (qhmem_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (qhmem.IStracing >= 1)
-    kjb_fprintf (qhmem.ferr, "qh_meminitbuffers: memory initialized with alignment %d\n", alignment);
+    ivi_fprintf (qhmem.ferr, "qh_meminitbuffers: memory initialized with alignment %d\n", alignment);
 } /* meminitbuffers */
 
 /*-------------------------------------------------
@@ -324,20 +324,20 @@ void qh_memsetup (void) {
   qsort(qhmem.sizetable, qhmem.TABLEsize, sizeof(int), qh_intcompare);
   qhmem.LASTsize= qhmem.sizetable[qhmem.TABLEsize-1];
   if (qhmem .LASTsize >= qhmem .BUFsize || qhmem.LASTsize >= qhmem .BUFinit) {
-    kjb_fprintf (qhmem.ferr, "qhull error (qh_memsetup): largest mem size %d is >= buffer size %d or initial buffer size %d\n",
+    ivi_fprintf (qhmem.ferr, "qhull error (qh_memsetup): largest mem size %d is >= buffer size %d or initial buffer size %d\n",
             qhmem .LASTsize, qhmem .BUFsize, qhmem .BUFinit);
     qh_errexit (qhmem_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
   }
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-  if (!(qhmem.indextable= (int *)KJB_MALLOC((qhmem.LASTsize+1) * sizeof(int)))) {
+#ifdef USE_IVI_MALLOC
+  if (!(qhmem.indextable= (int *)IVI_MALLOC((qhmem.LASTsize+1) * sizeof(int)))) {
 #else
   if (!(qhmem.indextable= (int *)malloc((qhmem.LASTsize+1) * sizeof(int)))) {
 #endif
 /* END kobus */
 
-    kjb_fprintf(qhmem.ferr, "qhull error (qh_memsetup): insufficient memory\n");
+    ivi_fprintf(qhmem.ferr, "qhull error (qh_memsetup): insufficient memory\n");
     qh_errexit (qhmem_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
   }
   for(k=qhmem.LASTsize+1; k--; )
@@ -358,7 +358,7 @@ void qh_memsize(int size) {
   int k;
 
   if (qhmem .LASTsize) {
-    kjb_fprintf (qhmem .ferr, "qhull error (qh_memsize): called after qhmem_setup\n");
+    ivi_fprintf (qhmem .ferr, "qhull error (qh_memsize): called after qhmem_setup\n");
     qh_errexit (qhmem_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
   size= (size + qhmem.ALIGNmask) & ~qhmem.ALIGNmask;
@@ -369,7 +369,7 @@ void qh_memsize(int size) {
   if (qhmem.TABLEsize < qhmem.NUMsizes)
     qhmem.sizetable[qhmem.TABLEsize++]= size;
   else
-    kjb_fprintf(qhmem.ferr, "qhull warning (memsize): free list table has room for only %d sizes\n", qhmem.NUMsizes);
+    ivi_fprintf(qhmem.ferr, "qhull warning (memsize): free list table has room for only %d sizes\n", qhmem.NUMsizes);
 } /* memsize */
 
 
@@ -387,7 +387,7 @@ void qh_memstatistics (FILE *fp) {
       count++;
     totfree += qhmem.sizetable[i] * count;
   }
-  kjb_fprintf (fp, "\nmemory statistics:\n\
+  ivi_fprintf (fp, "\nmemory statistics:\n\
 %7d quick allocations\n\
 %7d short allocations\n\
 %7d long allocations\n\
@@ -405,17 +405,17 @@ void qh_memstatistics (FILE *fp) {
 	   qhmem .maxlong, qhmem .totlong, qhmem .cntlong - qhmem .freelong,
 	   qhmem .BUFsize, qhmem .BUFinit);
   if (qhmem.cntlarger) {
-    kjb_fprintf (fp, "%7d calls to qh_setlarger\n%7.2g     average copy size\n",
+    ivi_fprintf (fp, "%7d calls to qh_setlarger\n%7.2g     average copy size\n",
 	   qhmem.cntlarger, ((float) qhmem.totlarger)/ qhmem.cntlarger);
-    kjb_fprintf (fp, "  freelists (bytes->count):");
+    ivi_fprintf (fp, "  freelists (bytes->count):");
   }
   for (i=0; i<qhmem.TABLEsize; i++) {
     count=0;
     for (object= qhmem .freelists[i]; object; object= *((void **)object))
       count++;
-    kjb_fprintf (fp, " %d->%d", qhmem.sizetable[i], count);
+    ivi_fprintf (fp, " %d->%d", qhmem.sizetable[i], count);
   }
-  kjb_fprintf (fp, "\n\n");
+  ivi_fprintf (fp, "\n\n");
 } /* memstatistics */
 
 #else /* qh_NOmem, use malloc/free instead */
@@ -425,18 +425,18 @@ void *qh_memalloc(int insize) {
 
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-     if (!(object= KJB_MALLOC(insize))) {
+#ifdef USE_IVI_MALLOC
+     if (!(object= IVI_MALLOC(insize))) {
 #else
      if (!(object= malloc(insize))) {
 #endif
 /* END kobus */
 
-    kjb_fprintf(qhmem.ferr, "qhull error (qh_memalloc): insufficient memory\n");
+    ivi_fprintf(qhmem.ferr, "qhull error (qh_memalloc): insufficient memory\n");
     qh_errexit (qhmem_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (qhmem.IStracing >= 5)
-    kjb_fprintf (qhmem.ferr, "qh_memalloc long: %d bytes at %p\n", insize, object);
+    ivi_fprintf (qhmem.ferr, "qh_memalloc long: %d bytes at %p\n", insize, object);
   return object;
 }
 
@@ -446,15 +446,15 @@ void qh_memfree(void *object, int size) {
     return;
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-   kjb_free(object);
+#ifdef USE_IVI_MALLOC
+   ivi_free(object);
 #else
    free (object);
 #endif
 /* END kobus */
 
   if (qhmem.IStracing >= 5)
-    kjb_fprintf (qhmem.ferr, "qh_memfree long: %d bytes at %p\n", size, object);
+    ivi_fprintf (qhmem.ferr, "qh_memfree long: %d bytes at %p\n", size, object);
 }
 
 void qh_memfreeshort (int *curlong, int *totlong) {
@@ -469,7 +469,7 @@ void qh_meminit (FILE *ferr) {
   memset((char *)&qhmem, 0, sizeof qhmem);  /* every field is 0, FALSE, NULL */
   qhmem.ferr= ferr;
   if (sizeof(void*) < sizeof(int)) {
-    kjb_fprintf (ferr, "qhull internal error (qh_meminit): sizeof(void*) < sizeof(int).  set.c will not work\n");
+    ivi_fprintf (ferr, "qhull internal error (qh_meminit): sizeof(void*) < sizeof(int).  set.c will not work\n");
     qh_errexit (qhmem_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
 }

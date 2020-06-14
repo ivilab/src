@@ -1,4 +1,4 @@
-/* $Id: gui_trackball.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_trackball.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,10 +19,10 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_TRACKBALL_H
-#define KJB_CPP_GUI_TRACKBALL_H
+#ifndef IVI_CPP_GUI_TRACKBALL_H
+#define IVI_CPP_GUI_TRACKBALL_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_vector_d.h>
 #include <g_cpp/g_quaternion.h>
@@ -30,13 +30,13 @@
 #include <gr_cpp/gr_opengl.h>
 #include <camera_cpp/perspective_camera.h>
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 
 #include <boost/bind.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -78,7 +78,7 @@ public:
         delta_q_(),
         cur_mouse_x_(),
         cur_mouse_y_(),
-        cur_t_(kjb::Vector(0, 0, -10)),
+        cur_t_(ivi::Vector(0, 0, -10)),
         xy_scale_(1.0),
         mode_(no_mode),
         offset_x_(0),
@@ -93,15 +93,15 @@ public:
         ACCELERATION_FACTOR(1.0/200.0)
     {
 
-        base_cam_.set_world_origin(kjb::Vector(cur_t_.begin(), cur_t_.end()));
+        base_cam_.set_world_origin(ivi::Vector(cur_t_.begin(), cur_t_.end()));
         cam_ = base_cam_;
 
         set_focal_from_fovy_();
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     /// setup glut mouse callbacks
-    void bind(kjb::opengl::Glut_window& wnd)
+    void bind(ivi::opengl::Glut_window& wnd)
     {
         using namespace boost;
 
@@ -178,25 +178,25 @@ public:
     // Call when dragging is done
     void rotate_mouse_up();
 
-    /// Get the trackball orientation for sending to kjb::opengl::glRotate
+    /// Get the trackball orientation for sending to ivi::opengl::glRotate
     const Quaternion get_orientation()
     {
         update_camera_();
         return cam_.get_orientation();
     }
 
-    void set_extrinsic(const kjb::Matrix& extrinsic)
+    void set_extrinsic(const ivi::Matrix& extrinsic)
     {
         set_extrinsic_dispatch_(extrinsic);
     }
 
-    void set_extrinsic(const kjb::Matrix4& extrinsic)
+    void set_extrinsic(const ivi::Matrix4& extrinsic)
     {
         set_extrinsic_dispatch_(extrinsic);
     }
 
     /**
-     * @tparam Matrix_type must be either Matrix_d<4,4> or kjb::Matrix
+     * @tparam Matrix_type must be either Matrix_d<4,4> or ivi::Matrix
      */
     template <class Matrix_type>
     void set_extrinsic_dispatch_(const Matrix_type& extrinsic);
@@ -214,7 +214,7 @@ public:
 
     void set_camera_same_fovy(const Perspective_camera& cam);
 
-    const kjb::Perspective_camera& get_camera() const;
+    const ivi::Perspective_camera& get_camera() const;
 
     /**
      * Set location of object origin in world coordinates.  Rotations
@@ -332,7 +332,7 @@ private:
     int cur_mouse_x_;
     int cur_mouse_y_;
 
-    kjb::Vector3 cur_t_;
+    ivi::Vector3 cur_t_;
     double xy_scale_;
 
     Mouse_mode mode_;
@@ -342,8 +342,8 @@ private:
     int width_;
     int height_;
 
-    kjb::Perspective_camera base_cam_;
-    mutable kjb::Perspective_camera cam_;
+    ivi::Perspective_camera base_cam_;
+    mutable ivi::Perspective_camera cam_;
     mutable bool cam_dirty_;
 
     double fixed_fovy_;
@@ -353,7 +353,7 @@ private:
     static const float DEFAULT_FOVY;
 };
 } // namespace gui
-} // namespace kjb
+} // namespace ivi
 
 #endif /* HAVE_OPENGL */
 #endif 

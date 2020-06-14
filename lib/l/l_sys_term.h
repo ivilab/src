@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_term.h 24713 2019-12-14 01:00:04Z kobus $ */
+/* $Id: l_sys_term.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -43,10 +43,10 @@ namespace kjb_c {
 
 
 int set_term_io_options   (const char* option, const char* value);
-int kjb_use_default_paging(void);
-int kjb_enable_paging     (void);
-int kjb_disable_paging    (void);
-int kjb_restore_paging    (void);
+int ivi_use_default_paging(void);
+int ivi_enable_paging     (void);
+int ivi_disable_paging    (void);
+int ivi_restore_paging    (void);
 int is_in_background      (void);
 int toggle_high_light     (FILE*);
 int set_high_light        (FILE*);

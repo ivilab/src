@@ -16,10 +16,10 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flow_feature_set.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: flow_feature_set.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_FLOW_FEATURE_SET_H
-#define KJB_FLOW_FEATURE_SET_H
+#ifndef IVI_FLOW_FEATURE_SET_H
+#define IVI_FLOW_FEATURE_SET_H
 
 #include <m_cpp/m_vector.h>
 #include <gr_cpp/gr_2D_bounding_box.h>
@@ -31,7 +31,7 @@
 #include <numeric> 
 
 
-namespace kjb {
+namespace ivi {
 
 /** @brief   Move direction of the 2D bounding box. */
 enum MOVE_DIRECTION { COL_PLUS, COL_MINUS, ROW_PLUS, ROW_MINUS }; 
@@ -184,7 +184,7 @@ Vector total_flow
     //size_t subsample_sz = 1
 );
 
-} //namespace kjb
+} //namespace ivi
 
-#endif /* KJB_PSI_OPTICAL_FLOW_H */
+#endif /* IVI_PSI_OPTICAL_FLOW_H */
 

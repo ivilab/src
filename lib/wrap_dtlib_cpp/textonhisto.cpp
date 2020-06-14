@@ -8,7 +8,7 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
@@ -16,7 +16,7 @@
 #include <fstream>
 
 using namespace DTLib;
-using namespace kjb_c;
+using namespace ivi_c;
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -55,7 +55,7 @@ void DTLib::ComputeTextonHistogramImg(CCircleMasks* pCircleMasks,
     const int StartX = Padding, EndX = Padding+Width;
     const int StartY = Padding, EndY = Padding+Height;
 
-    CImg<kjb_int32> PaddedTextonsImg(PaddedWidth, PaddedHeight);
+    CImg<ivi_int32> PaddedTextonsImg(PaddedWidth, PaddedHeight);
     PaddedTextonsImg.ChangeROI(StartX, EndX, StartY, EndY);
     PaddedTextonsImg.CopyFromBuf(pTextonsImg->pBuffer());
     PaddedTextonsImg.ReflectToROI(); // here is where the mirror's done!
@@ -70,7 +70,7 @@ void DTLib::ComputeTextonHistogramImg(CCircleMasks* pCircleMasks,
     const bool bNotUpdating = !bUpdating;
 
     const int Skip = PaddedTextonsImg.ROISkipCols();
-    kjb_int32* pTexton = PaddedTextonsImg.pROI();
+    ivi_int32* pTexton = PaddedTextonsImg.pROI();
     float* pPTexture = PaddedPTextureImg.pROI();
     float* pTextureScale = pTextureScaleImg->pBuffer();
 
@@ -89,7 +89,7 @@ void DTLib::ComputeTextonHistogramImg(CCircleMasks* pCircleMasks,
                 pHisto->Zero(); // updating: redo histograms
                 InRegion = pPresegImg->GetPix(x, y);
             }
-            kjb_int32* pTextonYOffset;
+            ivi_int32* pTextonYOffset;
             float* pPTextureYOffset;
             float BinZeroSum = 0.0f;
             for (int yy = -Rad, yoffset = -Rad*PaddedWidth; yy <= Rad; yy++, 

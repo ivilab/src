@@ -16,7 +16,7 @@
    |  Author: Jinyan Guan 
  * =========================================================================== */
 
-/* $Id: psi_face_util.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_face_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "psi_cpp/psi_face_util.h"
@@ -30,12 +30,12 @@
 
 #include <boost/foreach.hpp>
 
-using namespace kjb;
-using namespace kjb::psi;
+using namespace ivi;
+using namespace ivi::psi;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Bbox kjb::psi::estimate_body_box
+Bbox ivi::psi::estimate_body_box
 (
     const Bbox& face_box,
     bool standardized
@@ -61,7 +61,7 @@ Bbox kjb::psi::estimate_body_box
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix kjb::psi::create_gaze_cone_pts
+Matrix ivi::psi::create_gaze_cone_pts
 (
     double height, 
     double radius, 
@@ -109,7 +109,7 @@ Matrix kjb::psi::create_gaze_cone_pts
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Matrix kjb::psi::create_cylinder_pts
+Matrix ivi::psi::create_cylinder_pts
 (
     double radius,
     double height,
@@ -138,7 +138,7 @@ Matrix kjb::psi::create_cylinder_pts
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::psi::get_corresponding_entity
+bool ivi::psi::get_corresponding_entity
 (
     const Bbox& face_box,
     const pt::Box_trajectory_map& trajectories,
@@ -175,7 +175,7 @@ bool kjb::psi::get_corresponding_entity
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::psi::get_corresponding_body_box
+bool ivi::psi::get_corresponding_body_box
 (
     const Bbox& face_box,
     Bbox& corr_body_box,
@@ -210,7 +210,7 @@ bool kjb::psi::get_corresponding_body_box
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::psi::get_corresponding_face
+bool ivi::psi::get_corresponding_face
 (
     const std::vector<Face_detection>& faces,
     const Bbox& body_box,
@@ -245,7 +245,7 @@ bool kjb::psi::get_corresponding_face
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-//bool kjb::psi::get_holding_object_entity
+//bool ivi::psi::get_holding_object_entity
 //(
 //    const Bbox& object_box,
 //    const Skeleton_trajectory_map& trajectories,
@@ -289,7 +289,7 @@ bool kjb::psi::get_corresponding_face
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-bool kjb::psi::face_inside_body_box 
+bool ivi::psi::face_inside_body_box 
 (
     const Face_detection& face,
     const Bbox& body_box,
@@ -320,7 +320,7 @@ bool kjb::psi::face_inside_body_box
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::psi::standardize_face_boxes 
+void ivi::psi::standardize_face_boxes 
 (
     std::vector<Face_detection>& faces,
     double image_width, 
@@ -335,7 +335,7 @@ void kjb::psi::standardize_face_boxes
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::psi::draw_hull
+void ivi::psi::draw_hull
 (
     const Matrix& hull_pts, 
     const Matrix& camera_matrix, 

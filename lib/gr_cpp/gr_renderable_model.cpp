@@ -53,39 +53,39 @@
 
 #include "gr_cpp/gr_renderable_model.h"
 
-using namespace kjb;
+using namespace ivi;
 
-void Renderable_model::wire_render() const throw(kjb::KJB_error)
+void Renderable_model::wire_render() const throw(ivi::IVI_error)
 {
     update_if_needed();
     get_rendering_interface().wire_render();
 }
 
-void Renderable_model::render_occluded_wireframe() const throw(kjb::KJB_error)
+void Renderable_model::render_occluded_wireframe() const throw(ivi::IVI_error)
 {
     update_if_needed();
     get_rendering_interface().render_occluded_wireframe();
 }
 
-void Renderable_model::wire_occlude_render() const throw(kjb::KJB_error)
+void Renderable_model::wire_occlude_render() const throw(ivi::IVI_error)
 {
     update_if_needed();
     get_rendering_interface().wire_occlude_render();
 }
 
-void Renderable_model::solid_render() const throw(kjb::KJB_error)
+void Renderable_model::solid_render() const throw(ivi::IVI_error)
 {
     update_if_needed();
     get_rendering_interface().solid_render();
 }
 
-void Renderable_model::silhouette_render(const kjb::Base_gl_interface & camera, double width) const
+void Renderable_model::silhouette_render(const ivi::Base_gl_interface & camera, double width) const
 {
     update_if_needed();
     get_rendering_interface().silhouette_render(camera, width);
 }
 
-/*Rendering_interface * Renderable_model::project() throw(kjb::KJB_error)
+/*Rendering_interface * Renderable_model::project() throw(ivi::IVI_error)
 {
     if(!_rendering_representation_updated)
     {

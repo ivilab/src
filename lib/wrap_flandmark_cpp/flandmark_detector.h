@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flandmark_detector.h 18301 2014-11-26 19:17:13Z ksimek $ */
+/* $Id: flandmark_detector.h 25499 2020-06-14 13:26:04Z kobus $ */
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@
  * Copyright (C) 2012 Michal Uricar
  */
 
-#ifndef KJB_FLANDMARK_DETECTOR_H_
-#define KJB_FLANDMARK_DETECTOR_H_
+#ifndef IVI_FLANDMARK_DETECTOR_H_
+#define IVI_FLANDMARK_DETECTOR_H_
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 
 #include <wrap_flandmark_cpp/msvc-compat.h>
 //#include <cv.h>
@@ -39,7 +39,7 @@
 #include <i_cpp/i_image.h>
 #include <gr_cpp/gr_2D_bounding_box.h>
 
-namespace kjb {
+namespace ivi {
 namespace flandmark {
 // index row-order matrices
 #define INDEX(ROW, COL, NUM_ROWS) ((COL)*(NUM_ROWS)+(ROW))
@@ -224,7 +224,7 @@ std::vector<double> flandmark_detect
     int * bw_margin = 0
 );
 
-}} //namespace kjb::flandmark
+}} //namespace ivi::flandmark
 
-#endif /* KJB_HAVE_OPENCV */
-#endif /* KJB_LIBFLD_DETECTOR_H_ */
+#endif /* IVI_HAVE_OPENCV */
+#endif /* IVI_LIBFLD_DETECTOR_H_ */

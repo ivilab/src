@@ -1,5 +1,5 @@
 
-/* $Id: l_getopt.h 8758 2011-02-24 18:06:31Z predoehl $ */
+/* $Id: l_getopt.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
 // Kobus. GNU getopt code, with a few non-substantive changes (scan for
@@ -17,7 +17,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

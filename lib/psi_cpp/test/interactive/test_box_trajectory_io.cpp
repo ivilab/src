@@ -2,7 +2,7 @@
 #include <l_cpp/l_exception.h>
 #include <exception>
 
-using namespace kjb;
+using namespace ivi;
 using namespace psi;
 using namespace std;
 
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
         trajectories.write("box_trajectories");
     }
-    catch(const kjb::Exception& kex)
+    catch(const ivi::Exception& kex)
     {
         kex.print_details();
     }

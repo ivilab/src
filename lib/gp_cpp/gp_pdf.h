@@ -31,7 +31,7 @@
 #include <prob_cpp/prob_util.h>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 /** @brief  Compute pdf of a GP prior distribution. */
@@ -39,7 +39,7 @@ template<class Mean, class Covariance>
 inline
 double pdf(const Prior<Mean, Covariance>& P, const Vector& f_s)
 {
-    return kjb::pdf(P.normal(), f_s);
+    return ivi::pdf(P.normal(), f_s);
 }
 
 /** @brief  Compute log-pdf of a GP prior distribution. */
@@ -47,7 +47,7 @@ template<class Mean, class Covariance>
 inline
 double log_pdf(const Prior<Mean, Covariance>& P, const Vector& f_s)
 {
-    return kjb::log_pdf(P.normal(), f_s);
+    return ivi::log_pdf(P.normal(), f_s);
 }
 
 /**
@@ -97,7 +97,7 @@ double pdf
     const Vector& f
 )
 {
-    return kjb::pdf(P.normal(), f);
+    return ivi::pdf(P.normal(), f);
 }
 
 /**
@@ -111,7 +111,7 @@ double log_pdf
     const Vector& f
 )
 {
-    return kjb::log_pdf(P.normal(), f);
+    return ivi::log_pdf(P.normal(), f);
 }
 
 /**
@@ -122,7 +122,7 @@ template<class Mean, class Covariance>
 inline
 double pdf(const Predictive_nl<Mean, Covariance>& P, const Vector& f_s)
 {
-    return kjb::pdf(P.normal(), f_s);
+    return ivi::pdf(P.normal(), f_s);
 }
 
 /**
@@ -133,7 +133,7 @@ template<class Mean, class Covariance>
 inline
 double log_pdf(const Predictive_nl<Mean, Covariance>& P, const Vector& f_s)
 {
-    return kjb::log_pdf(P.normal(), f_s);
+    return ivi::log_pdf(P.normal(), f_s);
 }
 
 /**
@@ -229,7 +229,7 @@ double pdf
     const Vector& f_s
 )
 {
-    return kjb::pdf(P.normal(), f_s);
+    return ivi::pdf(P.normal(), f_s);
 }
 
 /**
@@ -243,7 +243,7 @@ double log_pdf
     const Vector& f_s
 )
 {
-    return kjb::log_pdf(P.normal(), f_s);
+    return ivi::log_pdf(P.normal(), f_s);
 }
 
 /**
@@ -257,7 +257,7 @@ double pdf
     const Vector& f_s
 )
 {
-    return kjb::pdf(P.normal(), f_s);
+    return ivi::pdf(P.normal(), f_s);
 }
 
 /**
@@ -271,10 +271,10 @@ double log_pdf
     const Vector& f_s
 )
 {
-    return kjb::log_pdf(P.normal(), f_s);
+    return ivi::log_pdf(P.normal(), f_s);
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_PDF_H_INCLUDED */
 

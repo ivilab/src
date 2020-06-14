@@ -8,7 +8,7 @@
 #include <boost/bind.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 template<class D>
 bool is_sample_good(const D& P, int nsamples, int nparams, double alpha, int nbins)
@@ -30,7 +30,7 @@ bool is_sample_good(const D& P, int nsamples, double alpha, int dofr)
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     int num_samples = 5000;
     double alpha = 0.001;

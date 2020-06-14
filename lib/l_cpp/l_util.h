@@ -1,14 +1,14 @@
 
-/* $Id: l_util.h 18962 2015-04-28 00:51:55Z jguan1 $ */
+/* $Id: l_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_WRAP_UTIL_H
-#define KJB_WRAP_UTIL_H
+#ifndef IVI_WRAP_UTIL_H
+#define IVI_WRAP_UTIL_H
 
 #include <stdlib.h>
 
-#define KJB(x) do {using namespace kjb_c; x;} while(0)
+#define IVI(x) do {using namespace ivi_c; x;} while(0)
 
-namespace kjb {
+namespace ivi {
 
 void alert_untested( int line, const char* file );
 

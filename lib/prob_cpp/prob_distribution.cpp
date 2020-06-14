@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: prob_distribution.cpp 20242 2016-01-20 22:36:29Z jguan1 $ */
+/* $Id: prob_distribution.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "prob_cpp/prob_distribution.h"
 #include "prob_cpp/prob_conditional_distribution.h"
@@ -29,7 +29,7 @@
 #include "l_cpp/l_index.h"
 #include "m_cpp/m_mat_view.h"
 
-namespace kjb {
+namespace ivi {
 
 const Gaussian_distribution STD_NORMAL;
 
@@ -57,7 +57,7 @@ MV_gaussian_conditional_distribution
         "Cannot get conditional distribution: index out of bounds");
 
     // TODO: replace string-based indexing with
-    //       kjb::Index_range objects
+    //       ivi::Index_range objects
     Vector mu(get_dimension() - 1);
     std::copy(mean.begin(), mean.begin() + i, mu.begin());
     std::copy(mean.begin() + i + 1, mean.end(), mu.begin() + i);
@@ -91,5 +91,5 @@ MV_gaussian_conditional_distribution
                     MV_gaussian_distribution(mu, Sigma), Sigma_i));
 }
 
-} //namespace kjb
+} //namespace ivi
 

@@ -55,14 +55,14 @@
 #include <gr_cpp/gr_opengl.h>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 bool Glut_perspective_camera::camera_enabled;
 unsigned int Glut_perspective_camera::selected_parameter;
 Perspective_camera * Glut_perspective_camera::camera;
 unsigned char Glut_perspective_camera::increment_character;
 unsigned char Glut_perspective_camera::decrement_character;
-kjb::Vector Glut_perspective_camera::increment_steps;
+ivi::Vector Glut_perspective_camera::increment_steps;
 bool Glut_perspective_camera::centre_when_scaling_viewport;
 
 /*
@@ -91,7 +91,7 @@ int Glut_perspective_camera::create_glut_perspective_camera_submenu(void (*icame
         bool enable_world_scale,
         bool icentre_when_scaling_viewport, unsigned char iincrement_char, unsigned char idecrement_char)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     int camera_menu = glutCreateMenu(camera_submenu_glut);
     if(enable_translation)
     {
@@ -161,7 +161,7 @@ int Glut_perspective_camera::create_glut_perspective_camera_submenu(void (*icame
 
     return camera_menu;
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 
 }

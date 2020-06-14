@@ -4,7 +4,7 @@
  * @brief implementation of fast (FFT-based) reentrant image convolution
  */
 /*
- * $Id: i_mt_convo.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: i_mt_convo.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "i/i_matrix.h"
@@ -16,44 +16,44 @@ namespace
 {
 
 // typedef of a pointer-to-member-function to select the convolution style
-typedef void (kjb::Fftw_convolution_2d::* Convo_pf_t)(
-    const kjb::Matrix&,
-    kjb::Matrix&,
-    kjb::Fftw_convolution_2d::Work_buffer
+typedef void (ivi::Fftw_convolution_2d::* Convo_pf_t)(
+    const ivi::Matrix&,
+    ivi::Matrix&,
+    ivi::Fftw_convolution_2d::Work_buffer
 )   const;
 
 
 // this takes the user's choice of zero-pad or reflect, in 'convo_type' param.
 void channel_convolve(
-    const kjb::Image& in,
-    kjb::Image& out,
-    kjb::Fftw_convolution_2d::Work_buffer buf,
-    const kjb::Fftw_convolution_2d* convolver,
+    const ivi::Image& in,
+    ivi::Image& out,
+    ivi::Fftw_convolution_2d::Work_buffer buf,
+    const ivi::Fftw_convolution_2d* convolver,
     Convo_pf_t convo_type
 )
 {
-    const int CHAN_CT = kjb::Image::END_CHANNELS;
+    const int CHAN_CT = ivi::Image::END_CHANNELS;
 
     // Extract image channels into a Matrix_vector.
-    kjb_c::Matrix_vector *mvc = NULL;
-    ETX(kjb_c::image_to_matrix_vector(in.c_ptr(), &mvc));
+    ivi_c::Matrix_vector *mvc = NULL;
+    ETX(ivi_c::image_to_matrix_vector(in.c_ptr(), &mvc));
     if (0 == mvc || mvc -> length != CHAN_CT || 0 == mvc -> elements)
     {
-        KJB_THROW_2(kjb::KJB_error,"Bad result from image_to_matrix_vector()");
+        IVI_THROW_2(ivi::IVI_error,"Bad result from image_to_matrix_vector()");
     }
 
     // Plunder the Matrix_vector and wrap contents; dispose of Matrix_vector.
     // The next three lines cannot throw, so this is exception-safe.
-    kjb::Matrix r_chan(mvc -> elements[kjb::Image::RED]),
-                g_chan(mvc -> elements[kjb::Image::GREEN]),
-                b_chan(mvc -> elements[kjb::Image::BLUE]),
+    ivi::Matrix r_chan(mvc -> elements[ivi::Image::RED]),
+                g_chan(mvc -> elements[ivi::Image::GREEN]),
+                b_chan(mvc -> elements[ivi::Image::BLUE]),
                 *mv[CHAN_CT];
-    std::fill_n(mvc -> elements, CHAN_CT, static_cast<kjb_c::Matrix*>(0));
-    kjb_c::free_matrix_vector(mvc);
+    std::fill_n(mvc -> elements, CHAN_CT, static_cast<ivi_c::Matrix*>(0));
+    ivi_c::free_matrix_vector(mvc);
     mvc = 0;
-    mv[kjb::Image::RED  ] = &r_chan;
-    mv[kjb::Image::GREEN] = &g_chan;
-    mv[kjb::Image::BLUE ] = &b_chan;
+    mv[ivi::Image::RED  ] = &r_chan;
+    mv[ivi::Image::GREEN] = &g_chan;
+    mv[ivi::Image::BLUE ] = &b_chan;
 
     // do convolution
     for (int i = 0; i < CHAN_CT; ++i)
@@ -62,13 +62,13 @@ void channel_convolve(
     }
 
     // reassemble the channels
-    kjb::Image i2(kjb::rgb_matrices_to_image(r_chan, g_chan, b_chan));
+    ivi::Image i2(ivi::rgb_matrices_to_image(r_chan, g_chan, b_chan));
     out.swap(i2);
 }
 
 }
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -77,7 +77,7 @@ namespace kjb
  * @param[out] out   reference to output image object to which to write results
  * @param[in]  buf   individual working memory for (this thread's) computations
  *
- * This method will emulate the behavior of kjb_c::fourier_convolve_image(),
+ * This method will emulate the behavior of ivi_c::fourier_convolve_image(),
  * i.e., it assumes the borders of the image are surrounded by zeros.
  * This is usually a poor assumption for images;
  * you might prefer to use reflect_and_convolve().
@@ -106,7 +106,7 @@ void Fftw_image_convolution::convolve(
  * @param[out] out   reference to output image object to which to write results
  * @param[in]  buf   individual working memory for (this thread's) computations
  *
- * This method will emulate the behavior of kjb_c::convolve_image(),
+ * This method will emulate the behavior of ivi_c::convolve_image(),
  * i.e., it assumes the borders of the image are surrounded by reflection.
  * This is a common assumption for images.
  * See @ref fft_boundary_convo.

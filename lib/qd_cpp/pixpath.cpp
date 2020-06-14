@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: pixpath.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: pixpath.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
@@ -18,8 +18,8 @@
 #include "l_cpp/l_stdio_wrap.h" /* File_Ptr_Write, _Smart_Read */
 #include "qd_cpp/pixpath.h"
 
-using kjb::qd::PixPoint;
-using kjb::qd::PixPath;
+using ivi::qd::PixPoint;
+using ivi::qd::PixPath;
 
 namespace
 {
@@ -48,7 +48,7 @@ void back_pop_and_validate( VT* vec, MT* map )
 
     if ( map -> end() == iii || iii -> second < 1 )
     {
-        KJB_THROW_2(kjb::Cant_happen, "Internal corruption in PixPath::ppmap");
+        IVI_THROW_2(ivi::Cant_happen, "Internal corruption in PixPath::ppmap");
     }
 
     vec -> pop_back();
@@ -66,7 +66,7 @@ bool are_both_nonzero_but_opposite_signs( double u, double v )
 } // end anonymous ns
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -136,7 +136,7 @@ PixPath PixPath::operator+( const PixPath& other ) const
 {
     if( size() != other.size() )
     {
-        KJB_THROW_2(Dimension_mismatch, "Size mismatch in PixPath::operator+");
+        IVI_THROW_2(Dimension_mismatch, "Size mismatch in PixPath::operator+");
     }
 
     PixPath result( /*reserve*/ size() );
@@ -186,17 +186,17 @@ int PixPath::append_no_overlap( const PixPath& suffix )
 
     if ( 0 == size() || 0 == suffix.size() )
     {
-        kjb_c::set_error( "Empty input" );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Empty input" );
+        return ivi_c::ERROR;
     }
     if ( back() != suffix.front() )
     {
-        kjb_c::set_error( "Mismatch in input" );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Mismatch in input" );
+        return ivi_c::ERROR;
     }
 
     append( suffix.begin()+1, suffix.end() );
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -264,7 +264,7 @@ PixPath bresenham_line( const PixPoint& ca, const PixPoint& b )
 {
     if ( ca.is_unused() || b.is_unused() )
     {
-        KJB_THROW_2( PixPoint::Unused, "Bresenham builder bad input" );
+        IVI_THROW_2( PixPoint::Unused, "Bresenham builder bad input" );
     }
 
     PixPath result( PixPath::reserve( 1 + ca.L_infinity_distance( b ) ) );
@@ -283,9 +283,9 @@ PixPath bresenham_line( const PixPoint& ca, const PixPoint& b )
 
     PixPoint::Integer fraction = dx > dy ? dy - deltax : dx - deltay;
 
-    KJB( ASSERT( 0 <= dx && 0 <= dy ) );
-    KJB( ASSERT( stepx * dx == 2 * (b.x - a.x) ) );
-    KJB( ASSERT( stepy * dy == 2 * (b.y - a.y) ) );
+    IVI( ASSERT( 0 <= dx && 0 <= dy ) );
+    IVI( ASSERT( stepx * dx == 2 * (b.x - a.x) ) );
+    IVI( ASSERT( stepy * dy == 2 * (b.y - a.y) ) );
 
     if ( deltax > deltay )
     {
@@ -315,7 +315,7 @@ PixPath bresenham_line( const PixPoint& ca, const PixPoint& b )
             result.push_back( a );
         }
     }
-    KJB( ASSERT( a == b ) );
+    IVI( ASSERT( a == b ) );
 
     return result;
 }
@@ -354,7 +354,7 @@ bool PixPath::connected8( bool emit_db_output ) const
                    "d2 " << d2 << " to last pixel; "
                    "self = " << me.str() << "   "
                    "previous = " << prev.str() << "\n";
-            kjb_c::pso( "%s", dbs.str().c_str() );
+            ivi_c::pso( "%s", dbs.str().c_str() );
             if ( d2 > 2 ) break;
         }
     }
@@ -374,13 +374,13 @@ bool PixPath::connected8( bool emit_db_output ) const
 
 int PixPath::arclength( std::vector<float>* alvec ) const
 {
-    KJB( NRE( alvec ) );
+    IVI( NRE( alvec ) );
     alvec -> clear();
 
     if ( 0 == size() )
     {
-        kjb_c::set_error( "Null path has undefined arclength." );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Null path has undefined arclength." );
+        return ivi_c::ERROR;
     }
 
     alvec -> reserve( size() );
@@ -390,7 +390,7 @@ int PixPath::arclength( std::vector<float>* alvec ) const
     {
         alvec -> push_back( alvec -> back() + p -> dist( *p_back ) );
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -409,14 +409,14 @@ int PixPath::save( const std::string& filename ) const
 {
     try
     {
-        kjb::File_Ptr_Write fpw( filename );
-        KJB( ERE( kjb_c::kjb_fputs( fpw, str().c_str() ) ) );
+        ivi::File_Ptr_Write fpw( filename );
+        IVI( ERE( ivi_c::ivi_fputs( fpw, str().c_str() ) ) );
     }
-    catch( kjb::IO_error& )
+    catch( ivi::IO_error& )
     {
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -424,7 +424,7 @@ int PixPath::save( const std::string& filename ) const
 // Note this does not use str_to_PixPoint, but maybe it should.
 PixPath::PixPath( const std::string& filename )
 {
-    kjb::File_Ptr_Smart_Read fi( filename );
+    ivi::File_Ptr_Smart_Read fi( filename );
     int ct = 0;
     /* Don't use a float here, use a double, since our regression tests use
      * random integers that exercise all 32 bits; and a float only has about
@@ -437,7 +437,7 @@ PixPath::PixPath( const std::string& filename )
          */
         if ( ct != 1 && ct != 2 )
         {
-            KJB_THROW_2(IO_error, "IO error reading from file (bad scan)" );
+            IVI_THROW_2(IO_error, "IO error reading from file (bad scan)" );
         }
         /*
          * If we only read 1 number, probably that's because there was a comma.
@@ -447,15 +447,15 @@ PixPath::PixPath( const std::string& filename )
             ct = fscanf( fi, ", %le\n", &yy );
             if ( ct != 1 )
             {
-                KJB_THROW_2(IO_error, "IO error reading from file (sep)" );
+                IVI_THROW_2(IO_error, "IO error reading from file (sep)" );
             }
         }
         int ix = int(xx), iy = int(yy);
         push_back( PixPoint( ix, iy ) );
-        KJB( ASSERT( double(ix) == xx ) );
-        KJB( ASSERT( double(iy) == yy ) );
+        IVI( ASSERT( double(ix) == xx ) );
+        IVI( ASSERT( double(iy) == yy ) );
     }
-    KJB( ASSERT( 0 == ct || EOF == ct ) );
+    IVI( ASSERT( 0 == ct || EOF == ct ) );
 }
 
 
@@ -484,7 +484,7 @@ PixPath::PixPath( const std::string& coords, int )
 
     if ( ! iss.eof() )
     {
-        KJB_THROW_2(Serialization_error, "Error parsing SVG-style input");
+        IVI_THROW_2(Serialization_error, "Error parsing SVG-style input");
     }
 }
 
@@ -494,7 +494,7 @@ PixPoint PixPath::boundbox_min_min() const
 {
     if ( 0 == size() )
     {
-        KJB_THROW_2(Illegal_argument, "Too small for bounding box min" );
+        IVI_THROW_2(Illegal_argument, "Too small for bounding box min" );
     }
 
     PixPoint minmin = front();
@@ -511,7 +511,7 @@ PixPoint PixPath::boundbox_max_max() const
 {
     if ( 0 == size() )
     {
-        KJB_THROW_2(Illegal_argument, "Too small for bounding box max" );
+        IVI_THROW_2(Illegal_argument, "Too small for bounding box max" );
     }
 
     PixPoint maxmax = front();
@@ -550,7 +550,7 @@ PixPoint PixPath::nearest( const PixPoint& pp, const_iterator* qq ) const
 {
     if ( 0 == size() )
     {
-        KJB_THROW_2(Illegal_argument, "Too small for nearest" );
+        IVI_THROW_2(Illegal_argument, "Too small for nearest" );
     }
 
     /* linear scan for closest point
@@ -576,13 +576,13 @@ PixPoint PixPath::nearest( const PixPoint& pp, const_iterator* qq ) const
 
 
 /// @brief Return the PixPath member closest to the given real xy coordinates
-PixPoint PixPath::nearest( const kjb::Vector2& xy, const_iterator* qq ) const
+PixPoint PixPath::nearest( const ivi::Vector2& xy, const_iterator* qq ) const
 {
     typedef Vector::Value_type DPVT;
 
     if ( 0 == size() )
     {
-        KJB_THROW_2(Illegal_argument, "Too small for nearest" );
+        IVI_THROW_2(Illegal_argument, "Too small for nearest" );
     }
 
     /* linear scan for closest point
@@ -592,7 +592,7 @@ PixPoint PixPath::nearest( const kjb::Vector2& xy, const_iterator* qq ) const
     DPVT near_d2 = std::numeric_limits< DPVT >::max();
     for (const_iterator new_q = my_vpp.begin(); new_q != my_vpp.end(); ++new_q)
     {
-        const kjb::Vector2 dif( xy - to_vector2(*new_q) );
+        const ivi::Vector2 dif( xy - to_vector2(*new_q) );
         DPVT new_d2 = dif.magnitude_squared();
         if ( new_d2 < near_d2 )
         {
@@ -600,7 +600,7 @@ PixPoint PixPath::nearest( const kjb::Vector2& xy, const_iterator* qq ) const
             near_d2 = new_d2;
         }
     }
-    KJB( ASSERT( near_q != end() ) );
+    IVI( ASSERT( near_q != end() ) );
     if ( qq )
     {
         *qq = near_q;
@@ -636,7 +636,7 @@ PixPath& PixPath::ow_reverse()
  * The fit is effected using the Moore-Penrose pseudoinverse, which assumes
  * Gaussian errors.  This can spell trouble if your errors are not Gaussian.
  *
- * @return kjb_c::ERROR or NO_ERROR indicating outcome of computation.
+ * @return ivi_c::ERROR or NO_ERROR indicating outcome of computation.
  *
  * @throws Too_small if this path has fewer than 4 points (which means the
  *          system is underdetermined).
@@ -649,13 +649,13 @@ int PixPath::cubic_fit(
 {
     if ( size() < 4 )
     {
-        KJB_THROW_2(Illegal_argument, "Too small for cubic fit" );
+        IVI_THROW_2(Illegal_argument, "Too small for cubic fit" );
     }
 
     if ( 00 == x || 00 == y || ref < 0 || int( size() ) <= ref )
     {
-        kjb_c::set_error( "Empty input in cubic_fit()" );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Empty input in cubic_fit()" );
+        return ivi_c::ERROR;
     }
 
     const size_t DIMS = 2;      // a PixPoint is a two-dimensional entity
@@ -665,7 +665,7 @@ int PixPath::cubic_fit(
     /*
      * Build a matrix of target values.
      */
-    kjb::Matrix xy( size(), DIMS );
+    ivi::Matrix xy( size(), DIMS );
     for( size_t rrr = 0; rrr < size(); ++rrr )
     {
         xy( rrr, 0 ) = my_vpp[ rrr ].x;
@@ -676,7 +676,7 @@ int PixPath::cubic_fit(
     /*
      * Build a possibly overdetermined Vandermonde matrix to fit a cubic poly
      */
-    kjb::Matrix van( size(), WIDTH, 1.0 );
+    ivi::Matrix van( size(), WIDTH, 1.0 );
 
     /*
      * Row 0 is a special case; set it to [1 0 0 0].  The 1 is already there.
@@ -697,15 +697,15 @@ int PixPath::cubic_fit(
             van( rrr, ccc ) = position * van( rrr, ccc-1 );
     }
 
-    kjb::Matrix mpi_van = van.get_pseudoinverse();
+    ivi::Matrix mpi_van = van.get_pseudoinverse();
 
     /*
      * Compute the "best" coefficients, assuming our errors are Gaussian (ha).
      */
-    kjb::Matrix fit = mpi_van * xy;
+    ivi::Matrix fit = mpi_van * xy;
 
 #else
-    kjb::Vector t( size() );
+    ivi::Vector t( size() );
     t[0] = 0;
     for( size_t iii = 1; iii < size(); ++iii )
     {
@@ -723,14 +723,14 @@ int PixPath::cubic_fit(
     }
 
     double err;
-    kjb_c::Matrix* c_mp = 00;
-    KJB( ERE( fit_parametric_cubic_known_time(
+    ivi_c::Matrix* c_mp = 00;
+    IVI( ERE( fit_parametric_cubic_known_time(
                     t.get_c_vector(), xy.get_c_matrix(), 00, &c_mp, &err ) ) );
-    kjb::Matrix fit( c_mp );
+    ivi::Matrix fit( c_mp );
 #endif
 
-    KJB( ASSERT( fit.get_num_rows() == WIDTH ) );
-    KJB( ASSERT( fit.get_num_cols() == int( DIMS ) ) );
+    IVI( ASSERT( fit.get_num_rows() == WIDTH ) );
+    IVI( ASSERT( fit.get_num_cols() == int( DIMS ) ) );
 
     /*
      * Stuff the coefficients into the output vectors.
@@ -744,7 +744,7 @@ int PixPath::cubic_fit(
         y -> at( rrr ) = fit( rrr, 1 );
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -799,7 +799,7 @@ PixPath PixPath::interpolate( bool forbid_self_intersection ) const
 
     if ( forbid_self_intersection && self_intersect() )
     {
-        KJB_THROW_2(Illegal_argument, "Self intersection in interpolate" );
+        IVI_THROW_2(Illegal_argument, "Self intersection in interpolate" );
     }
 
     PixPath fatter;
@@ -812,7 +812,7 @@ PixPath PixPath::interpolate( bool forbid_self_intersection ) const
     // insert the non-first points, and we can always look backwards
     for ( const_iterator q = begin() + 1; q != end(); ++q )
     {
-        KJB( ASSERT(    originals.size()==fatter.size()
+        IVI( ASSERT(    originals.size()==fatter.size()
                     ||  !forbid_self_intersection       ) );
         if ( ( q - 1 ) -> adjacent8( *q ) )
         {
@@ -831,13 +831,13 @@ PixPath PixPath::interpolate( bool forbid_self_intersection ) const
             originals.push_back( true );
         }
     }
-    KJB( ASSERT( fatter.connected8() ) );
+    IVI( ASSERT( fatter.connected8() ) );
 
     // If output must not have self intersection, clean up the mess (ick)
     if ( forbid_self_intersection && fatter.self_intersect() )
     {
         PixPath fat2( /*reserve*/ fatter.size() );
-        KJB( ASSERT( originals.size() == fatter.size() ) );
+        IVI( ASSERT( originals.size() == fatter.size() ) );
         const_iterator pfat1 = fatter.begin();
         std::vector< bool >::const_iterator por = originals.begin();
         for( ; por != originals.end(); ++por, ++pfat1 )
@@ -851,11 +851,11 @@ PixPath PixPath::interpolate( bool forbid_self_intersection ) const
                 fat2.push_back( *pfat1 );
             }
         }
-        KJB( ASSERT( ! fat2.self_intersect() ) );
+        IVI( ASSERT( ! fat2.self_intersect() ) );
         fatter.swap( fat2 );
     }
 
-    KJB( ASSERT( fatter.has_subsequence( *this ) ) );
+    IVI( ASSERT( fatter.has_subsequence( *this ) ) );
     return fatter;
 }
 
@@ -926,8 +926,8 @@ PixPath PixPath::cull_redundant_points() const
     thinner.push_back( *q_past );
     for( ; q_future != end() ; ++q_future )
     {
-        KJB( ASSERT( q_past != end() ) );
-        KJB( ASSERT( q_present != end() ) );
+        IVI( ASSERT( q_past != end() ) );
+        IVI( ASSERT( q_present != end() ) );
 
         PixPath fat( bresenham_line( *q_past, *q_present ) );
         ETX( fat.append_no_overlap( bresenham_line( *q_present, *q_future )) );
@@ -939,9 +939,9 @@ PixPath PixPath::cull_redundant_points() const
         }
         q_present = q_future;
     }
-    KJB( ASSERT( back() != thinner.back() ) );
+    IVI( ASSERT( back() != thinner.back() ) );
     thinner.push_back( back() );
-    KJB( ASSERT( thinner.size() <= size() ) );
+    IVI( ASSERT( thinner.size() <= size() ) );
 
     /* tail recursion */
     return thinner.size() == size() ? *this : thinner.cull_redundant_points();
@@ -995,7 +995,7 @@ float PixPath::hausdorff_dist_1side( const PixPath& other ) const
     {
         hd2 = std::max( hd2, nearest( *q ).dist2( *q ) );
     }
-    KJB( ASSERT( hd2 != IMPOSSIBLE ) );
+    IVI( ASSERT( hd2 != IMPOSSIBLE ) );
     return sqrt( hd2 );
 }
 
@@ -1005,11 +1005,11 @@ float PixPath::closest_adjacent_pair( const_iterator* pa ) const
 {
     if ( size() < 2 )
     {
-        KJB_THROW_2(Illegal_argument, "Too small to have a pair" );
+        IVI_THROW_2(Illegal_argument, "Too small to have a pair" );
     }
 
     const_iterator qmin = begin();
-    KJB( ASSERT( qmin + 1 != end() ) );
+    IVI( ASSERT( qmin + 1 != end() ) );
     float d2min = std::numeric_limits< float >::max();
     for( const_iterator qc = begin(); qc + 1 != end(); ++qc )
     {
@@ -1026,7 +1026,7 @@ float PixPath::closest_adjacent_pair( const_iterator* pa ) const
         *pa = qmin;
     }
 
-    KJB( ASSERT( qmin != end() && qmin + 1 != end() ) );
+    IVI( ASSERT( qmin != end() && qmin + 1 != end() ) );
     return qmin -> dist( *( qmin + 1 ) );
 }
 
@@ -1104,11 +1104,11 @@ double PixPath::angle_at( unsigned index ) const
 
     if ( PixPoint( 0, 0 ) == p || PixPoint( 0, 0 ) == q )
     {
-        KJB_THROW_2(Illegal_argument, "Degenerate triangle" );
+        IVI_THROW_2(Illegal_argument, "Degenerate triangle" );
     }
 
-    const kjb::Vector2 dp( to_vector2(p) ), dq( to_vector2(q) );
-    double cosine = kjb::dot(dp, dq) / dp.magnitude() / dq.magnitude();
+    const ivi::Vector2 dp( to_vector2(p) ), dq( to_vector2(q) );
+    double cosine = ivi::dot(dp, dq) / dp.magnitude() / dq.magnitude();
 
     // The cosine value must be clamped -- empirically proved to be necessary
     return acos( std::min( std::max( cosine, -1.0 ), +1.0 ) );
@@ -1300,7 +1300,7 @@ unsigned PixPath::longest_segment( float* length ) const
 {
     if ( size() < 2 )
     {
-        KJB_THROW_2(Illegal_argument, "Too small, no segments" );
+        IVI_THROW_2(Illegal_argument, "Too small, no segments" );
     }
     const_iterator argmax = end();
     float max2 = -1.0f;
@@ -1313,7 +1313,7 @@ unsigned PixPath::longest_segment( float* length ) const
             max2 = d2;
         }
     }
-    KJB( ASSERT( argmax + 1 < end() ) );
+    IVI( ASSERT( argmax + 1 < end() ) );
 
     if ( length )
     {
@@ -1347,7 +1347,7 @@ PixPath::PixPath( const PixPoint& pa, const PixPoint& pb, size_t sz )
     my_vpp[ sz - 1 ] = pb;
     ppmap[ pa ] = 1;
     ppmap[ pb ] = 1;
-    const kjb::Vector2 da( to_vector2(pa) ), delta( to_vector2(pb - pa) );
+    const ivi::Vector2 da( to_vector2(pa) ), delta( to_vector2(pb - pa) );
     const_iterator ctor_end = my_vpp.end() - 1;
     size_t ctr = 0;
     double normf( 1.0 / ( sz - 1 ) );
@@ -1360,21 +1360,21 @@ PixPath::PixPath( const PixPoint& pa, const PixPoint& pb, size_t sz )
 }
 
 
-kjb::Vector2 PixPath::centroid() const
+ivi::Vector2 PixPath::centroid() const
 {
     if ( 0 == size() )
     {
-        KJB_THROW_2(Illegal_argument, "Too small, no centroid" );
+        IVI_THROW_2(Illegal_argument, "Too small, no centroid" );
     }
     // compute sum of points or throw if one of the points is bad
-    kjb::Vector2 centr(0, 0);
+    ivi::Vector2 centr(0, 0);
     for( const_iterator ppp = begin(); ppp != end(); ++ppp )
     {
         if ( ppp -> is_unused() )
         {
-            KJB_THROW_2( PixPoint::Unused, "bad input" );
+            IVI_THROW_2( PixPoint::Unused, "bad input" );
         }
-        centr += kjb::Vector2(ppp->x, ppp->y);
+        centr += ivi::Vector2(ppp->x, ppp->y);
     }
     return centr / size();
 }
@@ -1384,7 +1384,7 @@ unsigned PixPath::member_near_centroid() const
 {
     const_iterator nearp = end();
     nearest( centroid(), & nearp );
-    KJB( ASSERT( nearp != end() ) );
+    IVI( ASSERT( nearp != end() ) );
     return nearp - begin();
 }
 
@@ -1464,8 +1464,8 @@ PixPath PixPath::merge_redundant_slopes() const
 
     for( ; q_future != end() ; q_present = q_future++ )
     {
-        KJB( ASSERT( q_past != end() ) );
-        KJB( ASSERT( q_present != end() ) );
+        IVI( ASSERT( q_past != end() ) );
+        IVI( ASSERT( q_present != end() ) );
         PixPoint dfuture = *q_future - *q_present;
 
         // This test seems confusing:  see the above Doxygen/HTML chart.
@@ -1481,7 +1481,7 @@ PixPath PixPath::merge_redundant_slopes() const
             dpresent = *q_future - *q_past; // eliminate all trace of q_present
         }
     }
-    KJB( ASSERT( back() != thinner.back() ) );
+    IVI( ASSERT( back() != thinner.back() ) );
     thinner.push_back( back() );
     return thinner;
 }
@@ -1533,7 +1533,7 @@ float PixPath::closest_pair( const_iterator* pa, const_iterator* pb ) const
     }
     if ( x_array.size() < 2 )
     {
-        KJB_THROW_2(Illegal_argument, "Too small, no pair" );
+        IVI_THROW_2(Illegal_argument, "Too small, no pair" );
     }
     std::sort(x_array.begin(), x_array.end(), const_iterator_less_x);
 
@@ -1558,7 +1558,7 @@ float PixPath::closest_pair( const_iterator* pa, const_iterator* pb ) const
     for ( size_t iii = 1; iii < x_array.size(); ++iii ) // don't start at 0
     {
         // Invariant 1:  band holds at least 1 entry, corresponding to *(qq-1).
-        KJB( ASSERT( ! band.empty() ) );
+        IVI( ASSERT( ! band.empty() ) );
         /*
          * Invariant 2:  qq is the iterator of the new point to be added to
          * band.  It might be half of the pair we seek!  We will check.
@@ -1670,7 +1670,7 @@ void PixPath::pop_back()
 {
     if ( 0 == size() )
     {
-        KJB_THROW_2(Illegal_argument, "Tried to pop from empty PixPath" );
+        IVI_THROW_2(Illegal_argument, "Tried to pop from empty PixPath" );
     }
     back_pop_and_validate( &my_vpp, &ppmap );
 }
@@ -1702,5 +1702,5 @@ std::string svg_path(const PixPath& path)
 
 
 } // end namespace qd
-} // end namespace kjb
+} // end namespace ivi
 

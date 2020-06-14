@@ -6,21 +6,21 @@
 #include <i_cpp/i_image.h>
 #include <i/i_draw.h>
 
-namespace kjb
+namespace ivi
 {
 
 class Sphere{
 public:
     double GetRadius() const;
-    const kjb::Vector & GetCenter() const;
+    const ivi::Vector & GetCenter() const;
     //Contructor for radius & center
-    Sphere(kjb::Vector & center, double radius);
+    Sphere(ivi::Vector & center, double radius);
     Sphere();
     void drawSphere(void);
     static void init();
 private:
     double radius;
-    kjb::Vector center;
+    ivi::Vector center;
 };
 
 }

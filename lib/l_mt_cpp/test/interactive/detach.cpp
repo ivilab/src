@@ -4,7 +4,7 @@
  * @brief test RAII class for wrapped pthread attribute
  */
 /*
- * $Id: detach.cpp 17430 2014-09-01 18:43:22Z predoehl $
+ * $Id: detach.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_rand.h>
@@ -21,12 +21,12 @@ namespace
 
 void* chatter(void* v)
 {
-    KJB(NRN(v));
+    IVI(NRN(v));
     const char* m = (const char*) v;
     for(int i=100; i--; )
     {
-        const int s = 1+30*kjb_c::kjb_rand();
-        kjb_c::kjb_mt_fprintf(stdout, "%d %s %d\n", i, m, s);
+        const int s = 1+30*ivi_c::ivi_rand();
+        ivi_c::ivi_mt_fprintf(stdout, "%d %s %d\n", i, m, s);
     }
     return 0; // return value is meaningless because thread is detached
 }
@@ -35,15 +35,15 @@ void* chatter(void* v)
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_pthread_t tid;
-    kjb::Pthread_attr a;
+    ivi_c::ivi_pthread_t tid;
+    ivi::Pthread_attr a;
     a.set_detached();
-    kjb_c::kjb_disable_paging();
-    kjb_c::kjb_pthread_create(&tid, a, chatter, (void*) "lol");
-    kjb_c::kjb_pthread_create(&tid, a, chatter, (void*) "yolo");
-    kjb_c::kjb_mt_fprintf(stdout, "Parent thread is exiting soon, "
+    ivi_c::ivi_disable_paging();
+    ivi_c::ivi_pthread_create(&tid, a, chatter, (void*) "lol");
+    ivi_c::ivi_pthread_create(&tid, a, chatter, (void*) "yolo");
+    ivi_c::ivi_mt_fprintf(stdout, "Parent thread is exiting soon, "
                             "you kids keep the noise down.\n");
-    kjb_c::nap(500); // shutdown in .5 seconds
+    ivi_c::nap(500); // shutdown in .5 seconds
 
     // No need to join because chatter threads are detached.
     // They will be snuffed out now, whether or not they are finished.

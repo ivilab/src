@@ -64,7 +64,7 @@ static dynamic shared :
 # Makefile" will report Makefile is up to date, even if it is not. 
 #
 Makefile : 
-	@$(KJB_ECHO) "Dummy rule for Makefile." 
+	@$(IVI_ECHO) "Dummy rule for Makefile." 
 
 
 build : FORCE
@@ -99,11 +99,11 @@ build : FORCE
 
 
 .INIT : 
-	@$(KJB_ECHO) "Starting in Makefile." 
+	@$(IVI_ECHO) "Starting in Makefile." 
 
 
 .DONE :
-	@$(KJB_ECHO) "Done in Makefile." 
+	@$(IVI_ECHO) "Done in Makefile." 
 
 
 #

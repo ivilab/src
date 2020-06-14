@@ -1,4 +1,4 @@
-/* $Id: l_cloneable.h 9127 2011-04-01 02:43:50Z predoehl $ */
+/* $Id: l_cloneable.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,11 +30,11 @@
  */
 
 
-#ifndef KJB_CLONEABLE_H
-#define KJB_CLONEABLE_H
+#ifndef IVI_CLONEABLE_H
+#define IVI_CLONEABLE_H
 
 
-namespace kjb {
+namespace ivi {
 
 
 /**

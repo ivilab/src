@@ -1,5 +1,5 @@
 /*
- * $Id: test_md5.cpp 8966 2011-03-18 23:23:15Z predoehl $
+ * $Id: test_md5.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_incl.h>
@@ -531,7 +531,7 @@ bool test_string( const char* SPEECH, const unsigned* ar, const std::string& sum
 {
     int speechsz = strlen( SPEECH );
 
-    kjb::MD5 d2;
+    ivi::MD5 d2;
 
     if ( d2.is_finalized() )
         return FAIL( "d2 is unused but says it is finalized" ); // wrong answer
@@ -544,11 +544,11 @@ bool test_string( const char* SPEECH, const unsigned* ar, const std::string& sum
     std::ostringstream os;
     os.setf( std::ios_base::hex, std::ios_base::basefield );
 
-    const kjb::MD5::Digest::const_iterator PE = d2.end();
-    for( kjb::MD5::Digest::const_iterator p = d2.begin(); p != PE; )
+    const ivi::MD5::Digest::const_iterator PE = d2.end();
+    for( ivi::MD5::Digest::const_iterator p = d2.begin(); p != PE; )
         os << std::setw( 2 ) << std::setfill( '0' ) << unsigned( *p++ );
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
         std::cout << "Reference sum: " << sum
             << "\nComputed sum:  " << os.str() << '\n'
             << ( sum == os.str() ? "success:  they match" : "FAIL: MISMATCH" )
@@ -561,7 +561,7 @@ bool test_string( const char* SPEECH, const unsigned* ar, const std::string& sum
         return FAIL( "d2 has been read but says it is not finalized" );
 
     // Test the iterator interface
-    kjb::MD5 d3;
+    ivi::MD5 d3;
     d3.write( SPEECH, SPEECH + speechsz );
     if ( ! std::equal( d2.begin(), d2.end(), d3.begin() ) )
         return FAIL( "d3 does not match d2" );
@@ -570,7 +570,7 @@ bool test_string( const char* SPEECH, const unsigned* ar, const std::string& sum
 
     // Test it again
     const std::string cnu7( SPEECH );
-    kjb::MD5 d4;
+    ivi::MD5 d4;
     d4.write( cnu7.begin(), cnu7.end() );
     if ( ! std::equal( d2.begin(), d2.end(), d4.begin() ) )
         return FAIL( "d4 does not match d2" );
@@ -579,7 +579,7 @@ bool test_string( const char* SPEECH, const unsigned* ar, const std::string& sum
      * Dangerously architecture-dependent test (works on v01 though);
      * should work on all common little-endian archtectures of the 2010 era.
      */
-    kjb::MD5 d5;
+    ivi::MD5 d5;
     size_t sz = 0;
     while( ar[ sz ] )
         ++sz;

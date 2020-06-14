@@ -25,7 +25,7 @@
 // This shouldn't affect existing code that includes this header.
 // -- Kyle  November 23 2014 
 
-namespace kjb
+namespace ivi
 {
     class Segment_pair;
 }

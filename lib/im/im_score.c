@@ -1,5 +1,5 @@
 
-/* $Id: im_score.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: im_score.c 25499 2020-06-14 13:26:04Z kobus $ */
 
  
 #ifndef __C2MAN__
@@ -175,7 +175,7 @@
 extern "C" {
 #endif
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 #include "im/im_private.h"
 
@@ -5296,12 +5296,12 @@ static Image* XDisplayImage
 
   /* Kobus */
   /*
-  kjb_sprintf(score_str, sizeof(score_str),
+  ivi_sprintf(score_str, sizeof(score_str),
                "%s   /   %d", fs_prefix,
                fs_current_score);
   */
 
-  kjb_sprintf(score_str, sizeof(score_str),
+  ivi_sprintf(score_str, sizeof(score_str),
                "%d", fs_current_score);
   XMapWindow(display,windows->info.id);
   XInfoWidget(display,windows,score_str);
@@ -15495,12 +15495,12 @@ static int im_do_patch_output
             r_ave, g_ave, b_ave, r_stdev, g_stdev, b_stdev,
             xmin, ymin, xmax - xmin + 1, ymax - ymin +1);
     }
-    kjb_flush();
+    ivi_flush();
 
     return NO_ERROR;
 }
 
-#endif  /* #ifdef KJB_HAVE_X11 */
+#endif  /* #ifdef IVI_HAVE_X11 */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -15510,7 +15510,7 @@ static int im_do_patch_output
  *        enhanced version of ImageMagick display
  */
 
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_X11
 
 /* Kobus */
 int im_score_main(int argc, char** argv)
@@ -15673,13 +15673,13 @@ int im_score_main(int argc, char** argv)
 
         if (result == EOF)
         {
-            kjb_exit(EXIT_SUCCESS);
+            ivi_exit(EXIT_SUCCESS);
         }
 
         if (! BUFF_GET_TOKEN_OK(&line_pos, token))
         {
             p_stderr("Input file error.\n");
-            kjb_exit(EXIT_FAILURE);
+            ivi_exit(EXIT_FAILURE);
         }
 
         BUFF_CPY(fs_prefix, token);
@@ -15713,7 +15713,7 @@ int im_score_main(int argc, char** argv)
             {
                 p_stderr("Unable to read an image from %s.\n",
                          image_info.filename);
-                kjb_exit(EXIT_FAILURE);
+                ivi_exit(EXIT_FAILURE);
             }
 
             XDisplayImage(display,&resource_info,argv,argc,&image,&state);

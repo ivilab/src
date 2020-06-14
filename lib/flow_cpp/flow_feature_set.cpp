@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flow_feature_set.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: flow_feature_set.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <flow_cpp/flow_feature_set.h>
 #include <l_cpp/l_exception.h>
@@ -35,9 +35,9 @@
 #include <boost/foreach.hpp>
 #include <algorithm>
 
-using namespace kjb;
+using namespace ivi;
 
-Flow_feature_set kjb::read_flow_features
+Flow_feature_set ivi::read_flow_features
 (
     const std::string& fname 
 )
@@ -47,7 +47,7 @@ Flow_feature_set kjb::read_flow_features
     std::string line;
     if(ifs.fail())
     {
-        KJB_THROW_3(IO_error, "Can't open file: %s", (fname.c_str()));
+        IVI_THROW_3(IO_error, "Can't open file: %s", (fname.c_str()));
     }
    
     Flow_feature_set frame_flow;
@@ -76,7 +76,7 @@ Flow_feature_set kjb::read_flow_features
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Feature_pair> kjb::look_up_features
+std::vector<Feature_pair> ivi::look_up_features
 (
     const Flow_feature_set& of_set,
     const Axis_aligned_rectangle_2d& box
@@ -86,7 +86,7 @@ std::vector<Feature_pair> kjb::look_up_features
 
     //if(of_set.empty())
     //{
-    //    KJB_THROW_2(Runtime_error, "The optical flow is not precomputed.");
+    //    IVI_THROW_2(Runtime_error, "The optical flow is not precomputed.");
     //}
 
     const Vector& center = box.get_center();
@@ -123,7 +123,7 @@ std::vector<Feature_pair> kjb::look_up_features
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Feature_pair> kjb::look_up_bg_features
+std::vector<Feature_pair> ivi::look_up_bg_features
 (
     const Flow_feature_set& of_set,
     const std::vector<Axis_aligned_rectangle_2d>& model_boxes
@@ -133,7 +133,7 @@ std::vector<Feature_pair> kjb::look_up_bg_features
 
     //if(of_set.empty())
     //{
-    //    KJB_THROW_2(Runtime_error, "The optical flow is not precomputed.");
+    //    IVI_THROW_2(Runtime_error, "The optical flow is not precomputed.");
     //}
 
     Flow_feature_set::const_iterator flow_iter;
@@ -168,7 +168,7 @@ std::vector<Feature_pair> kjb::look_up_bg_features
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::valid_flow
+std::vector<Vector> ivi::valid_flow
 (
     const std::vector<Feature_pair>& feature_pairs,
     double percentile
@@ -203,7 +203,7 @@ std::vector<Vector> kjb::valid_flow
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<Vector> kjb::valid_flow
+std::vector<Vector> ivi::valid_flow
 (
     const std::vector<Feature_pair>& feature_pairs,
     const std::vector<size_t>& angle_hist
@@ -237,7 +237,7 @@ std::vector<Vector> kjb::valid_flow
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<size_t> kjb::angle_histogram
+std::vector<size_t> ivi::angle_histogram
 (
     const std::vector<Feature_pair>& feature_pairs,
     size_t num_bins
@@ -256,7 +256,7 @@ std::vector<size_t> kjb::angle_histogram
         double angle = atan2(flow[1], flow[0]) * 180.0 / M_PI;
         size_t index = std::floor((angle - min_angle) / bin_size);
         if(index == num_bins) index = num_bins - 1; 
-        KJB(ASSERT(index < num_bins));
+        IVI(ASSERT(index < num_bins));
         hist[index]++; 
     }
 
@@ -265,7 +265,7 @@ std::vector<size_t> kjb::angle_histogram
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::update_average_velocity
+Vector ivi::update_average_velocity
 (
     const Flow_feature_set& of_set,
     const Axis_aligned_rectangle_2d& old_box,
@@ -327,7 +327,7 @@ Vector kjb::update_average_velocity
             break;
                     
         default:
-            KJB_THROW_2(Illegal_argument, "Unknown moving direction");
+            IVI_THROW_2(Illegal_argument, "Unknown moving direction");
             break;
     }
 
@@ -343,7 +343,7 @@ Vector kjb::update_average_velocity
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::update_average_velocity
+Vector ivi::update_average_velocity
 (
     const Flow_feature_set& of_set,
     const Axis_aligned_rectangle_2d& old_box,
@@ -594,7 +594,7 @@ Vector kjb::update_average_velocity
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::lookup_feature
+Vector ivi::lookup_feature
 (
     const Flow_feature_set& of_set,
     size_t x,
@@ -621,7 +621,7 @@ Vector kjb::lookup_feature
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-/*Vector kjb::total_flow
+/*Vector ivi::total_flow
 (
     const Flow_feature_set& of_set,
     const Axis_aligned_rectangle_2d& box,
@@ -696,7 +696,7 @@ Vector kjb::lookup_feature
 }
 */
 
-Vector kjb::total_flow
+Vector ivi::total_flow
 (
     const Flow_feature_set& of_set,
     const Axis_aligned_rectangle_2d& box

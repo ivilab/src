@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: gp_base.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gp_base.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef GP_BASE_H_INCLUDED
 #define GP_BASE_H_INCLUDED
@@ -29,8 +29,10 @@
 #include <vector>
 #include <algorithm>
 #include <boost/bind.hpp>
+#include <boost/bind/placeholders.hpp>
 
-namespace kjb {
+namespace bph = boost::placeholders;
+namespace ivi {
 namespace gp {
 
 // useful typedef
@@ -52,7 +54,7 @@ Inputs make_inputs(double s, double e, double step = 1)
             ins.end(),
             boost::bind(
                 &Vector::set,
-                _1,
+                bph::_1,
                 boost::bind(Increase_by<double>(s, step))));
 
     ASSERT(ins.front()[0] <= s);
@@ -131,7 +133,7 @@ Matrix apply_cf_noise(const Covariance& cf, InIt first, InIt last, double ns)
     return K;
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_BASE_H_INCLUDED */
 

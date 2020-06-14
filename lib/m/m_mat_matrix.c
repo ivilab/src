@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_matrix.c 22184 2018-07-16 00:08:22Z kobus $ */
+/* $Id: m_mat_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -198,7 +198,7 @@ void free_matrix_matrix (Matrix_matrix* mmp)
         free_2D_mp_array_and_matrices(mmp->elements, rows, cols);
         }
 
-        kjb_free(mmp);
+        ivi_free(mmp);
     }
 
 }
@@ -316,7 +316,7 @@ Int_matrix_matrix* create_int_matrix_matrix_with_submatrices
  * debug_allocate_2D_int_mp_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_int_mp_array should be used to dispose of the storage once
@@ -370,14 +370,14 @@ Int_matrix*** debug_allocate_2D_int_mp_array(int num_rows, int num_cols,
         return NULL;
     }
     num_bytes = num_rows * sizeof(Int_matrix**);
-    NRN(array = (Int_matrix ***)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (Int_matrix ***)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     num_bytes = num_rows * num_cols * sizeof(Int_matrix*);
-    col_ptr = (Int_matrix**)debug_kjb_malloc(num_bytes, file_name, line_number);
+    col_ptr = (Int_matrix**)debug_ivi_malloc(num_bytes, file_name, line_number);
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -429,7 +429,7 @@ Int_matrix*** allocate_2D_int_mp_array(int num_rows, int num_cols)
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -476,8 +476,8 @@ void free_2D_int_mp_array(Int_matrix*** array)
 
     if (array == NULL) return;
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -516,8 +516,8 @@ void free_2D_int_mp_array_and_matrices
         }
     }
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -559,7 +559,7 @@ void free_int_matrix_matrix (Int_matrix_matrix* immp)
             */
             free_2D_int_mp_array_and_matrices( immp->elements, rows, cols );
         }
-        kjb_free( immp );
+        ivi_free( immp );
     }
 }
 

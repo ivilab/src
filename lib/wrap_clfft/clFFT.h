@@ -49,7 +49,7 @@
 #ifndef __CLFFT_H
 #define __CLFFT_H
 
-#ifdef KJB_HAVE_OPENCL
+#ifdef IVI_HAVE_OPENCL
 #include <gpu_cpp/gpu_opencl.h>
 
 #ifdef __cplusplus
@@ -129,4 +129,4 @@ void clFFT_DumpPlan( clFFT_Plan plan, FILE *file);
 #endif
 
 #endif
-#endif /* KJB_HAVE_OPENCL */
+#endif /* IVI_HAVE_OPENCL */

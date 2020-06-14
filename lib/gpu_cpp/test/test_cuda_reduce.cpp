@@ -41,10 +41,10 @@ float cpu_reduce(const float *data, int size)
 
 int main(int argc, char* argv[])
 {
-    using namespace kjb::gpu;
-    using namespace kjb;
+    using namespace ivi::gpu;
+    using namespace ivi;
     using namespace std;
-    using kjb_c::kjb_rand;
+    using ivi_c::ivi_rand;
 
     int time_factor = 1;
     if(argc >= 2)
@@ -56,17 +56,17 @@ int main(int argc, char* argv[])
     int MAX_SIZE = 30000;
     int MIN_SIZE = 30000;
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
     Cuda::set_jit_log_buffer_size(0); // no jit output
     Cuda_context ctx(Cuda::get_device(0));
     Cuda_reduce_module reduce_module;
 
-    int N = (int)(MIN_SIZE + (kjb_rand() * (MAX_SIZE - MIN_SIZE)));
+    int N = (int)(MIN_SIZE + (ivi_rand() * (MAX_SIZE - MIN_SIZE)));
     float* array = new float[N];
 
     for(int i = 0; i < N; i++)
     {
-        array[i] = kjb_c::kjb_rand();
+        array[i] = ivi_c::ivi_rand();
     }
 
     for(int i = 0; i < time_factor * NUM_ITERATIONS; i++)

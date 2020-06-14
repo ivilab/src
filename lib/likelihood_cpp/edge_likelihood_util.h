@@ -1,4 +1,4 @@
-/* $Id: edge_likelihood_util.h 14948 2013-07-18 16:00:33Z delpero $ */
+/* $Id: edge_likelihood_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -50,8 +50,8 @@
    |  Author: Luca Del Pero
  * =========================================================================== */
 
-#ifndef KJB_EDGE_LIKELIHOOD_UTIL_H_
-#define KJB_EDGE_LIKELIHOOD_UTIL_H_
+#ifndef IVI_EDGE_LIKELIHOOD_UTIL_H_
+#define IVI_EDGE_LIKELIHOOD_UTIL_H_
 
 #include <edge_cpp/line_segment.h>
 #include <edge_cpp/edge.h>
@@ -62,7 +62,7 @@
 /**
  * @file edge_likelihood_util.h
  */
-namespace kjb {
+namespace ivi {
 
     /**
      * @brief   Prepares a model map from a polymesh.
@@ -169,7 +169,7 @@ namespace kjb {
      */
     void prepare_solid_model_map(Int_matrix & model_map, const Polymesh & p);
 
-    void draw_model_edges(kjb::Image & img, const std::vector<Model_edge> & edges);
+    void draw_model_edges(ivi::Image & img, const std::vector<Model_edge> & edges);
 
     /**
      * @brief Prepares a set of rendered model edges from the model_map.
@@ -187,5 +187,5 @@ namespace kjb {
     };
 }
 
-#endif /* KJB_EDGE_LIKELIHOOD_UTIL_H_ */
+#endif /* IVI_EDGE_LIKELIHOOD_UTIL_H_ */
 

@@ -25,8 +25,8 @@
 
 #include "l_cpp/l_exception.h"
 
-using namespace kjb;
-using namespace kjb::bbb;
+using namespace ivi;
+using namespace ivi::bbb;
 
 void Association::check_consistent() const
 {

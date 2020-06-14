@@ -1,4 +1,4 @@
-/* $Id: psi_cylinder_world.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_cylinder_world.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -35,7 +35,7 @@
 #include <istream>
 #include <map>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -122,11 +122,11 @@ Entity_state::Entity_state() :
 
 void Entity_state::render() const
 {
-    using namespace kjb::opengl;
-    using kjb::Vector;
+    using namespace ivi::opengl;
+    using ivi::Vector;
 
     static const bool ENABLE_LIGHTING = 0;
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glPushMatrix();
     glTranslated(pos_[0], 0.0, pos_[1]);
 //    glRotated(heading_, 0.0, 1.0, 0.0);
@@ -158,7 +158,7 @@ void Entity_state::render() const
     glRotated(-90, 1.0, 0.0, 0.0);
 
     // radius 1, height 1
-    ::kjb::opengl::Cylinder c(width_/2.0, width_/2.0, height_);
+    ::ivi::opengl::Cylinder c(width_/2.0, width_/2.0, height_);
     c.wire_render();
 
     if(ENABLE_LIGHTING)
@@ -186,7 +186,7 @@ bool Simple_simulator::simulate(
     {
         if(start_state[type].size() != entity_actions[type].size())
         {
-            KJB_THROW_2(kjb::Illegal_argument, "start_state and action count do not match.");
+            IVI_THROW_2(ivi::Illegal_argument, "start_state and action count do not match.");
         }
     }
 
@@ -221,7 +221,7 @@ bool Simple_simulator::simulate(
         for(size_t e = 0; e < num_entites; e++)
         {
             Entity_state entity;
-            entity.set_position(kjb::Vector(start_state[type][e].x, start_state[type][e].y));
+            entity.set_position(ivi::Vector(start_state[type][e].x, start_state[type][e].y));
             entity.set_heading(start_state[type][e].theta);
 
             entity_states_[type][e][0] = entity;
@@ -548,13 +548,13 @@ void Simple_simulator::execute_follow_action
     size_t num_types = entity_states_.size();
     if(parent_type > num_types)
     {
-        KJB_THROW_2(kjb::Runtime_error, "Parent type is out of bound!");
+        IVI_THROW_2(ivi::Runtime_error, "Parent type is out of bound!");
     }
 
     size_t num_entities = entity_states_[parent_type].size(); 
     if(parent_index > num_entities)
     {
-        KJB_THROW_2(kjb::Runtime_error, "Parent index is out of bound!");
+        IVI_THROW_2(ivi::Runtime_error, "Parent index is out of bound!");
     }
 
     double time_behind = parameters[1];
@@ -573,7 +573,7 @@ void Simple_simulator::execute_follow_action
     {
         Entity_state* cur_walker_tbf_state = 
                             &entity_states_[parent_type][parent_index][static_cast<size_t>(prev_tbf_time)];
-        const kjb::Vector& tbf_position = cur_walker_tbf_state->get_position();
+        const ivi::Vector& tbf_position = cur_walker_tbf_state->get_position();
         double tbf_heading = cur_walker_tbf_state->get_heading();
         cur_walker_state->set_heading(tbf_heading);
         cur_walker_state->set_position(tbf_position);
@@ -582,4 +582,4 @@ void Simple_simulator::execute_follow_action
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi

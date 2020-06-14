@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_io.h 21593 2017-07-30 16:48:05Z kobus $ */
+/* $Id: l_sys_io.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -44,7 +44,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -77,8 +77,8 @@ namespace kjb_c {
 #    define SEEK_END 2
 #endif
 
-#define kjb_printf   pso
-#define kjb_flush()  kjb_fflush(stdout)
+#define ivi_printf   pso
+#define ivi_flush()  ivi_fflush(stdout)
 
 
 #define put_line(x)                fput_line(stdout, (x))
@@ -87,40 +87,40 @@ namespace kjb_c {
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             kjb_puts
+ *                             ivi_puts
  *
  * (MACRO) Writes a null terminated string to stdout.
  *
- * This macro is defined as kjb_fputs(stdout, (x)). This is the safe way to
+ * This macro is defined as ivi_fputs(stdout, (x)). This is the safe way to
  * write a string which is not known. If you use formatted IO on such a string,
  * then you risk problems if the unknown string has a formatting character.
  *
  * Related:
- *    kjb_fputs, fput_line, pso, kjb_fprintf
+ *    ivi_fputs, fput_line, pso, ivi_fprintf
  *
  * Index: I/O, input, Macros
  *
  * -----------------------------------------------------------------------------
 */
 #ifdef __C2MAN__    /* Pretend we are a ".c" file to document MACROS. */
-    long kjb_puts(const char* output_string);
+    long ivi_puts(const char* output_string);
 #endif
 
 #ifndef __C2MAN__  /* Just doing "else" confuses ctags for the first such line.
                       I have no idea what the problem is. */
-#   define kjb_puts(x)                kjb_fputs(stdout, (x))
+#   define ivi_puts(x)                ivi_fputs(stdout, (x))
 #endif
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#define kjb_putc(x)                kjb_fputc(stdout, (x))
-#define kjb_getc()                 kjb_fgetc(stdout)
+#define ivi_putc(x)                ivi_fputc(stdout, (x))
+#define ivi_getc()                 ivi_fgetc(stdout)
 
-#define FPUT_FIELD(x, y)           kjb_fwrite((x), (y), sizeof(y))
-#define FIELD_READ(x, y)           kjb_fread_exact((x), (void*)&(y), sizeof(y))
-#define FIELD_WRITE(x, y)          kjb_fwrite((x), (const void*)&(y), sizeof(y))
-#define ARRAY_READ(x, y)           kjb_fread_exact((x), (void*)(y), sizeof(y))
-#define ARRAY_WRITE(x, y)          kjb_fwrite((x), (const void*)(y), sizeof(y))
+#define FPUT_FIELD(x, y)           ivi_fwrite((x), (y), sizeof(y))
+#define FIELD_READ(x, y)           ivi_fread_exact((x), (void*)&(y), sizeof(y))
+#define FIELD_WRITE(x, y)          ivi_fwrite((x), (const void*)&(y), sizeof(y))
+#define ARRAY_READ(x, y)           ivi_fread_exact((x), (void*)(y), sizeof(y))
+#define ARRAY_WRITE(x, y)          ivi_fwrite((x), (const void*)(y), sizeof(y))
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -232,11 +232,11 @@ namespace kjb_c {
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#define BUFF_REAL_PATH(x, y)           kjb_realpath((x), (y), sizeof(y))
+#define BUFF_REAL_PATH(x, y)           ivi_realpath((x), (y), sizeof(y))
 #define BUFF_GET_FD_NAME(x, y)         get_fd_name((x), (y), sizeof(y))
 #define BUFF_GET_USER_FD_NAME(x, y)    get_user_fd_name((x), (y), sizeof(y))
-#define BUFF_READ(x, y)                kjb_read((x), (y), sizeof(y))
-#define BUFF_WRITE(x, y)               kjb_write((x), (y), sizeof(y))
+#define BUFF_READ(x, y)                ivi_read((x), (y), sizeof(y))
+#define BUFF_WRITE(x, y)               ivi_write((x), (y), sizeof(y))
 
 /* ------------------------------------------------------------------------- */
 
@@ -259,10 +259,10 @@ Path_type;
 
 int set_low_level_io_options(const char* option, const char* value);
 
-long kjb_read      (int, void*, size_t);
-int  kjb_read_exact(int, void*, size_t);
+long ivi_read      (int, void*, size_t);
+int  ivi_read_exact(int, void*, size_t);
 
-int  kjb_read_2
+int  ivi_read_2
 (
     int     des,
     void*   buff,
@@ -270,9 +270,9 @@ int  kjb_read_2
     size_t* num_bytes_read_ptr
 );
 
-long kjb_write     (int, const void*, size_t);
+long ivi_write     (int, const void*, size_t);
 
-int  kjb_write_2
+int  ivi_write_2
 (
     int         des,     /* File descriptor */
     const void* line,    /* Pointer to bytes to write */
@@ -286,12 +286,12 @@ int safe_pipe_write
     size_t      num_bytes
 );
 
-int  kjb_fread_exact(FILE*, void*, size_t);
-long kjb_fread      (FILE*, void*, size_t);
-int  kjb_fread_2    (FILE* fp, void* buff, size_t len, size_t* len_ptr);
-long kjb_fwrite     (FILE*, const void*, size_t);
+int  ivi_fread_exact(FILE*, void*, size_t);
+long ivi_fread      (FILE*, void*, size_t);
+int  ivi_fread_2    (FILE* fp, void* buff, size_t len, size_t* len_ptr);
+long ivi_fwrite     (FILE*, const void*, size_t);
 
-int  kjb_fwrite_2
+int  ivi_fwrite_2
 (
     FILE*       fp,      /* File pointer */
     const void* line,    /* Pointer to bytes to write */
@@ -299,9 +299,9 @@ int  kjb_fwrite_2
     size_t*     len_ptr  /* Number of bytes written. */
 );
 
-int  kjb_safe_fflush(FILE* fp);
-int  kjb_fflush     (FILE* fp);
-int  kjb_ioctl      (int, IOCTL_REQUEST_TYPE request, void* arg);
+int  ivi_safe_fflush(FILE* fp);
+int  ivi_fflush     (FILE* fp);
+int  ivi_ioctl      (int, IOCTL_REQUEST_TYPE request, void* arg);
 int  set_no_blocking(int);
 int  set_blocking   (int);
 
@@ -315,32 +315,32 @@ long  dget_line       (int, char*, size_t);
 long  fput_line       (FILE*, const char*);
 int   get_fd_name     (int, char*, size_t);
 int   get_user_fd_name(int, char*, size_t);
-int   kjb_mkdir       (const char*);
-int   kjb_mkdir_2     (const char*);
-int   kjb_unlink      (const char* file_name);
-int   kjb_unlink_2    (const char* dir, const char* file_name);
-int   kjb_rmdir       (const char*);
-FILE* kjb_fopen       (const char*, const char*);
-int   kjb_realpath    (const char*, char*, size_t);
-FILE* kjb_freopen     (const char*, const char*, FILE*);
-FILE* kjb_fdopen      (FILE*, const char*);
-int   kjb_fclose      (FILE*);
+int   ivi_mkdir       (const char*);
+int   ivi_mkdir_2     (const char*);
+int   ivi_unlink      (const char* file_name);
+int   ivi_unlink_2    (const char* dir, const char* file_name);
+int   ivi_rmdir       (const char*);
+FILE* ivi_fopen       (const char*, const char*);
+int   ivi_realpath    (const char*, char*, size_t);
+FILE* ivi_freopen     (const char*, const char*, FILE*);
+FILE* ivi_fdopen      (FILE*, const char*);
+int   ivi_fclose      (FILE*);
 
 #ifdef TEST          /* Currently only used in test programs.   */
-    FILE* kjb_popen(const char*, const char*);
-    int kjb_pclose(FILE*);
+    FILE* ivi_popen(const char*, const char*);
+    int ivi_pclose(FILE*);
 #endif
 
-int kjb_fseek(FILE*, long, int);
-long kjb_ftell(FILE*);
-long kjb_fputs(FILE*, const char*);
-int kjb_fgetc(FILE*);
-int kjb_fputc(FILE*, int);
+int ivi_fseek(FILE*, long, int);
+long ivi_ftell(FILE*);
+long ivi_fputs(FILE*, const char*);
+int ivi_fgetc(FILE*);
+int ivi_fputc(FILE*, int);
 
 #ifdef LINT
 /*PRINTFLIKE2*/
 #endif
-long kjb_fprintf(FILE*, const char*, ...);
+long ivi_fprintf(FILE*, const char*, ...);
 
 #ifdef LINT
 /*PRINTFLIKE1*/
@@ -357,7 +357,7 @@ long p_stderr(const char*, ...);
 #endif
 long pdo(const char*, ...);
 
-long      kjb_vfprintf    (FILE*, const char*, va_list ap);
+long      ivi_vfprintf    (FILE*, const char*, va_list ap);
 int       is_file         (const char* path);
 int       is_directory    (const char* path);
 Path_type get_path_type   (const char* path);
@@ -373,7 +373,7 @@ int       get_file_mod_time(const char* file_name, time_t *mod_time_ptr);
     int print_open_files(FILE*);
 #endif
 
-int  kjb_isatty         (int file_des);
+int  ivi_isatty         (int file_des);
 long print_underlined   (FILE* out_fp, const char* text_to_print);
 int  start_stdout_shadow(const char* file_name);
 void stop_stdout_shadow (void);
@@ -382,14 +382,14 @@ void stop_stderr_shadow (void);
 void enable_stdout      (void);
 void disable_stdout     (void);
 
-int  kjb_glob
+int  ivi_glob
 (
     Word_list** dir_files_pp,
     const char* pattern,
     int         filter_fn(const char* path)
 );
 
-int  kjb_simple_glob
+int  ivi_simple_glob
 (
     Word_list** dir_files_pp,
     Word_list** star_str_pp,

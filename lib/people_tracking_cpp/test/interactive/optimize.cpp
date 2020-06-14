@@ -46,15 +46,15 @@
 #include <boost/foreach.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace boost;
 
 /** @brief  Main -- all the magic happens here. */
 int main(int argc, char** argv)
 {
     string outdir = "output/optimize_cpp";
-    kjb_c::kjb_mkdir(outdir.c_str());
+    ivi_c::ivi_mkdir(outdir.c_str());
 
     try
     {
@@ -169,7 +169,7 @@ int main(int argc, char** argv)
             }
         }
 
-        kjb_c::kjb_mkdir(outdir.c_str());
+        ivi_c::ivi_mkdir(outdir.c_str());
 
         // write images and models
         I_o.write(outdir + "/initial.jpg");
@@ -219,7 +219,7 @@ int main(int argc, char** argv)
 
         cout << "Done. Check " << outdir << " for output..." << endl;
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;

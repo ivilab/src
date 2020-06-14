@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: util.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef TIES_UTIL_H
 #define TIES_UTIL_H
@@ -44,7 +44,7 @@
 #include "dbn_cpp/base_line_models.h"
 
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /** @brief  Reads in the topic times from a file. */
@@ -671,7 +671,7 @@ inline bool valid_frequency(const Linear_state_space& lss)
  * @brief  Adapts the hmc step size based on the acceptance probability 
  *         and rate. 
  */
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 template <typename Model, typename rng_t, bool ACCEPT_STEP, bool REVERSIBLE>
 void adapt_hmc_step_size
 (
@@ -697,7 +697,7 @@ void adapt_hmc_step_size
                 {
                     log_fs << "too high " << step_sizes[0]; 
                 }
-                double ratio = 1.0 + kjb_c::kjb_rand() * 9.0;
+                double ratio = 1.0 + ivi_c::ivi_rand() * 9.0;
                 std::transform(step_sizes.begin(),
                                step_sizes.end(),
                                step_sizes.begin(),
@@ -717,7 +717,7 @@ void adapt_hmc_step_size
         if(fabs(step.acceptance_probability()) < 1e-5)
         {
             std::vector<double> step_sizes = step.step_sizes();
-            double ratio = kjb_c::kjb_rand() * 1e5;
+            double ratio = ivi_c::ivi_rand() * 1e5;
             if(!not_record)
             {
                 log_fs << "too low: " << step_sizes[0];
@@ -741,7 +741,7 @@ void adapt_hmc_step_size
         num_accepted = 0;
         if(p_accept > 0.9)
         {
-            double ratio = 1.0 + kjb_c::kjb_rand() * 5.0;
+            double ratio = 1.0 + ivi_c::ivi_rand() * 5.0;
             std::vector<double> step_sizes = step.step_sizes();
             log_fs << "acceptance too high: " << step_sizes[0]; 
             std::transform(step_sizes.begin(),
@@ -763,7 +763,7 @@ void adapt_hmc_step_size
             }
             if(step_sizes[0] > 1e-13)
             {
-                double ratio = 1.0 + kjb_c::kjb_rand() * 9.0;
+                double ratio = 1.0 + ivi_c::ivi_rand() * 9.0;
                 std::transform(step_sizes.begin(),
                                step_sizes.end(),
                                step_sizes.begin(),
@@ -849,14 +849,14 @@ std::vector<double> get_hmc_step_size
 
 Matrix construct_diagonal_matrix(const std::vector<Matrix>& Ks);
 
-}} //namespace kjb::ties
+}} //namespace ivi::ties
 
 namespace boost { 
 namespace numeric { 
 namespace odeint {
 
 template<>
-struct is_resizeable<kjb::Vector> 
+struct is_resizeable<ivi::Vector> 
 {
     typedef boost::true_type type;
     static const bool value = type::value;

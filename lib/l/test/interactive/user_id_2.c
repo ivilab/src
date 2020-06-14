@@ -1,5 +1,5 @@
 
-/* $Id: user_id_2.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: user_id_2.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -11,17 +11,17 @@ int main(int argc, char **argv)
 {
     char user_id[ 100 ];
 
-    extern int kjb_debug_level;
+    extern int ivi_debug_level;
 
-    kjb_debug_level = 2; 
+    ivi_debug_level = 2; 
 
     EPETE(get_user_id(user_id, sizeof(user_id)));
 
-    kjb_fputs(stdout,"User id is: ");
+    ivi_fputs(stdout,"User id is: ");
     toggle_high_light(stdout); 
-    kjb_fputs(stdout,user_id);
+    ivi_fputs(stdout,user_id);
     toggle_high_light(stdout); 
-    kjb_fputs(stdout,"\n");
+    ivi_fputs(stdout,"\n");
 
     return EXIT_SUCCESS; 
 }

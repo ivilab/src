@@ -29,10 +29,10 @@
 #include <glut_cpp/glut_parapiped.h>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_X11
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_X11
 #ifdef MAC_OSX
 #include <OpenGL/OpenGL.h>
 #else
@@ -42,7 +42,7 @@ using namespace kjb;
 #endif
 #endif
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #ifdef MAC_OSX
 #include <GLUT/glut.h>
 #else
@@ -55,9 +55,9 @@ using namespace kjb;
 
 #define WRITE_PARAPIPED 9
 #define EXIT_ID 10
-static kjb::Offscreen_buffer* offscreen = 0;
-static kjb::Perspective_camera * camera = 0;
-static kjb::Parametric_parapiped * pp = 0;
+static ivi::Offscreen_buffer* offscreen = 0;
+static ivi::Perspective_camera * camera = 0;
+static ivi::Parametric_parapiped * pp = 0;
 static float gwidth = 500;
 static float gheight = 400;
 static uint32_t _current_action = 0;
@@ -69,9 +69,9 @@ void init_onscreen_buffer(int argc, char **argv);
 
 int main(int argc, char* argv[])
 {
-    using namespace kjb;
+    using namespace ivi;
 
-    offscreen = kjb::create_and_initialize_offscreen_buffer(gwidth, gheight);
+    offscreen = ivi::create_and_initialize_offscreen_buffer(gwidth, gheight);
     Perspective_camera camera2;
     camera2.prepare_for_rendering(true);
     glColor3f(255,0,0);
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, amb_dif);
 
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
         std::cout << "Glut main loop" << std::endl;
         glutMainLoop();
@@ -206,7 +206,7 @@ static void timer_glut(int ignored)
 
 static void main_menu_glut(int id)
 {
-    using namespace kjb;
+    using namespace ivi;
     _current_action = id;
     if(id == EXIT_ID)
     {
@@ -256,7 +256,7 @@ void init_onscreen_buffer(int argc, char **argv)
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-    kjb::opengl::default_init_opengl(gwidth, gheight);
+    ivi::opengl::default_init_opengl(gwidth, gheight);
 
 }
 

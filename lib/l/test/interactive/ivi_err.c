@@ -1,5 +1,5 @@
 
-/* $Id: kjb_err.c 9126 2011-04-01 02:39:12Z predoehl $ */
+/* $Id: ivi_err.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 
@@ -29,26 +29,26 @@ int main(int argc, char *argv[])
               "A looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message");
 
     add_error("Trouble with %F.", stdin);
-    add_error("Trouble with %hd.", ((kjb_int16)666));
-    add_error("Trouble with %+*.*hd.", 30,5, ((kjb_int16)666));
+    add_error("Trouble with %hd.", ((ivi_int16)666));
+    add_error("Trouble with %+*.*hd.", 30,5, ((ivi_int16)666));
     add_error("Trouble with %*.*Lf.", 10,5, ((long_double)1.2345678));
 
-    kjb_fprintf(stderr, "Printing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing.\n");
+    ivi_print_error(); 
 
-    kjb_fprintf(stderr, "Printing nothing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing nothing.\n");
+    ivi_print_error(); 
 
 
-    kjb_clear_error();
+    ivi_clear_error();
     insert_error("%s", test_str); 
 
 
-    kjb_fprintf(stderr, "Printing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing.\n");
+    ivi_print_error(); 
 
-    kjb_fprintf(stderr, "Printing nothing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing nothing.\n");
+    ivi_print_error(); 
 
 
     set_error("%s", test_str);  
@@ -62,15 +62,15 @@ int main(int argc, char *argv[])
                  "A looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message");
 
     insert_error("Trouble with %F.", stdin);
-    insert_error("Trouble with %hd.", ((kjb_int16)666));
-    insert_error("Trouble with %+*.*hd.", 30,5, ((kjb_int16)666));
+    insert_error("Trouble with %hd.", ((ivi_int16)666));
+    insert_error("Trouble with %+*.*hd.", 30,5, ((ivi_int16)666));
     insert_error("Trouble with %*.*Lf.", 10,5, ((long_double)1.2345678));
 
-    kjb_fprintf(stderr, "Printing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing.\n");
+    ivi_print_error(); 
 
-    kjb_fprintf(stderr, "Printing nothing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing nothing.\n");
+    ivi_print_error(); 
 
     set_error("Set error");
     add_error("After set error");
@@ -79,27 +79,27 @@ int main(int argc, char *argv[])
     add_error("After After set error");
     cat_error(" .... AND MORE");
 
-    kjb_fprintf(stderr, "Printing.\n");
+    ivi_fprintf(stderr, "Printing.\n");
 
-    err_strlen = kjb_get_strlen_error();
+    err_strlen = ivi_get_strlen_error();
 
-    kjb_get_error(buff, 1000);
-    kjb_fprintf(stderr, "\n\nBuff is ->%s<-\n\n", buff);
+    ivi_get_error(buff, 1000);
+    ivi_fprintf(stderr, "\n\nBuff is ->%s<-\n\n", buff);
 
     if ( err_strlen != signed_strlen( buff ) )
     {
-        kjb_printf( stderr, "Failure:  strlen prediction was %d, "
+        ivi_printf( stderr, "Failure:  strlen prediction was %d, "
                         "actual was %d\n", err_strlen, signed_strlen( buff ) );
         return EXIT_FAILURE;
     }
 
     set_error("Another user message");
 
-    kjb_fprintf(stderr, "Printing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing.\n");
+    ivi_print_error(); 
 
-    kjb_fprintf(stderr, "Printing nothing.\n");
-    kjb_print_error(); 
+    ivi_fprintf(stderr, "Printing nothing.\n");
+    ivi_print_error(); 
 
     return EXIT_SUCCESS;
 }

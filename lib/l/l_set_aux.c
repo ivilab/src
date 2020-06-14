@@ -1,5 +1,5 @@
 
-/* $Id: l_set_aux.c 15483 2013-10-03 00:50:45Z predoehl $ */
+/* $Id: l_set_aux.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -36,12 +36,12 @@ extern "C" {
  * Processes a string of options
  *
  * This routine parses a string of options and sends them to (*option_fn). This
- * routine is similar to kjb_process_option_string(), but it does not use a
+ * routine is similar to ivi_process_option_string(), but it does not use a
  * default value for option_fn (and thus option_fn cannot be NULL). This
- * routine is used in place of kjb_process_option_string() when additional
+ * routine is used in place of ivi_process_option_string() when additional
  * control over the loading of functions is required; specically when one wants
  * to diable the loading implied by the default option_fn.  Like
- * kjb_process_option_string(), the option function must be able to handle the
+ * ivi_process_option_string(), the option function must be able to handle the
  * cases (<option>, <value>), (<option>, ""), (<option>,"?"), and ("", "").
  * Normally, these correspond to the cases of setting an option, requesting the
  * value of an option in a sentence, requesting the value of the option as it
@@ -70,7 +70,7 @@ int process_option_string(
     int    result          = NO_ERROR;
 
 
-    NRE(arg_copy = kjb_strdup(arg));
+    NRE(arg_copy = ivi_strdup(arg));
 
     arg_pos = arg_copy;
 
@@ -85,7 +85,7 @@ int process_option_string(
             result = pso("\n");
         }
 
-        kjb_free(arg_copy);
+        ivi_free(arg_copy);
 
         return result;
     }
@@ -136,7 +136,7 @@ int process_option_string(
         }
     }
 
-    kjb_free(arg_copy);
+    ivi_free(arg_copy);
     free_options(num_options, option_list, value_list);
 
     return result;

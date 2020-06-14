@@ -1,4 +1,4 @@
-/* $Id: l_algorithm.h 21776 2017-09-17 16:44:49Z clayton $ */
+/* $Id: l_algorithm.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_L_CPP_ALGORITHM_H
-#define KJB_L_CPP_ALGORITHM_H
+#ifndef IVI_L_CPP_ALGORITHM_H
+#define IVI_L_CPP_ALGORITHM_H
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 /**
@@ -48,7 +48,7 @@
 //#include <boost/iterator/transform_iterator.hpp>
 //#include <boost/iterator/indirect_iterator.hpp>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -131,7 +131,7 @@ lerp(IIterator ibegin, IIterator iend, OIterator obegin, const QueryType& query_
     BOOST_CONCEPT_ASSERT((boost::Convertible<QueryType, InputType>));
 
     if(n == 0)
-        KJB_THROW_2(Illegal_argument, "Function is empty.");
+        IVI_THROW_2(Illegal_argument, "Function is empty.");
 
     IIterator iit = ibegin;
     std::advance(iit, n-1);
@@ -140,7 +140,7 @@ lerp(IIterator ibegin, IIterator iend, OIterator obegin, const QueryType& query_
     const InputType& upper_bound = *iit;
     // out of range
     if(!(lower_bound <= query_point && query_point <= upper_bound))
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
 
     iit = std::upper_bound(ibegin, iend, query_point);
     const InputType& iupper = *iit;
@@ -198,7 +198,7 @@ void ordered_lerp(
     // NOTE_USED  BOOST_CONCEPT_ASSERT((boost::Convertible<OutputType, Output2Type>));
 
     if(n == 0)
-        KJB_THROW_2(Illegal_argument, "Function is empty.");
+        IVI_THROW_2(Illegal_argument, "Function is empty.");
     if(n2 == 0)
         return;
 
@@ -218,7 +218,7 @@ void ordered_lerp(
 
         // out of range
         if(!(lower_bound <= query_lower_bound && query_upper_bound <= upper_bound))
-            KJB_THROW(Index_out_of_bounds);
+            IVI_THROW(Index_out_of_bounds);
 
     }
 
@@ -301,11 +301,11 @@ Value_type lerp(const std::map<Key_type, Value_type>& piecewise_function, const 
     BOOST_CONCEPT_ASSERT((boost::Convertible<Query_type, Key_type>));
 
     if(data_set.empty())
-        KJB_THROW_2(Illegal_argument, "Function is empty.");
+        IVI_THROW_2(Illegal_argument, "Function is empty.");
 
     // out of range
     if(!(data_set.begin()->first <= query_point && query_point <= data_set.rbegin()->first))
-        KJB_THROW(Index_out_of_bounds);
+        IVI_THROW(Index_out_of_bounds);
 
     Iterator upper = data_set.upper_bound(query_point);
     Iterator lower = upper;
@@ -400,7 +400,7 @@ void linspace(
 //    // create a transform function converts real-valued inputs to
 //    // InType-valued inputs.
 //    boost::function1<InType, double> lerp = boost::bind(
-//            static_cast< InType (*)(boost::indirect_iterator<InType const**> , boost::indirect_iterator<InType const**>, double)> (&::kjb::lerp),
+//            static_cast< InType (*)(boost::indirect_iterator<InType const**> , boost::indirect_iterator<InType const**>, double)> (&::ivi::lerp),
 //            boost::indirect_iterator<InType const **>(range),
 //            boost::indirect_iterator<InType const **>(range+2),
 //            _1);
@@ -415,7 +415,7 @@ void linspace(
 //    OutIterator out_it = out_begin;
 //    for(size_t i = 0; i < x.size(); ++i)
 //    {
-//        *out_it++ = f(::kjb::lerp(lower, upper, x[i]));
+//        *out_it++ = f(::ivi::lerp(lower, upper, x[i]));
 //    }
 
     OutIterator it = out_begin;
@@ -446,23 +446,23 @@ void linspace(
 template <class InType, class OutIterator>
 void linspace(InType min, InType max, size_t n, OutIterator begin)
 {
-    ::kjb::linspace(
+    ::ivi::linspace(
             min,
             max,
             n,
             begin,
             Identity<InType>()); // identity function
 }
-} // namespace kjb
+} // namespace ivi
 
 
-namespace kjb_parallel
+namespace ivi_parallel
 {
 /**
- * Parallel version of kjb::linspace.  If openmp isn't enabled,
- * this is identical to kjb::linspace
+ * Parallel version of ivi::linspace.  If openmp isn't enabled,
+ * this is identical to ivi::linspace
  *
- * @sa kjb::linspace
+ * @sa ivi::linspace
  */
 template <class InType, class OutIterator, class UnaryOperator>
 void linspace(
@@ -478,12 +478,12 @@ void linspace(
 
     // create real-valued inputs
     std::vector<double> x(N);
-    ::kjb::linspace(0.0, 1.0, N, x.begin());
+    ::ivi::linspace(0.0, 1.0, N, x.begin());
 //
 //    // create a transform function converts real-valued inputs to
 //    // InType-valued inputs.
 //    boost::function1<InType, double> lerp = boost::bind(
-//            static_cast< InType (*)(boost::indirect_iterator<InType const**> , boost::indirect_iterator<InType const**>, double)> (&::kjb::lerp),
+//            static_cast< InType (*)(boost::indirect_iterator<InType const**> , boost::indirect_iterator<InType const**>, double)> (&::ivi::lerp),
 //            boost::indirect_iterator<InType const **>(range),
 //            boost::indirect_iterator<InType const **>(range+2),
 //            _1);
@@ -508,6 +508,6 @@ void linspace(
         *it++ = f(lower + x[i] * diff);
 }
 
-} // namespace kjb_parallel
+} // namespace ivi_parallel
 
 #endif

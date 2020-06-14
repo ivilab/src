@@ -1,5 +1,5 @@
 
-/* $Id: nr_roots.h 4725 2009-11-16 19:50:08Z kobus $ */
+/* $Id: nr_roots.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #ifndef NR_ROOTS_INCLUDED
@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

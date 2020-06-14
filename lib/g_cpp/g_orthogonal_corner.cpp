@@ -24,27 +24,27 @@
 #include "g_cpp/g_quaternion.h"
 #include "g_cpp/g_line.h"
 
-void kjb::get_3D_corner_orientation_from_2D_corner_lines
+void ivi::get_3D_corner_orientation_from_2D_corner_lines
 (
-    const kjb::Vector & corner2D_1,
-    const kjb::Vector & corner2D_2,
-    const kjb::Vector & corner2D_3,
-    const kjb::Vector & position_2D,
-    const kjb::Vector & position_3D,
+    const ivi::Vector & corner2D_1,
+    const ivi::Vector & corner2D_2,
+    const ivi::Vector & corner2D_3,
+    const ivi::Vector & position_2D,
+    const ivi::Vector & position_3D,
     double focal_length,
     int epsilon,
-    kjb::Vector & corner3D_1,
-    kjb::Vector & corner3D_2,
-    kjb::Vector & corner3D_3
+    ivi::Vector & corner3D_1,
+    ivi::Vector & corner3D_2,
+    ivi::Vector & corner3D_3
 )
 {
     Line line1(corner2D_1, position_2D);
     Line line2(corner2D_2, position_2D);
     Line line3(corner2D_3, position_2D);
 
-    kjb::Vector N1 = line1.get_params();
-    kjb::Vector N2 = line2.get_params();
-    kjb::Vector N3 = line3.get_params();
+    ivi::Vector N1 = line1.get_params();
+    ivi::Vector N2 = line2.get_params();
+    ivi::Vector N3 = line3.get_params();
 
     if(corner2D_1(0) < position_2D(0))
     {
@@ -80,9 +80,9 @@ void kjb::get_3D_corner_orientation_from_2D_corner_lines
     N2 = N2.normalize();
     N3 = N3.normalize();
 
-    kjb::Vector cross1 = cross(N1, position_3D).normalize();
-    kjb::Vector cross2 = cross(N2, position_3D).normalize();
-    kjb::Vector cross3 = cross(N3, position_3D).normalize();
+    ivi::Vector cross1 = cross(N1, position_3D).normalize();
+    ivi::Vector cross2 = cross(N2, position_3D).normalize();
+    ivi::Vector cross3 = cross(N3, position_3D).normalize();
 
     double cosphi12 = dot(cross1, cross2);
     double cosphi23 = dot(cross2, cross3);
@@ -101,7 +101,7 @@ void kjb::get_3D_corner_orientation_from_2D_corner_lines
         double arg_root = -( (cosphi12*cosphi31)/cosphi23);
         if(arg_root < 0)
         {
-            KJB_THROW_2(KJB_error, "Get 3D corner from 2D corner, argument of square root is negative");
+            IVI_THROW_2(IVI_error, "Get 3D corner from 2D corner, argument of square root is negative");
         }
         double tg_theta1 = epsilon*sqrt(arg_root);
         theta1 = atan(tg_theta1);
@@ -120,7 +120,7 @@ void kjb::get_3D_corner_orientation_from_2D_corner_lines
     Quaternion q(N1, theta1);
     Matrix rotation = q.get_rotation_matrix();
 
-    kjb::Vector input_vector(4, 1.0);
+    ivi::Vector input_vector(4, 1.0);
     for(unsigned int i = 0; i < 3; i++)
     {
         input_vector(i) = cross1(i);

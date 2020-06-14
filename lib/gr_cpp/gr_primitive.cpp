@@ -1,4 +1,4 @@
-/* $Id: gr_primitive.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_primitive.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -28,14 +28,14 @@
 #include "gr_cpp/gr_glut.h"
 #include "g_cpp/g_quaternion.h"
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <gr_cpp/gr_primitive.h>
 
-using namespace kjb::opengl;
+using namespace ivi::opengl;
 
 using std::bad_alloc;
-using kjb::Vector;
+using ivi::Vector;
 
 GLUquadricObj* Quadric::_quad = 0;
 unsigned int Quadric::_num_instances = 0;
@@ -294,8 +294,8 @@ void Disk::_render() const
 
 void Arrow3d::_generic_render(const Generic_renderer& renderer) const
 {
-    using namespace kjb::opengl;
-    using namespace kjb;
+    using namespace ivi::opengl;
+    using namespace ivi;
 
     Vector up(3, 0.0); up[2] = 1.0;
 
@@ -327,14 +327,14 @@ void Arrow3d::_generic_render(const Generic_renderer& renderer) const
 
 void Teapot::solid_render() const 
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
    float mat_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
    glutSolidTeapot (1.0);
 
     GL_ETX();
 #else
-   KJB_THROW_2(Missing_dependency,"GLUT");
+   IVI_THROW_2(Missing_dependency,"GLUT");
 #endif
 }
 
@@ -379,4 +379,4 @@ void Ellipse::render_points() const
     }
 }
 
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */

@@ -2,7 +2,7 @@
  * This demonstrates an "automatic" mutex, i.e., it lives on the stack, not in
  * static memory, and it is locked and unlocked by ten threads.
  *
- * $Id: mono_mutex.cpp 15719 2013-10-18 01:34:29Z predoehl $
+ * $Id: mono_mutex.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 #include <l/l_incl.h>
 #include <l_cpp/l_util.h>
@@ -15,17 +15,17 @@ namespace
 void put()
 {
     static int i;
-    kjb_c::kjb_printf("print line %4d   (called by thread %d)\n",
-                      i++, kjb_c::get_kjb_pthread_number());
+    ivi_c::ivi_printf("print line %4d   (called by thread %d)\n",
+                      i++, ivi_c::get_ivi_pthread_number());
 
     // nap does not work -- I guess signals and threads do not mix.
-    //kjb_c::nap(10 * kjb_c::kjb_rand());
+    //ivi_c::nap(10 * ivi_c::ivi_rand());
 }
 
 // this enforces serial access to the above thread-unsafe function put().
-void serial_put(kjb::Pthread_mutex* q)
+void serial_put(ivi::Pthread_mutex* q)
 {
-    kjb::Mutex_lock m(q);   /* lock the mutex                           */
+    ivi::Mutex_lock m(q);   /* lock the mutex                           */
     put();                  /* call the "critical" function             */
                             /* mutex is automatically unlocked by dtor  */
 }
@@ -33,8 +33,8 @@ void serial_put(kjb::Pthread_mutex* q)
 // thread worker function, which is given a pointer to mutex as a parameter
 void* work(void* v)
 {
-    kjb::Pthread_mutex* q = static_cast<kjb::Pthread_mutex*>(v);
-    KJB(NRN(q));
+    ivi::Pthread_mutex* q = static_cast<ivi::Pthread_mutex*>(v);
+    IVI(NRN(q));
 
     serial_put(q);
     serial_put(q);
@@ -47,21 +47,21 @@ void* work(void* v)
 int test()
 {
     const int TCT = 10;
-    kjb_c::kjb_pthread_t tid[TCT];
-    kjb::Pthread_mutex q;
+    ivi_c::ivi_pthread_t tid[TCT];
+    ivi::Pthread_mutex q;
 
     for (int i = 0; i < TCT; ++i)
     {
-        KJB(ERE(kjb_pthread_create(tid + i, NULL, & work, & q)));
+        IVI(ERE(ivi_pthread_create(tid + i, NULL, & work, & q)));
     }
     for (int i = 0; i < TCT; ++i)
     {
         void *v;
-        KJB(ERE(kjb_pthread_join(tid[i], &v)));
-        KJB(NRE(v));
+        IVI(ERE(ivi_pthread_join(tid[i], &v)));
+        IVI(NRE(v));
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 }
@@ -69,16 +69,16 @@ int test()
 // main function starts the library nanny, catches errors, cleans up.
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
     try
     {
-        KJB(EPETE(test()));
+        IVI(EPETE(test()));
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details_exit();
     }
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return EXIT_SUCCESS;
 }
 

@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cholesky.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: cholesky.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <wrap_lapack/wrap_lapack.h>
 #include <m/m_incl.h>
@@ -36,11 +36,11 @@ int main(void)
     static const double TOLERANCE = 1e-7;
 
     /* Kobus: 17-07-16
-     * The logic behind calling kjb_rand() 100 times is not clear. A different
+     * The logic behind calling ivi_rand() 100 times is not clear. A different
      * way to play with seeding?
     */
     for(i = 0; i < 100; ++i) 
-        kjb_rand();
+        ivi_rand();
 
     for(i = 0; i < NUM_TRIES; ++i)
     {

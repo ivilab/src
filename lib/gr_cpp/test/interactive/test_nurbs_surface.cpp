@@ -33,9 +33,9 @@ static void key_cb(unsigned char code, int x, int y);
 
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::opengl;
-using kjb_c::pause_on_next;
+using namespace ivi;
+using namespace ivi::opengl;
+using ivi_c::pause_on_next;
 
 vector<Vector> points;
 Gl_nurbs_surface surf;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100,100);
     glutInitWindowSize(320,320);
-    glutCreateWindow("KJB Bezier Test");
+    glutCreateWindow("IVI Bezier Test");
     glutDisplayFunc(draw);
 //  glutIdleFunc(draw);
     glutReshapeFunc(reshape);
@@ -139,11 +139,11 @@ void init()
     );
 
     points = vector<Vector>(100, Vector(3));
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
     for(int i = 0; i < 100; i++)
     {   
-        float u = kjb_c::kjb_rand();
-        float v = kjb_c::kjb_rand();
+        float u = ivi_c::ivi_rand();
+        float v = ivi_c::ivi_rand();
         points[i] = surf.evaluate(u, v);
     }
 }

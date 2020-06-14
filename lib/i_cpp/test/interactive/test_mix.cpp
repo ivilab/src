@@ -15,21 +15,21 @@
  * transformations.
  */
 /*
- * $Id: test_mix.cpp 9333 2011-04-20 03:52:13Z predoehl $
+ * $Id: test_mix.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_rand.h>
 #include <i_cpp/i_cpp_incl.h>
 
-void get_a_color( kjb::Vector* u, kjb_c::Pixel* pu )
+void get_a_color( ivi::Vector* u, ivi_c::Pixel* pu )
 {
     int rc;
     do
     {
-        u -> at( 0 ) = kjb_c::kjb_rand();
-        u -> at( 1 ) = kjb_c::kjb_rand();
-        u -> at( 2 ) = kjb_c::kjb_rand();
-        rc = kjb::get_pixel_from_hsluma_space( *u, pu );
+        u -> at( 0 ) = ivi_c::ivi_rand();
+        u -> at( 1 ) = ivi_c::ivi_rand();
+        u -> at( 2 ) = ivi_c::ivi_rand();
+        rc = ivi::get_pixel_from_hsluma_space( *u, pu );
     }
     while ( EXIT_FAILURE == rc );
 }
@@ -37,15 +37,15 @@ void get_a_color( kjb::Vector* u, kjb_c::Pixel* pu )
 
 int main()
 {
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
     const int CHUNK = 50, NUMCHUNK = 10;
-    kjb::Image bands( CHUNK * NUMCHUNK, CHUNK * NUMCHUNK );
+    ivi::Image bands( CHUNK * NUMCHUNK, CHUNK * NUMCHUNK );
 
-    const kjb::PixelRGBA gray( kjb::PixelRGBA::create_gray( 150 ) );
+    const ivi::PixelRGBA gray( ivi::PixelRGBA::create_gray( 150 ) );
     bands.draw_aa_rectangle( 0,0,CHUNK*NUMCHUNK-1,CHUNK*NUMCHUNK-1, gray );
 
-    kjb::Vector u( 3 ), v( 3 ), a(3), b(3), c(3);
-    kjb::PixelRGBA pu(0,0,0), pv=pu, pa=pu, pb=pu, pc=pu;
+    ivi::Vector u( 3 ), v( 3 ), a(3), b(3), c(3);
+    ivi::PixelRGBA pu(0,0,0), pv=pu, pa=pu, pb=pu, pc=pu;
     for( int chunkrow = 0; chunkrow < NUMCHUNK; ++chunkrow )
     {
         for( int chunkcol = 0; chunkcol < NUMCHUNK; ++chunkcol )

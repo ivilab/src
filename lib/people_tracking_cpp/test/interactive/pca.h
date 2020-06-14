@@ -8,7 +8,7 @@
 #include "n_cpp/n_eig.h"
 
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 class PCA

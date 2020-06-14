@@ -47,16 +47,16 @@
 const bool VERBOSE = true;
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Main -- all the magic happens here. */
 int main(int argc, char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     const double stsz = 0.01;
@@ -128,9 +128,9 @@ int main(int argc, char** argv)
             cout << "Computing Hessian naive way (H1)..." << endl;
         }
 
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         Matrix H1 = hessian_symmetric(posterior, scene, step_sizes, adapter);
-        long t1 = kjb_c::get_real_time();
+        long t1 = ivi_c::get_real_time();
 
         if(VERBOSE)
         {
@@ -138,11 +138,11 @@ int main(int argc, char** argv)
         }
 
         // TEST INDEPENDENT HESSIAN
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         Matrix H2 = hess(scene);
-        long t2 = kjb_c::get_real_time();
+        long t2 = ivi_c::get_real_time();
 
-        double fn12 = kjb_c::frobenius_matrix_difference(
+        double fn12 = ivi_c::frobenius_matrix_difference(
                                                 H1.get_c_matrix(),
                                                 H2.get_c_matrix());
 
@@ -162,9 +162,9 @@ int main(int argc, char** argv)
         }
 
         for_each(w.begin(), w.end(), bind(&Target::set_changed_all, _1));
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         hess.set_diagonals(scene);
-        long t3 = kjb_c::get_real_time();
+        long t3 = ivi_c::get_real_time();
 
         Vector d3(step_sizes.size());
         size_t i = 0;
@@ -189,9 +189,9 @@ int main(int argc, char** argv)
         Scene_hessian hess_mt(posterior, step_sizes, num_threads);
         // set target to be changed
         for_each(w.begin(), w.end(), bind(&Target::set_changed_all, _1));
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         hess_mt.set_diagonals(scene);
-        long t_mt = kjb_c::get_real_time();
+        long t_mt = ivi_c::get_real_time();
 
         Vector d4(step_sizes.size());
         i = 0;
@@ -215,7 +215,7 @@ int main(int argc, char** argv)
 
 
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

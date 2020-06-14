@@ -1,5 +1,5 @@
 
-/* $Id: freopen.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: freopen.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 
 
     term_get_line("r> ",line, 30); 
-    NPETE(fp1 = kjb_fopen(line,"r")); 
+    NPETE(fp1 = ivi_fopen(line,"r")); 
 
     BUFF_GET_FD_NAME(fileno(stdout), name); 
     dbs(name); 
@@ -21,10 +21,10 @@ int main(int argc, char **argv)
     dbs(name); 
 
     term_get_line("w> ",line, 30); 
-    NPETE(kjb_freopen(line,"w", stdout)); 
+    NPETE(ivi_freopen(line,"w", stdout)); 
 
     term_get_line("r> ",line, 30); 
-    NPETE(kjb_freopen(line,"r", fp1)); 
+    NPETE(ivi_freopen(line,"r", fp1)); 
 
     pso("HELLO WORLD"); 
 

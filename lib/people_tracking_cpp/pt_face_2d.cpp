@@ -31,12 +31,12 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Face_2d kjb::pt::project_cstate_face
+Face_2d ivi::pt::project_cstate_face
 (
     const Complete_state& cs,
     const Perspective_camera& cam,
@@ -95,7 +95,7 @@ Face_2d kjb::pt::project_cstate_face
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Vector kjb::pt::face_model_direction
+Vector ivi::pt::face_model_direction
 (
     const Complete_state& cs1,
     const Complete_state& cs2,
@@ -125,7 +125,7 @@ Vector kjb::pt::face_model_direction
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::pt::face_distance
+double ivi::pt::face_distance
 (
     const Face_2d& face_model,
     const Deva_facemark facemark

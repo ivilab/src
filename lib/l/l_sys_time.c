@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_time.c 14531 2013-05-28 05:39:18Z predoehl $ */
+/* $Id: l_sys_time.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -117,7 +117,7 @@ static struct timeval fs_sys_time_base;
 
 #ifdef UNIX
 #ifndef SYSV
-static int kjb_ftime(struct timeb* cur_time_ptr);
+static int ivi_ftime(struct timeb* cur_time_ptr);
 #endif
 #endif
 
@@ -605,7 +605,7 @@ static int kjb_ftime(struct timeb* cur_time_ptr);
 /* ! SYSV */       struct timeb temp_time;
 /* ! SYSV */
 /* ! SYSV */
-/* ! SYSV */       if (kjb_ftime( &temp_time) == ERROR)
+/* ! SYSV */       if (ivi_ftime( &temp_time) == ERROR)
 /* ! SYSV */       {
 /* ! SYSV */           set_bug("Ftime failed.");
 /* ! SYSV */           return ERROR;
@@ -679,7 +679,7 @@ static int kjb_ftime(struct timeb* cur_time_ptr);
 /* ! SYSV */      long secs, milli_secs;
 /* ! SYSV */
 /* ! SYSV */
-/* ! SYSV */      if (kjb_ftime( &end_time) == ERROR)
+/* ! SYSV */      if (ivi_ftime( &end_time) == ERROR)
 /* ! SYSV */      {
 #ifdef TEST
 /* ! SYSV */          set_bug("Ftime failed.");
@@ -773,7 +773,7 @@ static int kjb_ftime(struct timeb* cur_time_ptr);
 /* ! SYSV */
 /* ! SYSV */
 /* ! SYSV */
-/* ! SYSV */      if (kjb_ftime( &end_time) == ERROR)
+/* ! SYSV */      if (ivi_ftime( &end_time) == ERROR)
 /* ! SYSV */      {
 #ifdef TEST
 /* ! SYSV */          set_bug("Ftime failed.");
@@ -900,7 +900,7 @@ int get_time_2(char* time_buff, size_t max_len, const char* format_str)
 #ifdef UNIX
 #ifndef SYSV
 
-static int kjb_ftime(struct timeb* cur_time_ptr)
+static int ivi_ftime(struct timeb* cur_time_ptr)
 {
 #ifdef MAC_OSX
     struct timeval tp;

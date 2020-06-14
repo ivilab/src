@@ -1,5 +1,5 @@
 
-/* $Id: bttv_camera.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: bttv_camera.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -45,7 +45,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -64,9 +64,9 @@ namespace kjb_c {
 /* =============================================================================
  *                               Bttv_camera
  *
- * KJB Library bttv camera type
+ * IVI Library bttv camera type
  *
- * This type is the bttv camera type for the KJB library. It stores the camera
+ * This type is the bttv camera type for the IVI library. It stores the camera
  * number that is being queried in camera_number, and the resolution the camera
  * should be taking images with, in width and height. It also store whether the
  * camera is upside down and needs to be flipped.

@@ -24,7 +24,7 @@
 #include <m_cpp/m_matrix.h>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Returns a matrix whose rows form a Fourier basis in R^D.
@@ -46,7 +46,7 @@ Matrix fourier_basis(size_t D, size_t num_basis_funcs);
  */
 //Matrix fourier_basis(size_t D, const std::vector<size_t>& indices);
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DIFF_FOURIER_H */
 

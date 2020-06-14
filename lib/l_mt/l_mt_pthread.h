@@ -1,29 +1,29 @@
 /*
- * $Id: l_mt_pthread.h 17430 2014-09-01 18:43:22Z predoehl $
+ * $Id: l_mt_pthread.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef L_MT_PTHREAD_H_LIBKJB_INCLUDED
-#define L_MT_PTHREAD_H_LIBKJB_INCLUDED 1
+#ifndef L_MT_PTHREAD_H_LIBIVI_INCLUDED
+#define L_MT_PTHREAD_H_LIBIVI_INCLUDED 1
 
 #include <l/l_sys_def.h>
 
-#ifdef KJB_HAVE_PTHREAD
+#ifdef IVI_HAVE_PTHREAD
 #include <pthread.h>
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-#ifdef KJB_HAVE_PTHREAD
+#ifdef IVI_HAVE_PTHREAD
 
 /* -------------------------------------------------------------------------- */
 
 /* ============================================================================
- *                             kjb_pthread_t
+ *                             ivi_pthread_t
  *
  * Opaque thread identity structure
  *
@@ -36,37 +36,37 @@ namespace kjb_c {
  *
  * ----------------------------------------------------------------------------
 */
-typedef pthread_t               kjb_pthread_t;
+typedef pthread_t               ivi_pthread_t;
 
-typedef pthread_attr_t          kjb_pthread_attr_t;
+typedef pthread_attr_t          ivi_pthread_attr_t;
 
-typedef pthread_mutex_t         kjb_pthread_mutex_t;
+typedef pthread_mutex_t         ivi_pthread_mutex_t;
 
-typedef pthread_mutexattr_t     kjb_pthread_mutexattr_t;
+typedef pthread_mutexattr_t     ivi_pthread_mutexattr_t;
 
-typedef pthread_key_t           kjb_pthread_key_t;
+typedef pthread_key_t           ivi_pthread_key_t;
 
-typedef pthread_once_t          kjb_pthread_once_t;
+typedef pthread_once_t          ivi_pthread_once_t;
 
 /* Mutex initializers */
-#define KJB_PTHREAD_MUTEX_INITIALIZER \
+#define IVI_PTHREAD_MUTEX_INITIALIZER \
                 PTHREAD_MUTEX_INITIALIZER
 
 /* The cleanup push and cleanup pop operations are often macros. */
-#define kjb_pthread_cleanup_push(f, x) \
+#define ivi_pthread_cleanup_push(f, x) \
                 pthread_cleanup_push(f, x)
-#define kjb_pthread_cleanup_pop(x) \
+#define ivi_pthread_cleanup_pop(x) \
                 pthread_cleanup_pop(x)
 
-#define KJB_PTHREAD_KEYS_MAX \
+#define IVI_PTHREAD_KEYS_MAX \
                 ((PTHREAD_KEYS_MAX) - 1)
 
-#define KJB_PTHREAD_ONCE_INIT \
+#define IVI_PTHREAD_ONCE_INIT \
                 PTHREAD_ONCE_INIT
 
-#define KJB_PTHREAD_CREATE_JOINABLE \
+#define IVI_PTHREAD_CREATE_JOINABLE \
                 PTHREAD_CREATE_JOINABLE
-#define KJB_PTHREAD_CREATE_DETACHED \
+#define IVI_PTHREAD_CREATE_DETACHED \
                 PTHREAD_CREATE_DETACHED
 
 
@@ -75,21 +75,21 @@ typedef pthread_once_t          kjb_pthread_once_t;
  * FAKE STUFF!  Use this when the system lacks pthread.h or for NO_LIBS builds.
  */
 
-typedef void*                                         kjb_pthread_t;
-typedef void*                                         kjb_pthread_attr_t;
-typedef void*                                         kjb_pthread_mutex_t;
-typedef void*                                         kjb_pthread_mutexattr_t;
-typedef int                                           kjb_pthread_key_t;
-typedef int                                           kjb_pthread_once_t;
-#define KJB_PTHREAD_MUTEX_INITIALIZER                 NULL
-#define kjb_pthread_cleanup_push(f, x)                do { ; } while(0)
-#define kjb_pthread_cleanup_pop(x)                    do { ; } while(0)
-#define KJB_PTHREAD_KEYS_MAX                          0
-#define KJB_PTHREAD_ONCE_INIT                         0
-#define KJB_PTHREAD_CREATE_JOINABLE                   0
-#define KJB_PTHREAD_CREATE_DETACHED                   0
+typedef void*                                         ivi_pthread_t;
+typedef void*                                         ivi_pthread_attr_t;
+typedef void*                                         ivi_pthread_mutex_t;
+typedef void*                                         ivi_pthread_mutexattr_t;
+typedef int                                           ivi_pthread_key_t;
+typedef int                                           ivi_pthread_once_t;
+#define IVI_PTHREAD_MUTEX_INITIALIZER                 NULL
+#define ivi_pthread_cleanup_push(f, x)                do { ; } while(0)
+#define ivi_pthread_cleanup_pop(x)                    do { ; } while(0)
+#define IVI_PTHREAD_KEYS_MAX                          0
+#define IVI_PTHREAD_ONCE_INIT                         0
+#define IVI_PTHREAD_CREATE_JOINABLE                   0
+#define IVI_PTHREAD_CREATE_DETACHED                   0
 
-#endif /* KJB_HAVE_PTHREAD */
+#endif /* IVI_HAVE_PTHREAD */
 
 
 
@@ -102,69 +102,69 @@ typedef int                                           kjb_pthread_once_t;
 
 /* BASIC PTHREAD CONTROL function ............................... */
 
-int kjb_pthread_create(
-    kjb_pthread_t* newthread,
-    const kjb_pthread_attr_t* attr,
+int ivi_pthread_create(
+    ivi_pthread_t* newthread,
+    const ivi_pthread_attr_t* attr,
     void* (*start_routine)(void*),
     void* arg
 );
 
-int kjb_pthread_join(kjb_pthread_t tid, void** rval_p);
+int ivi_pthread_join(ivi_pthread_t tid, void** rval_p);
 
-void kjb_pthread_exit(void* rval_p);
+void ivi_pthread_exit(void* rval_p);
 
 
 
 /* ADVANCED PTHREAD functions ................................... */
 
-int get_kjb_pthread_self(kjb_pthread_t* tid);
+int get_ivi_pthread_self(ivi_pthread_t* tid);
 
-int kjb_pthread_equal(kjb_pthread_t tid1, kjb_pthread_t tid2);
+int ivi_pthread_equal(ivi_pthread_t tid1, ivi_pthread_t tid2);
 
-int kjb_pthread_cancel(kjb_pthread_t tid);
+int ivi_pthread_cancel(ivi_pthread_t tid);
 
-int kjb_pthread_attr_init(kjb_pthread_attr_t* attr_p);
+int ivi_pthread_attr_init(ivi_pthread_attr_t* attr_p);
 
-int kjb_pthread_attr_destroy(kjb_pthread_attr_t* attr_p);
+int ivi_pthread_attr_destroy(ivi_pthread_attr_t* attr_p);
 
-int kjb_pthread_attr_setdetachstate(kjb_pthread_attr_t* attr_p, int state);
+int ivi_pthread_attr_setdetachstate(ivi_pthread_attr_t* attr_p, int state);
 
-int kjb_pthread_attr_getdetachstate(kjb_pthread_attr_t* attr_p, int* state);
+int ivi_pthread_attr_getdetachstate(ivi_pthread_attr_t* attr_p, int* state);
 
 
 
 /* MUTEX functions .............................................. */
 
-int kjb_pthread_mutex_lock(kjb_pthread_mutex_t* mutex);
+int ivi_pthread_mutex_lock(ivi_pthread_mutex_t* mutex);
 
-int kjb_pthread_mutex_trylock(kjb_pthread_mutex_t* mutex);
+int ivi_pthread_mutex_trylock(ivi_pthread_mutex_t* mutex);
 
-int kjb_pthread_mutex_unlock(kjb_pthread_mutex_t* mutex);
+int ivi_pthread_mutex_unlock(ivi_pthread_mutex_t* mutex);
 
-int kjb_pthread_mutex_init(
-    kjb_pthread_mutex_t* mutex,
-    kjb_pthread_mutexattr_t* attr
+int ivi_pthread_mutex_init(
+    ivi_pthread_mutex_t* mutex,
+    ivi_pthread_mutexattr_t* attr
 );
 
-int kjb_pthread_mutex_destroy(kjb_pthread_mutex_t* mutex);
+int ivi_pthread_mutex_destroy(ivi_pthread_mutex_t* mutex);
 
 
 
 /* THREAD SPECIFIC DATA functions ................................ */
 
-int kjb_pthread_key_create(
-    kjb_pthread_key_t *key,
+int ivi_pthread_key_create(
+    ivi_pthread_key_t *key,
     void (*destr_function) (void *)
 );
 
-int kjb_pthread_key_delete(kjb_pthread_key_t key);
+int ivi_pthread_key_delete(ivi_pthread_key_t key);
 
-int kjb_pthread_setspecific(kjb_pthread_key_t key, const void *pointer);
+int ivi_pthread_setspecific(ivi_pthread_key_t key, const void *pointer);
 
-void* kjb_pthread_getspecific(kjb_pthread_key_t key);
+void* ivi_pthread_getspecific(ivi_pthread_key_t key);
 
-int kjb_pthread_once(
-    kjb_pthread_once_t* once_control,
+int ivi_pthread_once(
+    ivi_pthread_once_t* once_control,
     void (*init_routine)(void)
 );
 
@@ -173,15 +173,15 @@ int kjb_pthread_once(
 /* Meta-wrapper functions:  they concern the wrapper itself.  Use sparingly.
    ................................................................ */
 
-int kjb_multithread_wrapper_serialization_lock(void);
+int ivi_multithread_wrapper_serialization_lock(void);
 
-int kjb_multithread_wrapper_serialization_unlock(void);
+int ivi_multithread_wrapper_serialization_unlock(void);
 
-int kjb_pthread_read_prng_seeds(kjb_uint16* s, size_t buf_length);
+int ivi_pthread_read_prng_seeds(ivi_uint16* s, size_t buf_length);
 
-int get_kjb_pthread_number(void);
+int get_ivi_pthread_number(void);
 
-void reset_kjb_pthread_counter(void);
+void reset_ivi_pthread_counter(void);
 
 /* below:  end-of-file boilerplate */
 

@@ -1,4 +1,4 @@
-/* $Id: g_util.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,15 +17,15 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_CPP_G_UTIL
-#define KJB_CPP_G_UTIL
+#ifndef IVI_CPP_G_UTIL
+#define IVI_CPP_G_UTIL
 
 #include <m_cpp/m_vector.h>
 #include <m_cpp/m_matrix.h>
 #include <m_cpp/m_vector_d.h>
 #include <m_cpp/m_matrix_d.h>
 
-namespace kjb {
+namespace ivi {
 namespace geometry {
 
 /**
@@ -42,7 +42,7 @@ Matrix get_translation_matrix(const Vector& v);
  *
  * @param   theta   The angle.
  *
- * @note    If you want 3D rotations, use kjb::Quaternion.
+ * @note    If you want 3D rotations, use ivi::Quaternion.
  */
 Matrix get_rotation_matrix(double theta);
 
@@ -54,7 +54,7 @@ Matrix get_rotation_matrix(double theta);
  * @param   u   Starting vector
  * @param   v   Ending vector
  *
- * @note    If you want 3D rotations, use kjb::Quaternion.
+ * @note    If you want 3D rotations, use ivi::Quaternion.
  */
 Matrix get_rotation_matrix(const Vector& u, const Vector& v);
 
@@ -65,7 +65,7 @@ Matrix get_rotation_matrix(const Vector& u, const Vector& v);
  * @param   u   Starting vector
  * @param   v   Ending vector
  *
- * @note    If you want 3D rotations, use kjb::Quaternion.
+ * @note    If you want 3D rotations, use ivi::Quaternion.
  */
 template<size_t D>
 inline
@@ -175,7 +175,7 @@ width - width (cols) of mask Matrix
 */
 Matrix polygon_to_mask(Matrix poly,int height, int width);
 
-}} // namespace kjb
+}} // namespace ivi
 
 #endif
 

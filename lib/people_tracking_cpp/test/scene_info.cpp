@@ -46,8 +46,8 @@
 const bool VERBOSE = true;
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /** @brief  Compare two scene info structs. */
 bool compare_infos(const Scene_info& si1, const Scene_info& si2);
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
             cout << endl;
         }
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

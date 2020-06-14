@@ -1,5 +1,5 @@
 
-/* $Id: t2_segment.c 7987 2010-12-15 09:32:33Z kobus $ */
+/* $Id: t2_segment.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
      Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -164,7 +164,7 @@ static Matrix* merge_g_diff_mp = NULL;
 static Matrix* merge_sum_diff_mp = NULL;
 #endif
 /* We play it a bit fast and loose to reduce stack use during recursion. */
-static const KJB_image* cached_ip;    /* Do NOT free this! */
+static const IVI_image* cached_ip;    /* Do NOT free this! */
 static int** cached_seg_map;            /* Do NOT free this! */
 static float cached_R_min;
 static float cached_R_max;
@@ -205,13 +205,13 @@ static int initialize_caches(int num_rows, int num_cols);
     static void prepare_memory_cleanup(void);
 #endif
 
-static void get_initial_segmentation(const KJB_image* ip, int** seg_map);
+static void get_initial_segmentation(const IVI_image* ip, int** seg_map);
 
-static void fill_holes(const KJB_image* ip, int** seg_map);
+static void fill_holes(const IVI_image* ip, int** seg_map);
 
 static void find_boundary_pixels
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     int**            seg_map,
     int*             num_pixels_ptr,
     Cached_pixel*    pixel_buff
@@ -219,7 +219,7 @@ static void find_boundary_pixels
 
 static int merge_segments
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     int**            seg_map,
     int              num_boundary_pixels,
     Cached_pixel*    boundary_pixels,
@@ -248,7 +248,7 @@ static int merge_segment_pair
 
 static int get_segment_pixels
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Segmentation_t2*    segment_info_ptr,
     int              num_segments,
     int*             pixel_counts,
@@ -288,7 +288,7 @@ static void grow_segment_using_rg_var_and_lum_diff_4(int i, int j);
 static void grow_segment_8(int i, int j);
 static void grow_segment_using_rg_var_and_lum_diff_8(int i, int j);
 static void remark_segment(int i, int j, int new_seg_num);
-static void zero_seg_map(const KJB_image* ip, int** seg_map);
+static void zero_seg_map(const IVI_image* ip, int** seg_map);
 
 #ifdef TEST
 static int verify_segmentation(Segmentation_t2* image_segment_info_ptr);
@@ -1660,7 +1660,7 @@ int t2_set_segmentation_options(const char* option, const char* value)
  *
  * This routine segments an image into regions. The segmentation is done under
  * the control of a large number of options normally exposed to the user, and
- * also accessable using kjb_set(). The routine makes minor changes to the image
+ * also accessable using ivi_set(). The routine makes minor changes to the image
  * to ensure consistency between the segmentation and the image. If you do not
  * want the image to be changed, you MUST make a copy. The routine fills a
  * structure which includes:
@@ -1697,7 +1697,7 @@ int t2_set_segmentation_options(const char* option, const char* value)
 
 int t2_segment_image
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Segmentation_t2**   segment_info_ptr_ptr
 )
 {
@@ -1796,7 +1796,7 @@ int t2_segment_image
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static void get_initial_segmentation(const KJB_image* ip, int** seg_map)
+static void get_initial_segmentation(const IVI_image* ip, int** seg_map)
 {
     int num_rows = ip->num_rows;
     int num_cols = ip->num_cols;
@@ -1908,7 +1908,7 @@ static void get_initial_segmentation(const KJB_image* ip, int** seg_map)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static void fill_holes(const KJB_image* ip, int** seg_map)
+static void fill_holes(const IVI_image* ip, int** seg_map)
 {
     int i, j;
     int num_rows = ip->num_rows;
@@ -2034,7 +2034,7 @@ static void fill_holes(const KJB_image* ip, int** seg_map)
 
 static void find_boundary_pixels
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     int**            seg_map,
     int*             num_pixels_ptr,
     Cached_pixel*    pixel_buff
@@ -2095,7 +2095,7 @@ static void find_boundary_pixels
 */
 static int merge_segments
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     int**            seg_map,
     int              num_boundary_pixels,
     Cached_pixel*    boundary_pixels,
@@ -2136,7 +2136,7 @@ static int merge_segments
 
         free_2D_int_array(merge_counts);
 
-        kjb_free(segment_indices_after_merging);
+        ivi_free(segment_indices_after_merging);
         NRE(segment_indices_after_merging = INT_MALLOC(num_segments));
 
         NRE(merge_counts = allocate_2D_int_array(num_segments, num_segments));
@@ -2394,7 +2394,7 @@ static int merge_segment_pair
 
 static int get_segment_pixels
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Segmentation_t2*    segment_info_ptr,
     int              num_segments,
     int*             pixel_counts,
@@ -3516,7 +3516,7 @@ static int find_neighbours(Segmentation_t2* image_segment_info_ptr)
     {
         verbose_pso(10, "Bumping up storage for neighbours.\n");
 
-        kjb_free(cached_neighbours);
+        ivi_free(cached_neighbours);
         NRE(cached_neighbours = INT_MALLOC(num_segments));
         prev_num_segments = num_segments;
     }
@@ -4162,7 +4162,7 @@ static void grow_segment(int i, int j)
     extern double cached_g_chrom_sum;
     extern double cached_r_chrom_sum;
     extern int**              cached_seg_map;
-    extern const KJB_image* cached_ip;
+    extern const IVI_image* cached_ip;
     extern float              cached_R_min;
     extern float              cached_R_max;
     extern float              cached_G_min;
@@ -4492,7 +4492,7 @@ static int grow_segment_using_rg_var_and_lum_diff(int i, int j)
     extern int   cached_num_cols;
     extern int   cached_num_rows;
     extern int**              cached_seg_map;
-    extern const KJB_image* cached_ip;
+    extern const IVI_image* cached_ip;
     extern float              cached_r_chrom_min;
     extern float              cached_r_chrom_max;
     extern float              cached_g_chrom_min;
@@ -5723,7 +5723,7 @@ static int chase_initial_segment_numbers(int seg_num)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static void zero_seg_map(const KJB_image* ip, int** seg_map)
+static void zero_seg_map(const IVI_image* ip, int** seg_map)
 {
     int num_rows = ip->num_rows;
     int num_cols = ip->num_cols;
@@ -5779,7 +5779,7 @@ static int initialize_caches(int num_rows, int num_cols)
         verbose_pso(2, "Bumping one dimensional caches from %,d to %,d.\n",
                     prev_num_pixels, num_pixels);
 
-        kjb_free(cached_pixels);
+        ivi_free(cached_pixels);
         NRE(cached_pixels = N_TYPE_MALLOC(Cached_pixel, 4 * num_pixels));
     }
 
@@ -5790,15 +5790,15 @@ static int initialize_caches(int num_rows, int num_cols)
         verbose_pso(2, "Bumping segment oriented caches from %,d to %,d.\n",
                     prev_max_num_segments, max_num_segments);
 
-        kjb_free(cached_pixel_counts);
-        kjb_free(cached_initial_segment_numbers);
-        kjb_free(cached_good_segment_numbers);
-        kjb_free(cached_R_means);
-        kjb_free(cached_G_means);
-        kjb_free(cached_B_means);
-        kjb_free(cached_r_chrom_means);
-        kjb_free(cached_g_chrom_means);
-        kjb_free(cached_sum_RGB_means);
+        ivi_free(cached_pixel_counts);
+        ivi_free(cached_initial_segment_numbers);
+        ivi_free(cached_good_segment_numbers);
+        ivi_free(cached_R_means);
+        ivi_free(cached_G_means);
+        ivi_free(cached_B_means);
+        ivi_free(cached_r_chrom_means);
+        ivi_free(cached_g_chrom_means);
+        ivi_free(cached_sum_RGB_means);
 
         NRE(cached_pixel_counts = INT_MALLOC(max_num_segments));
         NRE(cached_initial_segment_numbers = INT_MALLOC(1 + max_num_segments));
@@ -5845,7 +5845,7 @@ static int get_target_image_segment_info
             free_image_segment(image_seg_info_ptr->segments[ i ]);
         }
 
-        kjb_free(image_seg_info_ptr->segments);
+        ivi_free(image_seg_info_ptr->segments);
         image_seg_info_ptr->segments = NULL;
 
         if (    (image_seg_info_ptr->num_rows != num_rows)
@@ -5870,7 +5870,7 @@ static int get_target_image_segment_info
 
         if (image_seg_info_ptr->seg_map == NULL)
         {
-            kjb_free(image_seg_info_ptr);
+            ivi_free(image_seg_info_ptr);
             return ERROR;
         }
     }
@@ -5923,7 +5923,7 @@ static Segment_t2* create_image_segment
 
     if (seg_ptr->pixels == NULL)
     {
-        kjb_free(seg_ptr);
+        ivi_free(seg_ptr);
         return NULL;
     }
 
@@ -5975,9 +5975,9 @@ void t2_free_segmentation(Segmentation_t2* image_segment_info_ptr)
             free_image_segment(image_segment_info_ptr->segments[ i ]);
         }
 
-        kjb_free(image_segment_info_ptr->segments);
+        ivi_free(image_segment_info_ptr->segments);
         free_2D_int_array(image_segment_info_ptr->seg_map);
-        kjb_free(image_segment_info_ptr);
+        ivi_free(image_segment_info_ptr);
     }
 }
 
@@ -5988,13 +5988,13 @@ static void free_image_segment(Segment_t2* segment_ptr)
 
     if (segment_ptr != NULL)
     {
-        kjb_free(segment_ptr->pixels);
-        kjb_free(segment_ptr->boundary_pixels);
+        ivi_free(segment_ptr->pixels);
+        ivi_free(segment_ptr->boundary_pixels);
         free_matrix(segment_ptr->outside_boundary_mp);
-        kjb_free(segment_ptr->neighbours);
+        ivi_free(segment_ptr->neighbours);
     }
 
-    kjb_free(segment_ptr);
+    ivi_free(segment_ptr);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -6023,26 +6023,26 @@ static void free_allocated_static_data(void)
 {
 
 
-    kjb_free(cached_neighbours);
+    ivi_free(cached_neighbours);
 
 #ifdef IMPLEMENT_MERGING
     free_2D_int_array(merge_counts);
     free_matrix(merge_r_diff_mp);
     free_matrix(merge_g_diff_mp);
     free_matrix(merge_sum_diff_mp);
-    kjb_free(segment_indices_after_merging);
+    ivi_free(segment_indices_after_merging);
 #endif
 
-    kjb_free(cached_pixels);
-    kjb_free(cached_pixel_counts);
-    kjb_free(cached_initial_segment_numbers);
-    kjb_free(cached_good_segment_numbers);
-    kjb_free(cached_R_means);
-    kjb_free(cached_G_means);
-    kjb_free(cached_B_means);
-    kjb_free(cached_r_chrom_means);
-    kjb_free(cached_g_chrom_means);
-    kjb_free(cached_sum_RGB_means);
+    ivi_free(cached_pixels);
+    ivi_free(cached_pixel_counts);
+    ivi_free(cached_initial_segment_numbers);
+    ivi_free(cached_good_segment_numbers);
+    ivi_free(cached_R_means);
+    ivi_free(cached_G_means);
+    ivi_free(cached_B_means);
+    ivi_free(cached_r_chrom_means);
+    ivi_free(cached_g_chrom_means);
+    ivi_free(cached_sum_RGB_means);
     free_int_matrix(cached_magnified_boundary_points);
 
     free_int_matrix(cached_magnified_seg_map);

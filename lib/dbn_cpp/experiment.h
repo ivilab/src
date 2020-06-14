@@ -16,10 +16,10 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: experiment.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: experiment.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_EXPERIMENT_H
-#define KJB_TIES_EXPERIMENT_H
+#ifndef IVI_TIES_EXPERIMENT_H
+#define IVI_TIES_EXPERIMENT_H
 
 #include <m_cpp/m_vector.h>
 #include <l_cpp/l_filesystem.h>
@@ -31,7 +31,7 @@
 #include "dbn_cpp/coupled_oscillator.h"
 #include "dbn_cpp/linear_state_space.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 struct Data_options
@@ -296,6 +296,6 @@ struct Ties_experiment
 
 void generate_model_name(Ties_experiment& exp);
 
-}} // namspace kjb::ties
-#endif // KJB_TIES_EXPERIMENT_H
+}} // namspace ivi::ties
+#endif // IVI_TIES_EXPERIMENT_H
 

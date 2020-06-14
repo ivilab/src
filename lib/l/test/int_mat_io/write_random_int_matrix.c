@@ -1,5 +1,5 @@
 
-/* $Id: write_random_int_matrix.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: write_random_int_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /*
@@ -16,17 +16,17 @@ int main(argc, argv)
     Int_matrix* mp       = NULL;
     int     num_rows;
     int     num_cols;
-    extern int kjb_debug_level;
+    extern int ivi_debug_level;
 
-    kjb_debug_level = 0; 
+    ivi_debug_level = 0; 
 
-    kjb_init();
+    ivi_init();
     check_num_args(argc, 2, 3, NULL); 
 
     EPETE(ss1i(argv[ 1 ], &num_rows));
     EPETE(ss1i(argv[ 2 ], &num_cols));
 
-    kjb_seed_rand(100, 200); 
+    ivi_seed_rand(100, 200); 
     EPETE(get_random_matrix(&random_mp, num_rows, num_cols)); 
     EPETE(ow_multiply_matrix_by_scalar(random_mp, 100.0));
     EPETE(copy_matrix_to_int_matrix(&mp, random_mp)); 

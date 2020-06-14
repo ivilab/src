@@ -4,7 +4,7 @@
  * @brief Implemenation of finalize method for wrapper on OpenSSL EVP object
  */
 /*
- * $Id: wrap_openssl_evp.cpp 24606 2019-12-07 22:02:46Z kobus $
+ * $Id: wrap_openssl_evp.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -14,16 +14,16 @@
 #include <iostream>
 #include "wrap_openssl_cpp/wrap_openssl_evp.h"
 
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
 #include <algorithm>
 #endif
 
-namespace kjb
+namespace ivi
 {
 
 void OpenSSL_EVP::finalize()
 {
-#ifdef KJB_HAVE_OPENSSL
+#ifdef IVI_HAVE_OPENSSL
     Unit md[ EVP_MAX_MD_SIZE ];
     unsigned mdsize = 0;
     ETX( 0 == EVP_DigestFinal_ex( &m_context, md, &mdsize ) );
@@ -34,5 +34,5 @@ void OpenSSL_EVP::finalize()
 #endif
 }
 
-} // end namespace kjb
+} // end namespace ivi
 

@@ -6,13 +6,13 @@
 #include <l_cpp/l_test.h>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 #define EPSI 0.00001
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     Normal_distribution X(2, 0.5);
     Normal_conditional_distribution ZlY(Normal_on_normal_dependence(0.5));

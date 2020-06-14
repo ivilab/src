@@ -1,5 +1,5 @@
 
-/* $Id: c_colour_space.c 4819 2009-11-20 18:22:08Z kobus $ */
+/* $Id: c_colour_space.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -155,7 +155,7 @@ int get_rgb_to_xyz_matrix(Matrix **mpp)
  * Converts matrix RGB to L*a*b.
  *
  * This routine converts matrix RGB to L*a*b. This conversion uses an RGB to XYZ
- * matrix. If KJB library options are being made available to the user, then
+ * matrix. If IVI library options are being made available to the user, then
  * this matrix can be set using the option "rgb-to-xyz-file".  If no conversion
  * file has been set, than a default one is used. If no default is available,
  * then sRGB is used. The contents of the third argument, white_rgb_vp, is used
@@ -221,7 +221,7 @@ int convert_matrix_rgb_to_lab
  * Converts matrix RGB to XYZ
  *
  * This routine converts the matrix RGB to XYZ based on an RGB to XYZ matrix.
- * If KJB library options are being made available to the user, then
+ * If IVI library options are being made available to the user, then
  * this matrix can be set using the option "rgb-to-xyz-file".  If no conversion
  * file has been set, than a default one is used. If no default is available,
  * then sRGB is used.
@@ -262,7 +262,7 @@ int convert_matrix_rgb_to_xyz(Matrix **out_mpp, const Matrix *in_mp)
  * Converts vector RGB to L*a*b.
  *
  * This routine converts vector RGB to L*a*b. This conversion uses an RGB to XYZ
- * vector. If KJB library options are being made available to the user, then
+ * vector. If IVI library options are being made available to the user, then
  * this vector can be set using the option "rgb-to-xyz-file".  If no conversion
  * file has been set, than a default one is used. If no default is available,
  * then sRGB is used. The contents of the third argument, white_rgb_vp, is used
@@ -350,7 +350,7 @@ int get_reciprocal_of_white_xyz
  * Converts vector RGB to XYZ
  *
  * This routine converts the vector RGB to XYZ based on an RGB to XYZ vector.
- * If KJB library options are being made available to the user, then
+ * If IVI library options are being made available to the user, then
  * this vector can be set using the option "rgb-to-xyz-file".  If no conversion
  * file has been set, than a default one is used. If no default is available,
  * then sRGB is used.

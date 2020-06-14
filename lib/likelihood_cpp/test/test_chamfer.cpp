@@ -1,4 +1,4 @@
-/* $Id: test_chamfer.cpp 17425 2014-08-30 00:34:38Z predoehl $ */
+/* $Id: test_chamfer.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -23,22 +23,22 @@
 #define DEPS_MET 1
 
 #include <iostream>
-#ifndef KJB_HAVE_CUDA
+#ifndef IVI_HAVE_CUDA
 #undef DEPS_MET
 #define DEPS_MET 0
 #endif
 
-#ifndef KJB_HAVE_CUDPP
+#ifndef IVI_HAVE_CUDPP
 #undef DEPS_MET
 #define DEPS_MET 0
 #endif 
 
-#ifndef KJB_HAVE_GLEW
+#ifndef IVI_HAVE_GLEW
 #undef DEPS_MET
 #define DEPS_MET   0
 #endif
 
-#ifndef KJB_HAVE_OPENGL
+#ifndef IVI_HAVE_OPENGL
 #undef DEPS_MET
 #define DEPS_MET   0
 #endif
@@ -62,9 +62,9 @@
 
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::gpu;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::gpu;
+using namespace ivi::opengl;
 
 
 // make a single renderable look like a multi-view renderable
@@ -197,7 +197,7 @@ int main(int argc, char* argv[])
     Gpu_chamfer_likelihood likelihood(width, height);
 
     // create cuda structures
-    std::vector<kjb::Int_matrix> positions = xfm.position_map();
+    std::vector<ivi::Int_matrix> positions = xfm.position_map();
     CUdeviceptr cu_distances = likelihood.create_distance_map(xfm.distance_map());
     CUdeviceptr cu_positions = likelihood.create_position_map(positions[0], positions[1]);
 
@@ -275,7 +275,7 @@ int main(int argc, char* argv[])
 
     // get 4 numbers
     // compare and return
-    kjb_gpu_debug_to_vector_uint(cu_distances, width, height, width * sizeof(unsigned int));
+    ivi_gpu_debug_to_vector_uint(cu_distances, width, height, width * sizeof(unsigned int));
     }
     catch(std::exception& er) {}
     catch(Cuda_error& er)

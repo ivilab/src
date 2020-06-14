@@ -4,7 +4,7 @@
  * @brief Implementation for rational-coordinate points, line segments
  */
 /*
- * $Id: ratpoint.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: ratpoint.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -17,7 +17,7 @@
 namespace
 {
 
-using kjb::qd::RatPoint;
+using ivi::qd::RatPoint;
 
 
 /**
@@ -59,7 +59,7 @@ inline RatPoint::Rat dot_product(const RatPoint& a, const RatPoint& b)
 
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -72,7 +72,7 @@ bool is_intersecting(
 {
     if (s.a == t.a || s.a == t.b || s.b == t.a || s.b == t.b) return true;
 
-    kjb::qd::PixPath p = kjb::qd::PixPath::reserve(4);
+    ivi::qd::PixPath p = ivi::qd::PixPath::reserve(4);
     p.push_back(s.a);
     p.push_back(s.b);
     p.push_back(t.a);
@@ -100,7 +100,7 @@ RatPoint line_intersection(
 
     // matrix a is nonsingular, right?  d is its determinant.
     const RatPoint::Rat d = a[0]*a[3] - a[1]*a[2];
-    KJB(ASSERT(d != RatPoint::Rat(0)));
+    IVI(ASSERT(d != RatPoint::Rat(0)));
 
     // compute matrix inverse of a
     ainv[0] =  a[3] / d;
@@ -112,10 +112,10 @@ RatPoint line_intersection(
     // ainv * a equals the identity matrix, right?
     // this is exact, of course, because of the rational numeric type
     const RatPoint::Rat Z=0, U=1;
-    KJB(ASSERT(ainv[0]*a[0] + ainv[1]*a[2] == U));
-    KJB(ASSERT(ainv[0]*a[1] + ainv[1]*a[3] == Z));
-    KJB(ASSERT(ainv[2]*a[0] + ainv[3]*a[2] == Z));
-    KJB(ASSERT(ainv[2]*a[1] + ainv[3]*a[3] == U));
+    IVI(ASSERT(ainv[0]*a[0] + ainv[1]*a[2] == U));
+    IVI(ASSERT(ainv[0]*a[1] + ainv[1]*a[3] == Z));
+    IVI(ASSERT(ainv[2]*a[0] + ainv[3]*a[2] == Z));
+    IVI(ASSERT(ainv[2]*a[1] + ainv[3]*a[3] == U));
 #endif
 
     b[0] = t.a.x - s.a.x;
@@ -262,7 +262,7 @@ RatPoint closest_point_on_seg(
                        qb = query - domain.b;
         const RatPoint::Rat dista2 = qa.x * qa.x + qa.y * qa.y,
                             distb2 = qb.x * qb.x + qb.y * qb.y;
-        KJB(ASSERT(dista2 != distb2));
+        IVI(ASSERT(dista2 != distb2));
         return distb2 < dista2 ? domain.b : domain.a;
     }
 

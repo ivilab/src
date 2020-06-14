@@ -20,7 +20,7 @@
 #include "l_cpp/l_exception.h"
 #include <limits>
 
-namespace kjb {
+namespace ivi {
 /**
  * @class Line
  *
@@ -35,7 +35,7 @@ class Line
         Line() : line_params(3, 1.0) {}
 
         /** @brief Constructor from two points on the line */
-        Line(const kjb::Vector & point_1, const kjb::Vector & point_2);
+        Line(const ivi::Vector & point_1, const ivi::Vector & point_2);
         
         /** @brief Constructs a new Line_segment from line parameters a, b, c
          * as in ax + by + c = 0 */
@@ -48,11 +48,11 @@ class Line
 
         /** @brief Constructs a new Line_segment from line parameters vector [a, b, c]
          * as in ax + by + c = 0 */
-        Line(const kjb::Vector & iparams)
+        Line(const ivi::Vector & iparams)
         {
             if(iparams.size() != 3)
             {
-                throw kjb::Illegal_argument("Line constructor, input parameter vector must have size 3");
+                throw ivi::Illegal_argument("Line constructor, input parameter vector must have size 3");
             }
             line_params = iparams;
         }
@@ -86,7 +86,7 @@ class Line
         }
         
         /** @brief Returns the line parameters */
-        inline const kjb::Vector & get_params() const
+        inline const ivi::Vector & get_params() const
         {
             return line_params;
         }
@@ -96,7 +96,7 @@ class Line
         {
             if( fabs(line_params(1)) < FLT_EPSILON )
             {
-                throw kjb::KJB_error("Cannot compute y coordinate for a vertical line");
+                throw ivi::IVI_error("Cannot compute y coordinate for a vertical line");
             }
             return (-line_params(0)*ix - line_params(2))/line_params(1);
         }
@@ -120,11 +120,11 @@ class Line
         }
         
         /** @brief Sets the line parameters [a,b,c] of the line as in  ax + by + c = 0*/
-        inline void set_line_params(const kjb::Vector & iparams)
+        inline void set_line_params(const ivi::Vector & iparams)
         {
             if(iparams.size() != 3)
             {
-                throw kjb::Illegal_argument("Line constructor, input parameter vector must have size 3");
+                throw ivi::Illegal_argument("Line constructor, input parameter vector must have size 3");
             }
             line_params = iparams;
         }
@@ -133,7 +133,7 @@ class Line
         {
             if(point.size() < 2)
             {
-                throw kjb::Illegal_argument("point_is_on_line(), point's size < 2");
+                throw ivi::Illegal_argument("point_is_on_line(), point's size < 2");
             }
 
             return fabs(get_a()*point(0)+get_b()*point(1)+get_c()) < FLT_EPSILON;
@@ -142,10 +142,10 @@ class Line
         /** @brief Find the intersection between two lines, Returns false
          *  if the lines are parallel
          */
-        static bool find_line_intersection(const Line & l1, const Line & l2, kjb::Vector & ints);
+        static bool find_line_intersection(const Line & l1, const Line & l2, ivi::Vector & ints);
 
         /** @brief Finds the perpendicular distance between a line and a point */
-        double find_distance_to_point(const kjb::Vector & point) const;
+        double find_distance_to_point(const ivi::Vector & point) const;
 
         /** @brief Project a point onto a line 
          *  @return The projected point on the line
@@ -155,18 +155,18 @@ class Line
     private:
 
         /** @brief X coordinate of the centre of this line segment */
-        kjb::Vector line_params;
+        ivi::Vector line_params;
 
 };
 
 
 bool intersect_3D_line_with_plane
 (
-    kjb::Vector & intersection,
+    ivi::Vector & intersection,
     double &t,
-    const kjb::Vector & point,
-    const kjb::Vector & direction,
-    const kjb::Vector & plane
+    const ivi::Vector & point,
+    const ivi::Vector & direction,
+    const ivi::Vector & plane
 );
 
 
@@ -182,8 +182,8 @@ double intersect_line_with_plane_dispatch_
     const VectorType& plane_normal
 )
 {
-    double numerator = kjb::dot((plane_point - line_point), plane_normal);
-    double denominator = kjb::dot(line_direction, plane_normal);
+    double numerator = ivi::dot((plane_point - line_point), plane_normal);
+    double denominator = ivi::dot(line_direction, plane_normal);
 
     if(fabs(denominator) < FLT_EPSILON)
     {
@@ -220,10 +220,10 @@ double intersect_line_with_plane_dispatch_
  */
 inline double intersect_line_with_plane
 (
-    const kjb::Vector& line_point,
-    const kjb::Vector& line_direction,
-    const kjb::Vector& plane_point,
-    const kjb::Vector& plane_normal
+    const ivi::Vector& line_point,
+    const ivi::Vector& line_direction,
+    const ivi::Vector& plane_point,
+    const ivi::Vector& plane_normal
 )
 {
     return intersect_line_with_plane_dispatch_(
@@ -239,10 +239,10 @@ inline double intersect_line_with_plane
 template <std::size_t D>
 inline double intersect_line_with_plane
 (
-    const kjb::Vector_d<D>& line_point,
-    const kjb::Vector_d<D>& line_direction,
-    const kjb::Vector_d<D>& plane_point,
-    const kjb::Vector_d<D>& plane_normal
+    const ivi::Vector_d<D>& line_point,
+    const ivi::Vector_d<D>& line_direction,
+    const ivi::Vector_d<D>& plane_point,
+    const ivi::Vector_d<D>& plane_normal
 )
 {
     return intersect_line_with_plane_dispatch_(
@@ -348,7 +348,7 @@ std::pair<double, double> skew_lines_intersection
     return std::make_pair(u1, u2);
 }
 
-} // namespace kjb
+} // namespace ivi
 
 #endif
 

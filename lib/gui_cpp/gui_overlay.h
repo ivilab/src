@@ -1,4 +1,4 @@
-/* $Id: gui_overlay.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_overlay.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,16 +19,16 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_OVERLAY_H
-#define KJB_CPP_GUI_OVERLAY_H
+#ifndef IVI_CPP_GUI_OVERLAY_H
+#define IVI_CPP_GUI_OVERLAY_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <boost/function.hpp>
 #include <gr_cpp/gr_renderable.h>
 #include <gui_cpp/gui_event_listener.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -42,7 +42,7 @@ namespace gui
  *    Accessor functions for the overlay dimensions will always give screen coordinates.
  *    Origin is at bottom-left.
  */
-class Overlay : public kjb::Renderable
+class Overlay : public ivi::Renderable
 {
 public:
     Overlay();
@@ -104,8 +104,8 @@ private:
 };
 
 } // namespace gui
-} //namespace kjb
+} //namespace ivi
 
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_OPENGL */
 
 #endif

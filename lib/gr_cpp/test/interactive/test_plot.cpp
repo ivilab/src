@@ -17,7 +17,7 @@
 |
 * =========================================================================== */
 
-/* $Id: test_plot.cpp 13030 2012-09-26 17:27:19Z ernesto $ */
+/* $Id: test_plot.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <gr_cpp/gr_opengl.h>
@@ -25,8 +25,8 @@
 #include <algorithm>
 #include <cmath>
 
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 int main(int, char**)
 {

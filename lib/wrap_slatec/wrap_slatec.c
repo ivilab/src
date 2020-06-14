@@ -1,5 +1,5 @@
 
-/* $Id: wrap_slatec.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: wrap_slatec.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -47,12 +47,12 @@ extern "C" {
 /*
 // Un-comment to force NO SLATEC
 //
-#undef KJB_HAVE_SLATEC
+#undef IVI_HAVE_SLATEC
 */
 
-#ifdef KJB_HAVE_SLATEC
+#ifdef IVI_HAVE_SLATEC
 /* -----------------------------------------------------------------------------
-|                            KJB_HAVE_SLATEC
+|                            IVI_HAVE_SLATEC
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -70,7 +70,7 @@ extern "C" {
 |                                  /\
 |                                 /||\
 |                                  ||
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 ----------------------------------------------------------------------------- */
 #else
 /* -----------------------------------------------------------------------------
@@ -92,9 +92,9 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 
 
-#ifdef KJB_HAVE_SLATEC
+#ifdef IVI_HAVE_SLATEC
 /* -----------------------------------------------------------------------------
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -406,7 +406,7 @@ int do_dlsei_quadratic
                                             lb_vp, ub_vp) == ERROR)
             {
                 add_error("Currently this is only treated as a WARNING"); 
-                kjb_print_error(); 
+                ivi_print_error(); 
             }
         }
 
@@ -437,10 +437,10 @@ int do_dlsei_quadratic
 
     free_matrix(bound_constraint_mp);
 
-    kjb_free(W);
-    kjb_free(X);
-    kjb_free(WS);
-    kjb_free(IP);
+    ivi_free(W);
+    ivi_free(X);
+    ivi_free(WS);
+    ivi_free(IP);
 
     return result;
 }
@@ -448,7 +448,7 @@ int do_dlsei_quadratic
 |                                  /\
 |                                 /||\
 |                                  ||
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 ----------------------------------------------------------------------------- */
 #else
 /* -----------------------------------------------------------------------------
@@ -486,9 +486,9 @@ int do_dlsei_quadratic
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_SLATEC
+#ifdef IVI_HAVE_SLATEC
 /* -----------------------------------------------------------------------------
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -853,7 +853,7 @@ int do_dbocls_quadratic
                                             lb_vp, ub_vp) == ERROR)
             {
                 add_error("Currently this is only treated as a WARNING"); 
-                kjb_print_error(); 
+                ivi_print_error(); 
             }
         }
 
@@ -861,13 +861,13 @@ int do_dbocls_quadratic
         free_vector(diff_vp);
     }
 
-    kjb_free(W);
-    kjb_free(BL);
-    kjb_free(BU);
-    kjb_free(IND);
-    kjb_free(X);
-    kjb_free(RW);
-    kjb_free(IW);
+    ivi_free(W);
+    ivi_free(BL);
+    ivi_free(BU);
+    ivi_free(IND);
+    ivi_free(X);
+    ivi_free(RW);
+    ivi_free(IW);
 
     free_vector(input_lb_vp);
     free_vector(input_ub_vp);
@@ -880,7 +880,7 @@ int do_dbocls_quadratic
 |                                  /\
 |                                 /||\
 |                                  ||
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 ----------------------------------------------------------------------------- */
 #else
 /* -----------------------------------------------------------------------------
@@ -918,9 +918,9 @@ int do_dbocls_quadratic
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_SLATEC
+#ifdef IVI_HAVE_SLATEC
 /* -----------------------------------------------------------------------------
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -941,7 +941,7 @@ int slatec_i1mach(int* machine_constant_ptr, int machine_constant_id)
 |                                  /\
 |                                 /||\
 |                                  ||
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 ----------------------------------------------------------------------------- */
 #else
 /* -----------------------------------------------------------------------------
@@ -969,9 +969,9 @@ int slatec_i1mach
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_SLATEC
+#ifdef IVI_HAVE_SLATEC
 /* -----------------------------------------------------------------------------
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 |                                  ||
 |                                 \||/
 |                                  \/
@@ -992,7 +992,7 @@ int slatec_d1mach(double* machine_constant_ptr, int machine_constant_id)
 |                                  /\
 |                                 /||\
 |                                  ||
-|                             KJB_HAVE_SLATEC
+|                             IVI_HAVE_SLATEC
 ----------------------------------------------------------------------------- */
 #else
 /* -----------------------------------------------------------------------------
@@ -1020,7 +1020,7 @@ int slatec_d1mach
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifndef KJB_HAVE_SLATEC
+#ifndef IVI_HAVE_SLATEC
 /* -----------------------------------------------------------------------------
 |                              no SLATEC
 |                                  ||

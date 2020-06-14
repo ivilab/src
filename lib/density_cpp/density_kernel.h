@@ -30,7 +30,7 @@
 #include <iterator>
 #include <cmath>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Fixed kernel density estimator.
@@ -215,7 +215,7 @@ inline double fkde_normal
     return fkde(x, first, last, K, h.begin());
 }
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /*DENSITY_KERNEL_H */
 

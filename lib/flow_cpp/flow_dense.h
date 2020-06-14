@@ -16,10 +16,10 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flow_dense.h 14083 2013-03-12 18:41:07Z jguan1 $ */
+/* $Id: flow_dense.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_FLOW_DENSE_H
-#define KJB_FLOW_DENSE_H
+#ifndef IVI_FLOW_DENSE_H
+#define IVI_FLOW_DENSE_H
 
 #include <m_cpp/m_matrix.h>
 #include <gr_cpp/gr_2D_bounding_box.h>
@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -47,6 +47,6 @@ Vector average_flow
  */
 Matrix flow_magnitude(const Matrix& x_flows, const Matrix& y_flows);
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

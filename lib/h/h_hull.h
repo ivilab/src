@@ -1,5 +1,5 @@
 
-/* $Id: h_hull.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: h_hull.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -40,7 +40,7 @@ namespace kjb_c {
  *
  * Convex hull type
  *
- * This type is the convex hull type for the KJB library. Most fields are self
+ * This type is the convex hull type for the IVI library. Most fields are self
  * explanatory. The rows of the matri *vertex_mp contain the
  * vertice vectors. Similarly, the normal vectors are the rows of the matrix
  * *normal_mp. The values *b_value_vp derived values. For each facet, they are

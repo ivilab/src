@@ -27,7 +27,7 @@
 
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 
 
 void test_parapiped()

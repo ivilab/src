@@ -20,7 +20,7 @@
 
 #define MAX_NUM_ENTITIES 30
 
-namespace kjb{
+namespace ivi{
 
 class Geometric_context{
 
@@ -63,12 +63,12 @@ void draw_geometric_context(Image & img) const;
 
 void draw_segmentation(Image & img) const ;
 
-double compute_score(const kjb::Image & img) const;
-double compute_score(const kjb::Int_matrix & map) const;
+double compute_score(const ivi::Image & img) const;
+double compute_score(const ivi::Int_matrix & map) const;
 double compute_score
 (
-    const kjb::Int_matrix & map,
-    kjb::Vector & individual_scores,
+    const ivi::Int_matrix & map,
+    ivi::Vector & individual_scores,
     int num_entities
 ) const;
 
@@ -105,6 +105,6 @@ private:
 
 }; //class Geometric_context
 
-}//namespace kjb
+}//namespace ivi
 
 #endif 

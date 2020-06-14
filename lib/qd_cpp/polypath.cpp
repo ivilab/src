@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: polypath.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: polypath.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h" /* For ASSERT */
@@ -20,9 +20,9 @@
 namespace
 {
 
-using kjb::qd::PixPath;
-using kjb::qd::PixPoint;
-using kjb::Vector2;
+using ivi::qd::PixPath;
+using ivi::qd::PixPoint;
+using ivi::Vector2;
 
 const char* E_WHISKER = "Input has a whisker bend";
 const char* E_DUPLICATE = "Input path has a duplicate point";
@@ -33,18 +33,18 @@ Vector2 unit_vector(const PixPoint& a, const PixPoint& b)
     {
         return Vector2(b.x - a.x, b.y - a.y) * (1.0 / b.dist(a));
     }
-    KJB_THROW_2(kjb::Illegal_argument, "endpoints are not distinct");
+    IVI_THROW_2(ivi::Illegal_argument, "endpoints are not distinct");
 }
 
 
 // Test whether the two points are identical.
-// Implemented as a macro b/c KJB_THROW is a macro.
+// Implemented as a macro b/c IVI_THROW is a macro.
 #define NO_DUPLICATES(a, b)                                    \
     do                                                         \
     {                                                          \
         if ((a) == (b))                                        \
         {                                                      \
-            KJB_THROW_2(kjb::Illegal_argument, E_DUPLICATE);   \
+            IVI_THROW_2(ivi::Illegal_argument, E_DUPLICATE);   \
         }                                                      \
     }                                                          \
     while(0)
@@ -72,8 +72,8 @@ PixPath interpolate_and_build_map(
     for (PixPath::const_iterator j=sp.begin(), i=j++; j != sp.end(); ++i, ++j)
     {
         NO_DUPLICATES(*i, *j);
-        PixPath line_seg(kjb::qd::bresenham_line(*i, *j));
-        KJB(ASSERT(line_seg.size() > 0));
+        PixPath line_seg(ivi::qd::bresenham_line(*i, *j));
+        IVI(ASSERT(line_seg.size() > 0));
         sdmap -> push_back(sdmap -> back() + line_seg.size() - 1);
         dense_path.append_no_overlap(line_seg);
     }
@@ -116,7 +116,7 @@ void get_tangents(
         const double mag = out -> at(sdmap[sx]).magnitude();
         if (mag <= 0)
         {
-            KJB_THROW_2(kjb::Illegal_argument, E_WHISKER);
+            IVI_THROW_2(ivi::Illegal_argument, E_WHISKER);
         }
         out -> at(sdmap[sx]) *= 1.0 / mag;      // normalize to unit length
     }
@@ -126,7 +126,7 @@ void get_tangents(
 
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -157,7 +157,7 @@ int PolyPath::debug_print(std::ostream& os) const
     if (SZ != m_tangent.size())
     {
         os << "size of dense path does not match size of tangent array.\n";
-        return kjb_c::ERROR;
+        return ivi_c::ERROR;
     }
 
     for (size_t iii = 0, sdix = 0; iii < SZ; ++iii)
@@ -174,7 +174,7 @@ int PolyPath::debug_print(std::ostream& os) const
                 std::copy(sdmap.begin(), sdmap.end(),
                                     std::ostream_iterator<size_t>(os, ", "));
                 os << '\n';
-                return kjb_c::ERROR;
+                return ivi_c::ERROR;
             }
         }
         else
@@ -186,7 +186,7 @@ int PolyPath::debug_print(std::ostream& os) const
             << "\t tan=(" << m_tangent[iii].x() << ", " << m_tangent[iii].y()
             << ")\n";
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -195,7 +195,7 @@ Vector2 get_unit_vector_2x_angle(const Vector2& v)
     const double m = v.magnitude();
     if (0 == m)
     {
-        KJB_THROW_2(Illegal_argument, "input vector has zero length");
+        IVI_THROW_2(Illegal_argument, "input vector has zero length");
     }
     return get_unit_vector_2x_angle_of_unit_vector(v * 1.0/m);
 }
@@ -216,8 +216,8 @@ bool is_valid_as_polypath(const PixPath& path, bool throw_failure)
     for (PixPath::const_iterator i = path.begin(); i != path.end(); )
     {
         const unsigned hit_count = path.hits(*i++);
-        KJB(ASSERT(hit_count >= 1)); // this line eventually should replace next
-        if (hit_count < 1) KJB_THROW(Cant_happen); // eventually remove this
+        IVI(ASSERT(hit_count >= 1)); // this line eventually should replace next
+        if (hit_count < 1) IVI_THROW(Cant_happen); // eventually remove this
         if (hit_count != 1)
         {
             if (throw_failure)
@@ -225,7 +225,7 @@ bool is_valid_as_polypath(const PixPath& path, bool throw_failure)
                 std::ostringstream err;
                 err << E_DUPLICATE << " at (" << (i-1)->str()
                     << ") which is hit " << hit_count << " times.";
-                KJB_THROW_2(Illegal_argument, err.str());
+                IVI_THROW_2(Illegal_argument, err.str());
             }
             return false;
         }
@@ -253,7 +253,7 @@ bool is_valid_as_polypath(const PixPath& path, bool throw_failure)
                     err << E_WHISKER << " around index " << j
                         << " comprising points (" << path[j-1].str() << "); ("
                         << path[j].str() << "); (" << path[j+1].str() << ").";
-                    KJB_THROW_2(Illegal_argument, err.str());
+                    IVI_THROW_2(Illegal_argument, err.str());
                 }
                 return false;
             }
@@ -265,5 +265,5 @@ bool is_valid_as_polypath(const PixPath& path, bool throw_failure)
 
 
 } // namespace qd
-} // namespace kjb
+} // namespace ivi
 

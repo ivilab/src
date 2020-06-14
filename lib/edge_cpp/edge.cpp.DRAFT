@@ -19,13 +19,13 @@
 
 #include <edge_cpp/edge.h>
 
-namespace kjb
+namespace ivi
 {
 
 /**For debug purposes, checks that all the c++ wrappers are
  * consistent with the underlying c structures
  */
-bool kjb::Edge_set::is_edge_set_consistenct()
+bool ivi::Edge_set::is_edge_set_consistenct()
 {
 
     double small_epsilon = 1e-80;
@@ -33,7 +33,7 @@ bool kjb::Edge_set::is_edge_set_consistenct()
     for(unsigned int i = 0; i < m_edge_set->num_edges; i++)
     {
          Edge edge = get_edge(i);
-         kjb_c::Edge c_edge = m_edge_set->edges[i];
+         ivi_c::Edge c_edge = m_edge_set->edges[i];
          if(edge.get_num_points() != c_edge.num_points)
          {
              return false;
@@ -42,7 +42,7 @@ bool kjb::Edge_set::is_edge_set_consistenct()
          for(unsigned int j = 0; j < c_edge.num_points; j++)
          {
                Edge_point ept = edge.get_edge_point(j);
-               kjb_c::Edge_point c_ept = c_edge.points[j];
+               ivi_c::Edge_point c_ept = c_edge.points[j];
                if(ept.get_col() != c_ept.col)
                {
                    return false;
@@ -115,17 +115,17 @@ Edge_set_ptr edge_image_to_edge_points(const Image& i, bool oriented)
         return Canny_edge_detector(20, 20, 1.0)(i);
     }
 
-    std::vector<kjb_c::Edge_point> edges;
+    std::vector<ivi_c::Edge_point> edges;
     edges.reserve(512);
 
     for(int row = 0; row < i.get_num_rows(); row++)
     {
         for(int col = 0; col < i.get_num_cols(); col++)
         {
-            const kjb_c::Pixel& px =  i(row, col);
+            const ivi_c::Pixel& px =  i(row, col);
             if(px.r == 0.0 || px.g == 0.0 || px.g == 0.0)
             {
-                kjb_c::Edge_point pt;
+                ivi_c::Edge_point pt;
                 pt.row = row;
                 pt.col = col;
                 pt.dcol = 0.0;
@@ -142,4 +142,4 @@ Edge_set_ptr edge_image_to_edge_points(const Image& i, bool oriented)
     return result;
 }
 
-} // namespace kjb
+} // namespace ivi

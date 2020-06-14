@@ -1,4 +1,4 @@
-/* $Id: keypoint.c 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: keypoint.c 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
  * |
  * |  Copyright (c) 1994-2012 by Kobus Barnard. 
@@ -291,7 +291,7 @@ Keypoint*   create_keypoint( void )
  *
  * Gets target keypoint 
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of keypoints. If *target_kpp is NULL, then this routine
  * creates the keypoint . If it is not null, and it is the right size (for now
  * we only use 128-dimensional descriptor), then this
@@ -493,16 +493,16 @@ void free_keypoint( Keypoint *kp )
              * otherwise problems such as double free can look like unitialized
              * memory.
             */
-/*            if (kjb_debug_level >= 10)
+/*            if (ivi_debug_level >= 10)
             {
                 check_initialization(kp->descrip, kp->descrip->length, sizeof(Vector));
             }
 */
 /* #endif */
-            /* kjb_free( kp->descrip ); */
+            /* ivi_free( kp->descrip ); */
             free_vector( kp->descrip );
         }
-        kjb_free( kp );
+        ivi_free( kp );
     }
 
 }
@@ -515,7 +515,7 @@ void free_keypoint( Keypoint *kp )
  *
  * Reads in the VLFeat keypoints from a file.
  *
- * Uses KJB fp_read_formatted_matrix to read in the keypoints from the
+ * Uses IVI fp_read_formatted_matrix to read in the keypoints from the
  * specified file into a matrix.
  *
  * Input parameters: 
@@ -538,12 +538,12 @@ int read_vl_keypoints_into_matrix
     int result = NOT_FOUND;
 
     verbose_pso(9, "Opening '%s'...\n", fname);
-    fp = kjb_fopen( fname, "r" );
+    fp = ivi_fopen( fname, "r" );
     if (fp == NULL)
     {
         warn_pso("(%s +%d): A keypoint file '%s' does not exist.", __FILE__, __LINE__, fname);
         add_error("ERROR (%s +%d): A keypoint file '%s' does not exist.", __FILE__, __LINE__, fname);
-        ERE(kjb_fclose(fp));
+        ERE(ivi_fclose(fp));
         return ERROR;
     }
 
@@ -562,7 +562,7 @@ int read_vl_keypoints_into_matrix
         result = NO_ERROR; /* If there were no keypoints read, no need to continue? */
     }
 
-    kjb_fclose(fp);
+    ivi_fclose(fp);
     return result;
 }
 
@@ -1094,7 +1094,7 @@ int write_vl_keypoint_vector
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
         verbose_pso(9, " Writing vl keypoint vector to %s\n", file_name);
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
     else
     {
@@ -1108,7 +1108,7 @@ int write_vl_keypoint_vector
         result = get_vector_from_keypoint( &kpt_vp, kvp->elements[i] );
         if (result == ERROR)
         {
-            kjb_fclose(fp);
+            ivi_fclose(fp);
             free_vector( kpt_vp );
             return ERROR;
         }
@@ -1117,13 +1117,13 @@ int write_vl_keypoint_vector
         result = fp_write_row_vector( kpt_vp, fp );
         if (result == ERROR)
         {
-            kjb_fclose(fp);
+            ivi_fclose(fp);
             free_vector( kpt_vp );
             return ERROR;
         } 
     }
    
-    result = kjb_fclose(fp);
+    result = ivi_fclose(fp);
 
     free_vector( kpt_vp );
 
@@ -1217,12 +1217,12 @@ void free_keypoint_vector (Keypoint_vector* kvp)
                 kp_array_pos++;
             }
 
-            kjb_free(kvp->elements);
+            ivi_free(kvp->elements);
 
         }
     }
 
-    kjb_free(kvp);
+    ivi_free(kvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1232,7 +1232,7 @@ void free_keypoint_vector (Keypoint_vector* kvp)
  *
  * Gets a target keypoint vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of keypoint vectors. If *target_kvpp is
  * NULL, then this routine creates the keypoint vector. If it is not null, and it
  * is the right size, then this routine does nothing. If it is the wrong size,
@@ -1319,7 +1319,7 @@ Keypoint_vector_vector* create_keypoint_vector_vector(int length)
  *
  * Gets a target keypoint vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of keypoint vector vectors. If *target_kvvpp is
  * NULL, then this routine creates the object. If it is not null, and it
  * is the right size, then this routine does nothing. If it is the wrong size,
@@ -1385,8 +1385,8 @@ void free_keypoint_vector_vector (Keypoint_vector_vector* kvvp)
         kvpp++;
     }
 
-    kjb_free(kvvp->elements);
-    kjb_free(kvvp);
+    ivi_free(kvvp->elements);
+    ivi_free(kvvp);
 }
 
 
@@ -1430,7 +1430,7 @@ void free_keypoint_vector_descriptors (Keypoint_vector* kvp)
  * Computes the Euclidean distance between two keypoint descriptors.
  *
  * This routine computes the Euclidean distance between two keypoint which are
- * implemented as KJB Vectors. 
+ * implemented as IVI Vectors. 
  *
  * Returns:
  *     NO_ERROR on success; ERROR on failure, with a descriptive error message
@@ -1702,7 +1702,7 @@ int get_local_keypoint_match
  * indicating the keypoint direction) on a given image.
  *
  * Input parameters: 
- *  KJB_image* ip - a handle to the image
+ *  IVI_image* ip - a handle to the image
  *  float x, y - position of the keypoint 
  *  float scale - keypoint scale
  *  float rad - keypoint radius
@@ -1716,7 +1716,7 @@ int get_local_keypoint_match
 */
 int draw_oriented_keypoint 
 ( 
-    KJB_image* ip, 
+    IVI_image* ip, 
     float x, 
     float y, 
     float scale, 
@@ -1763,7 +1763,7 @@ int draw_oriented_keypoint
 */
 int draw_oriented_keypoint_1 
 ( 
-    KJB_image* ip, /* a handle to the image       */
+    IVI_image* ip, /* a handle to the image       */
     float x,       /* x position of the keypoint  */
     float y,       /* y position of the keypoint  */
     float scale,   /* keypoint scale              */
@@ -1805,7 +1805,7 @@ int draw_oriented_keypoint_1
  * the provided image.
  *
  * Input parameters: 
- *  KJB_image* ip - a handle to the resulting image
+ *  IVI_image* ip - a handle to the resulting image
  *  char* keypoint_filename - a file with the keypoints in the VLFeat 
  *                            format (each line contains x,y, scale, 
  *                            orientation, followed by the ddescriptor)
@@ -1817,13 +1817,13 @@ int draw_oriented_keypoint_1
  *
  * -----------------------------------------------------------------------------
 */
-int draw_ubc_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
+int draw_ubc_keypoints_from_file (IVI_image* ip, char *keypoint_filename)
 {
   int items_read = NOT_SET; /* a flag indicating if fscanf was successful */
   float total, length;
   FILE *fp = NULL;
   
-  NRE(fp = kjb_fopen(keypoint_filename, "r"));
+  NRE(fp = ivi_fopen(keypoint_filename, "r"));
   
   items_read = fscanf(fp, "%f %f", &total, &length);
   if (items_read <= 0)
@@ -1840,7 +1840,7 @@ int draw_ubc_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
   }
   
   ERE( fp_draw_vl_keypoints (fp, ip) );
-  ERE( kjb_fclose(fp) );
+  ERE( ivi_fclose(fp) );
   
   return NO_ERROR;
 }
@@ -1870,7 +1870,7 @@ int draw_ubc_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
 */
 int fp_draw_vl_keypoints(
     FILE* fp,     /* input file                      */
-    KJB_image* ip /* a handle to the resulting image */
+    IVI_image* ip /* a handle to the resulting image */
 )
 {
     int items_read = NOT_SET; /* a flag indicating if fscanf was successful */
@@ -1927,7 +1927,7 @@ int fp_draw_vl_keypoints(
  * the provided image.
  *
  * Input parameters: 
- *  KJB_image* ip - a handle to the resulting image
+ *  IVI_image* ip - a handle to the resulting image
  *  char* keypoint_filename - a file with the keypoints in the VLFeat 
  *                            format (each line contains x,y, scale, 
  *                            orientation, followed by the ddescriptor)
@@ -1939,7 +1939,7 @@ int fp_draw_vl_keypoints(
  *
  * -----------------------------------------------------------------------------
 */
-int draw_vl_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
+int draw_vl_keypoints_from_file (IVI_image* ip, char *keypoint_filename)
 {
     int items_read = NOT_SET; /* a flag indicating if fscanf was successful */
     float row, col, scale, orientation;
@@ -1947,7 +1947,7 @@ int draw_vl_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
     FILE *fp = NULL;
     int tmp; /* used to read-in the descriptor values */
     
-    NRE(fp = kjb_fopen(keypoint_filename, "r"));
+    NRE(fp = ivi_fopen(keypoint_filename, "r"));
   
     /* TODO: call fp_draw_vl_keypoints() */
     
@@ -1982,8 +1982,8 @@ int draw_vl_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
     }
   
       
-  /*    ERE(kjb_display_image(ip, NULL)); */
-    ERE(kjb_fclose(fp));
+  /*    ERE(ivi_display_image(ip, NULL)); */
+    ERE(ivi_fclose(fp));
     
     return NO_ERROR;
 }
@@ -2000,7 +2000,7 @@ int draw_vl_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
  * keypoints on the provided image.
  *
  * Input parameters: 
- *  KJB_image* ip - a handle to the image
+ *  IVI_image* ip - a handle to the image
  *  Keypoint_vector* keypoint_kvp - the keypoints vector
  *
  * Returns:
@@ -2012,7 +2012,7 @@ int draw_vl_keypoints_from_file (KJB_image* ip, char *keypoint_filename)
 */
 int draw_keypoints_from_keypoint_vector
 (
-  KJB_image* ip, 
+  IVI_image* ip, 
   const Keypoint_vector* keypoint_kvp
 )
 {
@@ -2049,7 +2049,7 @@ int draw_keypoints_from_keypoint_vector
  * The function is based on draw_keypoints_from_keypoint_vector().
  *
  * Input parameters: 
- *  KJB_image* ip - a handle to the image
+ *  IVI_image* ip - a handle to the image
  *  Keypoint_vector* keypoint_kvp - the keypoints vector
  *
  * Returns:
@@ -2061,7 +2061,7 @@ int draw_keypoints_from_keypoint_vector
 */
 int draw_vl_keypoint_vector_with_mask
 (
-  KJB_image*                ip, 
+  IVI_image*                ip, 
   const Keypoint_vector*    keypoint_kvp,
   const Int_vector*         mask_ivp
 )
@@ -2110,7 +2110,7 @@ int draw_vl_keypoint_vector_with_mask
  * The function is based on draw_keypoints_from_keypoint_vector().
  *
  * Input parameters: 
- *  KJB_image* ip - a handle to the image
+ *  IVI_image* ip - a handle to the image
  *  Keypoint_vector* keypoint_kvp - the keypoints vector
  *  Int_vector* mask_ivp - mask values
  *  int val - the value, which if matched, results in drawing the keypoint at
@@ -2125,7 +2125,7 @@ int draw_vl_keypoint_vector_with_mask
 */
 int draw_vl_keypoint_vector_with_mask_value
 (
-  KJB_image*                ip, 
+  IVI_image*                ip, 
   const Keypoint_vector*    keypoint_kvp,
   const Int_vector*         mask_ivp,
   const int                 val
@@ -2174,9 +2174,9 @@ int draw_vl_keypoint_vector_with_mask_value
  * img1_kvp->elements[0] is assumed to match img2_kvp->elements[0], etc.
  *
  * Input parameters: 
- *  KJB_image* img1_ip - a handle to the image
- *  KJB_image* img2_ip - a handle to another image
- *  KJB_image** result_ip - a handle to the resulting image
+ *  IVI_image* img1_ip - a handle to the image
+ *  IVI_image* img2_ip - a handle to another image
+ *  IVI_image** result_ip - a handle to the resulting image
  *  Keypoint_vector* img1_kvp - the keypoints for img1 
  *  Keypoint_vector* img2_kvp - the keypoints for img2 
  *
@@ -2191,11 +2191,11 @@ int draw_vl_keypoint_vector_with_mask_value
 */
 int draw_keypoint_correspondences
 (
-    const KJB_image           *img1_ip,
-    const KJB_image           *img2_ip,
+    const IVI_image           *img1_ip,
+    const IVI_image           *img2_ip,
     const Keypoint_vector     *img1_kvp,
     const Keypoint_vector     *img2_kvp,
-    KJB_image                 **result_ip
+    IVI_image                 **result_ip
 )
 {
     int i;
@@ -2261,12 +2261,12 @@ int draw_keypoint_correspondences
  * 11th keypoint from the second image.
  *
  * Input parameters: 
- *  KJB_image* img1_ip - a handle to the image
- *  KJB_image* img2_ip - a handle to another image
+ *  IVI_image* img1_ip - a handle to the image
+ *  IVI_image* img2_ip - a handle to another image
  *  Keypoint_vector* img1_kvp - the keypoints for img1 
  *  Keypoint_vector* img2_kvp - the keypoints for img2 
  *  Int_matrix* match_imp - the keypoint matches
- *  KJB_image** result_ip - a handle to the resulting image
+ *  IVI_image** result_ip - a handle to the resulting image
  *
  * Returns:
  *  NO_ERROR or an error set by the image_draw routines.
@@ -2277,12 +2277,12 @@ int draw_keypoint_correspondences
 */
 int draw_keypoint_matches
 (
-    const KJB_image           *img1_ip,
-    const KJB_image           *img2_ip,
+    const IVI_image           *img1_ip,
+    const IVI_image           *img2_ip,
     const Keypoint_vector     *img1_kvp,
     const Keypoint_vector     *img2_kvp,
     const Int_matrix          *match_imp,
-    KJB_image                 **result_ip
+    IVI_image                 **result_ip
 )
 {
     int i;
@@ -2431,13 +2431,13 @@ int draw_keypoint_matches
  * NOT_SET is a value for the keypoints that weren't matched.
  *
  * Input parameters: 
- *  KJB_image* img1_ip - a handle to the image
- *  KJB_image* img2_ip - a handle to another image
+ *  IVI_image* img1_ip - a handle to the image
+ *  IVI_image* img2_ip - a handle to another image
  *  Keypoint_vector* img1_kvp - the keypoints for img1 
  *  Keypoint_vector* img2_kvp - the keypoints for img2 
  *  Int_vector* match_ivp - each element, i, stores indices of img2_kvp that match
  *                          the i-th element of img1_kvp
- *  KJB_image** result_ip - a handle to the resulting image
+ *  IVI_image** result_ip - a handle to the resulting image
  *
  * Returns:
  *  NO_ERROR or an error set by the image_draw routines.
@@ -2448,12 +2448,12 @@ int draw_keypoint_matches
 */
 int draw_keypoint_matches_1
 (
-    const KJB_image           *img1_ip,
-    const KJB_image           *img2_ip,
+    const IVI_image           *img1_ip,
+    const IVI_image           *img2_ip,
     const Keypoint_vector     *img1_kvp,
     const Keypoint_vector     *img2_kvp,
     const Int_vector          *match_ivp,
-    KJB_image                 **result_ip
+    IVI_image                 **result_ip
 )
 {
     int i;
@@ -2541,9 +2541,9 @@ int draw_keypoint_matches_1
                     }
                     else
                     {
-                        double red = 255.0 * kjb_rand();
-                        double green = 255.0 * kjb_rand();
-                        double blue = 255.0 * kjb_rand();
+                        double red = 255.0 * ivi_rand();
+                        double green = 255.0 * ivi_rand();
+                        double blue = 255.0 * ivi_rand();
                         ERE( image_draw_segment_2( *result_ip,
                                                    (img1_kvp->elements[m1])->col, 
                                                    (img1_kvp->elements[m1])->row, 
@@ -2583,12 +2583,12 @@ int draw_keypoint_matches_1
  * The length of match_ivp is the same as the length of img1_mp and img2_mp.
  *
  * Input parameters: 
- *  KJB_image* img1_ip - a handle to the image
- *  KJB_image* img2_ip - a handle to another image
+ *  IVI_image* img1_ip - a handle to the image
+ *  IVI_image* img2_ip - a handle to another image
  *  Keypoint_vector* img1_mp - the locations of the keypoints for img1 
  *  Keypoint_vector* img2_mp - the locations of the keypoints for img2
  *  Int_vector* match_ivp - the keypoint matches
- *  KJB_image** result_ip - a handle to the resulting image
+ *  IVI_image** result_ip - a handle to the resulting image
  *
  * Returns:
  *  NO_ERROR or an error set by the image_draw routines.
@@ -2599,12 +2599,12 @@ int draw_keypoint_matches_1
 */
 int draw_ransac_matches
 (
-    const KJB_image  *img1_ip,
-    const KJB_image  *img2_ip,
+    const IVI_image  *img1_ip,
+    const IVI_image  *img2_ip,
     const Matrix     *img1_mp,
     const Matrix     *img2_mp,
     const Int_vector *match_ivp,
-    KJB_image        **result_ip
+    IVI_image        **result_ip
 )
 {
     int i;

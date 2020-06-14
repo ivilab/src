@@ -5,10 +5,10 @@
  *
  * This performs interpolation on NED data using Gaussian processes, a
  * technique historically called "kriging."  This file uses its own
- * implementation rather than the libkjb Gaussian process code (sorry).
+ * implementation rather than the libivi Gaussian process code (sorry).
  */
 /*
- * $Id: kriging.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: kriging.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT. */
@@ -41,10 +41,10 @@ namespace
 
 
 
-typedef kjb::TopoFusion::pt TopoPt;
+typedef ivi::TopoFusion::pt TopoPt;
 
 // Name stands for "Grid integral latitude, longitude [pair]."
-typedef kjb::Ned13_one_degree_grid::IntegralLL GILL;
+typedef ivi::Ned13_one_degree_grid::IntegralLL GILL;
 
 
 
@@ -94,11 +94,11 @@ std::vector< TopoPt > fill_training_elevation_grid(
     const GILL& nw_corner,
     const GILL& se_corner,
     char* most_popular_zone, // required output ptr, which zone predominates?
-    kjb::Ned13_grid_cache* cache,
-    kjb::Pthread_mutex* pmt_grid_cache_serializer // might equal NULL
+    ivi::Ned13_grid_cache* cache,
+    ivi::Pthread_mutex* pmt_grid_cache_serializer // might equal NULL
 )
 {
-    using kjb::Runtime_error;
+    using ivi::Runtime_error;
     NTX(cache);
     ASSERT(nw_corner.ilat > se_corner.ilat);
     ASSERT(nw_corner.ilon < se_corner.ilon);
@@ -111,10 +111,10 @@ std::vector< TopoPt > fill_training_elevation_grid(
     std::map<char, size_t> zone_histogram;
 
     // RAII-lock the mutex, if a mutex pointer was provided.
-    boost::scoped_ptr< kjb::Mutex_lock > lock;
+    boost::scoped_ptr< ivi::Mutex_lock > lock;
     if (pmt_grid_cache_serializer)
     {
-        lock.reset( new kjb::Mutex_lock(*pmt_grid_cache_serializer) );
+        lock.reset( new ivi::Mutex_lock(*pmt_grid_cache_serializer) );
     }
 
     // Scan the square of training data, buffer all the training points in it.
@@ -131,16 +131,16 @@ std::vector< TopoPt > fill_training_elevation_grid(
             p.ele = cache -> fetch(tile).elevation_meters(cursor);
 
             // Do not push the sentinel for "missing data" into output buffer
-            if (kjb::NED_MISSING == p.ele) continue;
+            if (ivi::NED_MISSING == p.ele) continue;
 
             // Sanity-check
-            if (p.ele < kjb::NED_MIN)
+            if (p.ele < ivi::NED_MIN)
             {
-                KJB_THROW_2(Runtime_error, "Impossible elevation: too small");
+                IVI_THROW_2(Runtime_error, "Impossible elevation: too small");
             }
-            if (p.ele > kjb::NED_MAX)
+            if (p.ele > ivi::NED_MAX)
             {
-                KJB_THROW_2(Runtime_error, "Impossible elevation:  too large");
+                IVI_THROW_2(Runtime_error, "Impossible elevation:  too large");
             }
 
             output.push_back(p);
@@ -163,9 +163,9 @@ std::vector< TopoPt > fill_training_elevation_grid(
 typedef std::valarray<double> VDub;
 
 #else
-kjb::Vector get_easting(const std::vector< TopoPt >& points)
+ivi::Vector get_easting(const std::vector< TopoPt >& points)
 {
-    kjb::Vector easting(points.size());
+    ivi::Vector easting(points.size());
     for (size_t iii = 0; iii < points.size(); ++iii)
     {
         easting.at(iii) = points[iii].x;
@@ -173,9 +173,9 @@ kjb::Vector get_easting(const std::vector< TopoPt >& points)
     return easting;
 }
 
-kjb::Vector get_northing(const std::vector< TopoPt >& points)
+ivi::Vector get_northing(const std::vector< TopoPt >& points)
 {
-    kjb::Vector northing(points.size());
+    ivi::Vector northing(points.size());
     for (size_t iii = 0; iii < points.size(); ++iii)
     {
         northing.at(iii) = points[iii].y;
@@ -185,7 +185,7 @@ kjb::Vector get_northing(const std::vector< TopoPt >& points)
 #endif
 
 
-kjb::Matrix gp_se_covariance(
+ivi::Matrix gp_se_covariance(
     const std::vector< TopoPt >& points,
     float char_sf2
 )
@@ -212,7 +212,7 @@ kjb::Matrix gp_se_covariance(
     VDub sev = exp(-0.5 * char_sf2 * (dx*dx + dy*dy));
 
     k = 0;
-    kjb::Matrix sem(points.size(), points.size());
+    ivi::Matrix sem(points.size(), points.size());
     sem(points.size()-1, points.size()-1) = DIAG_ELT;
     for (size_t j = 0; j < points.size()-1; ++j)
     {
@@ -226,8 +226,8 @@ kjb::Matrix gp_se_covariance(
     return sem;
 
 #else
-    kjb::Matrix dx(points.size(), points.size()), dy(dx);
-    const kjb::Vector   easting(get_easting(points)),
+    ivi::Matrix dx(points.size(), points.size()), dy(dx);
+    const ivi::Vector   easting(get_easting(points)),
                         northing(get_northing(points));
 
     for (size_t rrr = 0; rrr < points.size(); ++rrr)
@@ -239,8 +239,8 @@ kjb::Matrix gp_se_covariance(
         }
     }
 
-    kjb::ew_square_ow(dx);
-    kjb::ew_square_ow(dy);
+    ivi::ew_square_ow(dx);
+    ivi::ew_square_ow(dy);
     dx += dy;
     dx *= -0.5 * char_sf2;
     dx.mapcar(std::exp);
@@ -259,7 +259,7 @@ kjb::Matrix gp_se_covariance(
  * compare query-point to a given set of (training) points, using
  * squared exponential (SE) kernel.
  */
-kjb::Vector gp_se_kernel(
+ivi::Vector gp_se_kernel(
     const std::vector< TopoPt >& points, // training points
     const TopoPt& query,
     float char_sf2
@@ -275,9 +275,9 @@ kjb::Vector gp_se_kernel(
     }
 
     VDub se = exp(-0.5 * char_sf2 * (dx*dx + dy*dy));
-    return kjb::Vector(points.size(), & se[0]);
+    return ivi::Vector(points.size(), & se[0]);
 #else
-    kjb::Vector dx(points.size()), dy(points.size());
+    ivi::Vector dx(points.size()), dy(points.size());
 
     for (size_t rrr = 0; rrr < points.size(); ++rrr)
     {
@@ -285,8 +285,8 @@ kjb::Vector gp_se_kernel(
         dy.at(rrr) = points[rrr].y - query.y;
     }
 
-    kjb::ew_square_ow(dx);
-    kjb::ew_square_ow(dy);
+    ivi::ew_square_ow(dx);
+    ivi::ew_square_ow(dy);
     dx += dy;
     dx *= -0.5 * char_sf2;
     dx.mapcar(std::exp);
@@ -305,13 +305,13 @@ bool zone_for_real_fixup(
     char proper_zone
 )
 {
-    // KJB(UNTESTED_CODE()); // not true anymore: hit on 19 Aug 2013.
+    // IVI(UNTESTED_CODE()); // not true anymore: hit on 19 Aug 2013.
     ASSERT(points -> at(bad_loc).zone != proper_zone);
 
     for (size_t jjj = bad_loc; jjj < points -> size(); ++jjj)
     {
         TopoPt& p = points -> at(jjj);
-        p = kjb::force_zone_to_this(p, proper_zone);
+        p = ivi::force_zone_to_this(p, proper_zone);
     }
     return false; // False means that not all the points were in the same zone.
 }
@@ -354,7 +354,7 @@ struct Print_a_pt {
 
 std::string str_rank_deficit(
     const std::vector< TopoPt >& training,
-    const kjb::Svd& svd
+    const ivi::Svd& svd
 )
 {
     std::ostringstream os;
@@ -383,10 +383,10 @@ std::string str_rank_deficit(
  */
 std::vector< TopoPt > get_kriging_training(
     const GILL& training_center_loc,
-    kjb::Ned13_grid_cache* cache,
+    ivi::Ned13_grid_cache* cache,
     char* m_utm_zone,
     double characteristic_freq_m_sq, // ch. frequency, bumps per meter, SQUARED
-    kjb::Pthread_mutex* pmt_grid_cache_serializer
+    ivi::Pthread_mutex* pmt_grid_cache_serializer
 )
 {
     // grid increments in meters, in north (first) and east (second) directions
@@ -426,7 +426,7 @@ std::vector< TopoPt > get_kriging_training(
 
 
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -490,7 +490,7 @@ Kriging_interpolator::Kriging_interpolator(
     Svd svd(gp_se_covariance(m_training, m_char_sf2));
     if (svd.rank != int(m_training.size()))
     {
-        KJB_THROW_2(Runtime_error, str_rank_deficit(m_training, svd));
+        IVI_THROW_2(Runtime_error, str_rank_deficit(m_training, svd));
     }
 
     // Compute the vector of target values.

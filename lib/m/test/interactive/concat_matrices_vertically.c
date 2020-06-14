@@ -1,5 +1,5 @@
 
-/* $Id: concat_matrices_vertically.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: concat_matrices_vertically.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
             else
             {
                 EPETE(get_random_matrix(&(matrix_list[ j ]), 
-                                        (int)(1.1 + 5.0 * kjb_rand()), 5));
+                                        (int)(1.1 + 5.0 * ivi_rand()), 5));
             }
             db_mat(matrix_list[ j ]);
         }

@@ -1,4 +1,4 @@
-/* $Id: sample_serialization.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: sample_serialization.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,14 +19,14 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_SAMPLER_SERIALIZATION_H
-#define KJB_CPP_SAMPLER_SERIALIZATION_H
+#ifndef IVI_CPP_SAMPLER_SERIALIZATION_H
+#define IVI_CPP_SAMPLER_SERIALIZATION_H
 
 
 #include <sample_cpp/sample_base.h>
 
-// KJB DEPENDENCY
-#ifdef KJB_HAVE_BST_SERIAL
+// IVI DEPENDENCY
+#ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/deque.hpp>
 
 namespace boost 
@@ -54,6 +54,6 @@ void serialize(Archive& ar, Step_log<Model>& obj, const unsigned int version)
 } // namespace serialization
 } // namespace boost
 
-#endif  /* KJB_HAVE_BST_SERIAL */
+#endif  /* IVI_HAVE_BST_SERIAL */
 
 #endif

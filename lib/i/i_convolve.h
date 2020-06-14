@@ -1,5 +1,5 @@
 
-/* $Id: i_convolve.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_convolve.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -31,45 +31,45 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-int ow_gauss_convolve_image(KJB_image* ip, double sigma);
+int ow_gauss_convolve_image(IVI_image* ip, double sigma);
 
 int gauss_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           sigma
 );
 
 int convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Matrix* mask_mp
 );
 
 int x_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    mask_vp
 );
 
 int y_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    mask_vp
 );
 
 int gauss_sample_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     int              scale,
     double           sigma
 );

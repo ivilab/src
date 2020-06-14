@@ -37,7 +37,7 @@
  * functions to do that as well declared in this header.
  */
 /*
- * $Id: triangulate.h 20139 2015-11-30 05:50:36Z predoehl $
+ * $Id: triangulate.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef QD_CPP_MONOTONE_H_INCLUDED_IVILAB
@@ -45,7 +45,7 @@
 
 #include <qd_cpp/dcel.h>
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {

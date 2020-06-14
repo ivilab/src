@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: marginal_likelihood.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: marginal_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <n_cpp/n_cholesky.h>
 #include <diff_cpp/diff_optim.h>
@@ -35,8 +35,8 @@
 #include "dbn_cpp/lss_set.h"
 
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 double Marginal_likelihood::operator()(const Lss_set& lsss)
 {

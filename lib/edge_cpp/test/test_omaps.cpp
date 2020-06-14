@@ -31,7 +31,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     try
     {
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
         delete temp_edges;
 
     }
-    catch(KJB_error e)
+    catch(IVI_error e)
     {
         e.print(std::cout);
     }

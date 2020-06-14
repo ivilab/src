@@ -25,7 +25,7 @@
 #include <vector>
 #include <algorithm>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using namespace boost;
 

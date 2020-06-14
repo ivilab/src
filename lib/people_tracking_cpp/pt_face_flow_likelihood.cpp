@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_face_flow_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_face_flow_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_face_flow_likelihood.h"
@@ -29,8 +29,8 @@
 #include "people_tracking_cpp/pt_util.h"
 #include "detector_cpp/d_bbox.h"
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 double Face_flow_likelihood::operator()(const Scene& scene) const
 {

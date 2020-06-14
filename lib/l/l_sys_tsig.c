@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_tsig.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_sys_tsig.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -45,7 +45,7 @@ extern "C" {
 /* UNIX */  int set_time_alarm(long time_in_seconds)
 /* UNIX */
 /* UNIX */  {
-/* UNIX */      IMPORT volatile Bool kjb_timed_out;
+/* UNIX */      IMPORT volatile Bool ivi_timed_out;
 /* UNIX */      struct itimerval time_interval;
 /* UNIX */      Signal_info new_time_vec;
 /* UNIX */      int res;
@@ -56,7 +56,7 @@ extern "C" {
 /* UNIX */      time_interval.it_value.tv_usec = 0;
 /* UNIX */
 /* UNIX */
-/* UNIX */      kjb_timed_out = FALSE;
+/* UNIX */      ivi_timed_out = FALSE;
 /* UNIX */
 /* UNIX */      res = setitimer(ITIMER_REAL, &time_interval,
 /* UNIX */                      (struct itimerval *)NULL);
@@ -71,17 +71,17 @@ extern "C" {
 /* UNIX */      new_time_vec.SIGNAL_HANDLER = time_out_fn;
 /* UNIX */      SET_DONT_RESTART_IO_AFTER_SIGNAL(new_time_vec);
 /* UNIX */
-/* UNIX */      return kjb_sigvec(SIGALRM, &new_time_vec, (Signal_info*)NULL);
+/* UNIX */      return ivi_sigvec(SIGALRM, &new_time_vec, (Signal_info*)NULL);
 /* UNIX */  }
 /* UNIX */
 /* UNIX */
 #else
 /* default */  int set_time_alarm(long time_in_seconds)
 /* default */  {
-/* default */      IMPORT volatile Bool kjb_timed_out;
+/* default */      IMPORT volatile Bool ivi_timed_out;
 /* default */
 /* default */
-/* default */      kjb_timed_out = FALSE;
+/* default */      ivi_timed_out = FALSE;
 /* default */      set_bug("Time alarms are not supported on this system.");
 /* default */
 /* default */      return ERROR;
@@ -95,7 +95,7 @@ extern "C" {
 /* UNIX */
 /* UNIX */  int unset_time_alarm(void)
 /* UNIX */  {
-/* UNIX */      IMPORT volatile Bool kjb_timed_out;
+/* UNIX */      IMPORT volatile Bool ivi_timed_out;
 /* UNIX */      struct itimerval time_interval;
 /* UNIX */      int res;
 #ifdef LINUX
@@ -103,7 +103,7 @@ extern "C" {
 #endif
 /* UNIX */
 /* UNIX */
-/* UNIX */      kjb_timed_out = FALSE;
+/* UNIX */      ivi_timed_out = FALSE;
 /* UNIX */
 /* UNIX */      time_interval.it_interval.tv_sec = 0;
 /* UNIX */      time_interval.it_interval.tv_usec = 0;
@@ -120,21 +120,21 @@ extern "C" {
 /* UNIX */      }
 /* UNIX */
 #ifdef LINUX
-                ERE(kjb_sigemptyset(&mask));
-                ERE(kjb_sigaddset(&mask, SIGALRM));
-                ERE(kjb_sigprocmask(SIG_UNBLOCK, &mask, &save_mask));
+                ERE(ivi_sigemptyset(&mask));
+                ERE(ivi_sigaddset(&mask, SIGALRM));
+                ERE(ivi_sigprocmask(SIG_UNBLOCK, &mask, &save_mask));
 #endif
-/* UNIX */      return kjb_signal(SIGALRM, SIG_DFL);
+/* UNIX */      return ivi_signal(SIGALRM, SIG_DFL);
 /* UNIX */  }
 /* UNIX */
 #else
 /* default */
 /* default */  int unset_time_alarm(void)
 /* default */  {
-/* default */      IMPORT volatile Bool kjb_timed_out;
+/* default */      IMPORT volatile Bool ivi_timed_out;
 /* default */
 /* default */
-/* default */      kjb_timed_out = FALSE;
+/* default */      ivi_timed_out = FALSE;
 /* default */      set_bug("Time alarms are not supported on this system.");
 /* default */
 /* default */      return ERROR;
@@ -149,14 +149,14 @@ extern "C" {
 /*ARGSUSED*/ /* Usually have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE time_out_fn( TRAP_FN_ARGS )
 {
-    IMPORT volatile Bool kjb_timed_out;
+    IMPORT volatile Bool ivi_timed_out;
     IMPORT volatile int recorded_signal;
 
 
     recorded_signal = sig;
 
 
-    kjb_timed_out = TRUE;
+    ivi_timed_out = TRUE;
 }
 
 #else
@@ -166,10 +166,10 @@ TRAP_FN_RETURN_TYPE time_out_fn( TRAP_FN_ARGS )
 /* default */
 /* default */  TRAP_FN_RETURN_TYPE time_out_fn()
 /* default */  {
-/* default */      IMPORT volatile Bool kjb_timed_out;
+/* default */      IMPORT volatile Bool ivi_timed_out;
 /* default */
 /* default */
-/* default */      kjb_timed_out = TRUE;
+/* default */      ivi_timed_out = TRUE;
 /* default */  }
 /* default */
 
@@ -201,7 +201,7 @@ TRAP_FN_RETURN_TYPE time_out_fn( TRAP_FN_ARGS )
 /* UNIX */          return ERROR;
 /* UNIX */      }
 /* UNIX */
-/* UNIX */      return kjb_signal(SIGALRM, time_out_long_jump_fn);
+/* UNIX */      return ivi_signal(SIGALRM, time_out_long_jump_fn);
 /* UNIX */  }
 #else
 
@@ -285,7 +285,7 @@ TRAP_FN_RETURN_TYPE time_out_long_jump_fn( TRAP_FN_ARGS )
 /* SYSV */      sigset_t blank_mask;
 /* SYSV */
 /* SYSV */
-/* SYSV */      ERE(kjb_sigemptyset(&blank_mask));
+/* SYSV */      ERE(ivi_sigemptyset(&blank_mask));
 /* SYSV */
 /* SYSV */      ERE(set_ms_time_alarm(time_in_milliseconds));
 /* SYSV */
@@ -349,7 +349,7 @@ TRAP_FN_RETURN_TYPE time_out_long_jump_fn( TRAP_FN_ARGS )
 #ifdef UNIX
 /* UNIX */  int set_ms_time_alarm(long time_in_ms)
 /* UNIX */  {
-/* UNIX */      IMPORT volatile Bool kjb_timed_out;
+/* UNIX */      IMPORT volatile Bool ivi_timed_out;
 /* UNIX */      Signal_info new_time_vec;
 /* UNIX */      struct itimerval time_interval;
 /* UNIX */      long seconds, micro_seconds;
@@ -366,7 +366,7 @@ TRAP_FN_RETURN_TYPE time_out_long_jump_fn( TRAP_FN_ARGS )
 /* UNIX */      time_interval.it_value.tv_usec = micro_seconds;
 /* UNIX */
 /* UNIX */
-/* UNIX */      kjb_timed_out = FALSE;
+/* UNIX */      ivi_timed_out = FALSE;
 /* UNIX */
 /* UNIX */      res = setitimer(ITIMER_REAL, &time_interval,
 /* UNIX */                      (struct itimerval *)NULL);
@@ -380,7 +380,7 @@ TRAP_FN_RETURN_TYPE time_out_long_jump_fn( TRAP_FN_ARGS )
 /* UNIX */      INIT_SIGNAL_INFO(new_time_vec);
 /* UNIX */      new_time_vec.SIGNAL_HANDLER = time_out_fn;
 /* UNIX */      SET_DONT_RESTART_IO_AFTER_SIGNAL(new_time_vec);
-/* UNIX */      return kjb_sigvec(SIGALRM, &new_time_vec, (Signal_info*)NULL);
+/* UNIX */      return ivi_sigvec(SIGALRM, &new_time_vec, (Signal_info*)NULL);
 /* UNIX */  }
 /* UNIX */
 #endif

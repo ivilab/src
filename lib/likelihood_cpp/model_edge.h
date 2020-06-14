@@ -1,4 +1,4 @@
-/* $Id: model_edge.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: model_edge.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -50,8 +50,8 @@
    |  Author: Luca Del Pero
  * =========================================================================== */
 
-#ifndef KJB_MODEL_EDGE_H_
-#define KJB_MODEL_EDGE_H_
+#ifndef IVI_MODEL_EDGE_H_
+#define IVI_MODEL_EDGE_H_
 
 #include <edge_cpp/line_segment.h>
 
@@ -68,7 +68,7 @@
  * This last field is relevant only if the algorithm to compute
  * the likelihood from a set of edges needs it.
  */
-namespace kjb
+namespace ivi
 {
     class Model_edge : public Line_segment{
 
@@ -90,11 +90,11 @@ namespace kjb
          * @param iend   The position of the second end point of this segment
          * @param isilhouette indicates whether this is a silhouette edge or not
          */
-        Model_edge(const kjb::Vector & istart, const kjb::Vector & iend, bool isilhouette = false, bool isvisible = false, bool iflagged = false)
+        Model_edge(const ivi::Vector & istart, const ivi::Vector & iend, bool isilhouette = false, bool isvisible = false, bool iflagged = false)
         {
             if(istart.size() < 2 || iend.size() < 2)
             {
-                KJB_THROW_2(Illegal_argument, "Bad start and end points, expectin x and y coordinates");
+                IVI_THROW_2(Illegal_argument, "Bad start and end points, expectin x and y coordinates");
             }
 
             _degenerate = false;
@@ -213,4 +213,4 @@ namespace kjb
     };
 }
 
-#endif /* KJB_MODEL_EDGE_H_ */
+#endif /* IVI_MODEL_EDGE_H_ */

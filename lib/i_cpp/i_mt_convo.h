@@ -4,7 +4,7 @@
  * @brief declaration of fast (FFT-based) reentrant image convolution class.
  */
 /*
- * $Id: i_mt_convo.h 17393 2014-08-23 20:19:14Z predoehl $
+ * $Id: i_mt_convo.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef I_CPP_I_MT_CONVO_H_INCLUDED_IVILAB
@@ -13,7 +13,7 @@
 #include <m_cpp/m_convolve.h>
 #include <i_cpp/i_image.h>
 
-namespace kjb
+namespace ivi
 {
 
 
@@ -48,8 +48,8 @@ namespace kjb
  * multiple threads computing in parallel the convolution of a single image.
  * We don't do that!
  *
- * @ingroup kjbImageProc
- * @ingroup kjbThreads
+ * @ingroup iviImageProc
+ * @ingroup iviThreads
  */
 class Fftw_image_convolution
 {

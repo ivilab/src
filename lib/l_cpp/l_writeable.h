@@ -1,4 +1,4 @@
-/* $Id: l_writeable.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: l_writeable.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,8 +20,8 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_WRITEABLE_H
-#define KJB_WRITEABLE_H
+#ifndef IVI_WRITEABLE_H
+#define IVI_WRITEABLE_H
 
 
 #include <l_cpp/l_exception.h>
@@ -29,7 +29,7 @@
 
 
 
-namespace kjb
+namespace ivi
 {
 
 

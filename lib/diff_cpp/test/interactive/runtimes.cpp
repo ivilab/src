@@ -35,7 +35,7 @@
 #include <boost/ref.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 using namespace boost;
 
 Normal_distribution get_random_normal();
@@ -45,7 +45,7 @@ double nlpdfs1(const vector<Normal_distribution>&, const Vector&, size_t);
 /** @brief  Main. */
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("heap-checking", "off");
     const size_t nt = 12;
 
     const double eps = 1e-5;
@@ -59,21 +59,21 @@ int main(int argc, char** argv)
     Vector x = create_random_vector(D);
     vector<double> dx(D, 0.0001);
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     Vector G0 = gradient_cfd(bind(nlpdfs, cref(Ps), _1), x, dx);
-    double t0 = kjb_c::get_real_time() / 1000.0;
+    double t0 = ivi_c::get_real_time() / 1000.0;
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     Vector G1 = gradient_cfd_mt(bind(nlpdfs, cref(Ps), _1), x, dx, nt);
-    double t1 = kjb_c::get_real_time() / 1000.0;
+    double t1 = ivi_c::get_real_time() / 1000.0;
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     Vector G2 = gradient_ind_cfd(bind(nlpdfs1, cref(Ps), _1, _2), x, dx);
-    double t2 = kjb_c::get_real_time() / 1000.0;
+    double t2 = ivi_c::get_real_time() / 1000.0;
 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     Vector G3 = gradient_ind_cfd_mt(bind(nlpdfs1, cref(Ps), _1, _2), x, dx, nt);
-    double t3 = kjb_c::get_real_time() / 1000.0;
+    double t3 = ivi_c::get_real_time() / 1000.0;
 
     cout << "D = " << D << endl;
     cout << "N = " << N << endl;

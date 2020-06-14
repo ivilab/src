@@ -16,13 +16,13 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: msvc-compat.h 14469 2013-05-20 05:06:14Z jguan1 $ */
+/* $Id: msvc-compat.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef FLANDMAR_MSVC_COMPAT
 #define FLANDMAR_MSVC_COMPAT
 #ifdef FLANDMAR_MSC_VER
 
-namespace kjb {
+namespace ivi {
 namespace flandmark {
 
 typedef unsigned char uint8_t;
@@ -34,7 +34,7 @@ typedef __int32 int32_t;
 typedef unsigned __int64 uint64_t;
 typedef __int64 int64_t;
 
-}} //namespace kjb::flandmark
+}} //namespace ivi::flandmark
 
 #else
 #	include <stdint.h>

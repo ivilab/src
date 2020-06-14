@@ -1,4 +1,4 @@
-/* $Id: gr_fbo_offscreen.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_fbo_offscreen.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,13 +23,13 @@
 #include <boost/scoped_ptr.hpp>
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef KJB_GR_FBO_OFFSCREEN_H
-#define KJB_GR_FBO_OFFSCREEN_H
+#ifndef IVI_GR_FBO_OFFSCREEN_H
+#define IVI_GR_FBO_OFFSCREEN_H
 
-#ifdef KJB_HAVE_OPENGL
-#ifdef KJB_HAVE_GLEW
+#ifdef IVI_HAVE_OPENGL
+#ifdef IVI_HAVE_GLEW
 
-namespace kjb
+namespace ivi
 {
 namespace opengl
 {
@@ -70,17 +70,17 @@ public:
     int get_width() const { return width_; }
     int get_height() const { return height_; }
 
-    ::kjb::opengl::Framebuffer_object& get_fbo() { return *fbo_; }
-    ::kjb::opengl::Renderbuffer& get_depth_buffer() { return *depth_; }
-    ::kjb::opengl::Renderbuffer& get_color_buffer() { return *color_; }
+    ::ivi::opengl::Framebuffer_object& get_fbo() { return *fbo_; }
+    ::ivi::opengl::Renderbuffer& get_depth_buffer() { return *depth_; }
+    ::ivi::opengl::Renderbuffer& get_color_buffer() { return *color_; }
 private:
 
     int width_;
     int height_;
 
-    boost::scoped_ptr<kjb::opengl::Framebuffer_object> fbo_;
-    boost::scoped_ptr<kjb::opengl::Renderbuffer> depth_;
-    boost::scoped_ptr<kjb::opengl::Renderbuffer> color_;
+    boost::scoped_ptr<ivi::opengl::Framebuffer_object> fbo_;
+    boost::scoped_ptr<ivi::opengl::Renderbuffer> depth_;
+    boost::scoped_ptr<ivi::opengl::Renderbuffer> color_;
 
     bool grayscale_;
 
@@ -89,8 +89,8 @@ private:
 };
 
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
-#endif /* KJB_HAVE_GLEW */
-#endif /* KJB_HAVE_OPENGL */
+#endif /* IVI_HAVE_GLEW */
+#endif /* IVI_HAVE_OPENGL */
 #endif

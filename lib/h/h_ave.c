@@ -1,5 +1,5 @@
 
-/* $Id: h_ave.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: h_ave.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -167,7 +167,7 @@ int set_hull_ave_options(const char* option, const char* value)
  *
  * Currently hulls averages are computed using a discrete approximation. The
  * resolution of the descrete space is user settable with the
- * "hull-average-resolution" option, provided that the KJB library options are
+ * "hull-average-resolution" option, provided that the IVI library options are
  * made available to the user (recommended!).
  *
  * Note:
@@ -862,7 +862,7 @@ static int get_3D_hull_CM_and_volume
             db_mat(facet_mp);
         }
 
-        kjb_abort();
+        ivi_abort();
 #endif
         return ERROR;
     }
@@ -918,7 +918,7 @@ static int get_3D_hull_CM_and_volume
  *
  * Currently hulls averages are computed using a discrete approximation. The
  * resolution of the descrete space is user settable with the "hir" option,
- * provided that the KJB library options are made available to the user
+ * provided that the IVI library options are made available to the user
  * (recommended!).
  *
  * Returns:

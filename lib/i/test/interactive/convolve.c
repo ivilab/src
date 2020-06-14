@@ -1,5 +1,5 @@
 
-/* $Id: convolve.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: convolve.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -22,8 +22,8 @@
 
 static int old_gauss_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           sigma 
 );
 
@@ -31,10 +31,10 @@ static int old_gauss_convolve_image
 
 int main(int argc, char** argv)
 {
-    KJB_image* ip = NULL;
-    KJB_image* out_ip = NULL;
+    IVI_image* ip = NULL;
+    IVI_image* out_ip = NULL;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -46,26 +46,26 @@ int main(int argc, char** argv)
     create_image_display();
 
     check_num_args(argc, 1, 1,  "image_draw_point [ file_name ]");
-    EPETE(kjb_read_image(&ip, argv[ 1 ]));
+    EPETE(ivi_read_image(&ip, argv[ 1 ]));
 
     p_stderr("ONE\n"); 
     EPETE(old_gauss_convolve_image(&out_ip, ip, 5.0));
     p_stderr("ONE\n\n\n"); 
-    EPETE(kjb_display_image(out_ip, NULL));
+    EPETE(ivi_display_image(out_ip, NULL));
 
     p_stderr("TWO\n"); 
     EPETE(gauss_convolve_image(&out_ip, ip, 5.0));
     p_stderr("TWO\n"); 
-    EPETE(kjb_display_image(out_ip, NULL));
+    EPETE(ivi_display_image(out_ip, NULL));
 
 
     prompt_to_continue();
 
-    kjb_free_image(ip);
-    kjb_free_image(out_ip);
+    ivi_free_image(ip);
+    ivi_free_image(out_ip);
 
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS; 
 } 
@@ -74,12 +74,12 @@ int main(int argc, char** argv)
 
 static int old_gauss_convolve_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           sigma 
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j, mi, mj, m, n;
     int        mask_width;
     int        mask_size;

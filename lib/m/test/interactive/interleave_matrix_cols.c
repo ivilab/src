@@ -1,5 +1,5 @@
 
-/* $Id: interleave_matrix_cols.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: interleave_matrix_cols.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -28,8 +28,8 @@ int main(int argc, char **argv)
 
     for (i=0; i<NUM_MATRICES; i++)
     {
-        int num_rows = 1.1 + 5.0 * kjb_rand();
-        int num_cols = 1.1 + 5.0 * kjb_rand();
+        int num_rows = 1.1 + 5.0 * ivi_rand();
+        int num_cols = 1.1 + 5.0 * ivi_rand();
 
         for (j=0; j<i; j++)
         {

@@ -1,4 +1,4 @@
-/* $Id: psi_exception.h 10707 2011-09-29 20:05:56Z predoehl $ */
+/* $Id: psi_exception.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -21,7 +21,7 @@
 
 #include <l_cpp/l_exception.h>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {

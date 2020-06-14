@@ -1,5 +1,5 @@
 /*
- * $Id: disk.c 16804 2014-05-15 19:55:04Z predoehl $ 
+ * $Id: disk.c 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include <i/i_float.h>
@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image *i = NULL;
+    IVI_image *i = NULL;
 
     Pixel p;
     p.r = p.g = p.b = 255.0f;
@@ -29,8 +29,8 @@ int main(int argc, char** argv)
     EPETE(image_draw_disk(i, 50, 50, 4, 100, 100, 100));
     EPETE(image_draw_disk(i, 50, 50, 1, 0, 0, 0));
 
-    EPETE(kjb_write_image(i, "disk_image.tif"));
-    kjb_free_image(i);
+    EPETE(ivi_write_image(i, "disk_image.tif"));
+    ivi_free_image(i);
 
     return 0;
 }

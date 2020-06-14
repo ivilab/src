@@ -1,5 +1,5 @@
 
-/* $Id: test_hungarian.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: test_hungarian.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
     if (hungarian(mp, &row_vp, &cost) == ERROR)
     {
-        kjb_print_error();
+        ivi_print_error();
         result = EXIT_BUG;
     }
     else 

@@ -1,5 +1,5 @@
 
-/* $Id: i_stat.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_stat.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,21 +30,21 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-int get_ave_rgb(Vector**, const KJB_image*);
+int get_ave_rgb(Vector**, const IVI_image*);
 
-int get_max_rgb(Vector**, const KJB_image*);
+int get_max_rgb(Vector**, const IVI_image*);
 
 int get_image_stats
 (
     int*             num_valid_pixels_ptr,
     Vector**         mean_vpp,
     Vector**         stdev_vpp,
-    const KJB_image* source_ip
+    const IVI_image* source_ip
 );
 
 int get_image_window_stats
@@ -52,7 +52,7 @@ int get_image_window_stats
     int*             num_valid_pixels_ptr,
     Vector**         mean_vpp,
     Vector**         stdev_vpp,
-    const KJB_image* source_ip,
+    const IVI_image* source_ip,
     int              row_offset,
     int              col_offset,
     int              num_target_rows,
@@ -62,8 +62,8 @@ int get_image_window_stats
 int get_ave_ratio_without_invalid
 (
     Vector**         out_vpp,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     double           threshold,
     int              min_num_good_points
 );
@@ -71,8 +71,8 @@ int get_ave_ratio_without_invalid
 int get_ave_sum_ratio_without_invalid
 (
     double*          ratio_ptr,
-    const KJB_image* in1_ip,
-    const KJB_image* in2_ip,
+    const IVI_image* in1_ip,
+    const IVI_image* in2_ip,
     double           threshold,
     int              min_num_good_points
 );

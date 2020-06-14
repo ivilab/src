@@ -1,4 +1,4 @@
-/* $Id: test_Vector_d_precompiled.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: test_Vector_d_precompiled.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,7 +22,8 @@
 // This program tests that vector_d can be used with dimension 
 // up to 10 without including the file m_vector_d.impl.h, which contains
 // the template implementations.
-#include <stdlib.h>
+
+#include <stdlib.h>   // For size_t
 static const size_t D = 4;
 #include <test_vector_d.impl>
 

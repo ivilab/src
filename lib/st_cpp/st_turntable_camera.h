@@ -1,4 +1,4 @@
-/* $Id: st_turntable_camera.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: st_turntable_camera.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_ST_TURNTABLE_CAMERA_H
-#define KJB_ST_TURNTABLE_CAMERA_H
+#ifndef IVI_ST_TURNTABLE_CAMERA_H
+#define IVI_ST_TURNTABLE_CAMERA_H
 
 /**
  * @file

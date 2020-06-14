@@ -1,5 +1,5 @@
 
-/* $Id: wrap_gsl_rnd.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: wrap_gsl_rnd.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -39,7 +39,7 @@
 #include "m/m_incl.h"
 #include "wrap_gsl/wrap_gsl_rnd.h"
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #    include "gsl/gsl_cdf.h"
 #endif 
 
@@ -50,7 +50,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifndef KJB_HAVE_GSL 
+#ifndef IVI_HAVE_GSL 
 
 static void set_dont_have_gsl_error(void)
 {
@@ -64,9 +64,9 @@ static void set_dont_have_gsl_error(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int kjb_cdf_tdist_P(double* P_ptr, double x, double nu)
+int ivi_cdf_tdist_P(double* P_ptr, double x, double nu)
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     *P_ptr = gsl_cdf_tdist_P(x, nu);
     return NO_ERROR;
 #else
@@ -77,9 +77,9 @@ int kjb_cdf_tdist_P(double* P_ptr, double x, double nu)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int kjb_cdf_tdist_Q(double* P_ptr, double x, double nu)
+int ivi_cdf_tdist_Q(double* P_ptr, double x, double nu)
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     *P_ptr = gsl_cdf_tdist_Q(x, nu);
     return NO_ERROR;
 #else

@@ -9,7 +9,7 @@
  * test program.
  */
 /*
- * $Id: test_redblack.cpp 20087 2015-11-16 23:42:44Z predoehl $
+ * $Id: test_redblack.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -31,7 +31,7 @@ namespace {
 int ALOT = -1;
 
 /// @brief dictionary type used for this test
-typedef kjb::qd::Redblack_subtree_sum< const char* > Tree;
+typedef ivi::qd::Redblack_subtree_sum< const char* > Tree;
 
 /// @brief insert a record in a tree then test its validity
 Tree::Loc_tp do_a_thing( Tree* tree, float key, const char* str )
@@ -445,7 +445,7 @@ int test8()
 {
 #if 0
     const size_t SZ = 100;
-    typedef kjb::qd::Redblack_subtree_sum< int > T;
+    typedef ivi::qd::Redblack_subtree_sum< int > T;
     T t1, t2;
     std::vector< int > v1(SZ), v2(SZ);
     std::vector< size_t > l1(SZ), l2(SZ);
@@ -532,7 +532,7 @@ int test9()
     std::random_shuffle(l.begin(), l.end());
     for (size_t i = 0; i < N-2; ++i)
     {
-        KJB(ASSERT(! l.empty()));
+        IVI(ASSERT(! l.empty()));
         TEST_TRUE(tree.erase_loc(l.back()));
         l.pop_back();
     }
@@ -549,7 +549,7 @@ int test9()
     audit(tree, __LINE__);
     for (size_t i = 0; i < N-2; ++i)
     {
-        KJB(ASSERT(! l.empty()));
+        IVI(ASSERT(! l.empty()));
         TEST_TRUE(tree.erase_loc(l.back()));
         l.pop_back();
     }
@@ -567,7 +567,7 @@ int test9()
     std::reverse(l.begin(), l.end());
     for (size_t i = 0; i < N-2; ++i)
     {
-        KJB(ASSERT(! l.empty()));
+        IVI(ASSERT(! l.empty()));
         TEST_TRUE(tree.erase_loc(l.back()));
         l.pop_back();
     }
@@ -592,7 +592,7 @@ int main2( int argc, const char* const* argv )
 
     // update the number of test iterations based on the optional argument
     int test_factor = 1;
-    KJB(EPETE(scan_time_factor(argv[1], &test_factor)));
+    IVI(EPETE(scan_time_factor(argv[1], &test_factor)));
 
     for( ALOT = 100; test_factor > 0; --test_factor )
     {
@@ -606,7 +606,7 @@ int main2( int argc, const char* const* argv )
         int rc = (*p)();
         if ( rc != EXIT_SUCCESS )
         {
-            KJB(TEST_PSE(( "failure in test index %d.\n", p - suite )));
+            IVI(TEST_PSE(( "failure in test index %d.\n", p - suite )));
             return rc;
         }
     }
@@ -620,16 +620,16 @@ int main2( int argc, const char* const* argv )
 int main( int argc, const char* const* argv )
 {
     int rc;
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
     try
     {
         rc = main2( argc, argv );
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details_exit();
     }
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return rc;
 }
 

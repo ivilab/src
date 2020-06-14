@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: detection_box.cpp 12676 2012-07-16 00:53:03Z ernesto $ */
+/* $Id: detection_box.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_detection_box.h>
 #include <l_cpp/l_test.h>
@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 using namespace pt;
 using namespace std;
 

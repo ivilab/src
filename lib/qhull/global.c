@@ -1,5 +1,5 @@
 
-/* $Id: global.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: global.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -68,7 +68,7 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 
 #ifdef __cplusplus
-namespace kjb_c {
+namespace ivi_c {
 #endif
 
 #if qh_QHpointer
@@ -124,17 +124,17 @@ void qh_freebuffers (void) {
   qh gm_row= NULL;
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
+#ifdef USE_IVI_MALLOC
   if (qh line)
-    kjb_free (qh line);
+    ivi_free (qh line);
   if (qh half_space)
-    kjb_free (qh half_space);
+    ivi_free (qh half_space);
   if (qh feasible_point)
-    kjb_free (qh feasible_point);
+    ivi_free (qh feasible_point);
   if (qh feasible_string)
-    kjb_free (qh feasible_string);
+    ivi_free (qh feasible_string);
   if (qh temp_malloc)
-    kjb_free (qh temp_malloc);
+    ivi_free (qh temp_malloc);
 #else
   if (qh line)
     free (qh line);
@@ -154,8 +154,8 @@ void qh_freebuffers (void) {
   if (qh first_point && qh POINTSmalloc) {
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-    kjb_free(qh first_point);
+#ifdef USE_IVI_MALLOC
+    ivi_free(qh first_point);
 #else
     free(qh first_point);
 #endif
@@ -241,8 +241,8 @@ void qh_freeqhull (boolT allmem) {
 #if qh_QHpointer
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-  kjb_free (qh_qh);
+#ifdef USE_IVI_MALLOC
+  ivi_free (qh_qh);
 #else
   free (qh_qh);
 #endif
@@ -306,7 +306,7 @@ void qh_init_qhull_command(int argc, char *argv[]) {
       strcat (qh qhull_command, " ");
       strcat (qh qhull_command, argv[i]);
     }else {
-      kjb_fprintf (qh ferr, "qhull input error: more than %d characters in command line\n",
+      ivi_fprintf (qh ferr, "qhull input error: more than %d characters in command line\n",
         (int)sizeof(qh qhull_command));
       exit (1);  /* can not use qh_errexit */
     }
@@ -380,7 +380,7 @@ void qh_initflags(char *command) {
       break;
     case 'A':
       if (!isdigit(*s) && *s != '.' && *s != '-')
-	kjb_fprintf(qh ferr, "qhull warning: no maximum cosine angle given for option A.  Ignored.\n");
+	ivi_fprintf(qh ferr, "qhull warning: no maximum cosine angle given for option A.  Ignored.\n");
       else {
 	if (*s == '-') {
 	  qh premerge_cos= -qh_strtod (s, &s);
@@ -396,7 +396,7 @@ void qh_initflags(char *command) {
       break;
     case 'C':
       if (!isdigit(*s) && *s != '.' && *s != '-')
-	kjb_fprintf(qh ferr, "qhull warning: no centrum radius given for option C.  Ignored.\n");
+	ivi_fprintf(qh ferr, "qhull warning: no centrum radius given for option C.  Ignored.\n");
       else {
 	if (*s == '-') {
 	  qh premerge_centrum= -qh_strtod (s, &s);
@@ -412,9 +412,9 @@ void qh_initflags(char *command) {
       break;
     case 'E':
       if (*s == '-')
-	kjb_fprintf(qh ferr, "qhull warning: negative maximum roundoff given for option A.  Ignored.\n");
+	ivi_fprintf(qh ferr, "qhull warning: negative maximum roundoff given for option A.  Ignored.\n");
       else if (!isdigit(*s))
-	kjb_fprintf(qh ferr, "qhull warning: no maximum roundoff given for option E.  Ignored.\n");
+	ivi_fprintf(qh ferr, "qhull warning: no maximum roundoff given for option E.  Ignored.\n");
       else {
 	qh DISTround= qh_strtod (s, &s);
         qh_option ("Error-roundoff", NULL, &qh DISTround);
@@ -430,7 +430,7 @@ void qh_initflags(char *command) {
 	  if (*t == ',')
 	    t++;
 	  else
-	    kjb_fprintf (qh ferr, "qhull warning: origin for Halfspace intersection should be 'Hn,n,n,...'\n");
+	    ivi_fprintf (qh ferr, "qhull warning: origin for Halfspace intersection should be 'Hn,n,n,...'\n");
 	}
         s= t;
 	qh_strtod (s, &t);
@@ -438,14 +438,14 @@ void qh_initflags(char *command) {
       if (start < t) {
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-        if (!(qh feasible_string= (char*)KJB_CALLOC (t-start+1, 1))) {
+#ifdef USE_IVI_MALLOC
+        if (!(qh feasible_string= (char*)IVI_CALLOC (t-start+1, 1))) {
 #else
         if (!(qh feasible_string= (char*)calloc (t-start+1, 1))) {
 #endif
 /* END kobus */
 
-          kjb_fprintf(qh ferr, "qhull error: insufficient memory for 'Hn,n,n'\n");
+          ivi_fprintf(qh ferr, "qhull error: insufficient memory for 'Hn,n,n'\n");
           qh_errexit (qh_ERRmem, (facetT*)NULL, (ridgeT*)NULL);
         }
         strncpy (qh feasible_string, start, t-start);
@@ -456,7 +456,7 @@ void qh_initflags(char *command) {
       break;
     case 'R':
       if (!isdigit(*s))
-	kjb_fprintf(qh ferr, "qhull warning: no random perturbation given for option R.  Ignored\n");
+	ivi_fprintf(qh ferr, "qhull warning: no random perturbation given for option R.  Ignored\n");
       else {
 	qh RANDOMfactor= qh_strtod (s, &s);
         qh_option ("Random_perturbation", NULL, &qh RANDOMfactor);
@@ -465,7 +465,7 @@ void qh_initflags(char *command) {
       break;
     case 'V':
       if (!isdigit(*s) && *s != '-')
-	kjb_fprintf(qh ferr, "qhull warning: distance not given for option V.  Ignored\n");
+	ivi_fprintf(qh ferr, "qhull warning: distance not given for option V.  Ignored\n");
       else {
 	qh MINvisible= qh_strtod (s, &s);
         qh_option ("Visible", NULL, &qh MINvisible);
@@ -473,7 +473,7 @@ void qh_initflags(char *command) {
       break;
     case 'U':
       if (!isdigit(*s) && *s != '-')
-	kjb_fprintf(qh ferr, "qhull warning: distance not given for option U.  Ignored\n");
+	ivi_fprintf(qh ferr, "qhull warning: distance not given for option U.  Ignored\n");
       else {
 	qh MAXcoplanar= qh_strtod (s, &s);
         qh_option ("U-coplanar", NULL, &qh MAXcoplanar);
@@ -481,9 +481,9 @@ void qh_initflags(char *command) {
       break;
     case 'W':
       if (*s == '-')
-	kjb_fprintf(qh ferr, "qhull warning: negative width for option W.  Ignored.\n");
+	ivi_fprintf(qh ferr, "qhull warning: negative width for option W.  Ignored.\n");
       else if (!isdigit(*s))
-	kjb_fprintf(qh ferr, "qhull warning: no hull width given for option W.  Ignored\n");
+	ivi_fprintf(qh ferr, "qhull warning: no hull width given for option W.  Ignored\n");
       else {
 	qh MINoutside= qh_strtod (s, &s);
         qh_option ("W-outside", NULL, &qh MINoutside);
@@ -586,7 +586,7 @@ void qh_initflags(char *command) {
           break;
 	default:
 	  s--;
-	  kjb_fprintf (qh ferr, "qhull warning: unknown 'F' output option %c, rest ignored\n", (int)s[-1]);
+	  ivi_fprintf (qh ferr, "qhull warning: unknown 'F' output option %c, rest ignored\n", (int)s[-1]);
 	  while (*++s && !isspace(*s));
 	  break;
 	}
@@ -636,10 +636,10 @@ void qh_initflags(char *command) {
 	  break;
 	case 'D':
 	  if (!isdigit (*s))
-	    kjb_fprintf (qh ferr, "qhull input error: missing dimension for 'GD' option\n");
+	    ivi_fprintf (qh ferr, "qhull input error: missing dimension for 'GD' option\n");
 	  else {
 	    if (qh DROPdim >= 0)
-	      kjb_fprintf (qh ferr, "qhull warning: can only drop one dimension.  Previous 'GD%d' ignored\n",
+	      ivi_fprintf (qh ferr, "qhull warning: can only drop one dimension.  Previous 'GD%d' ignored\n",
 	           qh DROPdim);
   	    qh DROPdim= qh_strtol (s, &s);
             qh_option ("GDrop-dim", &qh DROPdim, NULL);
@@ -647,7 +647,7 @@ void qh_initflags(char *command) {
 	  break;
 	default:
 	  s--;
-	  kjb_fprintf (qh ferr, "qhull warning: unknown 'G' print option %c, rest ignored\n", (int)s[0]);
+	  ivi_fprintf (qh ferr, "qhull warning: unknown 'G' print option %c, rest ignored\n", (int)s[0]);
 	  while (*++s && !isspace(*s));
 	  break;
 	}
@@ -686,7 +686,7 @@ void qh_initflags(char *command) {
           break;
 	case 'A':
 	  if (!isdigit (*s))
-	    kjb_fprintf (qh ferr, "qhull input error: missing count for 'PA' option\n");
+	    ivi_fprintf (qh ferr, "qhull input error: missing count for 'PA' option\n");
 	  else {
   	    qh KEEParea= qh_strtol (s, &s);
             qh_option ("PArea-keep", &qh KEEParea, NULL);
@@ -695,7 +695,7 @@ void qh_initflags(char *command) {
 	  break;
 	case 'F':
 	  if (!isdigit (*s))
-	    kjb_fprintf (qh ferr, "qhull input error: missing area for 'PF' option\n");
+	    ivi_fprintf (qh ferr, "qhull input error: missing area for 'PF' option\n");
 	  else {
   	    qh KEEPminArea= qh_strtod (s, &s);
             qh_option ("PFacet-area-keep", NULL, &qh KEEPminArea);
@@ -704,7 +704,7 @@ void qh_initflags(char *command) {
 	  break;
 	case 'M':
 	  if (!isdigit (*s))
-	    kjb_fprintf (qh ferr, "qhull input error: missing count for 'PM' option\n");
+	    ivi_fprintf (qh ferr, "qhull input error: missing count for 'PM' option\n");
 	  else {
   	    qh KEEPmerge= qh_strtol (s, &s);
             qh_option ("PMerge-keep", &qh KEEPmerge, NULL);
@@ -712,7 +712,7 @@ void qh_initflags(char *command) {
 	  break;
 	default:
 	  s--;
-	  kjb_fprintf (qh ferr, "qhull warning: unknown 'P' print option %c, rest ignored\n", (int)s[-1]);
+	  ivi_fprintf (qh ferr, "qhull warning: unknown 'P' print option %c, rest ignored\n", (int)s[-1]);
 	  while (*++s && !isspace(*s));
 	  break;
 	}
@@ -823,7 +823,7 @@ void qh_initflags(char *command) {
 	  qh MERGEindependent= False;
 	LABELcheckdigit:
 	  if (isdigit(*s))
-	    kjb_fprintf (qh ferr, "qhull warning: can not follow '1' or '2' with a digit.  '%c' skipped.\n",
+	    ivi_fprintf (qh ferr, "qhull warning: can not follow '1' or '2' with a digit.  '%c' skipped.\n",
 	             *s++);
 	  break;
 	case '3':
@@ -853,9 +853,9 @@ void qh_initflags(char *command) {
 	case 'G':
 	  i= qh_strtol (s, &t);
 	  if (qh GOODpoint)
-	    kjb_fprintf (qh ferr, "qhull warning: good point already defined for QGn.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: good point already defined for QGn.  Ignored\n");
           else if (s == t)
-	    kjb_fprintf (qh ferr, "qhull warning: no good point id given for option QGn.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no good point id given for option QGn.  Ignored\n");
 	  else if (i < 0 || *s == '-') {
  	    qh GOODpoint= i-1;
   	    qh_option ("QGood-if-dont-see-point", &i, NULL);
@@ -867,7 +867,7 @@ void qh_initflags(char *command) {
 	  break;
 	case 'R':
           if (!isdigit(*s) && *s != '-')
-	    kjb_fprintf (qh ferr, "qhull warning: missing random seed for option QRn.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: missing random seed for option QRn.  Ignored\n");
 	  else {
  	    qh ROTATErandom= i= qh_strtol(s, &s);
  	    if (i == -1)
@@ -879,9 +879,9 @@ void qh_initflags(char *command) {
 	case 'V':
 	  i= qh_strtol (s, &t);
 	  if (qh GOODvertex)
-	    kjb_fprintf (qh ferr, "qhull warning: good vertex already defined for QV.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: good vertex already defined for QV.  Ignored\n");
           else if (s == t)
-	    kjb_fprintf (qh ferr, "qhull warning: no good point id given for QV.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no good point id given for QV.  Ignored\n");
 	  else if (i < 0) {
  	    qh GOODvertex= i - 1;
  	    qh_option ("QV-good-facets-not-point", &i, NULL);
@@ -892,7 +892,7 @@ void qh_initflags(char *command) {
  	  s= t;
 	  break;
 	default:
-	  kjb_fprintf (qh ferr, "qhull warning: unknown 'Q' qhull option %c, rest ignored\n", (int)s[-1]);
+	  ivi_fprintf (qh ferr, "qhull warning: unknown 'Q' qhull option %c, rest ignored\n", (int)s[-1]);
 	  while (*++s && !isspace(*s));
 	  break;
 	}
@@ -923,7 +923,7 @@ void qh_initflags(char *command) {
 	  break;
 	case 'C':
 	  if (!isdigit(*s))
-	    kjb_fprintf (qh ferr, "qhull warning: no point given for trace option C.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no point given for trace option C.  Ignored\n");
 	  else {
 	    i= qh_strtol (s, &s);
 	    qh_option ("TCone-stop", &i, NULL);
@@ -932,7 +932,7 @@ void qh_initflags(char *command) {
 	  break;
 	case 'F':
 	  if (!isdigit(*s))
-	    kjb_fprintf (qh ferr, "qhull warning: no count of new facets for trace option P.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no count of new facets for trace option P.  Ignored\n");
 	  else {
 	    qh REPORTfreq= qh_strtol (s, &s);
             qh_option ("TFacet-log", &qh REPORTfreq, NULL);
@@ -941,7 +941,7 @@ void qh_initflags(char *command) {
 	  break;
 	case 'P':
 	  if (!isdigit(*s))
-	    kjb_fprintf (qh ferr, "qhull warning: no point given for trace option P.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no point given for trace option P.  Ignored\n");
 	  else {
 	    qh TRACEpoint= qh_strtol (s, &s);
             qh_option ("Trace-point", &qh TRACEpoint, NULL);
@@ -949,7 +949,7 @@ void qh_initflags(char *command) {
 	  break;
 	case 'M':
 	  if (!isdigit(*s))
-	    kjb_fprintf (qh ferr, "qhull warning: no merge given for trace option M.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no merge given for trace option M.  Ignored\n");
 	  else {
 	    qh TRACEmerge= qh_strtol (s, &s);
             qh_option ("Trace-merge", &qh TRACEmerge, NULL);
@@ -958,7 +958,7 @@ void qh_initflags(char *command) {
 	case 'V':
 	  i= qh_strtol (s, &t);
 	  if (s == t)
-	    kjb_fprintf (qh ferr, "qhull warning: no point given for trace option V.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no point given for trace option V.  Ignored\n");
 	  else if (i < 0) {
 	    qh STOPpoint= i - 1;
             qh_option ("TV-stop-before-point", &i, NULL);
@@ -970,33 +970,33 @@ void qh_initflags(char *command) {
 	  break;
 	case 'W':
 	  if (!isdigit(*s))
-	    kjb_fprintf (qh ferr, "qhull warning: no max width given for trace option D.  Ignored\n");
+	    ivi_fprintf (qh ferr, "qhull warning: no max width given for trace option D.  Ignored\n");
 	  else {
  	    qh TRACEdist= (realT) qh_strtod (s, &s);
             qh_option ("TWide-trace", NULL, &qh TRACEdist);
           }
 	  break;
 	default:
-	  kjb_fprintf (qh ferr, "qhull warning: unknown 'T' trace option %c, rest ignored\n", (int)s[-1]);
+	  ivi_fprintf (qh ferr, "qhull warning: unknown 'T' trace option %c, rest ignored\n", (int)s[-1]);
 	  while (*++s && !isspace(*s));
 	  break;
 	}
       }
       break;
     default:
-      kjb_fprintf (qh ferr, "qhull warning: unknown flag %c (%x)\n", (int)s[-1],
+      ivi_fprintf (qh ferr, "qhull warning: unknown flag %c (%x)\n", (int)s[-1],
 	       (int)s[-1]);
       break;
     }
     if (s-1 == prev_s && *s && !isspace(*s)) {
-      kjb_fprintf (qh ferr, "qhull warning: missing space after flag %c (%x); reserved for menu. Skipped.\n",
+      ivi_fprintf (qh ferr, "qhull warning: missing space after flag %c (%x); reserved for menu. Skipped.\n",
 	       (int)*prev_s, (int)*prev_s);
       while (*s && !isspace(*s))
 	s++;
     }
   }
   if (isgeom && !qh FORCEoutput && qh PRINTout[1])
-    kjb_fprintf (qh ferr, "qhull warning: additional output formats are not compatible with Geomview\n");
+    ivi_fprintf (qh ferr, "qhull warning: additional output formats are not compatible with Geomview\n");
   /* set derived values in qh_initqhull_globals */
 } /* initflags */
 
@@ -1055,7 +1055,7 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
   qh hull_dim= qh input_dim= dim;
 #ifdef qh_NOmerge
   if (qh MERGING) {
-    kjb_fprintf (qh ferr, "qhull input error: merging not installed (qh_NOmerge + 'Qx', 'Cn' or 'An')\n");
+    ivi_fprintf (qh ferr, "qhull input error: merging not installed (qh_NOmerge + 'Qx', 'Cn' or 'An')\n");
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
 #endif
@@ -1071,11 +1071,11 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
     qh_option ("Pgood", NULL, NULL);
   }
   if (qh DELAUNAY && qh HALFspace) {
-    kjb_fprintf (qh ferr, "qhull input error: can not use Delaunay ('d') or Voronoi ('v') with halfspace intersection ('H')\n");
+    ivi_fprintf (qh ferr, "qhull input error: can not use Delaunay ('d') or Voronoi ('v') with halfspace intersection ('H')\n");
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (!qh DELAUNAY && !qh ATinfinity) {
-    kjb_fprintf (qh ferr, "qhull input error: use upper-hull ('Qu') with Delaunay ('d') or Voronoi ('v')\n");
+    ivi_fprintf (qh ferr, "qhull input error: use upper-hull ('Qu') with Delaunay ('d') or Voronoi ('v')\n");
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
   qh DOcheckmax= (!qh FORCEoutput && !qh SKIPcheckmax && (qh MERGING || qh APPROXhull));
@@ -1086,7 +1086,7 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
   else if (qh VORONOI)
     qh CENTERtype= qh_ASvoronoi;
   if (qh TESTvneighbors && !qh MERGING) {
-    kjb_fprintf(qh ferr, "qhull input error: test vertex neighbors ('Qv') needs a merge option\n");
+    ivi_fprintf(qh ferr, "qhull input error: test vertex neighbors ('Qv') needs a merge option\n");
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (qh PROJECTinput || (qh DELAUNAY && qh PROJECTdelaunay)) {
@@ -1097,7 +1097,7 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
     }
   }
   if (qh hull_dim <= 1) {
-    kjb_fprintf(qh ferr, "qhull error: dimension %d must be > 1\n", qh hull_dim);
+    ivi_fprintf(qh ferr, "qhull error: dimension %d must be > 1\n", qh hull_dim);
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
   for (k= 2, factorial=1.0; k < qh hull_dim; k++)
@@ -1128,7 +1128,7 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
     || (qh GOODvertex
 	&& (qh GOODvertexp < qh first_point  /* also catches !GOODvertexp */
 	    || qh GOODvertexp > qh_point (qh num_points-1)))) {
-    kjb_fprintf (qh ferr, "qhull input error: either QGn or QVn point is > p%d\n",
+    ivi_fprintf (qh ferr, "qhull input error: either QGn or QVn point is > p%d\n",
 	     qh num_points-1);
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -1138,7 +1138,7 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
   }
 #ifdef qh_NOtrace
   if (qh IStracing || qh TRACElevel) {
-    kjb_fprintf (qh ferr, "qhull input error: tracing is not installed (qh_NOtrace in user.h)");
+    ivi_fprintf (qh ferr, "qhull input error: tracing is not installed (qh_NOtrace in user.h)");
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
 #endif
@@ -1157,7 +1157,7 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
     randi= qh_RANDOMint;
     randr += randi;
     if (randi > qh_RANDOMmax) {
-      kjb_fprintf (qh ferr, "\
+      ivi_fprintf (qh ferr, "\
 qhull configuration error (qh_RANDOMmax in user.h):\n\
    random integer %d > qh_RANDOMmax (%.8g)\n",
 	       randi, qh_RANDOMmax);
@@ -1165,7 +1165,7 @@ qhull configuration error (qh_RANDOMmax in user.h):\n\
     }
   }
   if (randr/1000 < qh_RANDOMmax/10)
-    kjb_fprintf (qh ferr, "\
+    ivi_fprintf (qh ferr, "\
 qhull configuration warning (qh_RANDOMmax in user.h):\n\
    average of 1000 randoms %.2g much less than expected (%.2g).\n\
    Is qh_RANDOMmax wrong?\n",
@@ -1173,12 +1173,12 @@ qhull configuration warning (qh_RANDOMmax in user.h):\n\
   qh RANDOMa= 2.0 * qh RANDOMfactor/qh_RANDOMmax;
   qh RANDOMb= 1.0 - qh RANDOMfactor;
   if (qh_HASHfactor < 1.1) {
-    kjb_fprintf(qh ferr, "qhull internal error (qh_initqhull_globals): qh_HASHfactor %d must be at least 1.1.  Qhull uses linear hash probing\n",
+    ivi_fprintf(qh ferr, "qhull internal error (qh_initqhull_globals): qh_HASHfactor %d must be at least 1.1.  Qhull uses linear hash probing\n",
       qh_HASHfactor);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (numpoints+extra < pointsneeded) {
-    kjb_fprintf(qh ferr,"qhull input error: not enough points (%d) to construct initial simplex (need %d)\n",
+    ivi_fprintf(qh ferr,"qhull input error: not enough points (%d) to construct initial simplex (need %d)\n",
 	    numpoints, pointsneeded);
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -1192,40 +1192,40 @@ qhull configuration warning (qh_RANDOMmax in user.h):\n\
     else if (qh PRINTout[i] == qh_PRINTpointnearest)
       printcoplanar= True;
     else if (qh PRINTout[i] == qh_PRINTpointintersect && !qh HALFspace) {
-      kjb_fprintf (qh ferr, "qhull input error: option 'Fp' is used for halfspace intersect ('Hn,n,n')\n");
+      ivi_fprintf (qh ferr, "qhull input error: option 'Fp' is used for halfspace intersect ('Hn,n,n')\n");
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
     else if (qh PRINTout[i] == qh_PRINTcentrums && qh VORONOI) {
-      kjb_fprintf (qh ferr, "qhull input error: option 'Fc' is not available for Voronoi vertices ('v')\n");
+      ivi_fprintf (qh ferr, "qhull input error: option 'Fc' is not available for Voronoi vertices ('v')\n");
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
   }
   if (!qh KEEPcoplanar && !qh KEEPinside && !qh ONLYgood) {
     if ((qh PRINTcoplanar && qh PRINTspheres) || printcoplanar)
-      kjb_fprintf (qh ferr, "qhull input warning: options 'Fc', 'FP', and 'Gp' need option 'Qc' or 'Qi' to record coplanar/inside points\n");
+      ivi_fprintf (qh ferr, "qhull input warning: options 'Fc', 'FP', and 'Gp' need option 'Qc' or 'Qi' to record coplanar/inside points\n");
   }
   if (printmath && (qh hull_dim > 3 || qh VORONOI || qh HALFspace)) {
-    kjb_fprintf (qh ferr, "qhull input error: Mathematica output is only available for 2-d and 3-d convex hulls and Delaunay triangulations\n");
+    ivi_fprintf (qh ferr, "qhull input error: Mathematica output is only available for 2-d and 3-d convex hulls and Delaunay triangulations\n");
     qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (printgeom) {
     if (qh hull_dim > 4) {
-      kjb_fprintf (qh ferr, "qhull input error: Geomview output is only available for 2-d, 3-d and 4-d\n");
+      ivi_fprintf (qh ferr, "qhull input error: Geomview output is only available for 2-d, 3-d and 4-d\n");
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
     if (qh PRINTnoplanes && !(qh PRINTcoplanar + qh PRINTcentrums
      + qh PRINTdots + qh PRINTspheres + qh DOintersections + qh PRINTridges)) {
-      kjb_fprintf (qh ferr, "qhull input error: no output specified for Geomview\n");
+      ivi_fprintf (qh ferr, "qhull input error: no output specified for Geomview\n");
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
     if (qh VORONOI && (qh hull_dim > 3 || qh DROPdim >= 0)) {
-      kjb_fprintf (qh ferr, "qhull input error: Geomview output for Voronoi diagrams only for 2-d\n");
+      ivi_fprintf (qh ferr, "qhull input error: Geomview output for Voronoi diagrams only for 2-d\n");
       qh_errexit (qh_ERRinput, (facetT*)NULL, (ridgeT*)NULL);
     }
     /* can not warn about furthest-site Geomview output: no lower_threshold */
     if (qh hull_dim == 4 && qh DROPdim == -1 &&
 	(qh PRINTcoplanar || qh PRINTspheres || qh PRINTcentrums)) {
-      kjb_fprintf (qh ferr, "qhull input warning: coplanars, vertices, and centrums output not\n\
+      ivi_fprintf (qh ferr, "qhull input warning: coplanars, vertices, and centrums output not\n\
 available for 4-d output (ignored).  Could use 'GDn' instead.\n");
       qh PRINTcoplanar= qh PRINTspheres= qh PRINTcentrums= False;
     }
@@ -1235,7 +1235,7 @@ available for 4-d output (ignored).  Could use 'GDn' instead.\n");
     if (qh DROPdim < qh hull_dim) {
       qh PRINTdim--;
       if (!printgeom || qh hull_dim < 3)
-        kjb_fprintf (qh ferr, "qhull input warning: drop dimension 'GD%d' is only available for 3-d/4-d Geomview\n", qh DROPdim);
+        ivi_fprintf (qh ferr, "qhull input warning: drop dimension 'GD%d' is only available for 3-d/4-d Geomview\n", qh DROPdim);
     }else
       qh DROPdim= -1;
   }else if (qh VORONOI) {
@@ -1287,14 +1287,14 @@ void qh_initqhull_start (FILE *infile, FILE *outfile, FILE *errfile) {
 #if qh_QHpointer
 
 /* Kobus */
-#ifdef USE_KJB_MALLOC
-  if (!(qh_qh= (qhT *)KJB_MALLOC (sizeof(qhT)))) {
+#ifdef USE_IVI_MALLOC
+  if (!(qh_qh= (qhT *)IVI_MALLOC (sizeof(qhT)))) {
 #else
   if (!(qh_qh= (qhT *)malloc (sizeof(qhT)))) {
 #endif
 /* END kobus */
 
-    kjb_fprintf (errfile, "qhull error (qh_initqhull_globals): insufficient memory\n");
+    ivi_fprintf (errfile, "qhull error (qh_initqhull_globals): insufficient memory\n");
     exit (qh_ERRmem);  /* no error handler */
   }
   memset((char *)qh_qh, 0, sizeof(qhT));   /* every field is 0, FALSE, NULL */
@@ -1362,20 +1362,20 @@ void qh_initthresholds(char *command) {
       while (*s && !isspace(key= *s++)) {
 	if (key == 'd' || key == 'D') {
 	  if (!isdigit(*s)) {
-	    kjb_fprintf(qh ferr, "qhull warning: no dimension given for Print option '%c' at: %s.  Ignored\n",
+	    ivi_fprintf(qh ferr, "qhull warning: no dimension given for Print option '%c' at: %s.  Ignored\n",
 		    key, s-1);
 	    continue;
 	  }
 	  index= qh_strtol (s, &s);
 	  if (index >= qh hull_dim) {
-	    kjb_fprintf(qh ferr, "qhull warning: dimension %d for Print option '%c' is >= %d.  Ignored\n",
+	    ivi_fprintf(qh ferr, "qhull warning: dimension %d for Print option '%c' is >= %d.  Ignored\n",
 	        index, key, qh hull_dim);
 	    continue;
 	  }
 	  if (*s == ':') {
 	    value= qh_strtod(++s, &s);
 	    if (fabs((double)value) > 1.0) {
-	      kjb_fprintf(qh ferr, "qhull warning: value %2.4g for Print option %c is > +1 or < -1.  Ignored\n",
+	      ivi_fprintf(qh ferr, "qhull warning: value %2.4g for Print option %c is > +1 or < -1.  Ignored\n",
 	              value, key);
 	      continue;
 	    }
@@ -1400,13 +1400,13 @@ void qh_initthresholds(char *command) {
 	  s++;
 	else if (key == 'b' || key == 'B') {
 	  if (!isdigit(*s)) {
-	    kjb_fprintf(qh ferr, "qhull warning: no dimension given for Qhull option %c.  Ignored\n",
+	    ivi_fprintf(qh ferr, "qhull warning: no dimension given for Qhull option %c.  Ignored\n",
 		    key);
 	    continue;
 	  }
 	  index= qh_strtol (s, &s);
 	  if (index >= maxdim) {
-	    kjb_fprintf(qh ferr, "qhull warning: dimension %d for Qhull option %c is >= %d.  Ignored\n",
+	    ivi_fprintf(qh ferr, "qhull warning: dimension %d for Qhull option %c is >= %d.  Ignored\n",
 	        index, key, maxdim);
 	    continue;
 	  }
@@ -1477,16 +1477,16 @@ void qh_option (char *option, int *i, realT *r) {
 void qh_restore_qhull (qhT **oldqh) {
 
   if (*oldqh && strcmp ((*oldqh)->qhull, "qhull")) {
-    kjb_fprintf (qhmem.ferr, "qhull internal error (qh_restore_qhull): %p is not a qhull data structure\n",
+    ivi_fprintf (qhmem.ferr, "qhull internal error (qh_restore_qhull): %p is not a qhull data structure\n",
                   *oldqh);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (qh_qh) {
-    kjb_fprintf (qhmem.ferr, "qhull internal error (qh_restore_qhull): did not save or free existing qhull\n");
+    ivi_fprintf (qhmem.ferr, "qhull internal error (qh_restore_qhull): did not save or free existing qhull\n");
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
   if (!*oldqh || !(*oldqh)->old_qhstat) {
-    kjb_fprintf (qhmem.ferr, "qhull internal error (qh_restore_qhull): did not previously save qhull %p\n",
+    ivi_fprintf (qhmem.ferr, "qhull internal error (qh_restore_qhull): did not previously save qhull %p\n",
                   *oldqh);
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
@@ -1510,7 +1510,7 @@ qhT *qh_save_qhull (void) {
   qhT *oldqh;
 
   if (!qh_qh) {
-    kjb_fprintf (qhmem.ferr, "qhull internal error (qh_save_qhull): qhull not initialized\n");
+    ivi_fprintf (qhmem.ferr, "qhull internal error (qh_save_qhull): qhull not initialized\n");
     qh_errexit (qh_ERRqhull, (facetT*)NULL, (ridgeT*)NULL);
   }
   qh old_qhstat= qh_qhstat;

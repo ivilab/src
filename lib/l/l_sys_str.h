@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_str.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: l_sys_str.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,14 +27,14 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 #ifdef STANDARD_VAR_ARGS
     /*PRINTFLIKE3*/
-    long kjb_sprintf
+    long ivi_sprintf
     (
         char*       buff,
         size_t      max_len,
@@ -42,10 +42,10 @@ namespace kjb_c {
         ...
     );
 #else
-    long kjb_sprintf(void);
+    long ivi_sprintf(void);
 #endif
 
-long kjb_vsprintf
+long ivi_vsprintf
 (
     char*       buff,
     size_t      max_len,

@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_gaze.h 20912 2016-10-30 17:52:31Z ernesto $ */
+/* $Id: pt_gaze.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_GAZE_H
 #define PT_GAZE_H
@@ -30,7 +30,7 @@
 
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 namespace pt
 {
@@ -75,7 +75,7 @@ void estimate_gaze_direction_from_data
     }
 }
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_GAZE_H */
 

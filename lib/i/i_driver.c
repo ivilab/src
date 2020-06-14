@@ -1,5 +1,5 @@
 
-/* $Id: i_driver.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: i_driver.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -43,9 +43,9 @@ extern "C" {
 
 #define EGCRE(x)      if ((x) == ERROR)                                         \
                       {                                                        \
-                          extern int kjb_debug_level;                          \
+                          extern int ivi_debug_level;                          \
                                                                                \
-                          if (kjb_debug_level > 0)                             \
+                          if (ivi_debug_level > 0)                             \
                           {                                                    \
                               add_error("(EGCRE on line %d of %s.)",            \
                                         __LINE__, __FILE__);                   \
@@ -64,14 +64,14 @@ static int process_tri_value_option(Vector** vpp, char* value_buff);
 
 /* -------------------------------------------------------------------------- */
 
-int kjb_image_program_driver
+int ivi_image_program_driver
 (
     int    argc,
     char** argv,
     int    (*option_fn) (const char *, const char *),
-    int    (*program_fn) (const KJB_image *,
+    int    (*program_fn) (const IVI_image *,
                           const char *,
-                          KJB_image **,
+                          IVI_image **,
                           const char *,
                           const Int_matrix *)
 )
@@ -138,21 +138,21 @@ int kjb_image_program_driver
     };
 
     static char*        input_files[ 3 ] = { NULL, NULL, NULL };
-    static KJB_image* input_ip_array[ 2 ] = { NULL, NULL };
+    static IVI_image* input_ip_array[ 2 ] = { NULL, NULL };
     static char*        non_option_args[ 5 ] = { NULL, NULL, NULL, NULL, NULL };
     char*        output_file      = NULL;
-    KJB_image* output_ip        = NULL;
-    KJB_image* input_ip;
-    KJB_image* mapped_ip        = NULL;
-    KJB_image* merge_ip         = NULL;
-    KJB_image* reduced_ip       = NULL;
-    KJB_image* left_rotated_ip  = NULL;
-    KJB_image* right_rotated_ip = NULL;
-    KJB_image* luminance_ip     = NULL;
-    KJB_image* sum_ip           = NULL;
-    KJB_image* chrom_ip         = NULL;
-    KJB_image* sampled_ip       = NULL;
-    KJB_image* median_ip       = NULL;
+    IVI_image* output_ip        = NULL;
+    IVI_image* input_ip;
+    IVI_image* mapped_ip        = NULL;
+    IVI_image* merge_ip         = NULL;
+    IVI_image* reduced_ip       = NULL;
+    IVI_image* left_rotated_ip  = NULL;
+    IVI_image* right_rotated_ip = NULL;
+    IVI_image* luminance_ip     = NULL;
+    IVI_image* sum_ip           = NULL;
+    IVI_image* chrom_ip         = NULL;
+    IVI_image* sampled_ip       = NULL;
+    IVI_image* median_ip       = NULL;
     Vector*      max_vp           = NULL;
     double       max;
     int          block_size       = NOT_SET;
@@ -198,10 +198,10 @@ int kjb_image_program_driver
     /*
      * The dash at the begining of the option string tells GNU getopt to return
      * a non option argument as the argument to an option with the character
-     * code NON_OPTION_ARGUMENT, which is #define as 1. (kjb_getopts is just a
+     * code NON_OPTION_ARGUMENT, which is #define as 1. (ivi_getopts is just a
      * front end to a copy of GNU getopt).
     */
-    while ((option = kjb_getopts(argc, argv,
+    while ((option = ivi_getopts(argc, argv,
                                  "-R:M:vlow:h:x:y:b:s:a:I:r:S:L::g::c:4:5:6:7:PG:B:N:O:",
                                  long_options, value_buff, sizeof(value_buff)))
                != EOF
@@ -219,13 +219,13 @@ int kjb_image_program_driver
                 pso("\n\n");
                 break;
             case '4' :
-                EGCRE(kjb_read_image(&sum_ip, value_buff));
+                EGCRE(ivi_read_image(&sum_ip, value_buff));
                 break;
             case '5' :
-                EGCRE(kjb_read_image(&luminance_ip, value_buff));
+                EGCRE(ivi_read_image(&luminance_ip, value_buff));
                 break;
             case '6' :
-                EGCRE(kjb_read_image(&chrom_ip, value_buff));
+                EGCRE(ivi_read_image(&chrom_ip, value_buff));
                 break;
             case '7' :
                 EGCRE(ss1pi(value_buff, &map_border));
@@ -250,7 +250,7 @@ int kjb_image_program_driver
                 EGCRE(process_option_string(value_buff, option_fn));
                 break;
             case 'v' :
-                kjb_set_verbose_level(INT_MAX);
+                ivi_set_verbose_level(INT_MAX);
                 break;
             case 'o' :
                 option_str = "cvof=on";
@@ -293,7 +293,7 @@ int kjb_image_program_driver
                 }
                 break;
             case 'I' :
-                EGCRE(kjb_i_set("ipc", value_buff));
+                EGCRE(ivi_i_set("ipc", value_buff));
                 break;
             case 'c' :
                 EGCRE(ss1d(value_buff, &chrom_intensity));
@@ -352,7 +352,7 @@ int kjb_image_program_driver
                 if (num_non_option_args < 5)
                 {
                     non_option_args[ num_non_option_args ] =
-                                                       kjb_strdup(value_buff);
+                                                       ivi_strdup(value_buff);
                 }
                 num_non_option_args++;
 
@@ -413,7 +413,7 @@ int kjb_image_program_driver
         EGCRE(ss1d(non_option_args[ 2 ], &(merge_factors[ 1 ])));
         input_files[ 1 ] = non_option_args[ 3 ];
 
-        EGCRE(kjb_sprintf(display_title, sizeof(display_title), "(%s)%s+(%s)%s",
+        EGCRE(ivi_sprintf(display_title, sizeof(display_title), "(%s)%s+(%s)%s",
                           non_option_args[ 0 ], non_option_args[ 1 ],
                           non_option_args[ 2 ], non_option_args[ 3 ]));
     }
@@ -434,7 +434,7 @@ int kjb_image_program_driver
 
     while (input_files[ count ] != NULL)
     {
-        EGCRE(kjb_read_image(&input_ip_array[ count ], input_files[ count]));
+        EGCRE(ivi_read_image(&input_ip_array[ count ], input_files[ count]));
 
         if ((make_even) && (IS_ODD(input_ip_array[ count ]->num_rows)))
         {
@@ -446,7 +446,7 @@ int kjb_image_program_driver
             (input_ip_array[ count ]->num_cols)--;
         }
 
-        if (KJB_IS_SET(roll))
+        if (IVI_IS_SET(roll))
         {
             Pixel* row;
 
@@ -471,21 +471,21 @@ int kjb_image_program_driver
                 }
             }
 
-            kjb_free(row);
+            ivi_free(row);
         }
 
-        if (KJB_IS_SET(height) || KJB_IS_SET(width) || KJB_IS_SET(x) || KJB_IS_SET(y))
+        if (IVI_IS_SET(height) || IVI_IS_SET(width) || IVI_IS_SET(x) || IVI_IS_SET(y))
         {
-            KJB_image* window_ip = NULL;
+            IVI_image* window_ip = NULL;
 
 
             num_rows = input_ip_array[ count ]->num_rows;
             num_cols = input_ip_array[ count ]->num_cols;
 
-            if (KJB_IS_SET(height) && (width ==  NOT_SET)) width = height;
-            if (KJB_IS_SET(width)  && (height == NOT_SET)) height = width;
+            if (IVI_IS_SET(height) && (width ==  NOT_SET)) width = height;
+            if (IVI_IS_SET(width)  && (height == NOT_SET)) height = width;
 
-            if (KJB_IS_SET(height) && KJB_IS_SET(width) && (x==NOT_SET) && (y==NOT_SET))
+            if (IVI_IS_SET(height) && IVI_IS_SET(width) && (x==NOT_SET) && (y==NOT_SET))
             {
                 x = (num_cols - width)  / 2;
                 y = (num_rows - height) / 2;
@@ -517,7 +517,7 @@ int kjb_image_program_driver
             EGCRE(get_image_window(&window_ip, input_ip_array[ count ],
                                          y, x, height, width));
 
-            kjb_free_image(input_ip_array[ count ]);
+            ivi_free_image(input_ip_array[ count ]);
 
             input_ip_array[ count ] = window_ip;
         }
@@ -595,7 +595,7 @@ int kjb_image_program_driver
 
     if (program_fn == NULL)
     {
-        EGCRE(kjb_copy_image(&output_ip, input_ip));
+        EGCRE(ivi_copy_image(&output_ip, input_ip));
     }
     else
     {
@@ -810,12 +810,12 @@ int kjb_image_program_driver
 
     if (output_file != NULL)
     {
-        EGCRE(kjb_write_image(output_ip, output_file));
+        EGCRE(ivi_write_image(output_ip, output_file));
     }
 
     for (i = 0; i < num_output_files; i++)
     {
-        EGCRE(kjb_write_image(output_ip, output_files[ i ]));
+        EGCRE(ivi_write_image(output_ip, output_files[ i ]));
     }
 
 cleanup:
@@ -827,27 +827,27 @@ cleanup:
     free_matrix(transform_mp);
     free_vector(ave_vp);
     free_vector(stdev_vp);
-    kjb_free_image(input_ip_array[ 0 ]);
-    kjb_free_image(input_ip_array[ 1 ]);
-    kjb_free_image(output_ip);
-    kjb_free_image(mapped_ip);
-    kjb_free_image(merge_ip);
-    kjb_free_image(reduced_ip);
-    kjb_free_image(sampled_ip);
-    kjb_free_image(median_ip);
-    kjb_free_image(left_rotated_ip);
-    kjb_free_image(right_rotated_ip);
-    kjb_free_image(luminance_ip);
-    kjb_free_image(sum_ip);
-    kjb_free_image(chrom_ip);
+    ivi_free_image(input_ip_array[ 0 ]);
+    ivi_free_image(input_ip_array[ 1 ]);
+    ivi_free_image(output_ip);
+    ivi_free_image(mapped_ip);
+    ivi_free_image(merge_ip);
+    ivi_free_image(reduced_ip);
+    ivi_free_image(sampled_ip);
+    ivi_free_image(median_ip);
+    ivi_free_image(left_rotated_ip);
+    ivi_free_image(right_rotated_ip);
+    ivi_free_image(luminance_ip);
+    ivi_free_image(sum_ip);
+    ivi_free_image(chrom_ip);
     free_int_matrix(region_map_mp);
     free_int_matrix(windowed_region_map_mp);
 
-    kjb_free(non_option_args[ 0 ]);
-    kjb_free(non_option_args[ 1 ]);
-    kjb_free(non_option_args[ 2 ]);
-    kjb_free(non_option_args[ 3 ]);
-    kjb_free(non_option_args[ 4 ]);
+    ivi_free(non_option_args[ 0 ]);
+    ivi_free(non_option_args[ 1 ]);
+    ivi_free(non_option_args[ 2 ]);
+    ivi_free(non_option_args[ 3 ]);
+    ivi_free(non_option_args[ 4 ]);
 
     return result;
 }
@@ -900,8 +900,8 @@ static int process_option(const char* option, const char* value)
     int  temp_result;
     int  (*set_fn_list[ MAX_NUM_SET_FN ])(const char* opt, const char* val);
 
-    set_fn_list[ 0 ] = kjb_l_set;
-    set_fn_list[ 1 ] = kjb_i_set;
+    set_fn_list[ 0 ] = ivi_l_set;
+    set_fn_list[ 1 ] = ivi_i_set;
 
     ERE(temp_result = call_set_fn(2, set_fn_list, "Options",
                                       option, value));

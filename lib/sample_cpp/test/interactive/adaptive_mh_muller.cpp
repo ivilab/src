@@ -1,4 +1,4 @@
-/* $Id: adaptive_mh_muller.cpp 17425 2014-08-30 00:34:38Z predoehl $ */
+/* $Id: adaptive_mh_muller.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -38,18 +38,18 @@
 
 #include <unistd.h>
 
-//using namespace kjb;
+//using namespace ivi;
 using namespace std;
 
 double SIGMA = 500;
 
 Gnuplot muller_plot;
 
-class Point : public kjb::Vector
+class Point : public ivi::Vector
 {
 public:
-    Point() : kjb::Vector(2, 0.0) {}
-    Point(const kjb::Vector& other) : kjb::Vector(other) {}
+    Point() : ivi::Vector(2, 0.0) {}
+    Point(const ivi::Vector& other) : ivi::Vector(other) {}
 
     double& x()       { return (*this)[0]; }
     double  x() const { return (*this)[0]; }
@@ -219,7 +219,7 @@ int main (int /* argc */, char ** /*argv */)
     g1.set_terminal_std("wxt");
     g2.set_terminal_std("wxt"); */
 
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     muller_plot.cmd("load \"muller-V.gnu\"");
 
@@ -253,7 +253,7 @@ int main (int /* argc */, char ** /*argv */)
     Point model;
     double model_log_likelihood = log_likelihood(model);
 
-    Simple_adaptive_mh_step<Point> mh_step(log_likelihood, create_diagonal_matrix(kjb::Vector(2, SIGMA)), 0.22);
+    Simple_adaptive_mh_step<Point> mh_step(log_likelihood, create_diagonal_matrix(ivi::Vector(2, SIGMA)), 0.22);
 
 // BUILD SAMPLER
     Single_step_sampler<Point> sampler(

@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_file_util.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: pt_file_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #ifndef PT_FILE_UTIL_H_
@@ -28,7 +28,7 @@
 #include <string>
 #include <l_cpp/l_filesystem.h>
 
-namespace kjb
+namespace ivi
 {
 namespace pt
 {
@@ -264,7 +264,7 @@ private:
     std::string base_dir_;
 };
 
-}} // namespace kjb::pt
+}} // namespace ivi::pt
 
 #endif /*PT_FILE_UTIL_H_ */
 

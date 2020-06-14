@@ -1,5 +1,5 @@
 
-/* $Id: curv_lib.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: curv_lib.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -525,7 +525,7 @@ static int refit_parametric_cubic_parameter
                 {
                     db_mat(c_mp);
                     db_rv(px_vp);
-                    kjb_print_error();
+                    ivi_print_error();
                 }
                 continue;
             }
@@ -538,7 +538,7 @@ static int refit_parametric_cubic_parameter
                 {
                     db_mat(c_mp);
                     db_rv(py_vp);
-                    kjb_print_error();
+                    ivi_print_error();
                 }
                 continue;
             }
@@ -591,7 +591,7 @@ static int refit_parametric_cubic_parameter
             if (isnan(t_new))
             {
                 dbe(t_new);
-                kjb_exit(EXIT_FAILURE);
+                ivi_exit(EXIT_FAILURE);
             }
 
             (*new_t_vpp)->elements[ k ] = t_new;
@@ -609,9 +609,9 @@ static int refit_parametric_cubic_parameter
 
 #ifdef TEST_CIRCLE
 
-static KJB_image *create_test_circle(int rows, int cols)
+static IVI_image *create_test_circle(int rows, int cols)
 {
-    KJB_image *im = kjb_create_image(rows, cols);
+    IVI_image *im = ivi_create_image(rows, cols);
 
     double pi = 3.14159265358979;
     int i, j, k;

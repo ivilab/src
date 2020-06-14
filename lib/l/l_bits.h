@@ -60,8 +60,8 @@
  */
 
 
-#ifndef KJB_BITS_INCLUDED
-#define KJB_BITS_INCLUDED
+#ifndef IVI_BITS_INCLUDED
+#define IVI_BITS_INCLUDED
 
 #include "l/l_sys_def.h"
 
@@ -70,11 +70,11 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-int kjb_is_bigendian(void);
+int ivi_is_bigendian(void);
 
 /**
  * @name bswap
@@ -84,15 +84,15 @@ int kjb_is_bigendian(void);
  */
 
 /** @brief Swaps the 16-bit byte ordering between big and little endian. */
-void bswap_u16(kjb_uint16* x);
+void bswap_u16(ivi_uint16* x);
 
 
 /** @brief Swaps the 32-bit byte ordering between big and little endian. */
-void bswap_u32(kjb_uint32* x);
+void bswap_u32(ivi_uint32* x);
 
 
 /** @brief Swaps the 64-bit byte ordering between big and little endian. */
-void bswap_u64(kjb_uint64* x);
+void bswap_u64(ivi_uint64* x);
 
 /*@}*/
 

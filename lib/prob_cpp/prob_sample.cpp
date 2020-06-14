@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_sample.cpp 21776 2017-09-17 16:44:49Z clayton $ */
+/* $Id: prob_sample.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /** @file
  *
@@ -31,7 +31,7 @@
 
 #include <unistd.h>
 
-namespace kjb {
+namespace ivi {
 
 // basic global random number generators
 const unsigned int DEFAULT_SEED = static_cast<unsigned int>(std::time(0)+getpid());
@@ -172,5 +172,5 @@ Matrix sample_standard_wishart(double dof, size_t dim, const Matrix& C)
     return U;
 }
 
-} //namespace kjb
+} //namespace ivi
 

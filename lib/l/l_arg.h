@@ -1,5 +1,5 @@
 
-/* $Id: l_arg.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: l_arg.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -31,7 +31,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -75,7 +75,7 @@ int get_boolean_arg
     int*        boolean_ptr 
 );
 
-int kjb_getopts    
+int ivi_getopts    
 (
     int                  argc,
     char*                argv[],

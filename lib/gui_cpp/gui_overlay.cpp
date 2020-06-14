@@ -1,4 +1,4 @@
-/* $Id: gui_overlay.cpp 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: gui_overlay.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -19,13 +19,13 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <gui_cpp/gui_overlay.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
 
-namespace kjb {
+namespace ivi {
 namespace gui {
 Overlay::Overlay() :
     Renderable(),
@@ -107,6 +107,6 @@ void Overlay_callback_wrapper::render() const
 }
 
 } // namespace gui 
-} // namespace kjb 
+} // namespace ivi 
 
-#endif // KJB_HAVE_OPENGL
+#endif // IVI_HAVE_OPENGL

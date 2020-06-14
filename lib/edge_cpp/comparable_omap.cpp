@@ -10,7 +10,7 @@
 #include "edge_cpp/comparable_omap.h"
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 #define COLOR_TOLERANCE 5
 
@@ -20,7 +20,7 @@ using namespace kjb;
 #define OMAP_BLACK 3
 
 
-void Comparable_omap::prepare_int_maps(const kjb::Image & base)
+void Comparable_omap::prepare_int_maps(const ivi::Image & base)
 {
     map_base.zero_out(_num_rows, _num_cols);
     accum_hor.zero_out(_num_rows, _num_cols);
@@ -266,7 +266,7 @@ double Comparable_omap::compare_omap
 
 double Comparable_omap::compare_omap_integral
 (
-    const std::vector<kjb::Int_vector> & surface_changes,
+    const std::vector<ivi::Int_vector> & surface_changes,
     int surface_counter
 ) const
 {
@@ -360,13 +360,13 @@ int Comparable_omap::get_black(const Image & howblack){
         for(int j=0;j<base.get_num_cols();j++){
             if( (base(i,j,1) > COLOR_TOLERANCE ) && (base(i,j,2) > COLOR_TOLERANCE) )
             {
-                KJB_THROW_2(KJB_error, "Invalid orientation map");
+                IVI_THROW_2(IVI_error, "Invalid orientation map");
             }
             if((base(i,j,1) > COLOR_TOLERANCE) )
             {
                 if((base(i,j,0) > COLOR_TOLERANCE) )
                 {
-                    KJB_THROW_2(KJB_error, "Invalid orientation map");
+                    IVI_THROW_2(IVI_error, "Invalid orientation map");
                 }
                 reversedbase(i,j,1) = 0.0;
                 reversedbase(i,j,2) = 255.0;
@@ -375,7 +375,7 @@ int Comparable_omap::get_black(const Image & howblack){
             {
                 if((base(i,j,0) > COLOR_TOLERANCE) )
                 {
-                    KJB_THROW_2(KJB_error, "Invalid orientation map");
+                    IVI_THROW_2(IVI_error, "Invalid orientation map");
                 }
                 reversedbase(i,j,1) = 255.0;
                 reversedbase(i,j,2) = 0.0;

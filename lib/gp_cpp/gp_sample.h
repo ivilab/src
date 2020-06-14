@@ -28,7 +28,7 @@
 #include <m_cpp/m_vector.h>
 #include <prob_cpp/prob_sample.h>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 /** @brief  Draw a sample from a GP prior distribution. */
@@ -36,7 +36,7 @@ template<class Mean, class Covariance>
 inline
 Vector sample(const Prior<Mean, Covariance>& P)
 {
-    return kjb::sample(P.normal());
+    return ivi::sample(P.normal());
 }
 
 /** @brief  Draws a sample (of outputs) from the GP posterior distribution. */
@@ -59,7 +59,7 @@ template<class Mean, class Covariance>
 inline
 Vector sample(const Posterior<Mean, Covariance, Linear_gaussian>& P)
 {
-    return kjb::sample(P.normal());
+    return ivi::sample(P.normal());
 }
 
 /**
@@ -70,7 +70,7 @@ template<class Mean, class Covariance>
 inline
 Vector sample(const Predictive_nl<Mean, Covariance>& P)
 {
-    return kjb::sample(P.normal());
+    return ivi::sample(P.normal());
 }
 
 /**
@@ -113,10 +113,10 @@ template<class Mean, class Covariance>
 inline
 Vector sample(const Predictive<Mean, Covariance, Linear_gaussian>& P)
 {
-    return kjb::sample(P.normal());
+    return ivi::sample(P.normal());
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_SAMPLE_H_INCLUDED */
 

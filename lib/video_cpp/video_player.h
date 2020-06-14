@@ -1,4 +1,4 @@
-/* $Id: video_player.h 18791 2015-04-07 18:51:57Z ernesto $ */
+/* $Id: video_player.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -18,12 +18,12 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef KJB_CPP_GR_PLAYER_H
-#define KJB_CPP_GR_PLAYER_H
+#ifndef IVI_CPP_GR_PLAYER_H
+#define IVI_CPP_GR_PLAYER_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 
@@ -31,15 +31,15 @@
 #include <i_cpp/i_image.h>
 #include <video_cpp/video.h>
 
-namespace kjb
+namespace ivi
 {
     /**
      * A simple function that renders a video frame to opengl
      */
     void render_video_frame(const Video& video, size_t frame, bool reset_pos = true)
     {
-        size_t num_cols = kjb::opengl::get_viewport_width();
-        size_t num_rows = kjb::opengl::get_viewport_height();
+        size_t num_cols = ivi::opengl::get_viewport_width();
+        size_t num_rows = ivi::opengl::get_viewport_height();
         if(num_cols != video.get_width() || num_rows != video.get_height()) return;
 
         if(reset_pos) glRasterPos2f(0, 0);
@@ -137,8 +137,8 @@ public:
         video_ = boost::shared_ptr<Video>(video, null_deleter());
     }
 
-#ifdef KJB_HAVE_GLUT
-    void attach(kjb::opengl::Glut_window& wnd)
+#ifdef IVI_HAVE_GLUT
+    void attach(ivi::opengl::Glut_window& wnd)
     {
         using namespace boost;
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -155,7 +155,7 @@ public:
         render_video_frame(*video_, frame);
     }
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     void display() const
     {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -171,7 +171,7 @@ public:
 
     void special_key(int k, int, int)
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         switch(k)
         {
             case GLUT_KEY_UP:
@@ -192,27 +192,27 @@ public:
         }
         redisplay();
 #else
-        KJB_THROW_2(Missing_dependency, "glut");
+        IVI_THROW_2(Missing_dependency, "glut");
 #endif
     }
 
     void init_timer()
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         if(timer_registered_ == false)
         {
             float period = 1000.0 / video_->get_frame_rate();
-            kjb::opengl::Glut::add_timer_callback(period, boost::bind(&Self::timer, this));
+            ivi::opengl::Glut::add_timer_callback(period, boost::bind(&Self::timer, this));
             timer_registered_ = true;
         }
 #else
-        KJB_THROW_2(Missing_dependency, "glut");
+        IVI_THROW_2(Missing_dependency, "glut");
 #endif
     }
 
     void redisplay()
     {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutPostRedisplay();
 #endif
     }
@@ -265,7 +265,7 @@ public:
         return cur_frame_;
     }
 
-    boost::shared_ptr<kjb::Video> video_;
+    boost::shared_ptr<ivi::Video> video_;
 
     int cur_frame_;
         
@@ -274,6 +274,6 @@ public:
 };
 
 
-} // namespace kjb
+} // namespace ivi
 #endif /* HAVE_OPENGL */
 #endif

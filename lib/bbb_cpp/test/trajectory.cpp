@@ -25,7 +25,7 @@
 #include <iostream>
 #include <iterator>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using namespace boost;
 

@@ -16,23 +16,23 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_trajectory.h 20005 2015-11-01 07:25:30Z jguan1 $ */
+/* $Id: pt_trajectory.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_TRAJECTORY_H
 #define PT_TRAJECTORY_H
 
 #include <tracking_cpp/tracking_trajectory.h>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
-using namespace kjb::tracking;
+using namespace ivi::tracking;
 
 typedef Generic_trajectory_map<double> Angle_trajectory_map;
 typedef Generic_trajectory<double> Angle_trajectory;
 typedef Generic_trajectory_element<double> Angle_trajectory_element;
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_TRAJECTORY_H */
 

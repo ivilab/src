@@ -33,16 +33,16 @@
 #include <ios>
 #include <iomanip>
 
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
 #include <tbb/tbb.h>
 #include <tbb/scalable_allocator.h>
 #endif 
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 // some typdefs
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
     typedef std::vector<Vector, tbb::scalable_allocator<Vector> > Vector_vec;
 #else
     typedef std::vector<Vector> Vector_vec;
@@ -285,7 +285,7 @@ bool valid_body_dir(const Complete_state& cs)
     return cs.body_dir != std::numeric_limits<double>::max();
 }
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_COMPLETE_STATE_H */
 

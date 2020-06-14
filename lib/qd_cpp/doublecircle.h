@@ -10,7 +10,7 @@
  * Computational Geometry (Springer, 1999).
  */
 /*
- * $Id: doublecircle.h 19808 2015-09-21 03:49:24Z predoehl $
+ * $Id: doublecircle.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef DOUBLECIRCLE_H_UOFARIZONAVISION
@@ -23,7 +23,7 @@
 #include <vector>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -123,8 +123,8 @@ namespace std
     /// @brief swap representations of two circles
     template<>
     inline void swap(
-        kjb::qd::DoubleCircle& p1,
-        kjb::qd::DoubleCircle& p2
+        ivi::qd::DoubleCircle& p1,
+        ivi::qd::DoubleCircle& p2
     )
     {
         p1.swap( p2 );

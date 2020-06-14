@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: marginal_likelihood.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: marginal_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_MARGINAL_LIKELIHOOD_H
-#define KJB_TIES_MARGINAL_LIKELIHOOO_H 
+#ifndef IVI_TIES_MARGINAL_LIKELIHOOD_H
+#define IVI_TIES_MARGINAL_LIKELIHOOO_H 
 
 #include <vector>
 #include <string>
@@ -35,7 +35,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace kjb{
+namespace ivi{
 namespace ties{
 
 /**
@@ -128,5 +128,5 @@ private:
 
 }}
 
-#endif //KJB_TIES_MARGINAL_LIKELIHOOO_H 
+#endif //IVI_TIES_MARGINAL_LIKELIHOOO_H 
 

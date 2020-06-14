@@ -1,5 +1,5 @@
 
-/* $Id: l_math.h 21593 2017-07-30 16:48:05Z kobus $ */
+/* $Id: l_math.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -120,11 +120,11 @@ int get_random_integer_list
     int* output_array
 );
 
-double kjb_log2(double x);
+double ivi_log2(double x);
 
-int kjb_floor(double x);
-int kjb_rint (double x);
-int kjb_rintf(float x);
+int ivi_floor(double x);
+int ivi_rint (double x);
+int ivi_rintf(float x);
 
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE

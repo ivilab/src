@@ -1,5 +1,5 @@
 
-/* $Id: s2_fluorescence.c 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: s2_fluorescence.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -77,7 +77,7 @@ Fluorescent_database* debug_create_fluorescent_database
 
     if (fl_db_ptr->fluorescent_surfaces == NULL)
     {
-        kjb_free(fl_db_ptr);
+        ivi_free(fl_db_ptr);
         return NULL;
     }
 
@@ -121,7 +121,7 @@ Fluorescent_database* create_fluorescent_database
 
     if (fl_db_ptr->fluorescent_surfaces == NULL)
     {
-        kjb_free(fl_db_ptr);
+        ivi_free(fl_db_ptr);
         return NULL;
     }
 
@@ -177,8 +177,8 @@ void free_fluorescent_database(Fluorescent_database* fl_db_ptr)
             fluorescent_surface_ptr++;
 
         }
-        kjb_free(fl_db_ptr->fluorescent_surfaces);
-        kjb_free(fl_db_ptr);
+        ivi_free(fl_db_ptr->fluorescent_surfaces);
+        ivi_free(fl_db_ptr);
     }
 }
 
@@ -189,7 +189,7 @@ void free_fluorescent_database(Fluorescent_database* fl_db_ptr)
  *
  * Gets target fluorescent_database for "building block" routines
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library. If *target_fl_db_ptr_ptr is NULL, then this routine creates the
  * fluorescent_database. If it is not null, and it is the right size, then this
  * routine does nothing. If it is the wrong size, then it is resized.
@@ -437,7 +437,7 @@ int read_fl_db_from_config_file
     }
     else if (config_file_name != NULL)
     {
-        kjb_strncpy(config_file_name, temp_config_file_name,
+        ivi_strncpy(config_file_name, temp_config_file_name,
                     config_file_name_size);
     }
 
@@ -495,14 +495,14 @@ int read_fluorescent_database
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_fluorescent_database(fl_db_ptr_ptr, fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);   /* Ignore return--only reading */
+        (void)ivi_fclose(fp);   /* Ignore return--only reading */
     }
 
     return result;
@@ -558,8 +558,8 @@ int fp_read_fluorescent_database_header
     int*  num_fluorescent_surfaces_ptr
 )
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int            i;
     int            num_options;
     char**         option_list;
@@ -593,13 +593,13 @@ int fp_read_fluorescent_database_header
             /*EMPTY*/
             ;  /* Do nothing. */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
 
             trim_beg(&line_pos);
 
-            if (*line_pos == kjb_header_char)
+            if (*line_pos == ivi_header_char)
             {
                 line_pos++;
 
@@ -816,7 +816,7 @@ int write_fluorescent_database
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     result = fp_write_fluorescent_database(fp, fl_db_ptr);
@@ -828,7 +828,7 @@ int write_fluorescent_database
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        if (kjb_fclose(fp) == ERROR)
+        if (ivi_fclose(fp) == ERROR)
         {
             result = ERROR;
         }
@@ -873,13 +873,13 @@ int fp_write_fluorescent_database_header
     int   num_fluorescent_surfaces
 )
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
 
 
-    ERE(kjb_fprintf(fp, "\n%c%c t=fluorescent_db c=%d\n\n",
-                    kjb_comment_char,
-                    kjb_header_char,
+    ERE(ivi_fprintf(fp, "\n%c%c t=fluorescent_db c=%d\n\n",
+                    ivi_comment_char,
+                    ivi_header_char,
                     num_fluorescent_surfaces));
     return NO_ERROR;
 }
@@ -933,8 +933,8 @@ int fp_write_fluorescent_database_surface
 
     if (result != ERROR)
     {
-        result = kjb_fprintf(fp, "\n%c%c eof\n\n",
-                             kjb_comment_char, kjb_header_char);
+        result = ivi_fprintf(fp, "\n%c%c eof\n\n",
+                             ivi_comment_char, ivi_header_char);
     }
 
     free_spectra(output_sp);

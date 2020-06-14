@@ -2,7 +2,7 @@
  * @file Event_parser.cpp
  *
  * @author Colin Dawson 
- * $Id: Event_parser.cpp 21596 2017-07-30 23:33:36Z kobus $ 
+ * $Id: Event_parser.cpp 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "l/l_sys_debug.h"
@@ -59,8 +59,8 @@ namespace semantics
 	case(3):
 	    return read_event_u(event_stream);
 	default:
-	    KJB_THROW_2(
-		kjb::IO_error,
+	    IVI_THROW_2(
+		ivi::IO_error,
 		"Unknown event code encountered in parser");
 	}
     }

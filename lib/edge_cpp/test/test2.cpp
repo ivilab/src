@@ -29,14 +29,14 @@ using namespace std;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
     Line_segment ls(200.0, 200.0, 360*TEST_DEG_TO_RADIAN, 100.0 );
 
     if(!ls.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -48,7 +48,7 @@ int main()
     if(!ls_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -63,7 +63,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls_b;
@@ -71,7 +71,7 @@ int main()
     if(!ls_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -85,14 +85,14 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls2(200.0, 200.0, -(M_PI - 50*TEST_DEG_TO_RADIAN) - 2*M_PI, 100.0 );
     if(!ls2.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -106,7 +106,7 @@ int main()
     if(!ls2_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -120,12 +120,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls2_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -139,7 +139,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls3(200.0, 200.0, M_PI_2+DBL_EPSILON, 100.0 );
@@ -147,7 +147,7 @@ int main()
     if(!ls3.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -161,7 +161,7 @@ int main()
     if(!ls3_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -175,12 +175,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls3_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -194,7 +194,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls4(200.0, 200.0, 315*TEST_DEG_TO_RADIAN +2*M_PI, 100.0 );
@@ -202,7 +202,7 @@ int main()
     if(!ls4.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -216,7 +216,7 @@ int main()
     if(!ls4_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -230,12 +230,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls4_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -249,7 +249,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls5(200.0, 200.0, 180*TEST_DEG_TO_RADIAN, 100.0 );
@@ -257,7 +257,7 @@ int main()
     if(!ls.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -271,7 +271,7 @@ int main()
     if(!ls5_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -285,12 +285,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls5_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -304,7 +304,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls6(5.0, 5.0, 213*TEST_DEG_TO_RADIAN, 21.0 );
@@ -312,7 +312,7 @@ int main()
     if(!ls6.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -327,7 +327,7 @@ int main()
     if(!ls6_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -341,12 +341,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls6_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -360,7 +360,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls7(5.0, 5.0, 240*TEST_DEG_TO_RADIAN, 13.02 );
@@ -368,7 +368,7 @@ int main()
     if(!ls7.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -382,7 +382,7 @@ int main()
     if(!ls7_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -396,12 +396,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls7_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -415,7 +415,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls8(5.0, 5.0, 270*TEST_DEG_TO_RADIAN, 10.0 );
@@ -423,7 +423,7 @@ int main()
     if(!ls8.is_line_segment_consistent())
     {
         std::cout << "BAD 270 LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -437,7 +437,7 @@ int main()
     if(!ls8_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -451,12 +451,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls8_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -470,7 +470,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls9(5.0, 5.0, 301*TEST_DEG_TO_RADIAN, 110.0 );
@@ -478,7 +478,7 @@ int main()
     if(!ls9.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -492,7 +492,7 @@ int main()
     if(!ls9_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -506,12 +506,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls9_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -525,7 +525,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls10(5.0, 5.0, 333*TEST_DEG_TO_RADIAN, 10.0 );
@@ -533,7 +533,7 @@ int main()
     if(!ls10.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -547,7 +547,7 @@ int main()
     if(!ls10_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -561,12 +561,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls10_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -580,7 +580,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls11(5.0, 5.0, 360*TEST_DEG_TO_RADIAN, 10.0 );
@@ -588,7 +588,7 @@ int main()
     if(!ls11.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -602,7 +602,7 @@ int main()
     if(!ls11_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -616,12 +616,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls11_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -635,7 +635,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls12(5.0, 5.0, 360*TEST_DEG_TO_RADIAN, 10.0 );
@@ -643,7 +643,7 @@ int main()
     if(!ls12.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -657,7 +657,7 @@ int main()
     if(!ls12_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -671,12 +671,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls12_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -690,7 +690,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls13(5.0, 5.0, 45*TEST_DEG_TO_RADIAN, 10.0 );
@@ -698,7 +698,7 @@ int main()
     if(!ls13.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -712,7 +712,7 @@ int main()
     if(!ls13_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -726,12 +726,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls13_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -745,7 +745,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls14(5.0, 5.0, 0*TEST_DEG_TO_RADIAN, 10.0 );
@@ -753,7 +753,7 @@ int main()
     if(!ls14.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -767,7 +767,7 @@ int main()
     if(!ls14_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -781,12 +781,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls14_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -800,7 +800,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls15(5.0, 5.0, 90*TEST_DEG_TO_RADIAN, 10.0 );
@@ -808,7 +808,7 @@ int main()
     if(!ls15.is_line_segment_consistent())
     {
         std::cout << "BAD 90 LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -822,7 +822,7 @@ int main()
     if(!ls15_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -836,12 +836,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls15_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -855,7 +855,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls16(5.0, 5.0, 45*TEST_DEG_TO_RADIAN, 10.0 );
@@ -863,7 +863,7 @@ int main()
     if(!ls16.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -877,7 +877,7 @@ int main()
     if(!ls16_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -891,12 +891,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls16_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -910,7 +910,7 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
     Line_segment ls17(5.0, 5.0, 135*TEST_DEG_TO_RADIAN, 10.0 );
@@ -918,7 +918,7 @@ int main()
     if(!ls17.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -932,7 +932,7 @@ int main()
     if(!ls17_a.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -946,12 +946,12 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     if(!ls17_b.is_line_segment_consistent())
     {
         std::cout << "BAD LINE SEGMENT" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
     else
     {
@@ -965,10 +965,10 @@ int main()
     else
     {
         std::cout << "BAD, they are different" << std::endl;
-        throw KJB_error("Line segment test failed!");
+        throw IVI_error("Line segment test failed!");
     }
 
-    kjb::Image img = Image::create_zero_image(400,400);
+    ivi::Image img = Image::create_zero_image(400,400);
     ls.randomly_color(img);
     ls2.randomly_color(img);
     ls3.randomly_color(img);
@@ -977,7 +977,7 @@ int main()
     img.write("ls.tiff");
 
 
-    kjb::Image imga = Image::create_zero_image(400,400);
+    ivi::Image imga = Image::create_zero_image(400,400);
     ls_a.randomly_color(imga);
     ls2_a.randomly_color(imga);
     ls3_a.randomly_color(imga);
@@ -985,7 +985,7 @@ int main()
     ls5_a.randomly_color(imga);
     imga.write("lsa.tiff");
 
-    kjb::Image imgb = Image::create_zero_image(400,400);
+    ivi::Image imgb = Image::create_zero_image(400,400);
     ls_b.randomly_color(imgb);
     ls2_b.randomly_color(imgb);
     ls3_b.randomly_color(imgb);

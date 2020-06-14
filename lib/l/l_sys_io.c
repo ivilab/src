@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_io.c 24703 2019-12-13 22:56:35Z kobus $ */
+/* $Id: l_sys_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -249,9 +249,9 @@ Mode;
 /* -------------------------------------------------------------------------- */
 
 
-static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode);
+static FILE* ivi_fopen_2(const char* input_fd_name, const char* mode);
 
-static FILE* kjb_fopen_3(const char* input_fd_name, const char* mode);
+static FILE* ivi_fopen_3(const char* input_fd_name, const char* mode);
 
 static int expand_path(char*, const char*, size_t);
 
@@ -283,7 +283,7 @@ static void get_mode_for_error_message
     size_t len
 );
 
-static int kjb_isatty_guts(int file_des);
+static int ivi_isatty_guts(int file_des);
 
 static int process_file_open_mode
 (
@@ -346,7 +346,7 @@ static FILE* fs_debug_fp = NULL;
  *
  * This function lets one control some of the behind-the-scenes behavior of
  * library code.  For example, do you want the library to silently expand
- * compressed files?  If you kjb_fopen() a filename that is actually a
+ * compressed files?  If you ivi_fopen() a filename that is actually a
  * directory, do you want the function call to fail on you, or not?  You should
  * read the source code for a complete list of options, but hopefully these
  * two examples give you an idea of the flavor of library behavior that is
@@ -464,19 +464,19 @@ int set_low_level_io_options(const char* option, const char* value)
 
 /*
  * =============================================================================
- *                             kjb_read_exact
+ *                             ivi_read_exact
  *
  * Reads a specifed number of bytes from a file descriptor.
  *
- * This routine is very similar to kjb_read, execpt that exactly "len" bytes
+ * This routine is very similar to ivi_read, execpt that exactly "len" bytes
  * must be successfully read for a successfull return. Otherwise, ERROR is
  * returned, with an approapriate error measure being set.
  *
  * Returns:
- *    On success kjb_read_exact returns NO_ERROR. Since the number of bytes that
+ *    On success ivi_read_exact returns NO_ERROR. Since the number of bytes that
  *    must be read is in the parameter, there is no need to return that (thus
  *    avoiding problems due to signed versus unsigned types). On failure ERROR
- *    is returned and an error message is set. Other kjb_read returns such as
+ *    is returned and an error message is set. Other ivi_read returns such as
  *    EOF will not occur.
  *
  * Index: input, I/O
@@ -484,15 +484,15 @@ int set_low_level_io_options(const char* option, const char* value)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_read_exact(int file_des, void* buff, size_t len)
+int ivi_read_exact(int file_des, void* buff, size_t len)
 {
     int read_res;
     size_t num_bytes_read = 0;
 
 
-    UNTESTED_CODE(); /* Since switch to kjb_read_2(), etc. */
+    UNTESTED_CODE(); /* Since switch to ivi_read_2(), etc. */
 
-    ERE(read_res = kjb_read_2(file_des, buff, len, &num_bytes_read));
+    ERE(read_res = ivi_read_2(file_des, buff, len, &num_bytes_read));
 
     if (read_res == NO_ERROR)
     {
@@ -537,7 +537,7 @@ int kjb_read_exact(int file_des, void* buff, size_t len)
 
 /*
  * =============================================================================
- *                                kjb_read
+ *                                ivi_read
  *
  * Reads up to specified number of bytes from a device
  *
@@ -546,13 +546,13 @@ int kjb_read_exact(int file_des, void* buff, size_t len)
  * routine returns ERROR.
  *
  * Note:
- *     The routine kjb_read_2() can be used to get around the above byte limit
+ *     The routine ivi_read_2() can be used to get around the above byte limit
  *     to a certain extent, but under many circumstances, only a factor of 2
  *     more bytes can be read in this way and, in fact, typically only up to a
  *     factor of 2 more bytes are likely to be available. .
  *
  * Returns:
- *    On success kjb_read returns the number of bytes read. On end of file. EOF
+ *    On success ivi_read returns the number of bytes read. On end of file. EOF
  *    is returned. On failure ERROR is returned and an error message is set.
  *    If the I/O is non blocking, then WOULD_BLOCK may also be returned.
  *    Finally, depending on the type of signal handling in place, INTERRUPTED
@@ -563,7 +563,7 @@ int kjb_read_exact(int file_des, void* buff, size_t len)
  * -----------------------------------------------------------------------------
 */
 
-long kjb_read
+long ivi_read
 (
     int des,           /* File descriptor */
     void* buff,        /* Buffer for read */
@@ -580,9 +580,9 @@ long kjb_read
 
     if (len > MIN_OF(MAX_STREAM_IO_SIZE, MAX_FILE_DESCRIPTOR_IO_SIZE))
     {
-        set_error("The routine kjb_read can only read up to %ld bytes.\n",
+        set_error("The routine ivi_read can only read up to %ld bytes.\n",
                   MIN_OF(MAX_STREAM_IO_SIZE, MAX_FILE_DESCRIPTOR_IO_SIZE));
-        add_error("Consider using kjb_read_2() instead.");
+        add_error("Consider using ivi_read_2() instead.");
         return ERROR;
     }
 
@@ -622,16 +622,16 @@ long kjb_read
 
 /*
  * =============================================================================
- *                                kjb_read_2
+ *                                ivi_read_2
  *
- * Wraps read(2) to conform with the kjb library conventions.
+ * Wraps read(2) to conform with the ivi library conventions.
  *
- * This routine essentially wraps read(2) to conform with the kjb library
- * conventions.  Unlike kjb_read(), it can read up to the maximum of size_t
+ * This routine essentially wraps read(2) to conform with the ivi library
+ * conventions.  Unlike ivi_read(), it can read up to the maximum of size_t
  * bytes.
  *
  * Returns:
- *    On success kjb_read_2 returns NO_ERROR, and the number of bytes is put
+ *    On success ivi_read_2 returns NO_ERROR, and the number of bytes is put
  *    into *num_bytes_read_ptr if it is not NULL. On end of file. EOF is
  *    returned. On failure ERROR is returned and an error message is set.  If
  *    the I/O is non blocking, then WOULD_BLOCK may also be returned.  Finally,
@@ -643,7 +643,7 @@ long kjb_read
  * -----------------------------------------------------------------------------
 */
 
-int kjb_read_2
+int ivi_read_2
 (
     int     des,  /* File descriptor */
     void*   buff, /* Buffer for read */
@@ -756,10 +756,10 @@ static void broken_pipe_trap_fn(TRAP_FN_DUMMY_ARGS)
  * Writes to pipe with trap for SIGPIPE
  *
  * This routine writes to a pipe, trapping SIGPIPE so that if raised, error is
- * returned. Otherwise, this routine is the same as kjb_write. This routine can
+ * returned. Otherwise, this routine is the same as ivi_write. This routine can
  * be safely called with a descriptor for any type of file, but if the type of
  * file is known not to be a pipe, then there is nothing to be gained over
- * kjb_write.
+ * ivi_write.
  *
  * Returns:
  *    On success safe_pipe_write returns the number of bytes written. On
@@ -789,12 +789,12 @@ int safe_pipe_write
 #ifdef UNIX
     INIT_SIGNAL_INFO(new_broken_pipe_vec);
     new_broken_pipe_vec.SIGNAL_HANDLER = broken_pipe_trap_fn;
-    kjb_sigvec(SIGPIPE, &new_broken_pipe_vec, &save_broken_pipe_vec);
+    ivi_sigvec(SIGPIPE, &new_broken_pipe_vec, &save_broken_pipe_vec);
 #endif 
 
     verbose_pso(300, (const char*)buff);
 
-    result = kjb_write(des, buff, num_bytes);
+    result = ivi_write(des, buff, num_bytes);
 
 
     if (result == ERROR)
@@ -804,7 +804,7 @@ int safe_pipe_write
     }
 
 #ifdef UNIX
-    kjb_sigvec(SIGPIPE, &save_broken_pipe_vec, (Signal_info*)NULL);
+    ivi_sigvec(SIGPIPE, &save_broken_pipe_vec, (Signal_info*)NULL);
 #endif 
 
     if (result == ERROR)
@@ -819,18 +819,18 @@ int safe_pipe_write
 
 /*
  * =============================================================================
- *                                kjb_write
+ *                                ivi_write
  *
  * Writes a specifed number of bytes to a device
  *
  * Similer to system write except that error handling is simplified.
  * This routine can only write up to  MIN_OF(LONG_MAX, SSIZE_MAX), bytes. If
  * num_bytes is more than that, this routine returns ERROR. The alternative
- * wrapper, kjb_write_2() can be used to write up to the maximun value that
+ * wrapper, ivi_write_2() can be used to write up to the maximun value that
  * size_t can hold.
  *
  * Returns:
- *    On success kjb_write returns the number of bytes written.   On failure
+ *    On success ivi_write returns the number of bytes written.   On failure
  *    ERROR is returned and an error message is set.
  *
  * Index: output, I/O, paging
@@ -838,7 +838,7 @@ int safe_pipe_write
  * -----------------------------------------------------------------------------
 */
 
-long kjb_write
+long ivi_write
 (
      int des           /* File descriptor */,
      const void* buff  /* Location of bytes to write.  */,
@@ -850,9 +850,9 @@ long kjb_write
 
     if (len > MIN_OF(MAX_STREAM_IO_SIZE, MAX_FILE_DESCRIPTOR_IO_SIZE))
     {
-        set_error("The routine kjb_write can only write up to %ld bytes at a time.\n",
+        set_error("The routine ivi_write can only write up to %ld bytes at a time.\n",
                   MIN_OF(MAX_STREAM_IO_SIZE, MAX_FILE_DESCRIPTOR_IO_SIZE));
-        add_error("Consider using kjb_write_2() instead.");
+        add_error("Consider using ivi_write_2() instead.");
         return ERROR;
     }
 
@@ -884,14 +884,14 @@ long kjb_write
 
 /*
  * =============================================================================
- *                             kjb_write_2
+ *                             ivi_write_2
  *
  * Writes a specified number of bytes to a stream
  *
  * This routine is similar to write (but note the difference in arguments!).
- * However, error handling is made more consistant with the rest of the KJB
- * library. Several other KJB library IO conventions and features are also
- * implemented. (One should not mix KJB and non-KJB IO)!
+ * However, error handling is made more consistant with the rest of the IVI
+ * library. Several other IVI library IO conventions and features are also
+ * implemented. (One should not mix IVI and non-IVI IO)!
  *
  * The number of bytes that are written are returned in len_ptr. This can be set
  * to NULL if you are not interested.
@@ -899,13 +899,13 @@ long kjb_write
  * Index: output, I/O, paging
  *
  * Returns:
- *    On success kjb_write returns the number of bytes written.   On failure
+ *    On success ivi_write returns the number of bytes written.   On failure
  *    ERROR is returned and an error message is set.
  *
  * -----------------------------------------------------------------------------
 */
 
-int kjb_write_2
+int ivi_write_2
 (
     int         des,     /* File descriptor */
     const void* buff,    /* Pointer to bytes to write */
@@ -942,7 +942,7 @@ int kjb_write_2
     {
         bytes_to_write = (len - total_written) > block_size ? block_size : (len - total_written);
 
-        write_res = kjb_write(des, (const void *)((const char *) buff + total_written), bytes_to_write);
+        write_res = ivi_write(des, (const void *)((const char *) buff + total_written), bytes_to_write);
 
         if (write_res < 0) break;
 
@@ -968,21 +968,21 @@ int kjb_write_2
 
 /*
  * =============================================================================
- *                                kjb_fread_exact
+ *                                ivi_fread_exact
  *
  * Reads a specifed number of bytes from a stream.
  *
- * This routine is very similar to kjb_fread, execpt that exactly "len" bytes
+ * This routine is very similar to ivi_fread, execpt that exactly "len" bytes
  * must be successfully read for a successfull return. Otherwise, ERROR is
  * returned, with an approapriate error measure being set.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Returns:
- *    On success kjb_fread_exact returns NO_ERROR. Since the number of bytes that
+ *    On success ivi_fread_exact returns NO_ERROR. Since the number of bytes that
  *    must be read is in the parameter, there is no need to return that (thus
  *    avoiding problems due to signed versus unsigned types). On failure ERROR
- *    is returned and an error message is set. Other kjb_fread returns such as
+ *    is returned and an error message is set. Other ivi_fread returns such as
  *    EOF will not occur.
  *
  * Macros:
@@ -993,17 +993,17 @@ int kjb_write_2
  * -----------------------------------------------------------------------------
 */
 
-int kjb_fread_exact(FILE* fp, void* buff, size_t len)
+int ivi_fread_exact(FILE* fp, void* buff, size_t len)
 {
     int read_res;
     size_t num_bytes_read;
 
 
 #ifdef TOO_NOISY
-    UNTESTED_CODE();   /* Since use of kjb_read_2(). */
+    UNTESTED_CODE();   /* Since use of ivi_read_2(). */
 #endif
 
-    ERE(read_res = kjb_fread_2(fp, buff, len, &num_bytes_read));
+    ERE(read_res = ivi_fread_2(fp, buff, len, &num_bytes_read));
 
     if (read_res == NO_ERROR)
     {
@@ -1048,7 +1048,7 @@ int kjb_fread_exact(FILE* fp, void* buff, size_t len)
 
 /*
  * =============================================================================
- *                                kjb_fread
+ *                                ivi_fread
  *
  * Reads a specifed number of bytes from a stream.
  *
@@ -1059,13 +1059,13 @@ int kjb_fread_exact(FILE* fp, void* buff, size_t len)
  *
  * This routine can only read up to LONG_MAX bytes at a time.  If the number of
  * bytes requested is more than MIN_OF(LONG_MAX, SSIZE_MAX), this routine
- * returns ERROR.  The routine kjb_read() can be used to read up the number of
+ * returns ERROR.  The routine ivi_read() can be used to read up the number of
  * bytes that can stored in size_t.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Returns:
- *    On success kjb_fread returns the number of bytes read. On end of file. EOF
+ *    On success ivi_fread returns the number of bytes read. On end of file. EOF
  *    is returned. On failure ERROR is returned and an error message is set.
  *    If the I/O is non blocking, then WOULD_BLOCK may also be returned.
  *    Finally, depending on the type of signal handling in place, INTERRUPTED
@@ -1080,10 +1080,10 @@ int kjb_fread_exact(FILE* fp, void* buff, size_t len)
  * terminated. (See writup_to_man.c where this is done as part of using this
  * routine). 
  *
- * TODO. Sort out the difference between this routime and kjb_fread_2.
+ * TODO. Sort out the difference between this routime and ivi_fread_2.
 */
 
-long kjb_fread(FILE* fp, void* buff, size_t len)
+long ivi_fread(FILE* fp, void* buff, size_t len)
 {
 #ifndef errno  /* GNU defines errno as a macro, leading to warning messages. */
     IMPORT int          errno;
@@ -1095,15 +1095,15 @@ long kjb_fread(FILE* fp, void* buff, size_t len)
 
     if (len > MAX_STREAM_IO_SIZE)
     {
-        set_error("The routine kjb_fread can only read up to %ld bytes.\n",
+        set_error("The routine ivi_fread can only read up to %ld bytes.\n",
                   MAX_STREAM_IO_SIZE);
-        add_error("Consider using kjb_fread_2() instead.");
+        add_error("Consider using ivi_fread_2() instead.");
         return ERROR;
     }
 
     clearerr(fp);
 
-    if (kjb_isatty(fileno(fp)))
+    if (ivi_isatty(fileno(fp)))
     {
         pause_on_next = FALSE;
         num_term_lines = 0;
@@ -1153,7 +1153,7 @@ long kjb_fread(FILE* fp, void* buff, size_t len)
 
 /*
  * =============================================================================
- *                                kjb_fread_2
+ *                                ivi_fread_2
  *
  * Reads a specifed number of bytes from a stream.
  *
@@ -1165,7 +1165,7 @@ long kjb_fread(FILE* fp, void* buff, size_t len)
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Returns:
- *    On success kjb_fread returns the number of bytes read. On end of file. EOF
+ *    On success ivi_fread returns the number of bytes read. On end of file. EOF
  *    is returned. On failure ERROR is returned and an error message is set.
  *    If the I/O is non blocking, then WOULD_BLOCK may also be returned.
  *    Finally, depending on the type of signal handling in place, INTERRUPTED
@@ -1176,7 +1176,7 @@ long kjb_fread(FILE* fp, void* buff, size_t len)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_fread_2(FILE* fp, void* buff, size_t len, size_t* len_ptr)
+int ivi_fread_2(FILE* fp, void* buff, size_t len, size_t* len_ptr)
 {
     IMPORT volatile int num_term_lines;
     IMPORT volatile Bool pause_on_next;
@@ -1202,7 +1202,7 @@ int kjb_fread_2(FILE* fp, void* buff, size_t len, size_t* len_ptr)
 
     clearerr(fp);
 
-    if (kjb_isatty(fileno(fp)))
+    if (ivi_isatty(fileno(fp)))
     {
         pause_on_next = FALSE;
         num_term_lines = 0;
@@ -1242,7 +1242,7 @@ int kjb_fread_2(FILE* fp, void* buff, size_t len, size_t* len_ptr)
     {
         bytes_to_read = (len - total_read) > block_size ? block_size : (len - total_read);
 
-        read_res = kjb_fread(fp, (void *)((char *) buff + total_read), bytes_to_read);
+        read_res = ivi_fread(fp, (void *)((char *) buff + total_read), bytes_to_read);
 
         if (read_res < 0)
         {
@@ -1275,17 +1275,17 @@ int kjb_fread_2(FILE* fp, void* buff, size_t len, size_t* len_ptr)
 
 /*
  * =============================================================================
- *                             kjb_fwrite
+ *                             ivi_fwrite
  *
  * Writes a specified number of bytes to a stream
  *
  * This routine is similar to fwrite (but note the difference in arguments!).
- * However, error handling is made more consistant with the rest of the KJB
- * library. Several other KJB library IO conventions and features are also
- * implemented. (One should not mix KJB and non-KJB IO)!
+ * However, error handling is made more consistant with the rest of the IVI
+ * library. Several other IVI library IO conventions and features are also
+ * implemented. (One should not mix IVI and non-IVI IO)!
  *
  * This routine can only write up to LONG_MAX bytes at a time. The routine
- * kjb_fwrite_2() can be used to write up the number of bytes that can stored in
+ * ivi_fwrite_2() can be used to write up the number of bytes that can stored in
  * size_t.
  *
  * This function is not re-entrant (i.e., not thread-safe).
@@ -1293,13 +1293,13 @@ int kjb_fread_2(FILE* fp, void* buff, size_t len, size_t* len_ptr)
  * Index: output, I/O, paging
  *
  * Returns:
- *    On success kjb_write returns the number of bytes written.   On failure
+ *    On success ivi_write returns the number of bytes written.   On failure
  *    ERROR is returned and an error message is set.
  *
  * -----------------------------------------------------------------------------
 */
 
-long kjb_fwrite
+long ivi_fwrite
 (
      FILE* fp          /* File pointer */,
      const void* line  /* Pointer to bytes to write */,
@@ -1316,20 +1316,20 @@ long kjb_fwrite
 
     if (len > MAX_STREAM_IO_SIZE)
     {
-        set_error("The routine kjb_fwrite can only write up to %ld bytes.\n",
+        set_error("The routine ivi_fwrite can only write up to %ld bytes.\n",
                   MAX_STREAM_IO_SIZE);
-        add_error("Consider using kjb_fwrite_2() instead.");
+        add_error("Consider using ivi_fwrite_2() instead.");
         return ERROR;
     }
 
     if (fp == stderr)
     {
-        ERE(kjb_fflush((FILE*)NULL));
+        ERE(ivi_fflush((FILE*)NULL));
     }
 
     if ((fp != stdout) || (fs_enable_stdout))
     {
-        if (kjb_isatty(fileno(fp)))
+        if (ivi_isatty(fileno(fp)))
         {
             if (halt_term_output) return 0;
             result = term_put_n_chars((const char *)line, len);
@@ -1386,7 +1386,7 @@ long kjb_fwrite
 
     if (fp_get_path_type(fp) != PATH_IS_REGULAR_FILE) 
     {
-        kjb_fflush(fp); 
+        ivi_fflush(fp); 
     }
 
     return result;
@@ -1396,14 +1396,14 @@ long kjb_fwrite
 
 /*
  * =============================================================================
- *                             kjb_fwrite_2
+ *                             ivi_fwrite_2
  *
  * Writes a specified number of bytes to a stream
  *
  * This routine is similar to fwrite (but note the difference in arguments!).
- * However, error handling is made more consistant with the rest of the KJB
- * library. Several other KJB library IO conventions and features are also
- * implemented. (One should not mix KJB and non-KJB IO)!
+ * However, error handling is made more consistant with the rest of the IVI
+ * library. Several other IVI library IO conventions and features are also
+ * implemented. (One should not mix IVI and non-IVI IO)!
  *
  * The number of bytes that are written are returned in len_ptr. This can be set
  * to NULL if you are not interested.
@@ -1413,13 +1413,13 @@ long kjb_fwrite
  * Index: output, I/O, paging
  *
  * Returns:
- *    On success kjb_write returns the number of bytes written.   On failure
+ *    On success ivi_write returns the number of bytes written.   On failure
  *    ERROR is returned and an error message is set.
  *
  * -----------------------------------------------------------------------------
 */
 
-int kjb_fwrite_2
+int ivi_fwrite_2
 (
     FILE*       fp,      /* File pointer */
     const void* buff,    /* Pointer to bytes to write */
@@ -1454,13 +1454,13 @@ int kjb_fwrite_2
     {
         bytes_to_write = (len - total_written) > block_size ? block_size : (len - total_written);
 
-        write_res = kjb_fwrite(fp, (const void *)((const char *) buff + total_written), bytes_to_write);
+        write_res = ivi_fwrite(fp, (const void *)((const char *) buff + total_written), bytes_to_write);
 
         if (write_res < 0) break;
 
         total_written += write_res;
 
-        ERE(kjb_fflush(fp));
+        ERE(ivi_fflush(fp));
     }
 
     if (len_ptr != NULL)
@@ -1481,9 +1481,9 @@ int kjb_fwrite_2
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_safe_fflush
+ *                                ivi_safe_fflush
  *
- * KJB library replacement for fflush, but not as strict as kjb_fflush.
+ * IVI library replacement for fflush, but not as strict as ivi_fflush.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
@@ -1491,7 +1491,7 @@ int kjb_fwrite_2
  *
  * -----------------------------------------------------------------------------
 */
-int kjb_safe_fflush
+int ivi_safe_fflush
 (
      FILE* fp  /* File pointer, or NULL to flush all open files.*/
 )
@@ -1504,7 +1504,7 @@ int kjb_safe_fflush
 
     if (fs_cached_file_reference_count[ 0 ] != NOT_SET)
     {
-        return kjb_fflush(fp);
+        return ivi_fflush(fp);
     }
     else
     {
@@ -1515,9 +1515,9 @@ int kjb_safe_fflush
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_fflush
+ *                                ivi_fflush
  *
- * KJB library replacement for fflush.
+ * IVI library replacement for fflush.
  *
  * This routine is an anolog of the system routine fflush. It implements
  * additional error reporting and also implements taking a NULL argument to
@@ -1527,8 +1527,8 @@ int kjb_safe_fflush
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Warning:
- *    It is critical than any file pointer passed to kjb_fflush was obtained
- *    from this library using kjb_fopen and friends.
+ *    It is critical than any file pointer passed to ivi_fflush was obtained
+ *    from this library using ivi_fopen and friends.
  *
  * Index: output, I/O, paging
  *
@@ -1543,7 +1543,7 @@ int kjb_safe_fflush
 #define IMPLEMENT_FLUSH_ALL
 
 
-int kjb_fflush
+int ivi_fflush
 (
      FILE* fp /* File pointer, or NULL to flush all open files. */
 )
@@ -1573,7 +1573,7 @@ int kjb_fflush
                 {
                     if ( ! error_flag)
                     {
-                        kjb_clear_error();
+                        ivi_clear_error();
                         error_flag = TRUE;
                     }
                     add_error("Flush of %F failed.%S", fs_cached_fp[ i ]);
@@ -1591,7 +1591,7 @@ int kjb_fflush
                 {
                     if ( ! error_flag)
                     {
-                        kjb_clear_error();
+                        ivi_clear_error();
                         error_flag = TRUE;
                     }
                     add_error("Flush of %F failed.%S", fs_cached_fp[ i ]);
@@ -1640,11 +1640,11 @@ int kjb_fflush
 
 /*
  * =============================================================================
- *                                kjb_ioctl
+ *                                ivi_ioctl
  *
  * Front end for ioctl
  *
- * The function kjb_ioctl is very similar to the standard ioctl, except that
+ * The function ivi_ioctl is very similar to the standard ioctl, except that
  * error reporting is made consistent with the other library routines, and the
  * error messages are more meaningfull.
  *
@@ -1659,7 +1659,7 @@ int kjb_fflush
 
 #ifdef UNIX
 
-int kjb_ioctl(int file_des, IOCTL_REQUEST_TYPE request, void* arg)
+int ivi_ioctl(int file_des, IOCTL_REQUEST_TYPE request, void* arg)
 {
     int result;
 
@@ -1687,7 +1687,7 @@ int kjb_ioctl(int file_des, IOCTL_REQUEST_TYPE request, void* arg)
 
 
 /*ARGSUSED*/
-int kjb_ioctl(int file_des, IOCTL_REQUEST_TYPE  request, void* arg)
+int ivi_ioctl(int file_des, IOCTL_REQUEST_TYPE  request, void* arg)
 {
 
     UNTESTED_CODE(); 
@@ -1748,7 +1748,7 @@ int set_blocking(int des)
 
 #ifdef BSD
     ioctl_arg = 0;
-    ERE(kjb_ioctl(des, (IOCTL_REQUEST_TYPE)FIONBIO, (void*)&ioctl_arg));
+    ERE(ivi_ioctl(des, (IOCTL_REQUEST_TYPE)FIONBIO, (void*)&ioctl_arg));
 #else
     if ((ioctl_arg = fcntl(des, F_GETFL, 0)) < 0)
     {
@@ -1825,7 +1825,7 @@ int set_no_blocking(int des)
 
 #ifdef BSD
     ioctl_arg = 1;
-    ERE(kjb_ioctl(des, (IOCTL_REQUEST_TYPE)FIONBIO, (void*) & ioctl_arg));
+    ERE(ivi_ioctl(des, (IOCTL_REQUEST_TYPE)FIONBIO, (void*) & ioctl_arg));
 #else
     if ((ioctl_arg = fcntl(des, F_GETFL, 0)) < 0)
     {
@@ -1947,7 +1947,7 @@ int is_blocking(des)
 long stdin_get_line(const char* prompt_str, char* line, size_t max_len)
 {
     
-    if (kjb_isatty(fileno(stdin)))
+    if (ivi_isatty(fileno(stdin)))
     {
         return term_get_line((prompt_str == NULL) ? "" : prompt_str,
                              line, max_len);
@@ -2082,7 +2082,7 @@ long fget_line(FILE* fp, char* line, size_t max_len)
     {
         warn_pso("Suspicious buffer length (%lu) at line %d of %s.\n",
                  (unsigned long)max_len, __LINE__, __FILE__);
-        kjb_optional_abort();
+        ivi_optional_abort();
     }
 #endif 
 #endif 
@@ -2246,9 +2246,9 @@ long fget_line(FILE* fp, char* line, size_t max_len)
     //  CHANGED, 14/11/00
     //
     //  WAS
-    //      kjb_strncpy(line, buff, i + ROOM_FOR_NULL);
+    //      ivi_strncpy(line, buff, i + ROOM_FOR_NULL);
     //
-    //  Changed because this fools the trap in kjb_strncpy which checks for bad
+    //  Changed because this fools the trap in ivi_strncpy which checks for bad
     //  buffer sizes. Also, what do we want to do when there are NULLs in the
     //  file? The previous would not copy them. The current will copy them,
     //  but normally they would not get seen. It is a small point because the
@@ -2256,7 +2256,7 @@ long fget_line(FILE* fp, char* line, size_t max_len)
     //  considered.
     */
 
-    kjb_memcpy(line, buff, i);
+    ivi_memcpy(line, buff, i);
 
     /*
     // HACK to deal with DOS format.
@@ -2521,7 +2521,7 @@ long dget_line(int des, char* line, size_t max_len)
     // "i" is at most max_len which is one less than what max_len started as.
     */
 
-    kjb_strncpy(line, buff, i + ROOM_FOR_NULL);
+    ivi_strncpy(line, buff, i + ROOM_FOR_NULL);
 
     /*
     // Prepare for next read. Next time all statics will be reset.
@@ -2575,8 +2575,8 @@ long fput_line
     int res2;
 
 
-    ERE(res = kjb_fputs(fp, line));
-    ERE(res2 = kjb_fputs(fp, "\n"));
+    ERE(res = ivi_fputs(fp, line));
+    ERE(res2 = ivi_fputs(fp, "\n"));
 
     /* Parnoid! */
     if (res == INT_MAX)
@@ -2594,9 +2594,9 @@ long fput_line
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_mkdir
+ *                                ivi_mkdir
  *
- * KJB library version of mkdir(2).
+ * IVI library version of mkdir(2).
  *
  * Makes the directory pointed to by dir_path. Unlike mkdir(2), there is no
  * mode argument. For now, the directory will be made with the usual permission
@@ -2604,9 +2604,9 @@ long fput_line
  * a few systems).
  *
  * Note:
- *    Unlike mkdir(2) and kjb_mkdir_2(), this routine succeeds if the directory
+ *    Unlike mkdir(2) and ivi_mkdir_2(), this routine succeeds if the directory
  *    already exists. Also unlike mkdir(2) on many systems, this routine
- *    recursivley makes subdirectories. See kjb_mkdir_2 for a simple wrapper for
+ *    recursivley makes subdirectories. See ivi_mkdir_2 for a simple wrapper for
  *    mkdir(2).
  *
  * Index: files, standard library
@@ -2620,7 +2620,7 @@ long fput_line
 // Implement the permission semantics described above.
 */
 
-int kjb_mkdir(const char* dir_path)
+int ivi_mkdir(const char* dir_path)
 {
 #ifndef errno  /* GNU defines errno as a macro, leading to warning messages. */
     IMPORT int errno;
@@ -2663,21 +2663,21 @@ int kjb_mkdir(const char* dir_path)
            if (errno == EACCES)
            {
                char details[4096];
-               long ct = kjb_sprintf(
+               long ct = ivi_sprintf(
                        details,
                        sizeof(details),
-                       "kjb_mkdir(): error EACCES encountered.\n"
-                       "kjb_mkdir(): It is likely that the process "
+                       "ivi_mkdir(): error EACCES encountered.\n"
+                       "ivi_mkdir(): It is likely that the process "
                                      "will continue despite this error.\n"
-                       "kjb_mkdir(): It occurs sometimes on NFS directories.\n"
-                       "kjb_mkdir(): dir_path == %s\n"
-                       "kjb_mkdir(): sub_dir_path == %s\n",
+                       "ivi_mkdir(): It occurs sometimes on NFS directories.\n"
+                       "ivi_mkdir(): dir_path == %s\n"
+                       "ivi_mkdir(): sub_dir_path == %s\n",
                        dir_path,
                        sub_dir_path
                    );
                if (ERROR == ct)
                {
-                   set_error("kjb_mkdir() EACCES, cannot generate warning");
+                   set_error("ivi_mkdir() EACCES, cannot generate warning");
                    return ERROR;
                }
                warn_pso(details);
@@ -2699,9 +2699,9 @@ int kjb_mkdir(const char* dir_path)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_mkdir_2
+ *                                ivi_mkdir_2
  *
- * Another KJB library version of mkdir(2).
+ * Another IVI library version of mkdir(2).
  *
  * Makes the directory pointed to by dir_path. Unlike mkdir(2), there is no
  * mode argument. For now, the directory will be made with the usual permission
@@ -2709,7 +2709,7 @@ int kjb_mkdir(const char* dir_path)
  * a few systems).
  *
  * Note:
- *    See kjb_mkdir for a similar routine which succeeds even if the directory
+ *    See ivi_mkdir for a similar routine which succeeds even if the directory
  *    exists, and makes needed subdirectories.
  *
  * Index: files, standard library
@@ -2723,7 +2723,7 @@ int kjb_mkdir(const char* dir_path)
 // Implement the permission semantics described above.
 */
 
-int kjb_mkdir_2(const char* dir_path)
+int ivi_mkdir_2(const char* dir_path)
 {
     int mkdir_res = -1;
 
@@ -2752,9 +2752,9 @@ int kjb_mkdir_2(const char* dir_path)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_unlink
+ *                                ivi_unlink
  *
- * KJB library version of unlnk(2)
+ * IVI library version of unlnk(2)
  *
  * The main point of this routine is that error reporting is made consistent
  * with the rest of the library. In addition, if file_name is NULL, or if it is
@@ -2769,7 +2769,7 @@ int kjb_mkdir_2(const char* dir_path)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_unlink(const char* file_name)
+int ivi_unlink(const char* file_name)
 {
     Error_action save_error_action;
     char         real_path[ MAX_FILE_NAME_SIZE ];
@@ -2799,11 +2799,11 @@ int kjb_unlink(const char* file_name)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_unlink_2
+ *                                ivi_unlink_2
  *
- * Calls kjb_unlink with path constructed from a directory and file
+ * Calls ivi_unlink with path constructed from a directory and file
  *
- * This routine calls kjb_unlink with the path constructed from the directory
+ * This routine calls ivi_unlink with the path constructed from the directory
  * argument and the file_name argument. If directory is NULL, then it is not
  * used.
  *
@@ -2815,7 +2815,7 @@ int kjb_unlink(const char* file_name)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_unlink_2(const char* dir, const char* file_name)
+int ivi_unlink_2(const char* dir, const char* file_name)
 {
 
     char path[ MAX_FILE_NAME_SIZE ];
@@ -2831,15 +2831,15 @@ int kjb_unlink_2(const char* dir, const char* file_name)
         BUFF_CAT(path, file_name);
     }
 
-    return kjb_unlink(path);
+    return ivi_unlink(path);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_rmdir
+ *                                ivi_rmdir
  *
- * KJB library version of rmdir(2)
+ * IVI library version of rmdir(2)
  *
  * The main point of this routine is that error reporting is made consistent
  * with the rest of the library.
@@ -2852,7 +2852,7 @@ int kjb_unlink_2(const char* dir, const char* file_name)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_rmdir(const char* directory_name)
+int ivi_rmdir(const char* directory_name)
 {
 
 
@@ -2868,11 +2868,11 @@ int kjb_rmdir(const char* directory_name)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_fopen
+ *                                ivi_fopen
  *
  * A front end for fopen
  *
- * The routine kjb_fopen should be used to open files that are used with the KJB
+ * The routine ivi_fopen should be used to open files that are used with the IVI
  * library.  It implements additional features such as more comprehensive
  * diagnostics, and sytem independent determination of file name from the file
  * pointer. It also implements acceptance of the "b" (for binary) mode
@@ -2889,23 +2889,23 @@ int kjb_rmdir(const char* directory_name)
  * the temporary file is opened instead.  The temporary file is removed on file
  * close.
  *
- * Files opened with kjb_fopen MUST be closed with kjb_fclose.
+ * Files opened with ivi_fopen MUST be closed with ivi_fclose.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Warning:
- *     Many KJB library routines requiring a file pointer will assume that this
- *     pointer came from one of kjb_fopen, kjb_freopen, kjb_popen, or
- *     kjb_fdopen.  Furthermore the library assumes that all files opened with
- *     one of these routines will be closed with kjb_fclose.   Furthermore, the
- *     KJB library file IO routines assume that stdin, stdout, and stderr will
- *     not be closed with fclose (kjb_fclose is OK). In short, if one makes use
- *     of the IO portion of the library, then kjb_fopen and friends should be
+ *     Many IVI library routines requiring a file pointer will assume that this
+ *     pointer came from one of ivi_fopen, ivi_freopen, ivi_popen, or
+ *     ivi_fdopen.  Furthermore the library assumes that all files opened with
+ *     one of these routines will be closed with ivi_fclose.   Furthermore, the
+ *     IVI library file IO routines assume that stdin, stdout, and stderr will
+ *     not be closed with fclose (ivi_fclose is OK). In short, if one makes use
+ *     of the IO portion of the library, then ivi_fopen and friends should be
  *     used.
  *
- *     Using file pointers obtained from kjb_fopen with non KJB library
+ *     Using file pointers obtained from ivi_fopen with non IVI library
  *     routines is less critical, but can lead to minor problems such as
- *     incorrect paging. Of course, when there is no non-KJB library routine
+ *     incorrect paging. Of course, when there is no non-IVI library routine
  *     for the given task, then there is no problem.
  *
  * Returns:
@@ -2916,7 +2916,7 @@ int kjb_rmdir(const char* directory_name)
  * -----------------------------------------------------------------------------
 */
 
-FILE* kjb_fopen(const char* input_fd_name, const char* mode)
+FILE* ivi_fopen(const char* input_fd_name, const char* mode)
 {
     FILE* fp;
 
@@ -2927,7 +2927,7 @@ FILE* kjb_fopen(const char* input_fd_name, const char* mode)
         return NULL;
     }
 
-    fp = kjb_fopen_2(input_fd_name, mode);
+    fp = ivi_fopen_2(input_fd_name, mode);
 
     /*
      * Additional paths to try on failure would be implemented here. Right now
@@ -2966,7 +2966,7 @@ FILE* kjb_fopen(const char* input_fd_name, const char* mode)
 
             BUFF_CAT(exchange_path, path_pos);
 
-            fp = kjb_fopen_2(exchange_path, mode);
+            fp = ivi_fopen_2(exchange_path, mode);
 
             if (fp == NULL)
             {
@@ -2981,8 +2981,8 @@ FILE* kjb_fopen(const char* input_fd_name, const char* mode)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/* kjb_fopen_2 is not re-entrant. */
-static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode)
+/* ivi_fopen_2 is not re-entrant. */
+static FILE* ivi_fopen_2(const char* input_fd_name, const char* mode)
 {
     FILE* fp;
     char  system_dependent_mode[ 100 ];
@@ -3002,7 +3002,7 @@ static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode)
 
     /* Save error because cannot simply add errors. */
     error_on_entry[ 0 ] = '\0';
-    kjb_get_error(error_on_entry, sizeof(error_on_entry));
+    ivi_get_error(error_on_entry, sizeof(error_on_entry));
 
     push_error_action(SET_ERROR_ON_ERROR);
 
@@ -3018,13 +3018,13 @@ static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode)
     }
     else
     {
-        fp = kjb_fopen_3(input_fd_name, mode);
+        fp = ivi_fopen_3(input_fd_name, mode);
     }
 
     if (fp == NULL)
     {
         fopen_error[ 0 ] = '\0';
-        kjb_get_error(fopen_error, sizeof(fopen_error));
+        ivi_get_error(fopen_error, sizeof(fopen_error));
     }
 
     if (    (fp == NULL)
@@ -3036,7 +3036,7 @@ static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode)
         BUFF_CPY(gz_fd_name, input_fd_name);
         BUFF_CAT(gz_fd_name, ".gz");
 
-        fp = kjb_fopen_3(gz_fd_name, mode);
+        fp = ivi_fopen_3(gz_fd_name, mode);
     }
 
     if (    (fp == NULL)
@@ -3048,7 +3048,7 @@ static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode)
         BUFF_CPY(Z_fd_name, input_fd_name);
         BUFF_CAT(Z_fd_name, ".Z");
 
-        fp = kjb_fopen_3(Z_fd_name, mode);
+        fp = ivi_fopen_3(Z_fd_name, mode);
     }
 
     if (fp == NULL)
@@ -3065,7 +3065,7 @@ static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode)
             add_error("Also tried %s.", Z_fd_name);
         }
 
-        kjb_get_error(fopen_error, sizeof(fopen_error));
+        ivi_get_error(fopen_error, sizeof(fopen_error));
     }
 
     str_set_error(error_on_entry);
@@ -3079,8 +3079,8 @@ static FILE* kjb_fopen_2(const char* input_fd_name, const char* mode)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/* kjb_fopen_3 is not re-entrant. */
-static FILE* kjb_fopen_3(const char* input_fd_name, const char* mode)
+/* ivi_fopen_3 is not re-entrant. */
+static FILE* ivi_fopen_3(const char* input_fd_name, const char* mode)
 {
     FILE* fp = NULL;
     char  system_dependent_mode[ 100 ];
@@ -3141,18 +3141,18 @@ static FILE* kjb_fopen_3(const char* input_fd_name, const char* mode)
             BUFF_CPY(compressed_temp_name, uncompressed_temp_name);
             BUFF_CAT(compressed_temp_name, suffix);
 
-            ERN(kjb_sprintf(command, sizeof(command), "/bin/cp %s %s",
+            ERN(ivi_sprintf(command, sizeof(command), "/bin/cp %s %s",
                             expanded_path, compressed_temp_name));
-            ERN(kjb_system(command));
+            ERN(ivi_system(command));
 
-            result = kjb_sprintf(command, sizeof(command), "gunzip %s",
+            result = ivi_sprintf(command, sizeof(command), "gunzip %s",
                                  compressed_temp_name);
 
             if (result != ERROR)
             {
                 verbose_pso(5, "Uncompressing a copy of %s as %s.\n",
                             expanded_path, uncompressed_temp_name);
-                result = kjb_system(command);
+                result = ivi_system(command);
             }
 
             if (result != ERROR)
@@ -3162,7 +3162,7 @@ static FILE* kjb_fopen_3(const char* input_fd_name, const char* mode)
             }
             else
             {
-                (void)kjb_unlink(compressed_temp_name);  /* Just in case. */
+                (void)ivi_unlink(compressed_temp_name);  /* Just in case. */
             }
 
         }
@@ -3215,7 +3215,7 @@ static FILE* kjb_fopen_3(const char* input_fd_name, const char* mode)
          && (uncompressed_temp_name[ 0 ] != '\0')
        )
     {
-        kjb_unlink(uncompressed_temp_name);
+        ivi_unlink(uncompressed_temp_name);
     }
 
     return fp;
@@ -3224,11 +3224,11 @@ static FILE* kjb_fopen_3(const char* input_fd_name, const char* mode)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_freopen
+ *                                ivi_freopen
  *
  * A replacement for freopen
  *
- * See kjb_fopen for details
+ * See ivi_fopen for details
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
@@ -3240,7 +3240,7 @@ static FILE* kjb_fopen_3(const char* input_fd_name, const char* mode)
  * -----------------------------------------------------------------------------
 */
 
-FILE* kjb_freopen(const char* fd_name, const char* mode, FILE* stream)
+FILE* ivi_freopen(const char* fd_name, const char* mode, FILE* stream)
 {
     FILE* fp;
     char  system_dependent_mode[ 100 ];
@@ -3284,11 +3284,11 @@ FILE* kjb_freopen(const char* fd_name, const char* mode, FILE* stream)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_fdopen
+ *                                ivi_fdopen
  *
  * Replacement for fdopen
  *
- * See kjb_fopen for details.
+ * See ivi_fopen for details.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
@@ -3301,7 +3301,7 @@ FILE* kjb_freopen(const char* fd_name, const char* mode, FILE* stream)
 */
 
 /*ARGSUSED*/
-FILE* kjb_fdopen(FILE* old_fp, const char* mode)
+FILE* ivi_fdopen(FILE* old_fp, const char* mode)
 {
     FILE* new_fp;
     char  system_dependent_mode[ 100 ];
@@ -3319,7 +3319,7 @@ FILE* kjb_fdopen(FILE* old_fp, const char* mode)
        )
     {
         set_bug(
-              "kjb_fdopen sent a file descriptor not opened with KJB library.");
+              "ivi_fdopen sent a file descriptor not opened with IVI library.");
         return NULL;
     }
 
@@ -3358,10 +3358,10 @@ FILE* kjb_fdopen(FILE* old_fp, const char* mode)
        )
     {
         fs_cached_fnames[ new_file_des ] =
-                                kjb_strdup(fs_cached_fnames[ old_file_des ]);
+                                ivi_strdup(fs_cached_fnames[ old_file_des ]);
 
         fs_cached_user_fnames[ new_file_des ] =
-                                kjb_strdup(fs_cached_user_fnames[ old_file_des ]);
+                                ivi_strdup(fs_cached_user_fnames[ old_file_des ]);
 
         fs_cached_file_reference_count[ new_file_des ] = 1;
         fs_cached_fp[ new_file_des ] = new_fp;
@@ -3381,13 +3381,13 @@ FILE* kjb_fdopen(FILE* old_fp, const char* mode)
 
 
 /* =============================================================================
- *                                kjb_fclose
+ *                                ivi_fclose
  *
  * Replacement for fclose
  *
- * This function should be used to close files opened with a KJB library routine
- * such as kjb_fopen. File pointers obtained elsewhere should NOT be sent to
- * kjb_fclose. If kjb_fclose is sent a null file pointer, then this routine is a
+ * This function should be used to close files opened with a IVI library routine
+ * such as ivi_fopen. File pointers obtained elsewhere should NOT be sent to
+ * ivi_fclose. If ivi_fclose is sent a null file pointer, then this routine is a
  * successful no-op.
  *
  * This function is not re-entrant (i.e., not thread-safe).
@@ -3400,7 +3400,7 @@ FILE* kjb_fdopen(FILE* old_fp, const char* mode)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_fclose(FILE* fp)
+int ivi_fclose(FILE* fp)
 {
     int result = NO_ERROR;
     int file_des;
@@ -3415,7 +3415,7 @@ int kjb_fclose(FILE* fp)
 
     /*
     // If we need to close one of stdin, stdout, stderr, then we should make
-    // routines called kjb_fclose(stdin), etc, so the following error check can
+    // routines called ivi_fclose(stdin), etc, so the following error check can
     // remain.
     */
     if (file_des < 3)
@@ -3447,40 +3447,40 @@ int kjb_fclose(FILE* fp)
 
 
 /* =============================================================================
- *                                kjb_popen
+ *                                ivi_popen
  *
  * A front end for popen
  *
- * The routine kjb_popen should be used in place of popen for streams that are
- * that are used with the KJB library.   kjb_popen implements additional
+ * The routine ivi_popen should be used in place of popen for streams that are
+ * that are used with the IVI library.   ivi_popen implements additional
  * features such as more comprehensive diagnostics.
  *
  * The current implementation uses popen, so it shares the problem that the
  * open can succeed even if the execution of the command fails.
  *
- * Streams opened with kjb_popen MUST be closed with kjb_pclose.
+ * Streams opened with ivi_popen MUST be closed with ivi_pclose.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Warning:
- *     Many KJB library routines requiring a file pointer will assume that this
- *     pointer came from one of kjb_fopen, kjb_freopen, kjb_popen, or
- *     kjb_fdopen, Furthermore the library assumes that all files opened with
- *     one of these routines will be closed with kjb_fclose. Furthermore, the
- *     KJB library file IO routines assume that stdin, stdout, and stderr will
- *     not be closed with fclose (kjb_fclose is OK). In short, if one makes use
- *     of the IO portion of the library, then kjb_fopen and friends should be
+ *     Many IVI library routines requiring a file pointer will assume that this
+ *     pointer came from one of ivi_fopen, ivi_freopen, ivi_popen, or
+ *     ivi_fdopen, Furthermore the library assumes that all files opened with
+ *     one of these routines will be closed with ivi_fclose. Furthermore, the
+ *     IVI library file IO routines assume that stdin, stdout, and stderr will
+ *     not be closed with fclose (ivi_fclose is OK). In short, if one makes use
+ *     of the IO portion of the library, then ivi_fopen and friends should be
  *     used.
  *
- *     Using file pointers obtained from kjb_fopen with non KJB library
+ *     Using file pointers obtained from ivi_fopen with non IVI library
  *     routines is less critical, but can lead to minor problems such as
- *     incorrect paging. Of course, when there is no non-KJB library routine
+ *     incorrect paging. Of course, when there is no non-IVI library routine
  *     for the given task, then there is no problem.
  *
  * -----------------------------------------------------------------------------
 */
 
-FILE* kjb_popen(const char* cmd, const char* mode)
+FILE* ivi_popen(const char* cmd, const char* mode)
 {
     FILE* fp;
     char  system_dependent_mode[ 100 ];
@@ -3533,19 +3533,19 @@ FILE* kjb_popen(const char* cmd, const char* mode)
 */
 
 /* =============================================================================
- *                                kjb_pclose
+ *                                ivi_pclose
  *
  * Replacement for pclose
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
- * This function should be used to close streams opened with kjb_popen File
- * pointers obtained elsewhere should NOT be sent to kjb_pclose.
+ * This function should be used to close streams opened with ivi_popen File
+ * pointers obtained elsewhere should NOT be sent to ivi_pclose.
  *
  * -----------------------------------------------------------------------------
 */
 
-int kjb_pclose(FILE* fp)
+int ivi_pclose(FILE* fp)
 {
     int result;
     int file_des;
@@ -3599,7 +3599,7 @@ static int uncache_file_name(int file_des)
     }
     else if (fs_cached_mode[ file_des ] == MODE_IS_NOT_SET)
     {
-        set_bug("uncache_file_name recieved fp not opened by KJB library");
+        set_bug("uncache_file_name recieved fp not opened by IVI library");
         return ERROR;
     }
     else
@@ -3609,16 +3609,16 @@ static int uncache_file_name(int file_des)
 
     if (fs_cached_file_reference_count[ file_des ] == 0)
     {
-        kjb_free(fs_cached_fnames[ file_des ] );
+        ivi_free(fs_cached_fnames[ file_des ] );
         fs_cached_fnames[ file_des ] = NULL;
 
-        kjb_free(fs_cached_user_fnames[ file_des ] );
+        ivi_free(fs_cached_user_fnames[ file_des ] );
         fs_cached_user_fnames[ file_des ]=NULL;
 
         if (fs_cached_uncompressed_fnames[ file_des ] != NULL)
         {
-            EPE(kjb_unlink(fs_cached_uncompressed_fnames[ file_des ]));
-            kjb_free(fs_cached_uncompressed_fnames[ file_des ] );
+            EPE(ivi_unlink(fs_cached_uncompressed_fnames[ file_des ]));
+            ivi_free(fs_cached_uncompressed_fnames[ file_des ] );
             fs_cached_uncompressed_fnames[ file_des ]=NULL;
         }
 
@@ -3634,18 +3634,18 @@ static int uncache_file_name(int file_des)
 #ifdef TEST
     else if (fs_cached_file_reference_count[ file_des ] > 0)
     {
-        kjb_fprintf(stderr, "Reference count for %d reduced to %d.\n", file_des,
+        ivi_fprintf(stderr, "Reference count for %d reduced to %d.\n", file_des,
                     fs_cached_file_reference_count[ file_des ]);
     }
     else
     {
-        kjb_fprintf(stderr, "Reference count for %d reduced to %d.\n", file_des,
+        ivi_fprintf(stderr, "Reference count for %d reduced to %d.\n", file_des,
                     fs_cached_file_reference_count[ file_des ]);
 
-        kjb_fprintf(stderr,
+        ivi_fprintf(stderr,
                     "Presumably an attempt to close the same stream twice.\n");
 
-        kjb_abort();
+        ivi_abort();
     }
 #endif
 
@@ -3670,31 +3670,31 @@ static void get_mode_for_error_message(char* mode, char* buff, size_t len)
 
     if (STRCMP_EQ(mode, "r"))
     {
-        kjb_strncpy(buff, "reading", len);
+        ivi_strncpy(buff, "reading", len);
     }
     else if (STRCMP_EQ(mode, "w"))
     {
-        kjb_strncpy(buff, "writing", len);
+        ivi_strncpy(buff, "writing", len);
     }
     else if (STRCMP_EQ(mode, "w+"))
     {
-        kjb_strncpy(buff, "seek/write", len);
+        ivi_strncpy(buff, "seek/write", len);
     }
     else if (STRCMP_EQ(mode, "r+"))
     {
-        kjb_strncpy(buff, "read/write", len);
+        ivi_strncpy(buff, "read/write", len);
     }
     else if (STRCMP_EQ(mode, "a+"))
     {
-        kjb_strncpy(buff, "read/append", len);
+        ivi_strncpy(buff, "read/append", len);
     }
     else if (STRCMP_EQ(mode, "a"))
     {
-        kjb_strncpy(buff, "append", len);
+        ivi_strncpy(buff, "append", len);
     }
     else
     {
-        kjb_strncpy(buff, mode, len);
+        ivi_strncpy(buff, mode, len);
     }
 }
 
@@ -3752,24 +3752,24 @@ static int cache_file_name(FILE* fp, const char* expanded_path, const char* user
          * If this is a re-open, then we are in some sense,
          * "re-naming" the stream. The system has done the close
          * on the previous stream for us, and thus the cleanup code
-         * in kjb_fclose has not been executed. If the strings are not
+         * in ivi_fclose has not been executed. If the strings are not
          * null for any other reason, then there is a mistake. (?)
         */
         if (fs_cached_fnames[ file_des ] != NULL)
         {
-            kjb_free( fs_cached_fnames[ file_des ] );
+            ivi_free( fs_cached_fnames[ file_des ] );
         }
 
         if (fs_cached_user_fnames[ file_des ] != NULL)
         {
-            kjb_free( fs_cached_user_fnames[ file_des ] );
+            ivi_free( fs_cached_user_fnames[ file_des ] );
         }
 
-        if (kjb_isatty(fileno(fp)))
+        if (ivi_isatty(fileno(fp)))
         {
-            fs_cached_fnames[ file_des ] = kjb_strdup("the computer terminal");
+            fs_cached_fnames[ file_des ] = ivi_strdup("the computer terminal");
             fs_cached_user_fnames[ file_des ] =
-                kjb_strdup("the computer terminal");
+                ivi_strdup("the computer terminal");
             fs_cached_isatty[ file_des ] = TRUE;
             fs_cached_uncompressed_fnames[ file_des ] = NULL;
         }
@@ -3778,26 +3778,26 @@ static int cache_file_name(FILE* fp, const char* expanded_path, const char* user
             fs_cached_isatty[ file_des ] = FALSE;
 #ifdef VMS
             buff_ptr = getname(file_des, buff);
-            fs_cached_fnames[file_des ] = kjb_strdup(buff);
+            fs_cached_fnames[file_des ] = ivi_strdup(buff);
 #else
             if (expanded_path != NULL)
             {
                 ERE(BUFF_REAL_PATH(expanded_path, real_path));
-                fs_cached_fnames[file_des ] = kjb_strdup(real_path);
+                fs_cached_fnames[file_des ] = ivi_strdup(real_path);
             }
             else
             {
-                fs_cached_fnames[file_des ] = kjb_strdup(user_file_name);
+                fs_cached_fnames[file_des ] = ivi_strdup(user_file_name);
             }
 #endif
-            fs_cached_user_fnames[file_des ] = kjb_strdup(user_file_name);
+            fs_cached_user_fnames[file_des ] = ivi_strdup(user_file_name);
 
             if (    (uncompressed_fd_name != NULL)
                  && (uncompressed_fd_name[ 0 ] != '\0')
                )
             {
                 fs_cached_uncompressed_fnames[ file_des ] =
-                                       kjb_strdup(uncompressed_fd_name);
+                                       ivi_strdup(uncompressed_fd_name);
             }
         }
 
@@ -3808,10 +3808,10 @@ static int cache_file_name(FILE* fp, const char* expanded_path, const char* user
 #ifdef TEST
     else
     {
-        kjb_fprintf(stderr,
+        ivi_fprintf(stderr,
                     "Duplicate descriptor (%d) noted in cache_file_name.\n",
                     file_des);
-        kjb_fprintf(stderr, "This occured while attempting to cache %s\n",
+        ivi_fprintf(stderr, "This occured while attempting to cache %s\n",
                     user_file_name);
     }
 #endif
@@ -3836,7 +3836,7 @@ static int cache_file_name(FILE* fp, const char* expanded_path, const char* user
 // Important note: We assume that if the functions in this file are being
 // used at all, then they are not being mixed with the standard ones in
 // devious ways. Specifically, we assume that stdin, stdout, and stderr,
-// have NOT been closed with fclose (kjb_fclose is OK).
+// have NOT been closed with fclose (ivi_fclose is OK).
 */
 
 static int initialize_cache(void)
@@ -3859,17 +3859,17 @@ static int initialize_cache(void)
         // default file descriptors have been dealt with.
         */
 
-        if (kjb_isatty_guts(fileno(stdin)))
+        if (ivi_isatty_guts(fileno(stdin)))
         {
             fs_cached_isatty[ 0 ]      = TRUE;
-            fs_cached_fnames[ 0 ]      = kjb_strdup("the computer terminal");
-            fs_cached_user_fnames[ 0 ] = kjb_strdup("the computer terminal");
+            fs_cached_fnames[ 0 ]      = ivi_strdup("the computer terminal");
+            fs_cached_user_fnames[ 0 ] = ivi_strdup("the computer terminal");
         }
         else
         {
             fs_cached_isatty[ 0 ]      = FALSE;
-            fs_cached_fnames[ 0 ]      = kjb_strdup("standard input");
-            fs_cached_user_fnames[ 0 ] = kjb_strdup("standard input");
+            fs_cached_fnames[ 0 ]      = ivi_strdup("standard input");
+            fs_cached_user_fnames[ 0 ] = ivi_strdup("standard input");
         }
 
         fs_cached_uncompressed_fnames[ 0 ] = NULL;
@@ -3881,17 +3881,17 @@ static int initialize_cache(void)
         fs_cached_is_blocking[ 1 ]          = TRUE;
 #endif
 
-        if (kjb_isatty_guts(fileno(stdout)))
+        if (ivi_isatty_guts(fileno(stdout)))
         {
             fs_cached_isatty[ 1 ]      = TRUE;
-            fs_cached_fnames[ 1 ]      = kjb_strdup("the computer terminal");
-            fs_cached_user_fnames[ 1 ] = kjb_strdup("the computer terminal");
+            fs_cached_fnames[ 1 ]      = ivi_strdup("the computer terminal");
+            fs_cached_user_fnames[ 1 ] = ivi_strdup("the computer terminal");
         }
         else
         {
             fs_cached_isatty[ 1 ]      = FALSE;
-            fs_cached_fnames[ 1 ]      = kjb_strdup("standard output");
-            fs_cached_user_fnames[ 1 ] = kjb_strdup("standard output");
+            fs_cached_fnames[ 1 ]      = ivi_strdup("standard output");
+            fs_cached_user_fnames[ 1 ] = ivi_strdup("standard output");
         }
 
         fs_cached_uncompressed_fnames[ 1 ] = NULL;
@@ -3904,22 +3904,22 @@ static int initialize_cache(void)
         fs_cached_is_blocking[ 2 ]          = TRUE;
 #endif
 
-        if (kjb_isatty_guts(fileno(stderr)))
+        if (ivi_isatty_guts(fileno(stderr)))
         {
             fs_cached_isatty[ 2 ]      = TRUE;
-            fs_cached_fnames[ 2 ]      = kjb_strdup("the computer terminal");
-            fs_cached_user_fnames[ 2 ] = kjb_strdup("the computer terminal");
+            fs_cached_fnames[ 2 ]      = ivi_strdup("the computer terminal");
+            fs_cached_user_fnames[ 2 ] = ivi_strdup("the computer terminal");
         }
         else
         {
             fs_cached_isatty[ 2 ]      = FALSE;
-            fs_cached_fnames[ 2 ]      = kjb_strdup("standard error");
-            fs_cached_user_fnames[ 2 ] = kjb_strdup("standard error");
+            fs_cached_fnames[ 2 ]      = ivi_strdup("standard error");
+            fs_cached_user_fnames[ 2 ] = ivi_strdup("standard error");
         }
 
 
         /*
-        // This checks that we got memory when calling kjb_strdup.
+        // This checks that we got memory when calling ivi_strdup.
         */
         if (    (fs_cached_fnames[ 0 ]      == NULL)
              || (fs_cached_user_fnames[ 0 ] == NULL)
@@ -4013,7 +4013,7 @@ static Mode get_mode_for_cache(const char* mode)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_realpath
+ *                                ivi_realpath
  *
  * This wraps the standard Posix system call realpath().  The first argument is
  * the input pathname, and the second and third arguments are used for output,
@@ -4023,7 +4023,7 @@ static Mode get_mode_for_cache(const char* mode)
  * yield "/usr/bin" as output.
  *
  * C programmers: please consider using macro BUFF_REAL_PATH instead of this
- * function.  C++ programmers may prefer to use kjb::realpath.
+ * function.  C++ programmers may prefer to use ivi::realpath.
  *
  * Returns:
  *      This returns ERROR or NO_ERROR as appropriate.
@@ -4038,7 +4038,7 @@ static Mode get_mode_for_cache(const char* mode)
  * -----------------------------------------------------------------------------
 */
 
-/* ALL */   int kjb_realpath(const char* fd_name, char* path_buff, size_t max_len)
+/* ALL */   int ivi_realpath(const char* fd_name, char* path_buff, size_t max_len)
 /* ALL */
 /* ALL */
 /* ALL */
@@ -4123,7 +4123,7 @@ static Mode get_mode_for_cache(const char* mode)
 /* UNIX */          {
 /* UNIX */              resolved_path_pos += strlen("/.automount");
 /* UNIX */          }
-/* UNIX */          kjb_strncpy(path_buff, resolved_path_pos, max_len);
+/* UNIX */          ivi_strncpy(path_buff, resolved_path_pos, max_len);
 /* UNIX */      }
 /* UNIX */
 /* UNIX */      if (path_res != NULL)
@@ -4143,7 +4143,7 @@ static Mode get_mode_for_cache(const char* mode)
 /* default */   }
 /* default */   else
 /* default */   {
-/* default */       kjb_strncpy(path_buff, fd_name, max_len);
+/* default */       ivi_strncpy(path_buff, fd_name, max_len);
 /* default */       return NO_ERROR;
 /* default */   }
 #endif
@@ -4213,8 +4213,8 @@ static Mode get_mode_for_cache(const char* mode)
 /* UNIX */              return ERROR;
 /* UNIX */          }
 /* UNIX */
-/* UNIX */          kjb_strncpy(exanded_path, pw->pw_dir, max_len);
-/* UNIX */          kjb_strncat(exanded_path, path_pos, max_len);
+/* UNIX */          ivi_strncpy(exanded_path, pw->pw_dir, max_len);
+/* UNIX */          ivi_strncat(exanded_path, path_pos, max_len);
 /* UNIX */      }
 /* UNIX */      else
 /* UNIX */      {
@@ -4226,7 +4226,7 @@ static Mode get_mode_for_cache(const char* mode)
 /* UNIX */              return ERROR;
 /* UNIX */          }
 /* UNIX */
-/* UNIX */          kjb_strncpy(exanded_path, path, max_len);
+/* UNIX */          ivi_strncpy(exanded_path, path, max_len);
 /* UNIX */      }
 /* UNIX */
 /* UNIX */      return NO_ERROR;
@@ -4240,7 +4240,7 @@ static Mode get_mode_for_cache(const char* mode)
 /* default */   }
 /* default */   else
 /* default */   {
-/* default */       kjb_strncpy(exanded_path, path, max_len);
+/* default */       ivi_strncpy(exanded_path, path, max_len);
 /* default */       return NO_ERROR;
 /* default */   }
 #endif
@@ -4260,12 +4260,12 @@ static Mode get_mode_for_cache(const char* mode)
  * "~", "../", etc are expanded. Also, if the file was uncompressed behind the
  * scenes, then the uncompressed version is provided. The routine
  * get_user_fd_name can be used to find the name of the file as passed to
- * kjb_fopen.
+ * ivi_fopen.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Note:
- *   The file must have been opened with kjb_fopen.
+ *   The file must have been opened with ivi_fopen.
  *
  * Returns:
  *    On failure an error message is set, and ERROR is returned. Otherwise
@@ -4300,22 +4300,22 @@ int get_fd_name(int des, char* fd_name, size_t max_len)
     result = NO_ERROR;
 
     /*
-    // Have to be able to handle descriptors that did not come from kjb_fopen
+    // Have to be able to handle descriptors that did not come from ivi_fopen
     // and friends, as it could have come from opening a pipe or other similar
     // source, and we do not have replacements for these opens.
     */
 
     if (des >= MAX_NUM_NAMED_FILES)
     {
-        kjb_strncpy(fd_name, "<unknown>",  max_len);
+        ivi_strncpy(fd_name, "<unknown>",  max_len);
     }
     else if (fs_cached_uncompressed_fnames[ des ] != NULL)
     {
-        kjb_strncpy(fd_name, fs_cached_uncompressed_fnames[ des ], max_len);
+        ivi_strncpy(fd_name, fs_cached_uncompressed_fnames[ des ], max_len);
     }
     else if (fs_cached_fnames[ des ] != NULL)
     {
-        kjb_strncpy(fd_name, fs_cached_fnames[ des ], max_len);
+        ivi_strncpy(fd_name, fs_cached_fnames[ des ], max_len);
     }
     else
     {
@@ -4336,13 +4336,13 @@ int get_fd_name(int des, char* fd_name, size_t max_len)
  * The name of the file or device associated with desciptor in the parameter des
  * is copied into the buffer fd_name.  Max_len gives the size of the buffer
  * which will not be overflowed.  The name returned is the name as specified to
- * kjb_fopen and thus "~", "../", etc will not expanded if that is how the file
+ * ivi_fopen and thus "~", "../", etc will not expanded if that is how the file
  * was originally provided. 
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Note:
- *   The file must have been opened with kjb_fopen.
+ *   The file must have been opened with ivi_fopen.
  *
  * Returns:
  *    On failure an error message is set, and ERROR is returned. Otherwise
@@ -4377,18 +4377,18 @@ int get_user_fd_name(int des, char* fd_name, size_t max_len)
     result = NO_ERROR;
 
     /*
-    // Have to be able to handle descriptors that did not come from kjb_fopen
+    // Have to be able to handle descriptors that did not come from ivi_fopen
     // and friends, as it could have come from opening a pipe or other similar
     // source, and we do not have replacements for these opens.
     */
 
     if ((des < MAX_NUM_NAMED_FILES) && (fs_cached_fnames[ des ] != NULL))
     {
-        kjb_strncpy(fd_name, fs_cached_user_fnames[ des ], max_len);
+        ivi_strncpy(fd_name, fs_cached_user_fnames[ des ], max_len);
     }
     else
     {
-        kjb_strncpy(fd_name, "<unknown>",  max_len);
+        ivi_strncpy(fd_name, "<unknown>",  max_len);
     }
 
     return result;
@@ -4398,11 +4398,11 @@ int get_user_fd_name(int des, char* fd_name, size_t max_len)
 
 /*
  * =============================================================================
- *                                kjb_fseek
+ *                                ivi_fseek
  *
  * Moves the file pointer
  *
- * kjb_fseek is very similar to the standard fseek, except that error reporting
+ * ivi_fseek is very similar to the standard fseek, except that error reporting
  * is made consistent with the other library routines, and the messages are
  * more meaningfull.
  *
@@ -4415,7 +4415,7 @@ int get_user_fd_name(int des, char* fd_name, size_t max_len)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_fseek(FILE* fp, long int offset, int mode)
+int ivi_fseek(FILE* fp, long int offset, int mode)
 {
     int seek_res;
 
@@ -4437,11 +4437,11 @@ int kjb_fseek(FILE* fp, long int offset, int mode)
 
 /*
  * =============================================================================
- *                                kjb_ftell
+ *                                ivi_ftell
  *
  * Returns the file offset
  *
- * kjb_ftell is very similar to the standard ftell, except that error reporting
+ * ivi_ftell is very similar to the standard ftell, except that error reporting
  * is made consistent with the other library routines, and the error messages
  * are more meaningfull.
  *
@@ -4457,13 +4457,13 @@ int kjb_fseek(FILE* fp, long int offset, int mode)
  * -----------------------------------------------------------------------------
 */
 
-long kjb_ftell(FILE* fp)
+long ivi_ftell(FILE* fp)
 {
     struct stat file_stats;
     long        result;
 
 
-    if (kjb_isatty(fileno(fp)))
+    if (ivi_isatty(fileno(fp)))
     {
         set_error("Attempt to find file position of a terminal.");
         return ERROR;
@@ -4518,18 +4518,18 @@ long kjb_ftell(FILE* fp)
 
 /*
  * =============================================================================
- *                                kjb_fputs
+ *                                ivi_fputs
  *
  * Writes a null terminated string to a stream
  *
- * This is the KJB library version of fputs.   This routine works together with
- * the rest of the KJB library to implement paging and flushing of all files
+ * This is the IVI library version of fputs.   This routine works together with
+ * the rest of the IVI library to implement paging and flushing of all files
  * when stderr is written to.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Warning:
- *    The that the arguments are REVERSED from fputs(3). In the KJB library
+ *    The that the arguments are REVERSED from fputs(3). In the IVI library
  *    routines we tend to put the file pointer first.
  *
  * Returns:
@@ -4541,7 +4541,7 @@ long kjb_ftell(FILE* fp)
  * -----------------------------------------------------------------------------
 */
 
-long kjb_fputs
+long ivi_fputs
 (
      FILE* fp        /* File pointer */  ,
      const char* str /* String to write to file */
@@ -4556,12 +4556,12 @@ long kjb_fputs
 
     if (fp == stderr)
     {
-        ERE(kjb_fflush((FILE*)NULL));
+        ERE(ivi_fflush((FILE*)NULL));
     }
 
     if ((fp != stdout) || (fs_enable_stdout))
     {
-        if (kjb_isatty(fileno(fp)))
+        if (ivi_isatty(fileno(fp)))
         {
             if ( ! halt_term_output)
             {
@@ -4627,7 +4627,7 @@ long kjb_fputs
         /* Parnoid! */
         if (len == LONG_MAX)
         {
-            set_error("%ul too large for return value of kjb_puts().", len);
+            set_error("%ul too large for return value of ivi_puts().", len);
             add_error("The write itself appears succussful.");
             return ERROR;
         }
@@ -4635,7 +4635,7 @@ long kjb_fputs
         {
             if (fp_get_path_type(fp) != PATH_IS_REGULAR_FILE) 
             {
-                kjb_fflush(fp); 
+                ivi_fflush(fp); 
             }
             return len;
         }
@@ -4648,11 +4648,11 @@ long kjb_fputs
 
 /*
  * =============================================================================
- *                                kjb_fgetc
+ *                                ivi_fgetc
  *
  * Reads a character from a stream
  *
- * kjb_getc is very similar to the standard getc, except that error reporting
+ * ivi_getc is very similar to the standard getc, except that error reporting
  * is made consistent with the other library routines, and the error messages
  * are more meaningfull.
  *
@@ -4670,7 +4670,7 @@ long kjb_fputs
  * -----------------------------------------------------------------------------
 */
 
-int kjb_fgetc(FILE* fp)
+int ivi_fgetc(FILE* fp)
 {
 #ifndef errno  /* GNU defines errno as a macro, leading to warning messages. */
     IMPORT int errno;
@@ -4679,7 +4679,7 @@ int kjb_fgetc(FILE* fp)
     int        c;
 
 
-    if (kjb_isatty(fileno(fp)))
+    if (ivi_isatty(fileno(fp)))
     {
         return term_getc();
     }
@@ -4723,7 +4723,7 @@ int kjb_fgetc(FILE* fp)
 
 /*
  * =============================================================================
- *                                kjb_fputc
+ *                                ivi_fputc
  *
  * Write a character to a stream
  *
@@ -4748,7 +4748,7 @@ int kjb_fgetc(FILE* fp)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_fputc(FILE* fp, int c)
+int ivi_fputc(FILE* fp, int c)
 {
     IMPORT volatile Bool halt_all_output;
     IMPORT volatile Bool halt_term_output;
@@ -4761,12 +4761,12 @@ int kjb_fputc(FILE* fp, int c)
 
     if (fp == stderr)
     {
-        ERE(kjb_fflush((FILE*)NULL));
+        ERE(ivi_fflush((FILE*)NULL));
     }
 
     if ((fp != stdout) || (fs_enable_stdout))
     {
-        if (kjb_isatty(fileno(fp)))
+        if (ivi_isatty(fileno(fp)))
         {
             if (halt_term_output) return NO_ERROR;
 
@@ -4819,24 +4819,24 @@ int kjb_fputc(FILE* fp, int c)
  * Writes a formatted string to stdout.
  *
  * The formating options are similar to the standard ones, except that the
- * standard ones are not very standard! Thus the KJB library  routine provides
+ * standard ones are not very standard! Thus the IVI library  routine provides
  * some semblence of platform independent IO. Also, there are additional
- * formatting options available (see kjb_fprintf for details).
+ * formatting options available (see ivi_fprintf for details).
  *
- * This routine works together with the rest of the KJB library to implement
+ * This routine works together with the rest of the IVI library to implement
  * paging and flushing of all files when stderr is written to.
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Macros:
  *    This routine is similar is spirit to the system macro "printf", and
- *    hence an alternate name "kjb_printf" is provided.
+ *    hence an alternate name "ivi_printf" is provided.
  *
  * Returns:
  *    ERROR on failure and the number of characters printed on success.
  *
  * Related:
- *    kjb_fprintf
+ *    ivi_fprintf
  *
  * Index: output, I/O, paging
  *
@@ -4851,7 +4851,7 @@ long pso(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    result = kjb_vfprintf(stdout, format_str, ap);
+    result = ivi_vfprintf(stdout, format_str, ap);
 
     va_end(ap);
 
@@ -4867,11 +4867,11 @@ long pso(const char* format_str, ...)
  * Writes a formatted string to stderr.
  *
  * The formating options are similar to the standard ones, except that the
- * standard ones are not very standard! Thus the KJB library  routine provides
+ * standard ones are not very standard! Thus the IVI library  routine provides
  * some semblence of platform independent IO. Also, there are additional
- * formatting options available (see kjb_fprintf for details).
+ * formatting options available (see ivi_fprintf for details).
  *
- * This routine works together with the rest of the KJB library to implement
+ * This routine works together with the rest of the IVI library to implement
  * paging and flushing of all files when stderr is written to.
  *
  * This function is not re-entrant (i.e., not thread-safe).
@@ -4885,7 +4885,7 @@ long pso(const char* format_str, ...)
  *    ERROR on failure and the number of characters printed on success.
  *
  * Related:
- *    kjb_fprintf
+ *    ivi_fprintf
  *
  * Index: output, I/O, paging
  *
@@ -4900,7 +4900,7 @@ long p_stderr(const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    result = kjb_vfprintf(stderr, format_str, ap);
+    result = ivi_vfprintf(stderr, format_str, ap);
 
     va_end(ap);
 
@@ -4911,15 +4911,15 @@ long p_stderr(const char* format_str, ...)
 
 /*
  * =============================================================================
- *                                kjb_fprintf
+ *                                ivi_fprintf
  *
  * Writes a formatted string to a stream.
  *
  * The formating options are similar to the standard ones, except that the
- * standard ones are not very standard! Thus the KJB library routine provides
+ * standard ones are not very standard! Thus the IVI library routine provides
  * some semblence of platform independent IO.
  *
- * This routine works together with the rest of the KJB library to implement
+ * This routine works together with the rest of the IVI library to implement
  * 1) paging (controlled via user options) and 2) flushing of all files when
  * stderr is written to. This second feature reduces the confusion that
  * sometimes occur when one is expecting output from stdout before an error
@@ -4964,14 +4964,14 @@ long p_stderr(const char* format_str, ...)
 */
 
 /*PRINTFLIKE2*/
-long kjb_fprintf(FILE* fp, const char* format_str, ...)
+long ivi_fprintf(FILE* fp, const char* format_str, ...)
 {
     int     result;
     va_list ap;
  
     va_start(ap, format_str);
 
-    result = kjb_vfprintf(fp, format_str, ap);
+    result = ivi_vfprintf(fp, format_str, ap);
 
     va_end(ap);
 
@@ -4993,7 +4993,7 @@ long kjb_fprintf(FILE* fp, const char* format_str, ...)
  * This function is not re-entrant (i.e., not thread-safe).
  *
  * Related:
- *    pso, kjb_fprintf
+ *    pso, ivi_fprintf
  *
  * Index: debugging
  *
@@ -5012,21 +5012,21 @@ long pdo(const char* format_str, ...)
 
     if (fs_debug_fp == NULL)
     {
-        ERE(kjb_sprintf(debug_file_name, sizeof(debug_file_name),
+        ERE(ivi_sprintf(debug_file_name, sizeof(debug_file_name),
                         "debug-%ld.output", (long)MY_PID));
-        NRE(fs_debug_fp = kjb_fopen(debug_file_name, "w"));
+        NRE(fs_debug_fp = ivi_fopen(debug_file_name, "w"));
         add_cleanup_function(close_debug_file);
     }
 
     va_start(ap, format_str);
 
-    result =  kjb_vfprintf(fs_debug_fp, format_str, ap);
+    result =  ivi_vfprintf(fs_debug_fp, format_str, ap);
 
     va_end(ap);
 
     if (result != ERROR)
     {
-        result = kjb_fflush(fs_debug_fp);
+        result = ivi_fflush(fs_debug_fp);
     }
 
     return result;
@@ -5047,7 +5047,7 @@ static void close_debug_file(void)
 {
 
 
-    EPE(kjb_fclose(fs_debug_fp));  /* Print error, as this is a void cleanup fn. */
+    EPE(ivi_fclose(fs_debug_fp));  /* Print error, as this is a void cleanup fn. */
     fs_debug_fp = NULL;
 }
 
@@ -5055,7 +5055,7 @@ static void close_debug_file(void)
 
 /*
  * =============================================================================
- *                                kjb_vfprintf
+ *                                ivi_vfprintf
  *
  * This function is not re-entrant (i.e., not thread-safe).
  *
@@ -5066,7 +5066,7 @@ static void close_debug_file(void)
 // FIX   We should looking at sprintf's return.
 */
 
-long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
+long ivi_vfprintf(FILE* fp, const char* format_str, va_list ap)
 {
     IMPORT volatile Bool halt_all_output;
     IMPORT volatile Bool halt_term_output;
@@ -5098,18 +5098,18 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
     int                 temp_field_width;
 
 
-    if (halt_all_output || (halt_term_output && kjb_isatty(fileno(fp))))
+    if (halt_all_output || (halt_term_output && ivi_isatty(fileno(fp))))
     {
         return NO_ERROR;
     }
 
     /*
-    // Moved to kjb_fputs and kjb_fwrite, which are the only ways this routine
+    // Moved to ivi_fputs and ivi_fwrite, which are the only ways this routine
     // outputs?
     //
     //  if (fp == stderr)
     //  {
-    //      ERE(kjb_fflush((FILE*)NULL));
+    //      ERE(ivi_fflush((FILE*)NULL));
     //  }
     */
 
@@ -5138,7 +5138,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
 
         if (char_count != 0)
         {
-            ERE(res = kjb_fwrite(fp, (const void*)format_str, char_count));
+            ERE(res = ivi_fwrite(fp, (const void*)format_str, char_count));
             byte_count += res;
             format_str += char_count;
         }
@@ -5478,7 +5478,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                 // properly work with precision arguments!
                 //
                 // Note: This code must be synched with unsigned case, and
-                //       kjb_vsprintf.
+                //       ivi_vsprintf.
                  */
                 if (comma_flag && all_digits(output_buff))
                 {
@@ -5510,7 +5510,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     BUFF_CPY(output_buff, buff_copy);
                 }
 
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (    (type_char == 'o') || (type_char == 'u')
                       || (type_char == 'x') || (type_char == 'X')
@@ -5742,7 +5742,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     BUFF_CPY(output_buff, buff_copy);
                 }
 
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (    (type_char == 'e') || (type_char == 'f')
                          || (type_char == 'g') || (type_char == 'E')
@@ -5920,7 +5920,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     return ERROR;
                 }
 
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == 's')
             {
@@ -5994,45 +5994,45 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                         return ERROR;
                     }
 
-                    ERE(res = kjb_fputs(fp, output_buff));
+                    ERE(res = ivi_fputs(fp, output_buff));
                 }
                 else
                 {
-                    ERE(res = kjb_fputs(fp, va_arg(ap, char *)));
+                    ERE(res = ivi_fputs(fp, va_arg(ap, char *)));
                 }
             }
             else if (type_char == 'D')
             {
                 BUFF_GET_USER_FD_NAME(va_arg(ap, int), output_buff);
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == 'R')
             {
                 get_status_string(va_arg(ap, int), output_buff,
                                   sizeof(output_buff));
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == 'F')
             {
                 BUFF_GET_USER_FD_NAME(fileno(va_arg(ap, FILE *)), output_buff);
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == 'P')
             {
                 BUFF_GET_FD_NAME(fileno(va_arg(ap, FILE *)), output_buff);
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == 'S')
             {
-#ifdef KJB_HAVE_STRERROR
+#ifdef IVI_HAVE_STRERROR
                 const char* sys_mess = strerror(errno);
 
                 if (sys_mess != NULL)
                 {
-                    ERE(res = kjb_fputs(fp, "\nSystem error message is: "));
+                    ERE(res = ivi_fputs(fp, "\nSystem error message is: "));
                     byte_count += res;
 
-                    ERE(res = kjb_fputs(fp, sys_mess));
+                    ERE(res = ivi_fputs(fp, sys_mess));
                     byte_count += res;
                 }
 #else
@@ -6047,12 +6047,12 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                         && (errno < sys_nerr)
                    )
                 {
-                    ERE(res = kjb_fputs(fp, "\nSystem error message is: "));
+                    ERE(res = ivi_fputs(fp, "\nSystem error message is: "));
                     byte_count += res;
 
                     sys_mess = sys_errlist[errno];
 
-                    ERE(res = kjb_fputs(fp, sys_mess));
+                    ERE(res = ivi_fputs(fp, sys_mess));
                     byte_count += res;
                 }
 #endif
@@ -6110,7 +6110,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     trunc_quote_cpy(trunc_buff, va_arg(ap, char *), field_size);
                 }
 
-                ERE(res = kjb_fputs(fp, trunc_buff));
+                ERE(res = ivi_fputs(fp, trunc_buff));
             }
             else if (type_char == 'c')
             {
@@ -6155,7 +6155,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     return ERROR;
                 }
 
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == 'p')
             {
@@ -6176,7 +6176,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     return ERROR;
                 }
 
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == 'n')
             {
@@ -6197,7 +6197,7 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     return ERROR;
                 }
 
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
             }
             else if (type_char == '%')
             {
@@ -6219,9 +6219,9 @@ long kjb_vfprintf(FILE* fp, const char* format_str, va_list ap)
                     return ERROR;
                 }
 
-                ERE(res = kjb_fputs(fp, output_buff));
+                ERE(res = ivi_fputs(fp, output_buff));
 #else
-                ERE(res = kjb_fputs(fp, "%"));
+                ERE(res = ivi_fputs(fp, "%"));
 #endif 
             }
             else
@@ -6548,7 +6548,7 @@ int fp_get_byte_size(FILE* fp, off_t *size_ptr)
     struct stat file_stats;
 
 
-    if (kjb_isatty(fileno(fp)))
+    if (ivi_isatty(fileno(fp)))
     {
         set_error("Attempt to determine file size of a terminal.");
         return ERROR;
@@ -6757,7 +6757,7 @@ int get_file_mod_time(const char* file_name, time_t *mod_time_ptr)
  * Notes:
  *    This routine is only available in the development version of the library.
  *
- *    Only files opened with kjb_fopen will be listed.
+ *    Only files opened with ivi_fopen will be listed.
  *
  * Index: files, debugging
  *
@@ -6771,21 +6771,21 @@ int print_open_files(FILE* fp)
 
     ERE(initialize_cache());
 
-    ERE(kjb_fprintf(fp, "\nOpen files for process %ld:\n", (long)MY_PID));
+    ERE(ivi_fprintf(fp, "\nOpen files for process %ld:\n", (long)MY_PID));
 
     for (i=0; i<MAX_NUM_NAMED_FILES; i++)
     {
         if (fs_cached_file_reference_count[ i ] > 0)
         {
-            ERE(kjb_fprintf(fp, "    %-3d %s (%d ref).\n", i,
+            ERE(ivi_fprintf(fp, "    %-3d %s (%d ref).\n", i,
                             fs_cached_user_fnames[ i ],
                             fs_cached_file_reference_count[ i ]));
         }
     }
 
-    ERE(kjb_fputs(fp, "\n"));
+    ERE(ivi_fputs(fp, "\n"));
 
-    return kjb_fflush(fp);
+    return ivi_fflush(fp);
 }
 
 #endif
@@ -6832,7 +6832,7 @@ static void free_cached_file_names(void)
 
     for (i=0; i<MAX_NUM_NAMED_FILES; i++)
     {
-        kjb_free(fs_cached_fnames[ i ]);
+        ivi_free(fs_cached_fnames[ i ]);
         fs_cached_fnames[ i ] = NULL;
 
         if (fs_cached_user_fnames[ i ] != NULL)
@@ -6844,11 +6844,11 @@ static void free_cached_file_names(void)
                        fs_cached_file_reference_count[ i ]);
             }
 #endif
-            kjb_free(fs_cached_user_fnames[ i ]);
+            ivi_free(fs_cached_user_fnames[ i ]);
             fs_cached_user_fnames[ i ] = NULL;
         }
 
-        kjb_free(fs_cached_uncompressed_fnames[ i ]);
+        ivi_free(fs_cached_uncompressed_fnames[ i ]);
         fs_cached_uncompressed_fnames[ i ] = NULL;
 
         fs_cached_file_reference_count[ i ] = NOT_SET;   /* Invalidation */
@@ -6947,11 +6947,11 @@ static int process_file_open_mode
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 /*
  * =============================================================================
- *                                kjb_isatty
+ *                                ivi_isatty
  *
  * Returns whether a file descriptor is a terminal 
  *
- * kjb_isatty is very similar to the isatty, except that error reporting
+ * ivi_isatty is very similar to the isatty, except that error reporting
  * is made consistent with the other library routines, and the error messages
  * are more meaningfull.
  *
@@ -6969,7 +6969,7 @@ static int process_file_open_mode
  * -----------------------------------------------------------------------------
 */
 
-int kjb_isatty(int file_des)
+int ivi_isatty(int file_des)
 {
     int result;
 
@@ -6984,13 +6984,13 @@ int kjb_isatty(int file_des)
 
     if (file_des < MAX_NUM_NAMED_FILES)
     {
-        if (KJB_IS_SET(fs_cached_isatty[ file_des ]))
+        if (IVI_IS_SET(fs_cached_isatty[ file_des ]))
         {
             return fs_cached_isatty[ file_des ];
         }
     }
 
-    result = kjb_isatty_guts(file_des);
+    result = ivi_isatty_guts(file_des);
 
     if (file_des < MAX_NUM_NAMED_FILES)
     {
@@ -7004,7 +7004,7 @@ int kjb_isatty(int file_des)
 
 /*
  * =============================================================================
- * STATIC                         kjb_isatty_guts
+ * STATIC                         ivi_isatty_guts
  *
  * This function is not re-entrant (i.e., not thread-safe) for SUN4.
  *
@@ -7018,17 +7018,17 @@ int kjb_isatty(int file_des)
 
 #ifdef SUN4
 
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
     /* I have never tried C++ on SUN4, but this has been tested on SUN5. */
     extern "C" {
 #endif
     extern char* ctermid_r(char *);
     extern char* ttyname_r(int, char *, int);
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
                }
 #endif
 
-static int kjb_isatty_guts(int file_des)
+static int ivi_isatty_guts(int file_des)
 {
     static char  control_ttyname_buff[ L_ctermid ] = { '\0' };
     static int   first_time                        = TRUE;
@@ -7144,7 +7144,7 @@ static int kjb_isatty_guts(int file_des)
 // model Borland Compiler.
 */
 
-static int kjb_isatty_guts(int file_des)
+static int ivi_isatty_guts(int file_des)
 {
 
 
@@ -7187,10 +7187,10 @@ long print_underlined(FILE* fp, const char* buff)
     IMPORT volatile Bool halt_term_output;
     int                 result           = NO_ERROR;
     int                 count            = 0;
-    int                 cache_is_ttty    = kjb_isatty(fileno(fp));
+    int                 cache_is_ttty    = ivi_isatty(fileno(fp));
 
 
-    kjb_clear_error();
+    ivi_clear_error();
 
     /*
     // For each character in buff, we output "_", "" (ctl-H), and the
@@ -7282,7 +7282,7 @@ int start_stdout_shadow(const char* file_name)
 
     stop_stdout_shadow();
 
-    fs_stdout_shadow_fp = kjb_fopen(file_name, "a");
+    fs_stdout_shadow_fp = ivi_fopen(file_name, "a");
 
     if (fs_stdout_shadow_fp == NULL)
     {
@@ -7318,7 +7318,7 @@ int start_stdout_shadow(const char* file_name)
 void stop_stdout_shadow(void)
 {
 
-    (void)kjb_fclose(fs_stdout_shadow_fp);
+    (void)ivi_fclose(fs_stdout_shadow_fp);
     fs_stdout_shadow_fp = NULL;
 }
 
@@ -7355,7 +7355,7 @@ int start_stderr_shadow(const char* file_name)
 
     stop_stderr_shadow();
 
-    fs_stderr_shadow_fp = kjb_fopen(file_name, "a");
+    fs_stderr_shadow_fp = ivi_fopen(file_name, "a");
 
     if (fs_stderr_shadow_fp == NULL)
     {
@@ -7391,7 +7391,7 @@ int start_stderr_shadow(const char* file_name)
 void stop_stderr_shadow(void)
 {
 
-    (void)kjb_fclose(fs_stderr_shadow_fp);
+    (void)ivi_fclose(fs_stderr_shadow_fp);
     fs_stderr_shadow_fp = NULL;
 }
 
@@ -7426,7 +7426,7 @@ void enable_stdout(void)
  * Disable writing to standard output.
  *
  * Immediately after calling this function, all writes to standard output are
- * suppressed, provided one uses KJB library output routines.
+ * suppressed, provided one uses IVI library output routines.
  * You can cancel the effect with enable_stdout().
  *
  * This function is not re-entrant (i.e., not thread-safe).
@@ -7444,12 +7444,12 @@ void disable_stdout(void)
 
 /*
  * =============================================================================
- *                                kjb_glob
+ *                                ivi_glob
  *
  * Wrapper for glob() with optional filtering
  *
  * This routine is a wrapper for glob() with optional filtering. It thus deals
- * with system dependent aspects to glob(), and puts the result into the KJB
+ * with system dependent aspects to glob(), and puts the result into the IVI
  * library type "Word_list". If filter_fn() is NOT null, the reults are further
  * pruned based on whether it evaluates to TRUE. A typical value for filter_fn()
  * is is_file(). 
@@ -7461,7 +7461,7 @@ void disable_stdout(void)
  * a successful return (NO_ERROR). 
  *
  * Returns: 
- *    On success kjb_glob returns NO_ERROR.  On failure ERROR is returned and an
+ *    On success ivi_glob returns NO_ERROR.  On failure ERROR is returned and an
  *    error message is set.
  *
  * Index: I/O, files, standard library
@@ -7469,7 +7469,7 @@ void disable_stdout(void)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_glob(Word_list** dir_files_pp, const char* pattern,
+int ivi_glob(Word_list** dir_files_pp, const char* pattern,
              int filter_fn(const char* path))
 {
 #ifdef UNIX
@@ -7529,7 +7529,7 @@ int kjb_glob(Word_list** dir_files_pp, const char* pattern,
                 }
                 else if (filter_res)
                 {
-                    if ((words[ word_count ] = kjb_strdup(pglob.gl_pathv[ i ])) == NULL)
+                    if ((words[ word_count ] = ivi_strdup(pglob.gl_pathv[ i ])) == NULL)
                     {
                         NOTE_ERROR();
                         result = ERROR;
@@ -7560,20 +7560,20 @@ int kjb_glob(Word_list** dir_files_pp, const char* pattern,
 
 /*
  * =============================================================================
- *                                kjb_simple_glob
+ *                                ivi_simple_glob
  *
- * Interface to kjb_glob() for a comon cases
+ * Interface to ivi_glob() for a comon cases
  *
  * This routine is an alternative interface to glob(), where the pattern is
  * being built up of [beg_pattern]*[end_pattern], and the values of what is
  * matched to the "*" is required. Either beg_pattern and/or end_pattern can be
  * NULL.  If star_str_pp is not NULL, then the values matched to the the "*" are
  * placed in (*star_str_pp).  (This routine is normally called with star_str_pp
- * not NULL, otherwise kjb_glob would tyically be used).  Otherwise, this
- * routine is similar to kjb_glob(). 
+ * not NULL, otherwise ivi_glob would tyically be used).  Otherwise, this
+ * routine is similar to ivi_glob(). 
  *
  * Returns: 
- *    On success kjb_simple_glob returns NO_ERROR.  On failure ERROR is returned
+ *    On success ivi_simple_glob returns NO_ERROR.  On failure ERROR is returned
  *    and an error message is set.
  *
  * Index: I/O, files, standard library
@@ -7581,7 +7581,7 @@ int kjb_glob(Word_list** dir_files_pp, const char* pattern,
  * -----------------------------------------------------------------------------
 */
 
-int kjb_simple_glob(Word_list** dir_files_pp, Word_list** star_str_pp,
+int ivi_simple_glob(Word_list** dir_files_pp, Word_list** star_str_pp,
                     const char* beg_pattern, const char* end_pattern,
                     int filter_fn(const char* path))
 {
@@ -7608,7 +7608,7 @@ int kjb_simple_glob(Word_list** dir_files_pp, Word_list** star_str_pp,
         BUFF_CAT(glob_pattern, end_pattern);
     }
 
-    ERE(kjb_glob(dir_files_pp, glob_pattern, filter_fn));
+    ERE(ivi_glob(dir_files_pp, glob_pattern, filter_fn));
 
     if (star_str_pp == NULL) return NO_ERROR;
 
@@ -7623,7 +7623,7 @@ int kjb_simple_glob(Word_list** dir_files_pp, Word_list** star_str_pp,
 
         word_ptr += beg_pattern_len;
 
-        NRE((*star_str_pp)->words[ i ] = kjb_strdup(word_ptr));
+        NRE((*star_str_pp)->words[ i ] = ivi_strdup(word_ptr));
 
         word_len = strlen((*star_str_pp)->words[ i ]);
         (*star_str_pp)->words[ i ][ word_len - end_pattern_len ] = '\0';

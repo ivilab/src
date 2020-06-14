@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <iterator>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 /**
@@ -449,7 +449,7 @@ Predictive<Mean, Covariance, Likelihood> make_predictive
             teins.begin(), teins.end());
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_PREDICTIVE_H_INCLUDED */
 

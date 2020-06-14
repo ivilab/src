@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: flandmark_detector.cpp 17774 2014-10-17 18:20:41Z ksimek $ */
+/* $Id: flandmark_detector.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
  * Copyright (C) 2012 Michal Uricar
  */
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <wrap_flandmark_cpp/flandmark_detector.h>
 #include <wrap_flandmark_cpp/liblbp.h>
 #include <wrap_opencv_cpp/cv_util.h>
@@ -40,7 +40,7 @@
 #include <float.h>
 #include <algorithm> 
 
-namespace kjb {
+namespace ivi {
 namespace flandmark {
 
 void flandmark_write_model(const char* filename, FLANDMARK_Model* model)
@@ -1152,12 +1152,12 @@ std::vector<double> flandmark_detect
     int bbox[] = {x - w/2, y - h/2, x + w/2, y + w/2}; 
    
     size_t num_marks = 2 * model->data.options.M;
-    using namespace kjb_c;
-    double *marks = (double*)kjb_malloc(num_marks * sizeof(double));
+    using namespace ivi_c;
+    double *marks = (double*)ivi_malloc(num_marks * sizeof(double));
     int res = flandmark_detect(cv_img, bbox, model, marks, bw_margin);
     if(res != 0)
     {
-        KJB_THROW_2(Runtime_error, "Error in executing flandmark_detect()");
+        IVI_THROW_2(Runtime_error, "Error in executing flandmark_detect()");
     }
 
     std::vector<double> landmarks(num_marks, 0.0);
@@ -1167,9 +1167,9 @@ std::vector<double> flandmark_detect
         landmarks[i + 1] = marks[i + 1];
     }
 
-    kjb_free(marks);
+    ivi_free(marks);
     return landmarks;
 }
-}} //namespace kjb::flandmark
+}} //namespace ivi::flandmark
 
-#endif //KJB_HAVE_OPENCV
+#endif //IVI_HAVE_OPENCV

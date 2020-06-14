@@ -1,4 +1,4 @@
-/* $Id: edge_base.h 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: edge_base.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -51,8 +51,8 @@
  * =========================================================================== */
 
 
-#ifndef KJB_EDGE_H 
-#define KJB_EDGE_H 
+#ifndef IVI_EDGE_H 
+#define IVI_EDGE_H 
 
 #include <stdlib.h>
 #include <inttypes.h>
@@ -63,7 +63,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -124,7 +124,7 @@ Edge_set;
 int detect_image_edge_set
 (
     Edge_set**   edges_out,
-    const KJB_image* img,
+    const IVI_image* img,
     float          sigma, 
     float          begin_thresh, 
     float          end_thresh,
@@ -185,8 +185,8 @@ void sample_edge_set
 /** @brief Colors single precision set of edges in an image. */
 int color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges, 
     const Pixel*    pxl
 );
@@ -199,8 +199,8 @@ int color_edge_set
  */
 int randomly_color_edge_set
 (
-    KJB_image**         img_out,
-    const KJB_image*    img_in,
+    IVI_image**         img_out,
+    const IVI_image*    img_in,
     const Edge_set* edges
 );
 
@@ -209,8 +209,8 @@ int randomly_color_edge_set
 /** @brief Colors edge points in an image. */
 int color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts, 
     uint32_t            num_pts,
     const Pixel*      pxl
@@ -219,8 +219,8 @@ int color_edge_points
 /** @brief Colors an edge point in an image. */
 int color_edge_point
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pt,
     const Pixel*      pxl
 );
@@ -231,8 +231,8 @@ int color_edge_point
  */
 int randomly_color_edge_points
 (
-    KJB_image**           img_out,
-    const KJB_image*      img_in,
+    IVI_image**           img_out,
+    const IVI_image*      img_in,
     const Edge_point* pts, 
     uint32_t            num_pts
 );

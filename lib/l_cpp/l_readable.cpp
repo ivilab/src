@@ -1,4 +1,4 @@
-/* $Id: l_readable.cpp 17330 2014-08-19 20:49:51Z predoehl $ */
+/* $Id: l_readable.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,23 +30,23 @@
 #include <string>
 
 
-namespace kjb
+namespace ivi
 {
 
 /** 
  * @param  fname  Input file to read from.
  *
- * @throw  kjb::IO_error   Could not read from @em fname.
- * @throw  kjb::Illegal_argument  Invalid arguments in the file to read from.
+ * @throw  ivi::IO_error   Could not read from @em fname.
+ * @throw  ivi::Illegal_argument  Invalid arguments in the file to read from.
  */
 void Readable::read(const char* fname)
 {
-    KJB(NTX(fname));
+    IVI(NTX(fname));
 
     std::ifstream in(fname);
     if (in.fail())
     {
-        KJB_THROW_2(IO_error, std::string(fname) + ": Could not open file");
+        IVI_THROW_2(IO_error, std::string(fname) + ": Could not open file");
     }
 
     try
@@ -55,7 +55,7 @@ void Readable::read(const char* fname)
     }
     catch (const IO_error& e)
     {
-        KJB_THROW_2(IO_error, std::string(fname) + ": " + e.get_msg());
+        IVI_THROW_2(IO_error, std::string(fname) + ": " + e.get_msg());
     }
 }
 
@@ -76,9 +76,9 @@ void Readable::read(const char* fname)
  * @param  separator   Character separating the field name and value. The
  *                     default is ':'.  The zero character is not allowed.
  *
- * @throw  kjb::Illegal_argument  Either the field is not the one named or
+ * @throw  ivi::Illegal_argument  Either the field is not the one named or
  *                                  it is not formatted properly.
- * @throw  kjb::IO_error   Could not read a line from the input stream.
+ * @throw  ivi::IO_error   Could not read a line from the input stream.
  *
  * @return A constant pointer into @em field_buf where the field value is or 0 
  * if there is no value.
@@ -95,15 +95,15 @@ const char* Readable::read_field_value
     char          separator
 ) 
 {
-    using kjb_c::kjb_strncmp;
+    using ivi_c::ivi_strncmp;
 
-    KJB(NTX(field_name));
-    KJB(NTX(field_buf));
+    IVI(NTX(field_name));
+    IVI(NTX(field_buf));
 
     in.getline(field_buf, buf_len);
     if (in.fail() || 0 == buf_len || 0 == separator) 
     {
-        KJB_THROW_2(IO_error, "Could not read field line");
+        IVI_THROW_2(IO_error, "Could not read field line");
     }
 
     const char* field_ptr = field_buf;
@@ -115,10 +115,10 @@ const char* Readable::read_field_value
     }
 
     // Test whether field_name is a prefix of the trimmed buffer.
-    const int LFN = kjb_c::signed_strlen(field_name);
+    const int LFN = ivi_c::signed_strlen(field_name);
     if (! STRNCMP_EQ(field_ptr, field_name, LFN))
     {
-        KJB_THROW_2(Illegal_argument, std::string("Field name '") + field_name
+        IVI_THROW_2(Illegal_argument, std::string("Field name '") + field_name
                                        + "' not found in '" + field_buf + "'");
     }
     field_ptr += LFN;
@@ -128,7 +128,7 @@ const char* Readable::read_field_value
     {
         if (*field_ptr == 0)
         {
-            KJB_THROW_2(Illegal_argument,
+            IVI_THROW_2(Illegal_argument,
                 std::string("Field '") + field_buf + "' improperly formatted");
         }
 #if 1
@@ -139,7 +139,7 @@ const char* Readable::read_field_value
          */
         if (!isspace(*field_ptr))
         {
-            KJB_THROW_2(Illegal_argument, std::string("Field name '")
+            IVI_THROW_2(Illegal_argument, std::string("Field name '")
               + field_name + "' has a suffix mismatch in '" + field_buf + "'");
         }
 #else
@@ -184,9 +184,9 @@ const char* Readable::read_field_value
  * @param  separator   Character separating the field name and value. The
  *                     default is ':'.
  *
- * @throw  kjb::Illegal_argument    Either the field is not the one named or
+ * @throw  ivi::Illegal_argument    Either the field is not the one named or
  *                                  it is not formatted properly.
- * @throw  kjb::IO_error            Could not read a line from the input stream.
+ * @throw  ivi::IO_error            Could not read a line from the input stream.
  *
  * @return A constant pointer to the field value or 0 if there is no value.
  *
@@ -208,4 +208,4 @@ const char* Readable::read_field_value
     return read_field_value(in, field_name, field_buf, 1024, separator);
 }
 
-} // namespace kjb
+} // namespace ivi

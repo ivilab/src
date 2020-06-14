@@ -81,7 +81,7 @@
 #define CAMERA_FRUSTUM_TOP_RADIUS 2
 #define CAMERA_FRUSTUM_HEIGHT 3
 
-namespace kjb
+namespace ivi
 {
 
 class Perspective_camera;
@@ -104,36 +104,36 @@ public:
     Parametric_frustum( unsigned int inv = 6, double ix = 0.0, double iy = 0.0,
     double iz = 0.0, double iw = 1.0, double il = 1.0, double iratio_top_bottom
     = 1.0, double ih = 1.0,
-                         double ipitch = 0.0, double iyaw = 0.0, double iroll = 0.0) throw(kjb::Illegal_argument);
+                         double ipitch = 0.0, double iyaw = 0.0, double iroll = 0.0) throw(ivi::Illegal_argument);
 
     /** @brief Constructs a parametric_frustum from an input file. */
-    Parametric_frustum(const char* fname) throw (kjb::Illegal_argument,
-                kjb::IO_error);
+    Parametric_frustum(const char* fname) throw (ivi::Illegal_argument,
+                ivi::IO_error);
 
     /** @brief Constructs a parametric_frustum from an input stream. */
-    Parametric_frustum(std::istream& in) throw (kjb::Illegal_argument,
-            kjb::IO_error);
+    Parametric_frustum(std::istream& in) throw (ivi::Illegal_argument,
+            ivi::IO_error);
 
     Parametric_frustum(const Parametric_frustum & src);
     Parametric_frustum & operator = (const Parametric_frustum & src);
 
     /** @brief Reads this Parametric_frustum from an input stream. */
-    virtual void read(std::istream& in) throw (kjb::Illegal_argument,
-            kjb::IO_error);
+    virtual void read(std::istream& in) throw (ivi::Illegal_argument,
+            ivi::IO_error);
 
     /** @brief Reads this Parametric_frustum from a file */
-    virtual void read(const char * fname) throw (kjb::IO_error,  kjb::Illegal_argument)
+    virtual void read(const char * fname) throw (ivi::IO_error,  ivi::Illegal_argument)
     {
         Readable::read(fname);
     }
 
     /** @brief Writes this Parametric_frustum to a file. */
     virtual void write(std::ostream& out) const
-       throw (kjb::IO_error);
+       throw (ivi::IO_error);
 
     /** @brief Writes this Parametric_frustum to an output stream. */
     virtual void write(const char * fname) const
-       throw (kjb::IO_error)
+       throw (ivi::IO_error)
     {
         Writeable::write(fname);
     }
@@ -152,7 +152,7 @@ public:
      * the current values of the parameters. This is not done
      * any time a parameter changes for efficiency reasons
      */
-    virtual void update_rendering_representation() const throw(kjb::KJB_error);
+    virtual void update_rendering_representation() const throw(ivi::IVI_error);
 
     virtual Parametric_frustum * clone() const;
     virtual ~Parametric_frustum() { }
@@ -183,13 +183,13 @@ public:
     inline double get_centre_z() const {return centre(2); }
 
     /** @brief Sets the width of the base of this Parametric_frustum */
-    void set_width(double iwidth) throw(kjb::Illegal_argument);
+    void set_width(double iwidth) throw(ivi::Illegal_argument);
 	/** @brief Sets the length of the base of this Parametric_frustum */
-    void set_length(double ilength)throw(kjb::Illegal_argument);
+    void set_length(double ilength)throw(ivi::Illegal_argument);
 	/** @brief Sets the ratio between the top and the base of this Parametric_frustum */
-    void set_ratio_top_bottom(double iratio_top_bottom)throw(kjb::Illegal_argument);
+    void set_ratio_top_bottom(double iratio_top_bottom)throw(ivi::Illegal_argument);
     /** @brief Sets the height of this Parametric_frustum */
-    void set_height(double iheight) throw(kjb::Illegal_argument);
+    void set_height(double iheight) throw(ivi::Illegal_argument);
 
     /** @brief Sets the pitch of this Parametric_frustum */
     void set_pitch(double ip);
@@ -211,19 +211,19 @@ public:
     virtual void rotate_around_frustum_axes(double thetax, double thetay, double thetaz);
 
     /** @brief Sets the centre of this parametric_frustum */
-    void set_centre(const kjb::Vector & icentre) throw(kjb::Illegal_argument);
+    void set_centre(const ivi::Vector & icentre) throw(ivi::Illegal_argument);
     /** @brief Sets the x coordinate of the centre of this parametric_frustum */
-    void set_centre_x(double ix) throw(kjb::Illegal_argument);
+    void set_centre_x(double ix) throw(ivi::Illegal_argument);
     /** @brief Sets the y coordinate of the centre of this parametric_frustum */
-    void set_centre_y(double iy) throw(kjb::Illegal_argument);
+    void set_centre_y(double iy) throw(ivi::Illegal_argument);
     /** @brief Sets the z coordinate of the centre of this parametric_frustum */
-    void set_centre_z(double iz) throw(kjb::Illegal_argument);
+    void set_centre_z(double iz) throw(ivi::Illegal_argument);
 
     /** @brief sets the rotation angles from an input quaternion */
-    virtual void set_angles_from_quaternion(const kjb::Quaternion & q);
+    virtual void set_angles_from_quaternion(const ivi::Quaternion & q);
 
     /** @brief returns the rotations of this parapiped as a quaternion */
-    inline const kjb::Quaternion & get_rotations_as_a_quaternion() const
+    inline const ivi::Quaternion & get_rotations_as_a_quaternion() const
     {
         update_rendering_representation();
         return rendering_interface.get_orientation();
@@ -237,9 +237,9 @@ public:
      * and roll as Euler angle 3. This function (except for
      * standard mode XYZR) is not adequately tested
      */
-    void set_rotation_mode(kjb::Quaternion::Euler_mode imode)
+    void set_rotation_mode(ivi::Quaternion::Euler_mode imode)
     {
-        KJB(UNTESTED_CODE());
+        IVI(UNTESTED_CODE());
         rendering_interface.set_rotation_mode(imode);
     }
 
@@ -250,16 +250,16 @@ public:
      *  axes are defined by the parapiped axes */
     void get_point_in_parapiped_coordinates
     (
-        const kjb::Vector & point_in_world_coordinates,
-        kjb::Vector & point_in_parapiped_coordinates
+        const ivi::Vector & point_in_world_coordinates,
+        ivi::Vector & point_in_parapiped_coordinates
     ) const;
 
     /** @brief Transforms a point in parapiped coordinates to
      *  world coordinates */
     void get_point_in_world_coordinates
     (
-        const kjb::Vector & point_in_parapiped_coordinates,
-        kjb::Vector & point_in_world_coordinates
+        const ivi::Vector & point_in_parapiped_coordinates,
+        ivi::Vector & point_in_world_coordinates
     ) const;
 
 /*    void draw_orientation_map() const;
@@ -303,17 +303,17 @@ private:
     double ratio_top_bottom;
     double height;
 
-    kjb::Vector centre;
+    ivi::Vector centre;
 
     /* The rotation angle around the object's x axis (pitch), the
      * object's y axis (yaw) and the object's z axis (roll). Stored
      * in this order */
-    kjb::Vector rotation_angles;
+    ivi::Vector rotation_angles;
 
     /**
      * The interface to the representation used for rendering this parametric_frustum
      */
-    mutable kjb::Frustum rendering_interface;
+    mutable ivi::Frustum rendering_interface;
 
 };
 

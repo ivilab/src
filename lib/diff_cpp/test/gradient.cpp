@@ -32,7 +32,7 @@
 #include <boost/ref.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 using namespace boost;
 
 const bool VERBOSE = false;
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     const double dx = 0.0001;
     const double eps = 1e-5;
 
-    kjb_c::kjb_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("heap-checking", "off");
 
     // declarations
     Vector x;

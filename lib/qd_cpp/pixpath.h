@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: pixpath.h 20532 2016-03-12 00:54:48Z predoehl $
+ * $Id: pixpath.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef PIXPATH_H_UOFARIZONAVISION
@@ -25,7 +25,7 @@
 #include <algorithm>
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -223,10 +223,10 @@ public:
 
 #if 0
     /// @brief Vacuous class thrown if an error occurs
-    struct Some_error : public kjb::Exception
+    struct Some_error : public ivi::Exception
     {
         Some_error( const std::string& m, const char* f, int l )
-        :   kjb::Exception( m, f, l )
+        :   ivi::Exception( m, f, l )
         {}
     };
 #endif
@@ -311,7 +311,7 @@ public:
          */
         if ( ppmap[ oldp ] <= 0 )
         {
-            KJB_THROW_2(Cant_happen, "Internal corruption in PixPath::ppmap");
+            IVI_THROW_2(Cant_happen, "Internal corruption in PixPath::ppmap");
         }
         ppmap[ oldp ] -= 1;
         ppmap[ newp ] += 1;
@@ -416,7 +416,7 @@ public:
      *
      * @pre First point of suffix must be equal to the last point of this path.
      *
-     * @return kjb_c::NO_ERROR, or kjb_c::ERROR if the precondition is not met.
+     * @return ivi_c::NO_ERROR, or ivi_c::ERROR if the precondition is not met.
      *
      * @warning This is not a const method; it modifies the path!
      *
@@ -493,7 +493,7 @@ public:
      * @brief Return a vector of arclengths along the polygonal path.
      *
      * @pre Input pointer must not equal null.
-     * @return kjb_c::NO_ERROR, or ERROR if the input equals null
+     * @return ivi_c::NO_ERROR, or ERROR if the input equals null
      *
      * The pointer input (which must be non-null) points to a vector of output
      * such that the i-th point in the PixPath sequence has an arclength from
@@ -506,7 +506,7 @@ public:
      * @brief compute and return polygonal path length of this path
      *
      * @return the length of the polygonal path defined by the points.
-     * @throws kjb::KJB_error if the arclength computation fails.
+     * @throws ivi::IVI_error if the arclength computation fails.
      *
      * This method takes linear time in the number of points of the path.
      * So if you need to access it a lot, consider using PixPathAc, which
@@ -631,7 +631,7 @@ public:
 
     PixPoint nearest( const PixPoint&, const_iterator* q = 00 ) const;
 
-    PixPoint nearest( const kjb::Vector2&, const_iterator* q = 00 ) const;
+    PixPoint nearest( const ivi::Vector2&, const_iterator* q = 00 ) const;
 
 
     /**
@@ -983,14 +983,14 @@ public:
      */
     int untangle_segments()
     {
-        KJB(ASSERT( ! self_intersect() ));
+        IVI(ASSERT( ! self_intersect() ));
         return untangle_recursive( 0 );
     }
 #endif
 
 
      /// @brief return the "mean" of the points (nonempty, none may be unused)
-     kjb::Vector2 centroid() const;
+     ivi::Vector2 centroid() const;
 
      /// @brief return index of a member point nearest centroid() (qv)
      unsigned member_near_centroid() const;
@@ -1034,8 +1034,8 @@ namespace std
      */
     template<>
     inline void swap(
-        kjb::qd::PixPath& p1,
-        kjb::qd::PixPath& p2
+        ivi::qd::PixPath& p1,
+        ivi::qd::PixPath& p2
     )
     {
         p1.swap( p2 );

@@ -31,7 +31,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     if(argc < 3)
     {
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     std::vector<Vanishing_point> vpts;
 
     double focal_length;
-    if(!kjb::relaxed_vanishing_point_estimation(vpts, focal_length, or_map, 0.95))
+    if(!ivi::relaxed_vanishing_point_estimation(vpts, focal_length, or_map, 0.95))
     {
         ifstream good_values;
         std::vector<Vanishing_point> good_vpts(3);
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    kjb::Edge_set * edges;
+    ivi::Edge_set * edges;
     Edge_segment_set * edge_segments;
     Canny_edge_detector edge_detector(1.2, 2.55, 2.04, 20, true);
     edges = edge_detector.detect_edges(or_map);

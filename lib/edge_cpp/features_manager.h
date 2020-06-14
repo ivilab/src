@@ -29,7 +29,7 @@
 #define FM_DEFAULT_VP_SUCCESS_PROBABILITY 0.999
 #define FM_DEFAULT_VP_ASSIGNMENT_THRESHOLD 0.16
 
-namespace kjb {
+namespace ivi {
 /**
  * @class Features manager
  *
@@ -60,7 +60,7 @@ class Features_manager : public Readable, public Writeable
          *  All the requested features will be detected */
         Features_manager
         (
-            const kjb::Image & img,
+            const ivi::Image & img,
             bool idetect_edges = true,
             bool ifit_edge_segments = true,
             bool icreate_manhattan_world = true
@@ -81,7 +81,7 @@ class Features_manager : public Readable, public Writeable
          * is NULL, it will be assumed that that feature is not available */
         Features_manager
         (
-            kjb::Edge_set * edges,
+            ivi::Edge_set * edges,
             Edge_segment_set * edge_segments,
             Manhattan_world * manhattan_world
         );
@@ -90,7 +90,7 @@ class Features_manager : public Readable, public Writeable
          *  All the requested features will be detected */
         Features_manager
         (
-            const kjb::Image & img,
+            const ivi::Image & img,
             float iblurring_sigma,
             float ibegin_threshold,
             float iend_threshold,
@@ -164,11 +164,11 @@ class Features_manager : public Readable, public Writeable
         }
 
         /** @brief Returns a pointer to the edge set if available */
-        inline const kjb::Edge_set & get_edges()
+        inline const ivi::Edge_set & get_edges()
         {
             if(!_edges_available)
             {
-                KJB_THROW_2(KJB_error,"Edges are not available!");
+                IVI_THROW_2(IVI_error,"Edges are not available!");
             }
             return *edges;
         }
@@ -178,7 +178,7 @@ class Features_manager : public Readable, public Writeable
         {
             if(!_edge_segments_available)
             {
-                KJB_THROW_2(KJB_error,"Edge segments are not available!");
+                IVI_THROW_2(IVI_error,"Edge segments are not available!");
             }
             return *edge_segments;
         }
@@ -188,7 +188,7 @@ class Features_manager : public Readable, public Writeable
         {
             if(!_manhattan_world_available)
             {
-                KJB_THROW_2(KJB_error,"Manhattan world is not available!");
+                IVI_THROW_2(IVI_error,"Manhattan world is not available!");
             }
             return *manhattan_world;
         }
@@ -248,7 +248,7 @@ class Features_manager : public Readable, public Writeable
             bool idetect_edges,
             bool ifit_edge_segments,
             bool icreate_manhattan_world,
-            const kjb::Image & img
+            const ivi::Image & img
         );
 
         /** @brief Detects the requested features from an image */
@@ -261,14 +261,14 @@ class Features_manager : public Readable, public Writeable
         );
 
         /** @brief detect edges on an image using the Canny algorithm */
-        void detect_edges(const kjb::Image & img);
+        void detect_edges(const ivi::Image & img);
 
         /** @brief fit line segments to the image edges */
         void fit_edge_segments_to_edges();
 
         /** @brief Detects Manhattan world features
          *  (vanishing points for three orthogonal directions) */
-        bool create_manhattan_world(const kjb::Image & img);
+        bool create_manhattan_world(const ivi::Image & img);
 
         /** @brief Detects Manhattan world features
          *  (vanishing points for three orthogonal directions) */
@@ -277,7 +277,7 @@ class Features_manager : public Readable, public Writeable
         /** Features */
 
         /** @brief image edges */
-        kjb::Edge_set         * edges;
+        ivi::Edge_set         * edges;
 
         /** @brief line segments fit to image edges */
         Edge_segment_set * edge_segments;

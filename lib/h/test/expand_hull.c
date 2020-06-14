@@ -1,5 +1,5 @@
 
-/* $Id: expand_hull.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: expand_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -21,7 +21,7 @@ int main(void)
     }
     */
 
-    kjb_seed_rand(0, 0);
+    ivi_seed_rand(0, 0);
 
     for (k=0; k<2; k++)
     {
@@ -31,7 +31,7 @@ int main(void)
         {
             for (j=0; j<mp->num_cols; j++)
             {
-                mp->elements[ i ][ j ] = (int)(100.0 * kjb_rand());
+                mp->elements[ i ][ j ] = (int)(100.0 * ivi_rand());
             }
         }
 

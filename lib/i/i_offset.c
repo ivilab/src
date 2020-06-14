@@ -1,5 +1,5 @@
 
-/* $Id: i_offset.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_offset.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -72,10 +72,10 @@ extern "C" {
 
 static Vector*    fs_offset_vector_vp                               = NULL;
 static int        fs_disable_offset_vector_removal                  = TRUE;
-static KJB_image* fs_spatial_chrom_ip                               = NULL;
+static IVI_image* fs_spatial_chrom_ip                               = NULL;
 static int        fs_disable_spatial_chrom_removal                  = TRUE;
 static char       fs_spatial_chrom_path[ MAX_FILE_NAME_SIZE ]       = { '\0' };
-static KJB_image* fs_offset_image_ip                                = NULL;
+static IVI_image* fs_offset_image_ip                                = NULL;
 static Vector*    fs_offset_image_ave_vp                            = NULL;
 static int        fs_disable_offset_image_removal                   = TRUE;
 static char       fs_offset_image_path[ MAX_FILE_NAME_SIZE ]        = { '\0' };
@@ -107,7 +107,7 @@ static int set_linearization_file
 );
 
 static int initialize_linearize(void);
-static int ow_linearize_image(KJB_image* ip);
+static int ow_linearize_image(IVI_image* ip);
 static int ow_linearize_data(Matrix* mp);
 
 #ifdef TRACK_MEMORY_ALLOCATION
@@ -319,7 +319,7 @@ int set_camera_vector_offset(const char* file_name)
         return NO_ERROR;
     }
 
-    NRE(offset_fp = kjb_fopen(file_name, "r"));
+    NRE(offset_fp = ivi_fopen(file_name, "r"));
 
     result = set_offset_vector(offset_fp);
 
@@ -328,7 +328,7 @@ int set_camera_vector_offset(const char* file_name)
         fs_disable_offset_vector_removal = FALSE;
     }
 
-    (void)kjb_fclose(offset_fp);  /* Ignore return--only reading. */
+    (void)ivi_fclose(offset_fp);  /* Ignore return--only reading. */
 
     return result;
 }
@@ -401,11 +401,11 @@ int set_camera_spatial_chrom_file(const char* file_name)
         return NO_ERROR;
     }
 
-    NRE(offset_fp = kjb_fopen(file_name, "r"));
+    NRE(offset_fp = ivi_fopen(file_name, "r"));
 
     result = set_spatial_chrom(offset_fp);
 
-    (void)kjb_fclose(offset_fp);  /* Ignore return--only reading. */
+    (void)ivi_fclose(offset_fp);  /* Ignore return--only reading. */
 
     return result;
 }
@@ -478,11 +478,11 @@ int set_camera_image_offset(const char* file_name)
         return NO_ERROR;
     }
 
-    NRE(offset_fp = kjb_fopen(file_name, "r"));
+    NRE(offset_fp = ivi_fopen(file_name, "r"));
 
     result = set_offset_image(offset_fp);
 
-    (void)kjb_fclose(offset_fp);  /* Ignore return--only reading. */
+    (void)ivi_fclose(offset_fp);  /* Ignore return--only reading. */
 
     return result;
 }
@@ -497,7 +497,7 @@ int set_camera_image_offset(const char* file_name)
  * -----------------------------------------------------------------------------
 */
 
-int remove_camera_offset_from_image(KJB_image* ip)
+int remove_camera_offset_from_image(IVI_image* ip)
 {
     ERE(initialize_offset_image());
 
@@ -647,7 +647,7 @@ static int initialize_spatial_chrom(void)
             add_error("Spatical chromaticity correction file not set.");
             result =  ERROR;
         }
-        (void)kjb_fclose(spatial_chrom_fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(spatial_chrom_fp);  /* Ignore return--only reading. */
     }
 
     return result;
@@ -683,7 +683,7 @@ static int initialize_offset_image(void)
             add_error("Offset image file not set.");
             result =  ERROR;
         }
-        (void)kjb_fclose(offset_image_fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(offset_image_fp);  /* Ignore return--only reading. */
     }
 
     return result;
@@ -718,7 +718,7 @@ static int initialize_offset_vector(void)
 
     result = set_offset_vector(offset_vector_fp);
 
-    (void)kjb_fclose(offset_vector_fp);  /* Ignore return--only reading. */
+    (void)ivi_fclose(offset_vector_fp);  /* Ignore return--only reading. */
 
     return result;
 }
@@ -765,7 +765,7 @@ static int initialize_linearize(void)
 static int set_spatial_chrom(FILE* fp)
 {
     int        result;
-    KJB_image* temp_ip = NULL;
+    IVI_image* temp_ip = NULL;
 
 
 #ifdef TRACK_MEMORY_ALLOCATION
@@ -773,13 +773,13 @@ static int set_spatial_chrom(FILE* fp)
 #endif
 
     /*
-    // Can't be kjb_read_image(), since we are called from kjb_read_image()!
+    // Can't be ivi_read_image(), since we are called from ivi_read_image()!
     */
     result = read_image_from_kiff(&temp_ip, fp, (int*)NULL);
 
     if (result != ERROR)
     {
-        result = kjb_copy_image(&fs_spatial_chrom_ip, temp_ip);
+        result = ivi_copy_image(&fs_spatial_chrom_ip, temp_ip);
     }
 
     if (result == NO_ERROR)
@@ -788,7 +788,7 @@ static int set_spatial_chrom(FILE* fp)
         fs_disable_spatial_chrom_removal = FALSE;
     }
 
-    kjb_free_image(temp_ip);
+    ivi_free_image(temp_ip);
 
     return result;
 }
@@ -798,7 +798,7 @@ static int set_spatial_chrom(FILE* fp)
 static int set_offset_image(FILE* fp)
 {
     int        result;
-    KJB_image* temp_ip = NULL;
+    IVI_image* temp_ip = NULL;
 
 
 #ifdef TRACK_MEMORY_ALLOCATION
@@ -806,13 +806,13 @@ static int set_offset_image(FILE* fp)
 #endif
 
     /*
-    // Can't be kjb_read_image(), since we are called from kjb_read_image()!
+    // Can't be ivi_read_image(), since we are called from ivi_read_image()!
     */
     result = read_image_from_kiff(&temp_ip, fp, (int*)NULL);
 
     if (result != ERROR)
     {
-        result = kjb_copy_image(&fs_offset_image_ip, temp_ip);
+        result = ivi_copy_image(&fs_offset_image_ip, temp_ip);
     }
 
     if (result != ERROR)
@@ -827,7 +827,7 @@ static int set_offset_image(FILE* fp)
         fs_disable_offset_image_removal = FALSE;
     }
 
-    kjb_free_image(temp_ip);
+    ivi_free_image(temp_ip);
 
     return result;
 }
@@ -948,7 +948,7 @@ static int set_linearization_file
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int ow_linearize_image(KJB_image* ip)
+static int ow_linearize_image(IVI_image* ip)
 {
     int    i, j, num_rows, num_cols;
     Pixel* pos;
@@ -1135,8 +1135,8 @@ static void free_allocated_static_data(void)
 {
     free_vector(fs_offset_vector_vp);
 
-    kjb_free_image(fs_spatial_chrom_ip);
-    kjb_free_image(fs_offset_image_ip);
+    ivi_free_image(fs_spatial_chrom_ip);
+    ivi_free_image(fs_offset_image_ip);
     free_vector(fs_offset_image_ave_vp);
 
     free_lut(fs_red_linearization_lut_ptr);

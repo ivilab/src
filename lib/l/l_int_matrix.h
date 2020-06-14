@@ -1,5 +1,5 @@
 
-/* $Id: l_int_matrix.h 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_int_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,7 +38,7 @@ namespace kjb_c {
  *
  * Int_matrix type
  *
- * This type is the int_matrix type for the KJB library and is used by many
+ * This type is the int_matrix type for the IVI library and is used by many
  * routines. It stores a int_matrix with num_rows rows and num_cols cols. If "mp"
  * is a pointer to the type Int_matrix, then mp->elements[ row ][ col ] accesses
  * the element (row, col), and mp->elements[ row ] accesses the row'th row.
@@ -89,7 +89,7 @@ Int_matrix;
  *
  * Type for an array of integer matrices
  *
- * This type is used in the KJB library for arrays of integer matrices.
+ * This type is used in the IVI library for arrays of integer matrices.
  *
  * Index: integer matrices, integer matrix vectors
  *
@@ -112,7 +112,7 @@ Int_matrix_vector;
  *
  * Type for an 2D array of integer vectors
  *
- * This type is used in the KJB library for 2D arrays of integer vectors.
+ * This type is used in the IVI library for 2D arrays of integer vectors.
  *
  * Index: integer vectors, integer vector matrices
  *
@@ -479,7 +479,7 @@ int add_int_matrices
  *
  * Type for an array of arrays of integer matrices
  *
- * This type is used in the KJB library for arrays of arrays of integer matrices.
+ * This type is used in the IVI library for arrays of arrays of integer matrices.
  *
  * Index: integer matrices
  *

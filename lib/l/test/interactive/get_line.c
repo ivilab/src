@@ -1,5 +1,5 @@
 
-/* $Id: get_line.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: get_line.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h"
@@ -30,8 +30,8 @@ int main(int argc, char **argv)
     int          would_block_count = 0;
 
 
-    kjb_l_set("debug_level", "1"); 
-    kjb_l_set("page", "off"); 
+    ivi_l_set("debug_level", "1"); 
+    ivi_l_set("page", "off"); 
 
     num_chars = 2000;
 
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
     p_stderr("\n -----------   TEST TWO  ------------------  \n"); 
 
 
-    NPETE(fp = kjb_fopen("/dev/tty", "r"));
+    NPETE(fp = ivi_fopen("/dev/tty", "r"));
     p_stderr("Using fget_line(buff, %d, fp) from %F\n", num_chars, fp); 
 
     while ((res = fget_line(fp, buff, num_chars)) != EOF) 
@@ -159,11 +159,11 @@ int main(int argc, char **argv)
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
     would_block_count = 0;
 
-    kjb_fclose(fp);
+    ivi_fclose(fp);
 
 #ifdef SKIP 
     p_stderr("Try non-blocking now.\n");
-    NPETE(fp = kjb_fopen("/dev/tty", "r"));
+    NPETE(fp = ivi_fopen("/dev/tty", "r"));
     set_no_blocking(fileno(fp));
 
     while ((res = fget_line(fp, buff, num_chars)) != EOF) 
@@ -184,13 +184,13 @@ int main(int argc, char **argv)
     }
 
     set_blocking(fileno(fp)); 
-    kjb_fclose(fp);
+    ivi_fclose(fp);
 #endif
 
 
     p_stderr("Try non-restarting atn now (and back to blocking) \n");
 
-    NPETE(fp = kjb_fopen("/dev/tty", "r"));
+    NPETE(fp = ivi_fopen("/dev/tty", "r"));
     dont_restart_on_atn();
 
     while ((res = fget_line(fp, buff, num_chars)) != EOF) 
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
 
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
     would_block_count = 0;
-    kjb_fclose(fp); 
+    ivi_fclose(fp); 
     restart_on_atn();
 
     /*
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
         goto test_four;
     }
 
-    NPETE(fp = kjb_fopen(argv[ 1 ], "r"));
+    NPETE(fp = ivi_fopen(argv[ 1 ], "r"));
     p_stderr("Using fget_line(buff, %d, fp) on %F\n", num_chars, fp); 
 
     while ((res = fget_line(fp, buff, num_chars)) != EOF) 
@@ -293,7 +293,7 @@ int main(int argc, char **argv)
 
     p_stderr("Try non-restarting atn now (and back to blocking) \n");
 
-    NPETE(fp = kjb_fopen(argv[ 1 ], "r"));
+    NPETE(fp = ivi_fopen(argv[ 1 ], "r"));
     dont_restart_on_atn();
 
     while ((res = fget_line(fp, buff, num_chars)) != EOF) 
@@ -309,7 +309,7 @@ int main(int argc, char **argv)
 
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
     would_block_count = 0;
-    kjb_fclose(fp); 
+    ivi_fclose(fp); 
     restart_on_atn();
 
 
@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 test_four:
     p_stderr("\n -----------   TEST FOUR ------------------  \n"); 
 
-    NPETE(fp = kjb_fopen("/dev/tty", "r"));
+    NPETE(fp = ivi_fopen("/dev/tty", "r"));
     p_stderr("Using dget_line(buff, %d, fp) on %D\n", num_chars, fileno(fp)); 
 
     while ((res = dget_line(fileno(fp), buff, num_chars)) != EOF) 
@@ -378,7 +378,7 @@ test_four:
 
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
     would_block_count = 0;
-    kjb_fclose(fp); 
+    ivi_fclose(fp); 
     restart_on_atn();
 
     /*
@@ -395,7 +395,7 @@ test_four:
         goto test_six;
     }
 
-    NPETE(fp = kjb_fopen(argv[ 1 ], "r"));
+    NPETE(fp = ivi_fopen(argv[ 1 ], "r"));
     p_stderr("Using dget_line(buff, %d, fp) on %D\n", num_chars, fileno(fp)); 
 
     while ((res = dget_line(fileno(fp), buff, num_chars)) != EOF) 
@@ -437,7 +437,7 @@ test_four:
 
     p_stderr("Try non-restarting atn now (still blocking) \n");
 
-    NPETE(fp = kjb_fopen(argv[ 1 ], "r"));
+    NPETE(fp = ivi_fopen(argv[ 1 ], "r"));
     dont_restart_on_atn();
 
     while ((res = dget_line(fileno(fp), buff, num_chars)) != EOF) 
@@ -453,7 +453,7 @@ test_four:
 
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
     would_block_count = 0;
-    kjb_fclose(fp); 
+    ivi_fclose(fp); 
     restart_on_atn();
 
     /*
@@ -464,11 +464,11 @@ test_four:
 
 test_six: 
 
-#ifdef TEST    /* kjb_popen is not used for prime time yet. */
+#ifdef TEST    /* ivi_popen is not used for prime time yet. */
 
     p_stderr("\n -----------   TEST SIX  ------------------  \n"); 
 
-    NPETE(fp = kjb_popen("slow_write", "r"));
+    NPETE(fp = ivi_popen("slow_write", "r"));
 
     p_stderr("Using dget_line(buff, %d, fp) on %D\n", num_chars, fileno(fp)); 
 
@@ -482,11 +482,11 @@ test_six:
     }
 
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
-    kjb_pclose(fp);
+    ivi_pclose(fp);
 
     p_stderr("Try different buffer sizes. \n"); 
     would_block_count = 0;
-    NPETE(fp = kjb_popen("slow_write", "r"));
+    NPETE(fp = ivi_popen("slow_write", "r"));
 
     i = 0;
     p_stderr("Buffer size is %d\n", i); 
@@ -507,8 +507,8 @@ test_six:
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
     would_block_count = 0;
 
-    kjb_pclose(fp);
-    NPETE(fp = kjb_popen("slow_write", "r"));
+    ivi_pclose(fp);
+    NPETE(fp = ivi_popen("slow_write", "r"));
 
 
     p_stderr("Try non-blocking now.\n");
@@ -544,7 +544,7 @@ test_six:
 
     set_blocking(fileno(fp)); 
 
-    kjb_pclose(fp);
+    ivi_pclose(fp);
 
 
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
@@ -552,7 +552,7 @@ test_six:
 
     would_block_count = 0;
 
-    NPETE(fp = kjb_popen("slow_write", "r"));
+    NPETE(fp = ivi_popen("slow_write", "r"));
 
     dont_restart_on_atn();
 
@@ -569,7 +569,7 @@ test_six:
 
     p_stderr("%d WOULD_BLOCK's\n", would_block_count);
     would_block_count = 0;
-    kjb_pclose(fp); 
+    ivi_pclose(fp); 
 
     restart_on_atn();
 

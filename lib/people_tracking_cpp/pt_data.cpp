@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: pt_data.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_data.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_data.h"
@@ -32,16 +32,16 @@
 #include <set>
 #include <vector>
 
-using namespace kjb;
-using namespace kjb::pt;
-using namespace kjb::mcmcda;
+using namespace ivi;
+using namespace ivi::pt;
+using namespace ivi::mcmcda;
 
 Box_data::Box_set Box_data::read_single_time(const std::string& filename) const
 {
     std::ifstream ifs(filename.c_str());
     if(ifs.fail())
     {
-        KJB_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
+        IVI_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
     }
     Box_set data_t;
     std::string line;
@@ -70,7 +70,7 @@ void Box_data::write_single_time
     std::ofstream ofs(filename.c_str());
     if(ofs.fail())
     {
-        KJB_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
+        IVI_THROW_3(IO_error, "can't open file %s", (filename.c_str()));
     }
 
     BOOST_FOREACH(Detection_box dbox, data_t)
@@ -165,7 +165,7 @@ void Box_data::remove_overlapping(double thresh)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Deva_facemark kjb::pt::build_deva_facemark
+Deva_facemark ivi::pt::build_deva_facemark
 (
     const Vector& left_eye,
     const Vector& right_eye,
@@ -211,7 +211,7 @@ Deva_facemark kjb::pt::build_deva_facemark
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Facemark_data kjb::pt::parse_deva_facemarks
+Facemark_data ivi::pt::parse_deva_facemarks
 (
     const std::vector<std::string>& fps,
     double img_width,
@@ -242,7 +242,7 @@ Facemark_data kjb::pt::parse_deva_facemarks
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::write_deva_facemarks
+void ivi::pt::write_deva_facemarks
 (
     const Facemark_data& fm_data,
     const std::vector<std::string>& fps,

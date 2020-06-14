@@ -1,4 +1,4 @@
-/* $Id: gpu_cuda_util.h 10606 2011-09-29 19:50:30Z predoehl $ */
+/* $Id: gpu_cuda_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== }}}*/
 
-#ifndef KJB_CUDA_UTIL_H
-#define KJB_CUDA_UTIL_H
+#ifndef IVI_CUDA_UTIL_H
+#define IVI_CUDA_UTIL_H
 
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@
 #undef major
 #undef minor
 
-namespace kjb
+namespace ivi
 {
 namespace gpu
 {
@@ -44,7 +44,7 @@ namespace gpu
  * A set of miscelaneous cuda kernels perform simple tasks.
  *
  */
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 class Cuda_utility_module : public Cuda_base_module
 {
 private:
@@ -55,15 +55,15 @@ public:
 
     void load_functions_()
     {
-#define KJB_LOAD_FUNCTION__(a) cuModuleGetFunction(&a##_func, get_handle_(), #a);
-        CU_ETX(KJB_LOAD_FUNCTION__(ow_ew_multiply_float));
-        CU_ETX(KJB_LOAD_FUNCTION__(ow_ew_multiply_uint));
-        CU_ETX(KJB_LOAD_FUNCTION__(ow_ew_multiply_int));
-        CU_ETX(KJB_LOAD_FUNCTION__(ow_ew_multiply_uint_float));
-        CU_ETX(KJB_LOAD_FUNCTION__(detect_changes_float));
-        CU_ETX(KJB_LOAD_FUNCTION__(detect_changes_uint));
-        CU_ETX(KJB_LOAD_FUNCTION__(detect_changes_int));
-#undef KJB_LOAD_FUNCTION__
+#define IVI_LOAD_FUNCTION__(a) cuModuleGetFunction(&a##_func, get_handle_(), #a);
+        CU_ETX(IVI_LOAD_FUNCTION__(ow_ew_multiply_float));
+        CU_ETX(IVI_LOAD_FUNCTION__(ow_ew_multiply_uint));
+        CU_ETX(IVI_LOAD_FUNCTION__(ow_ew_multiply_int));
+        CU_ETX(IVI_LOAD_FUNCTION__(ow_ew_multiply_uint_float));
+        CU_ETX(IVI_LOAD_FUNCTION__(detect_changes_float));
+        CU_ETX(IVI_LOAD_FUNCTION__(detect_changes_uint));
+        CU_ETX(IVI_LOAD_FUNCTION__(detect_changes_int));
+#undef IVI_LOAD_FUNCTION__
     }
 
 
@@ -111,8 +111,8 @@ public:
     void ow_ew_multiply(CUdeviceptr v1, CUdeviceptr v2, unsigned int N)
     {
         using boost::scoped_array;
-        using kjb_c::kjb_debug_level;
-        using kjb_c::add_error;
+        using ivi_c::ivi_debug_level;
+        using ivi_c::add_error;
 
         CUcontext ctx;
         cuCtxAttach(&ctx, 0);
@@ -164,8 +164,8 @@ public:
     void detect_changes(CUdeviceptr d_in, unsigned int N)
     {
         using boost::scoped_array;
-        using kjb_c::kjb_debug_level;
-        using kjb_c::add_error;
+        using ivi_c::ivi_debug_level;
+        using ivi_c::add_error;
 
         CUcontext ctx;
         cuCtxAttach(&ctx, 0);
@@ -227,7 +227,7 @@ private:
 #endif
 
 
-} // namespace kjb
+} // namespace ivi
 } // namespace gpu
 
 

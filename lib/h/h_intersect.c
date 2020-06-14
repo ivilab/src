@@ -1,5 +1,5 @@
 
-/* $Id: h_intersect.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: h_intersect.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -383,7 +383,7 @@ int intersect_positive_hulls
  * hull-intersection-method. One method "a" is a discrete approximationl. A
  * faster, more accurate method is the dual space method "d". In the case of the
  * discrete approximation, the resolution of the descrete space is user settable
- * with the "hir" option, provided that the KJB library options are made
+ * with the "hir" option, provided that the IVI library options are made
  * available to the user (recommended!). The dual space method also makes use of
  * the resolution when finding an intial point inside the hull. The dual space
  * method normally returns an answer independent of the resolution, but the
@@ -2871,7 +2871,7 @@ int dual_space_intersect_hulls
     if (dim == 2)
     {
 #ifdef REALLY_TEST_INTERSECTION_ROUTINES
-        IMPORT int     kjb_debug_level;
+        IMPORT int     ivi_debug_level;
 #endif
 
         point_in_hull_result =
@@ -2879,7 +2879,7 @@ int dual_space_intersect_hulls
                                                fs_hull_intersection_resolution,
                                                &a_vp, &normal_mp, &b_vp);
 #ifdef REALLY_TEST_INTERSECTION_ROUTINES
-        if (kjb_debug_level > 20)
+        if (ivi_debug_level > 20)
         {
             int            count           = 1;
             int            plot_id;
@@ -2902,7 +2902,7 @@ int dual_space_intersect_hulls
                 {
                     char title[ 100 ];
 
-                    ERE(kjb_sprintf(title, sizeof(title), "Hull %d", count++));
+                    ERE(ivi_sprintf(title, sizeof(title), "Hull %d", count++));
 
                     EPE(plot_matrix_vector_cols(plot_id,
                                       ((Hull*)(cur_elem->contents))->facets,
@@ -3202,7 +3202,7 @@ int find_point_in_2D_hull_intersection
 
     try_count = 0;
 
-    max_num_tries = kjb_rint(2.0 * sqrt((double)resolution));
+    max_num_tries = ivi_rint(2.0 * sqrt((double)resolution));
 
     while (    (try_count < max_num_tries)
             && (num_points < NUM_POINTS_FOR_INTERIOR_POINT_AVERAGE)
@@ -3210,7 +3210,7 @@ int find_point_in_2D_hull_intersection
     {
         try_count++;
 
-        x = min_x + resolution * kjb_rand_2() * x_step;
+        x = min_x + resolution * ivi_rand_2() * x_step;
 
         if (is_segment_in_2D_hull_intersection(x, min_y, max_y,
                                                normal_mp,
@@ -3305,7 +3305,7 @@ int find_point_in_2D_hull_intersection
     else
     {
         pso("Tries: %d.\n", try_count);
-        kjb_flush();
+        ivi_flush();
     }
 #endif
 
@@ -3321,7 +3321,7 @@ int find_point_in_2D_hull_intersection
         if (found_by_exhaustive_search)
         {
             pso("Exhaustive search was required to find intersection point.\n");
-            kjb_flush();
+            ivi_flush();
         }
 #endif
         ERE(get_target_vector(result_ptr, 2));
@@ -3335,7 +3335,7 @@ int find_point_in_2D_hull_intersection
     {
 #ifdef REALLY_TEST_INTERSECTION_ROUTINES
         pso("Exhaustive search indicates that there is no intersection.\n");
-        kjb_flush();
+        ivi_flush();
 #endif
         return FALSE;
     }
@@ -3736,8 +3736,8 @@ int find_point_in_3D_hull_intersection
     {
         try_count++;
 
-        x = min_x + resolution * kjb_rand_2() * x_step;
-        y = min_y + resolution * kjb_rand_2() * y_step;
+        x = min_x + resolution * ivi_rand_2() * x_step;
+        y = min_y + resolution * ivi_rand_2() * y_step;
 
         if (is_segment_in_3D_hull_intersection(x, y, min_z, max_z,
                                                normal_mp,
@@ -3848,7 +3848,7 @@ int find_point_in_3D_hull_intersection
     else
     {
         pso("Tries: %d.\n", try_count);
-        kjb_flush();
+        ivi_flush();
     }
 #endif
 
@@ -3864,7 +3864,7 @@ int find_point_in_3D_hull_intersection
         if (found_by_exhaustive_search)
         {
             pso("Exhaustive search was required to find intersection point.\n");
-            kjb_flush();
+            ivi_flush();
         }
 #endif
         ERE(get_target_vector(result_ptr, 3));
@@ -3879,7 +3879,7 @@ int find_point_in_3D_hull_intersection
     {
 #ifdef REALLY_TEST_INTERSECTION_ROUTINES
         pso("Exhaustive search indicates that there is no intersection.\n");
-        kjb_flush();
+        ivi_flush();
 #endif
         return FALSE;
     }

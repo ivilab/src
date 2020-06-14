@@ -30,7 +30,7 @@
 #include <people_tracking_cpp/pt_sample_scenes.h>
 #include <gr_cpp/gr_opengl_headers.h>
 #include <gr_cpp/gr_opengl.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <m_cpp/m_vector.h>
@@ -50,8 +50,8 @@
 #include <boost/lexical_cast.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace boost;
 
 // state
@@ -140,11 +140,11 @@ int main(int argc, char** argv)
         update_viewer(viewer);
 
         // GL stuff
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;
@@ -290,7 +290,7 @@ void handle_key(Scene_viewer& viewer, unsigned char key, int, int)
     }
 
     update_viewer(viewer);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

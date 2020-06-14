@@ -1,4 +1,4 @@
-/* $Id: psi_metrics.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_metrics.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -34,7 +34,7 @@
 
 #ifndef PSI_TRACKING_METRICS_H
 #define PSI_TRACKING_METRICS_H
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -43,14 +43,14 @@ namespace metrics
 {
     typedef boost::bimap<pt::Entity_id, pt::Entity_id> Correspondence;
     void get_best_matching(
-            const kjb::Matrix& pw_distance,
+            const ivi::Matrix& pw_distance,
             double threshold,
             std::vector<std::pair<int, int> >& matching);
 
     void get_pw_distance(
             const std::vector<const Vector3*>& pts1,
             const std::vector<const Vector3*>& pts2,
-            kjb::Matrix& distance);
+            ivi::Matrix& distance);
 
     void init_correspondence(
             const pt::Trajectory_map& gt_track_map,
@@ -251,6 +251,6 @@ friend class Track_frame_metrics;
 };
 
 } // namespace psi
-} // namespace kjb 
+} // namespace ivi 
 
 #endif

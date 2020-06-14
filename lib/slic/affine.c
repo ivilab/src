@@ -1,4 +1,4 @@
-/* $Id: affine.c 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: affine.c 25499 2020-06-14 13:26:04Z kobus $
  */
 #include "slic/affine.h"
 
@@ -666,8 +666,8 @@ int constrained_affine_1
  */
 int get_color_constancy_matrix
 (
-    const KJB_image *src_img,
-    const KJB_image *target_img,
+    const IVI_image *src_img,
+    const IVI_image *target_img,
     const Int_matrix *mask_imp,
     Matrix **color_constancy_mpp
 )
@@ -737,10 +737,10 @@ int get_color_constancy_matrix
  */
 int apply_color_constancy
 (
-    const KJB_image *src_img,
+    const IVI_image *src_img,
     const Int_matrix *mask_imp,
     const Matrix *color_constancy_mp,
-    KJB_image       **res_img
+    IVI_image       **res_img
 )
 {
   Matrix *src_mp = NULL;
@@ -751,7 +751,7 @@ int apply_color_constancy
   int row;
   int col;
   int i, j, count;
-  KJB_image *img = NULL;
+  IVI_image *img = NULL;
   
 
   ERE(get_target_matrix(&src_mp, num, 3));
@@ -817,10 +817,10 @@ int apply_color_constancy
 */
 int do_color_constancy
 (
-    const KJB_image *src_img,
-    const KJB_image *target_img,
+    const IVI_image *src_img,
+    const IVI_image *target_img,
     const Int_matrix *mask_imp,
-    KJB_image       **res_img
+    IVI_image       **res_img
 )
 {
     Matrix *src_mp = NULL;
@@ -832,7 +832,7 @@ int do_color_constancy
     int num = num_rows * num_cols;
     int i, j;
     int count;
-    KJB_image *img = NULL;
+    IVI_image *img = NULL;
     int row;
     int col;
     int result = NO_ERROR;
@@ -904,10 +904,10 @@ int do_color_constancy
 
 int do_color_constancy_with_position
 (
-    const KJB_image *src_img,
-    const KJB_image *target_img,
+    const IVI_image *src_img,
+    const IVI_image *target_img,
     const Int_matrix *mask_imp,
-    KJB_image       **res_img
+    IVI_image       **res_img
 )
 {
     Matrix *src_mp = NULL;
@@ -919,7 +919,7 @@ int do_color_constancy_with_position
     int num = num_rows * num_cols;
     int i, j;
     int count;
-    KJB_image *img = NULL;
+    IVI_image *img = NULL;
     int row;
     int col;
     int result = NO_ERROR;
@@ -1065,9 +1065,9 @@ int main1(int argc, char *argv[])
     Matrix *R_mp = NULL;
     Matrix *S_mp = NULL;
     Matrix *Z_mp = NULL;
-    KJB_image *img1 = NULL;
-    KJB_image *img2 = NULL;
-    KJB_image *res_img = NULL;
+    IVI_image *img1 = NULL;
+    IVI_image *img2 = NULL;
+    IVI_image *res_img = NULL;
     double d;
     Matrix_vector *model1_mvp = NULL;
     Matrix_vector *model2_mvp = NULL;
@@ -1100,23 +1100,23 @@ int main1(int argc, char *argv[])
     pso("\nZ\n");
     write_matrix(Z_mp, 0);*/
 
-    kjb_read_image(&img1, argv[1]);
+    ivi_read_image(&img1, argv[1]);
     
  /*   d = atof(argv[2]);
     ERE(get_initialized_vector(&d_vp, 3, d));
     ERE(ow_add_vector_to_image(img1, d_vp));
-    kjb_display_image(img1, NULL);
+    ivi_display_image(img1, NULL);
     getchar();
     exit(0);*/
 
-    kjb_read_image(&img2, argv[2]);
+    ivi_read_image(&img2, argv[2]);
     ERE(do_color_constancy(img1, img2, NULL, &res_img));
  
-    kjb_display_image(res_img, NULL);
+    ivi_display_image(res_img, NULL);
     getchar();
-    kjb_free_image(img1);
-    kjb_free_image(img2);
-    kjb_free_image(res_img);
+    ivi_free_image(img1);
+    ivi_free_image(img2);
+    ivi_free_image(res_img);
     /*read_matrix(&A_mp, "B_mp");
     pso("ddd\n");   
     write_matrix(A_mp, 0);

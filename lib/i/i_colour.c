@@ -1,5 +1,5 @@
 
-/* $Id: i_colour.c 5831 2010-05-02 21:52:24Z ksimek $ */
+/* $Id: i_colour.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -41,8 +41,8 @@ extern "C" {
 
 int ow_match_brightness
 (
-    KJB_image*       in_ip,
-    const KJB_image* brightness_ip,
+    IVI_image*       in_ip,
+    const IVI_image* brightness_ip,
     double           (*brightness_fn) (double, double, double)
 )
 {
@@ -132,7 +132,7 @@ int ow_match_brightness
  * -----------------------------------------------------------------------------
 */
 
-int ow_match_chromaticity(KJB_image* in_ip, const KJB_image* chrom_ip)
+int ow_match_chromaticity(IVI_image* in_ip, const IVI_image* chrom_ip)
 {
     Pixel* in_pos;
     Pixel* chrom_pos;
@@ -250,12 +250,12 @@ double rgb_gm_brightness(double r, double g, double b)
 
 int make_chromaticity_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           intensity
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j;
     Pixel*     out_pos;
     Pixel*     in_pos;
@@ -350,7 +350,7 @@ int make_chromaticity_image
  * -----------------------------------------------------------------------------
 */
 
-int ow_make_chromaticity_image(KJB_image* ip, double intensity)
+int ow_make_chromaticity_image(IVI_image* ip, double intensity)
 {
     int    num_rows, num_cols, i, j;
     Pixel* pos;
@@ -450,11 +450,11 @@ int ow_make_chromaticity_image(KJB_image* ip, double intensity)
 
 int make_black_and_white_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip
 )
 {
-    KJB_image* out_ip;
+    IVI_image* out_ip;
     int        num_rows, num_cols, i, j;
     Pixel*     out_pos;
     Pixel*     in_pos;
@@ -515,7 +515,7 @@ int make_black_and_white_image
  * -----------------------------------------------------------------------------
 */
 
-int ow_make_black_and_white_image(KJB_image* ip)
+int ow_make_black_and_white_image(IVI_image* ip)
 {
     int    num_rows, num_cols, i, j;
     Pixel* pos;
@@ -552,7 +552,7 @@ int ow_make_black_and_white_image(KJB_image* ip)
  * Converts image RGB to L*a*b.
  *
  * This routine converts image RGB to L*a*b. This conversion uses an RGB to XYZ
- * matrix. If KJB library options are being made available to the user, then
+ * matrix. If IVI library options are being made available to the user, then
  * this matrix can be set using the option "rgb-to-xyz-file".  If no conversion
  * file has been set, than a default one is used. If no default is available,
  * then sRGB is used. The contents of the third argument, white_rgb_vp, is used
@@ -572,8 +572,8 @@ int ow_make_black_and_white_image(KJB_image* ip)
 
 int convert_image_rgb_to_lab
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    white_rgb_vp
 )
 {
@@ -620,7 +620,7 @@ int convert_image_rgb_to_lab
  * Converts image RGB to XYZ
  *
  * This routine converts the image RGB to XYZ based on an RGB to XYZ matrix. If
- * KJB library options are being made available to the user, then this matrix
+ * IVI library options are being made available to the user, then this matrix
  * can be set using the option "rgb-to-xyz-file".  If no conversion file has
  * been set, than a default one is used. If no default is available, then sRGB
  * is used.
@@ -637,7 +637,7 @@ int convert_image_rgb_to_lab
  * -----------------------------------------------------------------------------
 */
 
-int convert_image_rgb_to_xyz(KJB_image** out_ipp, const KJB_image* in_ip)
+int convert_image_rgb_to_xyz(IVI_image** out_ipp, const IVI_image* in_ip)
 {
     int     result;
     Matrix* rgb_to_xyz_mp = NULL;

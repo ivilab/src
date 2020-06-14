@@ -15,8 +15,8 @@
 #include <boost/lexical_cast.hpp>
 
 
-using namespace kjb;
-using namespace kjb::opencv;
+using namespace ivi;
+using namespace ivi::opencv;
 using namespace std;
 
 void update_features(const std::vector<Vector> old_features, std::vector<Vector>& new_features)
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
         std::cout<<"Usage: test_optical_flow <image_dir> <deva_boxes_dir> <num_frames>\n";
         return EXIT_FAILURE;
     }
-     kjb_c::kjb_l_set("page","off");
+     ivi_c::ivi_l_set("page","off");
     //const char* movie_dir = argv[1];
     string movie_dir(argv[1]);
     size_t num_frames = boost::lexical_cast<size_t>(argv[3]);
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
 //               
 //                if(vector_distance(prev_loc, next_loc) < 3)
 //                    continue;
-                kjb_c::Pixel pxl;
+                ivi_c::Pixel pxl;
                 pxl.r = 255.0;
                 pxl.g = 0.0;
                 pxl.b = 0.0;

@@ -1,4 +1,4 @@
-/* $Id: edge_points_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: edge_points_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -41,7 +41,7 @@
  *
  */
 
-using namespace kjb;
+using namespace ivi;
 
 bool Correspondence::Point::Compare_Normal_Distance::operator()
 (
@@ -136,7 +136,7 @@ bool Correspondence::Matched_point::operator< (const Matched_point& mp) const
 
 Correspondence::Point::Point
 (
-    const kjb::Edge_point & iedge_pt,
+    const ivi::Edge_point & iedge_pt,
     unsigned int            iedge_pt_num,
     unsigned int            imodel_pt_row,
     unsigned int            imodel_pt_col,
@@ -223,8 +223,8 @@ Correspondence::Point::Point
                 (v_x*sin_theta + v_y*cos_theta)*drow);
 
         /** Compute the penalties for this particular bin */
-        kjb_c::gaussian_pdf(&gauss_angles[ i ], angles[i], 0, angle_sigma);
-        kjb_c::gaussian_pdf(&gauss_norm_dists[ i ], norm_dists[i], 0, dist_sigma);
+        ivi_c::gaussian_pdf(&gauss_angles[ i ], angles[i], 0, angle_sigma);
+        ivi_c::gaussian_pdf(&gauss_norm_dists[ i ], norm_dists[i], 0, dist_sigma);
 
         theta += dtheta;
     }
@@ -300,7 +300,7 @@ Correspondence::Point & Correspondence::Point::operator=(const Point & p)
  */
 Correspondence::Correspondence
 (
-    const kjb::Edge_set * data_edges,
+    const ivi::Edge_set * data_edges,
     unsigned int          num_rows,
     unsigned int          num_cols,
     unsigned int          num_angles,
@@ -318,7 +318,7 @@ Correspondence::Correspondence
 
     for (i = 0; i < data_edges->num_edges(); i++)
     {
-        const kjb::Edge & _edge = data_edges->get_edge(i);
+        const ivi::Edge & _edge = data_edges->get_edge(i);
         for (j = 0; j < _edge.get_num_points(); j++)
         {
             /** For each edge point, we draw a line through it along
@@ -409,7 +409,7 @@ Correspondence & Correspondence::operator=(const Correspondence & c)
  */
 void Correspondence::add_edge_pts_along_line
 (
-    const kjb::Edge_point & edge_pt,
+    const ivi::Edge_point & edge_pt,
     unsigned int            edge_pt_num,
     unsigned int            num_rows,
     unsigned int            num_cols,
@@ -530,7 +530,7 @@ Correspondence::generate_for_model_from_map_and_edges
 (
     const Int_matrix & model_map,
     const std::vector<Model_edge> & model_edges,
-    const std::vector<kjb::Int_vector> & edge_indexes,
+    const std::vector<ivi::Int_vector> & edge_indexes,
     int edge_counter,
     int & num_sil_miss,
     int & num_inn_miss
@@ -664,7 +664,7 @@ void Correspondence::generate_for_model_from_map_and_edges
 (
     const Int_matrix & model_map,
     const std::vector<Model_edge> & model_edges,
-    const std::vector<kjb::Int_vector> & edge_indexes,
+    const std::vector<ivi::Int_vector> & edge_indexes,
     std::vector<Correspondence::Matched_point> & matched_points,
     std::vector< std::vector<const Correspondence::Matched_point *> > & edge_pts_matched_corr,
     int edge_counter,
@@ -817,7 +817,7 @@ void Correspondence::generate_for_model_from_map_and_edges
 const std::vector< std::vector<const Correspondence::Point*> > &
 Correspondence::generate_for_model
 (
-    const kjb::Edge_set& model_edge_set
+    const ivi::Edge_set& model_edge_set
 )
 {
     using std::vector;
@@ -835,7 +835,7 @@ Correspondence::generate_for_model
     {
         for(unsigned int p = 0; p < model_edge_set.get_edge(e).get_num_points(); p++)
         {
-            kjb::Edge_point model_pt = model_edge_set.get_edge(e).get_edge_point(p);
+            ivi::Edge_point model_pt = model_edge_set.get_edge(e).get_edge_point(p);
             int row = model_pt.get_row();
             int col = model_pt.get_col();
 
@@ -933,7 +933,7 @@ Correspondence::generate_for_model
  */
 Independent_edge_points_likelihood::Independent_edge_points_likelihood
 (
-    const kjb::Edge_set * idata_edges,
+    const ivi::Edge_set * idata_edges,
     int num_angles,
     unsigned int num_rows,
     unsigned int num_cols,
@@ -1059,7 +1059,7 @@ double Independent_edge_points_likelihood::old_operator
 (
     Int_matrix & model_map,
     const std::vector<Model_edge> & model_edges,
-    const std::vector<kjb::Int_vector> & external_edge_indexes,
+    const std::vector<ivi::Int_vector> & external_edge_indexes,
     int external_edge_counter
 ) const
 {
@@ -1093,7 +1093,7 @@ double Independent_edge_points_likelihood::old_operator
     {
         for(unsigned int e_pt_index = 0; e_pt_index < data_edges->get_edge(edge_index).get_num_points(); e_pt_index++)
         {
-            kjb::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
+            ivi::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
 
             if ( correspondence_pts[ e ].size() > 0)
             {
@@ -1186,7 +1186,7 @@ double Independent_edge_points_likelihood::new_operator
 (
     Int_matrix & model_map,
     const std::vector<Model_edge> & model_edges,
-    const std::vector<kjb::Int_vector> & external_edge_indexes,
+    const std::vector<ivi::Int_vector> & external_edge_indexes,
     int external_edge_counter
 ) const
 {
@@ -1221,7 +1221,7 @@ double Independent_edge_points_likelihood::new_operator
     {
         for(unsigned int e_pt_index = 0; e_pt_index < data_edges->get_edge(edge_index).get_num_points(); e_pt_index++)
         {
-            kjb::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
+            ivi::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
 
             if ( matched_pts[ e ].size() > 0)
             {
@@ -1317,7 +1317,7 @@ double Independent_edge_points_likelihood::operator()
 (
     Int_matrix & model_map,
     const std::vector<Model_edge> & model_edges,
-    const std::vector<kjb::Int_vector> & external_edge_indexes,
+    const std::vector<ivi::Int_vector> & external_edge_indexes,
     int external_edge_counter
 ) const
 {
@@ -1352,7 +1352,7 @@ double Independent_edge_points_likelihood::operator()
     {
         for(unsigned int e_pt_index = 0; e_pt_index < data_edges->get_edge(edge_index).get_num_points(); e_pt_index++)
         {
-            kjb::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
+            ivi::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
 
             if ( matched_pts[ e ].size() > 0)
             {
@@ -1479,9 +1479,9 @@ double Independent_edge_points_likelihood::operator()
     //m_ll_assign.zero_out(m_ll_assign.get_num_rows(), m_ll_assign.get_num_cols());
 
     // "Hash table"
-    typedef unordered_map<int, unordered_map< int, const kjb::Edge_point* > > Edge_map;
-    typedef unordered_map<int, unordered_map< int, const kjb::Edge_point* > >::iterator Edge_map_iterator;
-    typedef unordered_map< int, const kjb::Edge_point*>::iterator Edge_map_iterator_iterator;
+    typedef unordered_map<int, unordered_map< int, const ivi::Edge_point* > > Edge_map;
+    typedef unordered_map<int, unordered_map< int, const ivi::Edge_point* > >::iterator Edge_map_iterator;
+    typedef unordered_map< int, const ivi::Edge_point*>::iterator Edge_map_iterator_iterator;
 
     Edge_map map;
 
@@ -1489,7 +1489,7 @@ double Independent_edge_points_likelihood::operator()
     {
         for(unsigned int p = 0; p < model_edge_set.get_edge(e).get_num_points(); p++)
         {
-            kjb::Edge_point edge_pt = model_edge_set.get_edge(e).get_edge_point(p);
+            ivi::Edge_point edge_pt = model_edge_set.get_edge(e).get_edge_point(p);
 
             ASSERT(edge_pt.get_row() < num_rows);
             ASSERT(edge_pt.get_col() < num_cols);
@@ -1522,7 +1522,7 @@ double Independent_edge_points_likelihood::operator()
     {
         for(unsigned int e_pt_index = 0; e_pt_index < data_edges->get_edge(edge_index).get_num_points(); e_pt_index++)
         {
-            kjb::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
+            ivi::Edge_point edge_pt = data_edges->get_edge(edge_index).get_edge_point(e_pt_index);
 
             if (correspondence_pts[ e ].size() > 0)
             {
@@ -1679,9 +1679,9 @@ void Independent_edge_points_likelihood::draw_edge_set_using_mask(Image& img)
 double Independent_edge_points_likelihood::find_log_max(double angle_sigma, double dist_sigma)
 {
     double single_angle_penalty = 0.0;
-    kjb_c::gaussian_pdf(&single_angle_penalty, 0, 0, angle_sigma);
+    ivi_c::gaussian_pdf(&single_angle_penalty, 0, 0, angle_sigma);
     double single_dist_penalty = 0.0;
-    kjb_c::gaussian_pdf(&single_dist_penalty, 0, 0, dist_sigma);
+    ivi_c::gaussian_pdf(&single_dist_penalty, 0, 0, dist_sigma);
     double single_penalty = log(single_angle_penalty) + log(single_dist_penalty);
     return (single_penalty*data_edges->get_total_edge_points());
 }

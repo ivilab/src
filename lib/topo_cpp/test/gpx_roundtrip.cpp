@@ -4,7 +4,7 @@
  * @brief test file for GPX load then save (GPX round-trip)
  */
 /*
- * $Id: gpx_roundtrip.cpp 21357 2017-03-30 05:35:22Z kobus $
+ * $Id: gpx_roundtrip.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_incl.h>
@@ -20,21 +20,21 @@ int main2( int, const char* const* )
     const std::string filename1 = "points.gpx", filename2 = "schmoints.gpx";
 
     // load gpx file
-    kjb::TopoFusion::AutoLayer l( filename1 );
+    ivi::TopoFusion::AutoLayer l( filename1 );
 
     // write it
-    KJB( ERE( l.write( filename2 ) ) );
+    IVI( ERE( l.write( filename2 ) ) );
 
     off_t fs1, fs2;
-    KJB( ERE( get_file_size( filename1.c_str(), &fs1 ) ) );
-    KJB( ERE( get_file_size( filename2.c_str(), &fs2 ) ) );
+    IVI( ERE( get_file_size( filename1.c_str(), &fs1 ) ) );
+    IVI( ERE( get_file_size( filename2.c_str(), &fs2 ) ) );
     if ( fs1 != fs2 )
     {
-        kjb_c::set_error( "Files differ in size" );
-        return kjb_c::ERROR;
+        ivi_c::set_error( "Files differ in size" );
+        return ivi_c::ERROR;
     }
 
-    kjb::File_Ptr_Read f1( filename1 ), f2( filename2 );
+    ivi::File_Ptr_Read f1( filename1 ), f2( filename2 );
 
     // verify files are identical
     off_t ix = 0;
@@ -42,37 +42,37 @@ int main2( int, const char* const* )
     {
         if ( c1 != c2 )
         {
-            kjb_c::set_error( "Files differ at offset %u\n", ix );
-            return kjb_c::ERROR;
+            ivi_c::set_error( "Files differ at offset %u\n", ix );
+            return ivi_c::ERROR;
         }
         ++ix;
     }
 
-    KJB( ERE( kjb_unlink( filename2.c_str() ) ) );
-    return kjb_c::NO_ERROR;
+    IVI( ERE( ivi_unlink( filename2.c_str() ) ) );
+    return ivi_c::NO_ERROR;
 }
 
 int main( int argc, const char* const* argv )
 {
-    KJB( EPETE( kjb_init() ) );
+    IVI( EPETE( ivi_init() ) );
 
     try
     {
-        KJB( EPETE( main2( argc, argv ) ) );
+        IVI( EPETE( main2( argc, argv ) ) );
     }
-    catch( const kjb::KJB_error& e )
+    catch( const ivi::IVI_error& e )
     {
         e.print_details_exit();
         /* NOTREACHED */
         exit( 1 );
     }
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::pso( "Success!\n" );
+        ivi_c::pso( "Success!\n" );
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

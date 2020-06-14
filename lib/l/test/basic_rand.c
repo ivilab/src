@@ -1,7 +1,7 @@
 /*
  * Are the random number generators actually repeatable?  
  * 
- * $Id: basic_rand.c 22407 2019-04-14 20:21:31Z kobus $
+ * $Id: basic_rand.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_lib.h>
@@ -54,7 +54,7 @@ int check_for_errors(void)
         }
         if (0 == err_count_1 && 0 == err_count_2)
         {
-            kjb_puts("Success!\n");
+            ivi_puts("Success!\n");
         }
     }
 
@@ -67,17 +67,17 @@ int main(void)
 
     for (i = 0; i < SIZE; ++i)
     {
-        rand1early[i] = kjb_rand();
-        rand2early[i] = kjb_rand_2();
+        rand1early[i] = ivi_rand();
+        rand2early[i] = ivi_rand_2();
     }
 
-    kjb_seed_rand(0, 0);
-    kjb_seed_rand_2(0l);
+    ivi_seed_rand(0, 0);
+    ivi_seed_rand_2(0l);
 
     for (i = 0; i < SIZE; ++i)
     {
-        rand1late[i] = kjb_rand();
-        rand2late[i] = kjb_rand_2();
+        rand1late[i] = ivi_rand();
+        rand2late[i] = ivi_rand_2();
     }
 
     return check_for_errors();

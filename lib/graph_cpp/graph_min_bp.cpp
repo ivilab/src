@@ -4,7 +4,7 @@
  * @brief Implementation of dynamic programming solution to Matching
  */
 /*
- * $Id: graph_min_bp.cpp 13649 2013-01-24 17:40:40Z predoehl $
+ * $Id: graph_min_bp.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_def.h>
@@ -20,11 +20,11 @@
 
 namespace {
 
-using kjb_c::NO_ERROR;
-using kjb_c::ERROR;
+using ivi_c::NO_ERROR;
+using ivi_c::ERROR;
 
-using kjb::Matrix;
-using kjb::Int_vector;
+using ivi::Matrix;
+using ivi::Int_vector;
 
 const int LONELY = -1;
 
@@ -109,8 +109,8 @@ Solution grind_subsquare(
 )
 {
     const int mmm = row.get_length();
-    KJB( ASSERT( mmm == col.get_length() ) );
-    KJB( ASSERT( 2 * mmm == key.get_length() ) );
+    IVI( ASSERT( mmm == col.get_length() ) );
+    IVI( ASSERT( 2 * mmm == key.get_length() ) );
 
     Solution s_best;
     for( int k = 0; k < mmm; ++k )
@@ -122,7 +122,7 @@ Solution grind_subsquare(
         const int& c_k = col.at( k );
         // assume r_m, c_k are paired, and solve rest of association:
         Solution s = solve_subsquare( weights, memos, r_nm, c_nk );
-        KJB( ASSERT( 2 * mmm - 2 == s.association.size() ) );
+        IVI( ASSERT( 2 * mmm - 2 == s.association.size() ) );
         // compute cost of that solution (it might be terrible).
         Matrix::Value_type cost = s.cost + weights.at( r_m, c_k );
 
@@ -159,7 +159,7 @@ Solution solve_subsquare(
     Int_vector& col
 )
 {
-    KJB( ASSERT( row.get_length() && row.get_length() == col.get_length() ) );
+    IVI( ASSERT( row.get_length() && row.get_length() == col.get_length() ) );
 
     const int mmm = col.get_length();
 
@@ -176,7 +176,7 @@ Solution solve_subsquare(
 
     std::sort( row.begin(), row.end() );
     std::sort( col.begin(), col.end() );
-    KJB( ASSERT( valid( weights.get_num_rows(), row, col ) ) );
+    IVI( ASSERT( valid( weights.get_num_rows(), row, col ) ) );
 
     // Try for memoized solution
     Solution s;
@@ -202,13 +202,13 @@ int solve_square(
 )
 {
     const int nnn = weights.get_num_rows();
-    KJB( ASSERT( nnn == weights.get_num_cols() ) );
+    IVI( ASSERT( nnn == weights.get_num_cols() ) );
 
     std::vector< Memo > memos;
     Int_vector rl( ramp( nnn ) ), cl( ramp( nnn ) );
     Solution s = solve_subsquare( weights, memos, rl, cl );
 
-    KJB( ASSERT( 2 * nnn == s.association.get_length() ) );
+    IVI( ASSERT( 2 * nnn == s.association.get_length() ) );
     for( int iii = 0; iii < nnn; ++iii )
     {
         assignment -> at( s.association.at( iii ) )
@@ -228,12 +228,12 @@ int solve_nonsquare(
 {
     const int SKEW = weights.get_num_cols() - weights.get_num_rows();
 
-    KJB( ASSERT( SKEW ) );
+    IVI( ASSERT( SKEW ) );
 
     if ( SKEW < 0 )
     {
         Int_vector atrans( weights.get_num_cols() );
-        KJB( ERE( solve_nonsquare( weights.transpose(), &atrans, cost ) ) );
+        IVI( ERE( solve_nonsquare( weights.transpose(), &atrans, cost ) ) );
         for( int iii = 0; iii < weights.get_num_rows(); ++iii )
         {
             assignment -> at( iii ) = LONELY;
@@ -245,7 +245,7 @@ int solve_nonsquare(
         return NO_ERROR;
     }
 
-    KJB( ASSERT( 0 < SKEW ) );
+    IVI( ASSERT( 0 < SKEW ) );
 
     const Matrix::Value_type BIG = 1 + 2 * max( weights );
     Matrix square_weights( weights );
@@ -253,7 +253,7 @@ int solve_nonsquare(
 
     Int_vector a_long( weights.get_num_cols() );
     Matrix::Value_type c_long;
-    KJB( ERE( solve_square( square_weights, &a_long, &c_long ) ) );
+    IVI( ERE( solve_square( square_weights, &a_long, &c_long ) ) );
     for( int iii = 0; iii < weights.get_num_cols(); ++iii )
     {
         assignment -> at( iii ) = a_long.at( iii );
@@ -265,7 +265,7 @@ int solve_nonsquare(
 
 }
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief solve a matching with minimum cost in a complete bipartite graph.
@@ -302,7 +302,7 @@ int min_bipartite_match(
     Matrix::Value_type* cost
 )
 {
-    KJB( NRE( assignment ) );
+    IVI( NRE( assignment ) );
     if ( weights.get_length() < 2 )
     {
         if ( weights.get_length() )
@@ -315,7 +315,7 @@ int min_bipartite_match(
 
     if ( min( weights ) < 0 )
     {
-        kjb_c::set_error("Input matrix of weights contains a negative cost.");
+        ivi_c::set_error("Input matrix of weights contains a negative cost.");
         return ERROR;
     }
 

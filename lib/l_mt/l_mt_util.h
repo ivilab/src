@@ -1,9 +1,9 @@
 /*
- * $Id: l_mt_util.h 15510 2013-10-05 06:21:52Z predoehl $
+ * $Id: l_mt_util.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef L_MT_UTIL_H_LIBKJB_INCLUDED
-#define L_MT_UTIL_H_LIBKJB_INCLUDED 1
+#ifndef L_MT_UTIL_H_LIBIVI_INCLUDED
+#define L_MT_UTIL_H_LIBIVI_INCLUDED 1
 
 #include <l/l_sys_def.h>
 #include <l/l_sys_io.h>
@@ -11,38 +11,38 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
-void *kjb_mt_malloc(Malloc_size num_bytes);
+void *ivi_mt_malloc(Malloc_size num_bytes);
 
-void kjb_mt_free(void *ptr);
+void ivi_mt_free(void *ptr);
 
-FILE *kjb_mt_fopen(
+FILE *ivi_mt_fopen(
     const char *input_fd_name,
     const char *mode
 );
 
-long kjb_mt_fread(
+long ivi_mt_fread(
     FILE *fp,
     void *buff,
     size_t len
 );
 
-long kjb_mt_fwrite(
+long ivi_mt_fwrite(
     FILE *fp,
     const void *line,
     size_t len
 );
 
-long kjb_mt_fprintf(
+long ivi_mt_fprintf(
     FILE* fp,
     const char* format_str,
     ...
 );
 
-int kjb_mt_fclose(FILE *fp);
+int ivi_mt_fclose(FILE *fp);
 
 
 /* below:  end-of-file boilerplate */
@@ -55,5 +55,5 @@ int kjb_mt_fclose(FILE *fp);
 #endif
 
 
-#endif /* L_MT_UTIL_H_LIBKJB_INCLUDED */
+#endif /* L_MT_UTIL_H_LIBIVI_INCLUDED */
 

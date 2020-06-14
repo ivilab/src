@@ -1,4 +1,4 @@
-/* $Id: gpu_cuda_util.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gpu_cuda_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,9 +20,9 @@
 #include "gpu_cpp/gpu_cuda_util.h"
 #include "gpu_cpp/util_ptx.h"
 
-namespace kjb {
+namespace ivi {
 namespace gpu {
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 Cuda_utility_module::Cuda_utility_module() :
     Base(util_ptx, 32),
     ow_ew_multiply_float_func(),
@@ -37,4 +37,4 @@ Cuda_utility_module::Cuda_utility_module() :
 #endif
 
 } // namespace gpu 
-} // namespace kjb
+} // namespace ivi

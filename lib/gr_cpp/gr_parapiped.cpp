@@ -79,7 +79,7 @@
 #include "l/l_bits.h"
 
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * The mapping from four input points to the defined parallelepiped is as 
@@ -136,7 +136,7 @@ Parapiped::Parapiped
 )
 : Polymesh(6), points(4)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     _faces[5].add_point(x1, y1, z1);
     _faces[5].add_point(x1 + (x3 - x2), y1 + (y3 - y2), z1 + (z3 - z2));
@@ -248,19 +248,19 @@ Parapiped::Parapiped
  * @param  p3  Point 3.
  * @param  p4  Point 4.
  *
- * @throw  kjb::Illegal_argument  The vectors are not 3D.
+ * @throw  ivi::Illegal_argument  The vectors are not 3D.
  */
 Parapiped::Parapiped
 (
-    const kjb::Vector & p1,
-    const kjb::Vector & p2,
-    const kjb::Vector & p3,
-    const kjb::Vector & p4
+    const ivi::Vector & p1,
+    const ivi::Vector & p2,
+    const ivi::Vector & p3,
+    const ivi::Vector & p4
 )
-throw (kjb::Illegal_argument)
+throw (ivi::Illegal_argument)
 : Polymesh(6), points(4)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     if (p1.get_length() != 3 || p2.get_length() != 3 ||
         p3.get_length() != 3 || p4.get_length() != 3)
@@ -362,14 +362,14 @@ Parapiped::Parapiped(const Parapiped& p)
  *
  * @param  fname  Input file to read this parallelepiped from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Parapiped::Parapiped(const char* fname)
-    throw (kjb::Illegal_argument, kjb::IO_error)
+    throw (ivi::Illegal_argument, ivi::IO_error)
     : Polymesh(), points(4)
 {
-    kjb::Readable::read(fname);
+    ivi::Readable::read(fname);
 }
 
 
@@ -378,11 +378,11 @@ Parapiped::Parapiped(const char* fname)
  *
  * @param  in  Input stream to read this parallelepiped from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Parapiped::Parapiped(std::istream& in)
-    throw (kjb::Illegal_argument, kjb::IO_error)
+    throw (ivi::Illegal_argument, ivi::IO_error)
     : Polymesh(), points(4)
 {
     read(in);
@@ -420,12 +420,12 @@ Parapiped* Parapiped::clone() const
  *
  * @param i the index of the point to be returned
  */
-const kjb::Vector & Parapiped::get_point(size_t i) const
-    throw (kjb::Illegal_argument)
+const ivi::Vector & Parapiped::get_point(size_t i) const
+    throw (ivi::Illegal_argument)
 {
     if (i >= 4)
     { 
-        throw kjb::Illegal_argument("Invalid point index");
+        throw ivi::Illegal_argument("Invalid point index");
     }
 
     return points[i];
@@ -436,7 +436,7 @@ const kjb::Vector & Parapiped::get_point(size_t i) const
  * The vector is in homogeneous coordinates x, y, z, w. The coordinate
  * w is always 1.
  */
-const kjb::Vector &Parapiped::get_center() const
+const ivi::Vector &Parapiped::get_center() const
 { 
     return center; 
 }
@@ -445,13 +445,13 @@ const kjb::Vector &Parapiped::get_center() const
 /** 
  * @param  in  Input stream to read the members of this parallelepiped from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid argument to read from file.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid argument to read from file.
  */
-void Parapiped::read(std::istream& in) throw (kjb::IO_error,
-        kjb::Illegal_argument)
+void Parapiped::read(std::istream& in) throw (ivi::IO_error,
+        ivi::Illegal_argument)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     Polymesh::read(in);
 
@@ -470,7 +470,7 @@ void Parapiped::read(std::istream& in) throw (kjb::IO_error,
             throw IO_error("Could not read point");
         }
 
-        if(!kjb_is_bigendian())
+        if(!ivi_is_bigendian())
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -494,7 +494,7 @@ void Parapiped::read(std::istream& in) throw (kjb::IO_error,
         throw IO_error("Could not read center");
     }
 
-    if(!kjb_is_bigendian())
+    if(!ivi_is_bigendian())
     {
         bswap_u64((uint64_t*)&(x));
         bswap_u64((uint64_t*)&(y));
@@ -517,11 +517,11 @@ void Parapiped::read(std::istream& in) throw (kjb::IO_error,
  *
  * @param  out  Output stream to write the members of this parallelepiped to.
  *
- * @throw  kjb::IO_error  Could not write to @em out.
+ * @throw  ivi::IO_error  Could not write to @em out.
  */
-void Parapiped::write(std::ostream& out) const throw (kjb::IO_error)
+void Parapiped::write(std::ostream& out) const throw (ivi::IO_error)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     Polymesh::write(out);
 
@@ -534,7 +534,7 @@ void Parapiped::write(std::ostream& out) const throw (kjb::IO_error)
         double z = (points[ i ])[2];
         double w = (points[ i ])[3];
 
-        if(!kjb_is_bigendian())
+        if(!ivi_is_bigendian())
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -557,7 +557,7 @@ void Parapiped::write(std::ostream& out) const throw (kjb::IO_error)
     double z = center[2];
     double w = center[3];
 
-    if(!kjb_is_bigendian())
+    if(!ivi_is_bigendian())
     {
         bswap_u64((uint64_t*)&(x));
         bswap_u64((uint64_t*)&(y));
@@ -580,11 +580,11 @@ void Parapiped::write(std::ostream& out) const throw (kjb::IO_error)
  * @param  M  Homogeneous transformation matrix to transform this
  *            parallelepiped by.
  *
- * @throw  kjb::Illegal_argument  The matrix is not in 4x4 homogeneous
+ * @throw  ivi::Illegal_argument  The matrix is not in 4x4 homogeneous
  *                                  coordinates.
  */
-void Parapiped::transform(const kjb::Matrix & M)
-    throw (kjb::Illegal_argument)
+void Parapiped::transform(const ivi::Matrix & M)
+    throw (ivi::Illegal_argument)
 {
     Polymesh::transform(M);
 
@@ -621,7 +621,7 @@ void Parapiped::set_points(
         double x3, double y3, double z3,
         double x4, double y4, double z4)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     _faces[5].set_point(0, x1, y1, z1);
     _faces[5].set_point(1, x1 + (x3 - x2), y1 + (y3 - y2), z1 + (z3 - z2));
@@ -704,7 +704,7 @@ void Parapiped::set_points(
  *  of the parallelepiped
  */
 unsigned int Parapiped::adjacent_face(unsigned int f, unsigned int e) const
-               throw (Index_out_of_bounds,KJB_error)
+               throw (Index_out_of_bounds,IVI_error)
 {
     return _adjacency(f, e);
 }
@@ -753,9 +753,9 @@ void Parapiped::create_adjacency_matrix()
  *
  * @param face The face to be added
  */
-void Parapiped::add_face(const Polygon & /* face */) throw (kjb::Illegal_argument)
+void Parapiped::add_face(const Polygon & /* face */) throw (ivi::Illegal_argument)
 {
-    KJB_THROW(Not_implemented);
+    IVI_THROW(Not_implemented);
 }
 
 void Parapiped::draw_orientation_map() const

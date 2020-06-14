@@ -1,5 +1,5 @@
 
-/* $Id: i_draw.c 16804 2014-05-15 19:55:04Z predoehl $ */
+/* $Id: i_draw.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -33,7 +33,7 @@ extern "C" {
 
 static int image_draw_gradient_2_helper
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i_beg,
     int        j_beg,
     int        i_end,
@@ -53,7 +53,7 @@ static int image_draw_gradient_2_helper
 /* helper function for image_draw_circle routines */
 static void circle_points
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        x,
@@ -89,7 +89,7 @@ static void circle_points
 
 int image_draw_contour
 (
-    KJB_image* ip,
+    IVI_image* ip,
     Matrix*    mp,
     int        width,
     int        r,
@@ -155,7 +155,7 @@ int image_draw_contour
 
 int image_draw_segment
 (
-    KJB_image* ip,
+    IVI_image* ip,
     Vector*    p1_vp,
     Vector*    p2_vp,
     int        width,
@@ -190,7 +190,7 @@ int image_draw_segment
 
 int image_draw_segment_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i_beg,
     int        j_beg,
     int        i_end,
@@ -228,7 +228,7 @@ int image_draw_segment_2
 
 int image_draw_gradient
 (
-    KJB_image* ip,
+    IVI_image* ip,
     Vector*    p1_vp,
     Vector*    p2_vp,
     int        width,
@@ -267,7 +267,7 @@ int image_draw_gradient
 
 int image_draw_gradient_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i_beg,
     int        j_beg,
     int        i_end,
@@ -308,7 +308,7 @@ int image_draw_gradient_2
 
 static int image_draw_gradient_2_helper
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i_beg,
     int        j_beg,
     int        i_end,
@@ -458,7 +458,7 @@ static int image_draw_gradient_2_helper
  * -----------------------------------------------------------------------------
 */
 
-int image_draw_points(KJB_image* ip, Matrix* mp, int r, int g, int b)
+int image_draw_points(IVI_image* ip, Matrix* mp, int r, int g, int b)
 {
     int    num_rows = ip->num_rows;
     int    num_cols = ip->num_cols;
@@ -524,7 +524,7 @@ int image_draw_points(KJB_image* ip, Matrix* mp, int r, int g, int b)
 
 int image_draw_pixels
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     int         num_pixels,
     Pixel_info* pixels,
     int         r,
@@ -589,7 +589,7 @@ int image_draw_pixels
 
 int image_draw_point
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        width,
@@ -629,7 +629,7 @@ int image_draw_point
 
 int image_draw_point_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        width,
@@ -699,7 +699,7 @@ int image_draw_point_2
 
 int image_draw_add_to_point
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        width,
@@ -741,7 +741,7 @@ int image_draw_add_to_point
 
 int image_draw_add_to_point_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        width,
@@ -778,7 +778,7 @@ int image_draw_add_to_point_2
 
 int image_draw_blend_with_point
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        width,
@@ -798,7 +798,7 @@ int image_draw_blend_with_point
 
 int image_draw_blend_with_point_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        width,
@@ -881,8 +881,8 @@ int image_draw_blend_with_point_2
 
 int image_draw_image
 (
-    KJB_image*       canvas_ip,
-    const KJB_image* ip,
+    IVI_image*       canvas_ip,
+    const IVI_image* ip,
     int              i,
     int              j,
     int              scale
@@ -965,7 +965,7 @@ int image_draw_image
 
 int image_draw_rectangle
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        height,
@@ -1004,7 +1004,7 @@ int image_draw_rectangle
 
 int image_draw_rectangle_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        height,
@@ -1058,7 +1058,7 @@ int image_draw_rectangle_2
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int image_draw_box(KJB_image* out_ip, int i, int j, int half_size,
+int image_draw_box(IVI_image* out_ip, int i, int j, int half_size,
                    int width, int r, int g, int b)
 {
 
@@ -1106,7 +1106,7 @@ int image_draw_box(KJB_image* out_ip, int i, int j, int half_size,
 
 int image_draw_circle
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        radius,
@@ -1143,7 +1143,7 @@ int image_draw_circle
 
 int image_draw_circle_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        radius,
@@ -1203,7 +1203,7 @@ int image_draw_circle_2
 
 int image_draw_disk
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        radius,
@@ -1221,7 +1221,7 @@ int image_draw_disk
 /* draw a 1-pixel horizontal line */
 static void draw_raster
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j_min,
     int        j_max,
@@ -1261,7 +1261,7 @@ static void draw_raster
 
 int image_draw_disk_2
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        radius,
@@ -1329,7 +1329,7 @@ int image_draw_disk_2
 
 static void circle_points
 (
-    KJB_image* ip,
+    IVI_image* ip,
     int        i,
     int        j,
     int        x,

@@ -52,11 +52,11 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_RIGHT_TRIANGLE_PAIR_H
-#define KJB_RIGHT_TRIANGLE_PAIR_H
+#ifndef IVI_RIGHT_TRIANGLE_PAIR_H
+#define IVI_RIGHT_TRIANGLE_PAIR_H
 
 #include "gr_cpp/gr_polymesh.h"
-namespace kjb{
+namespace ivi{
 
 
 class Right_Triangle_Pair

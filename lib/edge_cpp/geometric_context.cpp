@@ -11,7 +11,7 @@
 #include "m_cpp/m_vector.h"
 #include "l_cpp/l_int_matrix.h"
 
-using namespace kjb;
+using namespace ivi;
 
 void Geometric_context::draw_geometric_context(Image & img) const
 {
@@ -69,7 +69,7 @@ void Geometric_context::draw_geometric_context(Image & img) const
     }
 }
 
-double Geometric_context::compute_score(const kjb::Image & img) const
+double Geometric_context::compute_score(const ivi::Image & img) const
 {
     assert(img.get_num_rows() == seg_map.get_num_rows());
     assert(img.get_num_cols() == seg_map.get_num_cols());
@@ -128,7 +128,7 @@ double Geometric_context::compute_score(const kjb::Image & img) const
     return score;
 }
 
-double Geometric_context::compute_score(const kjb::Int_matrix & map) const
+double Geometric_context::compute_score(const ivi::Int_matrix & map) const
 {
     assert(map.get_num_rows() == seg_map.get_num_rows());
     assert(map.get_num_cols() == seg_map.get_num_cols());
@@ -163,14 +163,14 @@ double Geometric_context::compute_score(const kjb::Int_matrix & map) const
 
 double Geometric_context::compute_score
 (
-    const kjb::Int_matrix & map,
-    kjb::Vector & individual_scores,
+    const ivi::Int_matrix & map,
+    ivi::Vector & individual_scores,
     int num_entities
 ) const
 {
     assert(map.get_num_rows() == seg_map.get_num_rows());
     assert(map.get_num_cols() == seg_map.get_num_cols());
-    kjb::Int_vector counters(num_entities, 0);
+    ivi::Int_vector counters(num_entities, 0);
     double score = 0.0;
     for(unsigned int i = 0; i < map.get_num_rows(); i++)
     {

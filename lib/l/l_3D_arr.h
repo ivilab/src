@@ -1,5 +1,5 @@
 
-/* $Id: l_3D_arr.h 4899 2009-11-28 20:50:49Z kobus $ */
+/* $Id: l_3D_arr.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -60,7 +60,7 @@ namespace kjb_c {
 */
 
 #ifdef __C2MAN__
-    kjb_int16 **allocate_3D_int16_array(int num_rows, int num_cols);
+    ivi_int16 **allocate_3D_int16_array(int num_rows, int num_cols);
 #endif
 
 #ifndef __C2MAN__  /* Just doing "else" confuses ctags for the first such line (only).
@@ -93,7 +93,7 @@ namespace kjb_c {
 */
 
 #ifdef __C2MAN__
-     void free_3D_int16_array(kjb_int16 **array);
+     void free_3D_int16_array(ivi_int16 **array);
 #else
 #ifdef INT16_IS_SHORT
 #    define free_3D_int16_array     free_3D_short_array
@@ -132,7 +132,7 @@ namespace kjb_c {
 */
 
 #ifdef __C2MAN__
-    kjb_int32 **allocate_3D_int32_array(int num_rows, int num_cols);
+    ivi_int32 **allocate_3D_int32_array(int num_rows, int num_cols);
 #else
 #ifdef INT32_IS_LONG
 #    define allocate_3D_int32_array allocate_3D_long_array
@@ -162,7 +162,7 @@ namespace kjb_c {
 */
 
 #ifdef __C2MAN__
-     void free_3D_int32_array(kjb_int32 **array);
+     void free_3D_int32_array(ivi_int32 **array);
 #else
 #ifdef INT32_IS_LONG
 #    define free_3D_int32_array     free_3D_long_array

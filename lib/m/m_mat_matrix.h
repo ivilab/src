@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_matrix.h 22184 2018-07-16 00:08:22Z kobus $ */
+/* $Id: m_mat_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,7 +38,7 @@ namespace kjb_c {
  *
  * Type for a matrix of matrices
  *
- * This type is used in the KJB library for matrices of matrices.
+ * This type is used in the IVI library for matrices of matrices.
  *
  * It stores a main matrix with num_rows rows and num_cols cols, whose elements 
  * are also matrices. If "mp" is a pointer to the type Matrix, then 
@@ -108,7 +108,7 @@ void free_matrix_matrix (Matrix_matrix* mmp);
  *
  * Type for a matrix of integer matrices
  *
- * This type is used in the KJB library for matrices of integer matrices.
+ * This type is used in the IVI library for matrices of integer matrices.
  *
  * It stores a main matrix with num_rows rows and num_cols cols, whose elements 
  * are also matrices. If "mp" is a pointer to the type Matrix, then 

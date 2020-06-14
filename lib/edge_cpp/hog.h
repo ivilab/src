@@ -1,4 +1,4 @@
-/* $Id: hog.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: hog.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Luca del Pero
  * =========================================================================== */
 
-#ifndef KJB_CPP_EDGE_HOG_H
-#define KJB_CPP_EDGE_HOG_H
+#ifndef IVI_CPP_EDGE_HOG_H
+#define IVI_CPP_EDGE_HOG_H
 
 #include <l/l_incl.h>
 #include <i_cpp/i_image.h>
@@ -31,7 +31,7 @@
 // small value, used to avoid division by zero
 #define eps 0.0001
 
-namespace kjb
+namespace ivi
 {
 
 static inline float hog_min(float x, float y) { return (x <= y ? x : y); }
@@ -161,5 +161,5 @@ void rotate_matrix_90_degrees(Matrix & m, int number_of_times);
 /** angle is in degrees!! */
 void rotateMatrix(Matrix & m, double angle);
 
-} // namespace kjb
+} // namespace ivi
 #endif

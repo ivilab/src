@@ -1,5 +1,5 @@
 
-/* $Id: i_color_histogram.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: i_color_histogram.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "i_cpp/i_color_histogram.h"
 #include "m_cpp/m_vector_stream_io.h"
@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * Constructor. The color histogram is computed over the entire image
@@ -97,7 +97,7 @@ void Color_histogram::read(std::istream& in)
     num_bins = (int) m_histogram.size()/3.0;
     if(num_bins <= 0)
     {
-        KJB_THROW_2(IO_error, "Histogram vector read from file has zero size!");
+        IVI_THROW_2(IO_error, "Histogram vector read from file has zero size!");
     }
     bin_size = 255.0 / num_bins;
 }
@@ -107,19 +107,19 @@ void Color_histogram::write(std::ostream& out) const
     Vector_stream_io::write_vector(out, m_histogram);
 }
 
-void Color_histogram::compute_histogram(const kjb::Image & img, unsigned int inum_bins)
+void Color_histogram::compute_histogram(const ivi::Image & img, unsigned int inum_bins)
 {
      compute_histogram(img, inum_bins, 0.0, 0.0, img.get_num_cols() -1, img.get_num_rows()-1);
 }
 
-void Color_histogram::compute_histogram(const kjb::Image & img)
+void Color_histogram::compute_histogram(const ivi::Image & img)
 {
     compute_histogram(img, 0.0, 0.0, img.get_num_cols()-1, img.get_num_rows()-1);
 }
 
 void Color_histogram::compute_histogram
 (
-    const kjb::Image & img,
+    const ivi::Image & img,
     unsigned int inum_bins,
     int top_left_x,
     int top_left_y,
@@ -135,7 +135,7 @@ void Color_histogram::compute_histogram
 
 void Color_histogram::compute_histogram
 (
-    const kjb::Image & img,
+    const ivi::Image & img,
     int top_left_x,
     int top_left_y,
     int bottom_right_x,
@@ -145,27 +145,27 @@ void Color_histogram::compute_histogram
 {
     if( (top_left_x < 0) )
     {
-        KJB_THROW_2(Illegal_argument, "Top left x coordinate of image region is out of bounds");
+        IVI_THROW_2(Illegal_argument, "Top left x coordinate of image region is out of bounds");
     }
     if( bottom_right_x >= img.get_num_cols() )
     {
-        KJB_THROW_2(Illegal_argument, "Bottom right x coordinate of image region is out of bounds");
+        IVI_THROW_2(Illegal_argument, "Bottom right x coordinate of image region is out of bounds");
     }
     if( bottom_right_x <= top_left_x)
     {
-        KJB_THROW_2(Illegal_argument, "right x coordinate of image region is smaller then left x coordinate");
+        IVI_THROW_2(Illegal_argument, "right x coordinate of image region is smaller then left x coordinate");
     }
     if( (top_left_y < 0) )
     {
-        KJB_THROW_2(Illegal_argument, "Top left y coordinate of image region is out of bounds");
+        IVI_THROW_2(Illegal_argument, "Top left y coordinate of image region is out of bounds");
     }
     if( bottom_right_y >= img.get_num_rows() )
     {
-        KJB_THROW_2(Illegal_argument, "Bottom right y coordinate of image region is out of bounds");
+        IVI_THROW_2(Illegal_argument, "Bottom right y coordinate of image region is out of bounds");
     }
     if( bottom_right_y <= top_left_y)
     {
-        KJB_THROW_2(Illegal_argument, "bottom y coordinate of image region is smaller then top y coordinate");
+        IVI_THROW_2(Illegal_argument, "bottom y coordinate of image region is smaller then top y coordinate");
     }
 
     m_histogram.zero_out((int)(num_bins*num_bins*num_bins));
@@ -195,7 +195,7 @@ unsigned int Color_histogram::find_bin(float ivalue) const
 {
     if(ivalue < 0.0 || (ivalue > 255.0) )
     {
-        KJB_THROW_2(Illegal_argument, "RGB value should be between 0 and 255");
+        IVI_THROW_2(Illegal_argument, "RGB value should be between 0 and 255");
     }
     unsigned int bin = round( (ivalue/bin_size) );
     if(bin == (num_bins))
@@ -204,7 +204,7 @@ unsigned int Color_histogram::find_bin(float ivalue) const
     }
     if(bin > num_bins)
     {
-        KJB_THROW_2(KJB_error, "Bin index out of bounds");
+        IVI_THROW_2(IVI_error, "Bin index out of bounds");
     }
     return bin;
 }
@@ -238,7 +238,7 @@ double Color_histogram::compare(const Color_histogram & ch) const
 {
     if(ch.get_num_bins() != num_bins)
     {
-        KJB_THROW_2(KJB_error, "Trying to compare histograms with different number of bins!!!");
+        IVI_THROW_2(IVI_error, "Trying to compare histograms with different number of bins!!!");
     }
     double diff = 0.0;
     for(int i = 0; i < m_histogram.size(); i++)
@@ -248,12 +248,12 @@ double Color_histogram::compare(const Color_histogram & ch) const
     return sqrt(diff);
 }
 
-void kjb::write_histograms(const std::vector<kjb::Color_histogram> & chs, const std::string & file_name)
+void ivi::write_histograms(const std::vector<ivi::Color_histogram> & chs, const std::string & file_name)
 {
     std::ofstream out(file_name.c_str());
     if(out.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open file for writing histograms: ");
+        IVI_THROW_2(IO_error, "Could not open file for writing histograms: ");
     }
     out << "     Quantity: " << chs.size() << std::endl;
     for(unsigned int i = 0; i < chs.size(); i++)
@@ -264,27 +264,27 @@ void kjb::write_histograms(const std::vector<kjb::Color_histogram> & chs, const 
     out.close();
 }
 
-void kjb::read_histograms(std::vector<kjb::Color_histogram> & chs, const std::string & file_name)
+void ivi::read_histograms(std::vector<ivi::Color_histogram> & chs, const std::string & file_name)
 {
     chs.clear();
     std::ifstream in(file_name.c_str());
     if(in.fail())
     {
-        KJB_THROW_2(IO_error, "Could not open file for reading histograms: ");
+        IVI_THROW_2(IO_error, "Could not open file for reading histograms: ");
     }
 
     const char* field_value;
     // Quantity
-    if (!(field_value = kjb::Readable::read_field_value(in, "Quantity")))
+    if (!(field_value = ivi::Readable::read_field_value(in, "Quantity")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing Type Quantity");
+        IVI_THROW_2(Illegal_argument, "Missing Type Quantity");
     }
     std::istringstream ist(field_value);
     int quantity = 0;
     ist >> quantity;
     if (ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid Number of histograms");
+        IVI_THROW_2(Illegal_argument, "Invalid Number of histograms");
     }
     for(int i = 0; i < quantity; i++)
     {

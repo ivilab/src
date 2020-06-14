@@ -1,5 +1,5 @@
 
-/* $Id: t1_segment.c 7987 2010-12-15 09:32:33Z kobus $ */
+/* $Id: t1_segment.c 25499 2020-06-14 13:26:04Z kobus $ */
 
  
 /* =========================================================================== *
@@ -155,7 +155,7 @@ static Matrix* merge_g_diff_mp = NULL;
 static Matrix* merge_sum_diff_mp = NULL;
 #endif
 /* We play it a bit fast and loose to reduce stack use during recursion. */
-static const KJB_image* cached_ip;    /* Do NOT free this! */
+static const IVI_image* cached_ip;    /* Do NOT free this! */
 static int** cached_seg_map;            /* Do NOT free this! */
 static float cached_R_min;
 static float cached_R_max;
@@ -1619,7 +1619,7 @@ int t1_set_segmentation_options(const char* option, const char* value)
 
 int t1_segment_image
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     Segmentation_t1**   image_segment_info_ptr_ptr
 )
 {
@@ -1730,7 +1730,7 @@ int t1_segment_image
             seg_ptr = (Segment_t1*)(cur_elem->contents);
             image_segment_info_ptr->segments[ i ] = seg_ptr;
             cur_elem = cur_elem->next;
-            kjb_free(save_cur_elem);
+            ivi_free(save_cur_elem);
         }
     }
     else
@@ -2690,7 +2690,7 @@ static int find_boundary_pixels(Segmentation_t1* image_segment_info_ptr)
             }
         }
 
-        kjb_free(cur_seg_ptr->boundary_pixels);
+        ivi_free(cur_seg_ptr->boundary_pixels);
         NRE(cur_seg_ptr->boundary_pixels = N_TYPE_MALLOC(Pixel_info, count));
 
         for (k = 0; k<count; k++)
@@ -2736,7 +2736,7 @@ static int merge_segments(Segmentation_t1* image_segment_info_ptr)
         verbose_pso(10, "Bumping up storage for merging.\n");
 
         free_2D_int_array(merge_counts);
-        kjb_free(segment_indices_after_merging);
+        ivi_free(segment_indices_after_merging);
 
         NRE(merge_counts = allocate_2D_int_array(num_segments, num_segments));
 
@@ -3642,9 +3642,9 @@ add_pixel:
                 for (k = 0; k<count; k++)
                 {
                     double x = (double)cached_pixels[ k ].i / 2.0;
-                    int  b_i = kjb_rint(x);
+                    int  b_i = ivi_rint(x);
                     double y = (double)cached_pixels[ k ].j / 2.0;
-                    int  b_j = kjb_rint(y);
+                    int  b_j = ivi_rint(y);
 
                     cur_seg_ptr->outside_boundary_mp->elements[ k ][ 0 ] = b_i;
                     cur_seg_ptr->outside_boundary_mp->elements[ k ][ 1 ] = b_j;
@@ -3681,7 +3681,7 @@ static int find_neighbours(Segmentation_t1* image_segment_info_ptr)
     {
         verbose_pso(10, "Bumping up storage for neighbours.\n");
 
-        kjb_free(cached_neighbours);
+        ivi_free(cached_neighbours);
         NRE(cached_neighbours = INT_MALLOC(num_segments));
         prev_num_segments = num_segments;
     }
@@ -3958,7 +3958,7 @@ static int get_target_image_segment_info
             free_image_segment(image_seg_info_ptr->segments[ i ]);
         }
 
-        kjb_free(image_seg_info_ptr->segments);
+        ivi_free(image_seg_info_ptr->segments);
         image_seg_info_ptr->segments = NULL;
 
         if (    (image_seg_info_ptr->num_rows != num_rows)
@@ -3983,7 +3983,7 @@ static int get_target_image_segment_info
 
         if (image_seg_info_ptr->seg_map == NULL)
         {
-            kjb_free(image_seg_info_ptr);
+            ivi_free(image_seg_info_ptr);
             return ERROR;
         }
     }
@@ -4024,9 +4024,9 @@ void t1_free_segmentation(Segmentation_t1* image_segment_info_ptr)
             free_image_segment(image_segment_info_ptr->segments[ i ]);
         }
 
-        kjb_free(image_segment_info_ptr->segments);
+        ivi_free(image_segment_info_ptr->segments);
         free_2D_int_array(image_segment_info_ptr->seg_map);
-        kjb_free(image_segment_info_ptr);
+        ivi_free(image_segment_info_ptr);
     }
 }
 
@@ -4072,7 +4072,7 @@ static Segment_t1* create_image_segment(int segment_number)
 
     if (seg_ptr->pixels == NULL)
     {
-        kjb_free(seg_ptr);
+        ivi_free(seg_ptr);
         return NULL;
     }
 
@@ -4121,13 +4121,13 @@ static void free_image_segment(Segment_t1* segment_ptr)
 
     if (segment_ptr != NULL)
     {
-        kjb_free(segment_ptr->pixels);
-        kjb_free(segment_ptr->boundary_pixels);
+        ivi_free(segment_ptr->pixels);
+        ivi_free(segment_ptr->boundary_pixels);
         free_matrix(segment_ptr->outside_boundary_mp);
-        kjb_free(segment_ptr->neighbours);
+        ivi_free(segment_ptr->neighbours);
     }
 
-    kjb_free(segment_ptr);
+    ivi_free(segment_ptr);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -4138,7 +4138,7 @@ static int initialize_pixel_cache(int new_cache_size)
 
     if (new_cache_size > pixel_cache_size)
     {
-        kjb_free(cached_pixels);
+        ivi_free(cached_pixels);
         NRE(cached_pixels = N_TYPE_MALLOC(Pixel_info, new_cache_size));
         pixel_cache_size = new_cache_size;
     }
@@ -4171,15 +4171,15 @@ static void free_allocated_static_data(void)
 {
 
 
-    kjb_free(cached_pixels);
-    kjb_free(cached_neighbours);
+    ivi_free(cached_pixels);
+    ivi_free(cached_neighbours);
 
 #ifdef IMPLEMENT_MERGING
     free_2D_int_array(merge_counts);
     free_matrix(merge_r_diff_mp);
     free_matrix(merge_g_diff_mp);
     free_matrix(merge_sum_diff_mp);
-    kjb_free(segment_indices_after_merging);
+    ivi_free(segment_indices_after_merging);
 #endif
 
     free_int_matrix(cached_magnified_seg_map);

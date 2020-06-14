@@ -3,7 +3,7 @@
 #include <iostream>
 
 using namespace DTLib;
-using namespace kjb;
+using namespace ivi;
 int main(int argc, char ** argv)
 {
     if(argc != 3)
@@ -16,9 +16,9 @@ int main(int argc, char ** argv)
     img_name.append(argv[2]);
     img_name.append(".jpg");
 
-    kjb::Image img(img_name.c_str());
+    ivi::Image img(img_name.c_str());
 
-    if(kjb_c::is_black_and_white(img.c_ptr()))
+    if(ivi_c::is_black_and_white(img.c_ptr()))
     {
         std::cout << "Black and white" << std::endl;
     }

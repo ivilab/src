@@ -8,7 +8,7 @@
  * now living in sweep.cpp.   See the introduction there.
  */
 /*
- * $Id: intersection.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: intersection.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -33,24 +33,24 @@
 namespace
 {
 
-using kjb::qd::RatPoint;
-using kjb::qd::RatPoint_line_segment;
-using kjb::qd::sweep::SweepLine;
-using kjb::qd::sweep::Static_segment_map;
+using ivi::qd::RatPoint;
+using ivi::qd::RatPoint_line_segment;
+using ivi::qd::sweep::SweepLine;
+using ivi::qd::sweep::Static_segment_map;
 
 
 #if INTERSECTION_CPP_DEBUG
 void draw_line_seg(
-    kjb::Image* i,
+    ivi::Image* i,
     int MAG,
     int RBIAS,
     int CBIAS,
     int width,
     const RatPoint_line_segment& s,
-    const kjb::PixelRGBA& color
+    const ivi::PixelRGBA& color
 )
 {
-    using kjb::qd::dbl_ratio;
+    using ivi::qd::dbl_ratio;
     i -> draw_line_segment(
             RBIAS+MAG*dbl_ratio(s.a.y), CBIAS+MAG*dbl_ratio(s.a.x),
             RBIAS+MAG*dbl_ratio(s.b.y), CBIAS+MAG*dbl_ratio(s.b.x),
@@ -67,7 +67,7 @@ void debug_sweep_viz(
     const RatPoint_line_segment& rbump
 )
 {
-    using kjb::qd::dbl_ratio;
+    using ivi::qd::dbl_ratio;
 
     static int count = 10000;
     std::ostringstream fn;
@@ -75,10 +75,10 @@ void debug_sweep_viz(
     if (count < 10) fn << '0';
     fn << count++ << ".png";
     const int SIZE=500;
-    kjb::Image i(SIZE, SIZE, 0,0,100);
+    ivi::Image i(SIZE, SIZE, 0,0,100);
 
-    KJB(ASSERT(lbump.b.y > lbump.a.y));
-    KJB(ASSERT(rbump.a.x > lbump.a.x));
+    IVI(ASSERT(lbump.b.y > lbump.a.y));
+    IVI(ASSERT(rbump.a.x > lbump.a.x));
     const RatPoint::Rat
         l = std::max(lbump.b.y - lbump.a.y, rbump.a.x - lbump.a.x),
         dcy = lbump.b.y + lbump.a.y, // double centroid y
@@ -90,26 +90,26 @@ void debug_sweep_viz(
     // sweep line
     i.draw_point(   RBIAS + MAG * dbl_ratio(sweep_location.y),
                     CBIAS + MAG * dbl_ratio(sweep_location.x),
-                    5, kjb::PixelRGBA(200,100,100));
+                    5, ivi::PixelRGBA(200,100,100));
     RatPoint_line_segment h(sweep_location, sweep_location);
     h.a.x = -1;
     h.b.x = 7;
-    draw_line_seg(&i, MAG, RBIAS, CBIAS, 1, h, kjb::PixelRGBA(200,50,50));
+    draw_line_seg(&i, MAG, RBIAS, CBIAS, 1, h, ivi::PixelRGBA(200,50,50));
 
     // all segments
     for (size_t j = 0; j < segs.size(); ++j)
     {
         const RatPoint_line_segment s = segs[j];
-        draw_line_seg(&i, MAG, RBIAS, CBIAS, 1, s, kjb::PixelRGBA(200,200,50));
+        draw_line_seg(&i, MAG, RBIAS, CBIAS, 1, s, ivi::PixelRGBA(200,200,50));
     }
 
     // sweep line segments
-    for (kjb::qd::sweep::SweepLine<Static_segment_map>::const_iterator j=sweep.begin();
+    for (ivi::qd::sweep::SweepLine<Static_segment_map>::const_iterator j=sweep.begin();
             j!=sweep.end(); ++j)
     {
         if (j -> is_fake()) continue;
         const RatPoint_line_segment s = segs[j -> true_index()];
-        draw_line_seg(&i, MAG, RBIAS, CBIAS, 1, s, kjb::PixelRGBA(50,150,50));
+        draw_line_seg(&i, MAG, RBIAS, CBIAS, 1, s, ivi::PixelRGBA(50,150,50));
     }
     i.write(fn.str());
 }
@@ -125,7 +125,7 @@ public:
     Intersect_indices(size_t i, size_t j)
     :   m_indices(i < j ? std::make_pair(i, j) : std::make_pair(j, i))
     {
-        if (i == j) KJB_THROW(kjb::Illegal_argument);
+        if (i == j) IVI_THROW(ivi::Illegal_argument);
     }
 
     operator const std::pair<size_t, size_t>&() const { return m_indices; }
@@ -168,7 +168,7 @@ std::ostream& operator<<(
 std::vector< std::pair<size_t, size_t> > filter(
     const std::vector< std::pair<size_t, size_t> > hits,
     bool ignore_trivia,
-    const kjb::qd::PixPath& path
+    const ivi::qd::PixPath& path
 )
 {
     std::vector< std::pair<size_t, size_t> > vhits;
@@ -177,7 +177,7 @@ std::vector< std::pair<size_t, size_t> > filter(
     for (size_t j = 0; j < hits.size(); ++j)
     {
         const size_t i1 = hits.at(j).first, i2 = hits.at(j).second;
-        KJB(ASSERT(i1 < i2));
+        IVI(ASSERT(i1 < i2));
 
         if (ignore_trivia)
         {
@@ -188,8 +188,8 @@ std::vector< std::pair<size_t, size_t> > filter(
             }
             else
             {
-                KJB(ASSERT(1+i1 == i2));
-                const kjb::qd::PixPoint_line_segment s(path[i1], path[i1+1]),
+                IVI(ASSERT(1+i1 == i2));
+                const ivi::qd::PixPoint_line_segment s(path[i1], path[i1+1]),
                                                      t(path[i2], path[i2+1]);
                 if (    is_degenerate(s)
                     ||  is_degenerate(t)
@@ -217,7 +217,7 @@ void report_intersections(
     std::set< Intersect_indices >* hits
 )
 {
-    KJB(ASSERT(hits));
+    IVI(ASSERT(hits));
     std::vector<size_t> erbody(ulm_union.begin(), ulm_union.end());
 
     while (! erbody.empty())
@@ -247,7 +247,7 @@ bool is_correct_based_on_brute_force_verification(
     {
         for (size_t j = 1+i; j < sl.size(); ++j)
         {
-            if (kjb::qd::is_intersecting(sl[i], sl[j]))
+            if (ivi::qd::is_intersecting(sl[i], sl[j]))
             {
                 brute.push_back( Intersect_indices(i, j) );
             }
@@ -259,7 +259,7 @@ bool is_correct_based_on_brute_force_verification(
                              back_inserter(ssd));
     if (!ssd.empty())
     {
-        kjb_c::set_error("get_intersections() runtime error -- results "
+        ivi_c::set_error("get_intersections() runtime error -- results "
                 "disagree with brute-force verification");
     }
 
@@ -272,7 +272,7 @@ bool is_correct_based_on_brute_force_verification(
 
 
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {
@@ -367,7 +367,7 @@ std::vector< std::pair<size_t, size_t> > get_intersections(
             find_new_event(&eq, *eir.first, *eir.second, ssm, sweep_location);
 #ifdef DEBUGGING
             SLCI bgin(eir.first);
-            KJB(ASSERT(++bgin == eir.second));
+            IVI(ASSERT(++bgin == eir.second));
 #endif
         }
         else
@@ -376,10 +376,10 @@ std::vector< std::pair<size_t, size_t> > get_intersections(
             SLCI li = eir.first, ri = eir.second; // left, right intersectors
             find_new_event(&eq, *eir.first, *++li, ssm, sweep_location);
             find_new_event(&eq, *--ri, *eir.second, ssm, sweep_location);
-            KJB(ASSERT(li != eir.second));
+            IVI(ASSERT(li != eir.second));
         }
     }
-    KJB(ASSERT(2 == sweep.size())); // just the two bumpers
+    IVI(ASSERT(2 == sweep.size())); // just the two bumpers
 
 #if 0 /* formerly, ifdef DEBUGGING */
 
@@ -395,7 +395,7 @@ std::vector< std::pair<size_t, size_t> > get_intersections(
      */
     if (! is_correct_based_on_brute_force_verification(hits, sls))
     {
-        KJB_THROW(Runtime_error);
+        IVI_THROW(Runtime_error);
     }
 #endif
 
@@ -428,7 +428,7 @@ public:
                     && (s.a == x.a || s.b == x.a)
                     && (t.a == x.a || t.b == x.a);
         }
-        KJB_THROW(Illegal_argument);
+        IVI_THROW(Illegal_argument);
     }
 };
 

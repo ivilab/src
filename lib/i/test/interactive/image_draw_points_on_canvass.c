@@ -23,12 +23,12 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
     int read_res, i, j;
     char line_in[ 200 ];
     float r, g, b;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     EPETE(get_initialized_image_2(&ip, 600, 800, 255, 255, 255));
      
     /*
-    EPETE(kjb_display_image(ip, NULL));
+    EPETE(ivi_display_image(ip, NULL));
     */
     /*
     EPETE(create_image_display());
@@ -56,16 +56,16 @@ int main(int argc, char** argv)
         if (read_res == EOF) break; 
         EPETE(ss1i(line_in, &j));
 
-        r = 255.0 * kjb_rand();
-        g = 255.0 * kjb_rand();
-        b = 255.0 * kjb_rand();
+        r = 255.0 * ivi_rand();
+        g = 255.0 * ivi_rand();
+        b = 255.0 * ivi_rand();
 
         EPETE(image_draw_point_2(ip, i,j, 11, r,g,b));
 
-        EPETE(kjb_display_image(ip, NULL));
+        EPETE(ivi_display_image(ip, NULL));
     }
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
     
     return EXIT_SUCCESS; 
 } 

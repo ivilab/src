@@ -33,11 +33,11 @@
 #include <tracking_cpp/tracking_trajectory.h>
 #include <tracking_cpp/tracking_metrics.h>
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 
-using namespace kjb;
-using namespace kjb::tracking;
+using namespace ivi;
+using namespace ivi::tracking;
 using namespace std;
 using namespace boost;
 namespace po = boost::program_options;
@@ -86,7 +86,7 @@ struct Complete_state
     {}
 };
 
-namespace kjb
+namespace ivi
 {
     namespace tracking
     {
@@ -101,7 +101,7 @@ namespace kjb
             copy(istream_iterator<double>(istr), istream_iterator<double>(),
                  back_inserter(elems));
 
-            KJB(ASSERT(elems.size() > 3));
+            IVI(ASSERT(elems.size() > 3));
             IFT(elems.size() <= 7 && elems.size() != 6, Runtime_error,
                 "Cannot read trajectory element: line has wrong format.");
 
@@ -276,7 +276,7 @@ public:
         }
         catch(const po::error& err)
         {
-            KJB_THROW_2(kjb::Exception, err.what());
+            IVI_THROW_2(ivi::Exception, err.what());
         }    
 
     }
@@ -343,14 +343,14 @@ void init_trajectory
     }
     catch(Exception& ex)
     {
-        KJB_THROW_3(IO_error, "%s\nFailed to parse tracks.", 
+        IVI_THROW_3(IO_error, "%s\nFailed to parse tracks.", 
                     (ex.get_msg().c_str()));
     }
 
 }
 
-kjb::Vector get_vector_(const Complete_state& s) {
-    return kjb::Vector(s.position.begin(), s.position.end());
+ivi::Vector get_vector_(const Complete_state& s) {
+    return ivi::Vector(s.position.begin(), s.position.end());
 }
 
 int main(int argc, char** argv)
@@ -457,7 +457,7 @@ int main(int argc, char** argv)
     return 0;
 }
 
-#else // KJB_HAVE_BOOST_POPTION
+#else // IVI_HAVE_BOOST_POPTION
 #include <iostream>
 int main()
 {

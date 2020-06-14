@@ -22,7 +22,7 @@
 #include <sstream>
 #include <algorithm>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Get end-point with lowest y-value.
@@ -117,14 +117,14 @@ void Collinear_segment_chain::read(std::istream& in)
 
     if(!(field_value = read_field_value(in, "num_segments")))
     {
-        KJB_THROW_2(Illegal_argument,
+        IVI_THROW_2(Illegal_argument,
                     "Collinear line segment set, Could not read number of segments");
     }
     istringstream ist(field_value);
     ist >> num_segments;
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line segment set");
+        IVI_THROW_2(Illegal_argument, "Invalid line segment set");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -149,5 +149,5 @@ void Collinear_segment_chain::write(std::ostream& out) const
 
 }
 
-} //namespace kjb
+} //namespace ivi
 

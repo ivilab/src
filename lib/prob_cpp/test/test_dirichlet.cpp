@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: test_dirichlet.cpp 20241 2016-01-20 22:34:46Z jguan1 $ */
+/* $Id: test_dirichlet.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_pdf.h>
@@ -27,7 +27,7 @@
 
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {

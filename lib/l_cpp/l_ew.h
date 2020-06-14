@@ -1,4 +1,4 @@
-/* $Id: l_ew.h 17249 2014-08-07 16:03:32Z predoehl $ */
+/* $Id: l_ew.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-#ifndef KJB_L_EW_DEFINED
-#define KJB_L_EW_DEFINED
+#ifndef IVI_L_EW_DEFINED
+#define IVI_L_EW_DEFINED
 
 /**
  * @file 
@@ -26,11 +26,11 @@
  * @author  Ernesto Brau
  */
 
-namespace kjb
+namespace ivi
 {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  *
  * @{
  */
@@ -116,7 +116,7 @@ Indexable ew_sqrt(const Indexable& I)
 
 /// @}
 
-} //namespace kjb
+} //namespace ivi
 
-#endif /* KJB_L_EW_DEFINED */
+#endif /* IVI_L_EW_DEFINED */
 

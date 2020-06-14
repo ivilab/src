@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: l_int_matrix.cpp 19162 2015-05-26 18:43:28Z cdawson $ */
+/* $Id: l_int_matrix.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /** @file
  *
@@ -20,7 +20,7 @@
  *
  * @brief Definition for the Int_matrix class methods.
  *
- * The Int_matrix class is a thin wrapper on the KJB Int_matrix struct
+ * The Int_matrix class is a thin wrapper on the IVI Int_matrix struct
  * and its related functionality.
  *
  * If you make changes to this file, PLEASE CONSIDER making parallel changes to
@@ -43,10 +43,10 @@
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
 
-namespace kjb {
+namespace ivi {
 
 /**
- * @addtogroup kjbLinearAlgebra
+ * @addtogroup iviLinearAlgebra
  * @{
  */
 
@@ -57,7 +57,7 @@ void Int_matrix::throw_bad_bounds( int row_ix, int col_ix ) const
     msg << "Invalid Int_matrix access at (" << row_ix << ',' << col_ix
         << ").  Int_matrix size is " << get_num_rows() << " x "
         << get_num_cols() << ".\n";
-    KJB_THROW_2( Index_out_of_bounds, msg.str() );
+    IVI_THROW_2( Index_out_of_bounds, msg.str() );
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
@@ -86,16 +86,16 @@ Int_matrix::Int_matrix(const std::string& file_name)
     if ( file_name.length() == 0 )
     {
         // Test program was HERE.
-        KJB_THROW_2(Illegal_argument, "Cannot read vector from file:  "
+        IVI_THROW_2(Illegal_argument, "Cannot read vector from file:  "
                                             "filename is empty." );
     }
     else
     {
         // Test program was HERE.
-        int err = kjb_c::read_int_matrix(&m_matrix, file_name.c_str());
+        int err = ivi_c::read_int_matrix(&m_matrix, file_name.c_str());
         if(err)
         {
-            KJB_THROW_3(kjb::IO_error, "File not found %s", (file_name.c_str()));
+            IVI_THROW_3(ivi::IO_error, "File not found %s", (file_name.c_str()));
         }
     }
 }
@@ -117,8 +117,8 @@ Int_matrix create_row_matrix( const Int_matrix::Vec_type& vec )
 
 Int_matrix create_diagonal_matrix(const Int_matrix::Vec_type& diagonal)
 {
-    kjb_c::Int_matrix* result = 0;
-    ETX(kjb_c::get_diagonal_int_matrix(&result, diagonal.get_c_vector()));
+    ivi_c::Int_matrix* result = 0;
+    ETX(ivi_c::get_diagonal_int_matrix(&result, diagonal.get_c_vector()));
     return Int_matrix(result);
 }
 
@@ -194,7 +194,7 @@ Int_matrix& Int_matrix::operator/=(Int_matrix::Value_type op2)
     if ( 0 == op2 )
     {
         // Test program was HERE.
-        KJB_THROW( Divide_by_zero );
+        IVI_THROW( Divide_by_zero );
     }
     else
     {
@@ -231,7 +231,7 @@ bool operator==(const Int_matrix& op1, const Int_matrix::Impl_type& op2)
          * But, if you DID reach here, the answer clearly should be "false."
          */
 
-        KJB(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
+        IVI(UNTESTED_CODE()); // Unreachable line (as of 11 Feb. 2010)
         return false;
     }
     else if (       op1.get_num_rows() != op2.num_rows
@@ -243,7 +243,7 @@ bool operator==(const Int_matrix& op1, const Int_matrix::Impl_type& op2)
     else
     {
         // Test program was HERE.
-        return 0 == kjb_c::max_abs_int_matrix_difference( op1.get_c_matrix(), &op2 );
+        return 0 == ivi_c::max_abs_int_matrix_difference( op1.get_c_matrix(), &op2 );
     }
 }
 
@@ -271,7 +271,7 @@ Int_matrix::Vec_type sum_int_matrix_rows( const Int_matrix& m )
 {
     // not an exception-safe way to roll
     Int_matrix::Vec_type::Impl_type * vp = 00;
-    ETX( kjb_c::sum_int_matrix_rows( &vp, m.get_c_matrix() ) );
+    ETX( ivi_c::sum_int_matrix_rows( &vp, m.get_c_matrix() ) );
     return Int_matrix::Vec_type( vp );
 }
     

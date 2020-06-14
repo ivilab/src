@@ -38,7 +38,7 @@
 
 #include <unistd.h>
 
-//using namespace kjb;
+//using namespace ivi;
 using namespace std;
 
 double SIGMA = .05;
@@ -75,17 +75,17 @@ double log_prior(const Point& /*m*/) {return 0; }
 Mh_proposal_result proposal(const Point& m_in, Point& m_out)
 {
     Mh_proposal_result result;
-    double delta = SIGMA * kjb_c::gauss_rand();
+    double delta = SIGMA * ivi_c::gauss_rand();
     double pdf   = 0;
-    kjb_c::gaussian_log_pdf(&pdf, delta, 0, SIGMA);
+    ivi_c::gaussian_log_pdf(&pdf, delta, 0, SIGMA);
 
     result.fwd_prob = pdf;
 
     m_out = m_in;
     m_out.x += delta;
 
-    delta = SIGMA * kjb_c::gauss_rand();
-    kjb_c::gaussian_log_pdf(&pdf, delta, 0, SIGMA);
+    delta = SIGMA * ivi_c::gauss_rand();
+    ivi_c::gaussian_log_pdf(&pdf, delta, 0, SIGMA);
     
     m_out.y += delta;
 
@@ -247,7 +247,7 @@ int main (int /* argc */, char ** /*argv */)
     g1.set_terminal_std("wxt");
     g2.set_terminal_std("wxt"); */
 
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     muller_plot.cmd("load \"muller-V.gnu\"");
 

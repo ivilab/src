@@ -8,7 +8,7 @@
 #include <boost/lexical_cast.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {

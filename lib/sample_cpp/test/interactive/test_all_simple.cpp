@@ -14,7 +14,7 @@
 #include <boost/bind.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 //const int d = 4;
 const int num_samples = 5000;
@@ -64,7 +64,7 @@ int main(int /* argc */, char** /* argv */)
         Vector mu("test_all_simple_mu");
         Matrix Sigma("test_all_simple_sigma");
         MV_gaussian_distribution P(mu, Sigma);
-        Model_evaluator<Vector>::Type log_target = boost::bind(static_cast<double (*)(const MV_gaussian_distribution&, const Vector&)>(kjb::log_pdf), P, _1);
+        Model_evaluator<Vector>::Type log_target = boost::bind(static_cast<double (*)(const MV_gaussian_distribution&, const Vector&)>(ivi::log_pdf), P, _1);
         int d = mu.get_length();
 
         // create initial values
@@ -95,15 +95,15 @@ int main(int /* argc */, char** /* argv */)
         gibbs_sampler.add_recorder(&gibbs_recorder);
 
         // HMC sampler
-        Vector_numerical_gradient<Vector> gradient(log_target, Constant_parameter_evaluator<Vector>(kjb::Vector(d, 0.001)));
-        Vector_hmc_step<Vector> hmc_step(log_target, 100, gradient, Constant_parameter_evaluator<Vector>(kjb::Vector(d, 0.005)));
+        Vector_numerical_gradient<Vector> gradient(log_target, Constant_parameter_evaluator<Vector>(ivi::Vector(d, 0.001)));
+        Vector_hmc_step<Vector> hmc_step(log_target, 100, gradient, Constant_parameter_evaluator<Vector>(ivi::Vector(d, 0.005)));
         Sampler hmc_sampler(hmc_step, initial_model, initial_lt);
 
         Expectation_recorder<Vector, Vector> hmc_recorder(Identity<Vector>(), Vector(d, 0.0));
         hmc_sampler.add_recorder(&hmc_recorder);
 
         // SD "sampler"
-        Vector_sd_step<Vector>::Type sd_step(log_target, 1, gradient, Constant_parameter_evaluator<Vector>(kjb::Vector(d, 0.05)), 0.8);
+        Vector_sd_step<Vector>::Type sd_step(log_target, 1, gradient, Constant_parameter_evaluator<Vector>(ivi::Vector(d, 0.05)), 0.8);
         Sampler sd_sampler(sd_step, initial_model, initial_lt);
 
         Expectation_recorder<Vector, Vector> sd_recorder(Identity<Vector>(), Vector(d, 0.0));
@@ -111,7 +111,7 @@ int main(int /* argc */, char** /* argv */)
 
 
         // SD "sampler" ("optimized")
-        Vector_sd_step<Vector, false>::Type sd_opt_step(log_target, 1, gradient, Constant_parameter_evaluator<Vector>(kjb::Vector(d, 0.05)), 0.8);
+        Vector_sd_step<Vector, false>::Type sd_opt_step(log_target, 1, gradient, Constant_parameter_evaluator<Vector>(ivi::Vector(d, 0.05)), 0.8);
         Sampler sd_opt_sampler(sd_opt_step, initial_model, initial_lt);
 
         Expectation_recorder<Vector, Vector> sd_opt_recorder(Identity<Vector>(), Vector(d, 0.0));

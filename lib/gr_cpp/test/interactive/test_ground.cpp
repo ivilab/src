@@ -27,8 +27,8 @@
 #include <iostream>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 const double win_width = 768;
 const double win_height = 576;
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
 
         glutMainLoop();
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;

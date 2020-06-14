@@ -16,17 +16,17 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_features_to_track.cpp 21155 2017-01-29 19:20:33Z jguan1 $ */
+/* $Id: cv_features_to_track.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <wrap_opencv_cpp/cv_features_to_track.h>
 #include <wrap_opencv_cpp/cv_util.h>
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 std::vector<Vector> CV_features_to_track_detector::find_good_features
 (
     const Image& image
@@ -77,7 +77,7 @@ std::vector<Vector> CV_features_to_track_detector::find_good_features
     if(x > image.get_num_cols() || y > image.get_num_rows() ||
         (width-x) > image.get_num_cols() || (height-y) > image.get_num_rows() )
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Bad region of interst of the image");
+        IVI_THROW_2(ivi::Illegal_argument, "Bad region of interst of the image");
     }
 
     CvRect roi = cvRect(x, y, width, height);
@@ -125,8 +125,8 @@ std::vector<Vector> CV_features_to_track_detector::find_good_features
 }
 
 //#else
-//    KJB_THROW_2(Missing_dependency, "opencv");
+//    IVI_THROW_2(Missing_dependency, "opencv");
 #endif
 
 } // namespace opencv 
-} // namespace kjb
+} // namespace ivi

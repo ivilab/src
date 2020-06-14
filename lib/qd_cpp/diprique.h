@@ -4,13 +4,13 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: diprique.h 17555 2014-09-18 07:36:52Z predoehl $
+ * $Id: diprique.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef DIPRIQUEUE_H_INCLUDED_PREDOEHL_UOFARIZONAVISION
 #define DIPRIQUEUE_H_INCLUDED_PREDOEHL_UOFARIZONAVISION 1
 
-namespace kjb
+namespace ivi
 {
 namespace qd
 {

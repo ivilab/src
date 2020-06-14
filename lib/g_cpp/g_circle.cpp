@@ -28,9 +28,9 @@ Implementation was derived from the forumulas here:
 http://paulbourke.net/geometry/circlefrom3/
 */
 
-#warning "[CODE POLICE] This file needs cleanup to conform to libkjb style."
+#warning "[CODE POLICE] This file needs cleanup to conform to libivi style."
 
-using namespace kjb;
+using namespace ivi;
 
 Circle::Circle() : center(2, 0.0)
 {
@@ -57,7 +57,7 @@ Circle::Circle(Matrix* points) : center(2, 0.0){
     //(*this) =  computeCircleGivenPoints(Matrix* mp);
 }
 
-Circle::Circle(const std::vector<kjb::Vector> & ipoints) : center(2,0.0) 
+Circle::Circle(const std::vector<ivi::Vector> & ipoints) : center(2,0.0) 
 {
     (*this) =  computeCircleGivenPoints(ipoints);
 }
@@ -196,7 +196,7 @@ Circle Circle::computeCircleGivenPoints(Matrix* mp){
     return *best_circle;
 }
 
-Circle Circle::computeCircleGivenPoints(const std::vector<kjb::Vector> & ipoints){
+Circle Circle::computeCircleGivenPoints(const std::vector<ivi::Vector> & ipoints){
 
     const int passes = 200;
     int i = 0;
@@ -291,7 +291,7 @@ Image Circle::draw_circle(Matrix* mp){
         yoffset = -(center(1) -radius);
     }
 
-    kjb::Image i = Image(GetCenter()(1) + this->GetRadius() + 50+yoffset,this->GetCenter()(0) + this->GetRadius() +50+xoffset);
+    ivi::Image i = Image(GetCenter()(1) + this->GetRadius() + 50+yoffset,this->GetCenter()(0) + this->GetRadius() +50+xoffset);
     
     i.draw_circle((int)this->GetCenter()(1)+yoffset,(int)this->GetCenter()(0)+xoffset,(int)this->GetRadius(),2,p);
     printf("Image dims (%d %d)\n",i.get_num_rows(),i.get_num_cols());
@@ -371,43 +371,43 @@ void Circle_in_3d::read(std::istream & in)
     // Radius
     if(!(field_value = read_field_value(in, "radius")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing radius");
+        IVI_THROW_2(Illegal_argument, "Missing radius");
     }
     istringstream ist(field_value);
     ist >> circle_radius;
     if(circle_radius < 0)
     {
-        KJB_THROW_2(Illegal_argument, "Radius must be bigger than 0");
+        IVI_THROW_2(Illegal_argument, "Radius must be bigger than 0");
     }
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing radius");
+        IVI_THROW_2(Illegal_argument, "Missing radius");
     }
     ist.clear(std::ios_base::goodbit);
 
     // Center
     if(!(field_value = read_field_value(in, "center")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing center");
+        IVI_THROW_2(Illegal_argument,"Missing center");
     }
     ist.str(field_value);
     ist >> circle_center(0) >> circle_center(1) >> circle_center(2);
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing center");
+        IVI_THROW_2(Illegal_argument, "Missing center");
     }
     ist.clear(std::ios_base::goodbit);
 
     // Normal
     if(!(field_value = read_field_value(in, "normal")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing normal");
+        IVI_THROW_2(Illegal_argument,"Missing normal");
     }
     ist.str(field_value);
     ist >> circle_normal(0) >> circle_normal(1) >> circle_normal(2);
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing normal");
+        IVI_THROW_2(Illegal_argument, "Missing normal");
     }
     ist.clear(std::ios_base::goodbit);
 }

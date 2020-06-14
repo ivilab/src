@@ -38,7 +38,7 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using boost::bind;
 
@@ -263,7 +263,7 @@ void update_points()
 void generate_data()
 {
     const size_t N = ins.size();
-#if KJB_CXX11_FLAGS
+#if IVI_CXX11_FLAGS
     auto prior = gp::make_prior(gp::Zero(), gp::Sqex(gt_scale, gt_svar), ins);
 #else 
     gp::Prior<gp::Zero, gp::Sqex>  prior = gp::make_prior(gp::Zero(), gp::Sqex(gt_scale, gt_svar), ins);
@@ -274,7 +274,7 @@ void generate_data()
     y = f;
     for(size_t i = 0; i < N; ++i)
     {
-        y[i] += kjb::sample(lhood);
+        y[i] += ivi::sample(lhood);
     }
 }
 

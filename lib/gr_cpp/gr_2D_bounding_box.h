@@ -27,8 +27,8 @@
  */
 
 
-#ifndef KJB_AA_RECTANGLE_2D_H
-#define KJB_AA_RECTANGLE_2D_H
+#ifndef IVI_AA_RECTANGLE_2D_H
+#define IVI_AA_RECTANGLE_2D_H
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "m_cpp/m_vector.h"
@@ -39,7 +39,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 class Base_gl_interface;
 class Image;
 
@@ -136,7 +136,7 @@ public:
 
 
     /** Returns true if pt lies inside this box */
-    bool contains(const kjb::Vector& pt) const
+    bool contains(const ivi::Vector& pt) const
     {
         ASSERT(pt.size() == 2);
 
@@ -157,7 +157,7 @@ public:
      *                              OTHER                                   *
      *===================================================================== */
 
-    void draw(kjb::Image & img, double ir = 255, double ig = 0, double ib = 0, double iwidth = 1.0) const;
+    void draw(ivi::Image & img, double ir = 255, double ig = 0, double ib = 0, double iwidth = 1.0) const;
 
     void write_corners_on(std::ostream& ofs);
 
@@ -256,9 +256,9 @@ Bounding_Box2D intersect(const Bounding_Box2D& b1, const Bounding_Box2D& b2);
 /**
  * Translate a bounding box by a 2d offset vector
  */
-inline void translate(kjb::Axis_aligned_rectangle_2d& box, const kjb::Vector& t)
+inline void translate(ivi::Axis_aligned_rectangle_2d& box, const ivi::Vector& t)
 {
-    kjb::Vector c = box.get_center();
+    ivi::Vector c = box.get_center();
     box.set_center(c + t);
 }
 
@@ -269,7 +269,7 @@ inline void translate(kjb::Axis_aligned_rectangle_2d& box, const kjb::Vector& t)
  * i.e. boxes not centered at the origin will change position (similar to
  * opengl). If this is undesirable, scale first, then translate.
  */
-void scale(kjb::Axis_aligned_rectangle_2d& box, const kjb::Vector& s);
+void scale(ivi::Axis_aligned_rectangle_2d& box, const ivi::Vector& s);
 
 /**
  * @brief Projects a set of 3D points onto the image plane,
@@ -291,7 +291,7 @@ void get_projected_bbox_from_3Dpoints
  * This is implemented in the most straight-forward way possible; it's
  * linear in the number of points.
  *
- * @param   first   Points to the first kjb::Vector in the range.
+ * @param   first   Points to the first ivi::Vector in the range.
  * @param   first   Past-the-end iterator in the range.
  */
 template<class Iterator>
@@ -311,8 +311,8 @@ Axis_aligned_rectangle_2d compute_bounding_box(Iterator first, Iterator last)
  */
 double get_rectangle_intersection
 (
-    const kjb::Bounding_Box2D& b1,
-    const kjb::Bounding_Box2D& b2
+    const ivi::Bounding_Box2D& b1,
+    const ivi::Bounding_Box2D& b2
 );
 
 /**
@@ -324,7 +324,7 @@ void swap(Axis_aligned_rectangle_2d& r1, Axis_aligned_rectangle_2d& r2)
     r1.swap(r2);
 }
 
-} // namespace kjb
+} // namespace ivi
 
 #endif
 

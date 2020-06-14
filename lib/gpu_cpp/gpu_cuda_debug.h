@@ -1,4 +1,4 @@
-/* $Id: gpu_cuda_debug.h 10605 2011-09-29 19:50:29Z predoehl $ */
+/* $Id: gpu_cuda_debug.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -19,12 +19,12 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_CUDA_DEBUG
-#define KJB_CPP_CUDA_DEBUG
+#ifndef IVI_CPP_CUDA_DEBUG
+#define IVI_CPP_CUDA_DEBUG
 
 #include <gpu_cpp/gpu_cuda.h>
 
-#ifdef KJB_HAVE_CUDA
-kjb::Vector kjb_gpu_debug_to_vector_uint(CUdeviceptr ptr, int width, int height, int pitch);
+#ifdef IVI_HAVE_CUDA
+ivi::Vector ivi_gpu_debug_to_vector_uint(CUdeviceptr ptr, int width, int height, int pitch);
 #endif
 #endif

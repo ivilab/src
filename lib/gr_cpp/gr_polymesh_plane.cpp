@@ -54,7 +54,7 @@
 
 #include "gr_cpp/gr_polymesh_plane.h"
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * @param p  the polymesh

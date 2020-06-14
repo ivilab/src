@@ -1,4 +1,4 @@
-/* $Id: test_legacy.cpp 15381 2013-09-20 00:19:18Z predoehl $ */
+/* $Id: test_legacy.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 
 int main()
 {
-    kjb::Image i;
+    ivi::Image i;
     i.set_c_ptr(NULL);
     i.non_const_c_ptr();
     return 0;

@@ -7,11 +7,11 @@
  */
 
 /*
- * $Id: gsl_multimin.h 17393 2014-08-23 20:19:14Z predoehl $
+ * $Id: gsl_multimin.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef GSL_MULTIMIN_WRAP_H_KJBLIB_UARIZONAVISION
-#define GSL_MULTIMIN_WRAP_H_KJBLIB_UARIZONAVISION
+#ifndef GSL_MULTIMIN_WRAP_H_IVILIB_UARIZONAVISION
+#define GSL_MULTIMIN_WRAP_H_IVILIB_UARIZONAVISION
 
 #include <l_cpp/l_exception.h>
 #include <gsl_cpp/gsl_util.h>
@@ -19,7 +19,7 @@
 
 #include <boost/function/function1.hpp>
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #include "gsl/gsl_multimin.h" /* no need for extern "C" */
 #else
 #warning "Gnu Scientific Library is absent, yet essential to this program."
@@ -55,7 +55,7 @@ struct gsl_multimin_function {
 
 
 
-namespace kjb {
+namespace ivi {
 
 
 
@@ -68,7 +68,7 @@ namespace kjb {
  */
 class Gsl_Multimin_fdf {
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     /**
      * I split up the GSL multimin wrapper into two objects, namely
      * basic_Gsl_Multimin_fdf (henceforth "basic_") and
@@ -139,7 +139,7 @@ public:
      * @param verbosity If true, then a bad iterate() call will emit a message
      *                  to stderr.
      *
-     * @throws KJB_error if the input is bad:  e.g., x0 equal to NULL or
+     * @throws IVI_error if the input is bad:  e.g., x0 equal to NULL or
      *          cannot allocate memory.
      */
     Gsl_Multimin_fdf(
@@ -150,7 +150,7 @@ public:
         double tol,
         bool verbosity = true
     )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_min( type, x0 ? x0 -> size : 0 ),
         m_verbose( verbosity )
     {
@@ -159,7 +159,7 @@ public:
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -173,7 +173,7 @@ public:
      */
     int iterate()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         int rc = gsl_multimin_fdfminimizer_iterate( m_min.p );
         if (m_verbose) gsl_iterate_EPE(rc);
         return rc;
@@ -183,7 +183,7 @@ public:
     /// @brief query the current best argmin of the minimizer
     gsl_vector* argmin() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_fdfminimizer_x( m_min.p );
 #endif
     }
@@ -191,7 +191,7 @@ public:
     /// @brief query the current best min value of the function to be minimized
     double min() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_fdfminimizer_minimum( m_min.p );
 #endif
     }
@@ -199,7 +199,7 @@ public:
     /// @brief query the gradient of the function at the current location
     gsl_vector* gradient() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_fdfminimizer_gradient( m_min.p  );
 #endif
     }
@@ -207,7 +207,7 @@ public:
     /// @brief access a string describing the algorithm
     const char* name() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_fdfminimizer_name( m_min.p );
 #endif
     }
@@ -219,14 +219,14 @@ public:
      */
     int test_gradient( double epsabs ) const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_test_gradient( m_min.p -> gradient, epsabs );
 #endif
     }
 
     /**
      * @brief Restart the minimizer at the current argmin value.
-     * @throws KJB_error if an error occurs (not sure what that would be)
+     * @throws IVI_error if an error occurs (not sure what that would be)
      *
      * Bad news:
      * If you want to restart the whole thing at a new point in the domain, I'm
@@ -239,7 +239,7 @@ public:
      */
     void restart()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         GSL_ETX( gsl_multimin_fdfminimizer_restart( m_min.p ) );
 #endif
     }
@@ -253,7 +253,7 @@ public:
      */
     void swap( Gsl_Multimin_fdf& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( this == &that )
         {
             return;
@@ -288,7 +288,7 @@ public:
  */
 class Gsl_Multimin_f {
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     /**
      * I split up the GSL multimin wrapper into two objects, namely
      * basic_Gsl_Multimin_f (henceforth "basic_") and
@@ -364,7 +364,7 @@ public:
      * @param verbosity If true, then a bad iterate() call will emit a message
      *                  to stderr.
      *
-     * @throws KJB_error if the input is bad:  e.g., x0 equal to NULL or
+     * @throws IVI_error if the input is bad:  e.g., x0 equal to NULL or
      *          cannot allocate memory.
      */
     Gsl_Multimin_f(
@@ -374,7 +374,7 @@ public:
         const gsl_vector* step_size,
         bool verbosity = true
     )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_min( type, x0 ? x0 -> size : 0 ),
         m_verbose( verbosity ),
         m_initialized(false)
@@ -383,21 +383,21 @@ public:
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
     Gsl_Multimin_f(
             size_t size,
             const gsl_multimin_fminimizer_type* type = gsl_multimin_fminimizer_nmsimplex2)
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_min( type, size),
         m_verbose( false ),
         m_initialized(false)
     {}
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -406,9 +406,9 @@ public:
         const gsl_vector* x0,
         const gsl_vector* step_size)
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if(x0->size != step_size->size)
-            KJB_THROW(kjb::Dimension_mismatch);
+            IVI_THROW(ivi::Dimension_mismatch);
         GSL_ETX( gsl_multimin_fminimizer_set( m_min.p, f, x0, step_size ) );
         m_initialized = true;
 #endif
@@ -416,7 +416,7 @@ public:
 
     size_t dim() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return m_min.dim;
 #endif
     }
@@ -431,10 +431,10 @@ public:
      */
     int iterate()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if(!m_initialized)
         {
-            KJB_THROW_2(Runtime_error, "Minimizer not initialized");
+            IVI_THROW_2(Runtime_error, "Minimizer not initialized");
         }
 
         int rc = gsl_multimin_fminimizer_iterate( m_min.p );
@@ -446,7 +446,7 @@ public:
     /// @brief query the current best argmin of the minimizer
     gsl_vector* argmin() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_fminimizer_x( m_min.p );
 #endif
     }
@@ -454,7 +454,7 @@ public:
     /// @brief query the current best min value of the function to be minimized
     virtual double min() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_fminimizer_minimum( m_min.p );
 #endif
     }
@@ -462,7 +462,7 @@ public:
     /// @brief access a string describing the algorithm
     const char* name() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_multimin_fminimizer_name( m_min.p );
 #endif
     }
@@ -476,7 +476,7 @@ public:
      */
     int test_size( double epsabs ) const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         
         double size = gsl_multimin_fminimizer_size(m_min.p);
         return gsl_multimin_test_size( size, epsabs );
@@ -493,7 +493,7 @@ public:
      */
     void swap( Gsl_Multimin_f& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( this == &that )
         {
             return;
@@ -625,7 +625,7 @@ public:
             bool negate_evaluator = false)
     {
         negate_evaluator_ = negate_evaluator;
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         size_t num_dimensions = dim();
         // WARNING: possibly guess and/or step_size need to exist throughout the life of the minimizer.  If this immediately segfaults, this is probably why.
 
@@ -650,14 +650,14 @@ public:
 
         Base::initialize(&gsl_f_, gsl_guess, gsl_step_size);
 #else
-        KJB_THROW_2(Missing_dependency, "gsl");
+        IVI_THROW_2(Missing_dependency, "gsl");
 #endif
     }
 
     const T& get() const
     {
         if(!reference_)
-            KJB_THROW_2(Runtime_error, "Not initialized");
+            IVI_THROW_2(Runtime_error, "Not initialized");
         from_gsl_(argmin(), *reference_);
         return *reference_;
     }
@@ -665,7 +665,7 @@ public:
     /// @brief query the current best min value of the function to be minimized
     double min() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 
         double result = Base::min();
         return (negate_evaluator_ ? -result : result);
@@ -684,24 +684,24 @@ private:
 };
 
 
-} // namespace kjb
+} // namespace ivi
 
 namespace std {
 
     /// @brief Swap two wrapped multimin objects.
     template<>
-    inline void swap( kjb::Gsl_Multimin_fdf& m1, kjb::Gsl_Multimin_fdf& m2 )
+    inline void swap( ivi::Gsl_Multimin_fdf& m1, ivi::Gsl_Multimin_fdf& m2 )
     {
         m1.swap( m2 );
     }
 
     /// @brief Swap two wrapped multimin objects.
     template<>
-    inline void swap( kjb::Gsl_Multimin_f& m1, kjb::Gsl_Multimin_f& m2 )
+    inline void swap( ivi::Gsl_Multimin_f& m1, ivi::Gsl_Multimin_f& m2 )
     {
         m1.swap( m2 );
     }
 }
 
 
-#endif /* GSL_MULTIMIN_WRAP_H_KJBLIB_UARIZONAVISION */
+#endif /* GSL_MULTIMIN_WRAP_H_IVILIB_UARIZONAVISION */

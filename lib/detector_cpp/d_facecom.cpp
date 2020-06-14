@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: d_facecom.cpp 21296 2017-03-07 06:00:29Z jguan1 $ */
+/* $Id: d_facecom.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <detector_cpp/d_facecom.h>
 
@@ -38,9 +38,9 @@
 #include <string>
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 
-std::vector<Face_detection> kjb::read_face_file
+std::vector<Face_detection> ivi::read_face_file
 (
     std::istream& is
 )
@@ -61,7 +61,7 @@ std::vector<Face_detection> kjb::read_face_file
 
 /* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ */
 
-std::vector<std::vector<Face_detection> > kjb::read_face_files
+std::vector<std::vector<Face_detection> > ivi::read_face_files
 (
     const std::vector<std::string>& face_fps
 )
@@ -72,7 +72,7 @@ std::vector<std::vector<Face_detection> > kjb::read_face_files
         std::ifstream face_ifs(face_fps[i].c_str());
         if(face_ifs.fail())
         {
-            KJB_THROW_3(IO_error, "Could not open file: %s",
+            IVI_THROW_3(IO_error, "Could not open file: %s",
                         (face_fps[i].c_str()));
         }
 
@@ -82,7 +82,7 @@ std::vector<std::vector<Face_detection> > kjb::read_face_files
     return faces;
 }
 
-Vector kjb::gaze_direction
+Vector ivi::gaze_direction
 (
     const Face_detection& face,
     const Perspective_camera& camera
@@ -102,7 +102,7 @@ Vector kjb::gaze_direction
     return gaze_dir;
 }
 
-Vector kjb::face_location_3d
+Vector ivi::face_location_3d
 (
     const Face_detection& face,
     const Perspective_camera& camera,
@@ -159,7 +159,7 @@ bool operator<(const Face_detection& f1, const Face_detection& f2)
     return f1.box().get_bottom_center() < f2.box().get_bottom_center();
 }
 
-Face_detection kjb::parse_face_line
+Face_detection ivi::parse_face_line
 (
     const std::string& line 
 )
@@ -172,7 +172,7 @@ Face_detection kjb::parse_face_line
     copy(istream_iterator<double>(istr), istream_iterator<double>(),
          back_inserter(elems));
 
-    KJB(ASSERT(elems.size() == NUM_FIELDS || elems.size() == NUM_FIELDS + 1));
+    IVI(ASSERT(elems.size() == NUM_FIELDS || elems.size() == NUM_FIELDS + 1));
     IFT((elems.size() == NUM_FIELDS || elems.size() == NUM_FIELDS + 1),
         Runtime_error,
         "Cannot read face trajectory element: line has wrong format.");

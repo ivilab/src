@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm.c 6041 2010-06-28 22:16:07Z kobus $ */
+/* $Id: wrap_svm.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /* =========================================================================== *
@@ -45,14 +45,14 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 
 /*
- * Kobus: Use this to test without KJB_HAVE_LIBSVM
-#undef KJB_HAVE_LIBSVM
+ * Kobus: Use this to test without IVI_HAVE_LIBSVM
+#undef IVI_HAVE_LIBSVM
 */
 
 /* This table must be updated in parallel with fs_svm_prediction_methods. */
 static Method_option fs_svm_computation_methods[ ] =
 {
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
     { "libsvm",   "libsvm",   (int(*)())do_libsvm_svm_computation},
 #endif
     { "svmlight", "svmlight", (int(*)())do_svmlight_svm_computation}
@@ -73,7 +73,7 @@ static const char* fs_svm_computation_method_option_long_str =
 /* This table must be updated in parallel with fs_svm_computation_methods. */
 static Method_option fs_svm_prediction_methods[ ] =
 {
-#ifdef KJB_HAVE_LIBSVM
+#ifdef IVI_HAVE_LIBSVM
     { "libsvm",   "libsvm",   (int(*)())do_libsvm_svm_prediction},
 #endif
     { "svmlight", "svmlight", (int(*)())do_svmlight_svm_prediction}
@@ -151,7 +151,7 @@ int set_svm_options(const char* option, const char* value)
  *
  * This routine builds a Support Vector Machine using one of possibly several
  * wrapped methods under the control of user supplied options. The default is to
- * use libsvm if it is available. This KJB library interface to support vector
+ * use libsvm if it is available. This IVI library interface to support vector
  * machine code is file based. It is up to the user to be consistent regarding
  * building and predicting as this is not currently validated.
  *
@@ -215,7 +215,7 @@ int compute_svm(const char* training_file_name, const char * model_file_name,
  *
  * This routine predicts with a support vector machine built with one of
  * possibly several wrapped methods under the control of user supplied options.
- * The default is to use libsvm if it is available. This KJB library interface
+ * The default is to use libsvm if it is available. This IVI library interface
  * to support vector machine code is file based. It is up to the user to be
  * consistent regarding building and predicting as this is not currently
  * validated.

@@ -1,5 +1,5 @@
 
-/* $Id: i_float_io.c 22170 2018-06-23 23:01:50Z kobus $ */
+/* $Id: i_float_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -36,14 +36,14 @@
 #include "i/i_valid.h"
 #include "i/i_video.h"
 
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
 #include "tiffio.h"
 #endif
 
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
 #ifndef __C2MAN__
 
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 #ifdef SUN5
 extern "C"
 {
@@ -58,7 +58,7 @@ extern "C"
 #    include "jpeglib.h"
 #undef boolean 
 
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 #ifdef SUN5
 }
 #endif
@@ -155,51 +155,51 @@ static int print_invalid_pixel_colour_option(void);
 static int print_display_matrix(void);
 static void free_display_matrix(void);
 
-static int kjb_read_image_3
+static int ivi_read_image_3
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* file_name_and_sub_image,
     int* validity_data_is_part_of_image_ptr
 );
 
-static int read_image_from_raster(KJB_image** ip, FILE* fp);
+static int read_image_from_raster(IVI_image** ip, FILE* fp);
 
-#ifdef KJB_HAVE_TIFF
-static int read_image_from_tiff(KJB_image** ipp, FILE* fp);
+#ifdef IVI_HAVE_TIFF
+static int read_image_from_tiff(IVI_image** ipp, FILE* fp);
 #endif
 
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
 #ifndef __C2MAN__
-static int read_image_from_jpeg(KJB_image** ipp, FILE* fp);
+static int read_image_from_jpeg(IVI_image** ipp, FILE* fp);
 #endif
 #endif
 
 static int read_image_from_pcd
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* file_name,
     const char* sub_image,
     int         pcd_rotate
 );
 
-static int ow_convert_pcd_ycc_to_rgb(KJB_image* ip);
+static int ow_convert_pcd_ycc_to_rgb(IVI_image* ip);
 
-static int read_image_from_bmp(KJB_image** ipp, FILE* fp);
+static int read_image_from_bmp(IVI_image** ipp, FILE* fp);
 
-static int read_image_from_pnm_P6(KJB_image** ipp, FILE* fp);
+static int read_image_from_pnm_P6(IVI_image** ipp, FILE* fp);
 
 static int read_pnm_6_header_num(FILE* fp, int* num_ptr);
 
-static int read_image_from_MID_file(KJB_image** ip, FILE* fp);
+static int read_image_from_MID_file(IVI_image** ip, FILE* fp);
 
-static int read_image_from_raw_dcs_460_16_bit(KJB_image** ipp, FILE* fp);
+static int read_image_from_raw_dcs_460_16_bit(IVI_image** ipp, FILE* fp);
 
 /* Lindsay - Sept 28, 1999 */
-static int read_image_from_raw_hdrc_16_bit(KJB_image** ipp, FILE* fp);
+static int read_image_from_raw_hdrc_16_bit(IVI_image** ipp, FILE* fp);
 
 static int write_threshold_pixel_coords
 (
-    KJB_image* ip,
+    IVI_image* ip,
     char*      file_name,
     double     threshold
 );
@@ -208,7 +208,7 @@ static int write_threshold_pixel_coords
 
 static int read_byte_pixels
 (
-    KJB_image** ip,
+    IVI_image** ip,
     FILE*       fp,
     int         num_rows,
     int         num_cols
@@ -234,7 +234,7 @@ static int read_kiff_header_guts
 
 static int read_float_pixels
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int         num_rows,
     int         num_cols,
@@ -243,7 +243,7 @@ static int read_float_pixels
 
 static int read_float_with_validity_pixels
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int         num_rows,
     int         num_cols,
@@ -252,7 +252,7 @@ static int read_float_with_validity_pixels
 
 static int read_float_channel_data
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int         num_rows,
     int         num_cols,
@@ -261,24 +261,24 @@ static int read_float_channel_data
 
 static int write_image_as_raster
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 );
 
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
 static int write_image_as_tiff
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 );
 
 #endif
 
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
 #ifndef __C2MAN__
 static int write_image_as_jpeg
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 );
 #endif
@@ -286,33 +286,33 @@ static int write_image_as_jpeg
 
 static int write_image_as_validity_kiff
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 );
 
 static int write_image_as_float_kiff
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 );
 
 static int write_image_as_MID_file
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 );
 
 static int write_image_as_raw_16_bit
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 );
 
-static int write_validity_kiff_image_data(const KJB_image* ip, FILE* fp);
+static int write_validity_kiff_image_data(const IVI_image* ip, FILE* fp);
 
-static int write_float_pixel_image_data(const KJB_image* ip, FILE* fp);
+static int write_float_pixel_image_data(const IVI_image* ip, FILE* fp);
 
-static int write_float_channel_image_data(const KJB_image* ip, FILE* fp);
+static int write_float_channel_image_data(const IVI_image* ip, FILE* fp);
 
 static int write_image_for_display(const void* ip, char* title);
 
@@ -1159,9 +1159,9 @@ static int print_invalid_pixel_colour(void)
     else
     {
         ERE(pso("Invalid pixel colour is (%d, %d, %d)\n",
-                kjb_rintf(fs_invalid_pixel_colour.r), 
-                kjb_rintf(fs_invalid_pixel_colour.g), 
-                kjb_rintf(fs_invalid_pixel_colour.b))); 
+                ivi_rintf(fs_invalid_pixel_colour.r), 
+                ivi_rintf(fs_invalid_pixel_colour.g), 
+                ivi_rintf(fs_invalid_pixel_colour.b))); 
     }
 
     return NO_ERROR;
@@ -1181,9 +1181,9 @@ static int print_invalid_pixel_colour_option(void)
     else
     {
         ERE(pso("ipc = %d,%d,%d\n",
-                kjb_rintf(fs_invalid_pixel_colour.r), 
-                kjb_rintf(fs_invalid_pixel_colour.g), 
-                kjb_rintf(fs_invalid_pixel_colour.b))); 
+                ivi_rintf(fs_invalid_pixel_colour.r), 
+                ivi_rintf(fs_invalid_pixel_colour.g), 
+                ivi_rintf(fs_invalid_pixel_colour.b))); 
     }
 
     return NO_ERROR;
@@ -1265,16 +1265,16 @@ static void free_display_matrix(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_read_image
+ *                              ivi_read_image
  *
- * Reads an image into the kjb image structure
+ * Reads an image into the ivi image structure
  *
- * This routine reads an image from a file into the kjb image structure which is
+ * This routine reads an image from a file into the ivi image structure which is
  * a floating point precession RGB format. It also does pre-processing under the
  * control of options which have normally been set through calls to
- * process_kjb_options(3) or kjb_set(3), normally with user input, but sometimes
+ * process_ivi_options(3) or ivi_set(3), normally with user input, but sometimes
  * with hard coded constant strings. For reading without pre-processing, see
- * kjb_read_image_2.
+ * ivi_read_image_2.
  *
  * This routine natively reads sun-raster, simple jpeg, simple tiff, and the
  * home grown floating point formats kiff, and mid. In addition, it will arrange
@@ -1306,7 +1306,7 @@ static void free_display_matrix(void)
  *
  * Warning:
  *     The fancy nature of this routine has caused confusion. It is quite
- *     useful, but often starting with kjb_read_image_2 is better. However, if
+ *     useful, but often starting with ivi_read_image_2 is better. However, if
  *     this routine can be used to manipulate images on read under user control
  *     which has a lot of advantages in some cirumstances.
  *
@@ -1318,9 +1318,9 @@ static void free_display_matrix(void)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_read_image
+int ivi_read_image
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* file_name_gz_and_sub_image
 )
 {
@@ -1328,11 +1328,11 @@ int kjb_read_image
     int validity_data_is_part_of_image = NOT_SET;
 
 
-    ERE(kjb_read_image_3(ipp, file_name_gz_and_sub_image,
+    ERE(ivi_read_image_3(ipp, file_name_gz_and_sub_image,
                          &validity_data_is_part_of_image));
 
     if (    (result != ERROR)
-         && (kjb_get_verbose_level() >= 5)
+         && (ivi_get_verbose_level() >= 5)
        )
     {
         verbose_pso(5, "Image read from %s has %d invalid pixels before pre-processing.\n",
@@ -1346,7 +1346,7 @@ int kjb_read_image
          && ((*ipp)->num_cols == FULL_VIDEO_NUM_COLS)
        )
     {
-        KJB_image* temp_ip = NULL;
+        IVI_image* temp_ip = NULL;
 
         result = get_image_window(&temp_ip, *ipp,
                                   STRIP_TOP, STRIP_LEFT,
@@ -1355,11 +1355,11 @@ int kjb_read_image
 
         if (result == ERROR)
         {
-            kjb_free_image(temp_ip);
+            ivi_free_image(temp_ip);
         }
         else
         {
-            kjb_free_image(*ipp);
+            ivi_free_image(*ipp);
             *ipp = temp_ip;
         }
     }
@@ -1387,16 +1387,16 @@ int kjb_read_image
 
         while ((i<fs_bloom_removal_count) && (result != ERROR))
         {
-            KJB_image* temp_ip = NULL;
+            IVI_image* temp_ip = NULL;
 
             if (mark_blooming_candidates(&temp_ip, *ipp) == ERROR)
             {
-                kjb_free_image(temp_ip);
+                ivi_free_image(temp_ip);
                 result = ERROR;
             }
             else
             {
-                kjb_free_image(*ipp);
+                ivi_free_image(*ipp);
                 *ipp = temp_ip;
             }
 
@@ -1488,7 +1488,7 @@ int kjb_read_image
     }
 
     if (    (result != ERROR)
-         && (kjb_get_verbose_level() >= 5)
+         && (ivi_get_verbose_level() >= 5)
        )
     {
         verbose_pso(5, "Image read from %s has %d invalid pixels after pre-processing.\n",
@@ -1502,13 +1502,13 @@ int kjb_read_image
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_read_image_2
+ *                              ivi_read_image_2
  *
- * Reads an image into the kjb image data structure
+ * Reads an image into the ivi image data structure
  *
- * This routine reads an image from a file into the kjb image structure which is
+ * This routine reads an image from a file into the ivi image structure which is
  * a floating point RGB representation. For doing so with various pre-processing
- * options, see kjb_read_image.
+ * options, see ivi_read_image.
  *
  * This routine natively reads sun-raster, simple jpeg, simple tiff, and the
  * home grown floating point formats kiff, and mid. In addition, it will arrange
@@ -1523,29 +1523,29 @@ int kjb_read_image
  * -----------------------------------------------------------------------------
 */
 
-int kjb_read_image_2
+int ivi_read_image_2
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* file_name_and_sub_image
 )
 {
-    return kjb_read_image_3(ipp, file_name_and_sub_image, (int*)NULL);
+    return ivi_read_image_3(ipp, file_name_and_sub_image, (int*)NULL);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int kjb_read_image_3
+static int ivi_read_image_3
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* file_name_and_sub_image,
     int* validity_data_is_part_of_image_ptr
 )
 {
     FILE*         fp = NULL;
-    kjb_uint32        magic_number;
-    kjb_uint32        reversed_magic_number;
+    ivi_uint32        magic_number;
+    ivi_uint32        reversed_magic_number;
     int           result = NO_ERROR;
-#ifdef REGRESS_COMPRESSION /* kjb_fopen now uncompresses */
+#ifdef REGRESS_COMPRESSION /* ivi_fopen now uncompresses */
     size_t        file_name_gz_len;
     char          file_name_gz_and_sub_image_copy[ MAX_FILE_NAME_SIZE ];
     char*         file_name_gz_and_sub_image_pos;
@@ -1561,14 +1561,14 @@ static int kjb_read_image_3
     int pcd_rotate = 0;
 
 
-#ifdef REGRESS_COMPRESSION /* kjb_fopen now uncompresses */
+#ifdef REGRESS_COMPRESSION /* ivi_fopen now uncompresses */
     uncompressed_temp_name[ 0 ] = '\0';
 
     /*
     // We may have to add or insert error without being sure that the error
     // message list is clean, so clear it.
     */
-    kjb_clear_error();
+    ivi_clear_error();
 
     BUFF_CPY(file_name_gz_and_sub_image_copy, file_name_gz_and_sub_image);
     file_name_gz_and_sub_image_pos = file_name_gz_and_sub_image_copy;
@@ -1582,7 +1582,7 @@ static int kjb_read_image_3
     BUFF_CPY(sub_image, file_name_and_sub_image_pos);
 #endif
 
-#ifdef REGRESS_COMPRESSION /* kjb_fopen now uncompresses */
+#ifdef REGRESS_COMPRESSION /* ivi_fopen now uncompresses */
     if (    (file_name_gz_len > 3)
          && (    (    (file_name_gz[ file_name_gz_len - 3 ] == '.')
                    && (file_name_gz[ file_name_gz_len - 2 ] == 'g')
@@ -1606,18 +1606,18 @@ static int kjb_read_image_3
         BUFF_CPY(compressed_temp_name, uncompressed_temp_name);
         BUFF_CAT(compressed_temp_name, suffix);
 
-        ERE(kjb_sprintf(command, sizeof(command), "/bin/cp %s %s",
+        ERE(ivi_sprintf(command, sizeof(command), "/bin/cp %s %s",
                         file_name_gz, compressed_temp_name));
-        ERE(kjb_system(command));
+        ERE(ivi_system(command));
 
-        result = kjb_sprintf(command, sizeof(command), "gunzip %s",
+        result = ivi_sprintf(command, sizeof(command), "gunzip %s",
                              compressed_temp_name);
 
         if (result != ERROR)
         {
             verbose_pso(10, "Uncompressing a copy of %s as %s.\n",
                         file_name_gz, uncompressed_temp_name);
-            result = kjb_system(command);
+            result = ivi_system(command);
         }
 
         if (result != ERROR)
@@ -1627,7 +1627,7 @@ static int kjb_read_image_3
         }
         else
         {
-            (void)kjb_unlink(compressed_temp_name);  /* Just in case. */
+            (void)ivi_unlink(compressed_temp_name);  /* Just in case. */
         }
 
     }
@@ -1639,7 +1639,7 @@ static int kjb_read_image_3
 
     if (result != ERROR)
     {
-        fp = kjb_fopen(file_name, "rb");
+        fp = ivi_fopen(file_name, "rb");
         if (fp == NULL) { NOTE_ERROR(); result = ERROR; }
     }
 
@@ -1648,7 +1648,7 @@ static int kjb_read_image_3
         result = FIELD_READ(fp, magic_number);
 
         if (    (result != ERROR)
-             && (kjb_fseek(fp, 0L, SEEK_SET) == ERROR)
+             && (ivi_fseek(fp, 0L, SEEK_SET) == ERROR)
            )
         {
             result = ERROR;
@@ -1669,7 +1669,7 @@ static int kjb_read_image_3
     {
         char pcd_str[ 4 ];
 
-        result = kjb_fseek(fp, PCD_MAGIC_NUM_OFFSET, SEEK_SET);
+        result = ivi_fseek(fp, PCD_MAGIC_NUM_OFFSET, SEEK_SET);
 
         if (result != ERROR)
         {
@@ -1683,7 +1683,7 @@ static int kjb_read_image_3
         {
             unsigned char rotate_str[ 1 ];
 
-            result = kjb_fseek(fp, PCD_ROTATE_OFFSET, SEEK_SET);
+            result = ivi_fseek(fp, PCD_ROTATE_OFFSET, SEEK_SET);
 
             if (result != ERROR)
             {
@@ -1696,7 +1696,7 @@ static int kjb_read_image_3
             }
         }
 
-        if (kjb_fseek(fp, 0L, SEEK_SET) == ERROR)
+        if (ivi_fseek(fp, 0L, SEEK_SET) == ERROR)
         {
             result = ERROR;
         }
@@ -1723,7 +1723,7 @@ static int kjb_read_image_3
 #ifdef TEST
             char error_buff[ 1000 ];
 
-            kjb_get_error(error_buff, sizeof(error_buff)); 
+            ivi_get_error(error_buff, sizeof(error_buff)); 
             TEST_PSO(("\n"));
             TEST_PSO((error_buff)); 
             TEST_PSO(("\n"));
@@ -1748,7 +1748,7 @@ static int kjb_read_image_3
         {
             char img_name[ MAX_FILE_NAME_SIZE ];
 
-            (void)kjb_sprintf(img_name, MAX_FILE_NAME_SIZE, "%F", fp);
+            (void)ivi_sprintf(img_name, MAX_FILE_NAME_SIZE, "%F", fp);
 
             result = write_threshold_pixel_coords(*ipp,
                                                   img_name,
@@ -1782,7 +1782,7 @@ static int kjb_read_image_3
               || (reversed_magic_number == TIFF_MSB_FIRST_MAGIC_NUM)
             )
     {
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
         verbose_pso(5, "Attempting to read tiff file with builtin routine.\n");
 
         result = read_image_from_tiff(ipp, fp);
@@ -1802,10 +1802,10 @@ static int kjb_read_image_3
             /* char error_buff[ 1000 ]; */
 
             add_error("We will attempt to convert the TIFF to a different format and read that instead.");
-            kjb_print_error(); 
+            ivi_print_error(); 
 
             /*
-            kjb_get_error(error_buff, sizeof(error_buff)); 
+            ivi_get_error(error_buff, sizeof(error_buff)); 
             TEST_PSO(("\n"));
             TEST_PSO((error_buff)); 
             TEST_PSO(("\n"));
@@ -1828,7 +1828,7 @@ static int kjb_read_image_3
               || (reversed_magic_number>>16 == JPEG_MAGIC_NUM)
             )
     {
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
         result = read_image_from_jpeg(ipp, fp);
 
         if (result == NOT_FOUND)
@@ -1837,9 +1837,9 @@ static int kjb_read_image_3
             /* char error_buff[ 1000 ]; */
 
             add_error("We will attempt to convert the JPEG to different format and read that instead.");
-            kjb_print_error(); 
+            ivi_print_error(); 
             /*
-            kjb_get_error(error_buff, sizeof(error_buff)); 
+            ivi_get_error(error_buff, sizeof(error_buff)); 
             TEST_PSO(("\n"));
             TEST_PSO((error_buff)); 
             TEST_PSO(("\n"));
@@ -1889,7 +1889,7 @@ static int kjb_read_image_3
     }
 
     push_error_action(FORCE_ADD_ERROR_ON_ERROR);
-    if (kjb_fclose(fp) == ERROR) result = ERROR;
+    if (ivi_fclose(fp) == ERROR) result = ERROR;
     pop_error_action();
 
     if (result == NOT_FOUND)
@@ -1915,7 +1915,7 @@ static int kjb_read_image_3
 
         if (result != ERROR) {
            verbose_pso(2, "Conversion to raster succeeded.\n");
-           ras_fp = kjb_fopen(raster_temp_name, "rb");
+           ras_fp = ivi_fopen(raster_temp_name, "rb");
         }
 
         if (ras_fp == NULL) result = ERROR;
@@ -1935,8 +1935,8 @@ static int kjb_read_image_3
 
         push_error_action(FORCE_ADD_ERROR_ON_ERROR);
 
-        if (kjb_fclose(ras_fp) == ERROR) result = ERROR;
-        if (kjb_unlink(raster_temp_name) == ERROR) result = ERROR;
+        if (ivi_fclose(ras_fp) == ERROR) result = ERROR;
+        if (ivi_unlink(raster_temp_name) == ERROR) result = ERROR;
 
         pop_error_action();
     }
@@ -1951,13 +1951,13 @@ static int kjb_read_image_3
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int read_image_from_raster(KJB_image** ipp, FILE* fp)
+static int read_image_from_raster(IVI_image** ipp, FILE* fp)
 {
     Sun_header sun_header;
-    kjb_uint32 magic_number;
-    kjb_uint32 reversed_magic_number;
-    kjb_int32  temp_int32;
-    KJB_image* ip;
+    ivi_uint32 magic_number;
+    ivi_uint32 reversed_magic_number;
+    ivi_int32  temp_int32;
+    IVI_image* ip;
     int        i, j, num_rows, num_cols;
     int        row_length;
     off_t      raster_size;
@@ -2114,9 +2114,9 @@ static int read_image_from_raster(KJB_image** ipp, FILE* fp)
 
     if (sun_header.maptype > 0)
     {
-        if (kjb_fread(fp, data_row, (size_t)sun_header.maplength) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)sun_header.maplength) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
@@ -2138,7 +2138,7 @@ static int read_image_from_raster(KJB_image** ipp, FILE* fp)
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -2146,18 +2146,18 @@ static int read_image_from_raster(KJB_image** ipp, FILE* fp)
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -2235,20 +2235,20 @@ static int read_image_from_raster(KJB_image** ipp, FILE* fp)
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
 
 /*
 #define USE_TIFF_PHOTMETRIC
 */
 
-static int read_image_from_tiff(KJB_image** ipp, FILE* fp)
+static int read_image_from_tiff(IVI_image** ipp, FILE* fp)
 {
     TIFF* tiff_ptr;
     char  file_name[ MAX_FILE_NAME_SIZE ];
@@ -2346,12 +2346,12 @@ static int read_image_from_tiff(KJB_image** ipp, FILE* fp)
 
         for (i = 0; i<num_rows; i++)
         {
-            if (TIFFReadScanline(tiff_ptr, row, (kjb_uint32)(i + fs_strip_top),
+            if (TIFFReadScanline(tiff_ptr, row, (ivi_uint32)(i + fs_strip_top),
                                  sample)
                 == -1)
             {
                 set_error("Read of tiff file %s failed.", file_name);
-                kjb_free(row);
+                ivi_free(row);
                 TIFFClose(tiff_ptr);
                 return ERROR;
             }
@@ -2400,12 +2400,12 @@ static int read_image_from_tiff(KJB_image** ipp, FILE* fp)
 
             }
         }
-        kjb_free(row);
+        ivi_free(row);
     }
     else
     {
-        kjb_uint16* row_16;
-        kjb_uint16* row_16_pos;
+        ivi_uint16* row_16;
+        ivi_uint16* row_16_pos;
 
         row_16 = UINT16_MALLOC(scan_line_length/2);
 
@@ -2418,10 +2418,10 @@ static int read_image_from_tiff(KJB_image** ipp, FILE* fp)
         for (i = 0; i<num_rows; i++)
         {
             if (TIFFReadScanline(tiff_ptr, (unsigned char*)row_16,
-                                 (kjb_uint32)(i + fs_strip_top), sample) == -1)
+                                 (ivi_uint32)(i + fs_strip_top), sample) == -1)
             {
                 set_error("Read of tiff file %s failed.", file_name);
-                kjb_free(row_16);
+                ivi_free(row_16);
                 TIFFClose(tiff_ptr);
                 return ERROR;
             }
@@ -2483,7 +2483,7 @@ static int read_image_from_tiff(KJB_image** ipp, FILE* fp)
             }
         }
 
-        kjb_free(row_16);
+        ivi_free(row_16);
     }
 
     TIFFClose(tiff_ptr);
@@ -2495,7 +2495,7 @@ static int read_image_from_tiff(KJB_image** ipp, FILE* fp)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
 #ifndef __C2MAN__
 
 struct my_error_mgr
@@ -2524,7 +2524,7 @@ static void my_error_exit(j_common_ptr cinfo)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int read_image_from_jpeg(KJB_image** ipp, FILE* fp)
+static int read_image_from_jpeg(IVI_image** ipp, FILE* fp)
 {
 #ifdef TEST
     static int num_steps_completed = 0;  /* Static so no clobber on longjmp */
@@ -2538,7 +2538,7 @@ static int read_image_from_jpeg(KJB_image** ipp, FILE* fp)
     unsigned char*      row_pos;
 
 
-    kjb_clear_error();
+    ivi_clear_error();
 
     cinfo.err = jpeg_std_error(&jerr.pub);
     jerr.pub.error_exit = my_error_exit;
@@ -2774,13 +2774,13 @@ static int read_image_from_jpeg(KJB_image** ipp, FILE* fp)
 */
 static int read_image_from_pcd
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     const char* file_name,
     const char* sub_image,
     int         pcd_rotate
 )
 {
-    KJB_image* ycc_ip;
+    IVI_image* ycc_ip;
     int        i, j, num_rows, num_cols;
     char       temp_name[ MAX_FILE_NAME_SIZE ];
     char       ppm_name[ MAX_FILE_NAME_SIZE ];
@@ -2794,7 +2794,7 @@ static int read_image_from_pcd
 
     /*
     // Note that we do not implement stripping here because of the recursive
-    // call to kjb_read_image_2() which will do the stripping on the ycc file.
+    // call to ivi_read_image_2() which will do the stripping on the ycc file.
     */
 
     if (*sub_image_pos != '\0')
@@ -2818,49 +2818,49 @@ static int read_image_from_pcd
 
     ERE( BUFF_GET_TEMP_FILE_NAME( temp_name ) );
 
-    ERE(kjb_sprintf(ppm_name, sizeof(ppm_name), "%s.ppm", temp_name));
+    ERE(ivi_sprintf(ppm_name, sizeof(ppm_name), "%s.ppm", temp_name));
 
     if (sub_image_num < 5)
     {
-        ERE(kjb_sprintf(command_str, sizeof(command_str),
+        ERE(ivi_sprintf(command_str, sizeof(command_str),
                         "hpcdtoppm -ycc -rep -x -%d %s %s",
                         sub_image_num, file_name, ppm_name));
     }
     else
     {
-        ERE(kjb_sprintf(command_str, sizeof(command_str),
+        ERE(ivi_sprintf(command_str, sizeof(command_str),
                         "hpcdtoppm -ycc -rep -%d %s %s",
                         sub_image_num, file_name, ppm_name));
     }
 
-    if (    (kjb_system(command_str) == ERROR)
-         || (kjb_read_image_2(ipp, ppm_name) != NO_ERROR)
+    if (    (ivi_system(command_str) == ERROR)
+         || (ivi_read_image_2(ipp, ppm_name) != NO_ERROR)
        )
     {
         return NOT_FOUND;
     }
 
-    EPE(kjb_unlink(ppm_name));
+    EPE(ivi_unlink(ppm_name));
 
     ycc_ip = *ipp;
 
     if (pcd_rotate == 1)
     {
-        KJB_image* rotated_ip = NULL;
+        IVI_image* rotated_ip = NULL;
 
         ERE(rotate_image_left(&rotated_ip, ycc_ip));
-        ERE(kjb_copy_image(ipp, rotated_ip));
+        ERE(ivi_copy_image(ipp, rotated_ip));
         ycc_ip = *ipp;
-        kjb_free_image(rotated_ip);
+        ivi_free_image(rotated_ip);
     }
     else if (pcd_rotate == 3)
     {
-        KJB_image* rotated_ip = NULL;
+        IVI_image* rotated_ip = NULL;
 
         ERE(rotate_image_right(&rotated_ip, ycc_ip));
-        ERE(kjb_copy_image(ipp, rotated_ip));
+        ERE(ivi_copy_image(ipp, rotated_ip));
         ycc_ip = *ipp;
-        kjb_free_image(rotated_ip);
+        ivi_free_image(rotated_ip);
     }
 
 
@@ -2916,7 +2916,7 @@ static int read_image_from_pcd
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int ow_convert_pcd_ycc_to_rgb(KJB_image* ip)
+static int ow_convert_pcd_ycc_to_rgb(IVI_image* ip)
 {
     int i, j, num_rows, num_cols;
     int result   = NO_ERROR;
@@ -3011,9 +3011,9 @@ static int ow_convert_pcd_ycc_to_rgb(KJB_image* ip)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int read_image_from_bmp(KJB_image** ipp, FILE* fp)
+static int read_image_from_bmp(IVI_image** ipp, FILE* fp)
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        i, j, num_rows, num_cols;
     int        row_length;
     unsigned char*     data_row;
@@ -3021,21 +3021,21 @@ static int read_image_from_bmp(KJB_image** ipp, FILE* fp)
     Pixel*     out_pos;
     int        result;
     int        c1, c2;
-    kjb_int32  filler_int32;
-    kjb_uint32 header_file_size;
-    kjb_uint32 reversed_header_file_size;
+    ivi_int32  filler_int32;
+    ivi_uint32 header_file_size;
+    ivi_uint32 reversed_header_file_size;
     off_t      file_size;
     int        reverse_the_bytes;
-    kjb_int32  reversed_num_rows;
-    kjb_int32  reversed_num_cols;
-    kjb_int16  num_planes;
-    kjb_int16  reversed_num_planes;
-    kjb_int16  bpp;
-    kjb_int16  reversed_bpp;
+    ivi_int32  reversed_num_rows;
+    ivi_int32  reversed_num_cols;
+    ivi_int16  num_planes;
+    ivi_int16  reversed_num_planes;
+    ivi_int16  bpp;
+    ivi_int16  reversed_bpp;
 
 
-    c1 = kjb_fgetc(fp);
-    c2 = kjb_fgetc(fp);
+    c1 = ivi_fgetc(fp);
+    c2 = ivi_fgetc(fp);
 
     if ((c1 != 'B') || (c2 != 'M'))
     {
@@ -3106,7 +3106,7 @@ static int read_image_from_bmp(KJB_image** ipp, FILE* fp)
 
     if (bpp != 24) return NOT_FOUND;
 
-    ERE(kjb_fseek(fp, 54, SEEK_SET));
+    ERE(ivi_fseek(fp, 54, SEEK_SET));
 
     row_length = 3 * num_cols;
 
@@ -3129,7 +3129,7 @@ static int read_image_from_bmp(KJB_image** ipp, FILE* fp)
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -3137,18 +3137,18 @@ static int read_image_from_bmp(KJB_image** ipp, FILE* fp)
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -3172,7 +3172,7 @@ static int read_image_from_bmp(KJB_image** ipp, FILE* fp)
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     verbose_pso(10,"Read of 24 bit BMP file with builtin routine succeeded.\n");
 
@@ -3181,9 +3181,9 @@ static int read_image_from_bmp(KJB_image** ipp, FILE* fp)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int read_image_from_pnm_P6(KJB_image** ipp, FILE* fp)
+static int read_image_from_pnm_P6(IVI_image** ipp, FILE* fp)
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        i, j, num_rows, num_cols;
     int        row_length;
     off_t      pnm_size;
@@ -3197,8 +3197,8 @@ static int read_image_from_pnm_P6(KJB_image** ipp, FILE* fp)
     long       header_size;
 
 
-    c1 = kjb_fgetc(fp);
-    c2 = kjb_fgetc(fp);
+    c1 = ivi_fgetc(fp);
+    c2 = ivi_fgetc(fp);
 
     if ((c1 != 'P') || (c2 != '6'))
     {
@@ -3224,7 +3224,7 @@ static int read_image_from_pnm_P6(KJB_image** ipp, FILE* fp)
         return ERROR;
     }
 
-    ERE(header_size = kjb_ftell(fp));
+    ERE(header_size = ivi_ftell(fp));
 
     row_length = 3 * num_cols;
 
@@ -3265,7 +3265,7 @@ static int read_image_from_pnm_P6(KJB_image** ipp, FILE* fp)
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -3273,18 +3273,18 @@ static int read_image_from_pnm_P6(KJB_image** ipp, FILE* fp)
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -3308,7 +3308,7 @@ static int read_image_from_pnm_P6(KJB_image** ipp, FILE* fp)
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
@@ -3326,11 +3326,11 @@ static int read_pnm_6_header_num(FILE* fp, int* num_ptr)
     /*CONSTCOND*/
     while (TRUE)
     {
-        c = kjb_fgetc(fp);
+        c = ivi_fgetc(fp);
 
         while ((c == ' ') || (c == '\n') || (c == '\r') || (c == '\t'))
         {
-            c = kjb_fgetc(fp);
+            c = ivi_fgetc(fp);
 
             if (c == EOF)
             {
@@ -3343,7 +3343,7 @@ static int read_pnm_6_header_num(FILE* fp, int* num_ptr)
         {
             while (c != '\n')
             {
-                c = kjb_fgetc(fp);
+                c = ivi_fgetc(fp);
 
                 if (c == EOF)
                 {
@@ -3368,7 +3368,7 @@ static int read_pnm_6_header_num(FILE* fp, int* num_ptr)
                 buff_pos++;
                 number_char_count++;
 
-                c = kjb_fgetc(fp);
+                c = ivi_fgetc(fp);
 
                 if (c == EOF)
                 {
@@ -3390,20 +3390,20 @@ static int read_pnm_6_header_num(FILE* fp, int* num_ptr)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int read_image_from_raw_dcs_460_16_bit(KJB_image** ipp, FILE* fp)
+static int read_image_from_raw_dcs_460_16_bit(IVI_image** ipp, FILE* fp)
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        num_rows, num_cols, i, j;
     size_t     row_length;
-    kjb_uint16*    data_row;
-    kjb_uint16*    data_row_pos;
+    ivi_uint16*    data_row;
+    ivi_uint16*    data_row_pos;
     Pixel*     image_pos;
     int        result;
 
 
     UNTESTED_CODE();     /* Untested since adding stripping. */
 
-    row_length = 3 * NUM_DCS_460_COLS * sizeof(kjb_uint16);
+    row_length = 3 * NUM_DCS_460_COLS * sizeof(ivi_uint16);
 
     NRE(data_row = UINT16_MALLOC(row_length));
 
@@ -3421,7 +3421,7 @@ static int read_image_from_raw_dcs_460_16_bit(KJB_image** ipp, FILE* fp)
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -3429,18 +3429,18 @@ static int read_image_from_raw_dcs_460_16_bit(KJB_image** ipp, FILE* fp)
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -3473,7 +3473,7 @@ static int read_image_from_raw_dcs_460_16_bit(KJB_image** ipp, FILE* fp)
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
@@ -3491,34 +3491,34 @@ static int read_image_from_raw_dcs_460_16_bit(KJB_image** ipp, FILE* fp)
  * Reads 10-bit data verbatum from the .idt file. No range scaling!
  */
 
-static int read_image_from_raw_hdrc_16_bit(KJB_image** ipp, FILE* fp)
+static int read_image_from_raw_hdrc_16_bit(IVI_image** ipp, FILE* fp)
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        num_rows, num_cols, i, j;
     size_t     row_length;
     size_t     ri;
-    kjb_uint16*    data_row;
-    kjb_uint16*    data_row_pos;
-    kjb_uint16     pixel;
-    kjb_uint16     reversed_pixel;
-    kjb_uint16     mask;
-    kjb_uint16     sensor_min;
-    kjb_uint16     sensor_max;
+    ivi_uint16*    data_row;
+    ivi_uint16*    data_row_pos;
+    ivi_uint16     pixel;
+    ivi_uint16     reversed_pixel;
+    ivi_uint16     mask;
+    ivi_uint16     sensor_min;
+    ivi_uint16     sensor_max;
     Pixel*     image_pos;
     int        result;
 
     sensor_min = 1023;
     sensor_max = 0;
 
-    mask = (kjb_uint16)0x3FF; /* Only the lower 10 bits are significant */
+    mask = (ivi_uint16)0x3FF; /* Only the lower 10 bits are significant */
 
-    row_length = HDRC_NUM_COLS * sizeof(kjb_uint16);
+    row_length = HDRC_NUM_COLS * sizeof(ivi_uint16);
 
     NRE(data_row = UINT16_MALLOC(row_length));
 
     for (ri= 0; ri < row_length; ri++)
     {
-        data_row[ ri ] = (kjb_uint16)0;
+        data_row[ ri ] = (ivi_uint16)0;
     }
 
     num_rows = HDRC_NUM_ROWS;
@@ -3528,7 +3528,7 @@ static int read_image_from_raw_hdrc_16_bit(KJB_image** ipp, FILE* fp)
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -3536,9 +3536,9 @@ static int read_image_from_raw_hdrc_16_bit(KJB_image** ipp, FILE* fp)
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -3574,7 +3574,7 @@ static int read_image_from_raw_hdrc_16_bit(KJB_image** ipp, FILE* fp)
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     verbose_pso(10, "Raw HDRC sensor min, max: %d, %d.\n",
                 sensor_min, sensor_max);
@@ -3586,7 +3586,7 @@ static int read_image_from_raw_hdrc_16_bit(KJB_image** ipp, FILE* fp)
 
 static int write_threshold_pixel_coords
 (
-    KJB_image* ip,
+    IVI_image* ip,
     char*      file_name,
     double     threshold
 )
@@ -3601,12 +3601,12 @@ static int write_threshold_pixel_coords
 
     thresh = (float)threshold;
 
-    (void)kjb_sprintf(pix_coords_file_name,
+    (void)ivi_sprintf(pix_coords_file_name,
                       MAX_FILE_NAME_SIZE,
                       "%s.%f.pixel_coords",
                       file_name, thresh);
 
-    NRE(pix_coords_fp = kjb_fopen(pix_coords_file_name, "w"));
+    NRE(pix_coords_fp = ivi_fopen(pix_coords_file_name, "w"));
 
     count = 0;
     for (i = 0; i < ip->num_rows; i++)
@@ -3617,7 +3617,7 @@ static int write_threshold_pixel_coords
 
             if (pix_value >= thresh)
             {
-                (void)kjb_fprintf(pix_coords_fp, "%3d %3d %6.1f\n",
+                (void)ivi_fprintf(pix_coords_fp, "%3d %3d %6.1f\n",
                                   i, j, pix_value);
                 count++;
             }
@@ -3627,17 +3627,17 @@ static int write_threshold_pixel_coords
     ERE(verbose_pso(10, "Coords for %d pixels >= %6.1f written to %s.\n",
                     count, thresh, pix_coords_file_name));
 
-    return kjb_fclose(pix_coords_fp);
+    return ivi_fclose(pix_coords_fp);
 }
 
 /* End Lindsay */
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int read_image_from_MID_file(KJB_image** ipp, FILE* fp)
+static int read_image_from_MID_file(IVI_image** ipp, FILE* fp)
 {
-    kjb_uint32 magic_number;
-    kjb_uint32 reversed_magic_number;
-    kjb_int32  temp_int32;
+    ivi_uint32 magic_number;
+    ivi_uint32 reversed_magic_number;
+    ivi_int32  temp_int32;
     int    num_rows;
     int    num_cols;
     int    reversed = FALSE;
@@ -3679,7 +3679,7 @@ static int read_image_from_MID_file(KJB_image** ipp, FILE* fp)
 
 int read_image_from_kiff
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int*        validity_data_is_part_of_image_ptr
 )
@@ -3774,8 +3774,8 @@ static int read_kiff_header_guts
     int*            reversed_ptr
 )
 {
-    kjb_uint32 magic_number;
-    kjb_uint32 reversed_magic_number;
+    ivi_uint32 magic_number;
+    ivi_uint32 reversed_magic_number;
     char   line[ LARGE_IO_BUFF_SIZE ];
     char*  line_pos;
     char   word[ 100 ];
@@ -3912,14 +3912,14 @@ static int read_kiff_header_guts
     */
 
     ERE(ss1pi(word, &annotation_len));
-    ERE(kjb_fseek(fp, annotation_len, SEEK_CUR));
+    ERE(ivi_fseek(fp, annotation_len, SEEK_CUR));
 
     /*
     // Alternate method used to verify that the above is OK. Since the above
     // is slightly more efficient, we will use it unless there are more
     // problems.
     //
-    // kjb_clear_error();
+    // ivi_clear_error();
     // previous_lead_char = '\0';
     //
     // while (TRUE)
@@ -3955,14 +3955,14 @@ static int read_kiff_header_guts
 
 static int read_float_with_validity_pixels
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int         num_rows,
     int         num_cols,
     int         reversed
 )
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        i, j;
     int        row_length;
     Pixel*     data_row;
@@ -3985,7 +3985,7 @@ static int read_float_with_validity_pixels
 #endif
 
     row_length = num_cols * sizeof(Pixel);
-    expected_size = kjb_ftell(fp) + num_rows * row_length;
+    expected_size = ivi_ftell(fp) + num_rows * row_length;
 
     ERE(fp_get_byte_size(fp, &file_size));
 
@@ -4027,7 +4027,7 @@ static int read_float_with_validity_pixels
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -4035,9 +4035,9 @@ static int read_float_with_validity_pixels
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
@@ -4046,9 +4046,9 @@ static int read_float_with_validity_pixels
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -4094,7 +4094,7 @@ static int read_float_with_validity_pixels
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
@@ -4103,14 +4103,14 @@ static int read_float_with_validity_pixels
 
 static int read_float_pixels
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int         num_rows,
     int         num_cols,
     int         reversed
 )
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        i, j;
     int        row_length;
     float*     data_row;
@@ -4123,7 +4123,7 @@ static int read_float_pixels
 
 
     row_length = num_cols * sizeof(float) * 3;
-    expected_size = kjb_ftell(fp) + num_rows * row_length;
+    expected_size = ivi_ftell(fp) + num_rows * row_length;
 
     ERE(fp_get_byte_size(fp, &file_size));
 
@@ -4165,7 +4165,7 @@ static int read_float_pixels
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -4173,18 +4173,18 @@ static int read_float_pixels
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -4268,7 +4268,7 @@ static int read_float_pixels
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
@@ -4277,13 +4277,13 @@ static int read_float_pixels
 
 static int read_byte_pixels
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int         num_rows,
     int         num_cols
 )
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        i, j;
     int        row_length;
     off_t      kiff_size;
@@ -4297,7 +4297,7 @@ static int read_byte_pixels
 
     UNTESTED_CODE();     /* Untested since adding stripping. */
 
-    ERE(header_len = kjb_ftell(fp));
+    ERE(header_len = ivi_ftell(fp));
 
     row_length = num_cols * 3;
     kiff_size = num_rows * row_length + header_len;
@@ -4331,7 +4331,7 @@ static int read_byte_pixels
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -4339,18 +4339,18 @@ static int read_byte_pixels
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -4379,7 +4379,7 @@ static int read_byte_pixels
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
@@ -4388,14 +4388,14 @@ static int read_byte_pixels
 
 static int read_float_channel_data
 (
-    KJB_image** ipp,
+    IVI_image** ipp,
     FILE*       fp,
     int         num_rows,
     int         num_cols,
     int         reversed
 )
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int        i, j;
     int        row_length;
     float*     data_row;
@@ -4408,7 +4408,7 @@ static int read_float_channel_data
 
 
     row_length = num_cols * sizeof(float);
-    expected_size = kjb_ftell(fp) + 3 * num_rows * row_length;
+    expected_size = ivi_ftell(fp) + 3 * num_rows * row_length;
 
     ERE(fp_get_byte_size(fp, &file_size));
 
@@ -4438,7 +4438,7 @@ static int read_float_channel_data
 
     if (result == ERROR)
     {
-        kjb_free(data_row);
+        ivi_free(data_row);
         return ERROR;
     }
 
@@ -4450,18 +4450,18 @@ static int read_float_channel_data
 
     for(i=0; i<fs_strip_top; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -4486,18 +4486,18 @@ static int read_float_channel_data
 
     for(i=0; i<fs_strip_top + fs_strip_bottom; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -4522,18 +4522,18 @@ static int read_float_channel_data
 
     for(i=0; i<fs_strip_top + fs_strip_bottom; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
     }
 
     for(i=0; i<num_rows; i++)
     {
-        if (kjb_fread(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fread(fp, data_row, (size_t)row_length) == ERROR)
         {
-            kjb_free(data_row);
+            ivi_free(data_row);
             return ERROR;
         }
 
@@ -4571,7 +4571,7 @@ static int read_float_channel_data
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
     return result;
 }
@@ -4579,7 +4579,7 @@ static int read_float_channel_data
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                 kjb_write_image
+ *                                 ivi_write_image
  *
  * Writes a float image to a file
  *
@@ -4602,7 +4602,7 @@ static int read_float_channel_data
  * -----------------------------------------------------------------------------
 */
 
-int kjb_write_image(const KJB_image* ip, const char* file_name)
+int ivi_write_image(const IVI_image* ip, const char* file_name)
 {
     char base_name[ MAX_FILE_NAME_SIZE ];
     char suffix[ MAX_FILE_NAME_SIZE ];
@@ -4629,7 +4629,7 @@ int kjb_write_image(const KJB_image* ip, const char* file_name)
         }
         return write_image_as_raster(ip, file_name);
     }
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
     else if (    (STRCMP_EQ(lc_suffix, "tiff"))
               || (STRCMP_EQ(lc_suffix, "tif"))
             )
@@ -4637,7 +4637,7 @@ int kjb_write_image(const KJB_image* ip, const char* file_name)
         return write_image_as_tiff(ip, file_name);
     }
 #endif
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
 #ifndef __C2MAN__
     else if (    (STRCMP_EQ(lc_suffix, "jpeg"))
               || (STRCMP_EQ(lc_suffix, "jpg"))
@@ -4656,7 +4656,7 @@ int kjb_write_image(const KJB_image* ip, const char* file_name)
         else 
         {
             add_error("Trying to write into a temporary file with a different format and convert it into JPEG.");
-            kjb_print_error();
+            ivi_print_error();
             /* Fall through and see if converting will help. */
         }
     }
@@ -4709,7 +4709,7 @@ int kjb_write_image(const KJB_image* ip, const char* file_name)
 
         ERE(BUFF_GET_TEMP_FILE_NAME(temp_file_name));
 
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
         verbose_pso(2, "Attempting to write of image into a temporary TIFF image.\n");
         ERE(write_image_as_tiff(ip, temp_file_name));
         verbose_pso(2, "Write of image to temporary TIFF succeeded.\n");
@@ -4731,7 +4731,7 @@ int kjb_write_image(const KJB_image* ip, const char* file_name)
                         file_name);
         }
 
-        kjb_unlink(temp_file_name);
+        ivi_unlink(temp_file_name);
         return result;
     }
 }
@@ -4740,17 +4740,17 @@ int kjb_write_image(const KJB_image* ip, const char* file_name)
 
 static int write_image_as_MID_file
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 )
 {
     FILE*        fp;
-    kjb_int32        magic_number      = MID_MAGIC_NUM;
+    ivi_int32        magic_number      = MID_MAGIC_NUM;
     int          result;
     Error_action save_error_action = get_error_action();
 
 
-    NRE(fp = kjb_fopen(file_name, "wb"));
+    NRE(fp = ivi_fopen(file_name, "wb"));
 
     result = FIELD_WRITE(fp, magic_number);
 
@@ -4760,7 +4760,7 @@ static int write_image_as_MID_file
 
     if (result == ERROR) set_error_action(FORCE_ADD_ERROR_ON_ERROR);
 
-    if (kjb_fclose(fp) == ERROR) result = ERROR;
+    if (ivi_fclose(fp) == ERROR) result = ERROR;
 
     set_error_action(save_error_action);
 
@@ -4771,14 +4771,14 @@ static int write_image_as_MID_file
 
 static int write_image_as_raw_16_bit
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 )
 {
     FILE*  fp;
     int    num_rows, num_cols, i, j;
     Pixel* in_pos;
-    kjb_uint16 output;
+    ivi_uint16 output;
 
 
     /*
@@ -4786,7 +4786,7 @@ static int write_image_as_raw_16_bit
     //
     // On ERROR, fp does not get closed.
     */
-    NRE(fp = kjb_fopen(file_name, "wb"));
+    NRE(fp = ivi_fopen(file_name, "wb"));
 
     num_rows = ip->num_rows;
     num_cols = ip->num_cols;
@@ -4797,18 +4797,18 @@ static int write_image_as_raw_16_bit
 
         for (j=0; j<num_cols; j++)
         {
-            output = (kjb_uint16)((float)256.0 * in_pos->r);
+            output = (ivi_uint16)((float)256.0 * in_pos->r);
             ERE(FIELD_WRITE(fp, output));
-            output = (kjb_uint16)((float)256.0 * in_pos->g);
+            output = (ivi_uint16)((float)256.0 * in_pos->g);
             ERE(FIELD_WRITE(fp, output));
-            output = (kjb_uint16)((float)256.0 * in_pos->b);
+            output = (ivi_uint16)((float)256.0 * in_pos->b);
             ERE(FIELD_WRITE(fp, output));
 
             in_pos++;
         }
     }
 
-    ERE(kjb_fclose(fp));
+    ERE(ivi_fclose(fp));
 
     return NO_ERROR;
 }
@@ -4817,12 +4817,12 @@ static int write_image_as_raw_16_bit
 
 static int write_image_as_validity_kiff
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 )
 {
     FILE*       fp;
-    kjb_int32   magic_number = KIFF_MAGIC_NUM;
+    ivi_int32   magic_number = KIFF_MAGIC_NUM;
     const char* annotation   = "\n\n:\n";
     int         result;
 
@@ -4833,17 +4833,17 @@ static int write_image_as_validity_kiff
     // On some errors, fp does not get closed.
     */
 
-    NRE(fp = kjb_fopen(file_name, "wb"));
+    NRE(fp = ivi_fopen(file_name, "wb"));
 
     ERE(FIELD_WRITE(fp, magic_number));
-    ERE(kjb_fputs(fp, "\nkformat: float_with_validity\n"));
-    ERE(kjb_fprintf(fp, "rows: %d, cols: %d\n", ip->num_rows, ip->num_cols));
-    ERE(kjb_fprintf(fp, "annotation length: %d\n%s", strlen(annotation),
+    ERE(ivi_fputs(fp, "\nkformat: float_with_validity\n"));
+    ERE(ivi_fprintf(fp, "rows: %d, cols: %d\n", ip->num_rows, ip->num_cols));
+    ERE(ivi_fprintf(fp, "annotation length: %d\n%s", strlen(annotation),
                     annotation));
 
     result = write_validity_kiff_image_data(ip, fp);
 
-    ERE(kjb_fclose(fp));
+    ERE(ivi_fclose(fp));
 
     return result;
 }
@@ -4852,12 +4852,12 @@ static int write_image_as_validity_kiff
 
 static int write_image_as_float_kiff
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 )
 {
     FILE*       fp;
-    kjb_int32   magic_number = KIFF_MAGIC_NUM;
+    ivi_int32   magic_number = KIFF_MAGIC_NUM;
     const char* annotation   = "\n\n:\n";
     int         result;
 
@@ -4868,17 +4868,17 @@ static int write_image_as_float_kiff
     // On some errors, fp does not get closed.
     */
 
-    NRE(fp = kjb_fopen(file_name, "wb"));
+    NRE(fp = ivi_fopen(file_name, "wb"));
 
     ERE(FIELD_WRITE(fp, magic_number));
-    ERE(kjb_fputs(fp, "\nkformat: float\n"));
-    ERE(kjb_fprintf(fp, "rows: %d, cols: %d\n", ip->num_rows, ip->num_cols));
-    ERE(kjb_fprintf(fp, "annotation length: %d\n%s", strlen(annotation),
+    ERE(ivi_fputs(fp, "\nkformat: float\n"));
+    ERE(ivi_fprintf(fp, "rows: %d, cols: %d\n", ip->num_rows, ip->num_cols));
+    ERE(ivi_fprintf(fp, "annotation length: %d\n%s", strlen(annotation),
                     annotation));
 
     result = write_float_pixel_image_data(ip, fp);
 
-    ERE(kjb_fclose(fp));
+    ERE(ivi_fclose(fp));
 
     return result;
 }
@@ -4887,7 +4887,7 @@ static int write_image_as_float_kiff
 
 static int write_image_as_raster
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 )
 {
@@ -4901,17 +4901,17 @@ static int write_image_as_raster
     float      r_temp;
     float      g_temp;
     float      b_temp;
-    kjb_uint32 bigger_if_msb_first = 0;  /* Ignore lint */
-    kjb_uint32 less_if_msb_first   = 0;  /* Ignore lint */
+    ivi_uint32 bigger_if_msb_first = 0;  /* Ignore lint */
+    ivi_uint32 less_if_msb_first   = 0;  /* Ignore lint */
     int        msb_first = FALSE;
-    kjb_int32  magic     = RASTER_MAGIC_NUM;
-    kjb_int32  width     = ip->num_cols;
-    kjb_int32  height    = ip->num_rows;
-    kjb_int32  depth     = 24;
-    kjb_int32  length;
-    kjb_int32  type      = RT_FORMAT_RGB;
-    kjb_int32  maptype   = RMT_NONE;
-    kjb_int32  maplength = 0;
+    ivi_int32  magic     = RASTER_MAGIC_NUM;
+    ivi_int32  width     = ip->num_cols;
+    ivi_int32  height    = ip->num_rows;
+    ivi_int32  depth     = 24;
+    ivi_int32  length;
+    ivi_int32  type      = RT_FORMAT_RGB;
+    ivi_int32  maptype   = RMT_NONE;
+    ivi_int32  maplength = 0;
 
 
     ((unsigned char*)&bigger_if_msb_first)[ 0 ] = 1;
@@ -4922,7 +4922,7 @@ static int write_image_as_raster
         msb_first = TRUE;
     }
 
-    NRE(fp = kjb_fopen(file_name, "wb"));
+    NRE(fp = ivi_fopen(file_name, "wb"));
 
     row_length = 3 * ip->num_cols;
     if (IS_ODD(row_length)) row_length++;
@@ -4957,7 +4957,7 @@ static int write_image_as_raster
         Error_action save_error_action = get_error_action();
 
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(fp);
+        ivi_fclose(fp);
         set_error_action(save_error_action);
         return ERROR;
     }
@@ -4969,7 +4969,7 @@ static int write_image_as_raster
         Error_action save_error_action = get_error_action();
 
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(fp);
+        ivi_fclose(fp);
         set_error_action(save_error_action);
         return ERROR;
     }
@@ -5121,21 +5121,21 @@ static int write_image_as_raster
             *data_row_pos++ = 0;
         }
 
-        if (kjb_fwrite(fp, data_row, (size_t)row_length) == ERROR)
+        if (ivi_fwrite(fp, data_row, (size_t)row_length) == ERROR)
         {
             Error_action save_error_action = get_error_action();
 
-            kjb_free(data_row);
+            ivi_free(data_row);
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-            kjb_fclose(fp);
+            ivi_fclose(fp);
             set_error_action(save_error_action);
             return ERROR;
         }
     }
 
-    kjb_free(data_row);
+    ivi_free(data_row);
 
-    ERE(kjb_fclose(fp));
+    ERE(ivi_fclose(fp));
 
     return NO_ERROR;
 }
@@ -5162,7 +5162,7 @@ static int write_image_as_raster
 
 int write_image_with_transparency
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char* out_file_name
 )
 {
@@ -5179,8 +5179,8 @@ int write_image_with_transparency
     char               temp_name[ MAX_FILE_NAME_SIZE ];
     int                err = NO_ERROR;
 
-    KJB_image*         tmp_ip = NULL;
-    kjb_copy_image(&tmp_ip, ip);
+    IVI_image*         tmp_ip = NULL;
+    ivi_copy_image(&tmp_ip, ip);
 
     assert(ip->flags & HAS_ALPHA_CHANNEL);
 
@@ -5209,12 +5209,12 @@ int write_image_with_transparency
     BUFF_CAT(temp_name, ".tiff");
 
     tmp_ip->flags &= ~HAS_ALPHA_CHANNEL;
-    EGC(err = kjb_write_image(tmp_ip, out_file_name));
+    EGC(err = ivi_write_image(tmp_ip, out_file_name));
 
-    ERE(kjb_sprintf(exec_string, sizeof(exec_string), "%s %s",
+    ERE(ivi_sprintf(exec_string, sizeof(exec_string), "%s %s",
             modify_program, out_file_name));
 
-    result = kjb_system(exec_string);
+    result = ivi_system(exec_string);
 
     if (    (result == NO_ERROR)
         && (get_path_type(out_file_name) == PATH_IS_REGULAR_FILE)
@@ -5239,15 +5239,15 @@ int write_image_with_transparency
      *  use Kyle's code instead --Qiyam
      */
   
-   /* EGC(err = kjb_write_image(tmp_ip, temp_name)); */
+   /* EGC(err = ivi_write_image(tmp_ip, temp_name)); */
 
     /* /\* Try to save the image a number of different ways *\/ */
     /* for (i=0; i<num_convert_programs; i++) */
     /* { */
-    /*     ERE(kjb_sprintf(exec_string, sizeof(exec_string), "%s %s %s", */
+    /*     ERE(ivi_sprintf(exec_string, sizeof(exec_string), "%s %s %s", */
     /*                     convert_programs[i], temp_name, out_file_name)); */
 
-    /*     result = kjb_system(exec_string); */
+    /*     result = ivi_system(exec_string); */
 
     /*     if (    (result == NO_ERROR) */
     /*          && (get_path_type(out_file_name) == PATH_IS_REGULAR_FILE) */
@@ -5269,19 +5269,19 @@ int write_image_with_transparency
     /* cat_error("."); */
     /* err = ERROR; */
 cleanup:
-    if (kjb_unlink(temp_name) == ERROR) result = ERROR;
-    kjb_free_image(tmp_ip);
+    if (ivi_unlink(temp_name) == ERROR) result = ERROR;
+    ivi_free_image(tmp_ip);
     return err;
 }
 #endif
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
 
 static int write_image_as_tiff
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 )
 {
@@ -5292,7 +5292,7 @@ static int write_image_as_tiff
     Pixel* target_row;
     char   file_name_copy[ MAX_FILE_NAME_SIZE ];
     FILE*  fp;
-    kjb_uint16 channels_per_pixel;
+    ivi_uint16 channels_per_pixel;
     const tsample_t sample = 0;
 
 
@@ -5326,14 +5326,14 @@ static int write_image_as_tiff
 
     BUFF_CPY(file_name_copy, file_name);
 
-    /* Do a trial open to use the kjb library error reporting if it does not
+    /* Do a trial open to use the ivi library error reporting if it does not
     // work.
     */
-    if ((fp = kjb_fopen(file_name_copy, "w")) == NULL)
+    if ((fp = ivi_fopen(file_name_copy, "w")) == NULL)
     {
         return ERROR;
     }
-    kjb_fclose(fp);
+    ivi_fclose(fp);
 
     tiff_ptr=TIFFOpen(file_name_copy, "w");
 
@@ -5344,7 +5344,7 @@ static int write_image_as_tiff
     }
 
     TIFFSetField(tiff_ptr, TIFFTAG_DOCUMENTNAME, file_name);
-    TIFFSetField(tiff_ptr, TIFFTAG_SOFTWARE, "KJB library");
+    TIFFSetField(tiff_ptr, TIFFTAG_SOFTWARE, "IVI library");
 
     TIFFSetField(tiff_ptr, TIFFTAG_BITSPERSAMPLE, bits_per_sample);
 
@@ -5354,12 +5354,12 @@ static int write_image_as_tiff
     TIFFSetField(tiff_ptr, TIFFTAG_IMAGELENGTH, num_rows);
 
     /* "PHOTOMETRIC_RGB" here works for both RGB and RGBA images.  */
-    TIFFSetField(tiff_ptr, TIFFTAG_PHOTOMETRIC, (kjb_uint16)PHOTOMETRIC_RGB);
-    TIFFSetField(tiff_ptr, TIFFTAG_COMPRESSION, (kjb_uint16)COMPRESSION_NONE);
+    TIFFSetField(tiff_ptr, TIFFTAG_PHOTOMETRIC, (ivi_uint16)PHOTOMETRIC_RGB);
+    TIFFSetField(tiff_ptr, TIFFTAG_COMPRESSION, (ivi_uint16)COMPRESSION_NONE);
 
     TIFFSetField(tiff_ptr, TIFFTAG_SAMPLESPERPIXEL, channels_per_pixel);
-    TIFFSetField(tiff_ptr, TIFFTAG_PLANARCONFIG, (kjb_uint16)1);
-    TIFFSetField(tiff_ptr, TIFFTAG_RESOLUTIONUNIT, (kjb_uint16)1);
+    TIFFSetField(tiff_ptr, TIFFTAG_PLANARCONFIG, (ivi_uint16)1);
+    TIFFSetField(tiff_ptr, TIFFTAG_RESOLUTIONUNIT, (ivi_uint16)1);
 
     scan_line_length = TIFFScanlineSize(tiff_ptr);
 
@@ -5404,17 +5404,17 @@ static int write_image_as_tiff
             if (TIFFWriteScanline(tiff_ptr, row, (uint32)i, sample) == -1)
             {
                 set_error("Write of tiff file %s failed.", file_name_copy);
-                kjb_free(row);
+                ivi_free(row);
                 TIFFClose(tiff_ptr);
                 return ERROR;
             }
         }
 
-        kjb_free(row);
+        ivi_free(row);
     }
     else if (bits_per_sample == 16)
     {
-        kjb_uint16* row_16 = UINT16_MALLOC(scan_line_length/2);
+        ivi_uint16* row_16 = UINT16_MALLOC(scan_line_length/2);
 
         if (row_16 == NULL)
         {
@@ -5425,20 +5425,20 @@ static int write_image_as_tiff
         UNTESTED_CODE();
         for (i = 0; i<num_rows; i++)
         {
-            kjb_uint16* row_16_pos = row_16;
+            ivi_uint16* row_16_pos = row_16;
             target_row = ip->pixels[ i ];
 
             for (j = 0; j<num_cols; j++)
             {
-                *row_16_pos++ = (kjb_uint16)(0.5f + MIN_OF(65535.0f,
+                *row_16_pos++ = (ivi_uint16)(0.5f + MIN_OF(65535.0f,
                           256.0f * MAX_OF(FLT_ZERO, target_row->r)));
-                *row_16_pos++ = (kjb_uint16)(0.5f + MIN_OF(65535.0f,
+                *row_16_pos++ = (ivi_uint16)(0.5f + MIN_OF(65535.0f,
                           256.0f * MAX_OF(FLT_ZERO, target_row->g)));
-                *row_16_pos++ = (kjb_uint16)(0.5f + MIN_OF(65535.0f,
+                *row_16_pos++ = (ivi_uint16)(0.5f + MIN_OF(65535.0f,
                           256.0f * MAX_OF(FLT_ZERO, target_row->b)));
                 if (ip->flags & HAS_ALPHA_CHANNEL)
                 {
-                    *row_16_pos++ = (kjb_uint16)(0.5f + MIN_OF(65535.0f,
+                    *row_16_pos++ = (ivi_uint16)(0.5f + MIN_OF(65535.0f,
                           256.0f * MAX_OF(FLT_ZERO, target_row->extra.alpha)));
                 }
                 target_row++;
@@ -5447,13 +5447,13 @@ static int write_image_as_tiff
             if (TIFFWriteScanline(tiff_ptr, (unsigned char*)row_16, (uint32)i, sample) == -1)
             {
                 set_error("Write of tiff file %s failed.", file_name_copy);
-                kjb_free(row_16);
+                ivi_free(row_16);
                 TIFFClose(tiff_ptr);
                 return ERROR;
             }
         }
 
-        kjb_free(row_16);
+        ivi_free(row_16);
     }
     else
     {
@@ -5471,7 +5471,7 @@ static int write_image_as_tiff
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
 #ifndef __C2MAN__
 
 /*
@@ -5480,12 +5480,12 @@ static int write_image_as_tiff
 
 static int write_image_as_jpeg
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*      file_name
 )
 {
 #ifdef IMPLEMENT_JPEG_QUALITY
-    /* This would be a KJB library option if we wanted it. */
+    /* This would be a IVI library option if we wanted it. */
     extern int jpeg_quality;
 #endif
     /* This struct contains the JPEG compression parameters and pointers to
@@ -5516,7 +5516,7 @@ static int write_image_as_jpeg
 
     verbose_pso(5, "Writing jpeg file with builtin routine.\n");
 
-    if ((fp = kjb_fopen(file_name, "wb")) == NULL)
+    if ((fp = ivi_fopen(file_name, "wb")) == NULL)
     {
         return ERROR;
     }
@@ -5530,13 +5530,13 @@ static int write_image_as_jpeg
 
         UNTESTED_CODE();
 
-        kjb_free(row);
+        ivi_free(row);
         set_error("Limited JPEG writer failed to write %F.", fp);
         add_error(jpeg_error_buff); 
         add_error("We will attempt to write a different format and convert to JPEG.");
 
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(fp);
+        ivi_fclose(fp);
         set_error_action(save_error_action);
 
         jpeg_destroy_compress(&cinfo);
@@ -5592,7 +5592,7 @@ static int write_image_as_jpeg
         Error_action save_error_action = get_error_action();
 
         set_error_action(FORCE_ADD_ERROR_ON_ERROR);
-        kjb_fclose(fp);
+        ivi_fclose(fp);
         set_error_action(save_error_action);
 
         return ERROR;
@@ -5616,11 +5616,11 @@ static int write_image_as_jpeg
 
     jpeg_finish_compress(&cinfo);
 
-    kjb_free(row);
+    ivi_free(row);
 
     result = NO_ERROR;
 
-    if (kjb_fclose(fp) == ERROR)
+    if (ivi_fclose(fp) == ERROR)
     {
         result = ERROR;
     }
@@ -5640,7 +5640,7 @@ static int write_image_as_jpeg
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int write_validity_kiff_image_data(const KJB_image* ip, FILE* fp)
+static int write_validity_kiff_image_data(const IVI_image* ip, FILE* fp)
 {
     int    num_rows, num_cols, i, j;
     Pixel* in_pos;
@@ -5665,7 +5665,7 @@ static int write_validity_kiff_image_data(const KJB_image* ip, FILE* fp)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int write_float_pixel_image_data(const KJB_image* ip, FILE* fp)
+static int write_float_pixel_image_data(const IVI_image* ip, FILE* fp)
 {
     int    num_rows, num_cols, i, j;
     Pixel* in_pos;
@@ -5737,7 +5737,7 @@ static int write_float_pixel_image_data(const KJB_image* ip, FILE* fp)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-static int write_float_channel_image_data(const KJB_image* ip, FILE* fp)
+static int write_float_channel_image_data(const IVI_image* ip, FILE* fp)
 {
     int    num_rows, num_cols, i, j;
     Pixel* in_pos;
@@ -5790,7 +5790,7 @@ static int write_float_channel_image_data(const KJB_image* ip, FILE* fp)
  * Displays a matrix as a black and white image
  *
  * This routine is used to display a matrix as a black and white image using
- * kjb_display_image(). 
+ * ivi_display_image(). 
  *
  * Returns:
  *     On success, the image number is returned. This number can be used as a
@@ -5805,12 +5805,12 @@ static int write_float_channel_image_data(const KJB_image* ip, FILE* fp)
 
 int display_matrix(const Matrix* mp, const char* title)
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
     int result = NO_ERROR;
 
     ERE(matrix_to_bw_image(mp, &ip));
-    result = kjb_display_image(ip, title);
-    kjb_free_image(ip);
+    result = ivi_display_image(ip, title);
+    ivi_free_image(ip);
  
     return result;
 }
@@ -5818,7 +5818,7 @@ int display_matrix(const Matrix* mp, const char* title)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                kjb_display_image
+ *                                ivi_display_image
  *
  * Displays an image
  *
@@ -5827,7 +5827,7 @@ int display_matrix(const Matrix* mp, const char* title)
  * coded list found in PATH. The list is subject to change, but on 17/08/01 it
  * was:
  *
- * |        kjb_display
+ * |        ivi_display
  * |        display
  * |        xv
  *
@@ -5866,7 +5866,7 @@ int display_matrix(const Matrix* mp, const char* title)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_display_image(const KJB_image* ip, const char* title)
+int ivi_display_image(const IVI_image* ip, const char* title)
 {
 
     return display_any_image((const void*)ip, title,
@@ -5875,7 +5875,7 @@ int kjb_display_image(const KJB_image* ip, const char* title)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int fork_display_image(const KJB_image* ip, const char* title)
+int fork_display_image(const IVI_image* ip, const char* title)
 {
 
     return fork_display_any_image((const void*)ip, title,
@@ -5886,56 +5886,56 @@ int fork_display_image(const KJB_image* ip, const char* title)
 
 static int write_image_for_display(const void* ip, char* title)
 {
-    KJB_image* range_mapped_ip = NULL;
-    KJB_image* max_scaled_ip = NULL;
-    KJB_image* map_ip = NULL;
-    KJB_image* log_ip = NULL;
-    KJB_image* gamma_corrected_ip = NULL;
+    IVI_image* range_mapped_ip = NULL;
+    IVI_image* max_scaled_ip = NULL;
+    IVI_image* map_ip = NULL;
+    IVI_image* log_ip = NULL;
+    IVI_image* gamma_corrected_ip = NULL;
     int        result = NO_ERROR;
 
 
     if ((result != ERROR) && (fs_display_matrix_mp != NULL))
     {
-        result = post_map_image(&map_ip, (const KJB_image*)ip,
+        result = post_map_image(&map_ip, (const IVI_image*)ip,
                                 fs_display_matrix_mp);
         ip = map_ip;
     }
 
     if ((result != ERROR) && (fs_adjust_image_range))
     {
-        result = adjust_image_range(&range_mapped_ip, (const KJB_image*)ip);
+        result = adjust_image_range(&range_mapped_ip, (const IVI_image*)ip);
         ip = range_mapped_ip;
     }
 
     if ((result != ERROR) && (fs_display_log))
     {
-        result = log_one_plus_image(&log_ip, (const KJB_image*)ip);
+        result = log_one_plus_image(&log_ip, (const IVI_image*)ip);
         ip = log_ip;
     }
 
     if ((result != ERROR) && (fs_scale_by_max_rgb))
     {
-        result = scale_image_by_max(&max_scaled_ip, (const KJB_image*)ip);
+        result = scale_image_by_max(&max_scaled_ip, (const IVI_image*)ip);
         ip = max_scaled_ip;
     }
 
     if ((result != ERROR) && (fs_do_gamma_correction))
     {
-        result = gamma_correct_image(&gamma_corrected_ip, (const KJB_image*)ip,
+        result = gamma_correct_image(&gamma_corrected_ip, (const IVI_image*)ip,
                                      (Vector*)NULL);
         ip = gamma_corrected_ip;
     }
 
     if (result != ERROR)
     {
-        result = kjb_write_image((const KJB_image*)ip, title);
+        result = ivi_write_image((const IVI_image*)ip, title);
     }
 
-    kjb_free_image(map_ip);
-    kjb_free_image(log_ip);
-    kjb_free_image(range_mapped_ip);
-    kjb_free_image(max_scaled_ip);
-    kjb_free_image(gamma_corrected_ip);
+    ivi_free_image(map_ip);
+    ivi_free_image(log_ip);
+    ivi_free_image(range_mapped_ip);
+    ivi_free_image(max_scaled_ip);
+    ivi_free_image(gamma_corrected_ip);
 
     return result;
 }

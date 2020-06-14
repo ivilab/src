@@ -28,14 +28,14 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 int  mode_filter
 (
-   KJB_image_vector *ivp,
-   KJB_image **output_image
+   IVI_image_vector *ivp,
+   IVI_image **output_image
 );
 
 

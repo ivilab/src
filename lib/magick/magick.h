@@ -1,5 +1,5 @@
 
-/* $Id: magick.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: magick.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -7,7 +7,7 @@
  * Make sure that these files are not a liability when there is no X11. If this
  * is the case, then comment out the whole thing.
 */
-#ifdef KJB_HAVE_X11 
+#ifdef IVI_HAVE_X11 
 
 /* -------------------------------------------------------------------------- */
 
@@ -20,17 +20,17 @@
 // Kobus
 */
 
-#ifdef KJB_HAVE_TIFF
+#ifdef IVI_HAVE_TIFF
 #    define HasTIFF
 #endif
 
-#ifdef KJB_HAVE_JPEG
+#ifdef IVI_HAVE_JPEG
 #    define HasJPEG
 #endif
 
 #include "l/l_incl.h"
 
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 #    define class c_class
 #    define operator c_operator
 #endif
@@ -87,7 +87,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -241,7 +241,7 @@ static char
 
 /* -------------------------------------------------------------------------- */
 
-#endif   /* #ifdef KJB_HAVE_X11  */
+#endif   /* #ifdef IVI_HAVE_X11  */
 
 #endif   /* #ifndef __C2MAN__  */
 

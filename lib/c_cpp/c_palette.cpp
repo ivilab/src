@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: c_palette.cpp 19803 2015-09-20 04:05:01Z predoehl $
+ * $Id: c_palette.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_def.h>
@@ -71,7 +71,7 @@ namespace
 class ColorPick
 {
 
-    std::vector< kjb::PixelRGBA > colors;
+    std::vector< ivi::PixelRGBA > colors;
 
     void build(); // complicated overkill method, but it makes good colors.
 
@@ -87,7 +87,7 @@ public:
     {
         if ( 0 == num_colors )
         {
-            KJB_THROW_2(kjb::Illegal_argument,"Palette size must be positive");
+            IVI_THROW_2(ivi::Illegal_argument,"Palette size must be positive");
         }
         colors[ 0 ].extra.alpha = 0; // sentinel:  class hasn't built itself
     }
@@ -97,7 +97,7 @@ public:
         colors.swap( other.colors );
     }
 
-    kjb::PixelRGBA operator[]( size_t index )
+    ivi::PixelRGBA operator[]( size_t index )
     {
         if ( is_not_yet_built() ) build();
         return colors.at( index );
@@ -113,27 +113,27 @@ public:
 
 
 #if LAB_SPACE
-void convert_to_lab( const kjb::PixelRGBA cc, kjb_c::Vector** lab )
+void convert_to_lab( const ivi::PixelRGBA cc, ivi_c::Vector** lab )
 {
-    kjb::Vector vv( 3 );
+    ivi::Vector vv( 3 );
 
     vv.at( 0 ) = cc.r;
     vv.at( 1 ) = cc.g;
     vv.at( 2 ) = cc.b;
 
-    ETX( kjb_c::convert_vector_rgb_to_lab( lab, vv.get_c_vector(), 00 ) );
+    ETX( ivi_c::convert_vector_rgb_to_lab( lab, vv.get_c_vector(), 00 ) );
 }
 
 
 
-double lab_dist2( const kjb::PixelRGBA& c1, const kjb::PixelRGBA& c2 )
+double lab_dist2( const ivi::PixelRGBA& c1, const ivi::PixelRGBA& c2 )
 {
-    kjb_c::Vector *v1 = 00, *v2 = 00;
+    ivi_c::Vector *v1 = 00, *v2 = 00;
 
     convert_to_lab( c1, &v1 );
     convert_to_lab( c2, &v2 );
 
-    kjb::Vector w1( v1 ), w2( v2 );
+    ivi::Vector w1( v1 ), w2( v2 );
     w1 -= w2;
     return w1.magnitude_squared();
 }
@@ -155,13 +155,13 @@ void ColorPick::build()
     const size_t    K_CLUST = colors.size(),
                     EXTRA_CLUST =  K_CLUST * EXTRA_FACTOR;
 
-    std::vector< kjb::PixelRGBA > precolors;
+    std::vector< ivi::PixelRGBA > precolors;
     precolors.reserve( EXTRA_CLUST );
 
     //////// THIS ONE WORKS PRETTY WELL, even if EXTRA_FACTOR is 1.
     const double ISOSCALE = 2.0, Y_TOO_DARK = 0.15;
-    kjb::Vector v( 3 );
-    for ( kjb::Gsl_Qrng_Sobol qq( 3 ); precolors.size() < EXTRA_CLUST; )
+    ivi::Vector v( 3 );
+    for ( ivi::Gsl_Qrng_Sobol qq( 3 ); precolors.size() < EXTRA_CLUST; )
     {
 
         v = qq.read();  // elements 0,1,2 correspond to H,S,Y.
@@ -199,7 +199,7 @@ void ColorPick::build()
          * you whether v is valid, and if so, the RGB values are to be found in
          * Pixel p.
          */
-        kjb_c::Pixel p;
+        ivi_c::Pixel p;
         p.extra.alpha = 255; // doesn't get set by function, Valgrind is sad.
         int rc = get_pixel_from_hsluma_space( v, &p );
         if ( EXIT_SUCCESS == rc )
@@ -212,14 +212,14 @@ void ColorPick::build()
     // HEURISTIC FIXUP:  First thin it out.  Then look for splitups.
     std::vector< double > dist2;
     std::vector< size_t > winner;
-    kjb::Vector vk;
+    ivi::Vector vk;
 
     /* This loop could be "while(true)" since the break below will exit us.
      * However, I am afraid of putting an infinite loop in the code for real.
      */
     for ( int irrelevant = 0; irrelevant < 9999; ++irrelevant )
     {
-        using kjb_c::kjb_rand;
+        using ivi_c::ivi_rand;
 
         // compute nearest color to each color
         dist2.assign( precolors.size(), DBL_MAX );
@@ -245,7 +245,7 @@ void ColorPick::build()
                     winner[ kix ] = jix;
                 }
             }
-            KJB(ASSERT( winner[ kix ] < precolors.size() ));
+            IVI(ASSERT( winner[ kix ] < precolors.size() ));
         }
 
         // find which 2 colors are most cramped, least cramped
@@ -261,13 +261,13 @@ void ColorPick::build()
                 lcix = kix;
             }
         }
-        KJB(ASSERT( dist2.at( mcix ) < dist2.at( lcix ) || mcix == lcix ));
-        KJB(ASSERT( dist2[ mcix ] == dist2[ winner[ mcix ] ] ));
+        IVI(ASSERT( dist2.at( mcix ) < dist2.at( lcix ) || mcix == lcix ));
+        IVI(ASSERT( dist2[ mcix ] == dist2[ winner[ mcix ] ] ));
 
         // Cut one of the two most cramped colors if we have surplus colors
         if ( K_CLUST < precolors.size() )
         {
-            size_t cutix = kjb_rand() < 0.5 ? mcix : winner[ mcix ];
+            size_t cutix = ivi_rand() < 0.5 ? mcix : winner[ mcix ];
             precolors[ cutix ] = precolors.back();
             precolors.pop_back();
         }
@@ -275,7 +275,7 @@ void ColorPick::build()
         // No more cuts, but can one of the cramped pair move in with you guys?
         else if ( dist2[ mcix ] * 4 < dist2[ lcix ] )
         {
-            size_t shiftix = kjb_rand() < 0.5 ? mcix : winner[ mcix ];
+            size_t shiftix = ivi_rand() < 0.5 ? mcix : winner[ mcix ];
             precolors[ shiftix ] =
                             precolors[ lcix ] + precolors[ winner[ lcix ] ];
             precolors[ shiftix ] *= 0.5;
@@ -286,7 +286,7 @@ void ColorPick::build()
         }
     }
 #endif
-    KJB(ASSERT( K_CLUST == precolors.size() ));
+    IVI(ASSERT( K_CLUST == precolors.size() ));
     std::copy( precolors.begin(), precolors.end(), colors.begin() );
 }
 
@@ -314,7 +314,7 @@ void ColorPick::debug_print( std::ostream& os ) const
 
 
 
-namespace kjb {
+namespace ivi {
 
 
 Palette::Palette( size_t size )
@@ -323,8 +323,8 @@ Palette::Palette( size_t size )
     if ( 2 == size )
     {
         // Severe black and white for a two-color palette
-        my_pal.push_back( kjb::PixelRGBA( 0, 0, 0 ) );
-        my_pal.push_back( kjb::PixelRGBA( 250, 250, 250 ) );
+        my_pal.push_back( ivi::PixelRGBA( 0, 0, 0 ) );
+        my_pal.push_back( ivi::PixelRGBA( 250, 250, 250 ) );
     }
     else
     {
@@ -350,9 +350,9 @@ Palette::Palette( size_t size )
  * they must be normalized to sum to unity (or pretty close).  The output
  * pixel is a weighted sum of the palette colors, using these weights.
  */
-kjb::PixelRGBA Palette::weighted_sum( const kjb::Vector& weights_d ) const
+ivi::PixelRGBA Palette::weighted_sum( const ivi::Vector& weights_d ) const
 {
-    if (weights_d.get_length() != (int)size() ) KJB_THROW(Illegal_argument);
+    if (weights_d.get_length() != (int)size() ) IVI_THROW(Illegal_argument);
 
     float sum = 0;
     for ( int iii = 0; iii < weights_d.get_length(); ++iii )
@@ -360,9 +360,9 @@ kjb::PixelRGBA Palette::weighted_sum( const kjb::Vector& weights_d ) const
         sum += weights_d( iii );
     }
     const float EPS = 1.0E-4f;
-    if (fabs( sum - 1.0f ) > EPS ) KJB_THROW(Illegal_argument);
-    kjb::PixelRGBA weighted_sum( 0, 0, 0 );
-    std::vector< kjb::PixelRGBA >::const_iterator ppal = my_pal.begin();
+    if (fabs( sum - 1.0f ) > EPS ) IVI_THROW(Illegal_argument);
+    ivi::PixelRGBA weighted_sum( 0, 0, 0 );
+    std::vector< ivi::PixelRGBA >::const_iterator ppal = my_pal.begin();
     for ( int iii = 0; iii < weights_d.get_length(); ++iii )
     {
         weighted_sum += *ppal++ * weights_d( iii );
@@ -371,5 +371,5 @@ kjb::PixelRGBA Palette::weighted_sum( const kjb::Vector& weights_d ) const
 }
 
 
-} // namespace kjb
+} // namespace ivi
 

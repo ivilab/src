@@ -1,9 +1,9 @@
 /**
  * @file
  * @author Andrew Predoehl
- * @brief unit test for the methods of kjb::Image using Matrix and Int_matrix.
+ * @brief unit test for the methods of ivi::Image using Matrix and Int_matrix.
  *
- * kjb::Image gives an interface to build an image from three Matrix objects,
+ * ivi::Image gives an interface to build an image from three Matrix objects,
  * (R, G, B) and to decompose an image into them.  Obviously those two
  * operations should be complementary.  Likewise one can turn an image whose
  * pixels are integer valued in the R,G,B channels in the range 0-255 into an
@@ -12,7 +12,7 @@
  * Int_matrix interfaces are complementary.
  */
 /*
- * $Id: test_mat_comp.cpp 18292 2014-11-25 23:47:42Z ksimek $
+ * $Id: test_mat_comp.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_def.h>
@@ -26,10 +26,10 @@ namespace {
 
 int random_byte()
 {
-    return 255 * kjb_c::kjb_rand();
+    return 255 * ivi_c::ivi_rand();
 }
 
-bool are_different_pix( const kjb::PixelRGBA& p1, const kjb::PixelRGBA& p2 )
+bool are_different_pix( const ivi::PixelRGBA& p1, const ivi::PixelRGBA& p2 )
 {
     return      p1.r != p2.r
             ||  p1.g != p2.g
@@ -38,7 +38,7 @@ bool are_different_pix( const kjb::PixelRGBA& p1, const kjb::PixelRGBA& p2 )
 }
 
 
-bool different( const kjb::Image& im1, const kjb::Image& im2 )
+bool different( const ivi::Image& im1, const ivi::Image& im2 )
 {
     const int rows = im1.get_num_rows(), cols = im1.get_num_cols();
 
@@ -77,24 +77,24 @@ bool different( const kjb::Image& im1, const kjb::Image& im2 )
 int main()
 {
     const int EDGE = 512;
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
-    kjb::Image img( EDGE, EDGE, 0,0,0 );
+    ivi::Image img( EDGE, EDGE, 0,0,0 );
 
     for ( int row = 0; row < EDGE; ++row )
     {
         for ( int col = 0; col < EDGE; ++col )
         {
-            kjb::PixelRGBA ppp( random_byte(), random_byte(), random_byte() );
+            ivi::PixelRGBA ppp( random_byte(), random_byte(), random_byte() );
             img( row, col ) = ppp;
             // This is required to make to_grayscale_matrix succeed:
             img( row, col ).extra.invalid.pixel = VALID_PIXEL;
         }
     }
 
-    const kjb::Int_matrix ma1( img.to_color_matrix() );
+    const ivi::Int_matrix ma1( img.to_color_matrix() );
 
-    kjb::Image im2;
+    ivi::Image im2;
     im2.from_color_matrix( ma1 );
 
     // floating point comparison -- danger!
@@ -104,11 +104,11 @@ int main()
         return EXIT_FAILURE;
     }
 
-    const kjb::Matrix   reds( img.to_grayscale_matrix(1,0,0) ),
+    const ivi::Matrix   reds( img.to_grayscale_matrix(1,0,0) ),
                         grns( img.to_grayscale_matrix(0,1,0) ),
                         blus( img.to_grayscale_matrix(0,0,1) );
 
-    kjb::Image im3;
+    ivi::Image im3;
     im3.from_color_matrices( reds, grns, blus );
 
     if ( different( img, im3 ) )
@@ -119,7 +119,7 @@ int main()
 
     /*------------------------------------------------*/
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
         std::cout << "Success!\n";
     }

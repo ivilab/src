@@ -63,13 +63,13 @@
  */
 
 
-#ifndef KJB_POLYMESH_PLANE_H
-#define KJB_POLYMESH_PLANE_H
+#ifndef IVI_POLYMESH_PLANE_H
+#define IVI_POLYMESH_PLANE_H
 
 #include <gr_cpp/gr_polymesh.h>
 #include <vector>
 
-namespace kjb{
+namespace ivi{
 
 
 /**

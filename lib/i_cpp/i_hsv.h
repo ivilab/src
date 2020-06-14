@@ -4,11 +4,11 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: i_hsv.h 18170 2014-11-10 23:22:06Z ksimek $
+ * $Id: i_hsv.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef KJB_I_CPP_HSV_H
-#define KJB_I_CPP_HSV_H
+#ifndef IVI_I_CPP_HSV_H
+#define IVI_I_CPP_HSV_H
 
 #include <i/i_float.h>
 #include <i/i_float_io.h>
@@ -16,21 +16,21 @@
 
 #include <algorithm> /* for min and max */
 
-namespace kjb 
+namespace ivi 
 {
 
 // Forward declaration
 class Vector;
 
 /**
- * @addtogroup kjbImageProc
+ * @addtogroup iviImageProc
  * @{
  */
 
 /**
  * @brief Alternative Pixel using hue, saturation, value, and opacity (alpha).
  *
- * This is an adaptation of struct kjb_c::Pixel that adapts that type for 
+ * This is an adaptation of struct ivi_c::Pixel that adapts that type for 
  * an interface based on hue, saturation, and value.
  *
  * Hue is a value from 0 to 1 that cyclically moves through a sort of rainbow
@@ -56,24 +56,24 @@ class Vector;
  * This struct assumes the user is not interested in the "Invalid Pixel" 
  * structure.
  */
-struct PixelHSVA : public kjb_c::Pixel
+struct PixelHSVA : public ivi_c::Pixel
 {
     /**
      * @brief Default ctor, which leaves all fields uninitialized.
      * @warning "Uninitialized" often means "bug-causing" and "troublesome."
      */
     PixelHSVA()
-        : kjb_c::Pixel()
+        : ivi_c::Pixel()
     {
     }
 
     /**
      * @brief This builds a valid pixel from another.
      *
-     * Build a pixel from another. It receives a kjb_c::Pixel so as to
+     * Build a pixel from another. It receives a ivi_c::Pixel so as to
      * work with PixelRGBA as well.
      */
-    PixelHSVA(const kjb_c::Pixel& p)
+    PixelHSVA(const ivi_c::Pixel& p)
     {
         r = p.r;
         g = p.g;
@@ -165,7 +165,7 @@ struct PixelHSVA : public kjb_c::Pixel
  * The inverse of this matrix is hard-coded into
  * (overloaded) functions PixelRGBA_from_HSLuma_space().
  */
-Vector hsluma_space( const kjb_c::Pixel& p );
+Vector hsluma_space( const ivi_c::Pixel& p );
 
 
 /**
@@ -174,7 +174,7 @@ Vector hsluma_space( const kjb_c::Pixel& p );
  * @returns A pixel derived from input HSY coordinates, possibly clamped.
  *
  * Please see the comments for
- * get_pixel_from_hsluma_space( const kjb::Vector&, kjb_c::Pixel* ).
+ * get_pixel_from_hsluma_space( const ivi::Vector&, ivi_c::Pixel* ).
  *
  * If the hue-saturation-luma coordinates are outside the HSY polyhedron,
  * this still returns a pixel, but
@@ -182,7 +182,7 @@ Vector hsluma_space( const kjb_c::Pixel& p );
  * R,G,B values are clamped to the range 0 to 255.  
  * Alpha (opacity) is set to the default value used by class PixelRGBA.
  */
-kjb_c::Pixel get_pixel_from_hsluma_space( const Vector& hsy );
+ivi_c::Pixel get_pixel_from_hsluma_space( const Vector& hsy );
 
 
 /**
@@ -207,11 +207,11 @@ kjb_c::Pixel get_pixel_from_hsluma_space( const Vector& hsy );
  * pixel is stored in *p.  If you do not need the pixel, it is safe to pass in
  * a null value, and this function will act like a predicate.
  */
-int get_pixel_from_hsluma_space( const Vector& hsy, kjb_c::Pixel* p );
+int get_pixel_from_hsluma_space( const Vector& hsy, ivi_c::Pixel* p );
 
 
 /// @}
 
-} //namespace kjb
+} //namespace ivi
 
 #endif

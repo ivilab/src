@@ -81,7 +81,7 @@
 
 #define PI 3.1415926
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * The mapping from the input center point together with the height, top radius
@@ -136,7 +136,7 @@ Frustum::Frustum
 )
 : Polymesh(inv+2), points(inv*2)
 {
-    using namespace kjb;
+    using namespace ivi;
 
 	// set the number of vertices
 	nv = inv;
@@ -243,16 +243,16 @@ Frustum::Frustum
  *
  * @param  p  the vector of vertices.
  *
- * @throw  kjb::Illegal_argument  The vectors are not 3D.
+ * @throw  ivi::Illegal_argument  The vectors are not 3D.
  */
 Frustum::Frustum
 (
-    const std::vector<kjb::Vector> & p
+    const std::vector<ivi::Vector> & p
 )
-throw (kjb::Illegal_argument)
+throw (ivi::Illegal_argument)
 : Polymesh(6), points(p.size())
 {
-    using namespace kjb;
+    using namespace ivi;
 
 	nv = p.size()/2;
 	unsigned int inv = nv;
@@ -320,14 +320,14 @@ Frustum::Frustum(const Frustum& p)
  *
  * @param  fname  Input file to read this parallelepiped from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Frustum::Frustum(const char* fname, unsigned int inv)
-    throw (kjb::Illegal_argument, kjb::IO_error)
+    throw (ivi::Illegal_argument, ivi::IO_error)
     : Polymesh(), points(inv*2)
 {
-    kjb::Readable::read(fname);
+    ivi::Readable::read(fname);
 }
 
 
@@ -336,11 +336,11 @@ Frustum::Frustum(const char* fname, unsigned int inv)
  *
  * @param  in  Input stream to read this parallelepiped from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid arguments in file to read from.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid arguments in file to read from.
  */
 Frustum::Frustum(std::istream& in, unsigned int inv)
-    throw (kjb::Illegal_argument, kjb::IO_error)
+    throw (ivi::Illegal_argument, ivi::IO_error)
     : Polymesh(), nv(inv), points(inv*2)
 {
     read(in);
@@ -378,12 +378,12 @@ Frustum* Frustum::clone() const
  *
  * @param i the index of the point to be returned
  */
-const kjb::Vector & Frustum::get_point(size_t i) const
-    throw (kjb::Illegal_argument)
+const ivi::Vector & Frustum::get_point(size_t i) const
+    throw (ivi::Illegal_argument)
 {
     if (i >= nv*2)
     { 
-        throw kjb::Illegal_argument("Invalid point index");
+        throw ivi::Illegal_argument("Invalid point index");
     }
 
     return points[i];
@@ -394,7 +394,7 @@ const kjb::Vector & Frustum::get_point(size_t i) const
  * The vector is in homogeneous coordinates x, y, z, w. The coordinate
  * w is always 1.
  */
-const kjb::Vector &Frustum::get_center() const
+const ivi::Vector &Frustum::get_center() const
 { 
     return center; 
 }
@@ -403,13 +403,13 @@ const kjb::Vector &Frustum::get_center() const
 /** 
  * @param  in  Input stream to read the members of this frustum from.
  *
- * @throw  kjb::IO_error   Could not read from @em in.
- * @throw  kjb::Illegal_argument  Invalid argument to read from file.
+ * @throw  ivi::IO_error   Could not read from @em in.
+ * @throw  ivi::Illegal_argument  Invalid argument to read from file.
  */
-void Frustum::read(std::istream& in) throw (kjb::IO_error,
-        kjb::Illegal_argument)
+void Frustum::read(std::istream& in) throw (ivi::IO_error,
+        ivi::Illegal_argument)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     Polymesh::read(in);
 
@@ -428,7 +428,7 @@ void Frustum::read(std::istream& in) throw (kjb::IO_error,
             throw IO_error("Could not read point");
         }
 
-        if(!kjb_is_bigendian())
+        if(!ivi_is_bigendian())
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -452,7 +452,7 @@ void Frustum::read(std::istream& in) throw (kjb::IO_error,
         throw IO_error("Could not read center");
     }
 
-    if(!kjb_is_bigendian())
+    if(!ivi_is_bigendian())
     {
         bswap_u64((uint64_t*)&(x));
         bswap_u64((uint64_t*)&(y));
@@ -475,11 +475,11 @@ void Frustum::read(std::istream& in) throw (kjb::IO_error,
  *
  * @param  out  Output stream to write the members of this parallelepiped to.
  *
- * @throw  kjb::IO_error  Could not write to @em out.
+ * @throw  ivi::IO_error  Could not write to @em out.
  */
-void Frustum::write(std::ostream& out) const throw (kjb::IO_error)
+void Frustum::write(std::ostream& out) const throw (ivi::IO_error)
 {
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     Polymesh::write(out);
 
@@ -492,7 +492,7 @@ void Frustum::write(std::ostream& out) const throw (kjb::IO_error)
         double z = (points[ i ])[2];
         double w = (points[ i ])[3];
 
-        if(!kjb_is_bigendian())
+        if(!ivi_is_bigendian())
         {
             bswap_u64((uint64_t*)&(x));
             bswap_u64((uint64_t*)&(y));
@@ -515,7 +515,7 @@ void Frustum::write(std::ostream& out) const throw (kjb::IO_error)
     double z = center[2];
     double w = center[3];
 
-    if(!kjb_is_bigendian())
+    if(!ivi_is_bigendian())
     {
         bswap_u64((uint64_t*)&(x));
         bswap_u64((uint64_t*)&(y));
@@ -538,11 +538,11 @@ void Frustum::write(std::ostream& out) const throw (kjb::IO_error)
  * @param  M  Homogeneous transformation matrix to transform this
  *            frustum by.
  *
- * @throw  kjb::Illegal_argument  The matrix is not in 4x4 homogeneous
+ * @throw  ivi::Illegal_argument  The matrix is not in 4x4 homogeneous
  *                                  coordinates.
  */
-void Frustum::transform(const kjb::Matrix & M)
-    throw (kjb::Illegal_argument)
+void Frustum::transform(const ivi::Matrix & M)
+    throw (ivi::Illegal_argument)
 {
     Polymesh::transform(M);
 
@@ -578,7 +578,7 @@ void Frustum::set_points(
 	double ix, double iy, double iz,
 	double iw, double il, double iratio_top_bottom, double ih)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     // set the number of vertices of top face
     nv = inv;
@@ -692,7 +692,7 @@ void Frustum::set_points(
  *  of the parallelepiped
  */
 unsigned int Frustum::adjacent_face(unsigned int f, unsigned int e) const
-               throw (Index_out_of_bounds,KJB_error)
+               throw (Index_out_of_bounds,IVI_error)
 {
     return _adjacency(f, e);
 }
@@ -734,9 +734,9 @@ void Frustum::create_adjacency_matrix()
  *
  * @param face The face to be added
  */
-void Frustum::add_face(const Polygon & /* face */) throw (kjb::Illegal_argument)
+void Frustum::add_face(const Polygon & /* face */) throw (ivi::Illegal_argument)
 {
-    KJB_THROW(Not_implemented);
+    IVI_THROW(Not_implemented);
 }
 
 /*void Frustum::draw_orientation_map() const

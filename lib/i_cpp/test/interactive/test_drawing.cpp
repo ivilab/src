@@ -1,5 +1,5 @@
 /*
- * $Id: test_drawing.cpp 16805 2014-05-15 20:13:44Z predoehl $
+ * $Id: test_drawing.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "i/i_display.h"
@@ -8,11 +8,11 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 
-const kjb::PixelRGBA red(200,0,0), green(0,200,0), blue(0,0,200), black(0,0,0);
+const ivi::PixelRGBA red(200,0,0), green(0,200,0), blue(0,0,200), black(0,0,0);
 
 int test_circle(int cx, int cy, int r, int lw)
 {
-    kjb::Image im("image.jpg");
+    ivi::Image im("image.jpg");
 
     im.draw_circle(cx, cy, r, lw, red);
 
@@ -27,7 +27,7 @@ int test_circle(int cx, int cy, int r, int lw)
 
 int test_disk(int cx, int cy, int r)
 {
-    kjb::Image im("image.jpg");
+    ivi::Image im("image.jpg");
 
     im.draw_disk(cx, cy, r, blue);
 
@@ -57,14 +57,14 @@ int main()
 
     sleep(10);
     std::for_each( handles.begin(), handles.end(),
-                                std::ptr_fun(kjb_c::close_displayed_image) );
+                                std::ptr_fun(ivi_c::close_displayed_image) );
 
     #ifdef YES_WE_WANT_GARBAGE_POLICE
     fprintf(    stderr,
                 "Garbage police report that %d Images were (ever) constructed "
                 "via C++\nand %d of them are still alive now.\n", 
-                kjb::Image::query_serial_counter(),
-                kjb::Image::query_live_counter()
+                ivi::Image::query_serial_counter(),
+                ivi::Image::query_live_counter()
             );
     #endif
     return EXIT_SUCCESS;

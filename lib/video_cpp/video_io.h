@@ -1,4 +1,4 @@
-/* $Id: video_io.h 11310 2011-12-17 04:57:52Z ksimek $ */
+/* $Id: video_io.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,13 +19,13 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_VIDEO_IO_H
-#define KJB_CPP_VIDEO_IO_H
+#ifndef IVI_CPP_VIDEO_IO_H
+#define IVI_CPP_VIDEO_IO_H
 
 #include <boost/function.hpp>
 #include <string>
 
-namespace kjb
+namespace ivi
 {
 
 namespace opengl
@@ -52,6 +52,6 @@ void generate_video_frames(
 //    const std::string& out_fname);
 
 } // namespace opengl;
-} // namespace kjb
+} // namespace ivi
 
 #endif

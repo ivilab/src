@@ -32,8 +32,8 @@
 #include <l_cpp/l_test.h>
 #include <l/l_sys_io.h>
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 std::vector<Matrix> get_bg_matrices(std::vector<std::string>& img_names)
 {
@@ -69,7 +69,7 @@ int main()
     std::string img_w_fn = "output/color_likelihood_cpp/img_w.jpg";
     std::string img_r_fn = "output/color_likelihood_cpp/img_r.jpg";
 
-    kjb_c::kjb_mkdir("output/color_likelihood_cpp");
+    ivi_c::ivi_mkdir("output/color_likelihood_cpp");
 
     std::vector<Matrix> bg_vec;
 

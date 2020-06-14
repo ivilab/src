@@ -1,5 +1,5 @@
 
-/* $Id: append_word_list.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: append_word_list.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -11,15 +11,15 @@ int main(void)
     Word_list* word_list_ptr = NULL; 
     char line[ 1000 ];
 
-    kjb_init();
+    ivi_init();
 
     if (is_interactive())
     {
-        kjb_set_debug_level(2); 
+        ivi_set_debug_level(2); 
     }
     else 
     {
-        kjb_set_debug_level(0); 
+        ivi_set_debug_level(0); 
     }
 
     while (BUFF_GET_REAL_LINE(stdin, line) != EOF)
@@ -31,7 +31,7 @@ int main(void)
 
     free_word_list(word_list_ptr); 
 
-    kjb_cleanup();
+    ivi_cleanup();
     
     return EXIT_SUCCESS;
 }

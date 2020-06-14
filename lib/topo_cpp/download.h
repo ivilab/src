@@ -7,13 +7,13 @@
  * @warning Apparently this no longer works:  msrmaps.com seems unresponsive.
  */
 /*
- * $Id: download.h 20300 2016-01-29 19:40:59Z predoehl $
+ * $Id: download.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef DOWNLOAD_H_TOPOFUSION_INCLUDED
 #define DOWNLOAD_H_TOPOFUSION_INCLUDED
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {

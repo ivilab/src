@@ -1,4 +1,4 @@
-/* $Id: m_int_matrix.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: m_int_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_M_INT_MATRIX_H
-#define KJB_M_INT_MATRIX_H
+#ifndef IVI_M_INT_MATRIX_H
+#define IVI_M_INT_MATRIX_H
 
 #include "l_cpp/l_int_matrix.h"
 

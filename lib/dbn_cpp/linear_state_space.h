@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: linear_state_space.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: linear_state_space.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_LINEAR_STATE_SPACE_H
-#define KJB_TIES_LINEAR_STATE_SPACE_H
+#ifndef IVI_TIES_LINEAR_STATE_SPACE_H
+#define IVI_TIES_LINEAR_STATE_SPACE_H
 
 #include <l/l_sys_debug.h>
 #include <l_cpp/l_util.h>
@@ -51,7 +51,7 @@
 #include "dbn_cpp/typedefs.h"
 #include "dbn_cpp/data.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 static const double DEFAULT_SAMPLING_RATE = 0.01;
@@ -61,7 +61,7 @@ static const double DEFAULT_NOISE_SIGMA = 0.5;
 typedef std::map<std::string, Double_v> Mod_map;
 
 
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
 typedef std::vector<Coupled_oscillator, 
         tbb::scalable_allocator<Coupled_oscillator> > Coupled_oscillator_v;
 #else 
@@ -313,7 +313,7 @@ public:
     {
         if(predictors_.empty())
         {
-            KJB_THROW_2(Runtime_error, "predictors are not initialized");
+            IVI_THROW_2(Runtime_error, "predictors are not initialized");
         }
         return predictors_;
     }
@@ -1145,7 +1145,7 @@ inline std::ostream& operator <<
     return ost;
 }
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
-#endif //KJB_TIES_LINEAR_STATE_SPACE_H
+#endif //IVI_TIES_LINEAR_STATE_SPACE_H
  

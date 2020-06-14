@@ -1,4 +1,4 @@
-/* $Id: test_trajectory.cpp 14087 2013-03-12 20:44:24Z jguan1 $ */
+/* $Id: test_trajectory.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -29,8 +29,8 @@
 #include <boost/assign/list_of.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::psi;
+using namespace ivi;
+using namespace ivi::psi;
 
 using boost::assign::list_of;
 

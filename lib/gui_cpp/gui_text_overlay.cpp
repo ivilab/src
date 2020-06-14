@@ -1,4 +1,4 @@
-/* $Id: gui_text_overlay.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_text_overlay.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,13 +19,13 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
 #include <gui_cpp/gui_text_overlay.h>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {
@@ -68,7 +68,7 @@ void Text_overlay::render() const
             begin_x = x() + PADDING + (width() - string_width)/2.0;
             break;
         default:
-            KJB_THROW(Cant_happen_exception);
+            IVI_THROW(Cant_happen_exception);
     }
 
 //        switch(v_alignment_)
@@ -83,7 +83,7 @@ void Text_overlay::render() const
 //                begin_y = y() - PADDING - CHAR_HEIGHT;
 //                break;
 //            default:
-//                KJB_THROW(Cant_happen_exception);
+//                IVI_THROW(Cant_happen_exception);
 //        }
 //
     glScissor(x(), y(), width(), height());
@@ -91,7 +91,7 @@ void Text_overlay::render() const
     if(bg_color_)
     {
         glBegin(GL_QUADS);
-        kjb::opengl::glColor(*bg_color_);
+        ivi::opengl::glColor(*bg_color_);
         glVertex2f(begin_x - PADDING, y());
         glVertex2f(begin_x + PADDING + string_width, y());
         glVertex2f(begin_x + PADDING + string_width, y() + height());
@@ -99,7 +99,7 @@ void Text_overlay::render() const
         glEnd();
     }
 
-    kjb::opengl::glColor(color_);
+    ivi::opengl::glColor(color_);
     glRasterPos2f(begin_x, y() + PADDING);
 
     for(size_t i = 0; i < text_.size(); i++)
@@ -139,7 +139,7 @@ void Textarea_overlay::render() const
             begin_x = x() + PADDING + (width() - string_width)/2.0;
             break;
         default:
-            KJB_THROW(Cant_happen_exception);
+            IVI_THROW(Cant_happen_exception);
     }
 
 //        begin_y = y() + PADDING;
@@ -155,7 +155,7 @@ void Textarea_overlay::render() const
 //                begin_y = y() - PADDING - CHAR_HEIGHT;
 //                break;
 //            default:
-//                KJB_THROW(Cant_happen_exception);
+//                IVI_THROW(Cant_happen_exception);
 //        }
 
 //        glScissor(x(), y(), width(), height());
@@ -164,7 +164,7 @@ void Textarea_overlay::render() const
     {
         // TODO - handle this
         glBegin(GL_QUADS);
-        kjb::opengl::glColor(*bg_color_);
+        ivi::opengl::glColor(*bg_color_);
         glVertex2f(begin_x - PADDING, y());
         glVertex2f(begin_x + PADDING + string_width, y());
         glVertex2f(begin_x + PADDING + string_width, y() + height());
@@ -172,7 +172,7 @@ void Textarea_overlay::render() const
         glEnd();
     }
 
-    kjb::opengl::glColor(color_);
+    ivi::opengl::glColor(color_);
     float cur_y = height() - CHAR_HEIGHT - PADDING;
     glRasterPos2f(begin_x, cur_y);
 
@@ -194,6 +194,6 @@ void Textarea_overlay::render() const
 
 
 } // namespace gui
-} // namespace kjb
+} // namespace ivi
 
 #endif

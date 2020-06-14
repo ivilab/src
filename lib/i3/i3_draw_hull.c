@@ -1,5 +1,5 @@
 
-/* $Id: i3_draw_hull.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i3_draw_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 /*
@@ -34,7 +34,7 @@ extern "C" {
 
 int image_draw_hull_interior
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const Hull* hp,
     int         r,
     int         g,
@@ -102,7 +102,7 @@ int image_draw_hull_interior
 
 int image_draw_hull_boundary
 (
-    KJB_image*  ip,
+    IVI_image*  ip,
     const Hull* hp,
     int         r,
     int         g,

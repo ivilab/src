@@ -1,5 +1,5 @@
 
-/* $Id: l_int_matrix.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_int_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -160,7 +160,7 @@ int get_initialized_int_matrix(Int_matrix** target_mpp,
  *
  * Gets target Int_matrix
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of integer matrices. If *target_mpp is NULL, then this
  * routine creates the int_matrix. If it is not null, and it is the right size,
  * then this routine does nothing. If it is the wrong size, then it is resized.
@@ -231,7 +231,7 @@ int debug_get_target_int_matrix(Int_matrix** target_mpp,
 
         if (num_rows > out_mp->max_num_rows)
         {
-            kjb_free(out_mp->elements);
+            ivi_free(out_mp->elements);
             NRE(out_mp->elements = DEBUG_N_TYPE_MALLOC(int*, num_rows,
                                                        file_name, line_number));
             row_ptr = out_mp->elements;
@@ -331,7 +331,7 @@ int get_target_int_matrix(Int_matrix** target_mpp, int num_rows, int num_cols)
 
         if (num_rows > out_mp->max_num_rows)
         {
-            kjb_free(out_mp->elements);
+            ivi_free(out_mp->elements);
             NRE(out_mp->elements = N_TYPE_MALLOC(int*, num_rows));
             row_ptr = out_mp->elements;
 
@@ -449,7 +449,7 @@ int debug_ra_get_target_int_matrix
             NRE(elem_ptr = DEBUG_INT_REALLOC(elem_ptr,
                                              num_rows * num_cols,
                                              file_name, line_number));
-            kjb_free(out_mp->elements);
+            ivi_free(out_mp->elements);
 
             NRE(out_mp->elements = DEBUG_N_TYPE_MALLOC(int*, num_rows,
                                                        file_name, line_number));
@@ -546,7 +546,7 @@ int ra_get_target_int_matrix(Int_matrix** target_mpp, int num_rows, int num_cols
 
             NRE(elem_ptr = INT_REALLOC(elem_ptr, num_rows * num_cols));
 
-            kjb_free(out_mp->elements);
+            ivi_free(out_mp->elements);
 
             NRE(out_mp->elements = N_TYPE_MALLOC(int*, num_rows));
 
@@ -615,7 +615,7 @@ static Int_matrix* debug_create_int_matrix(int num_rows, int num_cols,
     
     if ((num_rows != 0) && (mp->elements == NULL))
     {
-        kjb_free(mp);
+        ivi_free(mp);
         return NULL; 
     }
                                                        
@@ -645,7 +645,7 @@ static Int_matrix* create_int_matrix(int num_rows, int num_cols)
 
     if ((num_rows != 0) && (mp->elements == NULL))
     {
-        kjb_free(mp);
+        ivi_free(mp);
         return NULL; 
     }
                                                        
@@ -736,7 +736,7 @@ void free_int_matrix(Int_matrix* mp)
              * otherwise problems such as double free can look like unitialized
              * memory.
             */
-            kjb_check_free(mp);
+            ivi_check_free(mp);
 
             check_initialization(mp->elements[ 0 ], mp->num_rows * mp->num_cols,
                                  sizeof(int));
@@ -746,7 +746,7 @@ void free_int_matrix(Int_matrix* mp)
             free_2D_int_array(mp->elements);
         }
 
-        kjb_free(mp);
+        ivi_free(mp);
     }
 }
 
@@ -908,7 +908,7 @@ int ra_get_target_int_matrix_vector(Int_matrix_vector **mvpp, int length)
  *
  * Gets a target integer matrix vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of matrix vectors. If *target_mvpp is
  * NULL, then this routine creates the matrix matrix. If it is not null, and it
  * is the right size, then this routine does nothing. If it is the wrong size,
@@ -1005,8 +1005,8 @@ void free_int_matrix_vector(Int_matrix_vector *int_mvp)
         mp_array_pos++;
     }
 
-    kjb_free(int_mvp->elements);
-    kjb_free(int_mvp);
+    ivi_free(int_mvp->elements);
+    ivi_free(int_mvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1051,7 +1051,7 @@ void free_int_matrix_vector_list(int count,
         free_int_matrix_vector(int_matrix_vector_list[ i ]);
     }
 
-    kjb_free(int_matrix_vector_list);
+    ivi_free(int_matrix_vector_list);
 }
 
 #endif 
@@ -1063,7 +1063,7 @@ void free_int_matrix_vector_list(int count,
  *
  * Gets a target integer vector matrix
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of integer vector matrices. If *target_vmpp is NULL, then
  * this routine creates the vector matrix. If it is not null, and it is the
  * right size, then this routine does nothing. If it is the wrong size, then it
@@ -1114,7 +1114,7 @@ static Int_vector_matrix* create_int_vector_matrix(int num_rows, int num_cols)
 
     if ((num_rows != 0) && (int_vmp->elements == NULL))
     {
-        kjb_free(int_vmp);
+        ivi_free(int_vmp);
         return NULL; 
     }
                                                        
@@ -1168,7 +1168,7 @@ void free_int_vector_matrix(Int_vector_matrix *int_vmp)
 
     free_2D_ptr_array((void***)(int_vmp->elements)); 
 
-    kjb_free(int_vmp);
+    ivi_free(int_vmp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -3742,7 +3742,7 @@ int ow_add_int_matrices
  *
  * Gets a target integer matrix vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of int matrix vector vectors. If *target_mvvpp is
  * NULL, then this routine creates the object. If it is not null, and it
  * is the right size, then this routine does nothing. If it is the wrong size,
@@ -3839,8 +3839,8 @@ void free_int_matrix_vector_vector(Int_matrix_vector_vector* mvvp)
         mvpp++;
     }
 
-    kjb_free(mvvp->elements);
-    kjb_free(mvvp);
+    ivi_free(mvvp->elements);
+    ivi_free(mvvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

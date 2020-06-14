@@ -1,5 +1,5 @@
 
-/* $Id: l_config.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_config.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -189,7 +189,7 @@ int read_dbl_from_config_file(double* value_ptr, const char* env_var,
     NRE(fp = open_config_file(env_var, sub_dir, file_name, message_name));
     BUFF_GET_USER_FD_NAME(fileno(fp), temp_config_file_name);
     BUFF_GET_REAL_LINE(fp, line);
-    ERE(kjb_fclose(fp));
+    ERE(ivi_fclose(fp));
 
     line_pos = line;
     trim_beg(&line_pos);
@@ -204,7 +204,7 @@ int read_dbl_from_config_file(double* value_ptr, const char* env_var,
     }
     else if (config_file_name != NULL)
     {
-        kjb_strncpy(config_file_name, temp_config_file_name,
+        ivi_strncpy(config_file_name, temp_config_file_name,
                     config_file_name_size);
     }
 
@@ -415,7 +415,7 @@ static FILE* open_config_file_2(const char* env_var, int num_files,
 
         if (BUFF_GET_ENV(env_var, env_var_file_name) != ERROR)
         {
-            fp = kjb_fopen(env_var_file_name, "r");
+            fp = ivi_fopen(env_var_file_name, "r");
         }
     }
 
@@ -428,7 +428,7 @@ static FILE* open_config_file_2(const char* env_var, int num_files,
             verbose_pso(15, "Trying %s for %s file.\n", file_name,
                         (message_name == NULL) ? "configuration"
                                                : message_name);
-            fp = kjb_fopen(file_name, "r");
+            fp = ivi_fopen(file_name, "r");
 
             if (fp != NULL) break;
         }
@@ -503,7 +503,7 @@ int get_config_file(const char* env_var, const char* sub_dir,
 
     get_user_fd_name(fileno(fp), config_file, config_file_size);
 
-    ERE(kjb_fclose(fp));
+    ERE(ivi_fclose(fp));
 
     return NO_ERROR;
 }

@@ -4,7 +4,7 @@
 #include <prob_cpp/prob_sample.h>
 #include <l_cpp/l_test.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 bool equal(const Blr_param& b1, const Blr_param& b2)

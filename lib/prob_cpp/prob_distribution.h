@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: prob_distribution.h 21776 2017-09-17 16:44:49Z clayton $ */
+/* $Id: prob_distribution.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PROB_DISTRIBUTION_H_INCLUDED
 #define PROB_DISTRIBUTION_H_INCLUDED
@@ -26,7 +26,7 @@
  * on how these work.
  *
  * In the multivariate distribution classes, the random vectors are represented
- * by kjb::Vector's. In the future, we would like to template-out this type
+ * by ivi::Vector's. In the future, we would like to template-out this type
  * and make these distributions over any type that implements the basic vector
  * (of a vector space) functionality.
  */
@@ -50,12 +50,12 @@
 #include "g/g_area.h"
 #include "g_cpp/g_quaternion.h"
 
-namespace kjb{
+namespace ivi{
 
 /*============================================================================
   These distributions are part of the boost-math library, defined in
   boost/math/distributions.hpp. See boost's documentation for details.
-  They are typdef'd to match the naming scheme of the KJB
+  They are typdef'd to match the naming scheme of the IVI
   ----------------------------------------------------------------------------*/
 
 typedef boost::math::bernoulli              Bernoulli_distribution;
@@ -156,7 +156,7 @@ public:
      * @brief   Constructs a categorical distribution over the integers
      * {1, ..., K}, where K is the length of the given vector.
      *
-     * @param   ps  A kjb::Vector of probabilities.
+     * @param   ps  A ivi::Vector of probabilities.
      */
     Categorical_distribution(const Vector& ps, const T& = T(1));
 
@@ -311,7 +311,7 @@ public:
             log_probs.push_back(it->second);
         }
 
-        double log_total = kjb::log_sum(log_probs.begin(), log_probs.end());
+        double log_total = ivi::log_sum(log_probs.begin(), log_probs.end());
 
         // normalize by subtracting log-total.  then exponentiate to get out of log-space
         for(iterator it = result.db.begin(); it != result.db.end(); ++it)
@@ -345,7 +345,7 @@ public:
     {
         size_t count = db.erase(key);
         if(count == 0) 
-            KJB_THROW_2(Illegal_argument, "Key not found");
+            IVI_THROW_2(Illegal_argument, "Key not found");
         init_cdf_();
     }
 
@@ -371,7 +371,7 @@ public:
     {
         size_t count = db.count(key);
         if(count > 0)
-            KJB_THROW_2(Illegal_argument, "Key collision");
+            IVI_THROW_2(Illegal_argument, "Key collision");
 
         const T* stored_key = &db.insert(std::make_pair(key, weight)).first->first;
 
@@ -419,7 +419,7 @@ private:
         //typedef typename std::map<T, double>::const_iterator Const_iterator;
 
         // copy into cdf
-        kjb_parallel_std::transform(
+        ivi_parallel_std::transform(
             db.begin(),
             db.end(),
             cdf_.begin(),
@@ -427,7 +427,7 @@ private:
         );
 
         // convert pdf values into cdf values
-        kjb_parallel_std::partial_sum(
+        ivi_parallel_std::partial_sum(
             cdf_.begin(),
             cdf_.end(),
             cdf_.begin(),
@@ -440,14 +440,14 @@ private:
         // so we can normalize the masses
         if(total_weight_ < FLT_EPSILON)
         {
-            KJB_THROW_2(Illegal_argument, "Items have zero probability mass.");
+            IVI_THROW_2(Illegal_argument, "Items have zero probability mass.");
         }
 
 
         // normalize to 1.0
         // update: we now store CDF unnormalized, to make dynamic
         // adding of elements easier.
-//        kjb_parallel_std::for_each(
+//        ivi_parallel_std::for_each(
 //            cdf_.begin(),
 //            cdf_.end(),
 //            multiply_second_by_scalar<Cdf_pair>(1.0/total_weight_)
@@ -456,7 +456,7 @@ private:
         // update: we now store elements unnormalized, to make dynamic
         // adding of elements easier.
 //        // normalize pdf map to 1.0
-//        kjb_parallel_std::for_each(
+//        ivi_parallel_std::for_each(
 //            db.begin(),
 //            db.end(),
 //            multiply_second_by_scalar<Map_pair>(1.0/cdf_.back().second)
@@ -844,7 +844,7 @@ private:
 typedef MV_gaussian_distribution MV_normal_distribution;
 
 /**
- * @brief Traits for the multivariate normal. Type is kjb::Vector.
+ * @brief Traits for the multivariate normal. Type is ivi::Vector.
  */
 template<>
 struct Distribution_traits<MV_gaussian_distribution>
@@ -955,7 +955,7 @@ public:
     friend
     double pdf
     (
-        const kjb::Mixture_distribution<Dist>& dist,
+        const ivi::Mixture_distribution<Dist>& dist,
         const typename Distribution_traits<Mixture_distribution<Dist> >::type& x
     );
 
@@ -963,14 +963,14 @@ public:
     friend
     double cdf
     (
-        const kjb::Mixture_distribution<Dist>& dist,
+        const ivi::Mixture_distribution<Dist>& dist,
         const typename Distribution_traits<Mixture_distribution<Dist> >::type& x
     );
 
     template<class Dist>
     friend
     typename Distribution_traits<Mixture_distribution<Dist> >::type
-        sample(const kjb::Mixture_distribution<Dist>& dist);
+        sample(const ivi::Mixture_distribution<Dist>& dist);
 
 private:
     std::vector<Distribution> dists;
@@ -1006,7 +1006,7 @@ public:
 template<size_t D>
 struct Distribution_traits<Uniform_sphere_distribution<D> >
 {
-    typedef typename kjb::Vector_d<D> type;
+    typedef typename ivi::Vector_d<D> type;
 };
 
 /* /////////////////////////////////////////////////////////////////////////// */
@@ -1019,17 +1019,17 @@ public:
      * @param mean unnormalized mean direction vector
      * @param kappa "precision" parameter.
      */
-    Von_mises_fisher_distribution(const kjb::Vector_d<D>& mean, double kappa) :
+    Von_mises_fisher_distribution(const ivi::Vector_d<D>& mean, double kappa) :
         mu_(mean.normalized()),
         kappa_(kappa)
     {}
 
-    const kjb::Vector_d<D>& mu() const { return mu_; }
+    const ivi::Vector_d<D>& mu() const { return mu_; }
 
     double kappa() const { return kappa_; }
 
 private:
-    kjb::Vector_d<D> mu_;
+    ivi::Vector_d<D> mu_;
     double kappa_;
 }; // Von_mises_fisher_distribution
 
@@ -1039,7 +1039,7 @@ private:
 template<size_t D>
 struct Distribution_traits<Von_mises_fisher_distribution<D> >
 {
-    typedef typename kjb::Vector_d<D> type;
+    typedef typename ivi::Vector_d<D> type;
 };
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -1403,7 +1403,7 @@ struct Distribution_traits<Normal_inverse_wishart_distribution>
     typedef std::pair<Vector, Matrix> type;
 };
 
-} //namespace kjb
+} //namespace ivi
 
 
 #endif /*PROB_DISTRIBUTION_H_INCLUDED */

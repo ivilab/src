@@ -16,10 +16,10 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: options.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: options.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_OPTIONS_H
-#define KJB_TIES_OPTIONS_H
+#ifndef IVI_TIES_OPTIONS_H
+#define IVI_TIES_OPTIONS_H
 
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@
 namespace bpo = boost::program_options;
 using std::string;
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /** @brief  Create options description for data options. */
@@ -552,7 +552,7 @@ Ties_experiment experiment_from_cl_options(int argc, const char** argv)
                       << "For questions or complaints please contact "
                       << "jguan1@email.arizona.edu.\n" << std::endl;
 
-            //kjb_c::kjb_cleanup();
+            //ivi_c::ivi_cleanup();
             exit(EXIT_SUCCESS);
         }
 
@@ -595,13 +595,13 @@ Ties_experiment experiment_from_cl_options(int argc, const char** argv)
     }
     catch(const bpo::error& err)
     {
-        KJB_THROW_2(Exception, err.what());
+        IVI_THROW_2(Exception, err.what());
     }    
     catch(const std::exception& ex)
     {
         throw ex;
     }    
 }
-}} //namespace kjb::ties
-#endif // KJB_TIES_OPTIONS_H
+}} //namespace ivi::ties
+#endif // IVI_TIES_OPTIONS_H
 

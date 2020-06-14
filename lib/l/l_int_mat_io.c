@@ -1,5 +1,5 @@
 
-/* $Id: l_int_mat_io.c 21520 2017-07-22 15:09:04Z kobus $ */
+/* $Id: l_int_mat_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -36,8 +36,8 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#define KJB_DATA_HEAD_SIZE  64
-#define KJB_RAW_INT_MATRIX_STRING  "kjb raw int matrix\n\n\f\n"
+#define IVI_DATA_HEAD_SIZE  64
+#define IVI_RAW_INT_MATRIX_STRING  "ivi raw int matrix\n\n\f\n"
 
 /* -------------------------------------------------------------------------- */
 
@@ -86,7 +86,7 @@ extern "C" {
  *     Either NO_ERROR, or ERROR, with an appropriate error message being set.
  *
  * Related:
- *     get_config_file, kjb_get_error
+ *     get_config_file, ivi_get_error
  *
  * Index: configuration files, I/O, matrix I/O
  *
@@ -128,7 +128,7 @@ int read_int_matrix_from_config_file(Int_matrix** result_mpp,
     }
     else if (config_file_name != NULL)
     {
-        kjb_strncpy(config_file_name, temp_config_file_name,
+        ivi_strncpy(config_file_name, temp_config_file_name,
                     config_file_name_size);
     }
 
@@ -180,7 +180,7 @@ int read_int_matrix(Int_matrix** result_mpp, const char* file_name)
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_int_matrix(result_mpp, fp);
@@ -200,7 +200,7 @@ int read_int_matrix(Int_matrix** result_mpp, const char* file_name)
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return: Only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return: Only reading. */
     }
 
     return result;
@@ -260,7 +260,7 @@ int fp_read_int_matrix(Int_matrix** result_mpp, FILE* fp)
         result = ERROR;
     }
 
-    ERE(save_file_pos = kjb_ftell(fp));
+    ERE(save_file_pos = ivi_ftell(fp));
 
     if (result == NOT_FOUND)
     {
@@ -268,7 +268,7 @@ int fp_read_int_matrix(Int_matrix** result_mpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -282,7 +282,7 @@ int fp_read_int_matrix(Int_matrix** result_mpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));;
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));;
         }
     }
 
@@ -297,7 +297,7 @@ int fp_read_int_matrix(Int_matrix** result_mpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -316,17 +316,17 @@ int fp_read_int_matrix(Int_matrix** result_mpp, FILE* fp)
 /* =============================================================================
  *                       fp_read_raw_int_matrix
  *
- * Reads kjb raw int matrix
+ * Reads ivi raw int matrix
  *
- * This routine reads kjb raw matrix integer data from a file pointed to by a
+ * This routine reads ivi raw matrix integer data from a file pointed to by a
  * FILE object into a matrix.
  *
  * The matrix *result_mpp is created or resized as necessary.
  *
- * "fp" points to a FILE object as returned by "kjb_fopen".
+ * "fp" points to a FILE object as returned by "ivi_fopen".
  *
  * Returns:
- *     If the file does not seem to be a kjb raw matrix file, then NOT_FOUND is
+ *     If the file does not seem to be a ivi raw matrix file, then NOT_FOUND is
  *     returned. NO_ERROR is returned on success, and ERROR is returned on
  *     success, with an appropriate error message being set.
  *
@@ -343,22 +343,22 @@ int fp_read_raw_int_matrix(Int_matrix** result_mpp, FILE* fp)
     int     num_rows, num_cols;
     long    bytes_used_so_far;
     int     byte_order;
-    char    head_str[ KJB_DATA_HEAD_SIZE ];
+    char    head_str[ IVI_DATA_HEAD_SIZE ];
     int     pad;
     off_t num_bytes;
 
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
-    if (num_bytes < KJB_DATA_HEAD_SIZE) return NOT_FOUND;
+    if (num_bytes < IVI_DATA_HEAD_SIZE) return NOT_FOUND;
 
-    ERE(kjb_fread_exact(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fread_exact(fp, head_str, sizeof(head_str)));
     head_str[ sizeof(head_str) - 1 ] = '\0';
 
-    if ( ! STRCMP_EQ(head_str, KJB_RAW_INT_MATRIX_STRING))
+    if ( ! STRCMP_EQ(head_str, IVI_RAW_INT_MATRIX_STRING))
     {
         return NOT_FOUND;
     }
@@ -371,7 +371,7 @@ int fp_read_raw_int_matrix(Int_matrix** result_mpp, FILE* fp)
     ERE(FIELD_READ(fp, pad));
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
@@ -404,7 +404,7 @@ int fp_read_raw_int_matrix(Int_matrix** result_mpp, FILE* fp)
     {
         ERE(get_target_int_matrix(result_mpp, num_rows, num_cols));
 
-        ERE(kjb_fread_exact(fp, (*result_mpp)->elements[ 0 ],
+        ERE(ivi_fread_exact(fp, (*result_mpp)->elements[ 0 ],
                             num_rows * num_cols * sizeof(int)));
     }
 
@@ -444,10 +444,10 @@ int fp_read_raw_int_matrix(Int_matrix** result_mpp, FILE* fp)
 
 int fp_read_int_matrix_from_matlab_file(Int_matrix** result_mpp, FILE* fp)
 {
-    kjb_int32 type;
-    kjb_int32 num_rows, num_cols;
-    kjb_int32 imaginary_componants;
-    kjb_int32 name_len;
+    ivi_int32 type;
+    ivi_int32 num_rows, num_cols;
+    ivi_int32 imaginary_componants;
+    ivi_int32 name_len;
     off_t num_bytes;
     int   reversed_int;
     Bool  reversed_data_flag = FALSE;
@@ -457,13 +457,13 @@ int fp_read_int_matrix_from_matlab_file(Int_matrix** result_mpp, FILE* fp)
 
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
     if (num_bytes  < 20) return NOT_FOUND;
 
-    ERE(kjb_fread_4_bytes(fp, &type));
+    ERE(ivi_fread_4_bytes(fp, &type));
 
     if (type != 20)
     {
@@ -482,17 +482,17 @@ int fp_read_int_matrix_from_matlab_file(Int_matrix** result_mpp, FILE* fp)
 
     if (reversed_data_flag)
     {
-        ERE(kjb_fread_4_bytes_backwards(fp, &num_rows));
-        ERE(kjb_fread_4_bytes_backwards(fp, &num_cols));
-        ERE(kjb_fread_4_bytes_backwards(fp, &imaginary_componants));
-        ERE(kjb_fread_4_bytes_backwards(fp, &name_len));
+        ERE(ivi_fread_4_bytes_backwards(fp, &num_rows));
+        ERE(ivi_fread_4_bytes_backwards(fp, &num_cols));
+        ERE(ivi_fread_4_bytes_backwards(fp, &imaginary_componants));
+        ERE(ivi_fread_4_bytes_backwards(fp, &name_len));
     }
     else
     {
-        ERE(kjb_fread_4_bytes(fp, &num_rows));
-        ERE(kjb_fread_4_bytes(fp, &num_cols));
-        ERE(kjb_fread_4_bytes(fp, &imaginary_componants));
-        ERE(kjb_fread_4_bytes(fp, &name_len));
+        ERE(ivi_fread_4_bytes(fp, &num_rows));
+        ERE(ivi_fread_4_bytes(fp, &num_cols));
+        ERE(ivi_fread_4_bytes(fp, &imaginary_componants));
+        ERE(ivi_fread_4_bytes(fp, &name_len));
     }
 
     if (    (imaginary_componants != 0)
@@ -502,7 +502,7 @@ int fp_read_int_matrix_from_matlab_file(Int_matrix** result_mpp, FILE* fp)
         return NOT_FOUND;
     }
 
-    ERE(kjb_fseek(fp, (long)name_len, SEEK_CUR));
+    ERE(ivi_fseek(fp, (long)name_len, SEEK_CUR));
 
     ERE(get_target_int_matrix(result_mpp, num_rows, num_cols));
     mp = *result_mpp;
@@ -516,7 +516,7 @@ int fp_read_int_matrix_from_matlab_file(Int_matrix** result_mpp, FILE* fp)
         {
             for (i = 0; i < num_rows; i++)
             {
-                ERE(kjb_fread_4_bytes_backwards(fp, &(mp->elements[ i ][ j ])));
+                ERE(ivi_fread_4_bytes_backwards(fp, &(mp->elements[ i ][ j ])));
             }
         }
     }
@@ -525,14 +525,14 @@ int fp_read_int_matrix_from_matlab_file(Int_matrix** result_mpp, FILE* fp)
         /*
         // Does not work. Fortran style!
         //
-        // ERE(kjb_fread_exact(fp, &(mp->elements[ 0 ][ 0 ]),
+        // ERE(ivi_fread_exact(fp, &(mp->elements[ 0 ][ 0 ]),
         //                    (size_t)(4 * num_rows * num_cols)));
         */
         for (j = 0; j < num_cols; j++)
         {
             for (i = 0; i < num_rows; i++)
             {
-                ERE(kjb_fread_4_bytes(fp, &(mp->elements[ i ][ j ])));
+                ERE(ivi_fread_4_bytes(fp, &(mp->elements[ i ][ j ])));
             }
         }
 
@@ -556,7 +556,7 @@ int fp_read_int_matrix_from_matlab_file(Int_matrix** result_mpp, FILE* fp)
  *
  * The integer matrix *result_mpp is created or resized as necessary.
  *
- * "fp" points to a FILE object as returned by "kjb_fopen".
+ * "fp" points to a FILE object as returned by "ivi_fopen".
  *
  * The file is scanned from the current position for the presence of a matrix
  * size header of the form:
@@ -698,7 +698,7 @@ int fp_read_int_matrix_with_header(Int_matrix** result_mpp, FILE* fp)
  *     Lindsay Martin and Kobus Barnard
  *
  * Related:
- *     read_int_matrix, kjb_print_error.
+ *     read_int_matrix, ivi_print_error.
  *
  * Index: I/O, matrices, matrix I/O
  *
@@ -852,7 +852,7 @@ int fp_read_formatted_int_matrix(Int_matrix** result_mpp, FILE* fp)
  *
  * Related:
  *     read_int_matrix_by_cols, fp_read_int_matrix_by_rows,
- *     kjb_print_error.
+ *     ivi_print_error.
  *
  * Index: I/O, matrices, matrix I/O
  *
@@ -874,14 +874,14 @@ int read_int_matrix_by_rows(Int_matrix** result_mpp, const char* file_name,
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_int_matrix_by_rows(result_mpp, fp, num_cols);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return: Only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return: Only reading. */
     }
 
     return result;
@@ -900,7 +900,7 @@ int read_int_matrix_by_rows(Int_matrix** result_mpp, const char* file_name,
  *
  * The integer matrix *result_mpp is created or resized as necessary.
  *
- * "fp" points to a FILE object as returned by "kjb_fopen".
+ * "fp" points to a FILE object as returned by "ivi_fopen".
  *
  * "num_cols" indicates the number of columns the new matrix will
  * contain. The number of rows in the new matrix depends on the number
@@ -915,7 +915,7 @@ int read_int_matrix_by_rows(Int_matrix** result_mpp, const char* file_name,
  *
  * Related:
  *     read_int_matrix_by_cols, fp_read_int_matrix_by_rows
- *     kjb_print_error.
+ *     ivi_print_error.
  *
  * Index: I/O, matrices, matrix I/O
  *
@@ -1045,7 +1045,7 @@ int fp_read_int_matrix_by_rows(Int_matrix** result_mpp, FILE* fp, int num_cols)
  *
  * Related:
  *     read_int_matrix_by_rows, fp_read_int_matrix_by_cols,
- *     kjb_print_error.
+ *     ivi_print_error.
  *
  * Index: I/O, matrices, matrix I/O
  *
@@ -1067,14 +1067,14 @@ int read_int_matrix_by_cols(Int_matrix** result_mpp, const char* file_name,
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_int_matrix_by_cols(result_mpp, fp, num_rows);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return: Only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return: Only reading. */
     }
 
     return result;
@@ -1094,7 +1094,7 @@ int read_int_matrix_by_cols(Int_matrix** result_mpp, const char* file_name,
  *
  * The integer matrix *result_mpp is created or resized as necessary.
  *
- * "fp" points to a FILE object as returned by "kjb_fopen".
+ * "fp" points to a FILE object as returned by "ivi_fopen".
  *
  * "num_rows" indicates the number of rows the new matrix will
  * contain. The number of columns in the new matrix depends on the number
@@ -1109,7 +1109,7 @@ int read_int_matrix_by_cols(Int_matrix** result_mpp, const char* file_name,
  *
  * Related:
  *     read_int_matrix_by_rows, fp_read_int_matrix_by_cols
- *     kjb_print_error.
+ *     ivi_print_error.
  *
  * Index: I/O, matrices, matrix I/O
  *
@@ -1234,7 +1234,7 @@ int fp_read_int_matrix_by_cols(Int_matrix** result_mpp, FILE* fp, int num_rows)
  *     Lindsay Martin and Kobus Barnard
  *
  * Related:
- *     read_int_matrix, kjb_print_error.
+ *     read_int_matrix, ivi_print_error.
  *
  * Index: I/O, matrices, matrix I/O
  *
@@ -1306,7 +1306,7 @@ int fp_ow_read_formatted_int_matrix(Int_matrix* mp, FILE* fp)
  * exist, and have the predefined size 'mp->num_rows' X 'mp->num_cols'.
  *
  * "fp" points to a FILE structure associated with the input stream as
- * returned by "kjb_fopen".
+ * returned by "ivi_fopen".
  *
  * Returns:
  *     ERROR, if "mp" is NULL, if EOF is encountered before num_rows X num_cols
@@ -1388,7 +1388,7 @@ int fp_ow_read_int_matrix_by_rows(Int_matrix* mp, FILE* fp)
  * exist, and have the predefined size 'mp->num_rows' X 'mp->num_cols'.
  *
  * "fp" points to a FILE structure associated with the input stream as
- * returned by "kjb_fopen".
+ * returned by "ivi_fopen".
  *
  * Returns:
  *     ERROR, if "mp" is NULL, if EOF is encountered before num_rows X num_cols
@@ -1498,7 +1498,7 @@ int fp_ow_read_int_matrix_by_cols(Int_matrix* mp, FILE* fp)
 
 int fp_read_matrix_size_header(FILE* fp, int* num_rows_ptr, int* num_cols_ptr)
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     int            i;
     int            num_options;
     char**         option_list;
@@ -1513,7 +1513,7 @@ int fp_read_matrix_size_header(FILE* fp, int* num_rows_ptr, int* num_cols_ptr)
     int            result   = NO_ERROR;
 
 
-    ERE(start_file_pos = kjb_ftell(fp));
+    ERE(start_file_pos = ivi_ftell(fp));
 
     while ((num_rows == NOT_SET) || (num_cols == NOT_SET))
     {
@@ -1534,7 +1534,7 @@ int fp_read_matrix_size_header(FILE* fp, int* num_rows_ptr, int* num_cols_ptr)
             /*EMPTY*/
             ;  /* Do nothing. */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
 
@@ -1587,7 +1587,7 @@ int fp_read_matrix_size_header(FILE* fp, int* num_rows_ptr, int* num_cols_ptr)
                     break;
                 }
             } /* if (*line_pos == '!') */
-        } /* else if (*line_pos == kjb_comment_char) */
+        } /* else if (*line_pos == ivi_comment_char) */
         else
         {
             result = NO_ERROR;
@@ -1598,13 +1598,13 @@ int fp_read_matrix_size_header(FILE* fp, int* num_rows_ptr, int* num_cols_ptr)
     if (result == ERROR)
     {
         /* Rewind file to starting position */
-        (void)kjb_fseek(fp, start_file_pos, SEEK_SET);
+        (void)ivi_fseek(fp, start_file_pos, SEEK_SET);
         return ERROR;
     }
     else if ((num_rows == NOT_SET) || (num_cols == NOT_SET))
     {
         /* Rewind file to starting position */
-        ERE(kjb_fseek(fp, start_file_pos, SEEK_SET));
+        ERE(ivi_fseek(fp, start_file_pos, SEEK_SET));
         return NOT_FOUND;
     }
     else
@@ -1644,7 +1644,7 @@ int fp_read_matrix_size_header(FILE* fp, int* num_rows_ptr, int* num_cols_ptr)
 int fp_write_int_matrix_with_title(const Int_matrix* mp, FILE* fp,
                                    const char* title)
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     int        i, j;
 
 
@@ -1652,41 +1652,41 @@ int fp_write_int_matrix_with_title(const Int_matrix* mp, FILE* fp,
     {
         if (title != NULL)
         {
-            ERE(kjb_fprintf(fp, title));
-            ERE(kjb_fprintf(fp, ": "));
+            ERE(ivi_fprintf(fp, title));
+            ERE(ivi_fprintf(fp, ": "));
         }
-        ERE(kjb_fprintf(fp, "NULL\n"));
+        ERE(ivi_fprintf(fp, "NULL\n"));
 
         return NO_ERROR;
     }
 
     if (title != NULL)
     {
-        ERE(kjb_fprintf(fp, "%c\n", kjb_comment_char));
-        ERE(kjb_fprintf(fp, "%c ", kjb_comment_char));
-        ERE(kjb_fprintf(fp, title));
-        ERE(kjb_fprintf(fp, "\n"));
-        ERE(kjb_fprintf(fp, "%c\n", kjb_comment_char));
+        ERE(ivi_fprintf(fp, "%c\n", ivi_comment_char));
+        ERE(ivi_fprintf(fp, "%c ", ivi_comment_char));
+        ERE(ivi_fprintf(fp, title));
+        ERE(ivi_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, "%c\n", ivi_comment_char));
     }
 
     for (i=0; i<mp->num_rows; i++)
     {
         for (j=0; j<mp->num_cols; j++)
         {
-            ERE(kjb_fprintf(fp, "%5d", mp->elements[i][j]));
+            ERE(ivi_fprintf(fp, "%5d", mp->elements[i][j]));
 
             if (j < (mp->num_cols-1))
             {
-                ERE(kjb_fprintf(fp," "));
+                ERE(ivi_fprintf(fp," "));
             }
             else
             {
-                ERE(kjb_fprintf(fp,"\n"));
+                ERE(ivi_fprintf(fp,"\n"));
             }
         }
     }
 
-    ERE(kjb_fprintf(fp, "\n"));
+    ERE(ivi_fprintf(fp, "\n"));
 
     return NO_ERROR;
 }
@@ -1738,7 +1738,7 @@ int write_int_matrix(const Int_matrix* mp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_int_matrix(mp, fp);
@@ -1751,7 +1751,7 @@ int write_int_matrix(const Int_matrix* mp, const char* file_name)
         {
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         set_error_action(save_error_action);
     }
@@ -1773,7 +1773,7 @@ int write_int_matrix(const Int_matrix* mp, const char* file_name)
  * This routine outputs an integer matrix to a file specified by a pointer to a
  * FILE object.
  *
- * "fp" is a pointer to a FILE object as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE object as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "mp" is a pointer to the Int_matrix object to output. The pointer is
@@ -1804,15 +1804,15 @@ int fp_write_int_matrix(const Int_matrix* mp, FILE* fp)
     {
         for (j=0; j<mp->num_cols; j++)
         {
-            ERE(kjb_fprintf(fp, "%5d", mp->elements[i][j]));
+            ERE(ivi_fprintf(fp, "%5d", mp->elements[i][j]));
 
             if (j < (mp->num_cols-1))
             {
-                ERE(kjb_fprintf(fp," "));
+                ERE(ivi_fprintf(fp," "));
             }
             else
             {
-                ERE(kjb_fprintf(fp,"\n"));
+                ERE(ivi_fprintf(fp,"\n"));
             }
         }
     }
@@ -1867,10 +1867,10 @@ int write_raw_int_matrix(const Int_matrix* mp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
-    if (kjb_isatty(fileno(fp)))
+    if (ivi_isatty(fileno(fp)))
     {
         set_error("Attempt to write a raw matrix to a terminal aborted.\n");
         write_result = ERROR;
@@ -1888,7 +1888,7 @@ int write_raw_int_matrix(const Int_matrix* mp, const char* file_name)
         {
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         set_error_action(save_error_action);
     }
@@ -1910,7 +1910,7 @@ int write_raw_int_matrix(const Int_matrix* mp, const char* file_name)
  * This routine outputs a Matrix to a file specified by a pointer to a
  * FILE object ias raw data.
  *
- * "fp" is a pointer to a FILE object as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE object as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "mp" is a pointer to the Matrix object to output. The pointer is
@@ -1933,7 +1933,7 @@ int fp_write_raw_int_matrix(const Int_matrix* mp, FILE* fp)
     int num_rows   = 0;
     int num_cols   = 0;
     int byte_order = 1;
-    char head_str[ KJB_DATA_HEAD_SIZE ];
+    char head_str[ IVI_DATA_HEAD_SIZE ];
     int pad = 0;
 
     if (mp != NULL)
@@ -1942,14 +1942,14 @@ int fp_write_raw_int_matrix(const Int_matrix* mp, FILE* fp)
         num_cols = mp->num_cols;
     }
 
-    for (i = 0; i < KJB_DATA_HEAD_SIZE; i++)
+    for (i = 0; i < IVI_DATA_HEAD_SIZE; i++)
     {
         head_str[ i ] = '\0';
     }
 
-    BUFF_CPY(head_str, KJB_RAW_INT_MATRIX_STRING);
+    BUFF_CPY(head_str, IVI_RAW_INT_MATRIX_STRING);
 
-    ERE(kjb_fwrite(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fwrite(fp, head_str, sizeof(head_str)));
 
     ERE(FIELD_WRITE(fp, byte_order));
     ERE(FIELD_WRITE(fp, pad));
@@ -1960,7 +1960,7 @@ int fp_write_raw_int_matrix(const Int_matrix* mp, FILE* fp)
 
     if ((num_rows > 0) && (num_cols > 0))
     {
-        ERE(kjb_fwrite_2(fp, &(mp->elements[ 0 ][ 0 ]),
+        ERE(ivi_fwrite_2(fp, &(mp->elements[ 0 ][ 0 ]),
                          (sizeof(int) * num_rows * num_cols),
                          NULL));
     }
@@ -2021,7 +2021,7 @@ int write_int_matrix_rows(const Int_matrix* mp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     result = fp_write_int_matrix_rows(mp, fp);
@@ -2035,7 +2035,7 @@ int write_int_matrix_rows(const Int_matrix* mp, const char* file_name)
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        if (kjb_fclose(fp) == ERROR)
+        if (ivi_fclose(fp) == ERROR)
         {
             result = ERROR;
         }
@@ -2057,7 +2057,7 @@ int write_int_matrix_rows(const Int_matrix* mp, const char* file_name)
  * pointer to a FILE object. All columns of a given row are output before
  * advancing to the next row.
  *
- * "fp" is a pointer to a FILE object as returned by "kjb_fopen".
+ * "fp" is a pointer to a FILE object as returned by "ivi_fopen".
  *
  * "mp" is a pointer to the Int_matrix object whose contents are to be
  * written.
@@ -2086,9 +2086,9 @@ int fp_write_int_matrix_rows(const Int_matrix* mp, FILE* fp)
     {
         for (j=0; j<mp->num_cols; j++)
         {
-            ERE(kjb_fprintf(fp, "%6d", mp->elements[i][j]));
+            ERE(ivi_fprintf(fp, "%6d", mp->elements[i][j]));
         }
-        ERE(kjb_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, "\n"));
     }
 
     return NO_ERROR;
@@ -2141,7 +2141,7 @@ int write_int_matrix_cols(const Int_matrix* mp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     result = fp_write_int_matrix_cols(mp, fp);
@@ -2155,7 +2155,7 @@ int write_int_matrix_cols(const Int_matrix* mp, const char* file_name)
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        if (kjb_fclose(fp) == ERROR)
+        if (ivi_fclose(fp) == ERROR)
         {
             result = ERROR;
         }
@@ -2177,7 +2177,7 @@ int write_int_matrix_cols(const Int_matrix* mp, const char* file_name)
  * a pointer to a FILE object. All row entriess of a given column are
  * output before advancing to the next column.
  *
- * "fp" is a pointer to a FILE object as returned by "kjb_fopen".
+ * "fp" is a pointer to a FILE object as returned by "ivi_fopen".
  *
  * "mp" is a pointer to the Int_matrix object whose contents are to be
  * written.
@@ -2207,10 +2207,10 @@ int fp_write_int_matrix_cols(const Int_matrix* mp, FILE* fp)
     {
         for (i=0; i<mp->num_rows; i++)
         {
-            ERE(kjb_fprintf(fp, "%6d", mp->elements[i][j]));
+            ERE(ivi_fprintf(fp, "%6d", mp->elements[i][j]));
         }
 
-        ERE(kjb_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, "\n"));
     }
 
     return NO_ERROR;
@@ -2269,7 +2269,7 @@ int write_int_matrix_with_header
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_int_matrix_with_header(mp, fp);
@@ -2281,7 +2281,7 @@ int write_int_matrix_with_header
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -2307,7 +2307,7 @@ int write_int_matrix_with_header
  * a matrix size header indicating the number of rows and columns in the matrix
  * being output.
  *
- * "fp" points to a FILE object as returned by "kjb_fopen".
+ * "fp" points to a FILE object as returned by "ivi_fopen".
  *
  * A matrix size header is written at the current file position. The matrix
  * size header has the form:
@@ -2322,7 +2322,7 @@ int write_int_matrix_with_header
  *
  * Returns:
  *     NO_ERROR on success,
- *     ERROR on failure, with "kjb_error" set to a descriptive message.
+ *     ERROR on failure, with "ivi_error" set to a descriptive message.
  *
  * Authors:
  *     Lindsay Martin and Kobus Barnard
@@ -2398,8 +2398,8 @@ int fp_write_int_matrix_with_header(const Int_matrix* mp, FILE* fp)
 int fp_write_matrix_size_header(FILE* fp, int num_rows, int num_cols)
 {
 
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int        result;
 
 
@@ -2419,8 +2419,8 @@ int fp_write_matrix_size_header(FILE* fp, int num_rows, int num_cols)
     }
     else
     {
-        result = kjb_fprintf(fp, "\n%c%c rows=%d cols=%d\n\n",
-                             kjb_comment_char, kjb_header_char,
+        result = ivi_fprintf(fp, "\n%c%c rows=%d cols=%d\n\n",
+                             ivi_comment_char, ivi_header_char,
                              num_rows, num_cols);
     }
 
@@ -2508,7 +2508,7 @@ int write_int_matrix_to_matlab_file(const Int_matrix* mp,
         warn_pso("I have no idea what will happen as a result!\n");
     }
 
-    NRE(fp = kjb_fopen(file_name, "w"));
+    NRE(fp = ivi_fopen(file_name, "w"));
 
     write_result = fp_write_int_matrix_to_matlab_file(mp, fp,
                                                       matlab_variable_name);
@@ -2526,7 +2526,7 @@ int write_int_matrix_to_matlab_file(const Int_matrix* mp,
         {
             set_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         set_error_action(save_error_action);
     }
@@ -2548,7 +2548,7 @@ int write_int_matrix_to_matlab_file(const Int_matrix* mp,
  * This routine outputs an integer matrix to a matlab file specified by a
  * pointer to a FILE object.
  *
- * "fp" is a pointer to a FILE object as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE object as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "mp" is a pointer to the Int_matrix object to output. If it is NULL, then
@@ -2602,11 +2602,11 @@ int fp_write_int_matrix_to_matlab_file(const Int_matrix* mp,
 
     FIELD_WRITE(fp, name_with_extra_nulls_size);
 
-    kjb_fwrite_2(fp, matlab_variable_name, name_size, NULL);
+    ivi_fwrite_2(fp, matlab_variable_name, name_size, NULL);
 
     ASSERT(extra_nulls < 4);
 
-    kjb_fwrite(fp, "\0\0\0", extra_nulls);
+    ivi_fwrite(fp, "\0\0\0", extra_nulls);
 
     for (j=0; j<mp->num_cols; j++)
     {

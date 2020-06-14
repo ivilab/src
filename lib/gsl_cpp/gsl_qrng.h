@@ -7,24 +7,24 @@
  */
 
 /*
- * $Id: gsl_qrng.h 17393 2014-08-23 20:19:14Z predoehl $
+ * $Id: gsl_qrng.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef GSL_QRNG_WRAP_H_KJBLIB_UARIZONAVISION
-#define GSL_QRNG_WRAP_H_KJBLIB_UARIZONAVISION
+#ifndef GSL_QRNG_WRAP_H_IVILIB_UARIZONAVISION
+#define GSL_QRNG_WRAP_H_IVILIB_UARIZONAVISION
 
 #include <l_cpp/l_exception.h>
 #include <m_cpp/m_vector.h>
 #include <gsl_cpp/gsl_util.h>
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #include "gsl/gsl_qrng.h"
 #endif
 
 
-namespace kjb {
+namespace ivi {
 
-#ifndef KJB_HAVE_GSL
+#ifndef IVI_HAVE_GSL
 #warning "Compiling GNU GSL wrapper without GNU GSL; it will not run properly"
 typedef void gsl_qrng_type;
 typedef void gsl_qrng;
@@ -73,7 +73,7 @@ public:
      *
      * @param dimensions    Number of dimensions the QRNG is asked to "sample"
      *
-     * @throws KJB_error if input is bad (dimensions is zero or too big) or
+     * @throws IVI_error if input is bad (dimensions is zero or too big) or
      *          cannot allocate memory.
      */
     Gsl_Qrng_basic(
@@ -81,7 +81,7 @@ public:
         const gsl_qrng_type* qtype,
         unsigned maxdim
     )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_dimensions( dimensions ),
         m_qrng( m_dimensions ? gsl_qrng_alloc( qtype, m_dimensions ) : 00 )
     {
@@ -92,13 +92,13 @@ public:
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
     ~Gsl_Qrng_basic()
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         gsl_qrng_free( m_qrng );
 #endif
     }
@@ -107,11 +107,11 @@ public:
      * @brief The old-fashioned way to read a quasi-random sample
      * @param [in] destination  must be an array of size at least that of the
      *              QRNG's dimensionality.
-     * @throws KJB_error if something goes wrong
+     * @throws IVI_error if something goes wrong
      */
     void read( double* destination )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         ETX_2( 00 == destination, "Call to Gsl_Qrng::read( NULL )" );
         GSL_ETX( gsl_qrng_get( m_qrng, destination ) );
 #endif
@@ -127,7 +127,7 @@ public:
 
     const char* name() const
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_qrng_name( m_qrng );
 #endif
     }
@@ -139,7 +139,7 @@ public:
 
     /// @brief copy ctor
     Gsl_Qrng_basic( const Gsl_Qrng_basic< KIND >& that )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_dimensions( that.get_dimensions() ),
         m_qrng( gsl_qrng_clone( that.m_qrng ) )
     {
@@ -153,7 +153,7 @@ public:
     /// @brief swap two generators
     void swap( Gsl_Qrng_basic< KIND >& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         using std::swap;
 
         swap( m_dimensions, that.m_dimensions );
@@ -164,7 +164,7 @@ public:
     /// @brief assignment operator
     Gsl_Qrng_basic< KIND >& operator=( const Gsl_Qrng_basic< KIND >& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         if ( this != &that )
         {
             GSL_ETX( gsl_qrng_memcpy( m_qrng, that.m_qrng ) );
@@ -247,15 +247,15 @@ public:
 };
 
 
-} // namespace kjb
+} // namespace ivi
 
 namespace std {
 
     /// @brief Swap two wrapped qrng objects.
     template< unsigned KIND >
     inline void swap(
-        kjb::Gsl_Qrng_basic< KIND >& m1,
-        kjb::Gsl_Qrng_basic< KIND >& m2
+        ivi::Gsl_Qrng_basic< KIND >& m1,
+        ivi::Gsl_Qrng_basic< KIND >& m2
     )
     {
         m1.swap( m2 );
@@ -263,4 +263,4 @@ namespace std {
 }
 
 
-#endif /* GSL_QRNG_WRAP_H_KJBLIB_UARIZONAVISION */
+#endif /* GSL_QRNG_WRAP_H_IVILIB_UARIZONAVISION */

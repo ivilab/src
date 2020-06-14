@@ -1,4 +1,4 @@
-/* $Id: gr_spline.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_spline.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -27,13 +27,13 @@
 #define CALLBACK
 #endif
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include "gr_cpp/gr_opengl.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::opengl;
 
 GLUnurbsObj* Opengl_nurbs_object::_nobj = 0;
 int Opengl_nurbs_object::_nobj_ref_count = 0;
@@ -181,7 +181,7 @@ void Gl_nurbs_curve::gl_call() const
 {
     if(_type == 0)
     {
-       KJB_THROW_2(Runtime_error, "Can't call nurbs curve -- not initialized.");
+       IVI_THROW_2(Runtime_error, "Can't call nurbs curve -- not initialized.");
     }
 
     const int STRIDE = _ctl_points[0].get_length();
@@ -206,7 +206,7 @@ void Gl_nurbs_curve::gl_call() const
             ASSERT(STRIDE == 4);
             break;
         default:
-            KJB_THROW(Runtime_error);
+            IVI_THROW(Runtime_error);
     }
 
     float* ctl_points = new float[_ctl_points.size() * STRIDE];
@@ -276,7 +276,7 @@ Gl_nurbs_surface* Gl_nurbs_surface::clone() const
     return new Gl_nurbs_surface(*this);
 }
 
-void Gl_nurbs_surface::init(std::vector<float>& pts, const std::vector<std::vector<kjb::Vector> >& ctl_points)
+void Gl_nurbs_surface::init(std::vector<float>& pts, const std::vector<std::vector<ivi::Vector> >& ctl_points)
 {
     const int STRIDE_T = ctl_points[0][0].get_length();
     const int STRIDE_S = ctl_points[0].size() * STRIDE_T;
@@ -311,7 +311,7 @@ void Gl_nurbs_surface::gl_call() const
 
     if(_type == 0)
     {
-       KJB_THROW_2(Runtime_error, "Can't call nurbs surface -- not initialized.");
+       IVI_THROW_2(Runtime_error, "Can't call nurbs surface -- not initialized.");
     }
 
 
@@ -351,13 +351,13 @@ Gl_bezier_curve::Gl_bezier_curve(int degree, int dimension, GLenum type) :
         case GL_MAP1_TEXTURE_COORD_1:
             if(dimension != 1)
             {
-                KJB_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
+                IVI_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
             }
             break;
         case GL_MAP1_TEXTURE_COORD_2:
             if(dimension != 2)
             {
-                KJB_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
+                IVI_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
             }
             break;
         case GL_MAP1_VERTEX_3:
@@ -365,7 +365,7 @@ Gl_bezier_curve::Gl_bezier_curve(int degree, int dimension, GLenum type) :
         case GL_MAP1_NORMAL:
             if(dimension != 3)
             {
-                KJB_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
+                IVI_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
             }
             break;
         case GL_MAP1_VERTEX_4:
@@ -373,11 +373,11 @@ Gl_bezier_curve::Gl_bezier_curve(int degree, int dimension, GLenum type) :
         case GL_MAP1_COLOR_4:
             if(dimension != 4)
             {
-                KJB_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
+                IVI_THROW_2(Illegal_argument, "Opengl type doesn't match spline dimension.");
             }
             break;
         default:
-            KJB_THROW(Runtime_error); // can't happen?
+            IVI_THROW(Runtime_error); // can't happen?
     }
 }
 

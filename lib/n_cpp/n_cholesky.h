@@ -25,7 +25,7 @@
 #include <m/m_matrix.h>
 #include <n/n_cholesky.h>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * For any symmetric positive-definite matrix M, returns a
@@ -34,9 +34,9 @@ namespace kjb {
 inline
 Matrix cholesky_decomposition(const Matrix& M)
 {
-    kjb_c::Matrix* kjb_matrix = 0;
-    ETX(kjb_c::cholesky_decomposition(&kjb_matrix, M.get_c_matrix()));
-    return Matrix(kjb_matrix);
+    ivi_c::Matrix* ivi_matrix = 0;
+    ETX(ivi_c::cholesky_decomposition(&ivi_matrix, M.get_c_matrix()));
+    return Matrix(ivi_matrix);
 }
 
 /**
@@ -45,7 +45,7 @@ Matrix cholesky_decomposition(const Matrix& M)
  */
 double log_det(const Matrix& M);
 
-} // namespace kjb
+} // namespace ivi
 
 #endif /*N_CHOLESKY_H */
 

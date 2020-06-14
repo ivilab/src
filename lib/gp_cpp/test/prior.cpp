@@ -8,7 +8,7 @@
 #include <l_cpp/l_test.h>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 int main(int, char**)
 {

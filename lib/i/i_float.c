@@ -1,5 +1,5 @@
 
-/* $Id: i_float.c 20918 2016-10-31 22:08:27Z kobus $ */
+/* $Id: i_float.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -52,13 +52,13 @@ static void free_2D_float_pixel_array(Pixel** pixel_array);
 /* -------------------------------------------------------------------------- */
 
 /* =============================================================================
- *                              kjb_create_image
+ *                              ivi_create_image
  *
  * Creates a float image
  *
  * This routine creates a float image of the size specified by the arguments
  * "num_rows" and "num_cols". Images are disposed of with the routine
- * "kjb_free_image"
+ * "ivi_free_image"
  *
  * Note:
  *     Usually the routine get_target_image is used to create images
@@ -75,7 +75,7 @@ static void free_2D_float_pixel_array(Pixel** pixel_array);
 
 #ifdef TRACK_MEMORY_ALLOCATION
 
-KJB_image* debug_create_image
+IVI_image* debug_create_image
 (
     int         num_rows,
     int         num_cols,
@@ -83,7 +83,7 @@ KJB_image* debug_create_image
     int         line_number
 )
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int i; 
 
 
@@ -100,7 +100,7 @@ KJB_image* debug_create_image
         return NULL;
     }
 
-    NRN(ip = DEBUG_TYPE_MALLOC(KJB_image, file_name, line_number));
+    NRN(ip = DEBUG_TYPE_MALLOC(IVI_image, file_name, line_number));
 
     if(num_rows == 0 && num_cols == 0)
     {
@@ -113,7 +113,7 @@ KJB_image* debug_create_image
 
         if (ip->pixels == NULL)
         {
-            kjb_free(ip);
+            ivi_free(ip);
             return NULL;
         }
     }
@@ -150,9 +150,9 @@ KJB_image* debug_create_image
         /*  ==>  Production code below        ||                              */
         /*  ==>                               \/                              */
 
-KJB_image* kjb_create_image(int num_rows, int num_cols)
+IVI_image* ivi_create_image(int num_rows, int num_cols)
 {
-    KJB_image* ip;
+    IVI_image* ip;
     int i;
 
 
@@ -169,7 +169,7 @@ KJB_image* kjb_create_image(int num_rows, int num_cols)
         return NULL;
     }
 
-    NRN(ip = TYPE_MALLOC(KJB_image));
+    NRN(ip = TYPE_MALLOC(IVI_image));
 
     if(num_rows == 0 && num_cols == 0)
     {
@@ -181,7 +181,7 @@ KJB_image* kjb_create_image(int num_rows, int num_cols)
 
         if (ip->pixels == NULL)
         {
-            kjb_free(ip);
+            ivi_free(ip);
             return NULL;
         }
     }
@@ -239,7 +239,7 @@ KJB_image* kjb_create_image(int num_rows, int num_cols)
 
 #ifdef TRACK_MEMORY_ALLOCATION
 
-void check_image_initialization(const KJB_image* ip)
+void check_image_initialization(const IVI_image* ip)
 {
 
     if (ip != NULL)
@@ -251,7 +251,7 @@ void check_image_initialization(const KJB_image* ip)
          * otherwise problems such as double free can look like unitialized
          * memory.
         */
-        kjb_check_free(ip);
+        ivi_check_free(ip);
 
         check_initialization(ip->pixels[ 0 ],
                              ip->num_cols * ip->num_rows * blocks_per_pixel,
@@ -266,7 +266,7 @@ void check_image_initialization(const KJB_image* ip)
 #ifdef TEST
 void debug_verify_image
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     const char*   file_name,
     int           line_number
 )
@@ -295,7 +295,7 @@ void debug_verify_image
                          line_number, file_name);
 
                 SET_NAN_FLOAT_BUG();
-                kjb_exit(EXIT_FAILURE);
+                ivi_exit(EXIT_FAILURE);
             }
             else if (    ( ! isfinitef(ip->pixels[ i ][ j ].r))
                       || ( ! isfinitef(ip->pixels[ i ][ j ].g))
@@ -308,7 +308,7 @@ void debug_verify_image
                          line_number, file_name);
 
                 SET_INFINITE_FLOAT_BUG();
-                kjb_exit(EXIT_FAILURE);
+                ivi_exit(EXIT_FAILURE);
             }
         }
     }
@@ -320,7 +320,7 @@ void debug_verify_image
 
 
 /* =============================================================================
- *                              kjb_free_image
+ *                              ivi_free_image
  *
  * Disposes of images
  *
@@ -332,7 +332,7 @@ void debug_verify_image
  * -----------------------------------------------------------------------------
 */
 
-void kjb_free_image(KJB_image* ip)
+void ivi_free_image(IVI_image* ip)
 {
 
     if (ip != NULL)
@@ -357,7 +357,7 @@ void kjb_free_image(KJB_image* ip)
              * otherwise problems such as double free can look like unitialized
              * memory.
             */
-            kjb_check_free(ip);
+            ivi_check_free(ip);
 
             check_initialization(ip->pixels[ 0 ],
                                  ip->num_cols * ip->num_rows * blocks_per_pixel,
@@ -367,14 +367,14 @@ void kjb_free_image(KJB_image* ip)
             free_2D_float_pixel_array(ip->pixels);
         }
 
-        kjb_free(ip);
+        ivi_free(ip);
     }
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                             kjb_copy_image
+ *                             ivi_copy_image
  *
  * Copies and image
  *
@@ -390,10 +390,10 @@ void kjb_free_image(KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int kjb_copy_image(KJB_image** target_ipp, const KJB_image* source_ip)
+int ivi_copy_image(IVI_image** target_ipp, const IVI_image* source_ip)
 {
-    IMPORT int kjb_use_memcpy;
-    KJB_image*  target_ip;
+    IMPORT int ivi_use_memcpy;
+    IVI_image*  target_ip;
     int           num_rows;
     int           num_cols;
     int           i;
@@ -404,7 +404,7 @@ int kjb_copy_image(KJB_image** target_ipp, const KJB_image* source_ip)
 
     if (source_ip == NULL)
     {
-        kjb_free_image(*target_ipp);
+        ivi_free_image(*target_ipp);
         *target_ipp = NULL;
         return NO_ERROR;
     }
@@ -419,7 +419,7 @@ int kjb_copy_image(KJB_image** target_ipp, const KJB_image* source_ip)
         return NO_ERROR;
     }
 
-    if (kjb_use_memcpy)
+    if (ivi_use_memcpy)
     {
         /* If we add resize capability, see the code for Matrix */
 
@@ -472,15 +472,15 @@ int kjb_copy_image(KJB_image** target_ipp, const KJB_image* source_ip)
 
 int get_image_window
 (
-    KJB_image**      target_ipp,
-    const KJB_image* source_ip,
+    IVI_image**      target_ipp,
+    const IVI_image* source_ip,
     int              row_offset,
     int              col_offset,
     int              num_target_rows,
     int              num_target_cols
 )
 {
-    KJB_image* target_ip;
+    IVI_image* target_ip;
     int    num_source_rows;
     int    num_source_cols;
     int    i, j;
@@ -559,9 +559,9 @@ int get_image_window
  * -----------------------------------------------------------------------------
 */
 
-int get_zero_image(KJB_image** target_ipp, int num_rows, int num_cols)
+int get_zero_image(IVI_image** target_ipp, int num_rows, int num_cols)
 {
-    KJB_image* target_ip;
+    IVI_image* target_ip;
     int    i, j;
     Pixel* row_pos;
 
@@ -613,12 +613,12 @@ int get_zero_image(KJB_image** target_ipp, int num_rows, int num_cols)
 
 int get_invalid_zero_image
 (
-    KJB_image** target_ipp,
+    IVI_image** target_ipp,
     int         num_rows,
     int         num_cols
 )
 {
-    KJB_image* target_ip;
+    IVI_image* target_ip;
     int    i, j;
     Pixel* row_pos;
 
@@ -670,13 +670,13 @@ int get_invalid_zero_image
 
 int get_initialized_image
 (
-    KJB_image** target_ipp,
+    IVI_image** target_ipp,
     int         num_rows,
     int         num_cols,
     Pixel*      initial_value_ptr
 )
 {
-    KJB_image* target_ip;
+    IVI_image* target_ip;
     int    i, j;
     Pixel* row_pos;
 
@@ -720,7 +720,7 @@ int get_initialized_image
 
 int get_initialized_image_2
 (
-    KJB_image** target_ipp,
+    IVI_image** target_ipp,
     int         num_rows,
     int         num_cols,
     int         r,
@@ -728,7 +728,7 @@ int get_initialized_image_2
     int         b
 )
 {
-    KJB_image* target_ip;
+    IVI_image* target_ip;
     int    i, j;
     Pixel* row_pos;
 
@@ -766,7 +766,7 @@ int get_initialized_image_2
  * Gets target float image for "building block" routines
  *
  * This routine implements the image creation/over-writing semantics used in
- * the KJB library in the case of Byte images. If *target_ipp is NULL, then
+ * the IVI library in the case of Byte images. If *target_ipp is NULL, then
  * this routine creates the images. If it is not null, and it is the right
  * size, then this routine does nothing. If it is the wrong size, then it is
  * resized.
@@ -775,7 +775,7 @@ int get_initialized_image_2
  * fails, then the original contents of the *target_ipp will be lost.
  * However, *target_ipp will be set to NULL, so it can be safely sent to
  * free_float_image(). Note that this is in fact the convention throughout the
- * KJB library--if destruction on failure is a problem (usually when
+ * IVI library--if destruction on failure is a problem (usually when
  * *target_ipp is global)--then work on a copy!
  *
  * The sizes (num_rows and num_cols) must both be nonnegative.
@@ -808,7 +808,7 @@ int get_initialized_image_2
 #ifdef TRACK_MEMORY_ALLOCATION
 int debug_get_target_image
 (
-    KJB_image** target_ipp,
+    IVI_image** target_ipp,
     int         num_rows,
     int         num_cols,
     const char* file_name,
@@ -849,7 +849,7 @@ int debug_get_target_image
         if (    ((*target_ipp)->num_rows != num_rows)
              || ((*target_ipp)->num_cols != num_cols))
         {
-            kjb_free_image(*target_ipp);
+            ivi_free_image(*target_ipp);
             NRE(*target_ipp = debug_create_image(num_rows, num_cols,
                                                  file_name, line_number));
         }
@@ -863,7 +863,7 @@ int debug_get_target_image
         /*  ==>  Production code below        ||                              */
         /*  ==>                               \/                              */
 
-int get_target_image(KJB_image** target_ipp, int num_rows, int num_cols)
+int get_target_image(IVI_image** target_ipp, int num_rows, int num_cols)
 {
 
 
@@ -882,7 +882,7 @@ int get_target_image(KJB_image** target_ipp, int num_rows, int num_cols)
 
     if (*target_ipp == NULL)
     {
-        NRE(*target_ipp = kjb_create_image(num_rows, num_cols));
+        NRE(*target_ipp = ivi_create_image(num_rows, num_cols));
     }
     else
     {
@@ -900,8 +900,8 @@ int get_target_image(KJB_image** target_ipp, int num_rows, int num_cols)
         if (    ((*target_ipp)->num_rows != num_rows)
              || ((*target_ipp)->num_cols != num_cols))
         {
-            kjb_free_image(*target_ipp);
-            NRE(*target_ipp = kjb_create_image(num_rows, num_cols));
+            ivi_free_image(*target_ipp);
+            NRE(*target_ipp = ivi_create_image(num_rows, num_cols));
         }
     }
 
@@ -946,7 +946,7 @@ static Pixel** debug_allocate_2D_float_pixel_array
 
     if ((pixel_array)[ 0 ] == NULL)
     {
-        kjb_free(pixel_array);
+        ivi_free(pixel_array);
         return NULL;
     }
 
@@ -987,7 +987,7 @@ static Pixel** allocate_2D_float_pixel_array(int num_rows, int num_cols)
 
     if ((pixel_array)[ 0 ] == NULL)
     {
-        kjb_free(pixel_array);
+        ivi_free(pixel_array);
         return NULL;
     }
 
@@ -1009,14 +1009,14 @@ static void free_2D_float_pixel_array(Pixel** pixel_array)
 
     if (pixel_array != NULL)
     {
-        kjb_free(pixel_array[ 0 ]);
-        kjb_free(pixel_array);
+        ivi_free(pixel_array[ 0 ]);
+        ivi_free(pixel_array);
     }
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int is_black_and_white( const KJB_image * ip)
+int is_black_and_white( const IVI_image * ip)
 {
     int i = 0;
     int j = 0;

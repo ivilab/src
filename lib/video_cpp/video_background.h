@@ -18,14 +18,14 @@
 
 /* $Id$ */
 
-#ifndef KJB_VIDEO_BACKGROUND_H_
-#define KJB_VIDEO_BACKGROUND_H_
+#ifndef IVI_VIDEO_BACKGROUND_H_
+#define IVI_VIDEO_BACKGROUND_H_
 
 #include <m_cpp/m_matrix.h>
 #include <string>
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /** 
  * @brief   Compute the background value by a median filter
@@ -40,7 +40,7 @@ void compute_median_background
     size_t rate = 1
 );
 
-} //namespace kjb
+} //namespace ivi
 
-#endif /*KJB_VIDEO_BACKGROIUND_H */
+#endif /*IVI_VIDEO_BACKGROIUND_H */
 

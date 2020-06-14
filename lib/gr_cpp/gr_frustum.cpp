@@ -1,4 +1,4 @@
-/* $Id: gr_frustum.cpp 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: gr_frustum.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -19,17 +19,17 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <gr_cpp/gr_frustum.h>
 #include <gr_cpp/gr_opengl.h>
 
-namespace kjb {
+namespace ivi {
 namespace opengl{
 
 void Frustum_display::render() const
 {
-#ifdef KJB_HAVE_OPENGL
-    using namespace kjb::opengl;
+#ifdef IVI_HAVE_OPENGL
+    using namespace ivi::opengl;
 
     glPushMatrix();
     glPushAttrib(GL_ENABLE_BIT);
@@ -127,10 +127,10 @@ void Frustum_display::render() const
     glPopAttrib();
     glPopMatrix();
 #else
-    KJB_THROW_2(Missing_dependency, "Missing library OpenGL");
+    IVI_THROW_2(Missing_dependency, "Missing library OpenGL");
 #endif
 }
 
 } // namespace opengl
-} // namespace kjb
-#endif // KJB_HAVE_OPENGL
+} // namespace ivi
+#endif // IVI_HAVE_OPENGL

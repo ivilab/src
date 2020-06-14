@@ -1,5 +1,5 @@
 
-/* $Id: i_html.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_html.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -95,7 +95,7 @@ int set_image_html_options(const char* option, const char* value)
 
 int output_image_for_html
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     FILE*            index_fp,
     const char*      dir,
     const char*      file_name
@@ -131,7 +131,7 @@ int output_image_for_html
 
 int output_image_for_html_2
 (
-    const KJB_image* ip,
+    const IVI_image* ip,
     FILE*            index_fp,
     const char*      dir,
     const char*      file_name,
@@ -141,17 +141,17 @@ int output_image_for_html_2
     char file_path[ MAX_FILE_NAME_SIZE ];
 
 
-    ERE(kjb_fprintf(index_fp,
+    ERE(ivi_fprintf(index_fp,
                     "<IMG SRC=%s%s.%s HEIGHT=%d WIDTH=%d>\n",
                     (location_str == NULL) ? "" : location_str,
                     file_name, fs_html_image_file_format,
                     ip->num_rows, ip->num_cols));
 
-    ERE(kjb_sprintf(file_path, sizeof(file_path), "%s%s%s.%s",
+    ERE(ivi_sprintf(file_path, sizeof(file_path), "%s%s%s.%s",
                     dir, DIR_STR, file_name,
                     fs_html_image_file_format));
 
-    ERE(kjb_write_image(ip, file_path));
+    ERE(ivi_write_image(ip, file_path));
 
     return NO_ERROR;
 }

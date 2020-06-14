@@ -4,18 +4,18 @@
 
 int back_project_image
 (
- const KJB_image *ip,
+ const IVI_image *ip,
  const Matrix    *H_mp,
  int             fitting_model,
- KJB_image       **bp_ipp,
+ IVI_image       **bp_ipp,
  Int_matrix      **mask_impp
  );
 
 int main()
 {
     int        result = NO_ERROR;
-    KJB_image  *src_ip = NULL;
-    KJB_image  *target_ip = NULL;
+    IVI_image  *src_ip = NULL;
+    IVI_image  *target_ip = NULL;
     Matrix     *H_mp = NULL;
     Int_matrix *mask_imp = NULL;
     FILE       *fp = NULL;
@@ -31,7 +31,7 @@ int main()
     const char *target_filename = "out/000517_bp.jpg";
 */
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (! is_interactive()) 
     {
@@ -39,22 +39,22 @@ int main()
         return EXIT_CANNOT_TEST;
     }
 
-    fp = kjb_fopen(H_filename, "r");
+    fp = ivi_fopen(H_filename, "r");
     if ( fp == NULL )
     {
         warn_pso(" Unable to open homography file '%s'.\n", H_filename);
-        kjb_fclose( fp );
+        ivi_fclose( fp );
         EGC(ERROR);
     }
 
     result = fp_read_matrix( &H_mp, fp );
     if (result == ERROR) { EGC(result); }
-    kjb_fclose( fp );
+    ivi_fclose( fp );
 
     db_mat( H_mp );
 
     pso( "Reading the source image: %s.\n", src_filename);
-    result = kjb_read_image( &src_ip, src_filename );
+    result = ivi_read_image( &src_ip, src_filename );
     if (result == ERROR) { EGC(result); }
 
     pso( "Backprojecting the image.\n");
@@ -62,7 +62,7 @@ int main()
     if (result == ERROR) { EGC(result); }
 
     pso( "Saving the backprojected image: %s.\n", target_filename);
-    result = kjb_write_image( target_ip, target_filename );
+    result = ivi_write_image( target_ip, target_filename );
     if (result == ERROR) { EGC(result); }
 
 
@@ -70,8 +70,8 @@ cleanup:
     EPE(result);
 
     pso("Cleaning up.\n");
-    kjb_free_image( src_ip );
-    kjb_free_image( target_ip );
+    ivi_free_image( src_ip );
+    ivi_free_image( target_ip );
     free_matrix( H_mp );
     free_int_matrix( mask_imp );
     pso("Finished.\n");
@@ -82,10 +82,10 @@ cleanup:
 
 int back_project_image
 (
- const KJB_image *ip,
+ const IVI_image *ip,
  const Matrix    *H_mp,
  int             fitting_model,
- KJB_image       **bp_ipp,
+ IVI_image       **bp_ipp,
  Int_matrix      **mask_impp
  )
 { 

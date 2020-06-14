@@ -1,5 +1,5 @@
 
-/* $Id: int_mat_read.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: int_mat_read.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "i/i_incl.h" 
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     }
     else 
     {
-        KJB_image* ip = NULL;
+        IVI_image* ip = NULL;
         int i, j; 
 
         EPETE(get_zero_image(&ip, mp->num_rows, mp->num_cols));
@@ -74,11 +74,11 @@ int main(int argc, char *argv[])
             }
         }
 
-        EPETE(kjb_display_image(ip, NULL));
+        EPETE(ivi_display_image(ip, NULL));
 
         prompt_to_continue();
 
-        kjb_free_image(ip); 
+        ivi_free_image(ip); 
     }
 
     free_int_matrix(mp); 

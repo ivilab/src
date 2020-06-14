@@ -27,14 +27,14 @@ using namespace std;
 
 int main()
 {
-    using namespace kjb;
+    using namespace ivi;
 
     Image img("001.jpg");
 
     Image img2(img);
 
     Canny_edge_detector edge_detector(1.0, 0.01*255, 0.008*255, 10, true);
-    kjb::Edge_set *edges = edge_detector.detect_edges(img);
+    ivi::Edge_set *edges = edge_detector.detect_edges(img);
     edges->remove_short_edges(15);
     edges->break_edges_at_corners(0.89, 6);
     edges->remove_short_edges(30);

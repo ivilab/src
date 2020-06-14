@@ -5,7 +5,7 @@
  * @file Marginal_cell.h
  *
  * @author Colin Dawson 
- * $Id: Marginal_cell.h 17175 2014-07-29 19:11:35Z cdawson $ 
+ * $Id: Marginal_cell.h 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include <semantics/Categorical_event.h>
@@ -209,7 +209,7 @@ public:
     size_t sample_table_assignment()
     {
         assert(!unused_table_codes_.empty());
-        kjb::Categorical_distribution<size_t> table_weights(per_table_counts_);
+        ivi::Categorical_distribution<size_t> table_weights(per_table_counts_);
         /// Add an extra weight for the unused component.  Note that, rather than
         /// compute (n_{table} / n_{context}) * (n_{context} / n_{context} + alpha)
         /// for the existing tables, and (alpha / (n_{context}+alpha)) * q(outcome),
@@ -220,7 +220,7 @@ public:
             unused_table_codes_.front(),
             context_->alpha() * backoff_probability()
             );
-        size_t result = kjb::sample(table_weights);
+        size_t result = ivi::sample(table_weights);
 
         if(result == unused_table_codes_.front())
         {

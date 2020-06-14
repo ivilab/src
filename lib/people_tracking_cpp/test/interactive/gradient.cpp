@@ -37,7 +37,7 @@
 #include <people_tracking_cpp/pt_util.h>
 #include <people_tracking_cpp/pt_scene_init.h>
 #include <gr_cpp/gr_opengl.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <gr_cpp/gr_opengl_headers.h>
@@ -55,12 +55,12 @@
 #include <boost/ref.hpp>
 #include <boost/lexical_cast.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/record.h>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace boost;
 
 // other constants
@@ -141,17 +141,17 @@ void set_changed_frame(const Target& target, size_t frame);
 int main(int argc, char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    //kjb_c::kjb_l_set("heap-checking", "off");
-    //kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    //ivi_c::ivi_l_set("heap-checking", "off");
+    //ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
     {
         const size_t rand_seed = 1234;
         // set random seed 
-        kjb_c::kjb_seed_rand(rand_seed, rand_seed);
-        kjb_c::kjb_seed_rand_2(rand_seed);
+        ivi_c::ivi_seed_rand(rand_seed, rand_seed);
+        ivi_c::ivi_seed_rand_2(rand_seed);
         ergo::global_rng<boost::mt19937>().seed(rand_seed);
         srand(rand_seed);
 
@@ -290,11 +290,11 @@ int main(int argc, char** argv)
         update_posterior(scene, 1);
 
         // GL stuff
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         return EXIT_FAILURE;
@@ -749,7 +749,7 @@ void handle_key(Scene_viewer& viewer, unsigned char key, int, int)
         case 'S':
         {
             std::cout << "HMC sampling \n";
-            kjb_c::kjb_mkdir(outdir.c_str());
+            ivi_c::ivi_mkdir(outdir.c_str());
             ofstream log_fs((outdir + "/sample_logs.txt").c_str());
             ostream_iterator<ergo::step_detail> log_out(log_fs, "\n");
             sample_scenes_p->set_hmc_step_size(hmc_step_size);
@@ -805,7 +805,7 @@ void handle_key(Scene_viewer& viewer, unsigned char key, int, int)
 
     //update_posterior(scene);
     update_viewer(viewer);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }
@@ -883,7 +883,7 @@ void update_viewer(Scene_viewer& viewer)
     info_text[i++] = "PST: " + lexical_cast<string>(pst);
     info_text[i++] = "GRAD MOVE SIZE: " + lexical_cast<string>(grad_move_size);
     info_text[i++] = "HMC STEP SIZE: " + lexical_cast<string>(hmc_step_size);
-    KJB(ASSERT(i == 13));
+    IVI(ASSERT(i == 13));
     viewer.set_text_lines(info_text.begin(), info_text.end());
 }
 

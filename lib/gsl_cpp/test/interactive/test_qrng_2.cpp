@@ -4,20 +4,20 @@
 
 int main()
 {
-    //kjb::Gsl_Qrng_Niederreiter qrng( 2 );
-    //kjb::Gsl_Qrng_Sobol qrng( 2 );
-    kjb::Gsl_Qrng_Halton qrng( 2 );
-    //kjb::Gsl_Qrng_Rvs_Halton qrng( 2 );
+    //ivi::Gsl_Qrng_Niederreiter qrng( 2 );
+    //ivi::Gsl_Qrng_Sobol qrng( 2 );
+    ivi::Gsl_Qrng_Halton qrng( 2 );
+    //ivi::Gsl_Qrng_Rvs_Halton qrng( 2 );
 
     const int SZ = 1000;
-    kjb::Image im( kjb::Image::create_zero_image( SZ, SZ ) );
-    kjb::PixelRGBA p( 250, 250, 250 );
+    ivi::Image im( ivi::Image::create_zero_image( SZ, SZ ) );
+    ivi::PixelRGBA p( 250, 250, 250 );
 
     for( int j = 0; j < 10*SZ; ++j ) {
-        kjb::Vector xy = qrng.read();
+        ivi::Vector xy = qrng.read();
         int r = std::min( SZ-1, std::max( 0, static_cast<int>( xy[1]*SZ+0.5)));
         int c = std::min( SZ-1, std::max( 0, static_cast<int>( xy[0]*SZ+0.5)));
-        kjb::PixelRGBA q = im.at( r, c );
+        ivi::PixelRGBA q = im.at( r, c );
         im.at( r, c ) = (( p + q )*0.5 ).ow_clamp().ow_floor();
     }
     im.display( "that is what it is" );

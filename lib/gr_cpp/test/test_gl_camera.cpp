@@ -17,7 +17,7 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_HAVE_OPENGL
+#ifndef IVI_HAVE_OPENGL
 // if opengl isn't installed, just run this 
 #include <iostream>
 int main()
@@ -28,7 +28,7 @@ int main()
 #else
 
 
-#ifndef KJB_HAVE_GLUT
+#ifndef IVI_HAVE_GLUT
 #include <iostream>
 int main()
 {
@@ -48,9 +48,9 @@ int main()
 
 #include <l_cpp/l_test.h>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
-using kjb_c::kjb_rand;
+using ivi_c::ivi_rand;
 
 float width = 640;
 float height = 480;
@@ -65,7 +65,7 @@ void get_random_camera_parameters(
         double& y0);
 void init_opengl(int argc, char* argv[])
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100,100);
@@ -83,7 +83,7 @@ void init_opengl(int argc, char* argv[])
 
     glEnable( GL_TEXTURE_2D );
 #else
-KJB_THROW_2(Missing_dependency,"Glut");
+IVI_THROW_2(Missing_dependency,"Glut");
 #endif
 
 }
@@ -104,12 +104,12 @@ int main(int argc, char* argv[])
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-width/2, width/2, -height/2, height/2, NEAR, FAR);
-    const Matrix gl_ortho = kjb::opengl::get_projection_matrix();
+    const Matrix gl_ortho = ivi::opengl::get_projection_matrix();
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glViewport(0, 0, width, height);
 
-    kjb_c::kjb_seed_rand_with_tod();
+    ivi_c::ivi_seed_rand_with_tod();
 
     for(int i = 0; i < NUM_ITERATIONS; i++)
     {
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
 
         // TODO: test situation where something isn't set
 
-        if(kjb_rand() > 0.5)
+        if(ivi_rand() > 0.5)
         {
             camera.set_orientation(Quaternion(R));
         }
@@ -211,7 +211,7 @@ int main(int argc, char* argv[])
 
         // retrieve from opengl
         Matrix modelview = opengl::get_modelview_matrix();
-        Matrix full_projection = kjb::opengl::get_projection_matrix();
+        Matrix full_projection = ivi::opengl::get_projection_matrix();
 
         // project point using reference matrix
         Vector math_pt = gl_ortho * K_homo * extrinsic_homo * P;
@@ -263,9 +263,9 @@ int main(int argc, char* argv[])
         Matrix projection = opengl::get_projection_matrix();
         Matrix raw_projection = camera.get_projection_matrix();
 
-        bool on_near_plane = (kjb_rand() < 0.5);
+        bool on_near_plane = (ivi_rand() < 0.5);
 
-        Vector P = kjb::create_random_vector(4);
+        Vector P = ivi::create_random_vector(4);
         P(3) = 1.0;
         // note that depth below is negative, indicating in front of the viewer
         if(on_near_plane)

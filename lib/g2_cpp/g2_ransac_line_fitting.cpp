@@ -1,4 +1,4 @@
-/* $Id: g2_ransac_line_fitting.cpp 12267 2012-05-07 02:54:58Z ksimek $ */
+/* $Id: g2_ransac_line_fitting.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,7 +22,7 @@
 
 #include "g2_cpp/g2_ransac_line_fitting.h"
 
-namespace kjb
+namespace ivi
 {
 
 bool Ransac_line_fitting::run(size_t max_num_iter)
@@ -142,4 +142,4 @@ bool Ransac_line_fitting::run(size_t max_num_iter)
     return success;
 }
 
-} // namespace kjb
+} // namespace ivi

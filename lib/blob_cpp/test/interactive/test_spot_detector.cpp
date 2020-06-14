@@ -11,7 +11,7 @@
 #include <boost/format.hpp>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 Matrix image_std_dev(const vector<Image>& imgs, const Image& avg)
 {

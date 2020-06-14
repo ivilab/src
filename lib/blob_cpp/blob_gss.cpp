@@ -27,10 +27,10 @@ void GSS::write(const std::string& base_filename, const std::string& extension)
     }
 }
 
-GSS GSS_generator::operator()(const kjb::Image& image)
+GSS GSS_generator::operator()(const ivi::Image& image)
 {
     GSS gss(O, o_min, S, s_min, s_max, sigma_0, sigma_n);
-    std::vector<kjb::Image>& gss_vector = gss.gss;
+    std::vector<ivi::Image>& gss_vector = gss.gss;
     std::vector<GSS::Octave::const_iterator>& octaves = gss.octaves;
     std::vector<GSS::Octave::const_iterator>& x_octaves = gss.x_octaves;
 
@@ -44,7 +44,7 @@ GSS GSS_generator::operator()(const kjb::Image& image)
     x_octaves.reserve(O + 1);
 
     // initial scaling of the image in case o_min =/= 0
-    kjb::Image I = kjb::scale_image(image, std::pow(2.0, -o_min));
+    ivi::Image I = ivi::scale_image(image, std::pow(2.0, -o_min));
 
     //-----------------------------------------------------------------------------
     // First octave ---------------------------------------------------------------
@@ -58,14 +58,14 @@ GSS GSS_generator::operator()(const kjb::Image& image)
 
     // First level
     sigma = sqrt(std::pow(sigma_0 * std::pow(2.0, static_cast<double>(s_min) / S), 2) - std::pow(sigma_n / std::pow(2.0, o_min), 2));
-    gss_vector.push_back(I * kjb::gaussian_filter(sigma));
+    gss_vector.push_back(I * ivi::gaussian_filter(sigma));
     //std::cout << "  level " << s_min << " : " << sigma << std::endl; 
 
     // Other levels
     for(int s = s_min + 1; s <= s_max; s++)
     {
         sigma = std::pow(2.0, static_cast<double>(s) / S) * sigma_sf;
-        gss_vector.push_back(gss_vector.back() * kjb::gaussian_filter(sigma));
+        gss_vector.push_back(gss_vector.back() * ivi::gaussian_filter(sigma));
         //std::cout<<"  level " << s << ": "<< sigma << " w ( " << gss_vector.back().get_num_rows() << " )" << std::endl; 
     }
 
@@ -103,7 +103,7 @@ GSS GSS_generator::operator()(const kjb::Image& image)
             double next_sigma = sigma_0 * std::pow(2.0, static_cast<double>(s_min) / S);
             double prev_sigma = sigma_0 * std::pow(2.0, static_cast<double>(s_max - S) / S);
             sigma = sqrt(next_sigma * next_sigma - prev_sigma * prev_sigma);
-            gss_vector.push_back(scale_image(*p_prev, 0.5) * kjb::gaussian_filter(sigma));
+            gss_vector.push_back(scale_image(*p_prev, 0.5) * ivi::gaussian_filter(sigma));
     //        std::cout << " first level sigma: "<< sigma << " w (" << p_prev->get_num_rows()*0.5 << ") " <<  std::endl; 
         }
 
@@ -111,7 +111,7 @@ GSS GSS_generator::operator()(const kjb::Image& image)
         for(int s = s_min + 1; s <= s_max; s++)
         {
             sigma = std::pow(2.0, static_cast<double>(s) / S) * sigma_sf;
-            gss_vector.push_back(gss_vector.back() * kjb::gaussian_filter(sigma));
+            gss_vector.push_back(gss_vector.back() * ivi::gaussian_filter(sigma));
             //std::cout << "level: " << s << " sigma: "<< sigma <<
             //    " w (" << gss_vector.back().get_num_rows() << ") " << std::endl; 
         }

@@ -1,5 +1,5 @@
 /*
- * $Id: test_image.cpp 15996 2013-11-13 21:54:27Z predoehl $
+ * $Id: test_image.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "i/i_display.h"
@@ -13,7 +13,7 @@
 
 namespace {
 
-const kjb::PixelRGBA    red(100,0,0),
+const ivi::PixelRGBA    red(100,0,0),
                         green(0,100,0),
                         blue(0,0,100),
                         black(0,0,0),
@@ -21,13 +21,13 @@ const kjb::PixelRGBA    red(100,0,0),
 
 void test1()
 {
-    kjb::Image i0;
+    ivi::Image i0;
     bool did_we_catch_ioob = false;
 
     try {
         i0.at( 0,0 ) = green;
     }
-    catch( kjb::Index_out_of_bounds& )
+    catch( ivi::Index_out_of_bounds& )
     {
         did_we_catch_ioob = true;
     }
@@ -37,7 +37,7 @@ void test1()
     try {
         i0.at( 0 ) = green;
     }
-    catch( kjb::Index_out_of_bounds& )
+    catch( ivi::Index_out_of_bounds& )
     {
         did_we_catch_ioob2 = true;
     }
@@ -46,21 +46,21 @@ void test1()
 
 int test2( bool showme )
 {
-    kjb::Image im(100,100);
+    ivi::Image im(100,100);
     im.draw_aa_rectangle(0,0,99,99, black);
     for( int i = 0; i < 100; ++i )
     {
         im.at(i,i) = red; // red slash
     }
-    return showme && kjb_c::is_interactive() ? im.display( "Red slash" ) : 0;
+    return showme && ivi_c::is_interactive() ? im.display( "Red slash" ) : 0;
 }
 
 
 /// @brief this makes horizontal bands of (dim) colors
 int test3()
 {
-    kjb::Image im(100,100);
-    const kjb::Image &constima = im;
+    ivi::Image im(100,100);
+    const ivi::Image &constima = im;
     int k = 0;
     for( int j = 0; j < 1000; ++j ) im.at( k++ ) = red;
     for( int j = 0; j < 1000; ++j ) im.at( k++ ) = green;
@@ -72,56 +72,56 @@ int test3()
     for( int j = 0; j < 1000; ++j, ++k ) im( k ) = constima( k-4000 );
     for( int j = 0; j < 3000; ++j, ++k ) im( k ) = black;
 
-    return kjb_c::is_interactive() ? im.display( "Horizontal RGB bars" ) : 0;
+    return ivi_c::is_interactive() ? im.display( "Horizontal RGB bars" ) : 0;
 }
 
 
 int test4()
 {
-    kjb::Image im(100,100);
+    ivi::Image im(100,100);
     im.draw_aa_rectangle(0,0,99,99, black);
-    for( int j =   0; j < 20; ++j ) im( j, j, kjb::Image::RED   ) = 10*(j   );
-    for( int j =  20; j < 40; ++j ) im( j, j, kjb::Image::GREEN ) = 10*(j-20);
-    for( int j =  40; j < 60; ++j ) im( j, j, kjb::Image::BLUE  ) = 10*(j-40);
+    for( int j =   0; j < 20; ++j ) im( j, j, ivi::Image::RED   ) = 10*(j   );
+    for( int j =  20; j < 40; ++j ) im( j, j, ivi::Image::GREEN ) = 10*(j-20);
+    for( int j =  40; j < 60; ++j ) im( j, j, ivi::Image::BLUE  ) = 10*(j-40);
 
-    const kjb::Image &constima = im;
+    const ivi::Image &constima = im;
     for ( int j = 0; j < 60; ++j ) im.at( j, 20+j ) = constima.at( j, j );
     for ( int j = 0; j < 60; ++j )
     {
-        for( int c = 0; c < kjb::Image::END_CHANNELS; ++c )
-            im( 20+j,j, c ) = constima( j,j, kjb::Image::END_CHANNELS-1-c );
+        for( int c = 0; c < ivi::Image::END_CHANNELS; ++c )
+            im( 20+j,j, c ) = constima( j,j, ivi::Image::END_CHANNELS-1-c );
     }
     for ( int j = 0; j < 60; ++j )
     {
-        for( int c = 0; c < kjb::Image::END_CHANNELS; ++c )
-            im.at(40+j,j,c) = constima.at( j,j, kjb::Image::END_CHANNELS-1-c );
+        for( int c = 0; c < ivi::Image::END_CHANNELS; ++c )
+            im.at(40+j,j,c) = constima.at( j,j, ivi::Image::END_CHANNELS-1-c );
     }
-    return kjb_c::is_interactive() ? im.display("RGB shooting stars") : 0;
+    return ivi_c::is_interactive() ? im.display("RGB shooting stars") : 0;
 }
 
 int test5()
 {
-    kjb::Image im("../input/test.tiff");
-    kjb::Image im2(std::string("../input/test.tiff"));
-    return kjb_c::is_interactive() ? im.display( "Test image" ) : 0;
+    ivi::Image im("../input/test.tiff");
+    ivi::Image im2(std::string("../input/test.tiff"));
+    return ivi_c::is_interactive() ? im.display( "Test image" ) : 0;
 }
 
 int test6(double a)
 {
-    kjb::Image im("../input/test.tiff");
-    kjb::Image im2 = kjb::scale_image(im, a);
+    ivi::Image im("../input/test.tiff");
+    ivi::Image im2 = ivi::scale_image(im, a);
     char temp[100];
     sprintf(temp, "Scaled by %.2f%%", a * 100);
-    return kjb_c::is_interactive() ? im2.display(temp) : 0;
+    return ivi_c::is_interactive() ? im2.display(temp) : 0;
 }
 
 int test7(double a)
 {
-    kjb::Image im("../input/test.tiff");
+    ivi::Image im("../input/test.tiff");
     im.scale(a);
     char temp[100];
     sprintf(temp, "Scaled in-place by %.2f%%", a * 100);
-    return kjb_c::is_interactive() ? im.display(temp) : 0;
+    return ivi_c::is_interactive() ? im.display(temp) : 0;
 }
 
 
@@ -131,8 +131,8 @@ void null_bug_handler(const char*) {}
 int test8()
 {
     const int SZ = 100, LL = 20, HH = (SZ - LL)/2;
-    kjb::Image im;
-    kjb::Matrix r(SZ, SZ, 0.0), g=r, b=r, wrong(SZ/2, SZ/2, 0.0);
+    ivi::Image im;
+    ivi::Matrix r(SZ, SZ, 0.0), g=r, b=r, wrong(SZ/2, SZ/2, 0.0);
 
     for (int i=0; i<LL; ++i)
     {
@@ -153,20 +153,20 @@ int test8()
     bool caught_it = false;
     try
     {
-        kjb_c::set_bug_handler( &null_bug_handler );
+        ivi_c::set_bug_handler( &null_bug_handler );
         im.from_color_matrices(r, g, wrong);
     }
-    catch( kjb::KJB_error &e )
+    catch( ivi::IVI_error &e )
     {
         caught_it = true;
     }
     assert(caught_it);
-    kjb_c::set_bug_handler( &kjb_c::default_bug_handler );
+    ivi_c::set_bug_handler( &ivi_c::default_bug_handler );
 
     // ------------------------------------------
 
     const char *title = "test 8: from_color_matrices()";
-    return kjb_c::is_interactive() ? im.display(title) : 0;
+    return ivi_c::is_interactive() ? im.display(title) : 0;
 }
 
 
@@ -174,7 +174,7 @@ int test8()
 // output should be the french flag speckled with little green hollow squares
 int test9()
 {
-    kjb::Image im(400, 400);
+    ivi::Image im(400, 400);
     im.draw_aa_rectangle(500, 500, -3, -3, red);        // background
 
     im.draw_aa_rectangle(500, 500, 450, 450, black);    // total clip to SE
@@ -203,7 +203,7 @@ int test9()
     // not clipped for once
     im.draw_aa_rectangle_outline(150, 150, 250, 250, green);  // center
 
-    return kjb_c::is_interactive() ? im.display("clipping") : 0;
+    return ivi_c::is_interactive() ? im.display("clipping") : 0;
 }
 
 
@@ -227,19 +227,19 @@ int main2()
     h = test8();        handles.push_back( h );
     h = test9();        handles.push_back( h );
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::nap(10000);
+        ivi_c::nap(10000);
         std::for_each( handles.begin(), handles.end(),
-                                std::ptr_fun(kjb_c::close_displayed_image) );
+                                std::ptr_fun(ivi_c::close_displayed_image) );
     }
 
     #ifdef YES_WE_WANT_GARBAGE_POLICE
     fprintf(    stderr,
                 "Garbage police report that %d Images were (ever) constructed "
                 "via C++\nand %d of them are still alive now.\n", 
-                kjb::Image::query_serial_counter(),
-                kjb::Image::query_live_counter()
+                ivi::Image::query_serial_counter(),
+                ivi::Image::query_live_counter()
             );
     #endif
 
@@ -254,7 +254,7 @@ int main()
     {
         return main2();
     }
-    catch( kjb::Exception &e )
+    catch( ivi::Exception &e )
     {
         e.print_details_exit();
     }

@@ -1,5 +1,5 @@
 /*
- * $Id: transparent.c 15303 2013-09-06 22:24:39Z predoehl $ 
+ * $Id: transparent.c 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include <i/i_float.h>
@@ -10,7 +10,7 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image *i = NULL, *j = NULL;
+    IVI_image *i = NULL, *j = NULL;
     int a, b;
 
     Pixel p;
@@ -45,10 +45,10 @@ int main(int argc, char** argv)
         }
     }
 
-    EPETE(kjb_write_image(i, "foo_image.tif"));
-    EPETE(kjb_write_image(j, "bar_image.tif"));
-    kjb_free_image(i);
-    kjb_free_image(j);
+    EPETE(ivi_write_image(i, "foo_image.tif"));
+    EPETE(ivi_write_image(j, "bar_image.tif"));
+    ivi_free_image(i);
+    ivi_free_image(j);
 
     return 0;
 }

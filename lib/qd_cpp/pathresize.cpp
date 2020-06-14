@@ -8,7 +8,7 @@
  * is much better.
  */
 /*
- * $Id: pathresize.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: pathresize.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -23,7 +23,7 @@
 #define ASSIDUOUS_DEBUG_CHECKING_SPRUCE 0   /**< macro: 1=expensive paranoia */
 
 #if ASSIDUOUS_DEBUG_CHECKING_SPRUCE
-#define ASSERTO(x) KJB(ASSERT(x)) /**< assertion when "assiduously" testing  */
+#define ASSERTO(x) IVI(ASSERT(x)) /**< assertion when "assiduously" testing  */
 #else
 #define ASSERTO(x)                /**< stub non-assertion when less paranoid */
 #endif
@@ -32,8 +32,8 @@
 namespace
 {
 
-using kjb::qd::PixPoint;
-using kjb::qd::PixPath;
+using ivi::qd::PixPoint;
+using ivi::qd::PixPath;
 
 
 /// @brief a functor much like fun sosq_error() but it memoizes its results
@@ -41,7 +41,7 @@ class Memo_sosq_error
 {
     const PixPath m_path;   ///< path for which we compute the error values
     // I could have made this mutable, but I couldn't see the advantage here.
-    kjb::Vector m_sosq_err; ///< row-maj repr of matrix of memoized answers
+    ivi::Vector m_sosq_err; ///< row-maj repr of matrix of memoized answers
     std::vector< bool > mmm_good; ///< row-major array of valid flags
 
 public:
@@ -60,7 +60,7 @@ public:
         if ( ! mmm_good.at( rmix ) )
         {
             const size_t rmco = ix2 * m_path.size() + ix1;
-            KJB( ASSERT( ! mmm_good.at( rmco ) ) );
+            IVI( ASSERT( ! mmm_good.at( rmco ) ) );
             m_sosq_err[ rmix ] = m_sosq_err[ rmco ]
                                             = sosq_error( m_path, ix1, ix2 );
             mmm_good[ rmix ] = mmm_good[ rmco ] = true;
@@ -103,13 +103,13 @@ class PixPath_compress_2
     {
         try
         {
-            kjb::qd::PixPath_expander pe( p, sz, dtc );
+            ivi::qd::PixPath_expander pe( p, sz, dtc );
             //return spruce_up( pe, devil_take_hindmost( pe, sz ) );
             return spruce_up( pe, polyline_approx( pe, sz ) );
         }
         catch( PixPoint::Unused& )
         {
-            kjb_c::p_stderr( "Caught PixPoint::unused in %s.\n", __func__ );
+            ivi_c::p_stderr( "Caught PixPoint::unused in %s.\n", __func__ );
             throw;
         }
     }
@@ -163,7 +163,7 @@ float perp_dist_sq( const PixPoint& v1, const PixPoint& v2, const PixPoint& q )
 
     const PixPoint v1v2( v1 - v2 ), qv2( q - v2 );
     float ttt = v1v2.idot( qv2 ) / float( v1v2.idot( v1v2 ) );
-    kjb::Vector2 r( to_vector2(v2) );
+    ivi::Vector2 r( to_vector2(v2) );
     r += to_vector2( v1v2 ) * ttt;
     return float( ( r - to_vector2(q) ).magnitude_squared() );
 }
@@ -355,7 +355,7 @@ PixPath spruce_up_body(
      */
     if ( p_0_plus.size() <= p_1.size() )
     {
-        KJB( ASSERT( p_1.has_subsequence( p_0_plus ) ) );
+        IVI( ASSERT( p_1.has_subsequence( p_0_plus ) ) );
         return p_1;
     }
 
@@ -376,7 +376,7 @@ PixPath spruce_up_body(
     const PixPath i0( p_0_plus.interpolate() );
     const PixPath i1( p_1.interpolate() );
     const float hd = i0.hausdorff_distance( i1 );
-    KJB( ASSERT( 0 <= hd ) );
+    IVI( ASSERT( 0 <= hd ) );
     if ( 0 == hd )
     {
         return p_1;
@@ -402,7 +402,7 @@ PixPath spruce_up_body(
      * and try to improve them by moving around the two middle points.
      * Final result will be stored in p_2, which is no worse than p_1.
      */
-    KJB( ASSERT( 4 <= p_1.size() ) );
+    IVI( ASSERT( 4 <= p_1.size() ) );
     PixPath p_2( p_1 ); // p_2 is at least as good, maybe better than, p_1
     PixPath p2i( p_2.interpolate() );   // must keep this up to date, danger!
     size_t jjj = 0;     // cursor within p_0_plus
@@ -421,7 +421,7 @@ PixPath spruce_up_body(
         ASSERTO( p2prefix_copy == p_2 ); // really useless!
         } while(0);
 #endif
-        KJB( ASSERT( p2mid.front() == p2iii ) );
+        IVI( ASSERT( p2mid.front() == p2iii ) );
 
         // after debug, you should probably delete all the "expensive" tests,
         // but the next four are especially deletable.
@@ -438,9 +438,9 @@ PixPath spruce_up_body(
         {
             ++jjj;
         }
-        KJB( ASSERT( jjj < p_0_plus.size() ) ); // keep this test around please
+        IVI( ASSERT( jjj < p_0_plus.size() ) ); // keep this test around please
         ASSERTO( 1 == p_0_plus.hits( p_0_plus[ jjj ] ) );// expensive, O(log N)
-        KJB( ASSERT( p_0_plus[ jjj ] == p2iii ) ); // stupid test (but cheap)
+        IVI( ASSERT( p_0_plus[ jjj ] == p2iii ) ); // stupid test (but cheap)
 
         /*
          * Now we put cursor mmm at the offset within p_0_plus corresponding to
@@ -451,9 +451,9 @@ PixPath spruce_up_body(
         {
             ++mmm;
         }
-        KJB( ASSERT( mmm < p_0_plus.size() ) ); // keep this test
-        KJB( ASSERT( jjj + 3 <= mmm ) ); // keep this test
-        KJB( ASSERT( p_0_plus[ mmm ] == p_2[ iii + 3 ] ) );
+        IVI( ASSERT( mmm < p_0_plus.size() ) ); // keep this test
+        IVI( ASSERT( jjj + 3 <= mmm ) ); // keep this test
+        IVI( ASSERT( p_0_plus[ mmm ] == p_2[ iii + 3 ] ) );
 
         /*
          * Now that jjj and mmm are in position, we can define two small sub-
@@ -514,8 +514,8 @@ PixPath spruce_up_body(
          */
         if ( found_something_better )
         {
-            KJB( ASSERT( ! pbest[ 1 ].is_unused() ) );
-            KJB( ASSERT( ! pbest[ 2 ].is_unused() ) );
+            IVI( ASSERT( ! pbest[ 1 ].is_unused() ) );
+            IVI( ASSERT( ! pbest[ 2 ].is_unused() ) );
 
             p2prefix.append( pbest ).append( p2suffix ); // clobbers!  it's ok!
             PixPath& preplacement( p2prefix );
@@ -539,7 +539,7 @@ PixPath spruce_up_body(
             ASSERTO( pri.hausdorff_distance( i0 )
                                     - p2i.hausdorff_distance( i0 ) < 1e-6 );
 
-            KJB( ASSERT( p_2.size() == preplacement.size() ) );
+            IVI( ASSERT( p_2.size() == preplacement.size() ) );
 
             p_2.swap( preplacement );
             p2i.swap( pri ); // must keep this up to date, danger!
@@ -549,7 +549,7 @@ PixPath spruce_up_body(
              * preplacement as it is within p_2.
              */
         }
-        KJB( ASSERT( p_2.size() == p_1.size() ) );
+        IVI( ASSERT( p_2.size() == p_1.size() ) );
     }
     return p_2;
 }
@@ -558,7 +558,7 @@ PixPath spruce_up_body(
 struct P3
 {
     enum { CULL_RED, RED_CULL, RED_RED };
-    boost::shared_ptr<kjb::qd::PixPath> gpa, par, self;
+    boost::shared_ptr<ivi::qd::PixPath> gpa, par, self;
     char g_p_s;
 };
 
@@ -570,16 +570,16 @@ PixPath PixPath_compress_2::devil_take_hindmost(
     size_t output_sz
 )
 {
-    KJB( ASSERT( 2 <= output_sz ) );
+    IVI( ASSERT( 2 <= output_sz ) );
     if ( 2 == output_sz )
         return PixPath::fenceposts( p.front(), p.back(), 2 );
 
-    KJB( ASSERT( output_sz <= p.size() ) );
+    IVI( ASSERT( output_sz <= p.size() ) );
     if ( p.size() == output_sz )
         return p;
 
     //AMPutil::DebugPrintTee dbt( "compress_2_progress.txt" );
-    kjb::File_Ptr_Append c2p( "compress_2_progress.txt" );
+    ivi::File_Ptr_Append c2p( "compress_2_progress.txt" );
 
     const PixPath pfull( p.interpolate() );
 
@@ -589,7 +589,7 @@ PixPath PixPath_compress_2::devil_take_hindmost(
 
     while( pp.size() > output_sz )
     {
-        KJB( ASSERT( 2 < pp.size() ) );
+        IVI( ASSERT( 2 < pp.size() ) );
         heart.beat();
         PixPath::const_iterator q = pp.begin() + 1;
         PixPath slimmer_pp( PixPath::reserve() );
@@ -608,7 +608,7 @@ PixPath PixPath_compress_2::devil_take_hindmost(
                 expelled_point = q -> str();
             }
         }
-        KJB( ASSERT( hd_min != FLT_MAX ) );
+        IVI( ASSERT( hd_min != FLT_MAX ) );
 
         /*
         // debug
@@ -621,11 +621,11 @@ PixPath PixPath_compress_2::devil_take_hindmost(
         if ( 0 == ( tencount = (1 + tencount) % 10 ) )
         {
             int rc = c2p.flush();
-            KJB( ASSERT( 0 == rc ) );
+            IVI( ASSERT( 0 == rc ) );
         }
         */
 
-        KJB( ASSERT( slimmer_pp.size() == pp.size() - 1 ) );
+        IVI( ASSERT( slimmer_pp.size() == pp.size() - 1 ) );
         pp.swap( slimmer_pp );
     }
     heart.stop();
@@ -651,7 +651,7 @@ PixPath PixPath_compress_2::spruce_up(
     }
     catch( PixPoint::Unused& )
     {
-        kjb_c::p_stderr( "Caught PixPoint::Unused in %s\n", __func__ );
+        ivi_c::p_stderr( "Caught PixPoint::Unused in %s\n", __func__ );
         throw;
     }
 }
@@ -663,7 +663,7 @@ PixPath PixPath_compress_2::spruce_up(
 
 
 
-namespace kjb {
+namespace ivi {
 namespace qd {
 
 
@@ -703,7 +703,7 @@ PixPath PixPath_expander::cull_cozy_points(
     {
         if ( inpath.front().dist( inpath.back() ) <= distance_too_close )
         {
-            KJB_THROW_2( kjb::Runtime_error, "Cannot resize" );
+            IVI_THROW_2( ivi::Runtime_error, "Cannot resize" );
         }
         return inpath;
     }
@@ -732,10 +732,10 @@ PixPath PixPath_expander::cull_cozy_points(
 
     for(const_iterator p = newpath.begin(); p + 1 != newpath.end(); ++smc, ++p)
     {
-        KJB( ASSERT( p != newpath.end() ) ); // verify, better late than nvr
+        IVI( ASSERT( p != newpath.end() ) ); // verify, better late than nvr
         if ( p -> dist2( *( p + 1 ) ) <= dtc2 )
         {
-            KJB( ASSERT( 0 < keep_count ) );
+            IVI( ASSERT( 0 < keep_count ) );
             --keep_count;
             float   e1 = newpath.hausdorff_distance( newpath.expel( p ) ),
                     e2 = newpath.hausdorff_distance( newpath.expel( p + 1 ) );
@@ -767,7 +767,7 @@ PixPath PixPath_expander::cull_cozy_points(
     const_iterator q = newpath.begin();
     for( size_t smc = 0; smc < skip_me.size(); ++smc, ++q )
     {
-        KJB( ASSERT( q != newpath.end() ) );
+        IVI( ASSERT( q != newpath.end() ) );
         if ( ! skip_me[ smc ] )
         {
             newnewpath.push_back( *q );
@@ -808,11 +808,11 @@ PixPath PixPath_expander::cull_squashed_points(
     for( int smc = 1; smc < int( skip_me.size() ) - 1;
                                                 ++smc, p = post_p, ++post_p )
     {
-        KJB( ASSERT( pre_p != inpath.end() && p != inpath.end() ) );
+        IVI( ASSERT( pre_p != inpath.end() && p != inpath.end() ) );
         if ( p -> dist2( *pre_p ) <= dtc2 && p -> dist2( *post_p ) <= dtc2 )
         {
             skip_me[ smc ] = true; // p is squashed by both of its neighbors
-            KJB( ASSERT( 0 < newpath_size ) );
+            IVI( ASSERT( 0 < newpath_size ) );
             --newpath_size;
         }
         else
@@ -825,7 +825,7 @@ PixPath PixPath_expander::cull_squashed_points(
     const_iterator q = inpath.begin();
     for( size_t smc = 0; smc < skip_me.size(); ++smc, ++q )
     {
-        KJB( ASSERT( q != inpath.end() ) );
+        IVI( ASSERT( q != inpath.end() ) );
         if ( ! skip_me[ smc ] )
         {
             newpath.push_back( *q );
@@ -842,11 +842,11 @@ PixPath PixPath_expander::expanded_pp(
     float distance_too_close
 )
 {
-    KJB( ASSERT( 2 <= sz ) );
+    IVI( ASSERT( 2 <= sz ) );
 
     PixPath inpath_2( cull_cozy_points( inpath, distance_too_close ) );
     const size_t NP2 = inpath_2.size();
-    KJB( ASSERT( ! inpath_2.self_intersect() ) );
+    IVI( ASSERT( ! inpath_2.self_intersect() ) );
 
     if ( sz <= NP2 )
     {
@@ -857,7 +857,7 @@ PixPath PixPath_expander::expanded_pp(
 
     // interpolate inpath_2, except that we forbid self intersection
     PixPath inpath_3( inpath_2.interpolate( true ) );
-    KJB( ASSERT( ! inpath_3.self_intersect() ) );
+    IVI( ASSERT( ! inpath_3.self_intersect() ) );
 
     if ( inpath_3.size() == sz )    // possible although unlikely
     {
@@ -866,9 +866,9 @@ PixPath PixPath_expander::expanded_pp(
 
     if ( inpath_3.size() < sz ) // also possible, and disastrous
     {
-        KJB_THROW_2( kjb::Runtime_error, "Path too short to resize thus" );
+        IVI_THROW_2( ivi::Runtime_error, "Path too short to resize thus" );
     }
-    KJB( ASSERT( inpath_3.size() > sz ) ); // common case, given inpath_2 small
+    IVI( ASSERT( inpath_3.size() > sz ) ); // common case, given inpath_2 small
 
     return all_from_list_a_with_some_from_list_b( inpath_2, inpath_3, sz );
 }
@@ -904,21 +904,21 @@ PixPath PixPath_expander::all_from_list_a_with_some_from_list_b (
     size_t sz
 )
 {
-    KJB( ASSERT( path_a.size() < sz && sz < path_b.size() ) );
+    IVI( ASSERT( path_a.size() < sz && sz < path_b.size() ) );
 
     #if 0
-        KJB( ASSERT( path_b.has_subsequence( path_a ) ) );
+        IVI( ASSERT( path_b.has_subsequence( path_a ) ) );
 
         std::vector< size_t > redundancies;
         redundancies.reserve( path_b.size() );
-        KJB( ASSERT( path_a.hits( path_b[0] ) ) );
-        KJB( ASSERT( path_a.hits( path_b[ path_b.size() - 1 ] ) ) );
+        IVI( ASSERT( path_a.hits( path_b[0] ) ) );
+        IVI( ASSERT( path_a.hits( path_b[ path_b.size() - 1 ] ) ) );
         for( size_t iii = 0; iii < path_b.size(); ++iii )
             if ( ! path_a.hits( path_b[ iii ] ) )
                 redundancies.push_back( iii );
-        KJB( ASSERT( redundancies.size() < path_b.size() ) );
-        KJB( ASSERT( 0 < redundancies.size() ) );
-        KJB( ASSERT( sz < path_a.size() + redundancies.size() ) );
+        IVI( ASSERT( redundancies.size() < path_b.size() ) );
+        IVI( ASSERT( 0 < redundancies.size() ) );
+        IVI( ASSERT( sz < path_a.size() + redundancies.size() ) );
 
         return choose_random_redundancies( path_a, path_b, redundancies, sz );
     #else
@@ -953,7 +953,7 @@ PixPath PixPath_expander::choose_random_redundancies(
         PixPoint pb = path_b[ iii ];
         if ( path_a.hits( pb ) )
         {
-            KJB( ASSERT( rix == redundancies.size()
+            IVI( ASSERT( rix == redundancies.size()
                         || iii != redundancies.at( rix ) ) );
             path_out.push_back( pb );
         }
@@ -967,9 +967,9 @@ PixPath PixPath_expander::choose_random_redundancies(
             ++skip_count;
         }
     }
-    KJB( ASSERT( redundancies.size() == rix ) );
-    KJB( ASSERT( path_out.size() == sz ) );
-    KJB( ASSERT( path_b.size() == path_out.size() + skip_count ) );
+    IVI( ASSERT( redundancies.size() == rix ) );
+    IVI( ASSERT( path_out.size() == sz ) );
+    IVI( ASSERT( path_b.size() == path_out.size() + skip_count ) );
     return path_out;
 }
 
@@ -1032,10 +1032,10 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
     size_t sz
 )
 {
-    KJB( ASSERT( sz > path_a.size() ) );
+    IVI( ASSERT( sz > path_a.size() ) );
     const size_t deficit = sz - path_a.size();
-    KJB( ASSERT( ! path_a.self_intersect() ) );
-    KJB( ASSERT( ! path_b.self_intersect() ) );
+    IVI( ASSERT( ! path_a.self_intersect() ) );
+    IVI( ASSERT( ! path_b.self_intersect() ) );
 
 #if 0
     /*
@@ -1050,11 +1050,11 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
         // next line looks buggy:  should be *pa==*pb, ne pravda li?
         while( pb != path_b.end() && *pa != *pb )
             ++pb;
-        KJB( ASSERT( pb != path_b.end() ) ); // assert path_a is subseq of b
+        IVI( ASSERT( pb != path_b.end() ) ); // assert path_a is subseq of b
         redundancies.push_back( *pb++ );
     }
 #else
-    KJB( ASSERT( path_b.has_subsequence( path_a ) ) );
+    IVI( ASSERT( path_b.has_subsequence( path_a ) ) );
 #endif
 
     /*
@@ -1063,7 +1063,7 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
      */
     std::vector< float > pgaps_d;
     pgaps_d.reserve( path_a.size() - 1 );
-    KJB( ASSERT( 2 <= path_a.size() ) );
+    IVI( ASSERT( 2 <= path_a.size() ) );
     float dmax = -FLT_MAX;
     for ( const_iterator pa = path_a.begin(); pa + 1 != path_a.end(); ++pa )
     {
@@ -1082,7 +1082,7 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
     size_t  fat_yield = insertion_yield( pgaps_d, d_fatgap ),   // SMALLER num,
             thin_yield =insertion_yield( pgaps_d, d_thingap),   // BIGGER num!
             yield = 0;
-    KJB( ASSERT( deficit <= thin_yield ) );
+    IVI( ASSERT( deficit <= thin_yield ) );
     if ( deficit <= fat_yield )
     {
         d_gap = d_fatgap;
@@ -1104,7 +1104,7 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
         {
             d_gap = ( d_fatgap + d_thingap ) / 2.0f;
             yield = insertion_yield( pgaps_d, d_gap );
-            KJB( ASSERT( fat_yield <= yield && yield <= thin_yield ) );
+            IVI( ASSERT( fat_yield <= yield && yield <= thin_yield ) );
             if ( yield < deficit )
             {
                 d_fatgap = d_gap;
@@ -1117,7 +1117,7 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
             }
             else
             {
-                KJB( ASSERT( deficit == yield ) );
+                IVI( ASSERT( deficit == yield ) );
                 break;
             }
         }
@@ -1127,7 +1127,7 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
             yield = thin_yield;
         }
     }
-    KJB( ASSERT( deficit <= yield ) );
+    IVI( ASSERT( deficit <= yield ) );
 
     /*
      * Find the "hermitic" (h) redundancies:  redundancies isolated from others
@@ -1170,19 +1170,19 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
         const_iterator pb_fore, pb_aft;
         const PixPoint pbn1 = path_b.nearest( *pa, &pb_fore );
         const PixPoint pbn2 = path_b.nearest( *( pa + 1 ), &pb_aft );
-        KJB( ASSERT( *pb_fore == pbn1 && *pb_aft == pbn2 ) );
-        KJB( ASSERT( pbn1 == *pa && pbn2 == *( pa + 1 ) ) ); // should be a hit
+        IVI( ASSERT( *pb_fore == pbn1 && *pb_aft == pbn2 ) );
+        IVI( ASSERT( pbn1 == *pa && pbn2 == *( pa + 1 ) ) ); // should be a hit
         for( int hhh = 1; hhh < whole_hermitage_radii; ++hhh )
         {
             float ttt = hhh / float( whole_hermitage_radii );
-            KJB( ASSERT( 0 < ttt && ttt < 1 ) );
+            IVI( ASSERT( 0 < ttt && ttt < 1 ) );
             // Compute a point along a parametric line connecting pa and pa+1
 #if 0
             float goal_x = pa -> x * ( 1 - ttt ) + ( pa + 1 ) -> x * ttt;
             float goal_y = pa -> y * ( 1 - ttt ) + ( pa + 1 ) -> y * ttt;
             PixPoint pbh = path_b.nearest( goal_x, goal_y ); // causes problems
 #else
-            const kjb::Vector2 da0( to_vector2(*pa) ),
+            const ivi::Vector2 da0( to_vector2(*pa) ),
                                da1( to_vector2(*(pa + 1)) );
             const PixPoint pbh( path_b.nearest( da0 * (1 - ttt) + da1 * ttt ));
 #endif
@@ -1208,11 +1208,11 @@ PixPath PixPath_expander::choose_hermitic_redundancies(
             }
         }
     }
-    KJB( ASSERT( ! herm.hits( path_a.back() ) ) );
+    IVI( ASSERT( ! herm.hits( path_a.back() ) ) );
     herm.push_back( path_a.back() );
-    KJB( ASSERT( herm.has_subsequence( path_a ) ) );
+    IVI( ASSERT( herm.has_subsequence( path_a ) ) );
 
-    KJB( ASSERT( sz <= herm.size() ) );
+    IVI( ASSERT( sz <= herm.size() ) );
 
     if ( sz == herm.size() )
     {
@@ -1291,7 +1291,7 @@ PixPath polyline_approx(
     }
 
     // initialize functor that we will use to compute error terms
-    kjb::qd::Memo_sosq_error se( base_path );
+    ivi::qd::Memo_sosq_error se( base_path );
 
     /*
      * allocate table used to store subsolutions
@@ -1532,7 +1532,7 @@ PixPath reduce_pixels_bfs(const PixPath& pixelpath)
                 }
                 break;
             default:
-                KJB_THROW(Cant_happen);
+                IVI_THROW(Cant_happen);
         }
     }
 

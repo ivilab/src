@@ -18,28 +18,28 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_ORTHOGONAL_CORNER_H
-#define KJB_ORTHOGONAL_CORNER_H
+#ifndef IVI_ORTHOGONAL_CORNER_H
+#define IVI_ORTHOGONAL_CORNER_H
 
 
 #include "m_cpp/m_matrix.h"
 #include "m_cpp/m_vector.h"
 
 
-namespace kjb {
+namespace ivi {
 
     void get_3D_corner_orientation_from_2D_corner_lines
     (
-        const kjb::Vector & corner2D_1,
-        const kjb::Vector & corner2D_2,
-        const kjb::Vector & corner2D_3,
-        const kjb::Vector & position_2D,
-        const kjb::Vector & position_3D,
+        const ivi::Vector & corner2D_1,
+        const ivi::Vector & corner2D_2,
+        const ivi::Vector & corner2D_3,
+        const ivi::Vector & position_2D,
+        const ivi::Vector & position_3D,
         double focal_length,
         int epsilon,
-        kjb::Vector & corner3D_1,
-        kjb::Vector & corner3D_2,
-        kjb::Vector & corner3D_3
+        ivi::Vector & corner3D_1,
+        ivi::Vector & corner3D_2,
+        ivi::Vector & corner3D_3
     );
-} // namespace kjb
+} // namespace ivi
 #endif

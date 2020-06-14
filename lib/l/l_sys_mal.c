@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_mal.c 21655 2017-08-05 14:54:36Z kobus $ */
+/* $Id: l_sys_mal.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 /*
- * $Id: l_sys_mal.c 21655 2017-08-05 14:54:36Z kobus $
+ * $Id: l_sys_mal.c 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_gen.h"     /* Only safe as first include in a ".c" file. */
@@ -367,7 +367,7 @@ int set_heap_options(const char* option, const char* value)
 
     if ((lc_option[ 0 ] == '\0') || match_pattern(lc_option, "use-memcpy"))
     {
-        IMPORT int kjb_use_memcpy;
+        IMPORT int ivi_use_memcpy;
 
         if (value == NULL)
         {
@@ -376,12 +376,12 @@ int set_heap_options(const char* option, const char* value)
         else if (value[ 0 ] == '?')
         {
             ERE(pso("use-memcpy = %s\n",
-                    kjb_use_memcpy ? "t" : "f"));
+                    ivi_use_memcpy ? "t" : "f"));
         }
         else if (value[ 0 ] == '\0')
         {
             ERE(pso("Memcpy %s used when possible for performance.\n",
-                    kjb_use_memcpy ? "is" : "is not" ));
+                    ivi_use_memcpy ? "is" : "is not" ));
         }
         else
         {
@@ -389,7 +389,7 @@ int set_heap_options(const char* option, const char* value)
 
             ERE(temp_boolean_value = get_boolean_value(value));
 
-            kjb_use_memcpy = temp_boolean_value;
+            ivi_use_memcpy = temp_boolean_value;
 
         }
         result = NO_ERROR;
@@ -437,7 +437,7 @@ void disable_heap_checking(void)
  * Resets heap checking for the child process
  *
  * This routine should only be called in very special circumntances. Currently,
- * it is only used by kjb_fork(). Since the fork copies all information, pending
+ * it is only used by ivi_fork(). Since the fork copies all information, pending
  * checked memory from the parent is inherited. So we reset the counter with
  * this function. .
  *
@@ -455,7 +455,7 @@ void disable_heap_checking(void)
  * want. This function is not OBSELETE. 
  *
  * Kobus, May 2014. Apparantly, this was either unfinished or wrong. So this
- * version of the function is relatively new, as is its call from kjb_fork(). 
+ * version of the function is relatively new, as is its call from ivi_fork(). 
 */
 void reset_heap_checking_for_fork(void)
 {
@@ -566,23 +566,23 @@ void continue_heap_check_2(void)
 
 /*
  * =============================================================================
- *                                 kjb_malloc
+ *                                 ivi_malloc
  *
  * Allocates memory from the heap.
  *
  * This routine is a replacement for malloc. It provides some error checking in
  * the case of development code (compiled with -DTEST), some platform
  * independence with respect to malloc's behaviour, and error reporting
- * consistent with the KJB library.
+ * consistent with the IVI library.
  *
  * If TRACK_MEMORY_ALLOCATION is defined (on unix, this is normally defined if
- * TEST is #defined) then this routine is #define'd to be debug_kjb_malloc,
+ * TEST is #defined) then this routine is #define'd to be debug_ivi_malloc,
  * which is the version available in the development library. In development
  * code, memory is tracked so that memory leaks can be found more easily.
- * Furthermore, all memory free'd is checked that it was allocated by a KJB
+ * Furthermore, all memory free'd is checked that it was allocated by a IVI
  * library routine, and that it has not already been freed (this is a common
  * source of nasty bugs). Finally, memory is checked for overruns. Most of these
- * problems are spotted when the code calls kjb_free. If a problem is spotted,
+ * problems are spotted when the code calls ivi_free. If a problem is spotted,
  * then you are notified, and asked if you want to abort. If you then abort,
  * then you simply need to go up a few stack frames with the debugger to find ut
  * where you were free'ing something that you should not be, or what was freed
@@ -591,16 +591,16 @@ void continue_heap_check_2(void)
  * often more useful that the allocation locatation is specified with respect
  * to higher level operations (such as creating a matrix), some routines such as
  * create_matrix will set it up so that the location reported is the matrix
- * creation call, not the call to kjb_malloc.
+ * creation call, not the call to ivi_malloc.
  *
- * The routine kjb_free should be used to free memory allocated by this routine.
- * kjb_free is normally accessed through the macro kjb_free.
+ * The routine ivi_free should be used to free memory allocated by this routine.
+ * ivi_free is normally accessed through the macro ivi_free.
  *
  * Macros:
- *    Normally kjb_malloc should be accessed through macros to provide the
+ *    Normally ivi_malloc should be accessed through macros to provide the
  *    casts.  The available macros are:
  *
- *        KJB_MALLOC(x), TYPE_MALLOC(t), N_TYPE_MALLOC(t,n), VOID_MALLOC(x),
+ *        IVI_MALLOC(x), TYPE_MALLOC(t), N_TYPE_MALLOC(t,n), VOID_MALLOC(x),
  *        UCHAR_MALLOC(x), BYTE_MALLOC(x), STR_MALLOC(x), SHORT_MALLOC(x),
  *        INT_MALLOC(x), LONG_MALLOC(x), FLT_MALLOC(x), DBL_MALLOC(x),
  *        INT16_MALLOC(x), UINT16_MALLOC(x), INT32_MALLOC(x), UINT32_MALLOC(x),
@@ -620,15 +620,15 @@ void continue_heap_check_2(void)
  */
 
 #ifdef TRACK_MEMORY_ALLOCATION
-void* debug_kjb_malloc(Malloc_size num_bytes,
+void* debug_ivi_malloc(Malloc_size num_bytes,
                        const char* file_name, int line_number)
 {
     void* malloc_res;
     unsigned int  i;
     unsigned long total_bytes_used;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 
 
@@ -687,7 +687,7 @@ void* debug_kjb_malloc(Malloc_size num_bytes,
 
 #ifdef TEST
     if (    (fs_simulated_heap_failure_frequency >= 0.0)
-         && (fs_simulated_heap_failure_frequency > kjb_rand_2())
+         && (fs_simulated_heap_failure_frequency > ivi_rand_2())
        )
     {
         set_error("Memory allocation failed due to simulated failure.");
@@ -703,10 +703,10 @@ void* debug_kjb_malloc(Malloc_size num_bytes,
 #endif
 
 #ifdef TEST
-    if (kjb_debug_level > 10)
+    if (ivi_debug_level > 10)
     {
         fprintf(stderr, "Process %ld (fork depth %d) has allocated %lx (IL4RT).\n",
-                (long)MY_PID, kjb_fork_depth, (unsigned long)malloc_res);
+                (long)MY_PID, ivi_fork_depth, (unsigned long)malloc_res);
     }
 #endif 
     if (malloc_res == NULL)
@@ -822,7 +822,7 @@ void* debug_kjb_malloc(Malloc_size num_bytes,
         /* ==>    Production code below        ||                             */
         /* ==>                                 \/                             */
 
-void* kjb_malloc(Malloc_size num_bytes)
+void* ivi_malloc(Malloc_size num_bytes)
 {
     void* malloc_res;
 
@@ -880,18 +880,18 @@ void* kjb_malloc(Malloc_size num_bytes)
 
 /*
  * =============================================================================
- *                                 kjb_calloc
+ *                                 ivi_calloc
  *
  * Allocates memory from the heap.
  *
- * This routine is a replacement for calloc. It is similar to kjb_malloc, in
- * anology with calloc. (See kjb_malloc for more information).
+ * This routine is a replacement for calloc. It is similar to ivi_malloc, in
+ * anology with calloc. (See ivi_malloc for more information).
  *
- * The routine kjb_free should be used to free memory allocated by this routine.
- * kjb_free is normally accessed through the macro kjb_free.
+ * The routine ivi_free should be used to free memory allocated by this routine.
+ * ivi_free is normally accessed through the macro ivi_free.
  *
  * Macros:
- *    Normally kjb_calloc should be accessed through the macro KJB_CALLOC(x).
+ *    Normally ivi_calloc should be accessed through the macro IVI_CALLOC(x).
  *
  * Returns:
  *    On error, this routine returns NULL, with an error message being set.  On
@@ -904,7 +904,7 @@ void* kjb_malloc(Malloc_size num_bytes)
  */
 
 #ifdef TRACK_MEMORY_ALLOCATION
-void* debug_kjb_calloc(Malloc_size num_items, Malloc_size item_size,
+void* debug_ivi_calloc(Malloc_size num_items, Malloc_size item_size,
                        const char* file_name, int line_number)
 {
     void* calloc_res;
@@ -975,7 +975,7 @@ void* debug_kjb_calloc(Malloc_size num_items, Malloc_size item_size,
 
 #ifdef TEST
     if (    (fs_simulated_heap_failure_frequency >= 0.0)
-         && (fs_simulated_heap_failure_frequency > kjb_rand_2())
+         && (fs_simulated_heap_failure_frequency > ivi_rand_2())
        )
     {
         set_error("Memory allocation failed due to simulated failure.");
@@ -1074,7 +1074,7 @@ void* debug_kjb_calloc(Malloc_size num_items, Malloc_size item_size,
         /* ==>    Production code below        ||                             */
         /* ==>                                 \/                             */
 
-void* kjb_calloc(Malloc_size num_items, Malloc_size item_size)
+void* ivi_calloc(Malloc_size num_items, Malloc_size item_size)
 {
     void* calloc_res;
     unsigned long total_bytes_used;
@@ -1136,23 +1136,23 @@ void* kjb_calloc(Malloc_size num_items, Malloc_size item_size)
 
 /*
  * =============================================================================
- *                                 kjb_realloc
+ *                                 ivi_realloc
  *
  * Reallocates memory from the heap.
  *
  * This routine is a replacement for realloc. It provides some error checking in
  * the case of development code (compiled with -DTEST), some platform
  * independence with respect to remalloc's behaviour, and error reporting
- * consistent with the KJB library.
+ * consistent with the IVI library.
  *
  * If TRACK_MEMORY_ALLOCATION is defined (on unix, this is normally defined if
- * TEST is #defined) then this routine is #define'd to be debug_kjb_realloc,
+ * TEST is #defined) then this routine is #define'd to be debug_ivi_realloc,
  * which is the version available in the development library. In development
  * code, memory is tracked so that memory leaks can be found more easily.
- * Furthermore, all memory free'd is checked that it was allocated by a KJB
+ * Furthermore, all memory free'd is checked that it was allocated by a IVI
  * library routine, and that it has not already been freed (this is a common
  * source of nasty bugs). Finally, memory is checked for overruns. Most of these
- * problems are spotted when the code calls kjb_free. If a problem is spotted,
+ * problems are spotted when the code calls ivi_free. If a problem is spotted,
  * then you are notified, and asked if you want to abort. If you then abort,
  * then you simply need to go up a few stack frames with the debugger to find ut
  * where you were free'ing something that you should not be, or what was freed
@@ -1161,16 +1161,16 @@ void* kjb_calloc(Malloc_size num_items, Malloc_size item_size)
  * often more useful that the allocation location is specified with respect
  * to higher level operations (such as creating a matrix), some routines such as
  * create_matrix will set it up so that the location reported is the matrix
- * creation call, not the call to kjb_realloc.
+ * creation call, not the call to ivi_realloc.
  *
- * The routine kjb_free should be used to free memory allocated by this routine.
- * kjb_free is normally accessed through the macro kjb_free.
+ * The routine ivi_free should be used to free memory allocated by this routine.
+ * ivi_free is normally accessed through the macro ivi_free.
  *
  * Macros:
- *    Normally kjb_realloc should be accessed through macros to provide the
+ *    Normally ivi_realloc should be accessed through macros to provide the
  *    casts.  The available macros are:
  *
- *        KJB_REALLOC(x), TYPE_REALLOC(t), N_TYPE_REALLOC(t,n), VOID_REALLOC(x),
+ *        IVI_REALLOC(x), TYPE_REALLOC(t), N_TYPE_REALLOC(t,n), VOID_REALLOC(x),
  *        UCHAR_REALLOC(x), BYTE_REALLOC(x), STR_REALLOC(x), SHORT_REALLOC(x),
  *        INT_REALLOC(x), LONG_REALLOC(x), FLT_REALLOC(x), DBL_REALLOC(x),
  *        INT16_REALLOC(x), UINT16_REALLOC(x), INT32_REALLOC(x), UINT32_REALLOC(x),
@@ -1190,7 +1190,7 @@ void* kjb_calloc(Malloc_size num_items, Malloc_size item_size)
  */
  
 #ifdef TRACK_MEMORY_ALLOCATION 
-void* debug_kjb_realloc(void* ptr, Malloc_size num_bytes,
+void* debug_ivi_realloc(void* ptr, Malloc_size num_bytes,
                         const char* file_name, int line_number)
 {
     void* realloc_res;
@@ -1204,7 +1204,7 @@ void* debug_kjb_realloc(void* ptr, Malloc_size num_bytes,
     /* realloc(ptr) is legal when ptr is NULL, and is equivalent to malloc().*/
     if ( ptr==NULL )
     {
-        return debug_kjb_malloc( num_bytes, file_name, line_number );
+        return debug_ivi_malloc( num_bytes, file_name, line_number );
     }
 
     if (fs_heap_checking_enable)
@@ -1292,7 +1292,7 @@ void* debug_kjb_realloc(void* ptr, Malloc_size num_bytes,
 
 #ifdef TEST
     if (    (fs_simulated_heap_failure_frequency >= 0.0)
-         && (fs_simulated_heap_failure_frequency > kjb_rand_2())
+         && (fs_simulated_heap_failure_frequency > ivi_rand_2())
        )
     {
         set_error("Memory allocation failed due to simulated failure.");
@@ -1388,7 +1388,7 @@ void* debug_kjb_realloc(void* ptr, Malloc_size num_bytes,
 
         if (    (fs_heap_checking_enable_2) 
              && (! fs_heap_checking_skip_2)
-             && (KJB_IS_SET(ptr_index_2))
+             && (IVI_IS_SET(ptr_index_2))
            )
         {
             UNTESTED_CODE(); 
@@ -1400,7 +1400,7 @@ void* debug_kjb_realloc(void* ptr, Malloc_size num_bytes,
 /*#ifdef DISABLE_CONDITIONAL_INIT */
          && (fs_initialization_checking_enable)
 /*#endif */
-         && (KJB_IS_SET(prev_num_bytes))
+         && (IVI_IS_SET(prev_num_bytes))
        )
     {
         for (i=prev_num_bytes; i<num_bytes; i++)
@@ -1417,7 +1417,7 @@ void* debug_kjb_realloc(void* ptr, Malloc_size num_bytes,
         /* ==>    Production code below        ||                             */
         /* ==>                                 \/                             */
 
-void* kjb_realloc(void* ptr, Malloc_size num_bytes)
+void* ivi_realloc(void* ptr, Malloc_size num_bytes)
 {
     void* realloc_res;
 
@@ -1425,7 +1425,7 @@ void* kjb_realloc(void* ptr, Malloc_size num_bytes)
     /* realloc(ptr) is legal when ptr is NULL, and is equivalent to malloc().*/
     if ( ptr==NULL )
     {
-        return kjb_malloc( num_bytes );
+        return ivi_malloc( num_bytes );
     }
 
     if (num_bytes == 0) num_bytes = 1;
@@ -1474,8 +1474,8 @@ static void save_pointer_info(void* ptr, Malloc_size num_bytes,
 {
     int i;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 
     fs_fast_lookup_is_valid = FALSE;
@@ -1493,12 +1493,12 @@ static void save_pointer_info(void* ptr, Malloc_size num_bytes,
     else if (fs_num_pointers == MAX_NUM_POINTERS)
     {
 #ifdef TEST
-        if (kjb_debug_level > 5)
+        if (ivi_debug_level > 5)
         {
-            /* Too dangerous to use KJB IO at this point.  */
+            /* Too dangerous to use IVI IO at this point.  */
             fprintf(stderr,
                     "<<TEST>> Process %ld (fork depth %d) compacting \"checked\" pointers because table is full ...",
-                    (long)MY_PID, kjb_fork_depth);
+                    (long)MY_PID, ivi_fork_depth);
         }
 #endif
 
@@ -1533,7 +1533,7 @@ static void save_pointer_info(void* ptr, Malloc_size num_bytes,
 #endif
 
 #ifdef TEST
-        if (kjb_debug_level > 5)
+        if (ivi_debug_level > 5)
         {
             fprintf(stderr, " done (IL4RR).\n\n");
         }
@@ -1548,7 +1548,7 @@ static void save_pointer_info(void* ptr, Malloc_size num_bytes,
     else if (fs_num_pointers == MAX_NUM_POINTERS)
     {
         /*
-        // Too dangerous to use KJB IO at this point.
+        // Too dangerous to use IVI IO at this point.
         */
         fprintf(stderr, "\nMax num \"checked\" pointers exceeded.\n");
         fprintf(stderr, "Pointer checking is now disabled.\n");
@@ -1601,8 +1601,8 @@ static void save_pointer_info_2(void* ptr, Malloc_size num_bytes,
 {
     int i;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 
 
@@ -1629,12 +1629,12 @@ static void save_pointer_info_2(void* ptr, Malloc_size num_bytes,
     else if (fs_num_pointers_2 == MAX_NUM_POINTERS_2)
     {
 #ifdef TEST
-        if (kjb_debug_level > 5)
+        if (ivi_debug_level > 5)
         {
-            /* Too dangerous to use KJB IO at this point.  */
+            /* Too dangerous to use IVI IO at this point.  */
             fprintf(stderr,
                     "\nProcess %ld (fork depth %d) compacting \"checked\" pointers (2) because table is full ...",
-                    (long)MY_PID, kjb_fork_depth);
+                    (long)MY_PID, ivi_fork_depth);
         }
 #endif
 
@@ -1673,7 +1673,7 @@ static void save_pointer_info_2(void* ptr, Malloc_size num_bytes,
             fs_pointers_to_allocated_2[ i ] = NULL;
         }
 
-        if (kjb_debug_level > 5)
+        if (ivi_debug_level > 5)
         {
             fprintf(stderr, " done (IL4RT).\n");
             fprintf(stderr, "    (%d pointer slots recovered).\n\n",
@@ -1690,7 +1690,7 @@ static void save_pointer_info_2(void* ptr, Malloc_size num_bytes,
     else if (fs_num_pointers_2 == MAX_NUM_POINTERS_2)
     {
         /*
-        // Too dangerous to use KJB IO at this point.
+        // Too dangerous to use IVI IO at this point.
         */
         fprintf(stderr, "\nMax num \"checked\" pointers (2) exceeded.\n");
         fprintf(stderr, "Pointer checking (2) is now disabled.\n\n");
@@ -1741,10 +1741,10 @@ void null_and_float_align(char** ptr_ptr)
 {
 
 #ifdef PTR_IS_32_BITS
-    while (! FLT_ALIGNED((kjb_uint32)(*ptr_ptr)))
+    while (! FLT_ALIGNED((ivi_uint32)(*ptr_ptr)))
 #else
 #ifdef PTR_IS_64_BITS
-    while (! FLT_ALIGNED((kjb_uint64)(*ptr_ptr)))
+    while (! FLT_ALIGNED((ivi_uint64)(*ptr_ptr)))
 #endif
 #endif
     {
@@ -1761,10 +1761,10 @@ void float_align(char** ptr_ptr)
 {
 
 #ifdef PTR_IS_32_BITS
-    while (! FLT_ALIGNED((kjb_uint32)(*ptr_ptr)))
+    while (! FLT_ALIGNED((ivi_uint32)(*ptr_ptr)))
 #else
 #ifdef PTR_IS_64_BITS
-    while (! FLT_ALIGNED((kjb_uint64)(*ptr_ptr)))
+    while (! FLT_ALIGNED((ivi_uint64)(*ptr_ptr)))
 #endif
 #endif
     {
@@ -1782,8 +1782,8 @@ int print_allocated_memory(FILE* fp)
     int    i;
     int   minimal_report = FALSE;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 #endif
     unsigned long  heap_memory;
@@ -1827,10 +1827,10 @@ int print_allocated_memory(FILE* fp)
     {
 #ifdef TEST
         /* If debug level is high enough, acknowledge that we don't have leaks. */
-        if (kjb_debug_level > 2)
+        if (ivi_debug_level > 2)
         {
             fprintf(fp, "\nResidual memory allocation for process %ld (fork depth %d) is %ld (IL4RT).\n",
-                    (long)MY_PID, kjb_fork_depth, total_bytes);
+                    (long)MY_PID, ivi_fork_depth, total_bytes);
         }
 #endif 
 
@@ -1838,14 +1838,14 @@ int print_allocated_memory(FILE* fp)
     }
 
     /*
-    // Use fprintf as opposed to kjb_fprintf to avoid allocating any more memory
+    // Use fprintf as opposed to ivi_fprintf to avoid allocating any more memory
     // or doing anything that may invoke add_cleanup_function. Also, unlike
     // other messages that have PIDs, we do not use the string to ignore like
     // for regression testing (IL4RT) because we should not be leaking memory to
     // pass tests. 
     */
     fprintf(fp, "\nResidual memory allocation for process %ld (fork depth %d): \n",
-            (long)MY_PID, kjb_fork_depth);
+            (long)MY_PID, ivi_fork_depth);
 
     /*
     // If fs_num_pointers is greater than MAX_NUM_POINTERS the
@@ -1867,7 +1867,7 @@ int print_allocated_memory(FILE* fp)
                             fs_allocation_line_number[ i ]);
                 }
 #ifdef TEST
-                else if (kjb_debug_level > 3)
+                else if (ivi_debug_level > 3)
                 {
                     fprintf(fp, "Inherited from a parent (%d) : %16lx  %10lu    %-*s %5d\n",
                             (int)fs_allocation_pid[ i ],
@@ -1944,8 +1944,8 @@ void finish_heap_check_2(const char* file_name, int line_number)
 {
     long  total_bytes = 0, i;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 
     UNTESTED_CODE();
@@ -1976,7 +1976,7 @@ void finish_heap_check_2(const char* file_name, int line_number)
     if (total_bytes > 0)
     {
         /*
-        // Use fprintf as opposed to kjb_printf to avoid allocating any more
+        // Use fprintf as opposed to ivi_printf to avoid allocating any more
         // memory or doing anything that may invoke add_cleanup_function.
         // Also, we do not use IL4RT because to pass tests we should not leak
         // memory. 
@@ -2013,7 +2013,7 @@ void finish_heap_check_2(const char* file_name, int line_number)
     }
 
 #ifdef TEST
-    if (kjb_debug_level > 2)
+    if (ivi_debug_level > 2)
     {
         for (i=0; i<fs_num_pointers_2; i++)
         {
@@ -2198,7 +2198,7 @@ void check_initialization(const void* ptr,
      * valid, then ptr and (count or block_size) will be bogus. However, we
      * still need ptr to be valid, and thus it is fair to check is also.
     */
-    kjb_check_free(ptr);
+    ivi_check_free(ptr);
 
     for (i=0; i<count; i++)
     {
@@ -2247,8 +2247,8 @@ void optimize_free(void)
     int i;
     int save_num_pointers = fs_num_pointers;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 
     if ( ! fs_heap_checking_enable) return;
@@ -2268,24 +2268,24 @@ void optimize_free(void)
     if (sizeof(void*) != sizeof(long))
     {
 #ifdef TEST
-        if (kjb_debug_level > 5)
+        if (ivi_debug_level > 5)
         {
-            /* Too dangerous to use KJB IO at this point.  */
+            /* Too dangerous to use IVI IO at this point.  */
             fprintf(stderr,
                     "\nProcess %ld (fork depth %d) skipping compacting \"checked\" pointers because of size of pointer is not size of long (IL4RT).\n",
-                    (long)MY_PID, kjb_fork_depth);
+                    (long)MY_PID, ivi_fork_depth);
         }
 #endif
         return;
     }
 
 #ifdef TEST
-    if (kjb_debug_level > 5)
+    if (ivi_debug_level > 5)
     {
-        /* Too dangerous to use KJB IO at this point.  */
+        /* Too dangerous to use IVI IO at this point.  */
         fprintf(stderr,
                 "<<TEST>> Process %ld (fork depth %d) compacting \"checked\" pointers for optimization ... ",
-                (long)MY_PID, kjb_fork_depth);
+                (long)MY_PID, ivi_fork_depth);
     }
 #endif
 
@@ -2311,9 +2311,9 @@ void optimize_free(void)
     }
 
 #ifdef TEST
-    if (kjb_debug_level > 5)
+    if (ivi_debug_level > 5)
     {
-        /* Too dangerous to use KJB IO at this point.  */
+        /* Too dangerous to use IVI IO at this point.  */
         fprintf(stderr, " done (IL4RT).\n");
         fprintf(stderr, "Setting up for sort for optimizing free.\n");
         fflush(stderr);  /* Stderr normally does not want a flush, but ... */
@@ -2330,11 +2330,11 @@ void optimize_free(void)
     }
 
 #ifdef TEST
-    if (kjb_debug_level > 5)
+    if (ivi_debug_level > 5)
     {
-        /* Too dangerous to use KJB IO at this point.  */
+        /* Too dangerous to use IVI IO at this point.  */
         fprintf(stderr, "Process %ld (fork depth %d) sorting %d pointers to optimize free (IL4RT).\n",
-                (long)MY_PID, kjb_fork_depth, fs_num_pointers);
+                (long)MY_PID, ivi_fork_depth, fs_num_pointers);
         fflush(stderr);  /* Stderr normally does not want a flush, but ... */
     }
 #endif
@@ -2352,9 +2352,9 @@ void optimize_free(void)
     fs_fast_lookup_is_valid = TRUE;
 
 #ifdef TEST
-    if (kjb_debug_level > 5)
+    if (ivi_debug_level > 5)
     {
-        /* Too dangerous to use KJB IO at this point.  */
+        /* Too dangerous to use IVI IO at this point.  */
         fprintf(stderr, "Done sorting. Fast lookup for frees is now valid.\n\n");
         fflush(stderr);  /* Stderr normally does not want a flush, but ... */
     }
@@ -2388,8 +2388,8 @@ int optimize_free_2(void)
     int i;
     int save_num_pointers = fs_num_pointers_2;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 
 
@@ -2407,12 +2407,12 @@ int optimize_free_2(void)
     if (fs_fast_lookup_is_valid_2) return NO_ERROR;
 
 #ifdef TEST
-    if (kjb_debug_level > 5)
+    if (ivi_debug_level > 5)
     {
-        /* Too dangerous to use KJB IO at this point.  */
+        /* Too dangerous to use IVI IO at this point.  */
         fprintf(stderr,
                 "<<TEST>> Process %ld (fork depth %d) compacting \"checked\" pointers 2 for optimization ... ",
-                (long)MY_PID, kjb_fork_depth);
+                (long)MY_PID, ivi_fork_depth);
     }
 #endif
 
@@ -2439,7 +2439,7 @@ int optimize_free_2(void)
     }
 
 #ifdef TEST
-    if (kjb_debug_level > 5)
+    if (ivi_debug_level > 5)
     {
         fprintf(stderr, " done (IL4RT).\n\n");
     }
@@ -2561,14 +2561,14 @@ void check_for_heap_overruns(const char* file_name, int line_number)
                     {
                         p_stderr("Abort called (regardless of response) ");
                         p_stderr("due to mutex failure.\n");
-                        kjb_abort();
+                        ivi_abort();
                     }
 
                     guard = TRUE;
 
                     if (yes_no_query("Abort (y/n/q) ") )
                     {
-                        kjb_abort();
+                        ivi_abort();
                     }
                     else if ( ! (yes_no_query(
                                     "Prompt for abort on future violations (y/n/q) ")
@@ -2588,7 +2588,7 @@ void check_for_heap_overruns(const char* file_name, int line_number)
 
     if ((result == ERROR) && ( ! user_has_cancelled_abort))
     {
-        kjb_abort();
+        ivi_abort();
     }
 }
 
@@ -2598,32 +2598,32 @@ void check_for_heap_overruns(const char* file_name, int line_number)
 
 /*
  * =============================================================================
- *                                  kjb_free
+ *                                  ivi_free
  *
- * KJB library replacement for free
+ * IVI library replacement for free
  *
- * This routine frees memory allocated by kjb_malloc or kjb_calloc, and in
+ * This routine frees memory allocated by ivi_malloc or ivi_calloc, and in
  * conjunction with those routines provides error checking in the case of
- * development code as described in kjb_malloc. One important additional
- * difference between kjb_free and "free", is that it is always safe to send
- * kjb_free a NULL pointer. (In fact, it should be safe to send all KJB library
+ * development code as described in ivi_malloc. One important additional
+ * difference between ivi_free and "free", is that it is always safe to send
+ * ivi_free a NULL pointer. (In fact, it should be safe to send all IVI library
  * destruction code a NULL pointer.) It is OK to send free a NULL pointer in
  * conformaing ANSI C, but many non-ANSI C environments break if you send free a
- * NULL. Using kjb_free is one way to be sure.
+ * NULL. Using ivi_free is one way to be sure.
  *
  * Index: memory allocation, debugging
  *
  * -----------------------------------------------------------------------------
  */
 
-void kjb_free(void* ptr)
+void ivi_free(void* ptr)
 {
 #ifdef TRACK_MEMORY_ALLOCATION
     static int prompt_for_abort = TRUE;
     int        i;
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 #endif 
 #endif
 
@@ -2661,14 +2661,14 @@ void kjb_free(void* ptr)
             {
                 fprintf(stderr, "Abort called (regardless of response) ");
                 fprintf(stderr, "due to mutex failure.\n");
-                kjb_abort();
+                ivi_abort();
             }
 
             guard = TRUE;
 
             if (yes_no_query("Abort (y/n/q) ") )
             {
-                kjb_abort();
+                ivi_abort();
             }
             else if ( ! (yes_no_query(
                             "Prompt for abort on future violations (y/n/q) ")
@@ -2757,12 +2757,12 @@ void kjb_free(void* ptr)
                 {
                     p_stderr("Abort called (regardless of response) ");
                     p_stderr("due to mutex failure.\n");
-                    kjb_abort();
+                    ivi_abort();
                 }
 
                 guard = TRUE;
 
-                kjb_abort();
+                ivi_abort();
                
                 if ( ! (yes_no_query("Prompt for abort on future violations (y/n/q) ")))
                 {
@@ -2867,14 +2867,14 @@ void kjb_free(void* ptr)
                 {
                     fprintf(stderr, "Abort called (regardless of response) ");
                     fprintf(stderr, "due to mutex failure.\n");
-                    kjb_abort();
+                    ivi_abort();
                 }
 
                 guard = TRUE;
 
                 if (yes_no_query("Abort (y/n/q) ") )
                 {
-                    kjb_abort();
+                    ivi_abort();
                 }
                 else if ( ! (yes_no_query(
                                 "Prompt for abort on future violations (y/n/q) ")
@@ -2906,10 +2906,10 @@ void kjb_free(void* ptr)
     }
 
 #ifdef TEST
-    if (kjb_debug_level > 10)
+    if (ivi_debug_level > 10)
     {
         fprintf(stderr, "Process %ld (fork depth %d) is freeing %lx (IL4RT).\n",
-                (long)MY_PID, kjb_fork_depth, (unsigned long)ptr);
+                (long)MY_PID, ivi_fork_depth, (unsigned long)ptr);
     }
 #endif 
 #endif
@@ -2950,7 +2950,7 @@ void kjb_free(void* ptr)
 
 #ifdef TRACK_MEMORY_ALLOCATION
 
-void kjb_check_free(const void* ptr)
+void ivi_check_free(const void* ptr)
 {
     int ptr_index;
 
@@ -2973,7 +2973,7 @@ void kjb_check_free(const void* ptr)
             fprintf(stderr,
                     "Checking a ptr not allocated / already been freed.\n");
 
-            kjb_abort();
+            ivi_abort();
         }
     }
 }

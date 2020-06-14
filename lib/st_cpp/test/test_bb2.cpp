@@ -31,7 +31,7 @@
 
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 
 
@@ -94,13 +94,13 @@ int main(int argc, char **argv)
         try
         {
             const Manhattan_corner & corner = fm.get_manhattan_world().get_corner_3(i);
-            /*kjb::robustly_propose_parapiped_and_camera_from_orthogonal_corner(pp, camera, corner,
+            /*ivi::robustly_propose_parapiped_and_camera_from_orthogonal_corner(pp, camera, corner,
                 fm.get_manhattan_world().get_focal_length(), img.get_num_rows(), img.get_num_cols(), 1000);*/
             found = true;
             corner_index = i;
             break;
         }
-        catch(KJB_error e)
+        catch(IVI_error e)
         {
             continue;
         }
@@ -109,11 +109,11 @@ int main(int argc, char **argv)
     if(!found)
     {
         std::cout << "Could not do it!" << std::endl;
-        KJB_THROW_2(KJB_error,"Could not do it");
+        IVI_THROW_2(IVI_error,"Could not do it");
     }
 
-    static kjb::Offscreen_buffer* offscreen = 0;
-    offscreen = kjb::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
+    static ivi::Offscreen_buffer* offscreen = 0;
+    offscreen = ivi::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
 
     camera.prepare_for_rendering(true);
 
@@ -199,7 +199,7 @@ int main(int argc, char **argv)
     glVertex4d(corner_position(0), corner_position(1), corner_position(2), corner_position(3));
     glVertex4d(vertex3(0), vertex3(1), vertex3(2), vertex3(3));
     glEnd();
-    kjb_c::KJB_image * capture4 = NULL;
+    ivi_c::IVI_image * capture4 = NULL;
     Base_gl_interface::capture_gl_view(&capture4);
     Image img2(capture4);
 
@@ -302,14 +302,14 @@ int main(int argc, char **argv)
     double t_x = 0.0;
     double max_t;
     bool found_t = false;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_room, camera_to_corner, x_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_x, camera_centre_in_room, camera_to_corner, x_plane) )
     {
         assert(t_x);
         max_t = t_x;
         found_t = true;
     }
     double t_y = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_room, camera_to_corner, y_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_y, camera_centre_in_room, camera_to_corner, y_plane) )
     {
         if(!found_t)
         {
@@ -323,7 +323,7 @@ int main(int argc, char **argv)
         }
     }
     double t_z = 0.0;
-    if(kjb::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_room, camera_to_corner, z_plane) )
+    if(ivi::intersect_3D_line_with_plane(intersection, t_z, camera_centre_in_room, camera_to_corner, z_plane) )
     {
         if(!found_t)
         {
@@ -339,7 +339,7 @@ int main(int argc, char **argv)
 
     if(!found_t)
     {
-        KJB_THROW_2(KJB_error,"Could not find intersection of vector with room planes");
+        IVI_THROW_2(IVI_error,"Could not find intersection of vector with room planes");
     }
 
     double chosen_t = 0.0;
@@ -726,7 +726,7 @@ int main(int argc, char **argv)
     pp.wire_render();
     glColor3f(0.0, 0.0, 255.0);
     inner_pp.wire_render();
-    kjb_c::KJB_image * capture5 = NULL;
+    ivi_c::IVI_image * capture5 = NULL;
     Base_gl_interface::capture_gl_view(&capture5);
     Image img3(capture5);
     img3.write("inner.jpg");

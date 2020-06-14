@@ -55,15 +55,15 @@
 #include <gr_cpp/gr_opengl.h>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 bool Glut_polymesh::polymesh_enabled;
 unsigned int Glut_polymesh::selected_parameter;
 Polymesh * Glut_polymesh::polymesh;
 unsigned char Glut_polymesh::increment_character;
 unsigned char Glut_polymesh::decrement_character;
-kjb::Vector Glut_polymesh::increment_steps;
-kjb::Vector Glut_polymesh::_angles(3, 0.0);
+ivi::Vector Glut_polymesh::increment_steps;
+ivi::Vector Glut_polymesh::_angles(3, 0.0);
 
 /*
  * @param ipolymesh_submenu_callback The user defined callback that will be executed
@@ -84,7 +84,7 @@ int Glut_polymesh::create_glut_polymesh_submenu(void (*ipolymesh_submenu_callbac
         bool enable_height, bool enable_length, unsigned char iincrement_char,
         unsigned char idecrement_char)
 {
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     int polymesh_menu = glutCreateMenu(Glut_polymesh::polymesh_submenu_glut);
     if(enable_translation)
     {
@@ -130,7 +130,7 @@ int Glut_polymesh::create_glut_polymesh_submenu(void (*ipolymesh_submenu_callbac
     return polymesh_menu;
 
 #else
-    KJB_THROW_2(Missing_dependency, "Opengl");
+    IVI_THROW_2(Missing_dependency, "Opengl");
 #endif
 }
 

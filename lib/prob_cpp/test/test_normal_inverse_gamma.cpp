@@ -26,7 +26,7 @@
 #include <m/m_mat_metric.h>
 #include <l_cpp/l_test.h>
 
-using namespace kjb;
+using namespace ivi;
 
 int main(int argc, char** argv)
 {

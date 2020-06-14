@@ -31,7 +31,7 @@
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 /** @brief  Class that holds information for endpoints. */
@@ -77,7 +77,7 @@ void endpoint_distribution
     const std::vector<size_t> tgts
 );
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_ENDPOINTS_H */
 

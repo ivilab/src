@@ -1,5 +1,5 @@
 
-/* $Id: kjb_simple_glob.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: ivi_simple_glob.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -26,7 +26,7 @@ int main(void)
 
         dbp("--------- PATHS  -------------");
 
-        EPE(kjb_simple_glob(&paths, &star_wl, beg, end, NULL));
+        EPE(ivi_simple_glob(&paths, &star_wl, beg, end, NULL));
 
         num_words = paths->num_words;
         words = paths->words;
@@ -40,7 +40,7 @@ int main(void)
 
         dbp("--------- FILES  -------------");
 
-        EPE(kjb_simple_glob(&paths, &star_wl, beg, end, is_file));
+        EPE(ivi_simple_glob(&paths, &star_wl, beg, end, is_file));
 
         num_words = paths->num_words;
         words = paths->words;

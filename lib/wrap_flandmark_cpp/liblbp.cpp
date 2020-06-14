@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: liblbp.cpp 14469 2013-05-20 05:06:14Z jguan1 $ */
+/* $Id: liblbp.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 
 #include <wrap_flandmark_cpp/liblbp.h>
 
-namespace kjb {
+namespace ivi {
 namespace flandmark {
 
 /*-----------------------------------------------------------------------
@@ -343,4 +343,4 @@ uint32_t liblbp_pyr_get_dim(uint16_t img_nRows, uint16_t img_nCols, uint16_t nPy
   return(256*N);
 }
 
-}} //namespace kjb::flandmark
+}} //namespace ivi::flandmark

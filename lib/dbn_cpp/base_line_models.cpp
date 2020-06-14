@@ -27,7 +27,7 @@
 #include <m_cpp/m_vector.h>
 #include <g_cpp/g_line.h>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #include <ergo/record.h>
 #else
@@ -59,10 +59,10 @@
 #include "dbn_cpp/thread_worker.h"
 
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
-double kjb::ties::line_fitting
+double ivi::ties::line_fitting
 (
     const std::vector<Vector>& points, 
     Line& fitted_line
@@ -129,7 +129,7 @@ double kjb::ties::line_fitting
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::average_model_fitting
+void ivi::ties::average_model_fitting
 (
     const std::vector<Data>& data,
     const std::string& output_dir,
@@ -143,7 +143,7 @@ void kjb::ties::average_model_fitting
     boost::format out_fmt(output_dir + "/" + obs_str + "/%04d/");
 
     // hack to make Condor respect the output
-    ETX(kjb_c::kjb_mkdir(output_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(output_dir.c_str()));
     std::ofstream touch((output_dir + DIR_STR + "invocation.txt").c_str());
     touch << "Program invocation:\n" << " average_model_fitting " << ' ' 
           << output_dir << ' ' << obs_str << '\n';
@@ -189,7 +189,7 @@ void kjb::ties::average_model_fitting
         }
 
         std::string res_dir = (out_fmt % data[d].dyid).str();
-        ETX(kjb_c::kjb_mkdir(res_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(res_dir.c_str()));
 
         std::string state_fp = res_dir + "/states.txt";
         std::ofstream state_ofs(state_fp.c_str());
@@ -252,7 +252,7 @@ void kjb::ties::average_model_fitting
 
     // Compute the mean and variance of the errors of all couples 
     std::string error_out(output_dir + "/errors");
-    ETX(kjb_c::kjb_mkdir(error_out.c_str()));
+    ETX(ivi_c::ivi_mkdir(error_out.c_str()));
 
     if (!all_errors.empty())
     {
@@ -271,7 +271,7 @@ void kjb::ties::average_model_fitting
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::line_model_fitting
+void ivi::ties::line_model_fitting
 (
     const std::vector<Data>& data, 
     const std::string& output_dir,
@@ -285,7 +285,7 @@ void kjb::ties::line_model_fitting
     boost::format out_fmt(output_dir + "/" + obs_str + "/%04d/");
 
     // hack to make Condor respect the output
-    ETX(kjb_c::kjb_mkdir(output_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(output_dir.c_str()));
     std::ofstream touch((output_dir + DIR_STR + "invocation.txt").c_str());
     touch << "Program invocation:\n" << "line_model_fitting" << ' ' 
           << output_dir << ' ' << obs_str << '\n';
@@ -328,7 +328,7 @@ void kjb::ties::line_model_fitting
         }
 
         std::string res_dir = (out_fmt % data[d].dyid).str();
-        ETX(kjb_c::kjb_mkdir(res_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(res_dir.c_str()));
 
         std::string state_fp = res_dir + "/states.txt";
         ofstream state_ofs(state_fp.c_str());
@@ -401,7 +401,7 @@ void kjb::ties::line_model_fitting
 
     // compute the mean and variance of the errors of all couples 
     std::string error_out(output_dir + "/errors");
-    ETX(kjb_c::kjb_mkdir(error_out.c_str()));
+    ETX(ivi_c::ivi_mkdir(error_out.c_str()));
     if(!all_errors.empty())
     {
         std::string err_fp(error_out + "/err_couples.txt");
@@ -420,7 +420,7 @@ void kjb::ties::line_model_fitting
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::lss_mh_fitting
+void ivi::ties::lss_mh_fitting
 (
     const std::vector<Data>& data,  
     const Ties_experiment& exp
@@ -449,7 +449,7 @@ void kjb::ties::lss_mh_fitting
         //  Output the error statistics 
         //////////////////////////////////////////////////////
         std::string error_out(exp.out_dp + "/errors");
-        ETX(kjb_c::kjb_mkdir(error_out.c_str()));
+        ETX(ivi_c::ivi_mkdir(error_out.c_str()));
         if(!all_errors.empty())
         {
             std::string err_fp(error_out + "/err_couples.txt");
@@ -543,7 +543,7 @@ void kjb::ties::lss_mh_fitting
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::ties::lss_mh_fitting
+void ivi::ties::lss_mh_fitting
 (
     const Data& data,
     const Ties_experiment& exp,
@@ -559,7 +559,7 @@ void kjb::ties::lss_mh_fitting
         const string& name = exp.likelihood.obs_names[i];
         if(data.observables.find(name) == data.observables.end())
         {
-            KJB_THROW_3(Illegal_argument, 
+            IVI_THROW_3(Illegal_argument, 
                         "Invalid observable %s", (name.c_str()));
         }
     }
@@ -605,7 +605,7 @@ void kjb::ties::lss_mh_fitting
         else
         {
             Obs_map::const_iterator it = data.observables.begin();
-            KJB(ASSERT(it != data.observables.end()));
+            IVI(ASSERT(it != data.observables.end()));
             State_type mean_state;
             if(exp.lss.polynomial_degree >= 0)
             {
@@ -774,7 +774,7 @@ void kjb::ties::lss_mh_fitting
     boost::format out_fmt(exp.out_dp + "/%04d");
     string sub_out_dp = (out_fmt % data.dyid).str();
     lss_out_dirs[0] = sub_out_dp;
-    ETX(kjb_c::kjb_mkdir(lss_out_dirs[0].c_str()));
+    ETX(ivi_c::ivi_mkdir(lss_out_dirs[0].c_str()));
 
     bool optimize = true;
     bool sample_state = true;
@@ -830,7 +830,7 @@ void kjb::ties::lss_mh_fitting
     boost::exception_ptr err;
     double best_lp = -DBL_MAX;
     double pre_best_lp = best_lp;
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     double lp = 0.0;
 
     std::cout << "lss_mh_fitting (exp.num_iterations="<<exp.num_iterations<<")"<<std::endl;
@@ -841,7 +841,7 @@ void kjb::ties::lss_mh_fitting
         lp = posteriors[0](lss_vec[0]);
         std::cout << "iter " << i <<  " : " << lp << std::endl;
         // reseed random seed
-        kjb_c::kjb_seed_rand_2_with_tod();
+        ivi_c::ivi_seed_rand_2_with_tod();
         long ltime = time(NULL);
         int stime = (unsigned) ltime/2;  
         srand(stime);
@@ -886,7 +886,7 @@ void kjb::ties::lss_mh_fitting
                                                      final_best, 
                                                      sub_out_dp);
     lss_all.write(string(sub_out_dp + "/all_states"));
-    long st = kjb_c::get_real_time();
+    long st = ivi_c::get_real_time();
 
     // Compute the error 
     errors = compute_ave_error(data, lss_all, obs_errors, 
@@ -917,9 +917,9 @@ void kjb::ties::lss_mh_fitting
     std::cout << "Execution time fitting: " << st / 3600000.0 << " hours\n";
 
     // Compute the predictive distribution
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     string sample_dp(sub_out_dp + "/pred_samples");
-    ETX(kjb_c::kjb_mkdir(sample_dp.c_str()));
+    ETX(ivi_c::ivi_mkdir(sample_dp.c_str()));
         
     boost::format sample_fmt(sample_dp + "/sample_%04d/");
     std::string pred_fp(sample_dp + "/sampled_rms_error.txt");
@@ -958,14 +958,14 @@ void kjb::ties::lss_mh_fitting
 
     // compute the outcome err
 
-    st = kjb_c::get_real_time();
+    st = ivi_c::get_real_time();
     std::cout << "Execution time of predicting samples: " 
               << st / 60000.0 << " minutes" << std::endl;
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-double kjb::ties::line_fitting_outcome
+double ivi::ties::line_fitting_outcome
 (
     const Lss_set& lss_set,
     Line& line,
@@ -990,7 +990,7 @@ double kjb::ties::line_fitting_outcome
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-std::vector<double> kjb::ties::line_fitting_outcome
+std::vector<double> ivi::ties::line_fitting_outcome
 (
     const Lss_set& lss_set,
     std::vector<Line>& lines

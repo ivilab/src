@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_util.h 21172 2017-01-30 09:21:24Z kobus $ */
+/* $Id: cv_util.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef CV_UTIL_H_
 #define CV_UTIL_H_
@@ -24,7 +24,7 @@
 #include <i_cpp/i_image.h>
 #include <m_cpp/m_matrix.h>
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -38,7 +38,7 @@
 #define DEFAULT_MAX_ITER 30 
 #define DEFAULT_MAX_EPSILON 0.1
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
@@ -74,7 +74,7 @@ struct CV_term_criteria
 
 };
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 /**
  * @brief   Convert a CV_term_criteria to cv::CvTermCriteria
  */
@@ -89,41 +89,41 @@ inline CvTermCriteria to_opencv(CV_term_criteria criteria)
 }
 
 /**
- * @brief   Convert a kjb::Image to a IplImage
+ * @brief   Convert a ivi::Image to a IplImage
  */
 //cv::Ptr<IplImage> to_opencv(const Image& image);
 
 /**
- * @brief Convert a kjb::Image to a IplImage 
+ * @brief Convert a ivi::Image to a IplImage 
  */
 cv::Ptr<IplImage> to_opencv_gray(const Image& image);
 
 /**
- * @brief   Convert a kjb::Matrix to a IplImage 
+ * @brief   Convert a ivi::Matrix to a IplImage 
  */
 cv::Ptr<IplImage> to_opencv_gray(const Matrix& matrix);
 
 /**
- * @brief   Convert a kjb::Image to a cv::Mat
+ * @brief   Convert a ivi::Image to a cv::Mat
  */
 cv::Mat to_opencv(const Image& img);
 
 /**
- * @brief   Convert a kjb::Matrix to a cv::Mat
- * @param   matrix is a kjb::Matrix with doubles
+ * @brief   Convert a ivi::Matrix to a cv::Mat
+ * @param   matrix is a ivi::Matrix with doubles
  * @return  a cv::Mat with type float
  */
 cv::Mat to_opencv(const Matrix& matrix);
 
 /**
- * @brief   Cnovert a cv::Mat to kjb::Matrix 
+ * @brief   Cnovert a cv::Mat to ivi::Matrix 
  * @param   cv_mat is a cv::Mat with 32F1C 
- * @return  a kjb::Matrix of doubles
+ * @return  a ivi::Matrix of doubles
  */
-Matrix opencv_to_kjb(const cv::Mat& cv_mat);
+Matrix opencv_to_ivi(const cv::Mat& cv_mat);
 
 #endif
 } // namespace opencv
-} // namespace kjb
+} // namespace ivi
 
 #endif

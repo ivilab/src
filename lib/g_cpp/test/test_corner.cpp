@@ -11,7 +11,7 @@
 #include <gr_cpp/gr_offscreen.h>
 
 
-using namespace::kjb;
+using namespace::ivi;
 
 void test_corners();
 
@@ -23,16 +23,16 @@ int main(int argc, char *argv[])
 
 void test_corners()
 {
-    kjb::Vector corner3D_1;
-    kjb::Vector corner3D_2;
-    kjb::Vector corner3D_3;
+    ivi::Vector corner3D_1;
+    ivi::Vector corner3D_2;
+    ivi::Vector corner3D_3;
     unsigned int epsilon = 1;
     double focal_length = 387;
-    kjb::Vector corner2D_1(3);
-    kjb::Vector corner2D_2(3);
-    kjb::Vector corner2D_3(3);
-    kjb::Vector position_2D(3);
-    kjb::Vector position_3D(3);
+    ivi::Vector corner2D_1(3);
+    ivi::Vector corner2D_2(3);
+    ivi::Vector corner2D_3(3);
+    ivi::Vector position_2D(3);
+    ivi::Vector position_3D(3);
 
     corner2D_1(0) = -48.6290;
     corner2D_1(1) = 15.2430;
@@ -54,7 +54,7 @@ void test_corners()
     position_2D(1) =  16.9759;
     position_2D(2) = 1.0;
 
-    kjb::get_3D_corner_orientation_from_2D_corner_lines
+    ivi::get_3D_corner_orientation_from_2D_corner_lines
     (
         corner2D_1,
         corner2D_2,
@@ -76,7 +76,7 @@ void test_corners()
     corner3D_2 = corner3D_2.normalize();
     corner3D_3 = corner3D_3.normalize();
 
-    kjb::Vector expected_out(4, 0.0);
+    ivi::Vector expected_out(4, 0.0);
     expected_out(0) = 9.11705282e-01;
     expected_out(1) = -1.66898378e-01;
     expected_out(2) = -3.75417647e-01;
@@ -84,7 +84,7 @@ void test_corners()
     double diff = expected_out.get_max_abs_difference(corner3D_1);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = 4.13860560e-02;
@@ -93,7 +93,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_2);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = -4.08771455e-01;
@@ -102,7 +102,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_3);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     corner2D_1(0) = 32.5870;
@@ -128,7 +128,7 @@ void test_corners()
     epsilon = 1;
     focal_length = 772;
 
-    kjb::get_3D_corner_orientation_from_2D_corner_lines
+    ivi::get_3D_corner_orientation_from_2D_corner_lines
     (
         corner2D_1,
         corner2D_2,
@@ -156,7 +156,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_1);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = -1.69833548e-03;
@@ -165,7 +165,7 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_2);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
     expected_out(0) = -9.52180848e-01;
@@ -174,10 +174,10 @@ void test_corners()
     diff = expected_out.get_max_abs_difference(corner3D_3);
     if(fabs(diff) > 0.0001)
     {
-        KJB_THROW_2(KJB_error, "Expected output does not match");
+        IVI_THROW_2(IVI_error, "Expected output does not match");
     }
 
-    kjb::Image img("001.jpg");
+    ivi::Image img("001.jpg");
     double princx = img.get_num_cols()/2.0;
     double princy = img.get_num_rows()/2.0;
 
@@ -208,15 +208,15 @@ void test_corners()
     corner3D_2 *= 300;
     corner3D_3 *= 300;
 
-    kjb::Vector corner_pos(4, 1.0);
+    ivi::Vector corner_pos(4, 1.0);
     for(unsigned int i = 0; i < 3; i++)
     {
         corner_pos(i) = position_3D(i);
     }
 
-    kjb::Vector vertex_1 = corner_pos + corner3D_1;
-    kjb::Vector vertex_2 = corner_pos + corner3D_2;
-    kjb::Vector vertex_3 = corner_pos + corner3D_3;
+    ivi::Vector vertex_1 = corner_pos + corner3D_1;
+    ivi::Vector vertex_2 = corner_pos + corner3D_2;
+    ivi::Vector vertex_3 = corner_pos + corner3D_3;
 
     std::cout << corner3D_1.normalize() << std::endl;
     std::cout << corner3D_2.normalize() << std::endl;
@@ -229,9 +229,9 @@ void test_corners()
     //camera.set_principal_point_y(princy);
 
 
-    static kjb::Offscreen_buffer* offscreen = 0;
-    offscreen = kjb::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
-    //kjb::opengl::default_init_opengl(img.get_num_cols(), img.get_num_rows());
+    static ivi::Offscreen_buffer* offscreen = 0;
+    offscreen = ivi::create_and_initialize_offscreen_buffer(img.get_num_cols(), img.get_num_rows());
+    //ivi::opengl::default_init_opengl(img.get_num_cols(), img.get_num_rows());
     camera.prepare_for_rendering(true);
     img.write("corner.jpg");
 
@@ -252,7 +252,7 @@ void test_corners()
 
     //glFlush();
 
-    kjb_c::KJB_image * capture = NULL;
+    ivi_c::IVI_image * capture = NULL;
     Base_gl_interface::capture_gl_view(&capture);
     Image img2(capture);
     ls1.draw(img2, 0, 0, 255);

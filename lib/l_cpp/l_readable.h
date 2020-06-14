@@ -1,4 +1,4 @@
-/* $Id: l_readable.h 17324 2014-08-18 23:24:24Z predoehl $ */
+/* $Id: l_readable.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,14 +20,14 @@
 |
 * =========================================================================== */
 
-#ifndef KJB_READABLE_H
-#define KJB_READABLE_H
+#ifndef IVI_READABLE_H
+#define IVI_READABLE_H
 
 #include <l_cpp/l_exception.h>
 
 #include <iosfwd>
 
-namespace kjb
+namespace ivi
 {
 
 /**

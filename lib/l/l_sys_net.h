@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_net.h 5389 2010-02-14 20:24:43Z kobus $ */
+/* $Id: l_sys_net.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,7 +27,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -35,10 +35,10 @@ namespace kjb_c {
 #define DEFAULT_REGISTERED_VERSION_NUM       1
 
 
-#define BUFF_GET_HOST_NAME(x)    kjb_get_host_name(x, sizeof(x))
+#define BUFF_GET_HOST_NAME(x)    ivi_get_host_name(x, sizeof(x))
 
 
-int kjb_get_host_name(char*, size_t);
+int ivi_get_host_name(char*, size_t);
 int get_host_suffix(char*, char*, size_t);
 
 int get_inet_socket(const char* ip_str, const char* port_str);

@@ -1,4 +1,4 @@
-/* $Id: g_cylinder_section.h 12850 2012-08-16 01:07:41Z elh $ */
+/* $Id: g_cylinder_section.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -60,8 +60,8 @@
  * @brief Cylinder_section: a section of a geometric cylinder
  */
 
-#ifndef KJB_CYLINDER_SECTION_H
-#define KJB_CYLINDER_SECTION_H
+#ifndef IVI_CYLINDER_SECTION_H
+#define IVI_CYLINDER_SECTION_H
 
 #include <g_cpp/g_cylinder.h>
 #include <l_cpp/l_readable.h>
@@ -69,7 +69,7 @@
 
 #define TWO_PI 6.28319
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -90,22 +90,22 @@ public:
     {
         if(angle_ < (-1 * TWO_PI) || angle_ > TWO_PI)
         {
-            KJB_THROW_2(Illegal_argument, "Cylinder_section(): angle must be between -2*PI and 2*PI");
+            IVI_THROW_2(Illegal_argument, "Cylinder_section(): angle must be between -2*PI and 2*PI");
         }
 
         if(angle_startpt_.size() < 3 || angle_startpt_.size() > 4)
         {
-            KJB_THROW_2(Illegal_argument, "Cylinder_section(): start point of angle must be 3-dimensional");
+            IVI_THROW_2(Illegal_argument, "Cylinder_section(): start point of angle must be 3-dimensional");
         }
 
         if(angle_endpt_.size() < 3 || angle_endpt_.size() > 4)
         {
-            KJB_THROW_2(Illegal_argument, "Cylinder_section(): end point of angle must be 3-dimensional");
+            IVI_THROW_2(Illegal_argument, "Cylinder_section(): end point of angle must be 3-dimensional");
         }
     }
 
     /** @brief Reads a cylinder section from an input file. */
-    Cylinder_section(const char* fname) throw (kjb::Illegal_argument, kjb::IO_error) :
+    Cylinder_section(const char* fname) throw (ivi::Illegal_argument, ivi::IO_error) :
         Cylinder(fname),
         angle_startpt_(3, 0.0),
         angle_endpt_(3, 0.0)
@@ -114,7 +114,7 @@ public:
     }
 
     /** @brief Reads a cylinder section from an input file. */
-    Cylinder_section(std::istream& in) throw (kjb::Illegal_argument, kjb::IO_error) :
+    Cylinder_section(std::istream& in) throw (ivi::Illegal_argument, ivi::IO_error) :
         Cylinder(in),
         angle_startpt_(3, 0.0),
         angle_endpt_(3, 0.0)
@@ -173,6 +173,6 @@ private:
     Vector angle_endpt_;
 };
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

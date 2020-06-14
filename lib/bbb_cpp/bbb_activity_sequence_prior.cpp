@@ -33,7 +33,7 @@
 #include <vector>
 #include <utility>
 
-using namespace kjb;
+using namespace ivi;
 using namespace bbb;
 
 std::vector<size_t> As_prior::sample_markov_chain(size_t sz) const
@@ -46,7 +46,7 @@ std::vector<size_t> As_prior::sample_markov_chain(size_t sz) const
 
     // first state
     Categorical_distribution<size_t> p0(x0, 0);
-    chain.front() = kjb::sample(p0);
+    chain.front() = ivi::sample(p0);
 
     // following states
     for(size_t t = 1; t < sz - 1; t++)
@@ -54,7 +54,7 @@ std::vector<size_t> As_prior::sample_markov_chain(size_t sz) const
         Vector pt = K.get_row(chain[t - 1]);
         Categorical_distribution<size_t> P(pt, 0);
 
-        chain[t] = kjb::sample(P);
+        chain[t] = ivi::sample(P);
     }
 
     chain[sz - 1] = chain[sz - 2];
@@ -88,7 +88,7 @@ As_prior::Chain_pair As_prior::condense_chain
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Activity_sequence kjb::bbb::sample(const As_prior& prior)
+Activity_sequence ivi::bbb::sample(const As_prior& prior)
 {
     const Activity_library& lib = prior.library();
 

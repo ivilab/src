@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: psi_skeleton.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: psi_skeleton.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #ifndef PSI_HUMAN_BODY_PARTS_H
@@ -33,7 +33,7 @@
 #include <l_cpp/l_exception.h>
 
 #include <string>
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -182,6 +182,6 @@ std::ostream& operator<<(std::ostream& out, const Psi_skeleton& skeleton);
 std::vector<Psi_skeleton> parse_skeleton(std::istream& ist);
 
 }// namespace psi
-}// namespace kjb
+}// namespace ivi
 
 #endif /*PSI_HUMAN_SKELETON_H */

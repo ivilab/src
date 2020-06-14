@@ -18,7 +18,7 @@
 #include <sstream>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 
 Hog_responses::Hog_responses(const Image & img, int ibin_size) : Readable(), Writeable()
 {
@@ -260,49 +260,49 @@ void Hog_responses::read(std::istream& in)
 
     if (!(field_value = read_field_value(in, "bin_size")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing bin_size");
+        IVI_THROW_2(Illegal_argument, "Missing bin_size");
     }
     istringstream ist(field_value);
     ist >> bin_size;
     if (ist.fail() || (bin_size <= 0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid line bin_size");
+        IVI_THROW_2(Illegal_argument, "Invalid line bin_size");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "num_rows")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing num_rows");
+        IVI_THROW_2(Illegal_argument, "Missing num_rows");
     }
     ist.str(field_value);
     ist >> num_rows;
     if (ist.fail() || (num_rows < 0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid num_rows");
+        IVI_THROW_2(Illegal_argument, "Invalid num_rows");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "num_cols")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing num_cols");
+        IVI_THROW_2(Illegal_argument, "Missing num_cols");
     }
     ist.str(field_value);
     ist >> num_cols;
     if (ist.fail() || (num_cols < 0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid num_cols");
+        IVI_THROW_2(Illegal_argument, "Invalid num_cols");
     }
     ist.clear(std::ios_base::goodbit);
 
     if (!(field_value = read_field_value(in, "hog_size")))
     {
-        KJB_THROW_2(Illegal_argument, "Missing hog_size");
+        IVI_THROW_2(Illegal_argument, "Missing hog_size");
     }
     ist.str(field_value);
     ist >> hog_size;
     if (ist.fail() || (hog_size < 0))
     {
-        KJB_THROW_2(Illegal_argument, "Invalid hog_size");
+        IVI_THROW_2(Illegal_argument, "Invalid hog_size");
     }
     ist.clear(std::ios_base::goodbit);
 
@@ -501,7 +501,7 @@ void Hog_responses::get_bims(std::vector<Matrix> & bim)
 
 
 
-void kjb::rotate_matrix_90_degrees(Matrix & m, int number_of_times)
+void ivi::rotate_matrix_90_degrees(Matrix & m, int number_of_times)
 {
     number_of_times = number_of_times % 4;
     if(number_of_times < 0)

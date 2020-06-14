@@ -1,4 +1,4 @@
-/* $Id: gr_spline.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gr_spline.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_gr_spline_H
-#define KJB_gr_spline_H
+#ifndef IVI_gr_spline_H
+#define IVI_gr_spline_H
 
 #include <m2_cpp/m2_spline.h>
 #include <gr_cpp/gr_renderable.h>
@@ -27,10 +27,10 @@
 #include <m_cpp/m_vector.h>
 #include <vector>
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 
-namespace kjb {
+namespace ivi {
 namespace opengl {
 class Opengl_nurbs_object
 {
@@ -130,7 +130,7 @@ public:
     Gl_nurbs_surface(const Gl_nurbs_surface& src);
     virtual ~Gl_nurbs_surface(){}
 
-    void init(std::vector<float>& pts, const std::vector<std::vector<kjb::Vector> >& ctl_points);
+    void init(std::vector<float>& pts, const std::vector<std::vector<ivi::Vector> >& ctl_points);
 
     Gl_nurbs_surface& operator=(const Gl_nurbs_surface& src);
     Gl_nurbs_surface* clone() const;
@@ -187,7 +187,7 @@ public:
     virtual void solid_render() const {gl_call();}
 };
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi
 
 #endif
-#endif /* ----- #ifndef KJB_gr_spline_H  ----- */
+#endif /* ----- #ifndef IVI_gr_spline_H  ----- */

@@ -1,4 +1,4 @@
-/* $Id: gr_opengl_debug.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_opengl_debug.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -25,21 +25,21 @@
 #include "m_cpp/m_matrix.h"
 #include "l_cpp/l_exception.h"
 
-namespace kjb
+namespace ivi
 {
 /**
  * This pops up a window to display the contents of the opengl color buffer during debugging.  
  *
  * This is intentionally in the global namespace to make it
- * callable inside gdb using "print kjb_opengl_debug_display_buffer()".
+ * callable inside gdb using "print ivi_opengl_debug_display_buffer()".
  *
  * Since it's difficult to know exactly the format of the active
  * buffer, this simply assumes it's grayscale and reads the
  * red component only.  This should be good enough for debugging.
  */
-void kjb_opengl_debug_display_buffer()
+void ivi_opengl_debug_display_buffer()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     GLint vp[4] = {0};
     glGetIntegerv(GL_VIEWPORT, vp);
 
@@ -51,7 +51,7 @@ void kjb_opengl_debug_display_buffer()
 
     float* pixels = new float[width * height];
     glReadPixels(x, y, width, height, GL_RED, GL_FLOAT, pixels);
-    kjb::Matrix mat(height, width);
+    ivi::Matrix mat(height, width);
 
     int i = 0;
     for(int row = height - 1; row >= 0; row--)
@@ -64,7 +64,7 @@ void kjb_opengl_debug_display_buffer()
 
     mat.display();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 } // namespace opengl
-} // namespace kjb
+} // namespace ivi

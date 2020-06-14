@@ -13,7 +13,7 @@
  *
  * I modified Joe's viewer application to use this output to highlight the 
  * clostest edge point when you hover over a pixel, but the code is written 
- * in Joe's jwsc framework, so it won't compile under kjb and isn't included 
+ * in Joe's jwsc framework, so it won't compile under ivi and isn't included 
  * here.  The code is available in svn under chamfer_viewer. 
  *
  * A better test would directly test each pixel for its closest edge pixel and 
@@ -29,9 +29,9 @@ const char* THREE_IMG_FNAME = "3_out.sun";
 int main()
 {
     /* read image */
-    KJB_image* img = NULL;
-    KJB_image* bw_out = NULL;
-    KJB_image* three_out = NULL;
+    IVI_image* img = NULL;
+    IVI_image* bw_out = NULL;
+    IVI_image* three_out = NULL;
 
     Matrix* m_img = NULL;
     Matrix* distances = NULL;
@@ -39,7 +39,7 @@ int main()
     Matrix* v = NULL;
     Int_matrix_vector* locations = NULL;
 
-    ERE(kjb_init());
+    ERE(ivi_init());
 
     /* Not ready to do anything in batch mode.  */
     if (! is_interactive()) 
@@ -52,7 +52,7 @@ int main()
 
 /*    scale-by-max-rgb = true; */
 
-    ERE(kjb_read_image(&img, IMG_FNAME));
+    ERE(ivi_read_image(&img, IMG_FNAME));
     ERE(image_to_matrix(img, &m_img));
 
     /* basic chamfer xform */
@@ -66,21 +66,21 @@ int main()
     /* output xformed image */
     EPETE(matrix_to_bw_image(distances, &bw_out));
     EPETE(rgb_matrices_to_image(distances, u, v, &three_out));
-    kjb_write_image(bw_out, BW_IMG_FNAME);
-    kjb_write_image(three_out, THREE_IMG_FNAME);
+    ivi_write_image(bw_out, BW_IMG_FNAME);
+    ivi_write_image(three_out, THREE_IMG_FNAME);
 
     free_matrix(u);
     free_matrix(v);
     free_matrix(m_img);
     free_matrix(distances);
 
-    kjb_free_image(img);
-    kjb_free_image(bw_out);
-    kjb_free_image(three_out);
+    ivi_free_image(img);
+    ivi_free_image(bw_out);
+    ivi_free_image(three_out);
 
     free_int_matrix_vector(locations);
 
-    kjb_cleanup();
+    ivi_cleanup();
 
     return 0;
 }

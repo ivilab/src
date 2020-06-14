@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: cv_histogram.h 15022 2013-07-28 22:31:58Z jguan1 $ */
+/* $Id: cv_histogram.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef CV_HISTOGRAM_H_
 #define CV_HISTOGRAM_H_
@@ -25,13 +25,13 @@
 #include <i_cpp/i_image.h>
 #include <gr_cpp/gr_2D_bounding_box.h>
 
-#ifdef KJB_HAVE_OPENCV
+#ifdef IVI_HAVE_OPENCV
 #include <wrap_opencv_cpp/cv.h>
 #endif
 
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 namespace opencv
 {
@@ -120,6 +120,6 @@ std::vector<Matrix> calculate_hs_histograms
 double compare_histograms(const Matrix& h1, const Matrix& h2, int method);
 
 }
-} // namespace kjb::opencv
+} // namespace ivi::opencv
 #endif
 

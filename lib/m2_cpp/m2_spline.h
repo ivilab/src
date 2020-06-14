@@ -1,8 +1,8 @@
 
-/* $Id: m2_spline.h 18244 2014-11-19 23:03:32Z ksimek $ */
+/* $Id: m2_spline.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_SPLINE_H
-#define KJB_SPLINE_H
+#ifndef IVI_SPLINE_H
+#define IVI_SPLINE_H
 
 #include <l_cpp/l_cloneable.h>
 #include <m_cpp/m_vector.h>
@@ -24,7 +24,7 @@
  * - Nurbs surfaces
  */
 
-namespace kjb {
+namespace ivi {
 
 /**
  * Abstract type for spline curves
@@ -69,8 +69,8 @@ public:
     virtual Nurbs_curve& operator=(const Nurbs_curve& src);
     virtual Nurbs_curve* clone() const;
 
-    kjb::Vector evaluate(double u) const;
-    kjb::Vector gradient(double u) const;
+    ivi::Vector evaluate(double u) const;
+    ivi::Vector gradient(double u) const;
     
     bool has_zero_length() const;
 protected:
@@ -165,12 +165,12 @@ public:
      * converts to a nurbs object and then evaluates the nurbs object.
      * As a result, this may be slower than expected.
      */
-    kjb::Vector evaluate(double u) const;
-    kjb::Vector gradient(double u) const;
+    ivi::Vector evaluate(double u) const;
+    ivi::Vector gradient(double u) const;
 
     void set_control_point(int index, const Vector& pt);
 
-    const kjb::Vector& get_control_point(int index) const;
+    const ivi::Vector& get_control_point(int index) const;
 
     /** @brief Convert to a mathematically equivalent nurbs curve. */
     Nurbs_curve to_nurbs() const;
@@ -195,7 +195,7 @@ public:
     enum Point_type { CURVE_POINT = 0, HANDLE_2_POINT = 1, HANDLE_1_POINT = 2 };
 
     Polybezier_curve(int dimension);
-    Polybezier_curve(const std::vector<kjb::Vector>& control_points);
+    Polybezier_curve(const std::vector<ivi::Vector>& control_points);
 
     Polybezier_curve* clone() const;
 
@@ -212,15 +212,15 @@ public:
      * converts to a nurbs object and then evaluates the nurbs object.
      * As a result, this may be slower than expected.
      */
-    kjb::Vector evaluate(double u) const;
-    kjb::Vector gradient(double u) const;
+    ivi::Vector evaluate(double u) const;
+    ivi::Vector gradient(double u) const;
     
-    void insert_curve_point(int index, const kjb::Vector& curve_pt);
-    void insert(int index, const kjb::Vector& curve_pt, const kjb::Vector& handle_pt_1, const kjb::Vector& handle_pt_2);
+    void insert_curve_point(int index, const ivi::Vector& curve_pt);
+    void insert(int index, const ivi::Vector& curve_pt, const ivi::Vector& handle_pt_1, const ivi::Vector& handle_pt_2);
 
-    void set_curve_point(int index, const kjb::Vector& pt);
-    void set_handle_point_1(int index, const kjb::Vector& pt);
-    void set_handle_point_2(int index, const kjb::Vector& pt);
+    void set_curve_point(int index, const ivi::Vector& pt);
+    void set_handle_point_1(int index, const ivi::Vector& pt);
+    void set_handle_point_2(int index, const ivi::Vector& pt);
 
 
     void delete_curve_point(int index);
@@ -231,17 +231,17 @@ public:
     void symmetrize_handle_1(int index);
     void symmetrize_handle_2(int index);
 
-    kjb::Vector& get_curve_point(int index);
-    const kjb::Vector& get_curve_point(int index) const;
+    ivi::Vector& get_curve_point(int index);
+    const ivi::Vector& get_curve_point(int index) const;
 
-    kjb::Vector& get_handle_point_1(int index);
-    const kjb::Vector& get_handle_point_1(int index) const;
+    ivi::Vector& get_handle_point_1(int index);
+    const ivi::Vector& get_handle_point_1(int index) const;
 
-    kjb::Vector& get_handle_point_2(int index);
-    const kjb::Vector& get_handle_point_2(int index) const;
+    ivi::Vector& get_handle_point_2(int index);
+    const ivi::Vector& get_handle_point_2(int index) const;
 
-    kjb::Vector& get_control_point(int index);
-    const kjb::Vector& get_control_point(int index) const;
+    ivi::Vector& get_control_point(int index);
+    const ivi::Vector& get_control_point(int index) const;
 
     /** @brief Convert to a mathematically equivalent nurbs curve. */
     virtual Nurbs_curve to_nurbs() const;
@@ -252,9 +252,9 @@ public:
 #endif
     friend bool operator==(const Polybezier_curve& op1, const Polybezier_curve& op2);
 private:
-    std::vector<kjb::Vector> _curve_points;
-    std::vector<kjb::Vector> _handle_1_points;
-    std::vector<kjb::Vector> _handle_2_points;
+    std::vector<ivi::Vector> _curve_points;
+    std::vector<ivi::Vector> _handle_1_points;
+    std::vector<ivi::Vector> _handle_2_points;
 
     int _dimension;
 };

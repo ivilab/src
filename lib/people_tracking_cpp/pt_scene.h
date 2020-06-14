@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: pt_scene.h 20912 2016-10-30 17:52:31Z ernesto $ */
+/* $Id: pt_scene.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_SCENE_H
 #define PT_SCENE_H
@@ -30,7 +30,7 @@
 #include <iterator>
 #include <boost/format.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 /**
@@ -521,7 +521,7 @@ inline void update_model_directions
     update_face_model_directions(target, frame, cam);
 }
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_SCENE_H */
 

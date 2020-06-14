@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: gp_covariance.h 20824 2016-08-31 16:19:00Z jguan1 $ */
+/* $Id: gp_covariance.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef GP_COVARIANCE_H_INCLUDED
 #define GP_COVARIANCE_H_INCLUDED
@@ -25,7 +25,7 @@
 #include "m_cpp/m_matrix.h"
 #include <cmath>
 
-namespace kjb {
+namespace ivi {
 namespace gp {
 
 /**
@@ -47,7 +47,7 @@ public:
         m_scale(scale),
         m_signal_sigma(signal_sigma)
     {
-        IFT(m_scale > 0 && m_signal_sigma > 0, kjb::Illegal_argument,
+        IFT(m_scale > 0 && m_signal_sigma > 0, ivi::Illegal_argument,
             "GP scale and signal variance must be positive.");
     }
 
@@ -102,7 +102,7 @@ Matrix apply_cf(const Squared_exponential& cf, InIt first, InIt last)
     return apply_cf_noise(cf, first, last, ns * d);
 }
 
-}} //namespace kjb::gp
+}} //namespace ivi::gp
 
 #endif /*GP_COVARIANCE_H_INCLUDED */
 

@@ -18,7 +18,7 @@
 #include "edge_cpp/line_segment.h"
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @class Line_segment_set
@@ -74,10 +74,10 @@ class Line_segment_set: public Readable, public Writeable
         inline const Line_segment & get_segment(unsigned int i) const { return _segments[i]; }
 
         /** @brief Draws this line segment set */
-        void draw( kjb::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
+        void draw( ivi::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
 
         /** @brief Randomly colors this line segment set on an image */
-        void randomly_color(kjb::Image & img, double width = 1.0)  const;
+        void randomly_color(ivi::Image & img, double width = 1.0)  const;
 
         /** @brief Reads this Edge_segment_set from an input stream. */
         void read(std::istream& in);
@@ -97,7 +97,7 @@ class Line_segment_set: public Readable, public Writeable
             Writeable::write(fname);
         }
 
-        kjb::Edge_set * convert_to_edge_set(unsigned int num_rows, unsigned int num_cols);
+        ivi::Edge_set * convert_to_edge_set(unsigned int num_rows, unsigned int num_cols);
 
         void remove_frame_segments(unsigned int num_rows, unsigned int num_cols);
 
@@ -133,13 +133,13 @@ class Edge_segment_set: public Readable, public Writeable
         Edge_segment_set(const std::vector<Edge_segment> & isegments )
          : Readable(), Writeable(), _segments(isegments){}
 
-        Edge_segment_set(const kjb::Edge_set * edge_set,const std::vector<Line_segment> & isegments );
+        Edge_segment_set(const ivi::Edge_set * edge_set,const std::vector<Line_segment> & isegments );
 
-        Edge_segment_set(const kjb::Edge_set * edge_set, bool use_num_pts_as_length = true );
+        Edge_segment_set(const ivi::Edge_set * edge_set, bool use_num_pts_as_length = true );
 
-        Edge_segment_set(const kjb::Edge_set * edge_set, const char * filename);
+        Edge_segment_set(const ivi::Edge_set * edge_set, const char * filename);
 
-        Edge_segment_set(const kjb::Edge_set * edge_set, std::istream& in);
+        Edge_segment_set(const ivi::Edge_set * edge_set, std::istream& in);
 
         Edge_segment_set(const Edge_segment_set & src) :
             Readable(), Writeable(), _segments(src._segments) { }
@@ -152,7 +152,7 @@ class Edge_segment_set: public Readable, public Writeable
 
         ~Edge_segment_set() {}
 
-        inline void init_from_edge_set(const kjb::Edge_set * edge_set, bool use_num_pts_as_length = true);
+        inline void init_from_edge_set(const ivi::Edge_set * edge_set, bool use_num_pts_as_length = true);
 
         /** Returns a vector containing the fitted line segments */
         inline const std::vector<Edge_segment> & get_segments() { return _segments; }
@@ -170,23 +170,23 @@ class Edge_segment_set: public Readable, public Writeable
         }
 
         /** @brief returns the ith collection of edge points the segments were fitted to */
-        inline const kjb::Edge & get_edge(unsigned int i)
+        inline const ivi::Edge & get_edge(unsigned int i)
         {
             return _segments[i].get_edge();
         }
 
         
         /** @brief Draws this line segment set */
-        void draw( kjb::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
+        void draw( ivi::Image & img, double ir, double ig, double ib, double width = 1.0)  const;
 
         /** @brief Randomly colors this line segment set on an image */
-        void randomly_color(kjb::Image & img, double width = 1.0)  const;
+        void randomly_color(ivi::Image & img, double width = 1.0)  const;
 
          /** @brief Reads this Edge_segment_set from an input stream. */
-        void read(std::istream& in, const kjb::Edge_set * edge_set );
+        void read(std::istream& in, const ivi::Edge_set * edge_set );
 
          /** @brief Reads this Edge_segment_set from an input file. */
-        void read(const char *filename, const kjb::Edge_set * edge_set );
+        void read(const char *filename, const ivi::Edge_set * edge_set );
 
         /** @brief Reads this Edge_segment_set from an input stream. */
         void read(std::istream& in);
@@ -211,16 +211,16 @@ class Edge_segment_set: public Readable, public Writeable
          *         for debug purposes */
         void remove_overlapping_segments
         (
-            kjb::Edge_set & edges,
+            ivi::Edge_set & edges,
             double collinear_threshold = 0.12,
             double overlapping_threshold = 10
         );
 
-        void remove_non_straight_segments(kjb::Edge_set & edges, double threshold);
+        void remove_non_straight_segments(ivi::Edge_set & edges, double threshold);
 
-        void remove_frame_segments(unsigned int num_rows, unsigned int num_cols, kjb::Edge_set & edges);
+        void remove_frame_segments(unsigned int num_rows, unsigned int num_cols, ivi::Edge_set & edges);
 
-        kjb::Edge_set * convert_to_edge_set(unsigned int num_rows, unsigned int num_cols);
+        ivi::Edge_set * convert_to_edge_set(unsigned int num_rows, unsigned int num_cols);
 
         void find_vertical_segment_pairs(std::vector<Segment_pair> & pairs, int num_rows) const;
 
@@ -229,7 +229,7 @@ class Edge_segment_set: public Readable, public Writeable
         /** @brief This function will change the edge set thie edge segment set
          *         was built from, according to the changes that were made to
          *         this edge_segment set */
-        void update_edge_set(kjb::Edge_set & edges);
+        void update_edge_set(ivi::Edge_set & edges);
 
         /** @brief A collection of edge segments */
         std::vector<Edge_segment> _segments;

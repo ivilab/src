@@ -41,7 +41,7 @@ namespace DTLib {
         // returns number of bytes per pixel read by prev. call to ReadImg()
         int nBytesPerPixel() { return m_BytesPerPixel; }
 
-        bool Convert_from_kjb(const kjb_c::KJB_image * ip);
+        bool Convert_from_ivi(const ivi_c::IVI_image * ip);
 
 
 ////////////////////////////////////////////

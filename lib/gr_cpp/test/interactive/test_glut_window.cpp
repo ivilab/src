@@ -33,7 +33,7 @@
 #include <boost/shared_ptr.hpp>
 
 using namespace std;
-using kjb::opengl::Glut_window;
+using ivi::opengl::Glut_window;
 using boost::shared_ptr;
 
 // These must be global, so we can pass to DEFINE_GLUT_CALLBACKS macro later.
@@ -59,7 +59,7 @@ struct Drawer
         /* clear the drawing buffer */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);   
     cout << "draw1" << endl;
-        kjb::opengl::Teapot().render();
+        ivi::opengl::Teapot().render();
 
         glutSwapBuffers(); 
     }
@@ -74,7 +74,7 @@ void draw2()
     /* clear the drawing buffer */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);   
 
-    kjb::opengl::Teapot().render();
+    ivi::opengl::Teapot().render();
     glutSwapBuffers(); 
 }
 
@@ -87,7 +87,7 @@ void key_handler(unsigned char k, int x, int y)
 
 int main()
 {
-    using kjb::opengl::Glut;
+    using ivi::opengl::Glut;
     // set up glut (optional)
     Glut::set_display_mode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     // All glut system-wide states are settable through Glut::

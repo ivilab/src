@@ -41,7 +41,7 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 /** @brief  Handle key input. */

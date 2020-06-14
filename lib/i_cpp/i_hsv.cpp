@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: i_hsv.cpp 21612 2017-08-01 22:07:20Z jguan1 $
+ * $Id: i_hsv.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_std.h"
@@ -24,16 +24,16 @@ float dominant_mix(float low_h, float high_h, float tt )
 }
 
 
-kjb::Vector rgb_from_hsy( const kjb::Vector& hsy )
+ivi::Vector rgb_from_hsy( const ivi::Vector& hsy )
 {
     // this contains row-major inverse of the implicit matrix in the 
     // function HSLuma_space().
-    kjb::Matrix::Value_type inv[ 9 ] = {
+    ivi::Matrix::Value_type inv[ 9 ] = {
         +.7,        -.27713,    1,
         -.3,        +.30022,    1,
         -.3,        -.85448,    1
     };
-    kjb::Matrix HVHL( 3, 3, inv );
+    ivi::Matrix HVHL( 3, 3, inv );
 
     return HVHL * hsy;
 }
@@ -41,7 +41,7 @@ kjb::Vector rgb_from_hsy( const kjb::Vector& hsy )
 
 }
 
-namespace kjb {
+namespace ivi {
 
 PixelHSVA::PixelHSVA( float hh, float ss, float vv, float aa )
 {
@@ -64,7 +64,7 @@ PixelHSVA::PixelHSVA( float hh, float ss, float vv, float aa )
 
     if ( ss < 0.0f || 1.0f < ss || vv < 0.0f || 1.0f < vv )
     {
-        KJB_THROW( Illegal_argument );
+        IVI_THROW( Illegal_argument );
     }
 
     /*
@@ -124,7 +124,7 @@ PixelHSVA::PixelHSVA( float hh, float ss, float vv, float aa )
             g = subdominant;
             break;
         default:
-            KJB_THROW( Result_error );
+            IVI_THROW( Result_error );
             break;
     }
 }
@@ -169,9 +169,9 @@ void PixelHSVA::get_hsv( float* ph , float* ps, float* pv ) const
 
 
 
-Vector hsluma_space( const kjb_c::Pixel& p )
+Vector hsluma_space( const ivi_c::Pixel& p )
 {
-    kjb::Vector v( 3 );
+    ivi::Vector v( 3 );
     /* Compute components of hue and saturation in "hexagon space."
      * p = pure red     means   v(0)=+1,    v(1)=0
      * p = pure green   means   v(0)=-0.5,  v(1)=+0.866
@@ -197,9 +197,9 @@ Vector hsluma_space( const kjb_c::Pixel& p )
 }
 
 
-kjb_c::Pixel get_pixel_from_hsluma_space( const Vector& vhsy )
+ivi_c::Pixel get_pixel_from_hsluma_space( const Vector& vhsy )
 {
-    kjb::Vector rgb = rgb_from_hsy( vhsy );
+    ivi::Vector rgb = rgb_from_hsy( vhsy );
 
     /* clampity clamp clamp clamp!! */
     return PixelRGBA(
@@ -210,9 +210,9 @@ kjb_c::Pixel get_pixel_from_hsluma_space( const Vector& vhsy )
 }
 
 
-int get_pixel_from_hsluma_space( const Vector& vhsy, kjb_c::Pixel* p )
+int get_pixel_from_hsluma_space( const Vector& vhsy, ivi_c::Pixel* p )
 {
-    kjb::Vector rgb = rgb_from_hsy( vhsy );
+    ivi::Vector rgb = rgb_from_hsy( vhsy );
 
     for( int iii = 0; iii < 3; ++iii )
     {
@@ -234,4 +234,4 @@ int get_pixel_from_hsluma_space( const Vector& vhsy, kjb_c::Pixel* p )
 
 
 
-} //namespace kjb
+} //namespace ivi

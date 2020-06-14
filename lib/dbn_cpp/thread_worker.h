@@ -18,10 +18,10 @@
 |
 * =========================================================================== */
 
-/* $Id: thread_worker.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: thread_worker.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_THREAD_WORKER_H
-#define KJB_TIES_THREAD_WORKER_H
+#ifndef IVI_TIES_THREAD_WORKER_H
+#define IVI_TIES_THREAD_WORKER_H
 
 #include <diff_cpp/diff_hessian.h>
 #include <m_cpp/m_matrix.h>
@@ -39,7 +39,7 @@
 #include "dbn_cpp/sample_lss.h"
 #include "dbn_cpp/time_util.h"
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/record.h>
 #else 
@@ -49,7 +49,7 @@
 #include <boost/exception_ptr.hpp>
 #include <boost/progress.hpp>
 
-namespace kjb{
+namespace ivi{
 namespace ties{
 
 /**
@@ -59,7 +59,7 @@ namespace ties{
  * @param   lsss        A vector of Linear_state_space 
  * @param   adapter     Allows us to treat our model as a vector. Must have
  *                      A::get, A::set, and A::size implemented. See
- *                      kjb::Vector_adapter for an example.
+ *                      ivi::Vector_adapter for an example.
  * @param   posteriors  The vector of posteriors of each model. 
  *
  * more Doc coming ...
@@ -245,11 +245,11 @@ public:
 
             if(record_samples_ || num_samples_ > 0)
             {
-                ETX(kjb_c::kjb_mkdir(samples_dir.c_str()));
+                ETX(ivi_c::ivi_mkdir(samples_dir.c_str()));
             }
             if(record_proposals_)
             {
-                ETX(kjb_c::kjb_mkdir(proposals_dir.c_str()));
+                ETX(ivi_c::ivi_mkdir(proposals_dir.c_str()));
             }
 
             sample_recorders_.push_back(
@@ -450,7 +450,7 @@ private:
  * @param   posteriors  The posteriors of each model. 
  * @param   adapter     Allows us to treat our model as a vector. Must have
  *                      A::get, A::set, and A::size implemented. See
- *                      kjb::Vector_adapter for an example.
+ *                      ivi::Vector_adapter for an example.
  *
  */
 template <typename Func, typename Model, typename Adapter>
@@ -636,7 +636,7 @@ void Hmc_step_thread<Func, Adapter, Gradient>::run
             if(!not_record_)
             {
                 std::string out_dir = out_dirs_[i] + "/samples";
-                ETX(kjb_c::kjb_mkdir(out_dir.c_str()));
+                ETX(ivi_c::ivi_mkdir(out_dir.c_str()));
                 std::string sample_target_fp = out_dir + "/ll.txt";
                 std::string sample_log_fp = out_dir + "/sample_log.txt";
 
@@ -737,6 +737,6 @@ void run_threads
     elapsed = (finish.tv_sec * NANOS + finish.tv_nsec - start_time)/NANOS;
     thread.decrease_running_time(elapsed);
 }
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
-#endif // KJB_TIES_THREAD_WORKER_H
+#endif // IVI_TIES_THREAD_WORKER_H

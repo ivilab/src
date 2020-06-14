@@ -18,12 +18,12 @@
 |
 * =========================================================================== */
 
-/* $Id: typedefs.h 22555 2019-06-08 22:10:51Z adarsh $ */
+/* $Id: typedefs.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_TYPEDEFS_H
-#define KJB_TIES_TYPEDEFS_H
+#ifndef IVI_TIES_TYPEDEFS_H
+#define IVI_TIES_TYPEDEFS_H
 
-#ifdef KJB_HAVE_TBB
+#ifdef IVI_HAVE_TBB
 #include <tbb/tbb.h>
 #include <tbb/scalable_allocator.h>
 #endif 
@@ -32,13 +32,13 @@
 #include <gp_cpp/gp_mean.h>
 #include <gp_cpp/gp_covariance.h>
 
-using namespace kjb;
+using namespace ivi;
 typedef gp::Prior<gp::Constant, gp::Squared_exponential> Gpp;
 
 // foward declaration 
 
-typedef kjb::Vector Double_v;
-#ifdef KJB_HAVE_TBB
+typedef ivi::Vector Double_v;
+#ifdef IVI_HAVE_TBB
 typedef std::vector<Double_v, tbb::scalable_allocator<Double_v> > Double_vv;
 typedef std::vector<Double_vv, tbb::scalable_allocator<Double_vv> > Double_vvv;
 typedef std::vector<Vector, tbb::scalable_allocator<Vector> > Vector_v; 
@@ -48,7 +48,7 @@ typedef std::vector<Double_v> Double_vv;
 typedef std::vector<Double_vv> Double_vvv;
 typedef std::vector<Vector> Vector_v; 
 typedef std::vector<Gpp> Gpp_v; 
-#endif // KJB_HAVE_TBB
+#endif // IVI_HAVE_TBB
 
 typedef Double_v State_type;
 typedef Double_vv State_vec; 
@@ -85,5 +85,5 @@ struct Group_params
     double group_weight;
 };
 
-#endif // KJB_TIES_TYPEDEFS_H
+#endif // IVI_TIES_TYPEDEFS_H
 

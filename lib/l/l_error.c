@@ -1,5 +1,5 @@
 
-/* $Id: l_error.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: l_error.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -60,10 +60,10 @@ void check_num_args(int argc,
             )
        )
     {
-        kjb_fprintf(stderr, "Usage:\n  ");
-        kjb_fprintf(stderr, usage);
-        kjb_fprintf(stderr, "\n\n");
-        kjb_exit(EXIT_FAILURE);
+        ivi_fprintf(stderr, "Usage:\n  ");
+        ivi_fprintf(stderr, usage);
+        ivi_fprintf(stderr, "\n\n");
+        ivi_exit(EXIT_FAILURE);
     }
     else if (    (min_num_args_allowed > 0)
               && (max_num_args_allowed > 0)
@@ -71,21 +71,21 @@ void check_num_args(int argc,
               && (argc != min_num_args_allowed)
             )
     {
-        kjb_fprintf(stderr, "Exactly %d program argument is required.\n",
+        ivi_fprintf(stderr, "Exactly %d program argument is required.\n",
                     min_num_args_allowed);
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
     else if ((min_num_args_allowed > 0) && (argc < min_num_args_allowed))
     {
-        kjb_fprintf(stderr, "At least %d program arguments are required.\n",
+        ivi_fprintf(stderr, "At least %d program arguments are required.\n",
                     min_num_args_allowed);
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
     else if ((max_num_args_allowed > 0) && (argc > max_num_args_allowed))
     {
-        kjb_fprintf(stderr, "At most %d program arguments can be used.\n",
+        ivi_fprintf(stderr, "At most %d program arguments can be used.\n",
                     max_num_args_allowed);
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
 }
 

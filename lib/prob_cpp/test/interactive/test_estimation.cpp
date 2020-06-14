@@ -7,7 +7,7 @@
 #include <iostream>
 #include <boost/bind.hpp>
 
-using namespace kjb;
+using namespace ivi;
 
 typedef Von_mises_fisher_distribution<3> Vmf_distribution;
 

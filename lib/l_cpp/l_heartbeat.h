@@ -7,7 +7,7 @@
  * program a little friendlier, by extrapolating how much longer it might run.
  */
 /*
- * $Id: l_heartbeat.h 14984 2013-07-22 23:46:33Z predoehl $
+ * $Id: l_heartbeat.h 25499 2020-06-14 13:26:04Z kobus $
  *
  * Recommended tab width:  4
  */
@@ -18,7 +18,7 @@
 
 #include <string>
 
-namespace kjb {
+namespace ivi {
 
 
 /**

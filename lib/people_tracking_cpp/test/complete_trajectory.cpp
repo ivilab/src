@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: complete_trajectory.cpp 15940 2013-10-29 04:14:54Z ernesto $ */
+/* $Id: complete_trajectory.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <people_tracking_cpp/pt_complete_trajectory.h>
 #include <people_tracking_cpp/pt_complete_state.h>
@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 using namespace pt;
 using namespace std;
 

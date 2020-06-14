@@ -1054,7 +1054,7 @@ static int select_GMM_helper
 
             if (result == ERROR) { NOTE_ERROR(); break; }
 
-            num_clusters = kjb_rint(d_num_clusters);
+            num_clusters = ivi_rint(d_num_clusters);
 
             if (num_clusters > max_num_clusters)
             {
@@ -1475,7 +1475,7 @@ int select_GMM_helper_2
         /* Randomly select which points will be used as held out data */
         while (1)
         {
-            int random_index = ((int) (num_points * kjb_rand())) - 1;
+            int random_index = ((int) (num_points * ivi_rand())) - 1;
 
             if (random_index < 0)
             {
@@ -1518,7 +1518,7 @@ int select_GMM_helper_2
         {
             if (result == ERROR) { NOTE_ERROR(); break; }
 
-            num_clusters = kjb_rint(d_num_clusters);
+            num_clusters = ivi_rint(d_num_clusters);
 
             if (num_clusters > max_num_clusters - 1)
             {
@@ -2369,7 +2369,7 @@ int get_full_GMM_2
                 }
             }
 
-            if (KJB_IS_SET(back_off))
+            if (IVI_IS_SET(back_off))
             {
                 int bad_cluster = back_off; 
 
@@ -2972,9 +2972,9 @@ if (held_out_indicator_vp != NULL)
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
@@ -3019,14 +3019,14 @@ if (held_out_indicator_vp != NULL)
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_vp->elements[ cluster ] += 0.5; 
                     }
@@ -3035,7 +3035,7 @@ if (held_out_indicator_vp != NULL)
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -3844,14 +3844,14 @@ int get_independent_GMM_2
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_vp->elements[ cluster ] += 0.5; 
                     }
@@ -3869,7 +3869,7 @@ int get_independent_GMM_2
                 result = ow_divide_vector_by_scalar(I_vp, 20.0 * (double)num_points);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                cluster = (int)(((double)num_clusters) * kjb_rand());
+                cluster = (int)(((double)num_clusters) * ivi_rand());
                 if (cluster == num_clusters) cluster--; 
                 I_vp->elements[ cluster ] = 1.0; 
                 
@@ -3878,7 +3878,7 @@ int get_independent_GMM_2
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -4418,9 +4418,9 @@ int get_independent_GMM_3
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
@@ -4465,14 +4465,14 @@ int get_independent_GMM_3
                 
                 for (cluster = 0; cluster < num_clusters; cluster++)
                 {
-                    double r = kjb_rand();
+                    double r = ivi_rand();
                     double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                     if (result == ERROR) { NOTE_ERROR(); break; }
 
                     I_vp->elements[ cluster ] = p;
 
-                    if (kjb_rand() < 1.0 / num_clusters) 
+                    if (ivi_rand() < 1.0 / num_clusters) 
                     {
                         I_vp->elements[ cluster ] += 0.5; 
                     }
@@ -4481,7 +4481,7 @@ int get_independent_GMM_3
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -4973,7 +4973,7 @@ int get_independent_GMM_2_with_missing_data
                 result = ow_divide_vector_by_scalar(I_vp, 20.0 * (double)num_points);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                cluster = (int)(((double)num_clusters) * kjb_rand());
+                cluster = (int)(((double)num_clusters) * ivi_rand());
                 if (cluster == num_clusters) cluster--; 
                 I_vp->elements[ cluster ] = 1.0; 
                 
@@ -4981,7 +4981,7 @@ int get_independent_GMM_2_with_missing_data
                 result = ow_scale_vector_by_sum(I_vp);
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
-                result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+                result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
                 result = ow_scale_vector_by_sum(I_vp);
@@ -5291,7 +5291,7 @@ cleanup:
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* Multithreaded EM */
-#ifdef KJB_HAVE_PTHREAD
+#ifdef IVI_HAVE_PTHREAD
 
 int get_independent_GMM_3_mt
 (
@@ -5349,11 +5349,11 @@ int get_independent_GMM_3_mt
     /* Used for multithreaded */
     int thread, end_index, thread_r, block_size; 
     int start_index;
-    kjb_pthread_attr_t attr;
-    kjb_pthread_t* threads;
+    ivi_pthread_attr_t attr;
+    ivi_pthread_t* threads;
     struct thread_GMM_data* data;
 
-    kjb_pthread_mutex_t mutexsum;
+    ivi_pthread_mutex_t mutexsum;
 
     if(num_clusters <= 0)
     {
@@ -5369,7 +5369,7 @@ int get_independent_GMM_3_mt
     }
 
     /* Create the threads */
-    threads = N_TYPE_MALLOC(kjb_pthread_t, num_threads);
+    threads = N_TYPE_MALLOC(ivi_pthread_t, num_threads);
     data = N_TYPE_MALLOC(struct thread_GMM_data, num_threads);
 
     if (held_out_indicator_vp != NULL)
@@ -5478,15 +5478,15 @@ int get_independent_GMM_3_mt
                 warn_pso("Initial cluster priors vector is NULL: Using random priors.\n");
                 for (i = 0; i < num_clusters; i++)
                 {
-                    a_vp->elements[i] = kjb_rand();
+                    a_vp->elements[i] = ivi_rand();
                 }
-                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * kjb_rand() / num_clusters)); 
+                ERE(ow_add_scalar_to_vector(a_vp, 0.2 * ivi_rand() / num_clusters)); 
                 ERE(ow_normalize_vector(a_vp, NORMALIZE_BY_SUM));
                 */
             }
 
 #ifdef DONT_USE_GAUSS_ROUTINE
-            kjb_pthread_mutex_lock (&mutexsum);
+            ivi_pthread_mutex_lock (&mutexsum);
             for (cluster = 0; cluster < num_clusters; cluster++)
             {
                 double temp = 0.0;
@@ -5503,7 +5503,7 @@ int get_independent_GMM_3_mt
                 log_sqrt_det_vp->elements[ cluster ] = temp / 2.0;
             }
             verify_vector(log_sqrt_det_vp, NULL);
-            kjb_pthread_mutex_unlock (&mutexsum);
+            ivi_pthread_mutex_unlock (&mutexsum);
 #endif 
         }
        
@@ -5514,9 +5514,9 @@ int get_independent_GMM_3_mt
          */
        
         /* Initialize the mutex for the shared data */
-        kjb_pthread_mutex_init(&mutexsum, NULL);
-        kjb_pthread_attr_init(&attr);
-        kjb_pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+        ivi_pthread_mutex_init(&mutexsum, NULL);
+        ivi_pthread_attr_init(&attr);
+        ivi_pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
         block_size = num_points/num_threads;
 
         for(thread = 0; thread < num_threads; thread++)
@@ -5562,7 +5562,7 @@ int get_independent_GMM_3_mt
             data[thread].mutexsum_p = &mutexsum;
             
             /*verbose_pso(3, "create thread %2d\n", thread);*/
-            thread_r = kjb_pthread_create(&threads[thread], &attr, create_independent_GMM_thread, (void*) &data[thread]);
+            thread_r = ivi_pthread_create(&threads[thread], &attr, create_independent_GMM_thread, (void*) &data[thread]);
            
             if(thread_r)
             {
@@ -5573,13 +5573,13 @@ int get_independent_GMM_3_mt
             start_index = end_index+1;
         }
         
-        kjb_pthread_attr_destroy(&attr);
+        ivi_pthread_attr_destroy(&attr);
         /* Wait until all the threads finish, then do the cleaning up step */
         
         for(thread = 0; thread < num_threads; thread++)
         {
             /*verbose_pso(3, "finish thread %2d\n", thread);*/
-            kjb_pthread_join(threads[thread], NULL);
+            ivi_pthread_join(threads[thread], NULL);
             /*free_vector(I_vps->elements[thread]);
             free_vector(x_vps->elements[thread]);
             free_vector(x2_vps->elements[thread]);*/
@@ -5781,8 +5781,8 @@ int get_independent_GMM_3_mt
         result = copy_matrix(means_mpp, u_mp);
     }
 
-    kjb_free(threads);
-    kjb_free(data);
+    ivi_free(threads);
+    ivi_free(data);
     free_vector(a_vp);
     free_vector(p_sum_vp);
     free_matrix(var_mp); 
@@ -5876,14 +5876,14 @@ void *create_independent_GMM_thread (void *arg)
 
             for (cluster = 0; cluster < num_clusters; cluster++)
             {
-                double r = kjb_rand();
+                double r = ivi_rand();
                 double p = pow(r, 5.0); /* Perhaps should be an option. */
 
                 if (result == ERROR) { NOTE_ERROR(); break; }
 
                 I_vp->elements[ cluster ] = p;
 
-                if (kjb_rand() < 1.0 / num_clusters) 
+                if (ivi_rand() < 1.0 / num_clusters) 
                 {
                     I_vp->elements[ cluster ] += 0.5; 
                 }
@@ -5892,7 +5892,7 @@ void *create_independent_GMM_thread (void *arg)
             result = ow_scale_vector_by_sum(I_vp);
             if (result == ERROR) { NOTE_ERROR(); break; }
 
-            result = ow_add_scalar_to_vector(I_vp, 0.2 * kjb_rand() / num_clusters); 
+            result = ow_add_scalar_to_vector(I_vp, 0.2 * ivi_rand() / num_clusters); 
             if (result == ERROR) { NOTE_ERROR(); break; }
 #endif 
 
@@ -5980,7 +5980,7 @@ void *create_independent_GMM_thread (void *arg)
         Lock a mutex prior to updating the value in the shared
         structure, and unlock it upon updating.
         */
-        kjb_pthread_mutex_lock ((data->mutexsum_p));
+        ivi_pthread_mutex_lock ((data->mutexsum_p));
 
         if (P_mpp != NULL)
         {
@@ -5990,7 +5990,7 @@ void *create_independent_GMM_thread (void *arg)
         *log_likelihood_ptr += log_likelihood;
         *held_out_log_likelihood_ptr += held_out_log_likelihood;
 
-        kjb_pthread_mutex_unlock ((data->mutexsum_p));
+        ivi_pthread_mutex_unlock ((data->mutexsum_p));
 
         /* M-Step */
         
@@ -6012,11 +6012,11 @@ void *create_independent_GMM_thread (void *arg)
                 Lock a mutex prior to updating the value in the shared
                 structure, and unlock it upon updating.
                 */
-                kjb_pthread_mutex_lock (data->mutexsum_p);
+                ivi_pthread_mutex_lock (data->mutexsum_p);
                
                 if (result == ERROR) {
                     NOTE_ERROR();
-                    kjb_pthread_mutex_unlock (data->mutexsum_p);
+                    ivi_pthread_mutex_unlock (data->mutexsum_p);
                     break;
                 }
 
@@ -6026,7 +6026,7 @@ void *create_independent_GMM_thread (void *arg)
                 if (result == ERROR) 
                 { 
                     NOTE_ERROR();
-                    kjb_pthread_mutex_unlock (data->mutexsum_p);
+                    ivi_pthread_mutex_unlock (data->mutexsum_p);
                     break;
                 } 
 
@@ -6036,14 +6036,14 @@ void *create_independent_GMM_thread (void *arg)
                 if (result == ERROR) 
                 { 
                     NOTE_ERROR();
-                    kjb_pthread_mutex_unlock (data->mutexsum_p);
+                    ivi_pthread_mutex_unlock (data->mutexsum_p);
                     break;
                 } 
 
                 p_sum_vp->elements[ cluster ] += p; 
 
                 p_square_sum_vp->elements[ cluster ] += (p * p);
-                kjb_pthread_mutex_unlock (data->mutexsum_p);
+                ivi_pthread_mutex_unlock (data->mutexsum_p);
             }
         }
     }
@@ -6053,12 +6053,12 @@ void *create_independent_GMM_thread (void *arg)
     /*free(I_vp);    
     free(x_vp);
     free(x2_vp);*/
-    kjb_pthread_exit(NULL);
+    ivi_pthread_exit(NULL);
 
     /* NOTREACHED */
     return NULL;
 }
-#endif /* KJB_HAVE_PTHREAD*/
+#endif /* IVI_HAVE_PTHREAD*/
 
 
 /** 

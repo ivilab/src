@@ -1,5 +1,5 @@
 
-/* $Id: i_global.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_global.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -54,7 +54,7 @@ namespace kjb_c {
  * I am not sure why C++ does not want to have a global that is declared
  * constant.
 */
-#ifdef KJB_CPLUSPLUS
+#ifdef IVI_CPLUSPLUS
 #    define GLOBAL_CONST
 #else
 #    define GLOBAL_CONST const

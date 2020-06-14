@@ -1,4 +1,4 @@
-/* $Id: psi_weighted_box.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: psi_weighted_box.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -18,8 +18,8 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef  KJB_PSI_WEIGHTED_BOX_H
-#define KJB_PSI_WEIGHTED_BOX_H
+#ifndef  IVI_PSI_WEIGHTED_BOX_H
+#define IVI_PSI_WEIGHTED_BOX_H
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "m_cpp/m_vector.h"
@@ -29,11 +29,11 @@
 
 #include <boost/io/ios_state.hpp>
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 #include <Control/BoxState.h>
 #endif
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -75,13 +75,13 @@ protected:
 std::vector<Vector> get_corners(const Cuboid& c);
 void render(const Cuboid& c);
 
-#ifdef KJB_HAVE_UA_CARTWHEEL
+#ifdef IVI_HAVE_UA_CARTWHEEL
 inline Cuboid to_cuboid(const CartWheel::BoxState& cw_box)
 {
     return Cuboid(
-            to_kjb(cw_box.getPosition()),
-            to_kjb(cw_box.getSize()),
-            to_kjb(cw_box.getQuaternion()));
+            to_ivi(cw_box.getPosition()),
+            to_ivi(cw_box.getSize()),
+            to_ivi(cw_box.getQuaternion()));
 }
 
 #endif
@@ -98,7 +98,7 @@ public:
         mass_(0.0)
     {}
 
-    Weighted_box(const kjb::Vector& position, double rotation, const kjb::Vector& size, double mass) :
+    Weighted_box(const ivi::Vector& position, double rotation, const ivi::Vector& size, double mass) :
         Base(position, size, Quaternion(Vector(0.0, 1.0, 0.0), rotation)),
         mass_(mass)
     {}
@@ -124,7 +124,7 @@ public:
             case 6:
                 return MASS_UNIT;
             default:
-                KJB_THROW(Index_out_of_bounds);
+                IVI_THROW(Index_out_of_bounds);
         }
     }
 
@@ -149,7 +149,7 @@ public:
             case 6:
                 return log(mass_);
             default:
-                KJB_THROW(Index_out_of_bounds);
+                IVI_THROW(Index_out_of_bounds);
             
         }
     }
@@ -183,7 +183,7 @@ public:
                 mass_ = exp(value);
                 return;
             default:
-                KJB_THROW(Index_out_of_bounds);
+                IVI_THROW(Index_out_of_bounds);
             
         }
     }
@@ -251,5 +251,5 @@ inline Weighted_box parse_cli_weighted_box(const std::string& line)
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 #endif

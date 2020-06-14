@@ -1,5 +1,5 @@
 
-#ifndef KJB_HAVE_WN
+#ifndef IVI_HAVE_WN
 
 #include "wrap_wordnet/wn_dont_have.h" 
 

@@ -1,5 +1,5 @@
 
-/* $Id: sample_dynamics.h 10651 2011-09-29 19:51:42Z predoehl $ */
+/* $Id: sample_dynamics.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,17 +24,17 @@
 
 #include "m_cpp/m_vector.h"
 
-namespace kjb {
+namespace ivi {
 
 /** @brief Double precision leapfrog stochastic dynamics. */
 
     int stochastic_dynamics
     (
         unsigned int    iterations,
-        const kjb::Vector &  delta_t,
+        const ivi::Vector &  delta_t,
         double          alpha,
         unsigned int    kick,
-        kjb::Vector &        parameters,
+        ivi::Vector &        parameters,
         int             (*compute_energy_gradient)(const Vector & parameters, Vector & out_gradient),
         int             (*accept_sample)(const Vector & parameters),
         int             (*log_sample)(const Vector & parameters, const Vector & momenta )

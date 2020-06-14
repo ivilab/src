@@ -1,5 +1,5 @@
 
-/* $Id: i_colour.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_colour.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -30,17 +30,17 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-int ow_match_chromaticity(KJB_image* in_ip, const KJB_image* chrom_ip);
+int ow_match_chromaticity(IVI_image* in_ip, const IVI_image* chrom_ip);
 
 int ow_match_brightness
 (
-    KJB_image*       in_ip,
-    const KJB_image* brightness_ip,
+    IVI_image*       in_ip,
+    const IVI_image* brightness_ip,
     double           (*brightness_fn) (double, double, double)
 );
 
@@ -50,29 +50,29 @@ double rgb_gm_brightness(double r, double g, double b);
 
 int make_chromaticity_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     double           intensity
 );
 
-int ow_make_chromaticity_image(KJB_image* ip, double intensity);
+int ow_make_chromaticity_image(IVI_image* ip, double intensity);
 
 int make_black_and_white_image
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip
 );
 
-int ow_make_black_and_white_image(KJB_image* ip);
+int ow_make_black_and_white_image(IVI_image* ip);
 
 int convert_image_rgb_to_lab
 (
-    KJB_image**      out_ipp,
-    const KJB_image* in_ip,
+    IVI_image**      out_ipp,
+    const IVI_image* in_ip,
     const Vector*    white_rgb_vp
 );
 
-int convert_image_rgb_to_xyz(KJB_image** out_ipp, const KJB_image* in_ip);
+int convert_image_rgb_to_xyz(IVI_image** out_ipp, const IVI_image* in_ip);
 
 
 #ifdef __cplusplus

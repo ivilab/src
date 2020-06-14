@@ -1,5 +1,5 @@
 
-/* $Id: slatec_machine_constants.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: slatec_machine_constants.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "wrap_slatec/wrap_slatec.h"
@@ -14,17 +14,17 @@ int main(int argc, char *argv[])
     int int_machine_constant; 
     int failed = FALSE;
 
-    kjb_init(); 
+    ivi_init(); 
 
-    kjb_set_debug_level(1);
+    ivi_set_debug_level(1);
 
     if (is_interactive())
     {
-        kjb_set_verbose_level(1);
+        ivi_set_verbose_level(1);
     }
     else
     {
-        kjb_set_verbose_level(0);
+        ivi_set_verbose_level(0);
     }
 
     i = 1;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         failed = TRUE;
     }
 
-    if (kjb_get_verbose_level() > 0)
+    if (ivi_get_verbose_level() > 0)
     {
         verbose_pso(1, "In hex: "); 
         hex_print(stdout, &dbl_machine_constant, 8); 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
         failed = TRUE;
     }
 
-    if (kjb_get_verbose_level() > 0)
+    if (ivi_get_verbose_level() > 0)
     {
         verbose_pso(1, "In hex: "); 
         hex_print(stdout, &dbl_machine_constant, 8); 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
         failed = TRUE;
     }
 
-    if (kjb_get_verbose_level() > 0)
+    if (ivi_get_verbose_level() > 0)
     {
         verbose_pso(1, "In hex: "); 
         hex_print(stdout, &dbl_machine_constant, 8); 
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
         failed = TRUE;
     }
 
-    if (kjb_get_verbose_level() > 0)
+    if (ivi_get_verbose_level() > 0)
     {
         verbose_pso(1, "In hex: "); 
         hex_print(stdout, &dbl_machine_constant, 8); 
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
         failed = TRUE;
     }
 
-    if (kjb_get_verbose_level() > 0)
+    if (ivi_get_verbose_level() > 0)
     {
         verbose_pso(1, "In hex: "); 
         hex_print(stdout, &dbl_machine_constant, 8); 
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
         failed = TRUE;
     }
 
-    if (kjb_get_verbose_level() > 0)
+    if (ivi_get_verbose_level() > 0)
     {
         verbose_pso(1, "--------------------------\n\n"); 
     }
@@ -299,20 +299,20 @@ int main(int argc, char *argv[])
     verbose_pso (1, "--------------------------\n");
     verbose_pso(1, "\n");
 
-    if (kjb_get_verbose_level() > 0)
+    if (ivi_get_verbose_level() > 0)
     {
         dbe(FLT_MIN); 
-        dbe(kjb_log2(FLT_MIN)); 
+        dbe(ivi_log2(FLT_MIN)); 
         dbe(FLT_MAX); 
-        dbe(kjb_log2(FLT_MAX)); 
+        dbe(ivi_log2(FLT_MAX)); 
         
 
         dbp("--------------------------"); 
 
         dbe(DBL_MIN); 
-        dbe(kjb_log2(DBL_MIN)); 
+        dbe(ivi_log2(DBL_MIN)); 
         dbe(DBL_MAX); 
-        dbe(kjb_log2(DBL_MAX)); 
+        dbe(ivi_log2(DBL_MAX)); 
         
         dbp("--------------------------"); 
     }

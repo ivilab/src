@@ -23,9 +23,9 @@
 
 int main(int argc, char** argv)
 {
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (! is_interactive()) 
     {
@@ -37,15 +37,15 @@ int main(int argc, char** argv)
     EPE(create_image_display());
 
     check_num_args(argc, 1, 1,  "image_draw_point [ file_name ]");
-    EPETE(kjb_read_image(&ip, argv[ 1 ]));
+    EPETE(ivi_read_image(&ip, argv[ 1 ]));
 
     EPETE(image_draw_circle(ip, 100, 40, 70, 1, 200, 0, 0));
 
-    EPETE(kjb_display_image(ip, NULL));
+    EPETE(ivi_display_image(ip, NULL));
 
     prompt_to_continue();
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
     
     return EXIT_SUCCESS; 
 } 

@@ -18,17 +18,17 @@
 |
 * =========================================================================== */
 
-/* $Id: adapter.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: adapter.h 25499 2020-06-14 13:26:04Z kobus $ */
 
-#ifndef KJB_TIES_ADAPTER_H
-#define KJB_TIES_ADAPTER_H
+#ifndef IVI_TIES_ADAPTER_H
+#define IVI_TIES_ADAPTER_H
 
 #include <vector>
 #include "dbn_cpp/linear_state_space.h"
 #include "dbn_cpp/lss_set.h"
 
 #include <boost/foreach.hpp>
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /**
@@ -304,7 +304,7 @@ private:
     std::vector<size_t> person_indices_;
 }; 
 
-}} //namespace kjb::ties
+}} //namespace ivi::ties
 
-#endif //KJB_TIES_ADAPTER_H
+#endif //IVI_TIES_ADAPTER_H
 

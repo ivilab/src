@@ -1,5 +1,5 @@
 
-/* $Id: sample_dynamics.cpp 10705 2011-09-29 19:52:58Z predoehl $ */
+/* $Id: sample_dynamics.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,7 +24,7 @@
 #include "prob_cpp/prob_sample.h"
 #include "prob_cpp/prob_distribution.h"
 
-namespace kjb
+namespace ivi
 {
 
 /* =============================================================================
@@ -74,38 +74,38 @@ int stochastic_dynamics
 )
 {
 
-    using namespace kjb_c;
+    using namespace ivi_c;
 
     unsigned int i, num_params;
 
 
     num_params = parameters.get_length();
 
-    kjb::Vector stochastic_momenta(num_params);
+    ivi::Vector stochastic_momenta(num_params);
 
     /* We keep track of what would have happened if we had
      * followed the momenta without stochastic transitions,
      * so that we can reset the correct dynamics at any point
      * as specified by the kick parameter
      */
-    kjb::Vector momenta(num_params);
+    ivi::Vector momenta(num_params);
 
     /*
      * We allocate this vectors here for efficiency reasons
      */
-    kjb::Vector temp_momenta(num_params);
-    kjb::Vector stochastic_transition(num_params);
+    ivi::Vector temp_momenta(num_params);
+    ivi::Vector stochastic_transition(num_params);
 
     double st_alpha = sqrt(1 - alpha*alpha);
 
     /*This vector will contain the gradient of the energy function, computed
      * at every iteration
      */
-    kjb::Vector gradients(num_params);
+    ivi::Vector gradients(num_params);
 
     //The momenta are randomly initialized
-    kjb::MV_gaussian_distribution mv_gauss(num_params);
-    stochastic_momenta = kjb::sample(mv_gauss);
+    ivi::MV_gaussian_distribution mv_gauss(num_params);
+    stochastic_momenta = ivi::sample(mv_gauss);
 
     //TODO take actions according to error
     ERE(compute_energy_gradient(parameters, gradients));
@@ -153,7 +153,7 @@ int stochastic_dynamics
          * from Neal's paper
          */
         stochastic_momenta *= alpha;
-        stochastic_transition =  kjb::sample(mv_gauss);
+        stochastic_transition =  ivi::sample(mv_gauss);
         stochastic_transition *= st_alpha;
         stochastic_momenta = stochastic_momenta + stochastic_transition;
 

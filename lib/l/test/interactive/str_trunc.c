@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     char buff_64[ 32 ];
 
     /* The truncate routines are used by the bug reporting routines. */
-    kjb_set_debug_level(1);
+    ivi_set_debug_level(1);
 
     check_num_args(argc, 1, 1, NULL);
 
@@ -119,6 +119,6 @@ int main(int argc, char* argv[])
     }
 
 
-    kjb_exit(EXIT_SUCCESS); 
+    ivi_exit(EXIT_SUCCESS); 
 }
 

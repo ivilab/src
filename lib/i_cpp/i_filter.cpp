@@ -3,7 +3,7 @@
  */
 
 /*
- * $Id: i_filter.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: i_filter.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
@@ -13,16 +13,16 @@
 #include "m/m_convolve.h"
 #include "i/i_convolve.h"
 
-namespace kjb {
+namespace ivi {
 
 Filter gaussian_filter(double sigma, int size)
 {
-    kjb_c::Matrix* mat = NULL;
+    ivi_c::Matrix* mat = NULL;
     if(size % 2 == 0)
     {
         size++;
     }
-    ETX(kjb_c::get_2D_gaussian_mask(&mat, size, sigma));
+    ETX(ivi_c::get_2D_gaussian_mask(&mat, size, sigma));
     return Filter(Matrix(mat));
 }
 
@@ -51,13 +51,13 @@ Filter laplacian_of_gaussian_filter(int size, double sigma)
 
 Image operator*(const Image& image, const Filter& kernel)
 {
-    kjb_c::KJB_image* temp = NULL;
+    ivi_c::IVI_image* temp = NULL;
 
 #if 0
     // this has been disabled, since boundaries are handled differently and it's unclear what kernel sizes are faster
-        ETX(kjb_c::fourier_convolve_image(&temp, image.c_ptr(), kernel.m_kernel.get_c_matrix()));
+        ETX(ivi_c::fourier_convolve_image(&temp, image.c_ptr(), kernel.m_kernel.get_c_matrix()));
 #else
-        ETX(kjb_c::convolve_image(&temp, image.c_ptr(), kernel.m_kernel.get_c_matrix()));
+        ETX(ivi_c::convolve_image(&temp, image.c_ptr(), kernel.m_kernel.get_c_matrix()));
 #endif
 
     return Image(temp);
@@ -65,11 +65,11 @@ Image operator*(const Image& image, const Filter& kernel)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-/// @brief this wraps C function kjb_c::gauss_sample_image (q.v.).
+/// @brief this wraps C function ivi_c::gauss_sample_image (q.v.).
 Image gauss_sample_image(const Image& in, int resolution, double sigma)
 {
-    kjb_c::KJB_image *out_ip = 0;
-    ETX(kjb_c::gauss_sample_image(&out_ip, in.c_ptr(), resolution, sigma));
+    ivi_c::IVI_image *out_ip = 0;
+    ETX(ivi_c::gauss_sample_image(&out_ip, in.c_ptr(), resolution, sigma));
     return Image(out_ip);
 }
 
@@ -116,5 +116,5 @@ Matrix operator*(const Matrix& in, const Filter& mask)
     return out;
 }
 
-} //namespace kjb
+} //namespace ivi
 

@@ -1,5 +1,5 @@
 
-/* $Id: l_int_vector.h 21445 2017-06-28 20:39:44Z kobus $ */
+/* $Id: l_int_vector.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -29,7 +29,7 @@ extern "C" {
 
 
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -41,7 +41,7 @@ namespace kjb_c {
  *
  * Integer list type
  *
- * This type is the int_vector type for the KJB library
+ * This type is the int_vector type for the IVI library
  *
  * Related:
  *    get_target_int_vector, ra_get_target_int_vector, free_int_vector

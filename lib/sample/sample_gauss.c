@@ -1,5 +1,5 @@
 
-/* $Id: sample_gauss.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: sample_gauss.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -67,7 +67,7 @@ static int initialize_gaussian_distribution_lut(void);
  *
  * This routine gets a matrix of the specified dimensions, and fills it with
  * gaussian random values with the specified mean and standard deviation. The
- * routine kjb_rand() is used as the random number source (via the gauss_rand()
+ * routine ivi_rand() is used as the random number source (via the gauss_rand()
  * function).
  *
  * The first argument is the adress of the target matrix. If the target matrix
@@ -104,7 +104,7 @@ int get_general_sv_gauss_random_matrix(Matrix** mpp, int num_rows, int num_cols,
  * Gets a Gaussian random matrix
  *
  * This routine gets a matrix of the specified dimensions, and fills it with
- * gaussian random values with mean 0.0 and variance 1.0. The routine kjb_rand()
+ * gaussian random values with mean 0.0 and variance 1.0. The routine ivi_rand()
  * is used as the random number source (via the gauss_rand() function).
  *
  * The first argument is the adress of the target matrix. If the target matrix
@@ -147,7 +147,7 @@ int get_gauss_random_matrix(Matrix** mpp, int num_rows, int num_cols)
  * Gets a Gaussian random matrix
  *
  * This routine is exaclty like get_gauss_random_matrix(), exept that the
- * alternative random stream (e.g. kjb_rand_2()) is used.
+ * alternative random stream (e.g. ivi_rand_2()) is used.
  *
  * Returns:
  *     NO_ERROR on success and ERROR on failure This routine will only fail if
@@ -184,7 +184,7 @@ int get_gauss_random_matrix_2(Matrix** mpp, int num_rows, int num_cols)
  * Gets a Gaussian random vector
  *
  * This routine gets a matrix of the specified length, and fills it with
- * Gaussian random values with mean 0.0 and variance 1.0. The routine kjb_rand()
+ * Gaussian random values with mean 0.0 and variance 1.0. The routine ivi_rand()
  * is used for the random stream.
  *
  * The first argument is the adress of the target vector. If the target vector
@@ -223,7 +223,7 @@ int get_gauss_random_vector(Vector** vp, int length)
  * Gets a Gaussian random vector
  *
  * This routine is exaclty like get_gauss_random_vector(), exept that the
- * alternative random stream (e.g. kjb_rand_2()) is used.
+ * alternative random stream (e.g. ivi_rand_2()) is used.
  *
  * Returns:
  *     NO_ERROR on success and ERROR on failure This routine will only fail if
@@ -277,7 +277,7 @@ int get_lookup_gauss_random_vector(Vector** vp, int length)
  * Returns a Gaussian distributed, random number
  *
  * This routine returns an approximately  Gaussian distributed, random number,
- * with mean zero and variance one. The random stream from kjb_rand() is used.
+ * with mean zero and variance one. The random stream from ivi_rand() is used.
  *
  * Polar version of the Box-Muller method with sample caching. Every run
  * of Box-Muller algorithm generates two independent samples. In order to save
@@ -290,7 +290,7 @@ int get_lookup_gauss_random_vector(Vector** vp, int length)
  * Index: random, gaussian distribution
  *
  * Related:
- *     kjb_rand, gauss_rand_2
+ *     ivi_rand, gauss_rand_2
  *
  * Documentor:  Prasad
  *
@@ -299,17 +299,17 @@ int get_lookup_gauss_random_vector(Vector** vp, int length)
 
 #ifdef REGRESS_07_10_21
 /*
- * Use the Box-Muller method. We used the random stream from kjb_rand(). Guard
+ * Use the Box-Muller method. We used the random stream from ivi_rand(). Guard
  * against floating point exceptions.
 */
 double gauss_rand()
 {
-  double theta = M_PI * kjb_rand();
+  double theta = M_PI * ivi_rand();
   /*
    *  Get exponantially distributed (lamda=0.5) r_squared
    *  (-1/p)*log(uniform) is distributed as exp(); here p is 1/2.
   */
-  double r_squared = -2.0 * SAFE_LOG(kjb_rand());
+  double r_squared = -2.0 * SAFE_LOG(ivi_rand());
 
   if (r_squared <= 0.0)
   {
@@ -333,8 +333,8 @@ double gauss_rand()
     {
         do
         {
-            u1 = (2.0 * kjb_rand()) - 1.0;
-            u2 = (2.0 * kjb_rand()) - 1.0;
+            u1 = (2.0 * ivi_rand()) - 1.0;
+            u2 = (2.0 * ivi_rand()) - 1.0;
 
             r_squared = (u1 * u1) + (u2 * u2);
         } 
@@ -371,32 +371,32 @@ double gauss_rand()
  * Returns a Gaussian distributed, random number
  *
  * This routine returns an approximately  Gaussian distributed, random number,
- * with mean zero and variance one. The random stream from kjb_rand_2() is used.
+ * with mean zero and variance one. The random stream from ivi_rand_2() is used.
  *
  * This routine is exactly the same as gauss_rand(), except that the alternative
- * random stream kjb_rand_2() is used.
+ * random stream ivi_rand_2() is used.
  *
  * Index: random, gaussian distribution
  *
  * Related:
- *     kjb_rand, gauss_rand
+ *     ivi_rand, gauss_rand
  *
  * -----------------------------------------------------------------------------
 */
 
 #ifdef REGRESS_07_10_21
 /*
- * Use the Box-Muller method. We used the random stream from kjb_rand(). Gaurd
+ * Use the Box-Muller method. We used the random stream from ivi_rand(). Gaurd
  * against floating point exceptions.
 */
 double gauss_rand_2()
 {
-  double theta = M_PI * kjb_rand_2();
+  double theta = M_PI * ivi_rand_2();
   /*
    *  Get exponantially distributed (lamda=0.5) r_squared
    *  (-1/p)*log(uniform) is distributed as exp(); here p is 1/2.
   */
-  double r_squared = -2.0 * SAFE_LOG(kjb_rand_2());
+  double r_squared = -2.0 * SAFE_LOG(ivi_rand_2());
 
   if (r_squared <= 0.0)
   {
@@ -428,8 +428,8 @@ double gauss_rand_2()
     {
         do
         {
-            u1 = (2.0 * kjb_rand_2()) - 1.0;
-            u2 = (2.0 * kjb_rand_2()) - 1.0;
+            u1 = (2.0 * ivi_rand_2()) - 1.0;
+            u2 = (2.0 * ivi_rand_2()) - 1.0;
 
             r_squared = (u1 * u1) + (u2 * u2);
         } 
@@ -479,10 +479,10 @@ double lookup_gauss_rand(void)
     EPETE(initialize_gaussian_distribution_lut());
 
     /*
-    // We use kjb_rand, as opposed to kjb_rand_2, to make this routine part of
+    // We use ivi_rand, as opposed to ivi_rand_2, to make this routine part of
     // the first random stream.
     */
-    uniform_random_number = kjb_rand();
+    uniform_random_number = ivi_rand();
 
     if (uniform_random_number >= 0.5)
     {
@@ -495,7 +495,7 @@ double lookup_gauss_rand(void)
     if ((index < 0) || (index >= fs_gaussian_distribution_lut_size))
     {
         SET_CANT_HAPPEN_BUG();
-        kjb_exit(EXIT_FAILURE);
+        ivi_exit(EXIT_FAILURE);
     }
 
     ASSERT(fs_gaussian_distribution_lut_size < GAUSSIAN_NOISE_LUT_SIZE);
@@ -503,10 +503,10 @@ double lookup_gauss_rand(void)
     x = fs_gaussian_distribution_lut[ index ];
     y = fs_gaussian_distribution_lut[ index + 1];
     /*
-    // We use kjb_rand, as opposed to kjb_rand_2, to make this routine part of
+    // We use ivi_rand, as opposed to ivi_rand_2, to make this routine part of
     // the first random stream.
     */
-    a = kjb_rand();
+    a = ivi_rand();
 
     gaussian_random_number = a * x + (1.0 - a) * y;
 
@@ -596,7 +596,7 @@ static void prepare_memory_cleanup(void)
 
 static void free_gaussian_distribution_lut(void)
 {
-    kjb_free(fs_gaussian_distribution_lut);
+    ivi_free(fs_gaussian_distribution_lut);
 }
 
 #endif
@@ -609,7 +609,7 @@ static void free_gaussian_distribution_lut(void)
  * Samples a gaussian random number
  *
  * This routine generates a normally-distributed number with mean 'mean' and
- * variance 'variance'. This routine uses kjb_rand().
+ * variance 'variance'. This routine uses ivi_rand().
  *
  * Returns:
  *    Returns ERROR on failure, setting the the errors string accordingly, and 
@@ -659,7 +659,7 @@ int gaussian_rand(double* sample, double mean, double variance)
  * Samples a standard gaussian random vector
  *
  * This routine generates a normally-distributed vector of length len with mean
- * zero and identity covariance matrix. This routine uses kjb_rand(). [NOTE: this
+ * zero and identity covariance matrix. This routine uses ivi_rand(). [NOTE: this
  * provides the exact same functionality as get_gauss_random_vector().]
  *
  * The first argument is the adress of the target vector. If the target vector
@@ -705,7 +705,7 @@ int mv_std_gaussian_rand(Vector** sample, int len)
  *
  * This routine generates a normally-distributed vector of length len with mean
  * mean and covariance matrix diag[vars]. In other words, the elements of the
- * sample are indepenent of each other. This routine uses kjb_rand(). 
+ * sample are indepenent of each other. This routine uses ivi_rand(). 
  *
  * The first argument is the adress of the target vector. If the target vector
  * itself is NULL, then a vector  of the appropriate size is created. If the
@@ -759,7 +759,7 @@ int mv_ind_gaussian_rand(Vector** sample, const Vector* mean, const Vector* vars
  * This routine generates a normally-distributed vector of with mean
  * 'mean' and covariance matrix 'covar_mat', where 'covar_mat' is positive-definite.
  * For the special case where the covariance is diagonal, use the much faster
- * routine mv_ind_gaussian_rand(). This routine uses kjb_rand(). 
+ * routine mv_ind_gaussian_rand(). This routine uses ivi_rand(). 
  * 
  * Note: It obtains a standard gaussian vector using mv_std_gaussian_rand and uses
  * the Cholesky decomposition method to convert it into one with the specified

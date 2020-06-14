@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: drift_sampler.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: drift_sampler.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
@@ -31,8 +31,8 @@
 #include "dbn_cpp/drift_sampler.h"
 #include "dbn_cpp/linear_state_space.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 Drift_sampler::Pred_vec Drift_sampler::make_predictive
 (
@@ -43,7 +43,7 @@ Drift_sampler::Pred_vec Drift_sampler::make_predictive
     size_t num_params = param_length(num_oscillators, lss.use_modal());
     // control outputs
     const std::vector<Vector>& c_outputs = model_.c_outputs;
-    KJB(ASSERT(c_outputs.size() == num_params));
+    IVI(ASSERT(c_outputs.size() == num_params));
 
     // inputs
     gp::Inputs::const_iterator first_in = lss.get_gp_inputs().begin();
@@ -75,7 +75,7 @@ Drift_sampler::make_control_predictives(const Linear_state_space& lss) const
     const std::vector<Vector>& c_outs_all = model_.c_outputs;
     size_t num_oscillators = lss.num_oscillators();
     size_t num_params = param_length(num_oscillators, lss.use_modal());
-    KJB(ASSERT(c_outs_all.size() == num_params));
+    IVI(ASSERT(c_outs_all.size() == num_params));
 
     std::vector<Pred_vec> c_preds;
     c_preds.reserve(num_control_pts_);

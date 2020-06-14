@@ -28,7 +28,7 @@
 
 #include <vector>
 
-using namespace kjb;
+using namespace ivi;
 
 //Triangular_mesh * tm = NULL;
 
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
             std::cout << std::endl;
         }
     } 
-    catch(KJB_error e)
+    catch(IVI_error e)
     {
         e.print(std::cout);
     }

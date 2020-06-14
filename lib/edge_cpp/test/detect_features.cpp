@@ -31,7 +31,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    using namespace kjb;
+    using namespace ivi;
 
     if(argc != 3)
     {
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 
     std::vector<Vanishing_point> cmuvpts;
     double focal;
-    //kjb::read_CMU_vanishing_points(cmuvpts, focal, cmuf);
+    //ivi::read_CMU_vanishing_points(cmuvpts, focal, cmuf);
 
     img_name.append(argv[2]);
     img_name.append(".jpg");
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
 
     Manhattan_world * mw = new Manhattan_world(thevpts, focal);
 
-    kjb::Edge_set * es = ls.convert_to_edge_set(img.get_num_rows(), img.get_num_cols());
+    ivi::Edge_set * es = ls.convert_to_edge_set(img.get_num_rows(), img.get_num_cols());
     Edge_segment_set * ess = new Edge_segment_set();
     for(unsigned int i = 0; i < ls.size(); i++)
     {
@@ -170,7 +170,7 @@ int main(int argc, char **argv)
     img4.write(corners.c_str());
     fm.write(features.c_str());
     }
-    catch(KJB_error e)
+    catch(IVI_error e)
     {
         e.print(std::cout);
     }

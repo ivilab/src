@@ -1,5 +1,5 @@
 
-/* $Id: sample_misc.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: sample_misc.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -34,7 +34,7 @@ static double sample_gamma_pdf_large_alpha(double alpha, double beta);
 /* -------------------------------------------------------------------------- */
 
 /* =============================================================================
- *                          kjb_rand_int
+ *                          ivi_rand_int
  *
  * Samples random integer
  *
@@ -47,7 +47,7 @@ static double sample_gamma_pdf_large_alpha(double alpha, double beta);
  *    Returns a random integer, provided ub >= lb, otherwise ERROR.
  *
  * Related:
- *    kjb_rand
+ *    ivi_rand
  *
  * Author:
  *    Ernesto Brau
@@ -57,9 +57,9 @@ static double sample_gamma_pdf_large_alpha(double alpha, double beta);
  * -----------------------------------------------------------------------------
 */
 
-int kjb_rand_int(int lb, int ub)
+int ivi_rand_int(int lb, int ub)
 {
-    int k = (int)(kjb_rand() * (1 + ub - lb));
+    int k = (int)(ivi_rand() * (1 + ub - lb));
 
     if (lb > ub)
     {
@@ -69,7 +69,7 @@ int kjb_rand_int(int lb, int ub)
 
     if (k == 1 + ub - lb)
     {
-        /* Only occurs when kjb_rand() returns 1 -- almost never! */
+        /* Only occurs when ivi_rand() returns 1 -- almost never! */
         return ub;
     }
 
@@ -91,7 +91,7 @@ int kjb_rand_int(int lb, int ub)
  *    ERROR on failure, NO_ERROR on success.
  *
  * Related:
- *    kjb_rand
+ *    ivi_rand
  *
  * Author:
  *    Ernesto Brau
@@ -104,7 +104,7 @@ int kjb_rand_int(int lb, int ub)
 int sample_from_discrete_distribution(int *idx, const Vector* dist)
 {
     double cdf = 0;
-    double u = kjb_rand();
+    double u = ivi_rand();
     const double DISTRIBUTION_EPSILON = 0.00001;
 
     int i;
@@ -149,7 +149,7 @@ int sample_from_discrete_distribution(int *idx, const Vector* dist)
  *    the sampled value
  *
  * Related:
- *    kjb_rand
+ *    ivi_rand
  *
  * Author:
  *    Luca Del Pero
@@ -165,7 +165,7 @@ double sample_from_uniform_distribution(double a, double b)
         return a;
     }
 
-    return (b - a)*kjb_rand() + a;
+    return (b - a)*ivi_rand() + a;
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -176,7 +176,7 @@ double sample_from_uniform_distribution(double a, double b)
  * Returns a Poisson-distributed random number
  *
  * This routine returns a Poisson-distributed random integer,
- * with parameter lambda. The random stream from kjb_rand() is used.
+ * with parameter lambda. The random stream from ivi_rand() is used.
  *
  * Returns:
  *    A Poisson-distributed integer. If lambda is negative, it 
@@ -193,7 +193,7 @@ double sample_from_uniform_distribution(double a, double b)
  * Index: random
  *
  * Related:
- *     kjb_rand
+ *     ivi_rand
  *
  * -----------------------------------------------------------------------------
 */
@@ -213,7 +213,7 @@ int poisson_rand(double lambda)
     do
     {
         k += 1;
-        p *= kjb_rand();
+        p *= ivi_rand();
     }
     while (p > L);
 
@@ -536,7 +536,7 @@ int pick_m_from_n(Int_vector ** m_indexes, int m, int n)
 
     for(i = 0; i < m; i++)
     {
-        value = kjb_rand_int(0, n-i-1);
+        value = ivi_rand_int(0, n-i-1);
         count = 0;
         for(j=0; j < n; j++)
         {

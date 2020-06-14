@@ -4,7 +4,7 @@
  * @author andrew predoehl
  */
 /*
- * $Id: test_bits.cpp 21755 2017-09-07 21:54:51Z kobus $
+ * $Id: test_bits.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "l/l_init.h"
@@ -32,26 +32,26 @@ int test_swapping(U& ux)
 
     std::copy(s, s+usize, ux.a);
     //std::string qf(ux.a, usize);
-    kjb::swap_bytes(ux.x);
+    ivi::swap_bytes(ux.x);
     //std::string qr(ux.a, usize);
 
     //std::cout << "Input: '" << qf << "'; output: '" << qr << "' -- wow.\n";
-    if (0 == kjb_c::kjb_strncmp(ux.a, answer, usize)) return EXIT_SUCCESS;
+    if (0 == ivi_c::ivi_strncmp(ux.a, answer, usize)) return EXIT_SUCCESS;
 
-    kjb_c::pso("Error for input of size %u\n", usize);
+    ivi_c::pso("Error for input of size %u\n", usize);
     return EXIT_FAILURE;
 }
 
 
-union U2 { char a[2]; kjb_c::kjb_uint16 x; } u2;
-union U4 { char a[4]; kjb_c::kjb_uint32 x; } u4;
-union U8 { char a[8]; kjb_c::kjb_uint64 x; } u8;
+union U2 { char a[2]; ivi_c::ivi_uint16 x; } u2;
+union U4 { char a[4]; ivi_c::ivi_uint32 x; } u4;
+union U8 { char a[8]; ivi_c::ivi_uint64 x; } u8;
 
 }
 
 int main()
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     ASSERT(2 == sizeof(U2));
     ASSERT(4 == sizeof(U4));
@@ -61,7 +61,7 @@ int main()
     FRF(test_swapping(u4));
     FRF(test_swapping(u8));
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
 
     return EXIT_SUCCESS;
 }

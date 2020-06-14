@@ -1,4 +1,4 @@
-/* $Id: test_matrix_d.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: test_matrix_d.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -34,7 +34,7 @@
 
 #include <l/l_sys_rand.h>
 
-using namespace kjb;
+using namespace ivi;
 
 template <std::size_t NROWS, std::size_t NCOLS, bool TRANSPOSE>
 void fill_with_random(Matrix_d<NROWS, NCOLS, TRANSPOSE>& mat)
@@ -45,7 +45,7 @@ void fill_with_random(Matrix_d<NROWS, NCOLS, TRANSPOSE>& mat)
     }
 }
 
-void fill_with_random(kjb::Matrix& m)
+void fill_with_random(ivi::Matrix& m)
 {
     m = create_random_matrix(m.get_num_rows(), m.get_num_cols());
 }
@@ -55,7 +55,7 @@ void fill_with_random(std::vector<std::vector<double> >& m)
     for(size_t row = 0; row < m.size(); row++)
     for(size_t col = 0; col < m[0].size(); col++)
     {
-        m[row][col] = kjb_c::kjb_rand();
+        m[row][col] = ivi_c::ivi_rand();
     }
 }
 

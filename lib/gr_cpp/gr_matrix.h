@@ -1,4 +1,4 @@
-/* $Id: gr_matrix.h 21599 2017-07-31 00:44:30Z kobus $ */
+/* $Id: gr_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_GR_MATRIX_H
-#define KJB_GR_MATRIX_H
+#ifndef IVI_GR_MATRIX_H
+#define IVI_GR_MATRIX_H
 
 #include "g_cpp/g_quaternion.h"
 #include "m_cpp/m_matrix.h"
@@ -30,7 +30,7 @@
  */
 
 
-namespace kjb
+namespace ivi
 {
 
 void rotate(Matrix& m, const Quaternion& r);

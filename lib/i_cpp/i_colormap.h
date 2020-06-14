@@ -1,4 +1,4 @@
-/* $Id: i_colormap.h 16764 2014-05-09 23:17:12Z ksimek $ */
+/* $Id: i_colormap.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,8 +19,8 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_I_CPP_I_COLORMAP_H
-#define KJB_I_CPP_I_COLORMAP_H
+#ifndef IVI_I_CPP_I_COLORMAP_H
+#define IVI_I_CPP_I_COLORMAP_H
 
 #include <string>
 #include <vector>
@@ -31,11 +31,11 @@
 #include <l_cpp/l_exception.h>
 #include <i_cpp/i_pixel.h>
 
-namespace kjb
+namespace ivi
 {
 
 /**
- * @addtogroup kjbImageProc
+ * @addtogroup iviImageProc
  * @{
  */
 
@@ -57,7 +57,7 @@ public:
     {
         if(presets_.count(name) == 0)
         {
-            KJB_THROW_3(Illegal_argument, "Unknown colormap preset: %s", (name.c_str()));
+            IVI_THROW_3(Illegal_argument, "Unknown colormap preset: %s", (name.c_str()));
         }
 
         colors_ = presets_[name](n);
@@ -92,5 +92,5 @@ public:
 
 /// @}
 
-} // namespace kjb
+} // namespace ivi
 #endif

@@ -1,4 +1,4 @@
-/* $Id: opt_pgpe.h 18545 2015-02-09 18:18:16Z jguan1 $ */
+/* $Id: opt_pgpe.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,8 +17,8 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-#ifndef KJB_CPP_PGPE_H
-#define KJB_CPP_PGPE_H
+#ifndef IVI_CPP_PGPE_H
+#define IVI_CPP_PGPE_H
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
@@ -36,7 +36,7 @@
  *
  * Note: Evaluator needs to have a ()(Vector parameters) operator 
  */
-namespace kjb
+namespace ivi
 {
 template <class Evaluator>
 class Pgpe
@@ -257,5 +257,5 @@ void Pgpe<Evaluator>::learn()
         }
     }
 }
-} // namespace kjb
-#endif /*KJB_PGPE_H */
+} // namespace ivi
+#endif /*IVI_PGPE_H */

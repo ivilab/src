@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: l_stdio_wrap.h 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: l_stdio_wrap.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 /* =========================================================================== *
@@ -38,7 +38,7 @@
 #include <string>
 #include <boost/scoped_ptr.hpp>
 
-namespace kjb
+namespace ivi
 {
 
 
@@ -70,20 +70,20 @@ protected:
 
     /**
      * @brief this is what we do when things go terribly wrong
-     * @throws kjb::IO_error in all cases, echoing the parameters.
+     * @throws ivi::IO_error in all cases, echoing the parameters.
      */
     void throw_io_error( const std::string& pathname, const char* mode )
     {
-        KJB_THROW_2( kjb::IO_error, "Unable to open " + pathname
+        IVI_THROW_2( ivi::IO_error, "Unable to open " + pathname
                                                     + " with mode " + mode );
     }
 
     /**
      * @brief ctor needs the pathname and a mode; mode is set by derived class
-     * @throws kjb::IO_error if the underlying fopen call fails
+     * @throws ivi::IO_error if the underlying fopen call fails
      */
     File_Ptr( const std::string& pathname, const char* mode )
-    :   m_fp( kjb_c::kjb_fopen( pathname.c_str(), mode ) )
+    :   m_fp( ivi_c::ivi_fopen( pathname.c_str(), mode ) )
     {
         if ( 0 == m_fp )
         {
@@ -107,7 +107,7 @@ public:
     /// @brief close file before destruction; rarely needed; safe to do twice.
     virtual int close()
     {
-        int rc = kjb_c::kjb_fclose( m_fp );
+        int rc = ivi_c::ivi_fclose( m_fp );
         m_fp = 0;
         return rc;
     }
@@ -171,7 +171,7 @@ struct File_Ptr_Read_Plus : public File_Ptr
  *
  * This object deletes its underlying file only when the object is destroyed.
  * If the program aborts, the temporary file might not be deleted.  In that
- * case, you might want to clean up files called /tmp/libkjb-XXXXXX manually,
+ * case, you might want to clean up files called /tmp/libivi-XXXXXX manually,
  * where XXXXXX denotes any arbitrary combination of six printable characters.
  *
  * Example usage:
@@ -202,7 +202,7 @@ public:
         if ( m_filename.size() )
         {
             rc1 = File_Ptr::close();
-            rc2 = kjb_c::kjb_unlink( m_filename.c_str() );
+            rc2 = ivi_c::ivi_unlink( m_filename.c_str() );
             m_filename.clear();
         }
         return rc1 | rc2;
@@ -267,12 +267,12 @@ class Temporary_Directory
 
     int do_rmdir() const
     {
-        return kjb_c::kjb_rmdir( m_pathname.c_str() );
+        return ivi_c::ivi_rmdir( m_pathname.c_str() );
     }
 
     int do_rmrf() const
     {
-        return kjb_c::kjb_system( ("rm -rf " + m_pathname).c_str() );
+        return ivi_c::ivi_system( ("rm -rf " + m_pathname).c_str() );
     }
 
     int do_the_cleaning(
@@ -280,7 +280,7 @@ class Temporary_Directory
         const std::string& fail_func
     )
     {
-        using namespace kjb_c;
+        using namespace ivi_c;
         ASSERT( pf_cleaning );
         if ( 0 == m_pathname.size() ) return NO_ERROR;
 
@@ -301,7 +301,7 @@ public:
     /**
      * @brief delete the temporary directory (if empty) otherwise return ERROR
      *
-     * Iff successful this returns kjb_c::NO_ERROR.  Safe to call twice, i.e.,
+     * Iff successful this returns ivi_c::NO_ERROR.  Safe to call twice, i.e.,
      * if this successfully removes the directory, later calls have no effect
      * but they still return NO_ERROR.  A call can fail for many reasons (see
      * rmdir(2)) but the most common is when the directory is not empty.  If
@@ -326,7 +326,7 @@ public:
         int status = remove();
         if (!m_silence)
         {
-            using namespace kjb_c;
+            using namespace ivi_c;
             EPE(status);
         }
     }
@@ -335,8 +335,8 @@ public:
 #warning "On non-Unix style systems, class Temporary_Directory does not work."
 public:
     Temporary_Directory() {}
-    int remove()                { return kjb_c::NO_ERROR; }
-    int recursively_remove()    { return kjb_c::NO_ERROR; }
+    int remove()                { return ivi_c::NO_ERROR; }
+    int recursively_remove()    { return ivi_c::NO_ERROR; }
 #endif /* UNIX_SYSTEM (or not) */
 
     /**
@@ -376,7 +376,7 @@ struct Temporary_Recursively_Removing_Directory : public Temporary_Directory
 
     ~Temporary_Recursively_Removing_Directory()
     {
-        using namespace kjb_c;
+        using namespace ivi_c;
         EPE( recursively_remove() );
     }
 
@@ -416,7 +416,7 @@ struct Temporary_Recursively_Removing_Directory : public Temporary_Directory
  * present, this file will simply open the binary compressed file for you,
  * which is likely to be non-text.  That maybe wasn't what you meant.
  *
- * @todo attempt_unzip() uses system(); should be kjb_system(), but that fails.
+ * @todo attempt_unzip() uses system(); should be ivi_system(), but that fails.
  */
 class File_Ptr_Smart_Read : public File_Ptr
 {
@@ -436,7 +436,7 @@ public:
             File_Ptr_Read fp( filename );
             File_Ptr::swap( fp );
         }
-        catch( kjb::IO_error& )
+        catch( ivi::IO_error& )
         {
             attempt_unzip( filename );
         }
@@ -492,12 +492,12 @@ public:
  *                      such a value must exist).  As is conventional, the
  *                      default value is '\n'
  *
- * @return kjb_c::ERROR if there is an error or if we reach EOF before any
- *          characters are read; but if successful, return kjb_c::NO_ERROR.
+ * @return ivi_c::ERROR if there is an error or if we reach EOF before any
+ *          characters are read; but if successful, return ivi_c::NO_ERROR.
  */
 int getline( FILE* fp, std::string* line, char EOL = '\n' );
 
 
-} //namespace kjb
+} //namespace ivi
 
 #endif /* L_STDIO_WRAP_H_UOFARIZONA_VISION */

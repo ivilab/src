@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_str.c 21656 2017-08-05 15:34:14Z kobus $ */
+/* $Id: l_sys_str.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -32,12 +32,12 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 
 /* =============================================================================
- *                              kjb_sprintf
+ *                              ivi_sprintf
  *
  * A version of sprintf that checks for buffer overflow and has some extras
  *
  * This routine is similar to sprintf(), except that it checks for buffer
- * overflow. The extra formatting items described in kjb_fprintf() are
+ * overflow. The extra formatting items described in ivi_fprintf() are
  * available.  Thus is it is more similar to snprinf(), but that routine is not
  * universally available (at least at the time this routine was written). 
  *
@@ -54,7 +54,7 @@ extern "C" {
  *    This returns ERROR if a problem is encountered.
  *
  * Related:
- *    kjb_fprintf
+ *    ivi_fprintf
  *
  * Index: strings
  *
@@ -62,7 +62,7 @@ extern "C" {
 */
 
 /*PRINTFLIKE3*/
-long kjb_sprintf(char* buff, size_t max_len, const char* format_str, ...)
+long ivi_sprintf(char* buff, size_t max_len, const char* format_str, ...)
 {
     int     result;
     va_list ap;
@@ -70,7 +70,7 @@ long kjb_sprintf(char* buff, size_t max_len, const char* format_str, ...)
 
     va_start(ap, format_str);
 
-    result = kjb_vsprintf(buff, max_len, format_str, ap);
+    result = ivi_vsprintf(buff, max_len, format_str, ap);
 
     va_end(ap);
 
@@ -80,15 +80,15 @@ long kjb_sprintf(char* buff, size_t max_len, const char* format_str, ...)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                              kjb_vsprintf
+ *                              ivi_vsprintf
  *
  * A version of vprintf that checks for buffer overflow and has some extras
  *
- * This routine is mostly use to construct others (e.g. kjb_sprintf()). However,
+ * This routine is mostly use to construct others (e.g. ivi_sprintf()). However,
  * it may be useful outside this context, hence we export the routine. 
  *
  * This routine is similar to vprintf(), except that it checks for buffer
- * overflow. The extra formatting items described in kjb_fprintf() are
+ * overflow. The extra formatting items described in ivi_fprintf() are
  * avaliable.  Thus is it is more similar to vnprintf(), but that routine is not
  * universally available (at least at the time this routine was written). 
  *
@@ -113,7 +113,7 @@ long kjb_sprintf(char* buff, size_t max_len, const char* format_str, ...)
  *    that want to treat this as a bug will have to check the return. 
  *
  * Related:
- *    kjb_fprintf, kjb_sprintf
+ *    ivi_fprintf, ivi_sprintf
  *
  * -----------------------------------------------------------------------------
 */
@@ -121,10 +121,10 @@ long kjb_sprintf(char* buff, size_t max_len, const char* format_str, ...)
 /*
  *  Note: This routine should always leave buff in a reaonable state (e.g.
  *        possibly a null terminated string) as it may be called from
- *        kjb_error.
+ *        ivi_error.
 */
 
-long kjb_vsprintf
+long ivi_vsprintf
 (
     char*       buff,
     size_t      max_len,
@@ -172,7 +172,7 @@ long kjb_vsprintf
     {
         warn_pso("Suspicious buffer length (%lu) at line %d of %s.\n",
                  (unsigned long)max_len, __LINE__, __FILE__);
-        kjb_optional_abort();
+        ivi_optional_abort();
     }
 #endif
 
@@ -1071,7 +1071,7 @@ long kjb_vsprintf
             else if (type_char == 'S')
             {
 
-#ifdef KJB_HAVE_STRERROR
+#ifdef IVI_HAVE_STRERROR
                 const char* sys_mess = strerror(errno);
 #else
 
@@ -1082,7 +1082,7 @@ long kjb_vsprintf
                 IMPORT SYS_ERRLIST_TYPE sys_errlist[];
 #endif
 
-#ifdef KJB_HAVE_STRERROR
+#ifdef IVI_HAVE_STRERROR
                 if (sys_mess != NULL)
 #else
                     if (    (errno != NO_SYSTEM_ERROR)
@@ -1103,7 +1103,7 @@ long kjb_vsprintf
                         buff_pos += temp_buff_len;
                         max_len -= temp_buff_len;
 
-#ifdef KJB_HAVE_STRERROR
+#ifdef IVI_HAVE_STRERROR
                         temp_buff_pos = sys_mess;
 #else
                         temp_buff_pos = sys_errlist[errno];

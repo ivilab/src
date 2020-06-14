@@ -9,7 +9,7 @@
  */
 
 /*
- * $Id: test_pixpath.cpp 21357 2017-03-30 05:35:22Z kobus $
+ * $Id: test_pixpath.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 
@@ -39,15 +39,15 @@
 namespace
 {
 
-using kjb::qd::PixPoint;
-using kjb::qd::PixPath;
+using ivi::qd::PixPoint;
+using ivi::qd::PixPath;
 
 std::string FNAME;
 
 void skipping()
 {
 #ifdef TEST
-    if (kjb_c::is_interactive())
+    if (ivi_c::is_interactive())
     {
         std::cerr << "Skipping some unit tests, since TEST is not defined.\n";
     }
@@ -58,7 +58,7 @@ void skipping()
 
 const int EDGE_SZ = 500;
 
-const kjb::PixelRGBA    red     ( 100,   0,   0 ),
+const ivi::PixelRGBA    red     ( 100,   0,   0 ),
                         green   (   0, 100,   0 ),
                         blue    (   0,   0, 100 ),
                         gray    ( 100, 100, 100 ),
@@ -91,7 +91,7 @@ void get_coords( double px, double py, int* cx, int* cy )
  */
 int test1()
 {
-    using kjb::qd::TEST_PIXPOINT_UNUSED;
+    using ivi::qd::TEST_PIXPOINT_UNUSED;
 
     PixPoint a, b( 1, 1 ), c( 1, 2 ), d( 2, 1 ), e( 1, 2 );
 
@@ -254,7 +254,7 @@ int test3()
         ppp.push_back( PixPoint( rand(), rand() ) );
 
     int rc = ppp.save( FNAME );
-    assert( kjb_c::NO_ERROR == rc );
+    assert( ivi_c::NO_ERROR == rc );
 
     TEST_TRUE( ppp == PixPath::load( FNAME ) );
     return EXIT_SUCCESS;
@@ -425,12 +425,12 @@ int test4()
     TEST_TRUE( 1 == rrr.hits( PixPoint( 5, 5 ) ) );
     TEST_TRUE( 0 == rrr.hits( PixPoint( 4, 4 ) ) );
 
-    TEST_TRUE( kjb_c::ERROR == rrr.append_no_overlap( ppp ) );
+    TEST_TRUE( ivi_c::ERROR == rrr.append_no_overlap( ppp ) );
 
     TEST_TRUE( PixPoint( 3, 3 ) == rrr.back() );
     rrr.push_back( PixPoint( 1, 1 ) );
     TEST_TRUE( PixPoint( 1, 1 ) == rrr.back() );
-    TEST_TRUE( kjb_c::NO_ERROR == rrr.append_no_overlap( qqq ) );
+    TEST_TRUE( ivi_c::NO_ERROR == rrr.append_no_overlap( qqq ) );
     TEST_TRUE( 13 == rrr.size() );
     TEST_TRUE( qqq == rrr.suffix( 10 ) );
 
@@ -529,7 +529,7 @@ PixPath operator+( const PixPath& p, const PixPoint& c )
  */
 int test5()
 {
-    using kjb::qd::bresenham_line;
+    using ivi::qd::bresenham_line;
 
     /*
      *    a   +   +   +   +   +   +   +
@@ -671,7 +671,7 @@ int test5()
  */
 int test6()
 {
-#ifdef KJB_HAVE_LAPACK
+#ifdef IVI_HAVE_LAPACK
     PixPath ppp( PixPath::reserve( 5 ) );
     ppp.push_back( PixPoint( 0, 0 ) );
     ppp.push_back( PixPoint( 10, 10 ) );
@@ -680,7 +680,7 @@ int test6()
     ppp.push_back( PixPoint( 40, 0 ) );
 
     std::vector<float> x, y;
-    KJB(EPETE(ppp.cubic_fit( &x, &y )));
+    IVI(EPETE(ppp.cubic_fit( &x, &y )));
     TEST_TRUE( 4 == x.size() );
     TEST_TRUE( 4 == y.size() );
 
@@ -694,7 +694,7 @@ int test6()
     TEST_APPROX_EQUALITY( y[3],  5.5e-1 );
 
 #ifdef SHOW_PRETTY_PICTURES
-    kjb::Image img = kjb::Image::create_zero_image( EDGE_SZ, EDGE_SZ );
+    ivi::Image img = ivi::Image::create_zero_image( EDGE_SZ, EDGE_SZ );
 
     /*
      * Plot polynomial
@@ -763,7 +763,7 @@ int test6()
         printf("t = %e, n = %e, d2 = %e, k = %e\n", t, n, d2, k);
         float   rrr = std::max( std::min( 128 + 1000*k, 255.0 ), 0.0 ),
                 bbb = std::max( std::min( 128 - 1000*k, 255.0 ), 0.0 );
-        kjb_c::Pixel pixel = gray;
+        ivi_c::Pixel pixel = gray;
         pixel.r = rrr;
         pixel.b = bbb;
         //img.rectangle( cx, cy, 3, 3, pixel );
@@ -897,7 +897,7 @@ int test8()
         // degenerate triangle:  angle undefined
         p.angle_at( 2 );
     }
-    catch (const kjb::Illegal_argument&)
+    catch (const ivi::Illegal_argument&)
     {
         satisfied = true;
     }
@@ -931,7 +931,7 @@ int test9(){
     {
         p + q;
     }
-    catch (const kjb::Dimension_mismatch&)
+    catch (const ivi::Dimension_mismatch&)
     {
         satisfied = true;
     }
@@ -959,7 +959,7 @@ int test9(){
  */
 int test10()
 {
-    using kjb::qd::PixPathAc;
+    using ivi::qd::PixPathAc;
 
     PixPathAc p( PixPathAc::reserve( 20 ) );
 
@@ -1149,7 +1149,7 @@ int test13()
     {
         pp.longest_segment();
     }
-    catch (kjb::Illegal_argument&)
+    catch (ivi::Illegal_argument&)
     {
         fine = true;
     }
@@ -1162,7 +1162,7 @@ int test13()
     {
         pp.longest_segment();
     }
-    catch (kjb::Illegal_argument&)
+    catch (ivi::Illegal_argument&)
     {
         fine = true;
     }
@@ -1434,7 +1434,7 @@ int test16()
  */
 int test17()
 {
-    using kjb::qd::sosq_error;
+    using ivi::qd::sosq_error;
 
     PixPath path1( PixPath::reserve( 3 ) );
     path1.push_back( PixPoint(0,0) );
@@ -1468,7 +1468,7 @@ int test17()
 
 #if 0 /* class Memo_sosq_error went private */
     // should be the same functionality but memoizes its answers
-    kjb::qd::Memo_sosq_error sf( path1 );
+    ivi::qd::Memo_sosq_error sf( path1 );
     float e7 = sf( 0, 6 );
     TEST_APPROX_EQUALITY( e7, e6 );
 
@@ -1505,7 +1505,7 @@ int test18()
     aaa.push_back( PixPoint( 700,100 ) );
 
     float err = 0;
-    PixPath bbb( kjb::qd::polyline_approx( aaa, 4, &err ) );
+    PixPath bbb( ivi::qd::polyline_approx( aaa, 4, &err ) );
     TEST_TRUE( err < 50 );
     TEST_TRUE( aaa.has_subsequence( bbb ) );
     TEST_TRUE( bbb[0] == aaa[0] );
@@ -1554,7 +1554,7 @@ int test19()
     {
         ppp.closest_pair();
     }
-    catch (kjb::Illegal_argument&)
+    catch (ivi::Illegal_argument&)
     {
         caught = true;
     }
@@ -1568,7 +1568,7 @@ int test19()
     {
         ppp.closest_pair();
     }
-    catch (kjb::Illegal_argument&)
+    catch (ivi::Illegal_argument&)
     {
         caught = true;
     }
@@ -1596,7 +1596,7 @@ int test19()
 
 int test20()
 {
-    using kjb::qd::str_to_PixPoint;
+    using ivi::qd::str_to_PixPoint;
 
     PixPoint a1 = str_to_PixPoint( "" );
     TEST_TRUE( a1.is_unused() );
@@ -1645,13 +1645,13 @@ int test20()
 int test21()
 {
     PixPath p( PixPath::reserve() );
-    kjb::qd::SvgWrap s( p );
+    ivi::qd::SvgWrap s( p );
     bool caught = false;
     try
     {
         s.set_id( "\"" );
     }
-    catch( const kjb::Illegal_argument& )
+    catch( const ivi::Illegal_argument& )
     {
         caught = true;
     }
@@ -1662,7 +1662,7 @@ int test21()
     {
         s.set_id( "\x1" );
     }
-    catch( const kjb::Illegal_argument& )
+    catch( const ivi::Illegal_argument& )
     {
         caught = true;
     }
@@ -1684,7 +1684,7 @@ int test22()
     {
         PixPath::parse( "M 123,456 L beef jerky" );
     }
-    catch (kjb::Serialization_error&)
+    catch (ivi::Serialization_error&)
     {
         caught = true;
     }
@@ -1767,8 +1767,8 @@ int test24()
 /*   DISABLED B/C DOUBLESEGMENT IS UNDER SUSPICION OF REDUNDANCY */
 int test25()
 {
-    typedef kjb::qd::DoubleSegment  DS;
-    typedef kjb::qd::DoublePoint    DP;
+    typedef ivi::qd::DoubleSegment  DS;
+    typedef ivi::qd::DoublePoint    DP;
 
     /*
      * By using small integer coordinate values, I hope to avoid any
@@ -1870,7 +1870,7 @@ int main2( int, const char* const* )
                         test20, test21, test22, test23, test24, /*test25,*/
                         00 };
 
-    kjb::Temporary_File tf;
+    ivi::Temporary_File tf;
     FNAME = tf.get_filename();
 
     srand( 7654321 );
@@ -1880,14 +1880,14 @@ int main2( int, const char* const* )
         int rc = (*p)();
         if ( rc != EXIT_SUCCESS )
         {
-            kjb_c::p_stderr( "Failure in test index %d.\n", p - suite );
+            ivi_c::p_stderr( "Failure in test index %d.\n", p - suite );
             return rc;
         }
     }
 
-    if ( kjb_c::is_interactive() )
+    if ( ivi_c::is_interactive() )
     {
-        kjb_c::pso( "Success!\n" );
+        ivi_c::pso( "Success!\n" );
     }
 
     RETURN_VICTORIOUSLY();
@@ -1897,9 +1897,9 @@ int main2( int, const char* const* )
 
 int main( int argc, const char* const* argv )
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
     int rc = main2( argc, argv );
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     return rc;
 }
 

@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
     char         plot_file_name[MAX_FILE_NAME_SIZE ]; 
     long        cpu_time;
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
     if (argc < 2)
     {
@@ -95,8 +95,8 @@ int main(int argc, char* argv[])
         verbose_pso(3, "Writing plot to file '%s' \n", plot_file_name);
     }
 
-    /* kjb_seed_rand_with_tod(); */
-    kjb_set_verbose_level(5);
+    /* ivi_seed_rand_with_tod(); */
+    ivi_set_verbose_level(5);
 
     /*
     EPETE(set_em_cluster_options("cluster-tie-cluster-var", "t")); 
@@ -210,11 +210,11 @@ int main(int argc, char* argv[])
     free_int_vector(index_vp); 
     free_vector(mean_vp); 
 
-    kjb_fclose(data_fp); 
+    ivi_fclose(data_fp); 
 
     /*prompt_to_continue();  */
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS;
 }

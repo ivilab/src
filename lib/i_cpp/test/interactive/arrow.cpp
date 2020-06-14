@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: arrow.cpp 15381 2013-09-20 00:19:18Z predoehl $
+ * $Id: arrow.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <i_cpp/i_image.h>
@@ -12,8 +12,8 @@
 int main(int argc, char** argv)
 {
     const int HALFSIZE = 100;
-    kjb::Image i(HALFSIZE *2, HALFSIZE * 2, 0, 0, 0);
-    kjb_c::Pixel red, yellow, white;
+    ivi::Image i(HALFSIZE *2, HALFSIZE * 2, 0, 0, 0);
+    ivi_c::Pixel red, yellow, white;
     red.r = 200;
     red.g = 0;
     red.b = 0;
@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     white = yellow;
     white.b = 200;
 
-    kjb::Vector c(2), d(2);
+    ivi::Vector c(2), d(2);
     c(0) = c(1) = HALFSIZE + 20;
 
     for (int j = 0; j < 270; j += 36)
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     }
 
     i.display("some arrows (press ctrl+c to end)");
-    while(1) { kjb_c::nap(1000); }
+    while(1) { ivi_c::nap(1000); }
 
     return 0;
 }

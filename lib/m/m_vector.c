@@ -1,5 +1,5 @@
 
-/* $Id: m_vector.c 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: m_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -160,7 +160,7 @@ int get_initialized_vector(Vector** vpp, int len, double initial_value)
  *
  * Gets target vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of vectors. If *target_vpp is NULL, then this routine
  * creates the vector. If it is not null, and it is the right size, then this
  * routine does nothing. If it is the wrong size, then it is resized.
@@ -169,7 +169,7 @@ int get_initialized_vector(Vector** vpp, int len, double initial_value)
  * fails, then the original contents of the *target_vpp will be lost.  However,
  * (*target_vpp)->elements will be set to NULL, so (*target_vpp) can be safely
  * sent to free_vector().  Note that this is in fact the convention throughout
- * the KJB library--if destruction on failure is a problem (usually when
+ * the IVI library--if destruction on failure is a problem (usually when
  * *target_vpp is global)--then work on a copy!
  *
  * Index: vectors
@@ -211,7 +211,7 @@ int debug_get_target_vector
     }
     else
     {
-        kjb_free(vp->elements);
+        ivi_free(vp->elements);
 
         if (length > 0)
         {
@@ -263,7 +263,7 @@ int get_target_vector(Vector** target_vpp, int length)
     }
     else
     {
-        kjb_free(vp->elements);
+        ivi_free(vp->elements);
 
         if (length > 0)
         {
@@ -333,7 +333,7 @@ Vector* debug_create_vector
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     NRN(vp = DEBUG_TYPE_MALLOC(Vector, file_name, line_number));
@@ -341,7 +341,7 @@ Vector* debug_create_vector
     if (len > 0)
     {
         /*
-        //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+        //  Use debug_ivi_malloc as opposed to macros to pass down file_name
         //  and line_number.
         */
 
@@ -349,7 +349,7 @@ Vector* debug_create_vector
 
         if (vp->elements == NULL)
         {
-            kjb_free(vp);
+            ivi_free(vp);
             return NULL;
         }
     }
@@ -389,7 +389,7 @@ Vector* create_vector(int len)
 
         if (vp->elements == NULL)
         {
-           kjb_free(vp);
+           ivi_free(vp);
            return NULL;
         }
     }
@@ -434,16 +434,16 @@ void free_vector(Vector* vp)
              * otherwise problems such as double free can look like unitialized
              * memory.
             */
-            if (kjb_debug_level >= 10)
+            if (ivi_debug_level >= 10)
             {
                 check_initialization(vp->elements, vp->length, sizeof(double));
             }
 #endif
-            kjb_free(vp->elements);
+            ivi_free(vp->elements);
         }
     }
 
-    kjb_free(vp);
+    ivi_free(vp);
 
 }
 
@@ -527,7 +527,7 @@ Vector* create_random_vector(int length)
 
     for (i=0; i<length; i++)
     {
-        *elem_ptr++ = kjb_rand();
+        *elem_ptr++ = ivi_rand();
     }
 
     return vp;
@@ -563,7 +563,7 @@ Vector* create_random_vector_2(int length)
 
     for (i=0; i<length; i++)
     {
-        *elem_ptr++ = kjb_rand_2();
+        *elem_ptr++ = ivi_rand_2();
     }
 
     return vp;
@@ -578,7 +578,7 @@ Vector* create_random_vector_2(int length)
  * Gets a uniform random vector
  *
  * This routine gets a matrix of the specified length, and fills it with uniform
- * random values between 0.0 and 1.0. The routine kjb_rand() is used.
+ * random values between 0.0 and 1.0. The routine ivi_rand() is used.
  *
  * The first argument is the adress of the target vector. If the target vector
  * itself is null, then a vector  of the appropriate size is created. If the
@@ -608,7 +608,7 @@ int get_random_vector(Vector** target_vpp, int length)
 
     for (i=0; i<length; i++)
     {
-        *elem_ptr++ = kjb_rand();
+        *elem_ptr++ = ivi_rand();
     }
 
     return NO_ERROR;
@@ -622,7 +622,7 @@ int get_random_vector(Vector** target_vpp, int length)
  * Gets a uniform random vector
  *
  * This routine is exaclty like get_random_vector(), exept that the alternative
- * random stream (e.g. kjb_rand_2()) is used.
+ * random stream (e.g. ivi_rand_2()) is used.
  *
  * Returns:
  *     NO_ERROR on success and ERROR on failure This routine will only fail if
@@ -647,7 +647,7 @@ int get_random_vector_2(Vector** target_vpp, int length)
 
     for (i=0; i<length; i++)
     {
-        *elem_ptr++ = kjb_rand_2();
+        *elem_ptr++ = ivi_rand_2();
     }
 
     return NO_ERROR;
@@ -713,7 +713,7 @@ int ascend_sort_vector(Vector* vp)
     int len = vp->length;
 #endif 
 
-    ERE(kjb_sort(vp->elements, vp->length, sizeof(double),
+    ERE(ivi_sort(vp->elements, vp->length, sizeof(double),
                  ascend_compare_vector_elements,
                  USE_CURRENT_ATN_HANDLING));
 
@@ -848,7 +848,7 @@ int get_random_indexed_vector(Indexed_vector** vpp, int length)
 
     for (i=0; i<length; i++)
     {
-        vp_pos->element = kjb_rand();
+        vp_pos->element = ivi_rand();
         vp_pos++;
     }
 
@@ -900,7 +900,7 @@ int get_target_indexed_vector(Indexed_vector** vpp, int length)
     }
     else
     {
-        kjb_free(vp->elements);
+        ivi_free(vp->elements);
 
         if (length > 0)
         {
@@ -940,7 +940,7 @@ Indexed_vector* create_indexed_vector(int length)
 
     if (result_ptr->elements == NULL)
     {
-        kjb_free(result_ptr);
+        ivi_free(result_ptr);
         return NULL;
     }
 
@@ -967,7 +967,7 @@ Indexed_vector* create_zero_indexed_vector(int length)
 
     if (result_ptr->elements == NULL)
     {
-        kjb_free(result_ptr);
+        ivi_free(result_ptr);
         return NULL;
     }
 
@@ -997,7 +997,7 @@ Indexed_vector* vp_create_indexed_vector(const Vector* vp)
 
     if (result_ptr->elements == NULL)
     {
-        kjb_free(result_ptr);
+        ivi_free(result_ptr);
         return NULL;
     }
 
@@ -1017,7 +1017,7 @@ Indexed_vector* vp_create_indexed_vector(const Vector* vp)
  *
  * Frees an indexed vector
  *
- * This routine frees storage associated with an indexed vector. As with all KJB
+ * This routine frees storage associated with an indexed vector. As with all IVI
  * library free routines, a NULL argument is OK. 
  *
  * Index: indexed vectors, vectors
@@ -1030,8 +1030,8 @@ void free_indexed_vector(Indexed_vector* vp)
 
     if (vp != NULL)
     {
-        kjb_free(vp->elements);
-        kjb_free(vp);
+        ivi_free(vp->elements);
+        ivi_free(vp);
     }
 }
 
@@ -1083,7 +1083,7 @@ int ascend_sort_indexed_vector(Indexed_vector* vp)
     }
 #endif 
 
-    ERE(kjb_sort(vp->elements, vp->length, sizeof(Indexed_vector_element),
+    ERE(ivi_sort(vp->elements, vp->length, sizeof(Indexed_vector_element),
                  ascend_compare_indexed_vector_elements,
                  USE_CURRENT_ATN_HANDLING));
 
@@ -1192,7 +1192,7 @@ int descend_sort_indexed_vector(Indexed_vector* vp)
     }
 #endif 
 
-    ERE(kjb_sort(vp->elements, vp->length, sizeof(Indexed_vector_element),
+    ERE(ivi_sort(vp->elements, vp->length, sizeof(Indexed_vector_element),
                  descend_compare_indexed_vector_elements,
                  USE_CURRENT_ATN_HANDLING));
 
@@ -1285,7 +1285,7 @@ static int ascend_compare_vector_elements
  *
  * Gets a target vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of vector arrays. If *target_vvpp is
  * NULL, then this routine creates the vector vector. If it is not null, and it
  * is the right size, then this routine does nothing. If it is the wrong size,
@@ -1425,8 +1425,8 @@ void free_vector_vector(Vector_vector* vvp)
         vp_pos++;
     }
 
-    kjb_free(vvp->elements);
-    kjb_free(vvp);
+    ivi_free(vvp->elements);
+    ivi_free(vvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1450,7 +1450,7 @@ void free_vector_vector(Vector_vector* vvp)
  * debug_allocate_2D_vp_array, which is the version available in the
  * development library. In development code, memory is tracked so that memory
  * leaks can be found more easily. Furthermore, all memory free'd is checked
- * that it was allocated by a KJB library routine. Finally, memory is checked
+ * that it was allocated by a IVI library routine. Finally, memory is checked
  * for overuns.
  *
  * The routine free_2D_vp_array_and_vectors should be used to dispose of the
@@ -1504,18 +1504,18 @@ Vector*** debug_allocate_2D_vp_array
     }
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
     num_bytes = num_rows * sizeof(Vector**);
-    NRN(array = (Vector ***)debug_kjb_malloc(num_bytes, file_name, line_number));
+    NRN(array = (Vector ***)debug_ivi_malloc(num_bytes, file_name, line_number));
 
     num_bytes = num_rows * num_cols * sizeof(Vector*);
-    col_ptr = (Vector**)debug_kjb_malloc(num_bytes, file_name, line_number);
+    col_ptr = (Vector**)debug_ivi_malloc(num_bytes, file_name, line_number);
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -1564,7 +1564,7 @@ Vector*** allocate_2D_vp_array(int num_rows, int num_cols)
 
     if (col_ptr == NULL)
     {
-        kjb_free(array);
+        ivi_free(array);
         return NULL;
     }
 
@@ -1626,8 +1626,8 @@ void free_2D_vp_array_and_vectors
         }
     }
 
-    kjb_free(*array);
-    kjb_free(array);
+    ivi_free(*array);
+    ivi_free(array);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1637,7 +1637,7 @@ void free_2D_vp_array_and_vectors
  *
  * Gets a target vector vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of vector vector vectors. If *target_vvvpp is NULL, then
  * this routine creates the vector vector vector. If it is not null, and it is
  * the right size, then this routine does nothing. If it is the wrong size,
@@ -1745,8 +1745,8 @@ void free_v3(V_v_v* vvvp)
         vvp_pos++;
     }
 
-    kjb_free(vvvp->elements);
-    kjb_free(vvvp);
+    ivi_free(vvvp->elements);
+    ivi_free(vvvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -1756,7 +1756,7 @@ void free_v3(V_v_v* vvvp)
  *
  * Gets a target vector vector vector
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of vector vector vectors. If *target_vvvvpp is NULL, then
  * this routine creates the vector vector vector. If it is not null, and it is
  * the right size, then this routine does nothing. If it is the wrong size,
@@ -1864,8 +1864,8 @@ void free_v4(V_v_v_v* vvvvp)
         vvvp_pos++;
     }
 
-    kjb_free(vvvvp->elements);
-    kjb_free(vvvvp);
+    ivi_free(vvvvp->elements);
+    ivi_free(vvvvp);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */

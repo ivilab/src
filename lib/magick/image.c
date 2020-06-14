@@ -1,5 +1,5 @@
 
-/* $Id: image.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: image.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -7,7 +7,7 @@
  * Make sure that these files are not a liability when there is no X11. If this
  * is the case, then comment out the whole thing.
 */
-#ifdef KJB_HAVE_X11 
+#ifdef IVI_HAVE_X11 
 
 /* -------------------------------------------------------------------------- */
 
@@ -9855,7 +9855,7 @@ void TransformRGBImage(Image *image, unsigned int colorspace)
 // Kobus, July 13, 2002.
 //
 // It seems that the handling of PCD changed from this obsolete version, and
-// lead to inconsistency between kjb_display and kjb_image, as the later either
+// lead to inconsistency between ivi_display and ivi_image, as the later either
 // uses the updated version of "convert", or optionally does its own
 // conversion. Therefore, we will try to replace the old PCD reader with the
 // new one taken from IM version 5.7.
@@ -10793,7 +10793,7 @@ Image *ZoomImage(Image *image, unsigned int columns, unsigned int rows, unsigned
 
 /* -------------------------------------------------------------------------- */
 
-#endif   /* #ifdef KJB_HAVE_X11  */
+#endif   /* #ifdef IVI_HAVE_X11  */
 
 #endif   /* #ifndef __C2MAN__  */
 

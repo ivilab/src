@@ -128,5 +128,5 @@ int main(int argc, char **argv)
 
     EPETE(test_get_mahalanobis_distance_sqrd_2())
 
-    kjb_exit(EXIT_SUCCESS);
+    ivi_exit(EXIT_SUCCESS);
 }

@@ -1,4 +1,4 @@
-/* $Id: g_camera_calibration.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g_camera_calibration.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -26,7 +26,7 @@
 #include <boost/assign/list_of.hpp>
 #include <n/n_qr.h>
 
-namespace kjb
+namespace ivi
 {
 
 const Calibration_descriptor Calibration_descriptor::STANDARD = {0, 0, CENTER, true, true};
@@ -194,8 +194,8 @@ void decompose_camera_matrix(
     //     rotation    = R
     //     translation = t
 
-    kjb_c::Matrix* R = NULL;
-    kjb_c::Matrix* Q = NULL;
+    ivi_c::Matrix* R = NULL;
+    ivi_c::Matrix* Q = NULL;
 
     Matrix A(camera_matrix);
     A.resize(3,3);
@@ -243,5 +243,5 @@ void decompose_camera_matrix(
     translation = -rotation * c;
 }
 
-} // namespace kjb
+} // namespace ivi
 

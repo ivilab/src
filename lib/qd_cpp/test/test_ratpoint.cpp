@@ -8,7 +8,7 @@
  * a sequence of three points turns clockwise or counterclockwise.
  */
 /*
- * $Id: test_ratpoint.cpp 20160 2015-12-08 23:36:20Z predoehl $
+ * $Id: test_ratpoint.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_init.h>
@@ -21,39 +21,39 @@
 
 namespace
 {
-using kjb::qd::RatPoint;
-using kjb::qd::RatPoint_line_segment;
-using kjb::qd::i_numerator;
-using kjb::qd::i_denominator;
-using kjb::qd::dbl_ratio;
+using ivi::qd::RatPoint;
+using ivi::qd::RatPoint_line_segment;
+using ivi::qd::i_numerator;
+using ivi::qd::i_denominator;
+using ivi::qd::dbl_ratio;
 
 
 int test_intersection(const int p[])
 {
-    const kjb::qd::PixPoint s1a(p[0], p[1]),
+    const ivi::qd::PixPoint s1a(p[0], p[1]),
                             s1b(p[2], p[3]),
                             s2a(p[4], p[5]),
                             s2b(p[6], p[7]);
-    const kjb::qd::PixPoint_line_segment s1(s1a, s1b), s2(s2a, s2b);
+    const ivi::qd::PixPoint_line_segment s1(s1a, s1b), s2(s2a, s2b);
     if (p[8])
     {
-        TEST_TRUE(kjb::qd::are_parallel(s1, s2));
+        TEST_TRUE(ivi::qd::are_parallel(s1, s2));
     }
     else
     {
-        TEST_FALSE(kjb::qd::are_parallel(s1, s2));
+        TEST_FALSE(ivi::qd::are_parallel(s1, s2));
     }
     if (p[9])
     {
-        TEST_TRUE(kjb::qd::is_intersecting(s1, s2));
+        TEST_TRUE(ivi::qd::is_intersecting(s1, s2));
         if ( ! p[8] )
         {
             // not parallel
-            const RatPoint isx( kjb::qd::line_intersection(s1, s2));
-            const kjb::Vector2 fxy( dbl_ratio(isx.x), dbl_ratio(isx.y) );
+            const RatPoint isx( ivi::qd::line_intersection(s1, s2));
+            const ivi::Vector2 fxy( dbl_ratio(isx.x), dbl_ratio(isx.y) );
 
 
-            if (kjb_c::is_interactive())
+            if (ivi_c::is_interactive())
             {
                 std::cout << "intersection point expected to be at\n"
                 "\tx=" << p[10] << '/' << p[11]
@@ -79,9 +79,9 @@ int test_intersection(const int p[])
     }
     else
     {
-        TEST_FALSE(kjb::qd::is_intersecting(s1, s2));
+        TEST_FALSE(ivi::qd::is_intersecting(s1, s2));
     }
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 int test1()
@@ -174,7 +174,7 @@ int test10()
     // next point is on the line but not on the segment
     TEST_FALSE(is_on(s, RatPoint(Rat(18477,32857), Rat(1,1))));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 // test triangle_area
@@ -202,7 +202,7 @@ int test11()
     TEST_TRUE(a5==a6);
     TEST_TRUE(a5 < 0);
     TEST_TRUE(-1==i_numerator(a5) && 2==i_denominator(a5));
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -228,7 +228,7 @@ bool test_intersection(
 // test line segment intersection predicate
 int test12()
 {
-    using kjb::qd::is_intersecting;
+    using ivi::qd::is_intersecting;
 
     const RatPoint_line_segment s1(seg(1,1, 1,1,  2,1, 2,1)),
                                 t1(seg(3,1, 3,1,  4,1, 4,1)),
@@ -259,13 +259,13 @@ int test12()
     TEST_TRUE(test_intersection(s1, u2, 1));
     TEST_TRUE(test_intersection(s1, u3, 0));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
 int test13()
 {
-    using kjb::qd::closest_point_on_seg;
+    using ivi::qd::closest_point_on_seg;
     typedef RatPoint::Rat Rat;
 
     const RatPoint_line_segment domain(RatPoint(0,3), RatPoint(1,1));
@@ -293,7 +293,7 @@ int test13()
     TEST_TRUE( x6 == RatPoint(1, 1));
     TEST_TRUE( x7 == RatPoint(1, 1));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -303,23 +303,23 @@ int test13()
 
 int main(int argc, char** argv)
 {
-    KJB(kjb_c::kjb_init());
+    IVI(ivi_c::ivi_init());
 
     /* Tests for elementary intersection functions of ratpoint.{h, cpp}. */
-    KJB(EPETE(test1()));
-    KJB(EPETE(test2()));
-    KJB(EPETE(test3()));
-    KJB(EPETE(test4()));
-    KJB(EPETE(test5()));
-    KJB(EPETE(test6()));
-    KJB(EPETE(test7()));
-    KJB(EPETE(test8()));
-    KJB(EPETE(test9()));
-    KJB(EPETE(test10()));
-    KJB(EPETE(test11()));
-    KJB(EPETE(test12()));
-    KJB(EPETE(test13()));
+    IVI(EPETE(test1()));
+    IVI(EPETE(test2()));
+    IVI(EPETE(test3()));
+    IVI(EPETE(test4()));
+    IVI(EPETE(test5()));
+    IVI(EPETE(test6()));
+    IVI(EPETE(test7()));
+    IVI(EPETE(test8()));
+    IVI(EPETE(test9()));
+    IVI(EPETE(test10()));
+    IVI(EPETE(test11()));
+    IVI(EPETE(test12()));
+    IVI(EPETE(test13()));
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }

@@ -11,7 +11,7 @@
 #include <l_cpp/l_test.h>
 
 using namespace std;
-using namespace kjb;
+using namespace ivi;
 
 const int num_samples = 10000;
 
@@ -19,7 +19,7 @@ typedef Single_step_sampler<double> Sampler;
 
 int main(int /*argc*/, char** /* argv */)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     try
     {

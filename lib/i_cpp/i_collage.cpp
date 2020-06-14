@@ -1,9 +1,9 @@
 /**
  * @file
- * @brief wrapper for kjb_c function to make a collage
+ * @brief wrapper for ivi_c function to make a collage
  */
 /*
- * $Id: i_collage.cpp 21596 2017-07-30 23:33:36Z kobus $
+ * $Id: i_collage.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include "i_cpp/i_collage.h"
@@ -18,14 +18,14 @@ size_t positive_product(int h, int v)
 {
     if (h < 1 || v <1)
     {
-        KJB_THROW_2(kjb::Illegal_argument, "Collage sizes must be positive");
+        IVI_THROW_2(ivi::Illegal_argument, "Collage sizes must be positive");
     }
     return h*v;
 }
 
 }
 
-namespace kjb {
+namespace ivi {
 
 Image make_collage(
     Image const* const* input_images,
@@ -35,14 +35,14 @@ Image make_collage(
 {
     const size_t count = positive_product(num_horizontal, num_vertical);
 
-    kjb_c::KJB_image* output = 0;
-    std::vector<const kjb_c::KJB_image*> i2(count);
+    ivi_c::IVI_image* output = 0;
+    std::vector<const ivi_c::IVI_image*> i2(count);
     for (size_t iii = 0; iii < count; ++iii)
     {
         i2.at(iii) = input_images[iii] -> c_ptr();
     }
 
-    ETX(kjb_c::make_image_collage(&output, num_horizontal, num_vertical,
+    ETX(ivi_c::make_image_collage(&output, num_horizontal, num_vertical,
                                                     & i2.front()));
     return Image(output);
 }
@@ -56,7 +56,7 @@ Image make_collage(
 {
     const size_t count = positive_product(num_horizontal, num_vertical);
 
-    std::vector< const kjb::Image* > in(count, 0);
+    std::vector< const ivi::Image* > in(count, 0);
     for (size_t iii = 0; iii < count; ++iii)
     {
         in.at(iii) = input_img_array + iii;

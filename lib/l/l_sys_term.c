@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_term.c 24713 2019-12-14 01:00:04Z kobus $ */
+/* $Id: l_sys_term.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -356,7 +356,7 @@ int set_term_io_options(const char* option, const char* value)
         {
             ERE(temp_boolean_value = get_boolean_value(value));
             fs_default_page_flag = (Bool)temp_boolean_value;
-            kjb_use_default_paging();
+            ivi_use_default_paging();
         }
         result = NO_ERROR;
     }
@@ -368,7 +368,7 @@ int set_term_io_options(const char* option, const char* value)
 
 /*
  * =============================================================================
- *                            kjb_use_default_paging
+ *                            ivi_use_default_paging
  *
  * Restores paging behaviour
  *
@@ -385,14 +385,14 @@ int set_term_io_options(const char* option, const char* value)
  * ==> Currently an ERROR return is impossible, but reserved for future use.
  *
  * Related:
- *     kjb_enable_paging, kjb_disable_paging, kjb_restore_paging
+ *     ivi_enable_paging, ivi_disable_paging, ivi_restore_paging
  *
  * Index: output, paging, terminal I/O, pause
  *
  * -----------------------------------------------------------------------------
  */
 
-int kjb_use_default_paging(void)
+int ivi_use_default_paging(void)
 {
     fs_page_flag = fs_default_page_flag;
 
@@ -403,26 +403,26 @@ int kjb_use_default_paging(void)
 
 /*
  * =============================================================================
- *                            kjb_enable_paging
+ *                            ivi_enable_paging
  *
  * Forces paging to occur.
  *
  * This routine forces paging to occur. The behavour will be reset to the
- * previous behavour with kjb_restore_paging().
+ * previous behavour with ivi_restore_paging().
  *
  * Returns:
  *    This routine returns NO_ERROR on success, and ERROR if there are
  *    unexpected problems.
  *
  * Related:
- *     kjb_use_default_paging, kjb_disable_paging, kjb_restore_paging
+ *     ivi_use_default_paging, ivi_disable_paging, ivi_restore_paging
  *
  * Index: output, paging, terminal I/O, pause
  *
  * -----------------------------------------------------------------------------
  */
 
-int kjb_enable_paging(void)
+int ivi_enable_paging(void)
 {
     Bool* save_page_flag_ptr;
     int result;
@@ -458,26 +458,26 @@ int kjb_enable_paging(void)
 
 /*
  * =============================================================================
- *                            kjb_disable_paging
+ *                            ivi_disable_paging
  *
  * Forces paging not to occur.
  *
  * This routine forces paging not to occur. The behavour will be reset to the
- * previous behavour with kjb_restore_paging().
+ * previous behavour with ivi_restore_paging().
  *
  * Returns:
  *    This routine returns NO_ERROR on success, and ERROR if there are
  *    unexpected problems.
  *
  * Related:
- *     kjb_use_default_paging, kjb_enable_paging, kjb_restore_paging
+ *     ivi_use_default_paging, ivi_enable_paging, ivi_restore_paging
  *
  * Index: output, paging, terminal I/O, pause
  *
  * -----------------------------------------------------------------------------
  */
 
-int kjb_disable_paging(void)
+int ivi_disable_paging(void)
 {
     Bool* save_page_flag_ptr;
     int result;
@@ -513,12 +513,12 @@ int kjb_disable_paging(void)
 
 /*
  * =============================================================================
- *                            kjb_restore_paging
+ *                            ivi_restore_paging
  *
  * Resets paging to behaviour.
  *
  * This routine resets paging to behaviour to the behaviour stored in the stack
- * maintained by this routine, kjb_disable_paging, and  kjb_enable_paging(). If
+ * maintained by this routine, ivi_disable_paging, and  ivi_enable_paging(). If
  * the entire stack of such behaviours has been used up, then this routine
  * silently does nothing.
  *
@@ -529,14 +529,14 @@ int kjb_disable_paging(void)
  * ==> Currently an ERROR return is impossible, but reserved for future use.
  *
  * Related:
- *     kjb_use_default_paging, kjb_enable_paging, kjb_disable_paging
+ *     ivi_use_default_paging, ivi_enable_paging, ivi_disable_paging
  *
  * Index: output, paging, terminal I/O, pause
  *
  * -----------------------------------------------------------------------------
  */
 
-int kjb_restore_paging(void)
+int ivi_restore_paging(void)
 {
     Queue_element* cur_elem;
 
@@ -553,7 +553,7 @@ int kjb_restore_paging(void)
     fs_page_flag = *((Bool*)(cur_elem->contents));
 
     SKIP_HEAP_CHECK_2();
-    free_queue_element(cur_elem, kjb_free);
+    free_queue_element(cur_elem, ivi_free);
     CONTINUE_HEAP_CHECK_2();
 
     return NO_ERROR;
@@ -571,18 +571,18 @@ int kjb_restore_paging(void)
 static void free_page_flag_stack(void)
 {
 #ifdef TEST
-    IMPORT int kjb_debug_level;
-    IMPORT int kjb_fork_depth; 
+    IMPORT int ivi_debug_level;
+    IMPORT int ivi_fork_depth; 
 
-    if (kjb_debug_level > 4)
+    if (ivi_debug_level > 4)
     {
-        /* Too dangerous to use KJB IO at this point.  */
+        /* Too dangerous to use IVI IO at this point.  */
         fprintf(stderr, "<<TEST>> Process %ld (fork depth %d) is freeing page flag stack.\n",
-                 (long)MY_PID, kjb_fork_depth);
+                 (long)MY_PID, ivi_fork_depth);
     }
 #endif 
 
-    free_queue(&fs_page_flag_stack_head, (Queue_element**)NULL, kjb_free);
+    free_queue(&fs_page_flag_stack_head, (Queue_element**)NULL, ivi_free);
 }
 
 #endif
@@ -651,12 +651,12 @@ int is_in_background (void)
 /* all */         fs_in_background = FALSE;
 #ifdef TEST
 #ifdef UNIX
-/* TEST */        fs_emulate_term_input_fp = kjb_fopen("emulate_term_input", "rb");
+/* TEST */        fs_emulate_term_input_fp = ivi_fopen("emulate_term_input", "rb");
 #endif
 #endif
 
 #ifdef MS_OS
-/* MS_OS */       fp=kjb_fopen("CON", "r");
+/* MS_OS */       fp=ivi_fopen("CON", "r");
 /* MS_OS */
 /* MS_OS */       if (fp != NULL)
 /* MS_OS */       {
@@ -669,7 +669,7 @@ int is_in_background (void)
                   /* Marginally better for debuggers. Previously we did this for
                    * TEST only, but better to test and run with the same code? 
                   */
-                  if (kjb_isatty(fileno(stdin)))
+                  if (ivi_isatty(fileno(stdin)))
                   {
                       fp = stdin;
                   }
@@ -688,12 +688,12 @@ int is_in_background (void)
 /* default */         else
 /* default */         {
 #ifdef SYSV
-/* SYSV */                kjb_signal(SIGTTOU, SIG_IGN);
+/* SYSV */                ivi_signal(SIGTTOU, SIG_IGN);
 #endif
-/* default */             fp=kjb_fopen(term_name, "r");
+/* default */             fp=ivi_fopen(term_name, "r");
                           must_close_it = TRUE; 
 #ifdef SYSV
-/* SYSV */                kjb_signal(SIGTTOU, SIG_DFL);
+/* SYSV */                ivi_signal(SIGTTOU, SIG_DFL);
 #endif
                       }
                   }
@@ -756,7 +756,7 @@ int is_in_background (void)
 
 static void close_tty_in()
 {
-    EPE(kjb_fclose(fs_tty_in));
+    EPE(ivi_fclose(fs_tty_in));
     fs_tty_in = NULL;
 }
 
@@ -779,9 +779,9 @@ static void close_tty_in()
 /* TEST */         sprintf(pid_string, "%ld", (long)pid);
 /* TEST */         strcat(term_input_file, pid_string);
 /* TEST */
-/* TEST */         NRE(fs_term_input_fp = kjb_fopen(term_input_file, "w"));
+/* TEST */         NRE(fs_term_input_fp = ivi_fopen(term_input_file, "w"));
 /* TEST */
-/* TEST */         kjb_fprintf(stderr,
+/* TEST */         ivi_fprintf(stderr,
 /* TEST */                     "Terminal input is being recorded in %s.\n",
 /* TEST */                     term_input_file);
 /* TEST */     }
@@ -819,7 +819,7 @@ static FILE* open_tty_out(void)
     /* This method, which is a reasonable alternative, works a
     // bit better with debuggers.
     */
-    if (kjb_isatty(fileno(stderr)))
+    if (ivi_isatty(fileno(stderr)))
     {
         fp = stderr;
     }
@@ -839,7 +839,7 @@ static FILE* open_tty_out(void)
         {
             term_name[ L_ctermid ] = '\0';
 
-            fp=kjb_fopen(term_name, "w");
+            fp=ivi_fopen(term_name, "w");
 
             if (fp != NULL)
             {
@@ -862,7 +862,7 @@ static FILE* open_tty_out(void)
     /* an error  message to this effect, we need a file.       */
     /* Similar reasoning could apply in other cases as well.   */
 
-    if ((fp == NULL) && (kjb_isatty(fileno(stderr))))
+    if ((fp == NULL) && (ivi_isatty(fileno(stderr))))
     {
         fp = stderr;
     }
@@ -889,7 +889,7 @@ static FILE* open_tty_out(void)
 
 static void close_tty_out()
 {
-    EPE(kjb_fclose(fs_tty_out));
+    EPE(ivi_fclose(fs_tty_out));
     fs_tty_out = NULL; 
 }
 
@@ -943,15 +943,15 @@ static void close_tty_out()
 /* all */
 /* all */         setup_terminal_size();
 #ifdef UNIX
-/* UNIX */        kjb_signal(SIGWINCH, reset_terminal_size_on_sig_fn);
+/* UNIX */        ivi_signal(SIGWINCH, reset_terminal_size_on_sig_fn);
 #ifdef NEXT
-/* next */        ER(kjb_ioctl(fileno(fp), (IOCTL_REQUEST_TYPE)TIOCGETP, &term_flags));
+/* next */        ER(ivi_ioctl(fileno(fp), (IOCTL_REQUEST_TYPE)TIOCGETP, &term_flags));
 /* next */        fs_initial_term_flags_set = TRUE;
 /* next */        fs_initial_term_flags = term_flags;
 /* next */
 /* next */        fs_erase_char = term_flags.sg_erase;
 #else
-/* NOT next */    ER(kjb_ioctl(fileno(fp), (IOCTL_REQUEST_TYPE)TCGETS, (void*) &term_flags));
+/* NOT next */    ER(ivi_ioctl(fileno(fp), (IOCTL_REQUEST_TYPE)TCGETS, (void*) &term_flags));
 /* NOT next */
 /* NOT next */    fs_initial_term_flags_set = TRUE;
 /* NOT next */    fs_initial_term_flags = term_flags;
@@ -1331,7 +1331,7 @@ static void close_tty_out()
 
 /* all */     void setup_terminal_size(void)
 /* all */     {
-/* all */         IMPORT volatile int kjb_tty_cols, kjb_tty_rows;
+/* all */         IMPORT volatile int ivi_tty_cols, ivi_tty_rows;
 /* all */         FILE* fp;
 #ifdef UNIX
 #ifndef SGI
@@ -1359,13 +1359,13 @@ static void close_tty_out()
 /* all */         /* Reset sane defaults, to start. On some systems, this is */
 /* all */         /* that gets done. */
 /* all */
-/* all */         kjb_tty_cols = 80;
-/* all */         kjb_tty_rows = 24;
+/* all */         ivi_tty_cols = 80;
+/* all */         ivi_tty_rows = 24;
 #ifdef UNIX
 #ifdef SGI
 /* SGI */         setupterm(NULL, fileno(fp), NULL);
-/* SGI */         kjb_tty_cols = tgetnum("cols") ;
-/* SGI */         kjb_tty_rows = tgetnum("lines") ;
+/* SGI */         ivi_tty_cols = tgetnum("cols") ;
+/* SGI */         ivi_tty_rows = tgetnum("lines") ;
 /* SGI */         reset_shell_mode();
 #else
 /* NOT SGI */     res=ioctl(fileno(fp), (int)TIOCGWINSZ, (void*)&window_size);
@@ -1374,8 +1374,8 @@ static void close_tty_out()
 /* NOT SGI */         (window_size.ws_col != 0) &&
 /* NOT SGI */         (window_size.ws_row != 0))
 /* NOT SGI */     {
-/* NOT SGI */         kjb_tty_cols = window_size.ws_col;
-/* NOT SGI */         kjb_tty_rows = window_size.ws_row;
+/* NOT SGI */         ivi_tty_cols = window_size.ws_col;
+/* NOT SGI */         ivi_tty_rows = window_size.ws_row;
 /* NOT SGI */     }
 /* NOT SGI */     else
 /* NOT SGI */     {
@@ -1389,18 +1389,18 @@ static void close_tty_out()
 /* NOT SGI */         BUFF_CPY(tgetnum_arg, "co"); /* Avoid warning. */
 /* NOT SGI */         if ((temp = tgetnum(tgetnum_arg)) == EOF) return;
 /* NOT SGI */
-/* NOT SGI */         kjb_tty_cols = temp;
+/* NOT SGI */         ivi_tty_cols = temp;
 /* NOT SGI */
 /* NOT SGI */         BUFF_CPY(tgetnum_arg, "li"); /* Avoid warning. */
 /* NOT SGI */         if ((temp = tgetnum(tgetnum_arg)) == EOF) return;
 /* NOT SGI */
-/* NOT SGI */         kjb_tty_rows = temp;
+/* NOT SGI */         ivi_tty_rows = temp;
 /* NOT SGI */     }
 /* NOT SGI */
 #endif
 #else
 #ifdef MS_OS
-/* MS_OS */        kjb_tty_rows = 25;
+/* MS_OS */        ivi_tty_rows = 25;
 #else
 #endif
 #endif
@@ -1459,7 +1459,7 @@ int term_puts(const char* line)
 
 int term_put_n_chars(const char* line, size_t len)
 {
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_cols;
     IMPORT volatile int num_term_chars;
     IMPORT volatile Bool halt_term_output;
     IMPORT volatile Bool pause_on_next;
@@ -1511,7 +1511,7 @@ int term_put_n_chars(const char* line, size_t len)
                 num_term_chars=0;
             }
 
-            if (num_term_chars > kjb_tty_cols)
+            if (num_term_chars > ivi_tty_cols)
             {
                 force_new_line = TRUE;
                 break;
@@ -1582,7 +1582,7 @@ int term_put_n_raw_chars(const char* line, size_t len)
         return ERROR;
     }
 
-    ERE(kjb_fflush(fs_tty_out));
+    ERE(ivi_fflush(fs_tty_out));
 
     term_io_since_last_input_attempt = TRUE;
     return len;
@@ -1712,7 +1712,7 @@ int term_put_n_raw_chars(const char* line, size_t len)
 /* UNIX */         if (c != '\n')
 /* UNIX */         {
 /* UNIX */             NRE(open_tty_out());
-/* UNIX */             kjb_fputc(fs_tty_out, '\n');
+/* UNIX */             ivi_fputc(fs_tty_out, '\n');
 /* UNIX */         }
 /* UNIX */
 /* UNIX */         if (c == EOF)
@@ -2353,13 +2353,13 @@ void term_beep_beep(int num_beeps, int pause_in_ms)
  * characters. This means that an inadvertant exit under some systems/shells
  * (including sh/csh) can leave the user without character echo. The mode can
  * be reset using term_reset(). However, this is automaticlally done in
- * kjb_cleanup(), and it is recommended that kjb_cleanup() is called instead.
- * kjb_cleanup() is called by kjb_exit(), as well as any abnmormal termination
- * trapped by the KJB library.  If the call to term_set_raw_mode_with_no_echo()
+ * ivi_cleanup(), and it is recommended that ivi_cleanup() is called instead.
+ * ivi_cleanup() is called by ivi_exit(), as well as any abnmormal termination
+ * trapped by the IVI library.  If the call to term_set_raw_mode_with_no_echo()
  * is in place before the call to term_get_line(), then the call is not made.
  *
  * The simplest way to handle some of these problems is to use the macro
- * KJB_INIT() before using this routine. KJB_INIT sets things up so that most
+ * IVI_INIT() before using this routine. IVI_INIT sets things up so that most
  * points of exit are covered by the appropriate cleanup.
  *
  * Any signals that are going to be used should be put in place BEFORE the
@@ -2367,7 +2367,7 @@ void term_beep_beep(int num_beeps, int pause_in_ms)
  * term_set_raw_mode_with_no_echo() intercepts the signals. This comment does
  * not apply to signals which are set and unset without any intervening call to
  * term_get_line() provided that they reinstate the previous handler
- * (kjb_set_atn_trap and kjb_unset_atn_trap can be used to do this in the case
+ * (ivi_set_atn_trap and ivi_unset_atn_trap can be used to do this in the case
  * of SIGINT -- ideally such a facility should be available for signals in
  * general, but .... )
  *
@@ -2420,7 +2420,7 @@ int term_get_line(const char* prompt, char* line, size_t max_size)
             {
                 BUFF_CPY(tty_input_log_name, "tty_input.log");
             }
-            NRE(tty_input_log_fp = kjb_fopen(tty_input_log_name, "w"));
+            NRE(tty_input_log_fp = ivi_fopen(tty_input_log_name, "w"));
             log_tty_input = TRUE;
         }
         else { log_tty_input = FALSE; }
@@ -2675,7 +2675,7 @@ static int enhanced_term_get_line(const char* prompt, char* line,
 static int enhanced_term_get_line_guts(const char* prompt, char* line,
                                        size_t max_size_in)
 {
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_cols;
     IMPORT volatile int term_io_since_last_input_attempt;
     static char         buff[ GET_LINE_BUFF_SIZE ];
     static int          buff_pos;
@@ -2711,7 +2711,7 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
     {
         prompt_size=strlen(prompt);
 
-        if (prompt_size >= kjb_tty_cols)
+        if (prompt_size >= ivi_tty_cols)
         {
             set_error("Terminal width is too small.");
             return ERROR;
@@ -2802,10 +2802,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                 save_buff_size = buff_size;
                 cursor_pos=buff_pos;
 
-                while (cursor_pos/kjb_tty_cols > 0)
+                while (cursor_pos/ivi_tty_cols > 0)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
-                    cursor_pos -= kjb_tty_cols;
+                    cursor_pos -= ivi_tty_cols;
                 }
                 fputc('\r', fs_tty_out);
 
@@ -2824,16 +2824,16 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                     fputc(' ', fs_tty_out);
                     cursor_pos++;
 
-                    if ( (cursor_pos % kjb_tty_cols) == 0)
+                    if ( (cursor_pos % ivi_tty_cols) == 0)
                     {
                         fputc('\n', fs_tty_out);
                     }
                 }
 
-                while (cursor_pos/kjb_tty_cols>buff_pos/kjb_tty_cols)
+                while (cursor_pos/ivi_tty_cols>buff_pos/ivi_tty_cols)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
-                    cursor_pos -= kjb_tty_cols;
+                    cursor_pos -= ivi_tty_cols;
                 }
 
                 while (cursor_pos>buff_pos)
@@ -2853,11 +2853,11 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
         {
             if (buff_pos>prompt_size)
             {
-                if (buff_pos % kjb_tty_cols == 0)
+                if (buff_pos % ivi_tty_cols == 0)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
 
-                    for (i=1;i<kjb_tty_cols;i++)
+                    for (i=1;i<ivi_tty_cols;i++)
                     {
                         TPUTS(fs_output_right_arrow_sequence);
                     }
@@ -2874,7 +2874,7 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                 /* will not leave the cursor at left margin.   */
                 /* Hence, set it there.                        */
 
-                if ( (buff_size/kjb_tty_cols) > (buff_pos/kjb_tty_cols) )
+                if ( (buff_size/ivi_tty_cols) > (buff_pos/ivi_tty_cols) )
                 {
                     for (i=0; i<prompt_size; i++)
                     {
@@ -2883,10 +2883,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                     }
                 }
 
-                while ( (buff_size/kjb_tty_cols)>(buff_pos/kjb_tty_cols) )
+                while ( (buff_size/ivi_tty_cols)>(buff_pos/ivi_tty_cols) )
                 {
                     TPUTS(fs_output_down_arrow_sequence);
-                    buff_pos += kjb_tty_cols;
+                    buff_pos += ivi_tty_cols;
                 }
 
                 while (buff_pos < buff_size)
@@ -2906,7 +2906,7 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
         {
             if (buff_pos < buff_size)
             {
-                if ((buff_pos+1) % kjb_tty_cols == 0)
+                if ((buff_pos+1) % ivi_tty_cols == 0)
                 {
                     TPUTS(fs_output_down_arrow_sequence);
                     fputc('\r', fs_tty_out);
@@ -2923,7 +2923,7 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                 /* will not leave the cursor at left margin.        */
                 /* Hence, set it there.                             */
 
-                move_amount = buff_pos % kjb_tty_cols;
+                move_amount = buff_pos % ivi_tty_cols;
 
                 for (i=0; i<move_amount; i++)
                 {
@@ -2932,10 +2932,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
 
                 buff_pos -= move_amount;
 
-                while (buff_pos >= kjb_tty_cols)
+                while (buff_pos >= ivi_tty_cols)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
-                    buff_pos -= kjb_tty_cols;
+                    buff_pos -= ivi_tty_cols;
                 }
 
                 while (buff_pos < prompt_size)
@@ -2952,13 +2952,13 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
         }
         else if ((c == '') || (c == ''))
         {
-            if (buff_pos >= kjb_tty_cols)
+            if (buff_pos >= ivi_tty_cols)
             {
                 /* Can't assume that a downward motion will or */
                 /* will not leave the cursor at left margin.   */
                 /* Hence, set it there.                        */
 
-                move_amount = buff_pos % kjb_tty_cols;
+                move_amount = buff_pos % ivi_tty_cols;
 
                 for (i=0; i<move_amount; i++)
                 {
@@ -2967,10 +2967,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
 
                 buff_pos -= move_amount;
 
-                while (buff_pos >= kjb_tty_cols)
+                while (buff_pos >= ivi_tty_cols)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
-                    buff_pos -= kjb_tty_cols;
+                    buff_pos -= ivi_tty_cols;
                 }
 
                 while (buff_pos < prompt_size)
@@ -2993,13 +2993,13 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
         }
         else if (c == '')
         {
-            if ( (buff_size/kjb_tty_cols)>(buff_pos/kjb_tty_cols) )
+            if ( (buff_size/ivi_tty_cols)>(buff_pos/ivi_tty_cols) )
             {
                 /* Can't assume that a downward motion will or */
                 /* will not leave the cursor at left margin.   */
                 /* Hence, set it there.                        */
 
-                move_amount = buff_pos % kjb_tty_cols;
+                move_amount = buff_pos % ivi_tty_cols;
 
                 for (i=0; i<move_amount; i++)
                 {
@@ -3008,13 +3008,13 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
 
                 buff_pos -= move_amount;
 
-                while ( (buff_size/kjb_tty_cols)>(buff_pos/kjb_tty_cols) )
+                while ( (buff_size/ivi_tty_cols)>(buff_pos/ivi_tty_cols) )
                 {
                     TPUTS(fs_output_down_arrow_sequence);
-                    buff_pos += kjb_tty_cols;
+                    buff_pos += ivi_tty_cols;
                 }
 
-                move_amount = buff_size % kjb_tty_cols;
+                move_amount = buff_size % ivi_tty_cols;
 
                 for (i=0; i<move_amount; i++)
                 {
@@ -3050,11 +3050,11 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                 }
                 buff_size--;
 
-                if (buff_pos % kjb_tty_cols == 0)
+                if (buff_pos % ivi_tty_cols == 0)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
 
-                    for (i=1;i<kjb_tty_cols;i++)
+                    for (i=1;i<ivi_tty_cols;i++)
                     {
                         TPUTS(fs_output_right_arrow_sequence);
                     }
@@ -3073,10 +3073,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
 
                 cursor_pos = buff_size+1;
 
-                while (cursor_pos/kjb_tty_cols >buff_pos/kjb_tty_cols)
+                while (cursor_pos/ivi_tty_cols >buff_pos/ivi_tty_cols)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
-                    cursor_pos -= kjb_tty_cols;
+                    cursor_pos -= ivi_tty_cols;
                 }
                 while (cursor_pos>buff_pos)
                 {
@@ -3095,10 +3095,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
             save_buff_size = buff_size;
             i=buff_pos;
 
-            while (buff_pos/kjb_tty_cols >0)
+            while (buff_pos/ivi_tty_cols >0)
             {
                 TPUTS(fs_output_up_arrow_sequence);
-                buff_pos -= kjb_tty_cols;
+                buff_pos -= ivi_tty_cols;
             }
             fputc('\r', fs_tty_out);
 
@@ -3113,10 +3113,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
 
             buff_pos = save_buff_size;
 
-            while (buff_pos/kjb_tty_cols > buff_size/kjb_tty_cols)
+            while (buff_pos/ivi_tty_cols > buff_size/ivi_tty_cols)
             {
                 TPUTS(fs_output_up_arrow_sequence);
-                buff_pos -= kjb_tty_cols;
+                buff_pos -= ivi_tty_cols;
             }
 
             while (buff_pos > buff_size)
@@ -3148,7 +3148,7 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                     buff[buff_pos] = '\0';
                     buff_size++;
 
-                    if (buff_size % kjb_tty_cols == 0)
+                    if (buff_size % ivi_tty_cols == 0)
                     {
                         fputc('\n', fs_tty_out);
                         TPUTS(fs_output_left_arrow_sequence);
@@ -3172,10 +3172,10 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
                 cursor_pos = buff_size;
                 buff_pos++;
 
-                while (cursor_pos/kjb_tty_cols >buff_pos/kjb_tty_cols)
+                while (cursor_pos/ivi_tty_cols >buff_pos/ivi_tty_cols)
                 {
                     TPUTS(fs_output_up_arrow_sequence);
-                    cursor_pos -= kjb_tty_cols;
+                    cursor_pos -= ivi_tty_cols;
                 }
 
                 while (cursor_pos>buff_pos)
@@ -3221,7 +3221,7 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
     {
         ASSERT(max_size > 0);
 
-        kjb_strncpy(line, buff + prompt_size, (size_t)(max_size + 1));
+        ivi_strncpy(line, buff + prompt_size, (size_t)(max_size + 1));
 
         if (buff[ prompt_size ] != '\0')
         {
@@ -3246,7 +3246,7 @@ static int enhanced_term_get_line_guts(const char* prompt, char* line,
 
 static void enhanced_term_put_blanks(int cur_pos, int num_blanks)
 {
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_cols;
     /*
     // blanks must be at least  40  blanks
     */
@@ -3261,9 +3261,9 @@ static void enhanced_term_put_blanks(int cur_pos, int num_blanks)
         cur_pos += 40;
         num_blanks -= 40;
 
-        while (cur_pos > kjb_tty_cols)
+        while (cur_pos > ivi_tty_cols)
         {
-            cur_pos -= kjb_tty_cols;
+            cur_pos -= ivi_tty_cols;
         }
 
     }
@@ -3282,34 +3282,34 @@ static void enhanced_term_put_blanks(int cur_pos, int num_blanks)
 static void enhanced_term_put_buff(int cur_pos, const char* buff_pos,
                                    int buff_len)
 {
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_cols;
 
 
-    cur_pos %= kjb_tty_cols;
+    cur_pos %= ivi_tty_cols;
 
     ASSERT(buff_len >= 0);
-    ASSERT(kjb_tty_cols >= 1);
+    ASSERT(ivi_tty_cols >= 1);
 
-    if (cur_pos + buff_len < kjb_tty_cols)
+    if (cur_pos + buff_len < ivi_tty_cols)
     {
         fwrite((const void*)buff_pos, sizeof(char), (size_t)buff_len,
                fs_tty_out);
     }
     else
     {
-        fwrite((const void*)buff_pos, 1, (size_t)(kjb_tty_cols - cur_pos),
+        fwrite((const void*)buff_pos, 1, (size_t)(ivi_tty_cols - cur_pos),
                fs_tty_out);
-        buff_len -= (kjb_tty_cols - cur_pos);
-        buff_pos += (kjb_tty_cols - cur_pos);
+        buff_len -= (ivi_tty_cols - cur_pos);
+        buff_pos += (ivi_tty_cols - cur_pos);
 
         fputc('\n', fs_tty_out);
 
-        while (buff_len >= kjb_tty_cols)
+        while (buff_len >= ivi_tty_cols)
         {
-            fwrite(buff_pos, 1, (size_t)kjb_tty_cols, fs_tty_out);
+            fwrite(buff_pos, 1, (size_t)ivi_tty_cols, fs_tty_out);
             fputc('\n', fs_tty_out);
-            buff_len -= kjb_tty_cols;
-            buff_pos += kjb_tty_cols;
+            buff_len -= ivi_tty_cols;
+            buff_pos += ivi_tty_cols;
         }
 
         fwrite((const void*)buff_pos, 1, (size_t) buff_len, fs_tty_out);
@@ -3360,8 +3360,8 @@ static const char* term_get_buff(int sub_num)
  * characters. This means that an inadvertant exit under some systems/shells
  * (including sh/csh) can leave the user without character echo. The mode can be
  * reset using term_reset(). However, this is automaticlally done in
- * kjb_cleanup(), which itself is automatically called on program exit (as well
- * as by kjb_exit() and any abnmormal termination trapped by the KJB library.
+ * ivi_cleanup(), which itself is automatically called on program exit (as well
+ * as by ivi_exit() and any abnmormal termination trapped by the IVI library.
  * If the call to term_set_raw_mode_with_no_echo() is in place before the call
  * to enhanced_term_getc(), then the call is not made.
  *
@@ -3374,10 +3374,10 @@ static const char* term_get_buff(int sub_num)
  * Although it may seem better to restore the terminal mode on exit, this leads
  * to a number of problems, especially with respect to typing ahead. Since I
  * normally use raw mode for I/O, it is best to enter into raw mode when needed
- * and restore the mode on program exit. Using the macro KJB_INIT() sets things
+ * and restore the mode on program exit. Using the macro IVI_INIT() sets things
  * up so that most points of exit are covered by the appropriate cleanup.
- * Nonetheless it is not a bad idea to call kjb_cleanup() before program exit
- * (for systems without atexit()) and using kjb_exit() and kjb_abort() instead
+ * Nonetheless it is not a bad idea to call ivi_cleanup() before program exit
+ * (for systems without atexit()) and using ivi_exit() and ivi_abort() instead
  * of their standard counterparts. Howerver, on most platforms, not doing so
  * will not normally cause problems.
  *
@@ -3752,7 +3752,7 @@ int term_getc(void)
 
 static void term_line_end(void)
 {
-    IMPORT volatile int kjb_tty_rows;
+    IMPORT volatile int ivi_tty_rows;
     IMPORT volatile Bool io_atn_flag;
     IMPORT volatile int num_term_lines;
     IMPORT volatile int num_term_chars;
@@ -3765,7 +3765,7 @@ static void term_line_end(void)
     if (    (io_atn_flag)
          ||
            (    (fs_page_flag)
-             && (num_term_lines > (kjb_tty_rows-3))
+             && (num_term_lines > (ivi_tty_rows-3))
            )
         )
     {
@@ -3875,7 +3875,7 @@ int set_high_light(FILE* fp)
     IMPORT volatile int term_io_since_last_input_attempt;
 
 
-    if ( ! kjb_isatty(fileno(fp))) return NO_ERROR;
+    if ( ! ivi_isatty(fileno(fp))) return NO_ERROR;
 
     NRE(open_tty_out());
 
@@ -3919,7 +3919,7 @@ int unset_high_light(FILE* fp)
     IMPORT volatile int term_io_since_last_input_attempt;
 
 
-    if ( ! kjb_isatty(fileno(fp))) return NO_ERROR;
+    if ( ! ivi_isatty(fileno(fp))) return NO_ERROR;
 
     NRE(open_tty_out());
 
@@ -3948,7 +3948,7 @@ int unset_high_light(FILE* fp)
 
 void term_blank_out_line (void)
 {
-    IMPORT volatile int kjb_tty_cols;
+    IMPORT volatile int ivi_tty_cols;
     IMPORT volatile int num_term_chars;
     /*   blanks must be at least  40  blanks  */
     const char* blanks = "                                        ";
@@ -3958,7 +3958,7 @@ void term_blank_out_line (void)
 
     num_term_chars = 0;
 
-    num_blanks = kjb_tty_cols;
+    num_blanks = ivi_tty_cols;
 
     term_put_n_raw_chars("\r", 1);
 
@@ -4104,25 +4104,25 @@ void term_blank_out_line (void)
 /* UNIX */        INIT_SIGNAL_INFO(new_atn_vec);
 /* UNIX */        new_atn_vec.SIGNAL_HANDLER = cooked_mode_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_atn_vec);
-/* UNIX */        kjb_sigvec(SIGINT, &new_atn_vec, &save_atn_vec);
+/* UNIX */        ivi_sigvec(SIGINT, &new_atn_vec, &save_atn_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_tstp_vec);
 /* UNIX */        new_tstp_vec.SIGNAL_HANDLER = cooked_mode_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_tstp_vec);
-/* UNIX */        kjb_sigvec(SIGTSTP, &new_tstp_vec, &save_tstp_vec);
+/* UNIX */        ivi_sigvec(SIGTSTP, &new_tstp_vec, &save_tstp_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_term_vec);
 /* UNIX */        new_term_vec.SIGNAL_HANDLER = cooked_mode_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_term_vec);
-/* UNIX */        kjb_sigvec(SIGTERM, &new_term_vec, &save_term_vec);
+/* UNIX */        ivi_sigvec(SIGTERM, &new_term_vec, &save_term_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_quit_vec);
 /* UNIX */        new_quit_vec.SIGNAL_HANDLER = cooked_mode_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_quit_vec);
-/* UNIX */        kjb_sigvec(SIGQUIT, &new_quit_vec, &save_quit_vec);
+/* UNIX */        ivi_sigvec(SIGQUIT, &new_quit_vec, &save_quit_vec);
 /* UNIX */
 #ifdef NEXT
-/* next */        ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCGETP,
+/* next */        ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCGETP,
 /* next */                      &save_term_flags));
 /* next */
 /* next */        term_flags = save_term_flags;
@@ -4131,9 +4131,9 @@ void term_blank_out_line (void)
 /* next */
 /* next */        term_flags.sg_flags |= ((unsigned short)ECHO);
 /* next */
-/* next */        ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCSETP, &term_flags));
+/* next */        ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCSETP, &term_flags));
 #else
-/* NOT next */    ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCGETS,
+/* NOT next */    ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCGETS,
 /* NOT next */                  (void*)&save_term_flags));
 /* NOT next */
 /* NOT next */    term_flags = save_term_flags;
@@ -4158,7 +4158,7 @@ void term_blank_out_line (void)
 /* SUN */         term_flags.c_lflag |= ((long)ECHOCTL);
 #endif
 /* NOT next */
-/* NOT next */    ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
+/* NOT next */    ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
 /* NOT next */                  (void*)&term_flags));
 #endif
 /* UNIX */
@@ -4244,25 +4244,25 @@ void term_blank_out_line (void)
 /* UNIX */        INIT_SIGNAL_INFO(new_atn_vec);
 /* UNIX */        new_atn_vec.SIGNAL_HANDLER = raw_mode_with_no_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_atn_vec);
-/* UNIX */        kjb_sigvec(SIGINT, &new_atn_vec, &save_atn_vec);
+/* UNIX */        ivi_sigvec(SIGINT, &new_atn_vec, &save_atn_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_tstp_vec);
 /* UNIX */        new_tstp_vec.SIGNAL_HANDLER = raw_mode_with_no_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_tstp_vec);
-/* UNIX */        kjb_sigvec(SIGTSTP, &new_tstp_vec, &save_tstp_vec);
+/* UNIX */        ivi_sigvec(SIGTSTP, &new_tstp_vec, &save_tstp_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_term_vec);
 /* UNIX */        new_term_vec.SIGNAL_HANDLER = raw_mode_with_no_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_term_vec);
-/* UNIX */        kjb_sigvec(SIGTERM, &new_term_vec, &save_term_vec);
+/* UNIX */        ivi_sigvec(SIGTERM, &new_term_vec, &save_term_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_quit_vec);
 /* UNIX */        new_quit_vec.SIGNAL_HANDLER = raw_mode_with_no_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_quit_vec);
-/* UNIX */        kjb_sigvec(SIGQUIT, &new_quit_vec, &save_quit_vec);
+/* UNIX */        ivi_sigvec(SIGQUIT, &new_quit_vec, &save_quit_vec);
 /* UNIX */
 #ifdef NEXT
-/* next */        ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCGETP,
+/* next */        ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCGETP,
 /* next */                      &save_term_flags));
 /* next */
 /* next */        term_flags = save_term_flags;
@@ -4271,10 +4271,10 @@ void term_blank_out_line (void)
 /* next */
 /* next */        term_flags.sg_flags &= (~((unsigned short)ECHO));
 /* next */
-/* next */        ERE(kjb_ioctl(fileno(fs_tty_in), 
+/* next */        ERE(ivi_ioctl(fileno(fs_tty_in), 
                                 (IOCTL_REQUEST_TYPE)TIOCSETP, &term_flags));
 #else
-/* NOT next */    ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCGETS,
+/* NOT next */    ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCGETS,
 /* NOT next */                  (void*)&save_term_flags));
 /* NOT next */
 /* NOT next */    term_flags = save_term_flags;
@@ -4288,7 +4288,7 @@ void term_blank_out_line (void)
 #ifdef SUN
 /* SUN */         term_flags.c_lflag &= (~((long)ECHOCTL)) ;
 #endif
-/* NOT next */    ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
+/* NOT next */    ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
 /* NOT next */                  (void*)&term_flags));
 #endif
 /* UNIX */
@@ -4374,25 +4374,25 @@ void term_blank_out_line (void)
 /* UNIX */        INIT_SIGNAL_INFO(new_atn_vec);
 /* UNIX */        new_atn_vec.SIGNAL_HANDLER = raw_mode_with_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_atn_vec);
-/* UNIX */        kjb_sigvec(SIGINT, &new_atn_vec, &save_atn_vec);
+/* UNIX */        ivi_sigvec(SIGINT, &new_atn_vec, &save_atn_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_tstp_vec);
 /* UNIX */        new_tstp_vec.SIGNAL_HANDLER = raw_mode_with_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_tstp_vec);
-/* UNIX */        kjb_sigvec(SIGTSTP, &new_tstp_vec, &save_tstp_vec);
+/* UNIX */        ivi_sigvec(SIGTSTP, &new_tstp_vec, &save_tstp_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_term_vec);
 /* UNIX */        new_term_vec.SIGNAL_HANDLER = raw_mode_with_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_term_vec);
-/* UNIX */        kjb_sigvec(SIGTERM, &new_term_vec, &save_term_vec);
+/* UNIX */        ivi_sigvec(SIGTERM, &new_term_vec, &save_term_vec);
 /* UNIX */
 /* UNIX */        INIT_SIGNAL_INFO(new_quit_vec);
 /* UNIX */        new_quit_vec.SIGNAL_HANDLER = raw_mode_with_echo_sig_fn;
 /* UNIX */        SET_DONT_RESTART_IO_AFTER_SIGNAL(new_quit_vec);
-/* UNIX */        kjb_sigvec(SIGQUIT, &new_quit_vec, &save_quit_vec);
+/* UNIX */        ivi_sigvec(SIGQUIT, &new_quit_vec, &save_quit_vec);
 /* UNIX */
 #ifdef NEXT
-/* next */        ERE(kjb_ioctl(fileno(fs_tty_in), 
+/* next */        ERE(ivi_ioctl(fileno(fs_tty_in), 
                                 (IOCTL_REQUEST_TYPE)TIOCGETP,
 /* next */                      &save_term_flags));
 /* next */
@@ -4402,10 +4402,10 @@ void term_blank_out_line (void)
 /* next */
 /* next */        term_flags.sg_flags |= ((unsigned short)ECHO);
 /* next */
-/* next */        ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCSETP,
+/* next */        ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCSETP,
                                 &term_flags));
 #else
-/* NOT next */    ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCGETS,
+/* NOT next */    ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCGETS,
 /* NOT next */                       (void*)&save_term_flags));
 /* NOT next */
 /* NOT next */    term_flags = save_term_flags;
@@ -4418,7 +4418,7 @@ void term_blank_out_line (void)
 /* SUN */         term_flags.c_lflag |= ((long)ECHOCTL) ;
 #endif
 /* NOT next */
-/* NOT next */    ERE(kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
+/* NOT next */    ERE(ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
 /* NOT next */                  (void*)&term_flags));
 #endif
 /* UNIX */
@@ -4485,21 +4485,21 @@ void term_blank_out_line (void)
 /* UNIX */        save_term_vec = terminal_settings.term_vec;
 /* UNIX */        save_quit_vec = terminal_settings.quit_vec;
 #ifdef NEXT
-/* next */        kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCSETP,
+/* next */        ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TIOCSETP,
                             &save_term_flags);
 #else
-/* NOT next */    kjb_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
+/* NOT next */    ivi_ioctl(fileno(fs_tty_in), (IOCTL_REQUEST_TYPE)TCSETS,
 /* NOT next */              (void*)&save_term_flags);
 #endif
-/* UNIX */        kjb_sigvec(SIGINT, &save_atn_vec, (Signal_info *)NULL);
-/* UNIX */        kjb_sigvec(SIGTSTP, &save_tstp_vec, (Signal_info*)NULL);
-/* UNIX */        kjb_sigvec(SIGTERM, &save_term_vec, (Signal_info*)NULL);
-/* UNIX */        kjb_sigvec(SIGQUIT, &save_quit_vec, (Signal_info*)NULL);
+/* UNIX */        ivi_sigvec(SIGINT, &save_atn_vec, (Signal_info *)NULL);
+/* UNIX */        ivi_sigvec(SIGTSTP, &save_tstp_vec, (Signal_info*)NULL);
+/* UNIX */        ivi_sigvec(SIGTERM, &save_term_vec, (Signal_info*)NULL);
+/* UNIX */        ivi_sigvec(SIGQUIT, &save_quit_vec, (Signal_info*)NULL);
 #endif
 /* all */         fs_current_terminal_mode = terminal_settings.terminal_mode;
 /* all */
                   SKIP_HEAP_CHECK_2();
-/* all */         free_queue_element(cur_elem, kjb_free);
+/* all */         free_queue_element(cur_elem, ivi_free);
                   CONTINUE_HEAP_CHECK_2();
 /* all */     }
 /* all */
@@ -4535,14 +4535,14 @@ void term_blank_out_line (void)
 /* UNIX */            save_term_vec = terminal_settings.term_vec;
 /* UNIX */            save_quit_vec = terminal_settings.quit_vec;
 /* UNIX */
-/* UNIX */            kjb_sigvec(SIGINT, &save_atn_vec,   (Signal_info*)NULL);
-/* UNIX */            kjb_sigvec(SIGTSTP, &save_tstp_vec, (Signal_info*)NULL);
-/* UNIX */            kjb_sigvec(SIGTERM, &save_term_vec, (Signal_info*)NULL);
-/* UNIX */            kjb_sigvec(SIGQUIT, &save_quit_vec, (Signal_info*)NULL);
+/* UNIX */            ivi_sigvec(SIGINT, &save_atn_vec,   (Signal_info*)NULL);
+/* UNIX */            ivi_sigvec(SIGTSTP, &save_tstp_vec, (Signal_info*)NULL);
+/* UNIX */            ivi_sigvec(SIGTERM, &save_term_vec, (Signal_info*)NULL);
+/* UNIX */            ivi_sigvec(SIGQUIT, &save_quit_vec, (Signal_info*)NULL);
 #endif
 /* all */
                      SKIP_HEAP_CHECK_2();
-/* all */            free_queue_element(cur_elem, kjb_free);
+/* all */            free_queue_element(cur_elem, ivi_free);
                      CONTINUE_HEAP_CHECK_2();
 /* UNIX */        }
 /* all */     }
@@ -4701,7 +4701,7 @@ static void add_line_to_reentry_queue(const char* line)
 
     SKIP_HEAP_CHECK_2();
     insert_at_end_of_queue(&fs_term_buff_head, &fs_term_buff_tail,
-                           (void*)kjb_strdup(line));
+                           (void*)ivi_strdup(line));
     CONTINUE_HEAP_CHECK_2();
 
     fs_term_buff_count++;
@@ -4724,7 +4724,7 @@ void read_line_reentry_history(const char* program_name)
 
     add_cleanup_function(write_line_reentry_history);
 
-    NR(reentry_fp = kjb_fopen(fs_reentry_file_path, "r"));
+    NR(reentry_fp = ivi_fopen(fs_reentry_file_path, "r"));
 
     if (fs_term_buff_count == 0) add_line_to_reentry_queue("");
 
@@ -4748,7 +4748,7 @@ void read_line_reentry_history(const char* program_name)
 
     fs_previous_sessions_term_buff_count = fs_term_buff_count - save_term_buff_count;
 
-    EPE(kjb_fclose(reentry_fp));
+    EPE(ivi_fclose(reentry_fp));
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -4783,7 +4783,7 @@ static void write_line_reentry_history(void)
 
     halt_all_output = FALSE;
 
-    NR(reentry_fp = kjb_fopen(fs_reentry_file_path, "w"));
+    NR(reentry_fp = ivi_fopen(fs_reentry_file_path, "w"));
 
     while ((cur_elem != NULL) && (count > MAX_NUM_HISTORY_LINES_WRITEN))
     {
@@ -4793,15 +4793,15 @@ static void write_line_reentry_history(void)
 
     while (cur_elem != NULL)
     {
-        EPE(kjb_fputs(reentry_fp, (char*)(cur_elem->contents)));
-        EPE(kjb_fputs(reentry_fp, "\n"));
+        EPE(ivi_fputs(reentry_fp, (char*)(cur_elem->contents)));
+        EPE(ivi_fputs(reentry_fp, "\n"));
 
         cur_elem = cur_elem->next;
     }
 
     EPE(BUFF_GET_TIME(time_buff));
-    EPE(kjb_fprintf(reentry_fp, "### Session ended at %s. ###\n", time_buff));
-    EPE(kjb_fclose(reentry_fp));
+    EPE(ivi_fprintf(reentry_fp, "### Session ended at %s. ###\n", time_buff));
+    EPE(ivi_fclose(reentry_fp));
 
     halt_all_output = save_halt_all_output;
 }
@@ -4817,7 +4817,7 @@ static void write_line_reentry_history(void)
 void free_line_reentry_queue(void)
 {
     fs_term_buff_count = 0;
-    free_queue(&fs_term_buff_head, &fs_term_buff_tail, kjb_free);
+    free_queue(&fs_term_buff_head, &fs_term_buff_tail, ivi_free);
 }
 #endif
 

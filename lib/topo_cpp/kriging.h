@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: kriging.h 17611 2014-09-26 20:39:48Z predoehl $
+ * $Id: kriging.h 25499 2020-06-14 13:26:04Z kobus $
  *
  * Tab size:  4
  */
@@ -17,7 +17,7 @@
 #include <topo_cpp/nedgrid.h>
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -47,7 +47,7 @@ namespace kjb
  * to build these objects, you must help serialize cache access, because the
  * NED grid cache fills itself from the file system, and you don't want two or
  * more parallel attempts to enlarge the cache that way, especially for the
- * same grid file.  In that case, just create a kjb::Pthread_mutex object
+ * same grid file.  In that case, just create a ivi::Pthread_mutex object
  * elsewhere, and all threads should provide to the ctor that mutex pointer.
  * If the above conditions do not apply (e.g., single-threaded or the cache is
  * not shared) then omit the pointer or pass in a NULL value.

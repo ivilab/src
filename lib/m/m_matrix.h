@@ -1,5 +1,5 @@
 
-/* $Id: m_matrix.h 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: m_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -50,9 +50,9 @@ namespace kjb_c {
 /* =============================================================================
  *                                   Matrix
  *
- * KJB library matrix type
+ * IVI library matrix type
  *
- * This type is the matrix type for the KJB library and is used by many
+ * This type is the matrix type for the IVI library and is used by many
  * routines. It stores a matrix with num_rows rows and num_cols cols. If "mp"
  * is a pointer to the type Matrix, then mp->elements[ row ][ col ] accesses
  * the element (row, col), and mp->elements[ row ] accesses the row'th row.

@@ -1,4 +1,4 @@
-/* $Id: gui_button.h 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: gui_button.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -19,15 +19,15 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
-#ifndef KJB_CPP_GUI_BUTTON_H
-#define KJB_CPP_GUI_BUTTON_H
+#ifndef IVI_CPP_GUI_BUTTON_H
+#define IVI_CPP_GUI_BUTTON_H
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 
 #include <gui_cpp/gui_overlay.h>
 #include <boost/function.hpp>
 
-namespace kjb
+namespace ivi
 {
 namespace gui
 {

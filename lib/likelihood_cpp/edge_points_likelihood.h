@@ -1,4 +1,4 @@
-/* $Id: edge_points_likelihood.h 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: edge_points_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -50,8 +50,8 @@
    |  Author: Luca Del Pero
  * =========================================================================== */
 
-#ifndef KJB_EDGE_POINTS_LIKELIHOOD_H_
-#define KJB_EDGE_POINTS_LIKELIHOOD_H_
+#ifndef IVI_EDGE_POINTS_LIKELIHOOD_H_
+#define IVI_EDGE_POINTS_LIKELIHOOD_H_
 
 #include <list>
 #include <vector>
@@ -89,7 +89,7 @@
  * For more details please see Figure 5 and 6 in:
  * http://vision.cs.arizona.edu/~schlecht/research/furniture/papers/schlecht-2009b.pdf
  */
-namespace kjb {
+namespace ivi {
 
 /**
  * Contains pointers to data edge point per cell.
@@ -124,7 +124,7 @@ public:
      */
     Correspondence
     (
-        const kjb::Edge_set * data_edges,
+        const ivi::Edge_set * data_edges,
         unsigned int          num_rows,
         unsigned int          num_cols,
         unsigned int          num_angles,
@@ -154,7 +154,7 @@ public:
         /** @brief Constructor*/
         Point
         (
-            const kjb::Edge_point    & e_pt,
+            const ivi::Edge_point    & e_pt,
             unsigned int             iedge_pt_num,
             unsigned int             imodel_pt_row,
             unsigned int             imodel_pt_col,
@@ -366,7 +366,7 @@ public:
     (
         const Int_matrix & model_map,
         const std::vector<Model_edge> & model_edges,
-        const std::vector<kjb::Int_vector> & edge_indexes,
+        const std::vector<ivi::Int_vector> & edge_indexes,
         int edge_counter,
         int & num_sil_miss,
         int & num_inn_miss
@@ -376,7 +376,7 @@ public:
     (
         const Int_matrix & model_map,
         const std::vector<Model_edge> & model_edges,
-        const std::vector<kjb::Int_vector> & edge_indexes,
+        const std::vector<ivi::Int_vector> & edge_indexes,
         std::vector<Correspondence::Matched_point> & matched_points,
         std::vector< std::vector<const Correspondence::Matched_point *> > & edge_pts_matched_corr,
         int edge_counter,
@@ -391,7 +391,7 @@ public:
     const std::vector< std::vector<const Correspondence::Point*> > &
     generate_for_model
     (
-        const kjb::Edge_set& model_edge_set
+        const ivi::Edge_set& model_edge_set
     );
 
     /** @brief Returns the max distance allowed between a model point
@@ -415,7 +415,7 @@ private:
      */
     void add_edge_pts_along_line
     (
-        const kjb::Edge_point & iedge_pt,
+        const ivi::Edge_point & iedge_pt,
         unsigned int            iedge_pt_num,
         unsigned int            num_rows,
         unsigned int            num_cols,
@@ -460,7 +460,7 @@ public:
     };
 
     Independent_edge_points_likelihood(
-        const kjb::Edge_set * data_edges,
+        const ivi::Edge_set * data_edges,
         int num_angles,
         unsigned int num_rows,
         unsigned int num_cols,
@@ -502,7 +502,7 @@ public:
     (
         Int_matrix & model_map,
         const std::vector<Model_edge> & model_edges,
-        const std::vector<kjb::Int_vector> & external_edge_indexes,
+        const std::vector<ivi::Int_vector> & external_edge_indexes,
         int external_edge_counter
     ) const;
 
@@ -510,7 +510,7 @@ public:
     (
         Int_matrix & model_map,
         const std::vector<Model_edge> & model_edges,
-        const std::vector<kjb::Int_vector> & external_edge_indexes,
+        const std::vector<ivi::Int_vector> & external_edge_indexes,
         int external_edge_counter
     ) const;
     
@@ -518,7 +518,7 @@ public:
     (
         Int_matrix & model_map,
         const std::vector<Model_edge> & model_edges,
-        const std::vector<kjb::Int_vector> & external_edge_indexes,
+        const std::vector<ivi::Int_vector> & external_edge_indexes,
         int external_edge_counter
     ) const;
 
@@ -529,7 +529,7 @@ public:
     ) const;
 
     /** @brief Returns the assignment matrix */
-    //const kjb::Int_matrix & get_assign() const { return m_ll_assign; };
+    //const ivi::Int_matrix & get_assign() const { return m_ll_assign; };
 
     /** @brief Returns the correspondence manager */
     Correspondence * get_correspondence() { return correspondence; }
@@ -584,7 +584,7 @@ public:
         U & camera,
         Int_matrix & model_map,
         V * auxiliary_structure,
-        const std::vector<kjb::Int_vector> & external_edge_indexes,
+        const std::vector<ivi::Int_vector> & external_edge_indexes,
         int external_edge_counter,
         int single_object = -1,
         unsigned int mode = FROM_MAP_AND_EDGES
@@ -608,7 +608,7 @@ public:
         return (1.0/(_num_miss + _num_data_point));
     }
 
-    const kjb::Edge_set * get_data_edges() const
+    const ivi::Edge_set * get_data_edges() const
     {
         return data_edges;
     }
@@ -656,7 +656,7 @@ private:
      *                      an object (not part of the silhouette).
      *                      We call this missed_inner_edge
      */
-    //mutable kjb::Int_matrix m_ll_assign;
+    //mutable ivi::Int_matrix m_ll_assign;
 
     /** @brief This contains the set of edges we want to compare to the detected image
      *          edges. We expect each edge point in this map to be rendered with a color
@@ -667,12 +667,12 @@ private:
      *          have to reallocate the matrix every time we need to compute the
      *          likelihood
      */
-    kjb::Int_matrix internal_model_map;
+    ivi::Int_matrix internal_model_map;
 
     /** The edges detected from the input image. The likelihood is computed
      *  by comparing a new set of edges against this one. This is not
      *  owned by this class (memory allocation not handled)*/
-    const kjb::Edge_set * data_edges;
+    const ivi::Edge_set * data_edges;
 
     /** @brief Used to precompute correspondences between the set of data_edges
      * and any possible set of new edges. See description above*/
@@ -712,7 +712,7 @@ private:
 
     mutable int edge_counter;
 
-    kjb::Matrix M;
+    ivi::Matrix M;
 
     int image_size;
 
@@ -750,13 +750,13 @@ double Independent_edge_points_likelihood::compute_likelihood(T & model, unsigne
     }
     else if(mode == FROM_EDGE_POINTS)
     {
-        kjb::Edge_set edge_points;
+        ivi::Edge_set edge_points;
         model.prepare_edge_points(edge_points);
         return this->operator()(edge_points);
     }
     else
     {
-        KJB_THROW_2(Illegal_argument, "Likelihood mode not supported");
+        IVI_THROW_2(Illegal_argument, "Likelihood mode not supported");
     }
 }
 
@@ -787,18 +787,18 @@ double Independent_edge_points_likelihood::compute_likelihood(T & model, U & cam
     }
     else if(mode == FROM_EDGE_POINTS)
     {
-        kjb::Edge_set edge_points;
+        ivi::Edge_set edge_points;
         model.prepare_edge_points(edge_points, camera);
         return this->operator()(edge_points);
     }
     else
     {
-        KJB_THROW_2(Illegal_argument, "Likelihood mode not supported");
+        IVI_THROW_2(Illegal_argument, "Likelihood mode not supported");
     }
 }
 
-} //namespace kjb
+} //namespace ivi
 
 
-#endif /* KJB_EDGE_POINTS_LIKELIHOOD_H_ */
+#endif /* IVI_EDGE_POINTS_LIKELIHOOD_H_ */
 

@@ -75,7 +75,7 @@ static int traverse_to_neighbor
     Hash_table       *ht_ptr
 );
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 static int is_synset_in_table_1
 (
     const SynsetPtr  synset_ptr,
@@ -226,7 +226,7 @@ int hash_word_sense
     const void *word_wp
 )
 {
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
     int value = 0;
     unsigned int c;
     char *word;
@@ -255,7 +255,7 @@ int hash_word_sense
 #endif 
 }
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 int is_word_in_synset
 (
     const SynsetPtr  synset_ptr,
@@ -293,7 +293,7 @@ int is_synset_in_table
     Word_sense       **word_wpp
 )
 {
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
     SynsetPtr synset_ptr = NULL;
     Word_sense *found_word_wp = NULL;
     int res;
@@ -338,7 +338,7 @@ int is_synonym
     Word_sense *word2_wp
 )
 {
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
     SynsetPtr synset_ptr = NULL;
     int res = 0;
 
@@ -435,7 +435,7 @@ int is_ancestor
 
         if(res == ERROR) /* found or terminated*/
         {
-            kjb_print_error();
+            ivi_print_error();
             break;
         }
     
@@ -461,7 +461,7 @@ static int traverse_to_parent
     Hash_table       *ht_ptr
 )
 {
-#ifdef KJB_HAVE_WN 
+#ifdef IVI_HAVE_WN 
     int res = NO_ERROR;
     
     if(PARENT_TYPE(parent_type, IS_A))
@@ -513,7 +513,7 @@ static int traverse_to_neighbor
     Hash_table       *ht_ptr
 )
 {
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
     SynsetPtr synset_ptr = NULL;
     SynsetPtr next_synset_ptr = NULL;
     SynsetPtr trace_synset_ptr = NULL;
@@ -591,7 +591,7 @@ static int traverse_to_neighbor
 #endif
 }
 
-#ifdef KJB_HAVE_WN
+#ifdef IVI_HAVE_WN
 static int is_synset_in_table_1
 (
     const            SynsetPtr  synset_ptr,

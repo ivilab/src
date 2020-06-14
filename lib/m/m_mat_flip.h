@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_flip.h 15078 2013-08-01 07:44:50Z predoehl $ */
+/* $Id: m_mat_flip.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

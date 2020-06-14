@@ -25,12 +25,12 @@
 */
 int back_project_frame_slide_to_slide
  (
-  const KJB_image *frame_ip,
+  const IVI_image *frame_ip,
   int slide_width,
   int slide_height,
   const Matrix    *H_mp,
   int             fitting_model,
-  KJB_image       **bp_ipp,
+  IVI_image       **bp_ipp,
   Int_matrix      **mask_impp
  )
 {
@@ -38,7 +38,7 @@ int back_project_frame_slide_to_slide
     Matrix *slide_bound_mp = NULL;
     Int_matrix *mask_imp = NULL;
     int result;
-    KJB_image       *tmp_bp_ip = NULL;
+    IVI_image       *tmp_bp_ip = NULL;
     int i,j;
 
     result = get_bound(H_mp, 
@@ -77,7 +77,7 @@ int back_project_frame_slide_to_slide
       }
     }
 
-    kjb_free_image(tmp_bp_ip);
+    ivi_free_image(tmp_bp_ip);
     free_matrix(img_pos_mp);
     free_matrix(slide_bound_mp);
     free_int_matrix(mask_imp);
@@ -140,7 +140,7 @@ int get_enlarged_frame_dimensions
 
 int back_project_frame_slide_to_slide_enlarged
  (
-  const KJB_image *frame_ip,
+  const IVI_image *frame_ip,
   int slide_width,
   int slide_height,
   int enlarged_slide_width,
@@ -149,7 +149,7 @@ int back_project_frame_slide_to_slide_enlarged
   int frame_height,
   const Matrix    *H_mp,
   int             fitting_model,
-  KJB_image       **bp_ipp,
+  IVI_image       **bp_ipp,
   Int_matrix      **mask_impp
  )
 {
@@ -158,8 +158,8 @@ int back_project_frame_slide_to_slide_enlarged
     Matrix *slide_bound_mp = NULL;
     Int_matrix *mask_imp = NULL;
     int result;
-    KJB_image       *tmp_bp_ip = NULL;
-    KJB_image       *scaled_frame_ip = NULL;
+    IVI_image       *tmp_bp_ip = NULL;
+    IVI_image       *scaled_frame_ip = NULL;
     int i,j;
     double enlarged_frame_width, enlarged_frame_height;
     Int_matrix *enlarged_frame_dimensions = NULL;
@@ -253,8 +253,8 @@ int back_project_frame_slide_to_slide_enlarged
       }
     }
     
-    kjb_free_image(tmp_bp_ip);
-    kjb_free_image(scaled_frame_ip);
+    ivi_free_image(tmp_bp_ip);
+    ivi_free_image(scaled_frame_ip);
     free_matrix(img_pos_mp);
     free_matrix(slide_bound_mp);
     free_int_matrix(mask_imp);
@@ -264,10 +264,10 @@ int back_project_frame_slide_to_slide_enlarged
 
 int back_project_image
 (
- const KJB_image *ip,
+ const IVI_image *ip,
  const Matrix    *H_mp,
  int             fitting_model,
- KJB_image       **bp_ipp,
+ IVI_image       **bp_ipp,
  Int_matrix      **mask_impp
  )
 { 

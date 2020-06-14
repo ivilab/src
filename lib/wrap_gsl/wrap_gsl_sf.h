@@ -1,5 +1,5 @@
 
-/* $Id: wrap_gsl_sf.h 11801 2012-02-27 05:17:45Z predoehl $ */
+/* $Id: wrap_gsl_sf.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -36,18 +36,18 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
-int kjb_erf(double* P_ptr, double x);
+int ivi_erf(double* P_ptr, double x);
 
-int kjb_bessel_I0( double* P_ptr, double x );
+int ivi_bessel_I0( double* P_ptr, double x );
 
-int kjb_scaled_bessel_I0( double* P_ptr, double x );
+int ivi_scaled_bessel_I0( double* P_ptr, double x );
 
-int kjb_scaled_bessel_I1( double* P_ptr, double x );
+int ivi_scaled_bessel_I1( double* P_ptr, double x );
 
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE

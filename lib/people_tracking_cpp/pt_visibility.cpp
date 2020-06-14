@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: pt_visibility.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: pt_visibility.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include "l/l_sys_debug.h"  /* For ASSERT */
 #include "people_tracking_cpp/pt_visibility.h"
@@ -35,7 +35,7 @@
 #include <boost/bimap/bimap.hpp>
 #include <boost/bimap/multiset_of.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 // depth map
@@ -54,14 +54,14 @@ Visibility get_box_visibility
     bool infer_head
 );
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::update_visibilities(const Scene& scene, bool infer_head)
+void ivi::pt::update_visibilities(const Scene& scene, bool infer_head)
 {
     if(scene.association.empty()) return;
 
@@ -73,7 +73,7 @@ void kjb::pt::update_visibilities(const Scene& scene, bool infer_head)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-void kjb::pt::update_visibilities
+void ivi::pt::update_visibilities
 (
     const Scene& scene,
     size_t frame,
@@ -129,7 +129,7 @@ void kjb::pt::update_visibilities
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-Visibility kjb::pt::get_box_visibility
+Visibility ivi::pt::get_box_visibility
 (
     const Bbox& box,
     double depth,

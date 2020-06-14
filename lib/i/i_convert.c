@@ -1,5 +1,5 @@
 
-/* $Id: i_convert.c 20697 2016-06-12 00:22:46Z kobus $ */
+/* $Id: i_convert.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -59,12 +59,12 @@ int convert_image_file_to_raster
 
     for (i=0; i<num_convert_programs; i++)
     {
-        EPETE(kjb_sprintf(exec_string, sizeof(exec_string), "%s %s %s%s",
+        EPETE(ivi_sprintf(exec_string, sizeof(exec_string), "%s %s %s%s",
                           convert_programs[ i ],
                           expanded_in_file_name_and_sub_image,
                           target_prefixes[ i ], out_file_name));
 
-        result = kjb_system(exec_string);
+        result = ivi_system(exec_string);
 
         if (    (result == NO_ERROR)
              && (get_path_type(out_file_name) == PATH_IS_REGULAR_FILE)
@@ -106,10 +106,10 @@ int convert_image_file_from_raster
 
     for (i=0; i<num_convert_programs; i++)
     {
-        ERE(kjb_sprintf(exec_string, sizeof(exec_string), "%s %s %s",
+        ERE(ivi_sprintf(exec_string, sizeof(exec_string), "%s %s %s",
                         convert_programs[ i ], in_file_name, out_file_name));
 
-        result = kjb_system(exec_string);
+        result = ivi_system(exec_string);
 
         if (    (result == NO_ERROR)
              && (get_path_type(out_file_name) == PATH_IS_REGULAR_FILE)

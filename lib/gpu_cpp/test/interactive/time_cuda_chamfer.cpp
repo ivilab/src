@@ -43,20 +43,20 @@
 
 #include <boost/scoped_ptr.hpp>
 
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
 #include <GL/gl.h>
 #endif
 
-#ifdef KJB_HAVE_CUDA
+#ifdef IVI_HAVE_CUDA
 #include <cuda.h>
 #include <cudaGL.h>
 #else
 #error "cuda required"
 #endif
 
-using namespace kjb;
-using namespace kjb::opengl;
-using namespace kjb::gpu;
+using namespace ivi;
+using namespace ivi::opengl;
+using namespace ivi::gpu;
 
 using namespace std;
 
@@ -94,7 +94,7 @@ int width, height;
 
 void generate_edge_sprite()
 {
-    using kjb_c::kjb_rand;
+    using ivi_c::ivi_rand;
     // generate edge image
     edge_img_gray = Matrix(height, width, 0.0);
 //    Matrix edges(height, width, 255.0);
@@ -104,8 +104,8 @@ void generate_edge_sprite()
 
     for(int i = 0; i < NUM_EDGE_PTS; i++)
     {
-        int x = kjb_rand() * width;
-        int y = kjb_rand() * height;
+        int x = ivi_rand() * width;
+        int y = ivi_rand() * height;
 
         edge_img_gray(y, x) = 255.0;
     }
@@ -205,7 +205,7 @@ double cpu_process(int p_i)
     }
 
     if(!glUnmapBuffer(GL_PIXEL_PACK_BUFFER))     // release pointer to the mapped buffer
-        KJB_THROW_2(Opengl_error, "glUnmapBuffer failed.");
+        IVI_THROW_2(Opengl_error, "glUnmapBuffer failed.");
 
     GL_ETX();
 
@@ -342,7 +342,7 @@ int main(int argc, char* argv[])
 
 
         
-        std::vector<kjb::Int_matrix> positions = xfm.position_map();
+        std::vector<ivi::Int_matrix> positions = xfm.position_map();
 
         CUdeviceptr cu_positions = tmp_likelihood->create_position_map(positions[0], positions[1]);
         tmp_likelihood->set_maps(cu_distances, cu_positions, edges->get_total_edge_points());

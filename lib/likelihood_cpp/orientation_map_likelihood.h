@@ -1,4 +1,4 @@
-/* $Id: orientation_map_likelihood.h 10707 2011-09-29 20:05:56Z predoehl $ */
+/* $Id: orientation_map_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -50,15 +50,15 @@
    |  Author: Joshua Bowdish
  * =========================================================================== */
 
-#ifndef KJB_ORMAP_LIKELIHOOD_H_
-#define KJB_ORMAP_LIKELIHOOD_H_
+#ifndef IVI_ORMAP_LIKELIHOOD_H_
+#define IVI_ORMAP_LIKELIHOOD_H_
 
 #include <i_cpp/i_image.h>
 
-namespace kjb {
+namespace ivi {
 
-} //namespace kjb
+} //namespace ivi
 
 
-#endif /* KJB_ORMAP_LIKELIHOOD_H_ */
+#endif /* IVI_ORMAP_LIKELIHOOD_H_ */
 

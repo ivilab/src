@@ -1,4 +1,4 @@
-/* $Id: g_cylinder.cpp 18278 2014-11-25 01:42:10Z ksimek $ */
+/* $Id: g_cylinder.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* ===========================================================================*
  |
  |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -23,7 +23,7 @@
 #include <g_cpp/g_cylinder.h>
 #include <sstream>
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * Performs a deep copy of the center points of the bases of the 
@@ -52,41 +52,41 @@ void Cylinder::read(std::istream & in)
 
     if(!(field_value = read_field_value(in, "radius")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing radius");
+        IVI_THROW_2(Illegal_argument,"Missing radius");
     }
     istringstream ist(field_value);
     ist >> r_;
     if(r_ < 0)
     {
-        KJB_THROW_2(Illegal_argument, "Radius must be bigger than 0");
+        IVI_THROW_2(Illegal_argument, "Radius must be bigger than 0");
     }
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing radius");
+        IVI_THROW_2(Illegal_argument, "Missing radius");
     }
     ist.clear(std::ios_base::goodbit);
     
     if(!(field_value = read_field_value(in, "centertop")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing center top");
+        IVI_THROW_2(Illegal_argument,"Missing center top");
     }
     ist.str(field_value);
     ist >> p1_(0) >> p1_(1) >> p1_(2);
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing center top");
+        IVI_THROW_2(Illegal_argument, "Missing center top");
     }
     ist.clear(std::ios_base::goodbit);
 
     if(!(field_value = read_field_value(in, "centerbottom")))
     {
-        KJB_THROW_2(Illegal_argument,"Missing center bottom");
+        IVI_THROW_2(Illegal_argument,"Missing center bottom");
     }
     ist.str(field_value);
     ist >> p2_(0) >> p2_(1) >> p2_(2);
     if(ist.fail())
     {
-        KJB_THROW_2(Illegal_argument, "Missing center bottom");
+        IVI_THROW_2(Illegal_argument, "Missing center bottom");
     }
     ist.clear(std::ios_base::goodbit);
 }

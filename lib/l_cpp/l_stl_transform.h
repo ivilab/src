@@ -1,4 +1,4 @@
-/* $Id: l_stl_transform.h 10621 2011-09-29 19:50:52Z predoehl $ */
+/* $Id: l_stl_transform.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -22,10 +22,10 @@
 /**
  * @file A set of general purpose unary functions for use with std::transform
  */
-#ifndef KJB_CPP_L_STL_TRANSFORM
-#define KJB_CPP_L_STL_TRANSFORM
+#ifndef IVI_CPP_L_STL_TRANSFORM
+#define IVI_CPP_L_STL_TRANSFORM
 
-namespace kjb
+namespace ivi
 {
 
 /// Convert to a pointer
@@ -35,5 +35,5 @@ template <class T>
 T* operator()(T& in) { return &in; }
 };
 
-} // namespace kjb
+} // namespace ivi
 #endif

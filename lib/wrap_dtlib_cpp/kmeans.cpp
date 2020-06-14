@@ -14,14 +14,14 @@
 
 /*
  * Kobus: We have run into trouble with 32 bit centric code in this
- * distribution. I have changed some long's to kjb_int32's.  The immediate
+ * distribution. I have changed some long's to ivi_int32's.  The immediate
  * problem is that the segmentation maps can get written out as 64 bit integers. 
 */
 #include "l/l_sys_def.h"
 #include <iostream>
 
 using namespace DTLib;
-using namespace kjb_c;
+using namespace ivi_c;
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -32,7 +32,7 @@ CKMeans::CKMeans(const int P, const int K, const int D, float** ppData,
     m_nK = K;
     m_nOrigK = K;
     m_nD = D;
-    m_pPtClusters = new kjb_int32[P];
+    m_pPtClusters = new ivi_int32[P];
     if (bTransposeData) {
         // if we transpose the data, we need to store a copy of (the 
         // transposed) data and copy over from ppData
@@ -555,8 +555,8 @@ float CKMeans::ComputeSquareDistance(const int k, const int p)
 
 void CKMeans::CleanupMemberships2D(const int& Width, const int& Height)
 {
-    CImg<kjb_int32> PtClustersImg(m_pPtClusters, Width, Height, false);
-    CImg<kjb_int32> TmpImg(Width+2, Height+2);
+    CImg<ivi_int32> PtClustersImg(m_pPtClusters, Width, Height, false);
+    CImg<ivi_int32> TmpImg(Width+2, Height+2);
     Reflect(PtClustersImg, TmpImg);
     const int StartX = TmpImg.ROIStartX(), 
         StartY = TmpImg.ROIStartY(), 
@@ -564,11 +564,11 @@ void CKMeans::CleanupMemberships2D(const int& Width, const int& Height)
         EndY = TmpImg.ROIEndY();
     ASSERT(EndX-StartX == Width);
     ASSERT(EndY-StartY == Height);
-    kjb_int32* pCluster = TmpImg.pROI();
-    kjb_int32* pNewCluster = PtClustersImg.pBuffer();
+    ivi_int32* pCluster = TmpImg.pROI();
+    ivi_int32* pNewCluster = PtClustersImg.pBuffer();
     const int sk = TmpImg.ROISkipCols();
-    kjb_int32* aKhisto = new kjb_int32[m_nK];
-    const int SizeKhisto = m_nK*sizeof(kjb_int32);
+    ivi_int32* aKhisto = new ivi_int32[m_nK];
+    const int SizeKhisto = m_nK*sizeof(ivi_int32);
     for (int y = StartY, p = 0; y < EndY; y++, pCluster += sk) {
         for (int x = StartX; x < EndX; x++, pCluster++, pNewCluster++, p++) {
             const int iParent = *pCluster;
@@ -585,7 +585,7 @@ void CKMeans::CleanupMemberships2D(const int& Width, const int& Height)
             aKhisto[*(pCluster+Width)]++;
             aKhisto[*(pCluster+Width+1)]++;
             int iNewParent = -1;
-            kjb_int32 maxNewParent = 0;
+            ivi_int32 maxNewParent = 0;
             for (int k = 0; k < m_nK; k++) {
                 if (aKhisto[k] > 4) {
                     // if (aKhisto[k] > maxNewParent) {

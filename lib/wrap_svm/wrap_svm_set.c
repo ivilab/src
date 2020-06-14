@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_set.c 8780 2011-02-27 23:42:02Z predoehl $ */
+/* $Id: wrap_svm_set.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -38,7 +38,7 @@ extern "C" {
 
 /*
  * =============================================================================
- *                                  kjb_svm_set
+ *                                  ivi_svm_set
  *
  *
  *
@@ -46,7 +46,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
  */
 
-int kjb_svm_set(const char* option, const char* value)
+int ivi_svm_set(const char* option, const char* value)
 {
     int         temp_result;
     int         result = NOT_FOUND;

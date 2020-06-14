@@ -23,7 +23,7 @@
 #include <m_cpp/m_matrix.h>
 #include <m_cpp/m_vector.h>
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief   Perform forward substitution to solve the SLE Lx = b, where
@@ -42,7 +42,7 @@ Vector forward_substitution(const Matrix& L, const Vector& b);
  */
 Vector back_substitution(const Matrix& U, const Vector& b);
 
-} // namespace kjb
+} // namespace ivi
 
 #endif  /*N_SOLVE_H */
 

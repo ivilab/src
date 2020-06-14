@@ -1,5 +1,5 @@
 
-/* $Id: wrap_gsl_sf.c 17569 2014-09-22 20:56:26Z predoehl $ */
+/* $Id: wrap_gsl_sf.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -39,7 +39,7 @@
 #include "m/m_incl.h"
 #include "wrap_gsl/wrap_gsl_sf.h"
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 #    include "gsl/gsl_sf.h"
 #endif 
 
@@ -50,7 +50,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#ifndef KJB_HAVE_GSL 
+#ifndef IVI_HAVE_GSL 
 
 static void set_dont_have_gsl_error(void)
 {
@@ -65,7 +65,7 @@ static void set_dont_have_gsl_error(void)
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                   kjb_erf
+ *                                   ivi_erf
  *
  * Computes error function erf(x)
  *
@@ -93,12 +93,12 @@ static void set_dont_have_gsl_error(void)
  * Index: random, statistics, special function
  * -----------------------------------------------------------------------------
  */
-int kjb_erf(
+int ivi_erf(
     double* P_ptr,    /* Pointer to where the result should be stored */
     double x          /* Value at which to evaluate erf               */
 )
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     NRE( P_ptr );
     *P_ptr = gsl_sf_erf(x);
     return NO_ERROR;
@@ -111,7 +111,7 @@ int kjb_erf(
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                                   kjb_bessel_I0
+ *                                   ivi_bessel_I0
  *
  * Computes modified Bessel function, order 0
  *
@@ -128,7 +128,7 @@ int kjb_erf(
  *
  * Keep in mind that I_0(x) grows very quickly with increasing x, on the order
  * of exp(x)/sqrt(x).  If you need to compute I_0 for a large value (perhaps in
- * a ratio calculation), please consider using kjb_scaled_bessel_I0() instead.
+ * a ratio calculation), please consider using ivi_scaled_bessel_I0() instead.
  * In this context if x has three digits, it is LARGE.
  *
  * Returns:
@@ -142,12 +142,12 @@ int kjb_erf(
  * Index: special function, bessel function
  * -----------------------------------------------------------------------------
  */
-int kjb_bessel_I0(
+int ivi_bessel_I0(
     double* P_ptr,    /* Pointer to where the result should be stored */
     double x          /* Value at which to evaluate erf               */
 )
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     NRE( P_ptr );
     *P_ptr = gsl_sf_bessel_I0(x);
     return NO_ERROR;
@@ -160,7 +160,7 @@ int kjb_bessel_I0(
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                          kjb_scaled_bessel_I1
+ *                          ivi_scaled_bessel_I1
  *
  * Computes a ratio:  bessel I1(x) over exp(x)
  *
@@ -186,12 +186,12 @@ int kjb_bessel_I0(
  * Index: special function, bessel function
  * -----------------------------------------------------------------------------
  */
-int kjb_scaled_bessel_I1(
+int ivi_scaled_bessel_I1(
     double* P_ptr,    /* Pointer to where the result should be stored */
     double x          /* Value at which to evaluate erf               */
 )
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     NRE( P_ptr );
     *P_ptr = gsl_sf_bessel_I1_scaled(x);
     return NO_ERROR;
@@ -204,13 +204,13 @@ int kjb_scaled_bessel_I1(
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /* =============================================================================
- *                          kjb_scaled_bessel_I0
+ *                          ivi_scaled_bessel_I0
  *
  * Computes a ratio:  bessel I0(x) over exp(x)
  *
  * If possible, computes a product: the modified Bessel function, order 0
  * (usually denoted by something like I_0(x) times exp(-x)).
- * Please see kjb_bessel_I0 for exposition about function I0(x).
+ * Please see ivi_bessel_I0 for exposition about function I0(x).
  * The reason for making this a product with exp(-x) is that I0(x) alone grows
  * very fast.  If one needs to evaluate it for large values of x (100 or
  * more), we need some scaling factor to avoid overflow.
@@ -231,12 +231,12 @@ int kjb_scaled_bessel_I1(
  * Index: special function, bessel function
  * -----------------------------------------------------------------------------
  */
-int kjb_scaled_bessel_I0(
+int ivi_scaled_bessel_I0(
     double* P_ptr,    /* Pointer to where the result should be stored */
     double x          /* Value at which to evaluate erf               */
 )
 {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     NRE( P_ptr );
     *P_ptr = gsl_sf_bessel_I0_scaled(x);
     return NO_ERROR;

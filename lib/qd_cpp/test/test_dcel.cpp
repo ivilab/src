@@ -4,7 +4,7 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_dcel.cpp 20167 2015-12-09 22:13:05Z predoehl $
+ * $Id: test_dcel.cpp 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #include <l/l_sys_std.h>
@@ -22,9 +22,9 @@
 namespace
 {
 
-using kjb::qd::Doubly_connected_edge_list;
-using kjb::qd::RatPoint_line_segment;
-using kjb::qd::RatPoint;
+using ivi::qd::Doubly_connected_edge_list;
+using ivi::qd::RatPoint_line_segment;
+using ivi::qd::RatPoint;
 
 
 // C++ is harrassing me about a locale parameter if I don't wrap this up. :-(
@@ -1013,10 +1013,10 @@ const char* o6 =
 int test1()
 {
     const Doubly_connected_edge_list d; // empty
-    KJB(ERE(is_valid(d)));
+    IVI(ERE(is_valid(d)));
     TEST_TRUE(xml_match(o1, xml_output(d)));
     TEST_TRUE(input_parse_match(o1, d));
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1024,10 +1024,10 @@ int test2()
 {
     const RatPoint_line_segment s(RatPoint(1, 1), RatPoint(2, 1));
     const Doubly_connected_edge_list d(s);
-    KJB(ERE(is_valid(d)));
+    IVI(ERE(is_valid(d)));
     TEST_TRUE(xml_match(o2, xml_output(d)));
     TEST_TRUE(input_parse_match(o2, d));
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1038,15 +1038,15 @@ int test3()
     const Doubly_connected_edge_list d1(s1);
     const Doubly_connected_edge_list d2(s2);
     const Doubly_connected_edge_list d3(d1.merge(d2));
-    KJB(ERE(is_valid(d1)));
-    KJB(ERE(is_valid(d2)));
-    KJB(ERE(is_valid(d3)));
+    IVI(ERE(is_valid(d1)));
+    IVI(ERE(is_valid(d2)));
+    IVI(ERE(is_valid(d3)));
 
     std::istringstream ds(o3);
     const Doubly_connected_edge_list
         d_ref(Doubly_connected_edge_list::ctor_xml_stream(ds));
     TEST_TRUE(is_isomorphic(d3, d_ref, 00));
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1057,16 +1057,16 @@ int test4()
     const Doubly_connected_edge_list d1(s1), d2(s2);
     d1.merge(d2);
     const Doubly_connected_edge_list d3(d1.merge(d2));
-    KJB(ERE(is_valid(d1)));
-    KJB(ERE(is_valid(d2)));
-    KJB(ERE(is_valid(d3)));
+    IVI(ERE(is_valid(d1)));
+    IVI(ERE(is_valid(d2)));
+    IVI(ERE(is_valid(d3)));
 
     std::istringstream ds(o4);
     const Doubly_connected_edge_list
         d_ref(Doubly_connected_edge_list::ctor_xml_stream(ds));
     TEST_TRUE(is_isomorphic(d3, d_ref, 00));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1098,14 +1098,14 @@ Doubly_connected_edge_list square()
 int test5()
 {
     const Doubly_connected_edge_list d1234(square());
-    KJB(ERE(is_valid(d1234)));
+    IVI(ERE(is_valid(d1234)));
 
     std::istringstream ds(o5);
     const Doubly_connected_edge_list
         d_ref(Doubly_connected_edge_list::ctor_xml_stream(ds));
     TEST_TRUE(is_isomorphic(d1234, d_ref, 00));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1118,14 +1118,14 @@ int test6()
     d2.transform(grow);
     const Doubly_connected_edge_list d3(d2.merge(d1));
     const Doubly_connected_edge_list d5(d3.merge(d4));
-    KJB(ERE(is_valid(d5)));
+    IVI(ERE(is_valid(d5)));
 
     std::istringstream ds(o6);
     const Doubly_connected_edge_list
         d_ref(Doubly_connected_edge_list::ctor_xml_stream(ds));
     TEST_TRUE(is_isomorphic(d5, d_ref, 00));
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
@@ -1134,7 +1134,7 @@ int test7()
 {
     const char *refs[] = {o1, o2, o3, o4, o5, o6};
     const size_t ref_count = sizeof(refs) / sizeof(char*);
-    KJB(ASSERT(6 == ref_count));
+    IVI(ASSERT(6 == ref_count));
 
     for (size_t i = 0; i < ref_count-1; ++i)
     {
@@ -1165,19 +1165,19 @@ int test7()
         }
     }
 
-    return kjb_c::NO_ERROR;
+    return ivi_c::NO_ERROR;
 }
 
 
-#define NOW_PERFORM(f) KJB(EPETE(f()))
-// do { std::cout << "now perform " << #f << '\n'; KJB(EPETE(f())); } while(0)
+#define NOW_PERFORM(f) IVI(EPETE(f()))
+// do { std::cout << "now perform " << #f << '\n'; IVI(EPETE(f())); } while(0)
 
 }
 
 
 int main(int argc, char** argv)
 {
-    KJB(EPETE(kjb_init()));
+    IVI(EPETE(ivi_init()));
 
     try
     {
@@ -1189,7 +1189,7 @@ int main(int argc, char** argv)
         NOW_PERFORM(test6);
         NOW_PERFORM(test7);
     }
-    catch (const kjb::Exception& e)
+    catch (const ivi::Exception& e)
     {
         e.print_details();
         return EXIT_FAILURE;
@@ -1200,7 +1200,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    kjb_c::kjb_cleanup();
+    ivi_c::ivi_cleanup();
     RETURN_VICTORIOUSLY();
 }
 

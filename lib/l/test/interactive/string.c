@@ -1,5 +1,5 @@
 
-/* $Id: string.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: string.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -12,7 +12,7 @@ main(int argc, char **argv)
     char *buff_pos; 
 
 
-    kjb_l_set("debug_level", "2"); 
+    ivi_l_set("debug_level", "2"); 
 
     buff_pos = buff; 
 

@@ -1,5 +1,5 @@
 
-/* $Id: m_missing.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: m_missing.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -48,13 +48,13 @@ int respect_missing_values        (void);
 
 #include "m/m_global.h"
 
-#define respect_missing_values() (kjb_respect_missing_values)
+#define respect_missing_values() (ivi_respect_missing_values)
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 

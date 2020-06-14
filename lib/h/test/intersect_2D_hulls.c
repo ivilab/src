@@ -1,5 +1,5 @@
 
-/* $Id: intersect_2D_hulls.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: intersect_2D_hulls.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
     } 
 
 
-    EPETB(kjb_sprintf(hir_str, sizeof(hir_str), "%d", 
+    EPETB(ivi_sprintf(hir_str, sizeof(hir_str), "%d", 
                       HULL_INTERSECTION_RESOLUTION));
     EPETB(set_random_options("seed", "0")); 
     EPETB(set_random_options("seed_2", "0")); 
@@ -97,13 +97,13 @@ int main(int argc, char **argv)
     {
         c1 = c2 = c3 = c4 = c5 = c6 = c7 = c8 = c9 = interior_point_count = 0;
 
-        num_hulls = 50.0 * kjb_rand() + 1;
+        num_hulls = 50.0 * ivi_rand() + 1;
 
         verbose_pso(1, "Test %d with %d hulls.\n", i+1, num_hulls);
 
         for (j=0; j<num_hulls; j++)
         {
-            num_points = 10 + 100.0 * kjb_rand();
+            num_points = 10 + 100.0 * ivi_rand();
 
             EPETE(get_random_matrix(&point_mp, num_points, 2));
 
@@ -494,8 +494,8 @@ int main(int argc, char **argv)
 
         for (k=0; k<NUM_RANDOM_SAMPLES; k++)
         {
-            test_vp->elements[ 0 ] = kjb_rand();
-            test_vp->elements[ 1 ] = kjb_rand();
+            test_vp->elements[ 0 ] = ivi_rand();
+            test_vp->elements[ 1 ] = ivi_rand();
 
             inside = TRUE; 
             cur_elem = hull_list_head; 

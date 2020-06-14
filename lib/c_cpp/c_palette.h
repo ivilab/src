@@ -11,7 +11,7 @@
  * (used to visualize superpixels).
  */
 /*
- * $Id: c_palette.h 18148 2014-11-09 21:36:11Z predoehl $
+ * $Id: c_palette.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef PALETTE_H_PREDOEHL_UOFARIZONAVISION
@@ -24,7 +24,7 @@
 #include <vector>
 
 
-namespace kjb
+namespace ivi
 {
 
 /**
@@ -38,7 +38,7 @@ namespace kjb
  */
 class Palette
 {
-    std::vector< kjb::PixelRGBA > my_pal;   ///< storage for the palette colors
+    std::vector< ivi::PixelRGBA > my_pal;   ///< storage for the palette colors
 
 public:
     /**
@@ -52,12 +52,12 @@ public:
     Palette( size_t );
 
     /// @brief Build a palette from a vector of colored Pixels.
-    Palette( const std::vector< kjb::PixelRGBA >& some_pal )
+    Palette( const std::vector< ivi::PixelRGBA >& some_pal )
     :   my_pal( some_pal )
     {}
 
     /// @brief Return a palette entry, a color, in the form of a Pixel.
-    const kjb::PixelRGBA& operator[]( size_t index ) const
+    const ivi::PixelRGBA& operator[]( size_t index ) const
     {
         return my_pal.at( index );
     }
@@ -82,10 +82,10 @@ public:
      *
      * In other words, you can use this to indicate weighted_sum or pick_max.
      */
-    typedef kjb::PixelRGBA ( Palette::* PIXOP )( const kjb::Vector& ) const;
+    typedef ivi::PixelRGBA ( Palette::* PIXOP )( const ivi::Vector& ) const;
 
 
-    kjb::PixelRGBA weighted_sum( const kjb::Vector& ) const;
+    ivi::PixelRGBA weighted_sum( const ivi::Vector& ) const;
 
 
     /**
@@ -102,15 +102,15 @@ public:
      * forms a mix comprising 100% of the most weighted color, and 0% of the
      * others.
      */
-    kjb::PixelRGBA pick_max( const kjb::Vector& weights ) const
+    ivi::PixelRGBA pick_max( const ivi::Vector& weights ) const
     {
         int max_index;
-        if (weights.get_length() != (int)size() ) KJB_THROW(Illegal_argument);
+        if (weights.get_length() != (int)size() ) IVI_THROW(Illegal_argument);
         weights.max( &max_index );
         return my_pal[ max_index ];
     }
 };
 
-} // namespace kjb
+} // namespace ivi
 
 #endif

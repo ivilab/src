@@ -27,7 +27,7 @@
 #include <people_tracking_cpp/pt_association.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_opengl_headers.h>
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
 #include <gr_cpp/gr_glut.h>
 #endif
 #include <i_cpp/i_image.h>
@@ -42,8 +42,8 @@
 #include <boost/lexical_cast.hpp>
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 using namespace boost;
 
 // globals
@@ -79,9 +79,9 @@ void update_viewer(Scene_viewer& viewer);
 int main(int argc, char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     if(argc != 5)
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
                         img_height);
 
         // find scenes on disk
-        Word_list scene_dps(scenes_dp + "/*", kjb_c::is_directory);
+        Word_list scene_dps(scenes_dp + "/*", ivi_c::is_directory);
         scene_dp_p = make_const_circular_iterator(scene_dps);
 
         // read first scene
@@ -147,11 +147,11 @@ int main(int argc, char** argv)
 
         // GL stuff
         glEnable(GL_DEPTH_TEST);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
         glutMainLoop();
 #endif
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;
@@ -238,7 +238,7 @@ void handle_key(Scene_viewer& viewer, unsigned char key, int, int)
     }
 
     update_viewer(viewer);
-#ifdef KJB_HAVE_GLUT
+#ifdef IVI_HAVE_GLUT
     glutPostRedisplay();
 #endif
 }

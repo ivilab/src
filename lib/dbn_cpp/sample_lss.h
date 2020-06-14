@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: sample_lss.h 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: sample_lss.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef TIES_SAMPLE_LSS_H
 #define TIES_SAMPLE_LSS_H
@@ -32,7 +32,7 @@
 #include "dbn_cpp/posterior.h"
 #include "dbn_cpp/linear_state_space.h"
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /** @brief   Generate samples of model using mh.  */
@@ -110,7 +110,7 @@ Double_vv get_sampled_params
     const Likelihood& ll
 );
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
 #endif // TIES_SAMPLE_LSS_H
 

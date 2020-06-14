@@ -1,5 +1,5 @@
 
-/* $Id: i_driver.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: i_driver.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,19 +27,19 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
 
 /* -------------------------------------------------------------------------- */
 
-int kjb_image_program_driver
+int ivi_image_program_driver
 (
     int   argc,
     char* argv[],
     int   (*option_fn) (const char*, const char* ),
-    int   (*program_fn) (const KJB_image*, const char *,                                 KJB_image**, const char*, const Int_matrix*)
+    int   (*program_fn) (const IVI_image*, const char *,                                 IVI_image**, const char*, const Int_matrix*)
 );
 
 

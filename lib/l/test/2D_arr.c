@@ -1,5 +1,5 @@
 
-/* $Id: 2D_arr.c 24744 2020-01-14 00:28:08Z kobus $ */
+/* $Id: 2D_arr.c 25499 2020-06-14 13:26:04Z kobus $ */
 
  
 #include "l/l_incl.h" 
@@ -41,10 +41,10 @@ int main(int  argc, char *argv[] )
     int**    int_ptr_ptr;
     long*    long_ptr;
     long**   long_ptr_ptr;
-    kjb_int16*   int16_ptr;
-    kjb_int16**  int16_ptr_ptr;
-    kjb_int32*   int32_ptr;
-    kjb_int32**  int32_ptr_ptr;
+    ivi_int16*   int16_ptr;
+    ivi_int16**  int16_ptr_ptr;
+    ivi_int32*   int32_ptr;
+    ivi_int32**  int32_ptr_ptr;
     float*   float_ptr;
     float**  float_ptr_ptr;
     double*  double_ptr;
@@ -56,7 +56,7 @@ int main(int  argc, char *argv[] )
     int      test_factor = 1; 
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -65,11 +65,11 @@ int main(int  argc, char *argv[] )
 
     if (is_interactive())
     {
-        kjb_set_verbose_level(2);
+        ivi_set_verbose_level(2);
     }
     else 
     {
-        kjb_set_verbose_level(0); 
+        ivi_set_verbose_level(0); 
     }
 
     if (test_factor == 0)
@@ -82,8 +82,8 @@ int main(int  argc, char *argv[] )
         double d_max_num_rows = (double)max_num_rows * sqrt((double)test_factor);
         double d_max_num_cols = (double)max_num_cols * sqrt((double)test_factor);
 
-        max_num_rows = kjb_rint(d_max_num_rows); 
-        max_num_cols = kjb_rint(d_max_num_cols); 
+        max_num_rows = ivi_rint(d_max_num_rows); 
+        max_num_cols = ivi_rint(d_max_num_cols); 
     }
 
     num_rows = 0;
@@ -317,7 +317,7 @@ int main(int  argc, char *argv[] )
                 {
                     if ( int16_ptr_ptr[ i ][ j] != TEST_INT16 )
                     {
-                        report_failure( "2D kjb_int16 array failure.\n" );
+                        report_failure( "2D ivi_int16 array failure.\n" );
                     }
                 }
             }
@@ -343,7 +343,7 @@ int main(int  argc, char *argv[] )
             {
                 if ( *int16_ptr != TEST_INT16 )
                 {
-                    report_failure( "2D kjb_int16 array failure.\n" );
+                    report_failure( "2D ivi_int16 array failure.\n" );
                 }
                 int16_ptr++;
             }
@@ -368,7 +368,7 @@ int main(int  argc, char *argv[] )
                 {
                     if ( int32_ptr_ptr[ i ][ j] != TEST_INT32 )
                     {
-                        report_failure( "2D kjb_int32 array failure.\n" );
+                        report_failure( "2D ivi_int32 array failure.\n" );
                     }
                 }
             }
@@ -394,7 +394,7 @@ int main(int  argc, char *argv[] )
             {
                 if ( *int32_ptr != TEST_INT32 )
                 {
-                    report_failure( "2D kjb_int32 array failure.\n" );
+                    report_failure( "2D ivi_int32 array failure.\n" );
                 }
                 int32_ptr++;
             }
@@ -520,9 +520,9 @@ int main(int  argc, char *argv[] )
             free_2D_short_array(short_ptr_ptr );
             free_2D_byte_array(byte_ptr_ptr);
 
-            num_cols += kjb_rint(5.0 * kjb_rand()); 
+            num_cols += ivi_rint(5.0 * ivi_rand()); 
         }
-        num_rows += kjb_rint(5.0 * kjb_rand()); 
+        num_rows += ivi_rint(5.0 * ivi_rand()); 
     }
 
     return EXIT_SUCCESS; 
@@ -537,13 +537,13 @@ static void report_failure(const char* message)
      p_stderr("\n");
      p_stderr("!!!!!!!!!!!!  FAILURE   !!!!!!!!!!!!\n\n");
      set_high_light(stderr);
-     kjb_fputs(stderr, message);
+     ivi_fputs(stderr, message);
      unset_high_light(stderr);
      p_stderr("\n");
      p_stderr("------------------------------------\n");
      p_stderr("\n");
 
-     kjb_exit( EXIT_BUG );
+     ivi_exit( EXIT_BUG );
 }
 
 

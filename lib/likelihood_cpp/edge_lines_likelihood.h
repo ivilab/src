@@ -1,4 +1,4 @@
-/* $Id: edge_lines_likelihood.h 18283 2014-11-25 05:05:59Z ksimek $ */
+/* $Id: edge_lines_likelihood.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -34,7 +34,7 @@
  * conditionally independent of each other given the model. We approaximate the
  * likelihood by the ignoring the noise and expected non-edge points. 
  */
-namespace kjb {
+namespace ivi {
 
 /**@class Line_correspondence
  * Represents the correspondence between an edge segment and a model edge, it greedily 
@@ -251,7 +251,7 @@ class Edge_lines_likelihood
          *          have to reallocate the matrix every time we need to compute the
          *          likelihood
          */
-        kjb::Int_matrix model_map;
+        ivi::Int_matrix model_map;
 
         /** @brief The detected edge line segments from the input image. The likelihood is computed
          *      *  by comparing a new set of edges against this one. This is not

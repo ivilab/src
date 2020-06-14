@@ -1,5 +1,5 @@
 
-/* $Id: fill_3D_hull.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: fill_3D_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     int  test_factor = 1;
 
 
-    kjb_init(); 
+    ivi_init(); 
 
     if (argc > 1)
     {
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     } 
 
 
-    EPETB(kjb_sprintf(hfr_str, sizeof(hfr_str), "%d", HULL_FILL_RESOLUTION));
+    EPETB(ivi_sprintf(hfr_str, sizeof(hfr_str), "%d", HULL_FILL_RESOLUTION));
     EPETB(set_hull_options("hfr", hfr_str)); 
     EPETB(set_random_options("seed", "0")); 
     EPETB(set_random_options("seed_2", "0")); 
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     {
         c1 = c2 = 0;
 
-        num_points = kjb_rint(30.0 + 500.0 * kjb_rand());
+        num_points = ivi_rint(30.0 + 500.0 * ivi_rand());
 
         verbose_pso(1, "Test %d (%d points).\n", i+1, num_points);
 
@@ -132,9 +132,9 @@ int main(int argc, char **argv)
 
         for (k=0; k<NUM_RANDOM_SAMPLES; k++)
         {
-            test_vp->elements[ 0 ] = kjb_rand();
-            test_vp->elements[ 1 ] = kjb_rand();
-            test_vp->elements[ 2 ] = kjb_rand();
+            test_vp->elements[ 0 ] = ivi_rand();
+            test_vp->elements[ 1 ] = ivi_rand();
+            test_vp->elements[ 2 ] = ivi_rand();
 
             init_cpu_time(); 
             EPETE(no_fill_inside = is_point_inside_hull(no_fill_hp, test_vp));
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
         sum_c1 += c1; 
         sum_c2 += c2; 
 
-        kjb_flush(); 
+        ivi_flush(); 
 
         free_hull(no_fill_hp);
     }

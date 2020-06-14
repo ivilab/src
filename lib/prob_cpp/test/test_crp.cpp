@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: test_crp.cpp 20241 2016-01-20 22:34:46Z jguan1 $ */
+/* $Id: test_crp.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
@@ -23,7 +23,7 @@
 #include <iterator>
 #include <boost/bind.hpp>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 using namespace boost;
 

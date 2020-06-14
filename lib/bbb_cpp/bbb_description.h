@@ -50,7 +50,7 @@
 #include <boost/ref.hpp>
 #include <boost/tuple/tuple.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace bbb {
 
 // forward declaration
@@ -515,7 +515,7 @@ void write
         Illegal_argument, "Cannot write description: bad trajectory indices.");
     IFT(std::distance(first, last) == ntrajs, Illegal_argument,
         "Cannot write description: bad trajectory indices.");
-    IFT(kjb_c::is_directory(path.c_str()), Illegal_argument,
+    IFT(ivi_c::is_directory(path.c_str()), Illegal_argument,
         "Cannot write description: invalid path.");
 
     // too much std:: in this function
@@ -661,14 +661,14 @@ void read
     using boost::tie;
     using std::vector;
 
-    IFT(kjb_c::is_directory(path.c_str()), Illegal_argument,
+    IFT(ivi_c::is_directory(path.c_str()), Illegal_argument,
         "Cannot read description: invalid path.");
 
     //// first read files and description info
     Description_info dinfo;
 
     // read parents file
-    IFT(kjb_c::is_file((path + "/parents.txt").c_str()), IO_error,
+    IFT(ivi_c::is_file((path + "/parents.txt").c_str()), IO_error,
         "Cannot read description; cannot read parents file.");
     Int_matrix parents(path + "/parents.txt");
 
@@ -678,7 +678,7 @@ void read
     {
         const std::string& name = lib.activity_name(i);
         //std::string act_fp = path + "/" + name + ".txt";
-        //if(!kjb_c::is_file(act_fp.c_str())) continue;
+        //if(!ivi_c::is_file(act_fp.c_str())) continue;
 
         std::string act_fpg = path + "/" + name + "*.txt";
         Word_list wl(act_fpg.c_str());
@@ -717,7 +717,7 @@ void read
  */
 Description make_trivial_description(const Data& data);
 
-}} // namespace kjb::bbb
+}} // namespace ivi::bbb
 
 #endif /*B3_DESCRIPTION_H */
 

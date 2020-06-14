@@ -1,5 +1,5 @@
 
-/* $Id: i_byte.c 5724 2010-03-18 01:29:35Z ksimek $ */
+/* $Id: i_byte.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -75,7 +75,7 @@ Byte_image* create_byte_image(int num_rows, int num_cols)
     {
         if ((ip->pixels = N_TYPE_MALLOC(Byte_pixel*, num_rows)) == NULL)
         {
-            kjb_free(ip);
+            ivi_free(ip);
             return NULL;
         }
 
@@ -83,8 +83,8 @@ Byte_image* create_byte_image(int num_rows, int num_cols)
 
         if ((ip->pixels)[ 0 ] == NULL)
         {
-            kjb_free(ip->pixels);
-            kjb_free(ip);
+            ivi_free(ip->pixels);
+            ivi_free(ip);
             return NULL;
         }
     }
@@ -123,11 +123,11 @@ void free_byte_image(Byte_image* ip)
                 return;
             }
 
-            kjb_free(ip->pixels[ 0 ]);
-            kjb_free(ip->pixels);
+            ivi_free(ip->pixels[ 0 ]);
+            ivi_free(ip->pixels);
         }
 
-        kjb_free(ip);
+        ivi_free(ip);
     }
 }
 
@@ -139,7 +139,7 @@ void free_byte_image(Byte_image* ip)
  * Gets target Byte image for "building block" routines
  *
  * This routine implements the image creation/over-writing symantics used in
- * the KJB library in the case of Byte images. If *ipp is NULL, then this
+ * the IVI library in the case of Byte images. If *ipp is NULL, then this
  * routine creates the images. If it is not null, and it is the right size,
  * then this routine does nothing. If it is the wrong size, then it is resized.
  *

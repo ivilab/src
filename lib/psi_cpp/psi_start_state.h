@@ -1,4 +1,4 @@
-/* $Id: psi_start_state.h 10707 2011-09-29 20:05:56Z predoehl $ */
+/* $Id: psi_start_state.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -25,7 +25,7 @@
 #include <string>
 #include <sstream>
 
-namespace kjb
+namespace ivi
 {
 namespace psi
 {
@@ -56,7 +56,7 @@ struct Start_state
             case 0: return x;
             case 1: return y;
             case 2: return theta;
-            default: KJB_THROW(kjb::Index_out_of_bounds);
+            default: IVI_THROW(ivi::Index_out_of_bounds);
         }
     }
 
@@ -67,7 +67,7 @@ struct Start_state
             case 0: return x;
             case 1: return y;
             case 2: return theta;
-            default: KJB_THROW(kjb::Index_out_of_bounds);
+            default: IVI_THROW(ivi::Index_out_of_bounds);
         }
     }
 
@@ -80,7 +80,7 @@ struct Start_state
             case 0: return SPACIAL_UNIT;
             case 1: return SPACIAL_UNIT;
             case 2: return ANGLE_UNIT;
-            default : KJB_THROW_2(kjb::Illegal_argument, "Unknown unit type.");
+            default : IVI_THROW_2(ivi::Illegal_argument, "Unknown unit type.");
         }
     }
 };
@@ -114,5 +114,5 @@ inline Start_state parse_cli_start_state(const std::string& str)
 }
 
 } // namespace psi
-} // namespace kjb
+} // namespace ivi
 #endif

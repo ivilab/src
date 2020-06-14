@@ -1,5 +1,5 @@
 
-/* $Id: kjb_glob.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: ivi_glob.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -18,7 +18,7 @@ int main(void)
     {
         dbp("--------- MATCHES  -------------");
 
-        EPE(kjb_glob(&paths, glob, NULL));
+        EPE(ivi_glob(&paths, glob, NULL));
 
         num_words = paths->num_words;
         words = paths->words;

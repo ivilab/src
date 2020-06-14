@@ -1,5 +1,5 @@
 
-/* $Id: m_matrix.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -207,7 +207,7 @@ int get_initialized_matrix
  *
  * Gets target matrix
  *
- * This routine implements the creation/over-writing semantics used in the KJB
+ * This routine implements the creation/over-writing semantics used in the IVI
  * library in the case of matrices. If *target_mpp is NULL, then this routine
  * creates the matrix. If it is not null, and it is the right size, then this
  * routine does nothing. If it is the wrong size, then it is resized.
@@ -216,7 +216,7 @@ int get_initialized_matrix
  * fails, then the original contents of the *target_mpp will be lost.  However,
  * target_mpp->elements will be set to NULL, so *target_mpp can be safely sent
  * to free_matrix().  Note that this is in fact the convention throughout the
- * KJB library--if destruction on failure is a problem (usually when *target_mpp
+ * IVI library--if destruction on failure is a problem (usually when *target_mpp
  * is global)--then work on a copy!
  *
  * The sizes (num_rows and num_cols) must both be nonnegative.
@@ -298,8 +298,8 @@ int debug_get_target_matrix
 
         if (num_rows > out_mp->max_num_rows)
         {
-            kjb_free(out_mp->elements);
-            NRE(out_mp->elements = (double **)debug_kjb_malloc(num_rows * sizeof(double*),
+            ivi_free(out_mp->elements);
+            NRE(out_mp->elements = (double **)debug_ivi_malloc(num_rows * sizeof(double*),
                                                                file_name, line_number));
             row_ptr = out_mp->elements;
 
@@ -398,8 +398,8 @@ int get_target_matrix(Matrix** target_mpp, int num_rows, int num_cols)
 
         if (num_rows > out_mp->max_num_rows)
         {
-            kjb_free(out_mp->elements);
-            NRE(out_mp->elements = (double **)kjb_malloc(num_rows * sizeof(double*)));
+            ivi_free(out_mp->elements);
+            NRE(out_mp->elements = (double **)ivi_malloc(num_rows * sizeof(double*)));
             row_ptr = out_mp->elements;
 
             out_mp->max_num_rows = num_rows;
@@ -501,7 +501,7 @@ Matrix* DEBUG_create_matrix
 
 
     /*
-    //  Use debug_kjb_malloc as opposed to macros to pass down file_name
+    //  Use debug_ivi_malloc as opposed to macros to pass down file_name
     //  and line_number.
     */
 
@@ -589,9 +589,9 @@ void free_matrix(Matrix* mp)
              * otherwise problems such as double free can look like unitialized
              * memory.
             */
-            kjb_check_free(mp);
+            ivi_check_free(mp);
 
-            if (kjb_debug_level >= 10)
+            if (ivi_debug_level >= 10)
             {
                 check_initialization(mp->elements[ 0 ],
                                      mp->num_rows * mp->num_cols,
@@ -602,7 +602,7 @@ void free_matrix(Matrix* mp)
             free_2D_double_array(mp->elements);
         }
 
-        kjb_free(mp);
+        ivi_free(mp);
     }
 }
 
@@ -895,7 +895,7 @@ Matrix* create_diagonal_matrix(const Vector* vp)
  * Creates a random matrix
  *
  * This routine creates a matrix of the specified dimensions, and fills it with
- * random values between 0.0 and 1.0. The routine kjb_rand is used for the
+ * random values between 0.0 and 1.0. The routine ivi_rand is used for the
  * random numbers.
  *
  * Returns:
@@ -925,7 +925,7 @@ Matrix* create_random_matrix(int num_rows, int num_cols)
 
         for (j=0; j<num_cols; j++)
         {
-            *elem_ptr++ = kjb_rand();
+            *elem_ptr++ = ivi_rand();
         }
     }
 
@@ -942,7 +942,7 @@ Matrix* create_random_matrix(int num_rows, int num_cols)
  * Creates a random matrix
  *
  * This routine creates a matrix of the specified dimensions, and fills it with
- * random values between 0.0 and 1.0. The routine kjb_rand_2() is used for the
+ * random values between 0.0 and 1.0. The routine ivi_rand_2() is used for the
  * random numbers.
  *
  * Returns:
@@ -971,7 +971,7 @@ Matrix* create_random_matrix_2(int num_rows, int num_cols)
 
         for (j=0; j<num_cols; j++)
         {
-            *elem_ptr++ = kjb_rand_2();
+            *elem_ptr++ = ivi_rand_2();
         }
     }
 
@@ -986,7 +986,7 @@ Matrix* create_random_matrix_2(int num_rows, int num_cols)
  * Gets a random matrix
  *
  * This routine gets a matrix of the specified dimensions, and fills it with
- * random values between 0.0 and 1.0. The routine kjb_rand() is used.
+ * random values between 0.0 and 1.0. The routine ivi_rand() is used.
  *
  * The first argument is the adress of the target matrix. If the target matrix
  * itself is null, then a matrix of the appropriate size is created. If the
@@ -1018,7 +1018,7 @@ int get_random_matrix(Matrix** target_mpp, int num_rows, int num_cols)
 
         for (j=0; j<num_cols; j++)
         {
-            *elem_ptr++ = kjb_rand();
+            *elem_ptr++ = ivi_rand();
         }
     }
 
@@ -1033,7 +1033,7 @@ int get_random_matrix(Matrix** target_mpp, int num_rows, int num_cols)
  * Gets a random matrix
  *
  * This routine gets a matrix of the specified dimensions, and fills it with
- * random values between 0.0 and 1.0. The routine kjb_rand_2 is used.
+ * random values between 0.0 and 1.0. The routine ivi_rand_2 is used.
  *
  * The first argument is the adress of the target matrix. If the target matrix
  * itself is null, then a matrix of the appropriate size is created. If the
@@ -1042,7 +1042,7 @@ int get_random_matrix(Matrix** target_mpp, int num_rows, int num_cols)
  *
  * Note:
  *     This routine is exactly the same as get_random_matrix(), except that the
- *     alternative random stream kjb_rand_2() is used.
+ *     alternative random stream ivi_rand_2() is used.
  *
  * Returns:
  *     NO_ERROR on success and ERROR on failure This routine will only fail if
@@ -1069,7 +1069,7 @@ int get_random_matrix_2(Matrix** target_mpp, int num_rows, int num_cols)
 
         for (j=0; j<num_cols; j++)
         {
-            *elem_ptr++ = kjb_rand_2();
+            *elem_ptr++ = ivi_rand_2();
         }
     }
 
@@ -1090,7 +1090,7 @@ int ow_perturb_matrix(Matrix* mp, double fraction)
     {
         for (j=0; j<num_cols; j++)
         {
-            mp->elements[ i ][ j ] *= (1.0 + fraction * (kjb_rand_2() - 0.5));
+            mp->elements[ i ][ j ] *= (1.0 + fraction * (ivi_rand_2() - 0.5));
         }
     }
 

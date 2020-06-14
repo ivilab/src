@@ -22,15 +22,15 @@
 #include <algorithm>
 #include <numeric>
 
-#ifndef KJB_CPP_L_STD_PARALLEL
+#ifndef IVI_CPP_L_STD_PARALLEL
 
 // need g++ 4.3 or newer
 // need -fopenmp load flag
 // need -D_GLIBCXX_PARALLEL compile flag
-#ifdef KJB_USE_GNU_PARALLEL
-namespace kjb_parallel_std = __gnu_parallel;
+#ifdef IVI_USE_GNU_PARALLEL
+namespace ivi_parallel_std = __gnu_parallel;
 #else
-namespace kjb_parallel_std = std;
+namespace ivi_parallel_std = std;
 #endif
 
 #endif

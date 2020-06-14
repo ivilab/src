@@ -36,9 +36,9 @@
 #include <iterator>
 #include <iostream>
 
-using namespace kjb;
-using namespace kjb::bbb;
-using namespace kjb::opengl;
+using namespace ivi;
+using namespace ivi::bbb;
+using namespace ivi::opengl;
 
 
 void Visualizer::clear_alternative_camera()
@@ -107,7 +107,7 @@ void Visualizer::set_overhead_view()
 
 void Visualizer::init_gl()
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     // general stuff
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glEnable(GL_DEPTH_TEST);
@@ -115,15 +115,15 @@ void Visualizer::init_gl()
     // display callback
     glwin_.set_display_callback(
         boost::bind(&Visualizer::render_scene, this));
-#else // KJB_HAVE_OPENGL
-        KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif // KJB_HAVE_OPENGL
+#else // IVI_HAVE_OPENGL
+        IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif // IVI_HAVE_OPENGL
 }
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
 void Visualizer::render_scene() const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glDisable(GL_LIGHTING);
@@ -173,16 +173,16 @@ void Visualizer::render_scene() const
     //}
 
     glutSwapBuffers();
-#else // KJB_HAVE_OPENGL
-    KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif // KJB_HAVE_OPENGL
+#else // IVI_HAVE_OPENGL
+    IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif // IVI_HAVE_OPENGL
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
 void Visualizer::render_trajectory(const Trajectory& traj) const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     //const Trajectory& traj = data_p_->trajectory(k);
 
     const size_t pf = frame_ > 20 ? frame_ - 20 : 1;
@@ -204,8 +204,8 @@ void Visualizer::render_trajectory(const Trajectory& traj) const
         glRotated(90, 1.0, 0.0, 0.0);
         ellipse.solid_render();
     glPopMatrix();
-#else // KJB_HAVE_OPENGL
-    KJB_THROW_2(kjb::Missing_dependency, "opengl");
-#endif // KJB_HAVE_OPENGL
+#else // IVI_HAVE_OPENGL
+    IVI_THROW_2(ivi::Missing_dependency, "opengl");
+#endif // IVI_HAVE_OPENGL
 }
 

@@ -4,14 +4,14 @@
 #include <l_cpp/l_test.h>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 typedef Axis_aligned_rectangle_2d Bbox;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
     Flow_feature_set of_set;
     Flow_feature_set sparse_of_set;
     const double min_x = 0.0;
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         }
         else
         {
-            dy = kjb_c::kjb_rand();
+            dy = ivi_c::ivi_rand();
         }
 
         for(size_t col = min_x; col < max_x; col = col + 1)
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                dx = kjb_c::kjb_rand();
+                dx = ivi_c::ivi_rand();
             }
             Feature_pair pair(Vector((double)col, (double)row), 
                               Vector((double)(col + dx), (double)(row + dy)));

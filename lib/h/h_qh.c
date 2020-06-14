@@ -1,5 +1,5 @@
 
-/* $Id: h_qh.c 6669 2010-09-06 07:18:06Z kobus $ */
+/* $Id: h_qh.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -70,11 +70,11 @@ int set_qhull_options(const char* option, const char* value)
         }
         else
         {
-            NRE(temp_fp = kjb_fopen(value, "a"));
+            NRE(temp_fp = ivi_fopen(value, "a"));
 
             if ((fs_qhull_error_fp != NULL) && (fileno(fs_qhull_error_fp) > 2))
             {
-                kjb_fclose(fs_qhull_error_fp);
+                ivi_fclose(fs_qhull_error_fp);
             }
             else
             {
@@ -236,7 +236,7 @@ int qh_find_convex_hull
 
 
 #ifdef TEST_CRASH_HANDLING
-    if (kjb_rand() < 0.2)
+    if (ivi_rand() < 0.2)
     {
         kill_myself(11);
     }
@@ -248,7 +248,7 @@ int qh_find_convex_hull
     num_points = point_mp->num_rows;
 
 #ifdef TEST_QHULL_CRACH_CODE
-    if (kjb_rand() > 0.8) TEST_PSO(("%d\n", *(int*)num_facets));
+    if (ivi_rand() > 0.8) TEST_PSO(("%d\n", *(int*)num_facets));
 #endif
 
     /*
@@ -323,7 +323,7 @@ int qh_find_convex_hull
         {
             char qhull_facet_cosine_min_str[ 100 ];
 
-            if (kjb_sprintf(qhull_facet_cosine_min_str,
+            if (ivi_sprintf(qhull_facet_cosine_min_str,
                             sizeof(qhull_facet_cosine_min_str), " -A%e",
                             fs_qhull_facet_cosine_min)
                 == ERROR)
@@ -565,7 +565,7 @@ int qh_find_convex_hull
         qh_settempfree (&points);
     }
 
-    kjb_free(in_points);
+    ivi_free(in_points);
 
     if (exitcode)
     {
@@ -659,7 +659,7 @@ static void close_qhull_error_file()
 
     if ((fs_qhull_error_fp != NULL) && (fileno(fs_qhull_error_fp) > 2))
     {
-        kjb_fclose(fs_qhull_error_fp);
+        ivi_fclose(fs_qhull_error_fp);
     }
 
     /* Guard against second close. Should not really happen. */

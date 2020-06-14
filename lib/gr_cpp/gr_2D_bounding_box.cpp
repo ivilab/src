@@ -1,4 +1,4 @@
-/* $Id: gr_2D_bounding_box.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: gr_2D_bounding_box.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -33,31 +33,31 @@
 using std::cout;
 using std::endl;
 
-namespace kjb{
+namespace ivi{
 
 void Bounding_Box2D::wire_render() const
 {
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_OPENGL
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_LIGHTING);
     glBegin(GL_LINE_STRIP);
-        ::kjb::opengl::glVertex(m_center + Vector().set(-m_width / 2.0, -m_height / 2.0));
-        ::kjb::opengl::glVertex(m_center + Vector().set(-m_width / 2.0, m_height / 2.0));
-        ::kjb::opengl::glVertex(m_center + Vector().set(m_width / 2.0, m_height / 2.0));
-        ::kjb::opengl::glVertex(m_center + Vector().set(m_width / 2.0, -m_height / 2.0));
-        ::kjb::opengl::glVertex(m_center + Vector().set(-m_width / 2.0, -m_height / 2.0));
+        ::ivi::opengl::glVertex(m_center + Vector().set(-m_width / 2.0, -m_height / 2.0));
+        ::ivi::opengl::glVertex(m_center + Vector().set(-m_width / 2.0, m_height / 2.0));
+        ::ivi::opengl::glVertex(m_center + Vector().set(m_width / 2.0, m_height / 2.0));
+        ::ivi::opengl::glVertex(m_center + Vector().set(m_width / 2.0, -m_height / 2.0));
+        ::ivi::opengl::glVertex(m_center + Vector().set(-m_width / 2.0, -m_height / 2.0));
     glEnd();
     glPopAttrib();
 
     GL_ETX();
 #else
-    KJB_THROW_2(Missing_dependency, "opengl");
+    IVI_THROW_2(Missing_dependency, "opengl");
 #endif
 }
 
-void Bounding_Box2D::draw(kjb::Image & img, double ir, double ig, double ib, double iwidth) const
+void Bounding_Box2D::draw(ivi::Image & img, double ir, double ig, double ib, double iwidth) const
 {
-    kjb_c::Pixel px;
+    ivi_c::Pixel px;
     px.r = ir;
     px.g = ig;
     px.b = ib;
@@ -106,9 +106,9 @@ void Bounding_Box2D::write_corners_on(std::ostream& ofs)
     ofs << get_top_left() << ' ' << get_bottom_right();
 }
 
-void scale(kjb::Axis_aligned_rectangle_2d& box, const kjb::Vector& s)
+void scale(ivi::Axis_aligned_rectangle_2d& box, const ivi::Vector& s)
 {
-    kjb::Vector c = box.get_center();
+    ivi::Vector c = box.get_center();
     double width = box.get_width();
     double height = box.get_height();
 
@@ -155,7 +155,7 @@ void get_projected_bbox_from_3Dpoints
 
     if(points.size() == 0)
     {
-        KJB_THROW_2(Illegal_argument,"Get projected bounding box, no input points");
+        IVI_THROW_2(Illegal_argument,"Get projected bounding box, no input points");
     }
 
     camera.prepare_for_rendering(true);
@@ -199,12 +199,12 @@ void get_projected_bbox_from_3Dpoints
     if(!found)
     {
         std::cout << "Bounding box outside the image, object is not visible" << std::endl;
-        KJB_THROW_2(KJB_error,"Bounding box outside the image, object is not visible");
+        IVI_THROW_2(IVI_error,"Bounding box outside the image, object is not visible");
     }
 
     if( (right < 0.0) || (left > (img_width - 1)) || (down < 0.0) || (up > (img_height - 1) ) )
     {
-        KJB_THROW_2(KJB_error,"Bounding box outside the image");
+        IVI_THROW_2(IVI_error,"Bounding box outside the image");
     }
     if(left < 0.0)
     {
@@ -263,8 +263,8 @@ std::istream& operator>>(std::istream& ist, Axis_aligned_rectangle_2d& box)
 
 Bounding_Box2D intersect(const Bounding_Box2D& b1, const Bounding_Box2D& b2)
 {
-    KJB_THROW(Not_implemented); // test me!!
-    KJB(UNTESTED_CODE());
+    IVI_THROW(Not_implemented); // test me!!
+    IVI(UNTESTED_CODE());
 
    double left   = 0;
    double right  = 0;
@@ -280,7 +280,7 @@ Bounding_Box2D intersect(const Bounding_Box2D& b1, const Bounding_Box2D& b2)
    return Bounding_Box2D(Vector(left, top), Vector(right, bottom));
 }
 
-double get_rectangle_intersection(const kjb::Bounding_Box2D& b1, const kjb::Bounding_Box2D& b2)
+double get_rectangle_intersection(const ivi::Bounding_Box2D& b1, const ivi::Bounding_Box2D& b2)
 {
     double overlap1 = Line_segment::get_overlap(b1.get_left(), b1.get_right(), b2.get_left(), b2.get_right());
     double overlap2 = 0.0;
@@ -297,4 +297,4 @@ double get_rectangle_intersection(const kjb::Bounding_Box2D& b1, const kjb::Boun
 }
 
 
-} // namespace kjb
+} // namespace ivi

@@ -1,4 +1,4 @@
-/* $Id: edge_chamfer_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: edge_chamfer_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -57,11 +57,11 @@
 #include "m_cpp/m_arith.h"
 #include "gr_cpp/gr_fbo_offscreen.h"
 
-using namespace kjb;
+using namespace ivi;
 
-#ifdef KJB_HAVE_GLEW
-#ifdef KJB_HAVE_CUDA
-#ifdef KJB_HAVE_OPENGL
+#ifdef IVI_HAVE_GLEW
+#ifdef IVI_HAVE_CUDA
+#ifdef IVI_HAVE_OPENGL
 
 CUarray Base_gpu_chamfer_likelihood::map_rbo()
 {
@@ -84,7 +84,7 @@ CUarray Base_gpu_chamfer_likelihood::map_rbo()
 /*  -------------------------------------------------------------------------- */
 /*  -------------------------------------------------------------------------- */
 
-//#ifdef KJB_HAVE_CUDPP
+//#ifdef IVI_HAVE_CUDPP
 #if 0
 
 Gpu_chamfer_likelihood::Gpu_chamfer_likelihood(int width, int height) :
@@ -104,7 +104,7 @@ Gpu_chamfer_likelihood::Gpu_chamfer_likelihood(int width, int height) :
     CUDPPResult result = cudppCreate(&cudpp_handle_);
 
     if(result != CUDPP_SUCCESS)
-        KJB_THROW_2(kjb::Runtime_error, "Failed to initialize cudpp library.");
+        IVI_THROW_2(ivi::Runtime_error, "Failed to initialize cudpp library.");
 
     CU_ETX(cuMemAllocPitch(
             &workspace_ui_,
@@ -156,7 +156,7 @@ void Gpu_chamfer_likelihood::set_maps(const CUdeviceptr distance, const CUdevice
 {
     if(N > 0 && N != N_)
     {
-        KJB_THROW_2(Illegal_argument, "Distance and position arrays must have same size as the display buffer.");
+        IVI_THROW_2(Illegal_argument, "Distance and position arrays must have same size as the display buffer.");
     }
 
     distance_map_ = distance;
@@ -171,7 +171,7 @@ CUdeviceptr Gpu_chamfer_likelihood::create_distance_map(const Matrix& distance_m
     if(distance_map.get_num_cols() != offscreen_buffer_.get_width() ||
        distance_map.get_num_rows() != offscreen_buffer_.get_height() )
     {
-        KJB_THROW_2(Illegal_argument, "Distance_map dimensions doesn't match the color buffer dimensions.");
+        IVI_THROW_2(Illegal_argument, "Distance_map dimensions doesn't match the color buffer dimensions.");
     }
 
 #if CUDA_VERSION < 3020
@@ -206,7 +206,7 @@ CUdeviceptr Gpu_chamfer_likelihood::create_position_map(const Int_matrix& row_po
     if(num_cols != (size_t) offscreen_buffer_.get_width() ||
        num_rows != (size_t) offscreen_buffer_.get_height())
     {
-        KJB_THROW_2(Illegal_argument, "Position_map dimensions doesn't match the color buffer dimensions.");
+        IVI_THROW_2(Illegal_argument, "Position_map dimensions doesn't match the color buffer dimensions.");
     }
 
     Int_matrix positions(num_rows, num_cols);
@@ -284,8 +284,8 @@ void Gpu_chamfer_likelihood::operator()(const Renderable& r)
     util_mod_.detect_changes<unsigned int>(workspace_ui_, (unsigned int) N_);
 
     // reduce to get sum
-//        bool kjb_reduce = true;
-//        if(kjb_reduce)
+//        bool ivi_reduce = true;
+//        if(ivi_reduce)
 //            correspondences_ reduce_mod.reduce_uint(positions, N_);
 //        else
     {
@@ -427,7 +427,7 @@ Matrix Gpu_chamfer_likelihood::get_buffer() const
 void Gpu_chamfer_likelihood::display_buffer(const std::string& str) const
 {
 
-    ::kjb::opengl::gl_display(get_buffer(), str);
+    ::ivi::opengl::gl_display(get_buffer(), str);
     
 }
 #endif /* TEST */
@@ -591,7 +591,7 @@ void Multi_gpu_chamfer_likelihood::operator()(const Mv_renderable& m)
 
 std::vector<size_t> Multi_gpu_chamfer_likelihood::get_view_list(const size_t num_views)
 {
-    KJB(UNTESTED_CODE());
+    IVI(UNTESTED_CODE());
 
     if(view_list_.size() > 0)
     {
@@ -716,13 +716,13 @@ void Chamfer_likelihood::operator()(const Renderable& r, bool invert_y)
     evaluate_dispatch_(buffer, invert_y);
 }
 
-void Chamfer_likelihood::operator()(const kjb::Matrix& r)
+void Chamfer_likelihood::operator()(const ivi::Matrix& r)
 {
     const int width = distance_->get_num_cols();
     const int height = distance_->get_num_rows();
 
     if(r.get_num_cols() != width || r.get_num_rows() != height)
-        KJB_THROW(kjb::Dimension_mismatch);
+        IVI_THROW(ivi::Dimension_mismatch);
 
     int N = width * height;
 

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: adapter.cpp 22559 2019-06-09 00:02:37Z kobus $ */
+/* $Id: adapter.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 
 #include <l/l_sys_def.h>
 #include <l/l_sys_debug.h>
@@ -32,16 +32,16 @@
 #include "dbn_cpp/adapter.h"
 
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 double Lss_adapter::get(const Linear_state_space* lss, size_t i) const
 {
     using namespace std;
     const State_type& init_state = lss->init_state();
     const Coupled_oscillator_v& clos = lss->coupled_oscillators();
-    KJB(ASSERT(!init_state.empty()));
-    KJB(ASSERT(!clos.empty()));
+    IVI(ASSERT(!init_state.empty()));
+    IVI(ASSERT(!clos.empty()));
     size_t num_params = clos.front().num_params();
     size_t num_clos = clos.size();
     if(!lss->allow_drift())
@@ -55,23 +55,23 @@ double Lss_adapter::get(const Linear_state_space* lss, size_t i) const
     {
         size_t c_i = i / num_params;
         size_t p_i = i - c_i * num_params;
-        KJB(KJB(ASSERT(p_i < num_params && c_i < num_clos)));
+        IVI(IVI(ASSERT(p_i < num_params && c_i < num_clos)));
         if(!lss->allow_drift())
         {
-            KJB(ASSERT(c_i == 0));
+            IVI(ASSERT(c_i == 0));
         }
         return clos.at(c_i).get_param(p_i);
     }
     else if(i < n1 + n2) 
     {
         // i >= n1  if n2 == 0, will not enter this part
-        KJB(ASSERT(sample_init_state_));
+        IVI(ASSERT(sample_init_state_));
         size_t n_i = i - n1;
         return init_state[n_i];
     }
     else
     {
-        KJB_THROW_2(Runtime_error, "Should never reach here");
+        IVI_THROW_2(Runtime_error, "Should never reach here");
     }
 }
 
@@ -82,8 +82,8 @@ void Lss_adapter::set(Linear_state_space* lss, size_t i, double value) const
     using namespace std;
     State_type& init_state = lss->init_state();
     Coupled_oscillator_v& clos = lss->coupled_oscillators();
-    KJB(ASSERT(!init_state.empty()));
-    KJB(ASSERT(!clos.empty()));
+    IVI(ASSERT(!init_state.empty()));
+    IVI(ASSERT(!clos.empty()));
 
     size_t num_params = clos[0].num_params();
     size_t num_clos = clos.size();
@@ -98,10 +98,10 @@ void Lss_adapter::set(Linear_state_space* lss, size_t i, double value) const
     {
         size_t c_i = i / num_params;
         size_t p_i = i - c_i * num_params;
-        KJB(ASSERT(p_i < num_params && c_i < num_clos));
+        IVI(ASSERT(p_i < num_params && c_i < num_clos));
         if(!lss->allow_drift())
         {
-            KJB(ASSERT(c_i == 0));
+            IVI(ASSERT(c_i == 0));
             BOOST_FOREACH(Coupled_oscillator& clo, clos)
             {
                 clo.set_param(p_i, value);
@@ -125,7 +125,7 @@ void Lss_adapter::set(Linear_state_space* lss, size_t i, double value) const
     }
     else
     {
-        KJB_THROW_2(Runtime_error, "Should never reach here");
+        IVI_THROW_2(Runtime_error, "Should never reach here");
     }
 }
 
@@ -171,17 +171,17 @@ double Shared_param_adapter::get(const Lss_set* lsss, size_t i) const
         size_t pred_per = pred_coefs[0].size();
         size_t index_1 = i / pred_per;
         size_t index_2 = i % pred_per; 
-        KJB(ASSERT(index_1 < pred_coefs.size()));
-        KJB(ASSERT(index_2 < pred_coefs[index_1].size()));
+        IVI(ASSERT(index_1 < pred_coefs.size()));
+        IVI(ASSERT(index_2 < pred_coefs[index_1].size()));
         return pred_coefs[index_1][index_2];
     }
     else
     {
         assert(i < nv + pred_size);
-        KJB(ASSERT(!exclude_variance_));
-        KJB(ASSERT(!lsss->fixed_clo()));
+        IVI(ASSERT(!exclude_variance_));
+        IVI(ASSERT(!lsss->fixed_clo()));
         size_t d = i - pred_size;
-        KJB(ASSERT(d < nv));
+        IVI(ASSERT(d < nv));
         return vars[d];
     }
 }
@@ -201,18 +201,18 @@ void Shared_param_adapter::set(Lss_set* lsss, size_t i, double value) const
         size_t pred_per = pred_coefs[0].size();
         size_t index_1 = i / pred_per;
         size_t index_2 = i % pred_per; 
-        KJB(ASSERT(index_1 < pred_coefs.size()));
-        KJB(ASSERT(index_2 < pred_coefs[index_1].size()));
+        IVI(ASSERT(index_1 < pred_coefs.size()));
+        IVI(ASSERT(index_2 < pred_coefs[index_1].size()));
         pred_coefs[index_1][index_2] = value;
         lsss->update_means();
     }
     else 
     {
         assert(i < nv + pred_size);
-        KJB(ASSERT(!exclude_variance_));
-        KJB(ASSERT(!lsss->fixed_clo()));
+        IVI(ASSERT(!exclude_variance_));
+        IVI(ASSERT(!lsss->fixed_clo()));
         size_t d = i - pred_size;
-        KJB(ASSERT(d < nv));
+        IVI(ASSERT(d < nv));
         variances[d] = value;
         lsss->update_variances();
     }
@@ -264,8 +264,8 @@ void Person_param_adapter::set
 ) const 
 {
     Coupled_oscillator_v& clos = lss->coupled_oscillators();
-    KJB(ASSERT(!clos.empty()));
-    KJB(ASSERT(i < person_indices_.size()));
+    IVI(ASSERT(!clos.empty()));
+    IVI(ASSERT(i < person_indices_.size()));
     size_t index = person_indices_[i];
     BOOST_FOREACH(Coupled_oscillator& clo, clos)
     {

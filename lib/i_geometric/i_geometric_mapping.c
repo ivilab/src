@@ -23,10 +23,10 @@
 
 int back_project_image_new
 (
- const KJB_image *ip,
+ const IVI_image *ip,
  const Matrix    *H_mp,
  int             fitting_model,
- KJB_image       **bp_ipp,
+ IVI_image       **bp_ipp,
  Int_matrix      **mask_impp
 )
 { 
@@ -104,13 +104,13 @@ cleanup:
 */
 int transform_image_homography
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix    *t_mp,
     int             width,
     int             height,
     const Matrix     *trans_rect_mp,
     int             inter_method,
-    KJB_image       **target_ipp,
+    IVI_image       **target_ipp,
     Int_matrix      **mask_impp
 )
 {
@@ -202,19 +202,19 @@ cleanup:
  */
 int bilinear_interpolation
 (
-    const KJB_image *src_ip,
+    const IVI_image *src_ip,
     const Matrix     *trans_mp,
     int              width,
     int              height,
     const Matrix     *trans_rect_mp,
-    KJB_image        **target_ipp,
+    IVI_image        **target_ipp,
     Int_matrix       **mask_impp
 )
 {
     int result = NO_ERROR;
     register int i, j;
     int id;
-    KJB_image *target_ip = NULL;
+    IVI_image *target_ip = NULL;
     double x, y;
     double normx, normy;
     int p1x, p1y;

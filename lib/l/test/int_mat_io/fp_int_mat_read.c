@@ -1,5 +1,5 @@
 
-/* $Id: fp_int_mat_read.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: fp_int_mat_read.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 
 #include "i/i_incl.h" 
@@ -13,13 +13,13 @@ int main(int argc, char *argv[ ])
 
     create_image_display(); 
 
-    NPETE(fp = kjb_fopen(argv[ 1 ], "r")); 
+    NPETE(fp = ivi_fopen(argv[ 1 ], "r")); 
 
     while ((read_res = fp_read_int_matrix(&mp, fp)) != EOF)
     {
         if (read_res == ERROR)
         {
-            kjb_print_error();
+            ivi_print_error();
             continue;
         }
  
@@ -30,7 +30,7 @@ int main(int argc, char *argv[ ])
         }
         else 
         {
-            KJB_image* ip = NULL;
+            IVI_image* ip = NULL;
             int i, j; 
 
             EPETE(get_zero_image(&ip, mp->num_rows, mp->num_cols));
@@ -84,15 +84,15 @@ int main(int argc, char *argv[ ])
                 }
             }
 
-            EPETE(kjb_display_image(ip, NULL));
+            EPETE(ivi_display_image(ip, NULL));
 
             prompt_to_continue();
 
-            kjb_free_image(ip); 
+            ivi_free_image(ip); 
         }
     }
 
-    kjb_fclose(fp); 
+    ivi_fclose(fp); 
     free_int_matrix(mp); 
 
     return EXIT_SUCCESS; 

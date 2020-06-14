@@ -70,7 +70,7 @@
 #include <gr_cpp/gr_renderable.h>
 #include <l_cpp/l_cloneable.h>
 
-namespace kjb
+namespace ivi
 {
     class Base_gl_interface;
 
@@ -115,16 +115,16 @@ namespace kjb
         virtual ~Renderable_model() { }
 
         /** @brief Renders this model as a wireframe */
-        virtual void wire_render() const throw(kjb::KJB_error);
+        virtual void wire_render() const throw(ivi::IVI_error);
         /** @brief Renders this model into the depth buffer */
-        virtual void wire_occlude_render() const throw(kjb::KJB_error);
+        virtual void wire_occlude_render() const throw(ivi::IVI_error);
         /** @brief Renders this model as a solid */
-        virtual void solid_render() const throw(kjb::KJB_error);
+        virtual void solid_render() const throw(ivi::IVI_error);
         /** @brief Renders this model as a wireframe by removing occluded edges */
-        virtual void render_occluded_wireframe() const throw(kjb::KJB_error);
+        virtual void render_occluded_wireframe() const throw(ivi::IVI_error);
 
         /** @brief renders the silhouette of this object */
-        virtual void silhouette_render(const kjb::Base_gl_interface &, double width = 1.0) const;
+        virtual void silhouette_render(const ivi::Base_gl_interface &, double width = 1.0) const;
 
         /** Updates the graphical representation if needed */
         inline void update_if_needed() const
@@ -148,7 +148,7 @@ namespace kjb
 
          /** @brief Updates the rendering interface so that it reflects the paremeter
           * values of this model to the rendering interface used to render this model */
-        virtual void update_rendering_representation() const throw(kjb::KJB_error) = 0;
+        virtual void update_rendering_representation() const throw(ivi::IVI_error) = 0;
 
         /** @brief This method is called to whenever the model parameters where changed
          * without updating the rendering interface accordingly. This means that the

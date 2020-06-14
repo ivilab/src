@@ -2,7 +2,7 @@
  * @file Semantic_step_proposal.cpp
  *
  * @author Colin Dawson 
- * $Id: Semantic_step_proposal.cpp 21596 2017-07-30 23:33:36Z kobus $ 
+ * $Id: Semantic_step_proposal.cpp 25499 2020-06-14 13:26:04Z kobus $ 
  */
 
 #include "l/l_sys_debug.h"
@@ -24,7 +24,7 @@ namespace semantics{
     std::ostream& operator<<(
 	std::ostream& os,
 	const boost::array<T, D>& arr
-	) {return kjb::operator<<(os,arr);}
+	) {return ivi::operator<<(os,arr);}
 };
 
 
@@ -233,7 +233,7 @@ namespace semantics
         const bool&          collins
 	)
     {
-	using namespace ::kjb;
+	using namespace ::ivi;
 	Proposal_array proposals;
 	Proposal_dist  dist;
 	boost::tie(proposals, dist) =

@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: test_expects.h 8428 2011-01-24 02:19:55Z predoehl $
+ * $Id: test_expects.h 25499 2020-06-14 13:26:04Z kobus $
  *
  * Recommended tab width:  4
  */
@@ -14,7 +14,7 @@
 #ifndef TEST_EXPECT_H_PREDOEHL
 #define TEST_EXPECT_H_PREDOEHL
 
-#include "l/l_incl.h"  // not really needed; it's here just to be kjb-orthodox
+#include "l/l_incl.h"  // not really needed; it's here just to be ivi-orthodox
 
 #include <iostream>
 #include <cassert>

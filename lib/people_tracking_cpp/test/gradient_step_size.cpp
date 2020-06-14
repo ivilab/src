@@ -28,8 +28,8 @@
 #include "utils.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::pt;
+using namespace ivi;
+using namespace ivi::pt;
 
 bool VERBOSE = true;
 
@@ -129,7 +129,7 @@ int main(int argc, char** argv)
         TEST_TRUE(2*sdu/ii >= 0.75 && 2*sdu/ii <= 1.25);
         TEST_TRUE(2*sdv/ii >= 0.75 && 2*sdv/ii <= 1.25);
     }
-    catch(const kjb::Exception& ex)
+    catch(const ivi::Exception& ex)
     {
         ex.print_details();
         cerr << endl;

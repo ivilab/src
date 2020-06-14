@@ -1,5 +1,5 @@
 
-/* $Id: x_complex.h 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: x_complex.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,7 +24,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
-namespace kjb_c {
+namespace ivi_c {
 #endif
 #endif
 
@@ -38,26 +38,26 @@ namespace kjb_c {
 // such a name, what can one do?
 */
 
-typedef struct KJB_complex
+typedef struct IVI_complex
 {
    double r;
    double i;
 }
-KJB_complex;
+IVI_complex;
 
 /* -------------------------------------------------------------------------- */
 
-KJB_complex make_complex            (double r, double i);
-KJB_complex conjugate_of_complex    (KJB_complex z);
-double      magnitude_of_complex    (KJB_complex z);
+IVI_complex make_complex            (double r, double i);
+IVI_complex conjugate_of_complex    (IVI_complex z);
+double      magnitude_of_complex    (IVI_complex z);
 double      magnitude_of_complex_2  (double r, double i);
-double      angle_of_complex        (KJB_complex z);
+double      angle_of_complex        (IVI_complex z);
 double      angle_of_complex_2      (double r, double i);
-KJB_complex add_complex             (KJB_complex a, KJB_complex b);
-KJB_complex subtract_complex        (KJB_complex a, KJB_complex b);
-KJB_complex multiply_complex        (KJB_complex a, KJB_complex b);
-KJB_complex divide_complex          (KJB_complex a, KJB_complex b);
-KJB_complex multiply_complex_by_real(KJB_complex z, double s);
+IVI_complex add_complex             (IVI_complex a, IVI_complex b);
+IVI_complex subtract_complex        (IVI_complex a, IVI_complex b);
+IVI_complex multiply_complex        (IVI_complex a, IVI_complex b);
+IVI_complex divide_complex          (IVI_complex a, IVI_complex b);
+IVI_complex multiply_complex_by_real(IVI_complex z, double s);
 
 
 #ifdef __cplusplus

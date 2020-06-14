@@ -33,7 +33,7 @@ public:
     void set_temperature(double t) {t_ = t;}
     Mh_proposal_result operator()(const Model& in, Model& out) const
     {
-        out = in + (kjb_c::kjb_rand() > 0.5 ? -1 * t_ : 1 * t_);
+        out = in + (ivi_c::ivi_rand() > 0.5 ? -1 * t_ : 1 * t_);
 
         return Mh_proposal_result();
     }
@@ -42,7 +42,7 @@ public:
 };
 
 double target(const Model&) { return 0.0; }
-kjb::Vector d_target(const Model&) { return kjb::Vector(1.0); }
+ivi::Vector d_target(const Model&) { return ivi::Vector(1.0); }
 
 
 int main()

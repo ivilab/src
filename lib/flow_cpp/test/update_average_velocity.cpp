@@ -4,14 +4,14 @@
 #include <l_cpp/l_test.h>
 #include <iostream>
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
 
 typedef Axis_aligned_rectangle_2d Bbox;
 
 int main(int argc, char** argv)
 {
-    kjb_c::kjb_init();
+    ivi_c::ivi_init();
 
     // Create sytheticc features
     Flow_feature_set of_set;
@@ -25,8 +25,8 @@ int main(int argc, char** argv)
     {
         for(size_t col = min_x; col < max_x; col = col++)
         {
-            dy = 100.0 * kjb_c::kjb_rand();
-            dx = 100.0 * kjb_c::kjb_rand();
+            dy = 100.0 * ivi_c::ivi_rand();
+            dx = 100.0 * ivi_c::ivi_rand();
             Feature_pair pair(Vector((double)col, (double)row),
                               Vector((double)(col + dx), (double)(row + dy)));
             of_set.insert(pair);

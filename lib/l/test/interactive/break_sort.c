@@ -1,15 +1,15 @@
 /*
- * This program exercises a sort function (like kjb_sort).
+ * This program exercises a sort function (like ivi_sort).
  * It does not really test it in the conventional sense.
  * However, if you run this program using valgrind, it has detected
- * erroneous behavior in kjb_sort -- specifically, calling memcpy with
+ * erroneous behavior in ivi_sort -- specifically, calling memcpy with
  * overlapping source and destination regions.
  *
  * It's a snipped from a longer test program that is or was in lib/l_mt/test
  * and ended up here only because, as a byproduct, it also found an error
  * in the (old) sort routine.
  *
- * $Id: break_sort.c 15637 2013-10-10 20:37:32Z predoehl $
+ * $Id: break_sort.c 25499 2020-06-14 13:26:04Z kobus $
  */
 #include <l/l_sys_io.h>
 #include <l/l_sys_debug.h>
@@ -26,9 +26,9 @@
 
 struct Seed
 {
-    int lag, stream_id; /* stream id LSB: 0==kjb_rand, 1==kjb_rand_2. */
+    int lag, stream_id; /* stream id LSB: 0==ivi_rand, 1==ivi_rand_2. */
 						/* thread id occupies the upper bits. */
-    kjb_uint16 s[SEED_PAIR_SIZE/2]; /* seed of just one stream, not a pair */
+    ivi_uint16 s[SEED_PAIR_SIZE/2]; /* seed of just one stream, not a pair */
 };
 
 static void db_print_seed(const struct Seed* s)
@@ -46,7 +46,7 @@ static void db_print_seed(const struct Seed* s)
 static int seed_cmp(const void* s1, const void* s2)
 {
     int i;
-    const kjb_uint16 *p, *q;
+    const ivi_uint16 *p, *q;
     ASSERT(s1);
     ASSERT(s2);
     p = ((const struct Seed*) s1) -> s;
@@ -88,7 +88,7 @@ static int ow_sort_sblock(struct S_block* b, size_t size)
     NRE(b);
     size = MIN_OF(size, BLOCK_SIZE); /* trim size to something valid */
 #if 1
-    return kjb_sort(b->b, size, sizeof(struct Seed), &seed_cmp, 
+    return ivi_sort(b->b, size, sizeof(struct Seed), &seed_cmp, 
                                                 USE_CURRENT_ATN_HANDLING);
 #else
     qsort(b->b, size, sizeof(struct Seed), &seed_cmp);
@@ -167,7 +167,7 @@ static int sls_append_block(struct S_list* d, struct S_block* b, size_t size)
         {
             ERE(sls_push_back(d, b -> b + i));
         }
-        kjb_free(b);
+        ivi_free(b);
     }
     else
     {
@@ -188,9 +188,9 @@ static void sls_destroy(struct S_list* d)
     {
         struct S_block* p = d -> head;
         d -> head = d -> head -> next;
-        kjb_free(p);
+        ivi_free(p);
     }
-    kjb_free(d -> head);
+    ivi_free(d -> head);
     d -> head = d -> tail = NULL;
     d -> total_size = 0;
 }
@@ -204,7 +204,7 @@ static int sls_pop_front(struct S_list* l, size_t* skip)
         ASSERT((int) *skip <= l -> tail_size);
         if ((int) *skip == l -> tail_size)
         {
-            kjb_free(l -> head);
+            ivi_free(l -> head);
             l -> head = l -> tail = NULL;
             l -> total_size = 0;
         }
@@ -218,7 +218,7 @@ static int sls_pop_front(struct S_list* l, size_t* skip)
             l -> head = l -> head -> next;
             l -> total_size -= BLOCK_SIZE;
             *skip = 0;
-            kjb_free(b);
+            ivi_free(b);
         }
     }
     return NO_ERROR;

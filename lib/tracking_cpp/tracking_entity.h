@@ -16,7 +16,7 @@
    |  Author:  Kyle Simek, Ernesto Brau, Jinyan Guan
  * =========================================================================== */
 
-/* $Id: tracking_entity.h 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: tracking_entity.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef TRACKING_ENTITY_H
 #define TRACKING_ENTITY_H
@@ -31,7 +31,7 @@
 #include <cassert>
 */
 
-namespace kjb {
+namespace ivi {
 namespace tracking {
 
 /**
@@ -132,7 +132,7 @@ std::istream& operator>>(std::istream& ist, Entity_id& id);
 /** @brief  Stream in an entity-id. */
 std::ostream& operator<<(std::ostream& ost, const Entity_id& id);
 
-}} //namespace kjb::tracking
+}} //namespace ivi::tracking
 
 #endif /* TRACKING_ENTITY_H */
 

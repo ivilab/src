@@ -17,8 +17,8 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef KJB_CPP_EDGE_MANHATTAN_HOG_H
-#define KJB_CPP_EDGE_MANHATTAN_HOG_H
+#ifndef IVI_CPP_EDGE_MANHATTAN_HOG_H
+#define IVI_CPP_EDGE_MANHATTAN_HOG_H
 
 #include <string>
 
@@ -27,7 +27,7 @@
 #include "st_cpp/st_perspective_camera.h"
 #include "edge_cpp/line_segment.h"
 
-namespace kjb
+namespace ivi
 {
 
 void compute_HOG_features(const Image & img, int bin_size);
@@ -103,29 +103,29 @@ public:
 
     void get_3D_manhattan_directions
     (
-        std::vector<kjb::Vector> & manhattan_dir_3d_vertical,
-        std::vector<kjb::Vector> & manhattan_dir_3d_vertical1,
-        std::vector<kjb::Vector> & manhattan_dir_3d_vertical2,
+        std::vector<ivi::Vector> & manhattan_dir_3d_vertical,
+        std::vector<ivi::Vector> & manhattan_dir_3d_vertical1,
+        std::vector<ivi::Vector> & manhattan_dir_3d_vertical2,
         int num_directions
     ) const;
 
     void get_projected_manhattan_directions
     (
-        const std::vector<kjb::Vector> & manhattan_dir_3d_vertical,
-        const std::vector<kjb::Vector> & manhattan_dir_3d_vertical1,
-        const std::vector<kjb::Vector> & manhattan_dir_3d_vertical2,
-        const kjb::Vector & center_in_pp_coordinates,
-        const kjb::Parametric_parapiped & pp,
-        const kjb::Perspective_camera & camera,
+        const std::vector<ivi::Vector> & manhattan_dir_3d_vertical,
+        const std::vector<ivi::Vector> & manhattan_dir_3d_vertical1,
+        const std::vector<ivi::Vector> & manhattan_dir_3d_vertical2,
+        const ivi::Vector & center_in_pp_coordinates,
+        const ivi::Parametric_parapiped & pp,
+        const ivi::Perspective_camera & camera,
         int img_height,
-        std::vector<kjb::Vector> & projected_manhattan_dir_horizontal,
-        std::vector<kjb::Vector> & projected_manhattan_dir_vertical1,
-        std::vector<kjb::Vector> & projected_manhattan_dir_vertical2
+        std::vector<ivi::Vector> & projected_manhattan_dir_horizontal,
+        std::vector<ivi::Vector> & projected_manhattan_dir_vertical1,
+        std::vector<ivi::Vector> & projected_manhattan_dir_vertical2
     ) const;
 
     void interpolate_projected_directions
     (
-        const std::vector<kjb::Vector> & projected_directions,
+        const std::vector<ivi::Vector> & projected_directions,
         const float * weights_2D,
         float * weights_3D,
         double angle_increment,
@@ -135,7 +135,7 @@ public:
     void get_line_segments_for_drawing
     (
         std::vector<Line_segment> & line_segments,
-        const std::vector<kjb::Vector> & projected_directions,
+        const std::vector<ivi::Vector> & projected_directions,
         double center_x,
         double center_y,
         double length
@@ -203,7 +203,7 @@ private:
     Vector hog_maxs;
     int bin_size;
 
-    void find_2D_hog_directions(std::vector<kjb::Vector> & directions_2D, int num_angle_bins) const;
+    void find_2D_hog_directions(std::vector<ivi::Vector> & directions_2D, int num_angle_bins) const;
 
     double find_2D_weight_by_interpolation
     (
@@ -214,5 +214,5 @@ private:
     ) const;
 };
 
-} // namespace kjb
+} // namespace ivi
 #endif

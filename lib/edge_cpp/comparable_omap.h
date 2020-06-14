@@ -17,7 +17,7 @@
 //#include < boost/multi_array.hpp >
 
 
-namespace kjb{
+namespace ivi{
 
 /**
  * @brief - creates an omap from an image that can call compare_omap(compareto)
@@ -49,7 +49,7 @@ Comparable_omap(const std::string& fname) // : base(fname.c_str())
     total = tempimg.get_num_rows()*tempimg.get_num_cols();
 }
 
-void prepare_int_maps(const kjb::Image & base);
+void prepare_int_maps(const ivi::Image & base);
 
 //double compare_omap(const Image & comparetoin) const;
 
@@ -61,12 +61,12 @@ double compare_omap(const Int_matrix & imap) const;
     const Image  & comparetoin
 ) const;*/
 
-/*const kjb::Image & get_base()
+/*const ivi::Image & get_base()
 {
     return base;
 }
 
-const kjb::Image & get_reversed()
+const ivi::Image & get_reversed()
 {
     return reversedbase;
 }*/
@@ -79,7 +79,7 @@ void convert_map_to_image
 
 double compare_omap_integral
 (
-    const std::vector<kjb::Int_vector> & surface_changes,
+    const std::vector<ivi::Int_vector> & surface_changes,
     int surface_counter
 ) const;
 
@@ -110,6 +110,6 @@ int get_black(const Image & howblack);
 
 }; //class Comparable_omap
 
-}//namespace kjb
+}//namespace ivi
 
 #endif 

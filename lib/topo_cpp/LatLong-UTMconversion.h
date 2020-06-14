@@ -68,7 +68,7 @@
  * I could say more but I'm tired of all this prose.
  */
 /*
- * $Id: LatLong-UTMconversion.h 17606 2014-09-26 01:09:51Z predoehl $
+ * $Id: LatLong-UTMconversion.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
 #ifndef LATLONGCONV_H_INCLUDED_UOFARIZONA_VISION
@@ -77,7 +77,7 @@
 #include <topo_cpp/layer.h>
 #include <vector>
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -226,7 +226,7 @@ struct datum
 
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi
 
 
 #endif

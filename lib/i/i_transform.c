@@ -1,5 +1,5 @@
 
-/* $Id: i_transform.c 7578 2010-11-21 19:53:39Z ksimek $ */
+/* $Id: i_transform.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -42,7 +42,7 @@ extern "C" {
  * -----------------------------------------------------------------------------
 */
 
-int ow_invert_image(KJB_image* ip)
+int ow_invert_image(IVI_image* ip)
 {
     int   i, j, num_rows, num_cols;
 
@@ -82,7 +82,7 @@ int ow_invert_image(KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int ow_invert_gamma_image(KJB_image* ip)
+int ow_invert_gamma_image(IVI_image* ip)
 {
 
     UNTESTED_CODE();
@@ -103,7 +103,7 @@ int ow_invert_gamma_image(KJB_image* ip)
  * Rotates an image to the right 90 degrees.
  *
  * This routine rotates an input image to the right 90 degrees. The result image
- * is created or resized as needed in conformance with KJB library semantics.
+ * is created or resized as needed in conformance with IVI library semantics.
  *
  * Returns:
  *     NO_ERROR on sucess and ERROR on failure with an error message being set.
@@ -113,9 +113,9 @@ int ow_invert_gamma_image(KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int rotate_image_right(KJB_image** target_ipp, const KJB_image* ip)
+int rotate_image_right(IVI_image** target_ipp, const IVI_image* ip)
 {
-    KJB_image* target_ip;
+    IVI_image* target_ip;
     int   i, j, num_rows, num_cols;
 
 
@@ -148,7 +148,7 @@ int rotate_image_right(KJB_image** target_ipp, const KJB_image* ip)
  * Rotates an image to the left 90 degrees.
  *
  * This routine rotates an input image to the left 90 degrees. The result image
- * is created or resized as needed in conformance with KJB library semantics.
+ * is created or resized as needed in conformance with IVI library semantics.
  *
  * Returns:
  *     NO_ERROR on sucess and ERROR on failure with an error message being set.
@@ -158,9 +158,9 @@ int rotate_image_right(KJB_image** target_ipp, const KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int rotate_image_left(KJB_image** target_ipp, const KJB_image* ip)
+int rotate_image_left(IVI_image** target_ipp, const IVI_image* ip)
 {
-    KJB_image* target_ip;
+    IVI_image* target_ip;
     int   i, j, num_rows, num_cols;
 
 
@@ -207,7 +207,7 @@ int rotate_image_left(KJB_image** target_ipp, const KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int ow_horizontal_flip_image(KJB_image* ip)
+int ow_horizontal_flip_image(IVI_image* ip)
 {
     int   i, j, num_rows, num_cols;
     float r, g, b;
@@ -265,7 +265,7 @@ int ow_horizontal_flip_image(KJB_image* ip)
  * -----------------------------------------------------------------------------
 */
 
-int ow_vertical_flip_image(KJB_image* ip)
+int ow_vertical_flip_image(IVI_image* ip)
 {
     int   i, j, num_rows, num_cols;
     float r, g, b;
@@ -308,7 +308,7 @@ int ow_vertical_flip_image(KJB_image* ip)
  * Scale an image
  *
  * This routine scales (in size) the image pointed to by ip and puts it in 
- * *target_ipp. This routine follows the KJB memory management conventions.
+ * *target_ipp. This routine follows the IVI memory management conventions.
  * This routine calls imagemagick to perform the scaling.
  *
  * Note: This should not be confused with scale_image, which scales the 
@@ -331,8 +331,8 @@ int ow_vertical_flip_image(KJB_image* ip)
 
 int scale_image_size
 (
-    KJB_image**      target_ipp,
-    const KJB_image* ip,
+    IVI_image**      target_ipp,
+    const IVI_image* ip,
     double           scale_factor
 )
 {
@@ -357,7 +357,7 @@ int scale_image_size
 
     if(scale_factor == 1.0)
     {
-        kjb_copy_image(target_ipp, ip);
+        ivi_copy_image(target_ipp, ip);
         return NO_ERROR;
     }
 
@@ -366,15 +366,15 @@ int scale_image_size
     BUFF_GET_TEMP_FILE_NAME(new_image_filename);
     BUFF_CAT(new_image_filename, ".tif");
 
-    kjb_write_image(ip, orig_image_filename);
+    ivi_write_image(ip, orig_image_filename);
 
     for(i = 0; i < num_convert_programs; i++)
     {
-        ERE(kjb_sprintf(command, sizeof(command), "%s %f%% %s %s", convert_programs[i], scale_factor * 100, orig_image_filename, new_image_filename));
+        ERE(ivi_sprintf(command, sizeof(command), "%s %f%% %s %s", convert_programs[i], scale_factor * 100, orig_image_filename, new_image_filename));
         result = system(command);
         if(result == NO_ERROR && get_path_type(new_image_filename) == PATH_IS_REGULAR_FILE)
         {
-            ERE(kjb_read_image(target_ipp, new_image_filename));
+            ERE(ivi_read_image(target_ipp, new_image_filename));
             remove(orig_image_filename);
             remove(new_image_filename);
             return NO_ERROR;

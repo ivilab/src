@@ -12,14 +12,14 @@
 //////////////////////////////////////////////
 //Added by Prasad
 //This is to allow for reading image formats other than .jpeg
-//using routines from the KJB library
+//using routines from the IVI library
 
 #define ENABLE_READING_OTHER_FORMATS
 /////////////////////////////////////////////
 
 #ifdef ENABLE_READING_OTHER_FORMATS
 #include "i/i_incl.h"
-using namespace kjb_c;
+using namespace ivi_c;
 #endif 
 
 ////////////////////////////////////////////
@@ -52,7 +52,7 @@ CJPEG::~CJPEG()
 
 /////////////////////////////////////////////////////////////////////////////
 
-bool CJPEG::Convert_from_kjb(const kjb_c::KJB_image * ip)
+bool CJPEG::Convert_from_ivi(const ivi_c::IVI_image * ip)
 {
 	delete[] m_pBuffer;
 	m_pBuffer = new float[ip->num_rows*ip->num_cols*3];
@@ -77,7 +77,7 @@ bool CJPEG::ReadImg(const char* filename)
 //////////////////////////////////////////////
 //Added by Prasad
 //This is to allow for reading image formats other than .jpeg
-//using routines from the KJB library
+//using routines from the IVI library
 
 //NOTE*****if ENABLE_FLOAT_PRECISION is defined, then m_BytesPerPixel 
 //means each pixel is represented by (m_BytesPerPixel*size(float)) bytes
@@ -85,9 +85,9 @@ bool CJPEG::ReadImg(const char* filename)
 
 #ifdef ENABLE_READING_OTHER_FORMATS
 
-    KJB_image* ip = NULL;
+    IVI_image* ip = NULL;
 
-    EPETE(kjb_read_image_2(&ip, filename));
+    EPETE(ivi_read_image_2(&ip, filename));
 
     m_BytesPerPixel = 3;
     m_Width = ip->num_cols;
@@ -120,7 +120,7 @@ bool CJPEG::ReadImg(const char* filename)
          }// for (int j = 0....
     }// for (int i = 0....
 
-    kjb_free_image(ip);
+    ivi_free_image(ip);
 /////////////////////////////////////////////
 
 #else

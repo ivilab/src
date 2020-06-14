@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_io.c 21522 2017-07-22 15:14:27Z kobus $ */
+/* $Id: m_vec_io.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,9 +28,9 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#define KJB_DATA_HEAD_SIZE  64
-#define KJB_RAW_VECTOR_STRING  "kjb raw vector\n\n\f\n"
-#define KJB_RAW_VECTOR_VECTOR_STRING  "kjb raw vector vector\n\n\f\n"
+#define IVI_DATA_HEAD_SIZE  64
+#define IVI_RAW_VECTOR_STRING  "ivi raw vector\n\n\f\n"
+#define IVI_RAW_VECTOR_VECTOR_STRING  "ivi raw vector vector\n\n\f\n"
 
 /* -------------------------------------------------------------------------- */
 
@@ -122,7 +122,7 @@ int read_vector_from_config_file
     }
     else if (config_file_name != NULL)
     {
-        kjb_strncpy(config_file_name, temp_config_file_name,
+        ivi_strncpy(config_file_name, temp_config_file_name,
                     config_file_name_size);
     }
 
@@ -146,7 +146,7 @@ int read_vector_from_config_file
  *
  * Returns:
  *     A valid pointer to the new vector on success, or
- *     NULL on failure, with "kjb_error" set to a descriptive message.
+ *     NULL on failure, with "ivi_error" set to a descriptive message.
  *
  * Documentor:
  *     Lindsay Martin
@@ -168,7 +168,7 @@ int read_vector(Vector** result_vpp, const char* file_name)
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_vector(result_vpp, fp);
@@ -186,7 +186,7 @@ int read_vector(Vector** result_vpp, const char* file_name)
 
     if (file_name != NULL)
     {
-        (void)kjb_fclose(fp);  /* Ignore return--only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return--only reading. */
     }
 
     return result;
@@ -236,7 +236,7 @@ int fp_read_vector(Vector** result_vpp, FILE* fp)
         result = ERROR;
     }
 
-    ERE(save_file_pos = kjb_ftell(fp));
+    ERE(save_file_pos = ivi_ftell(fp));
 
     if (result == NOT_FOUND)
     {
@@ -244,7 +244,7 @@ int fp_read_vector(Vector** result_vpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -254,7 +254,7 @@ int fp_read_vector(Vector** result_vpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -282,7 +282,7 @@ int fp_read_vector(Vector** result_vpp, FILE* fp)
  *
  * Returns:
  *     NO_ERROR on success, NOT_FOUND if the file does not appear to contain a
- *     valid KJB library format raw vector, and ERROR on failure, with an error
+ *     valid IVI library format raw vector, and ERROR on failure, with an error
  *     message being set.
  *
  * Index: I/O, vectors, vector I/O
@@ -295,22 +295,22 @@ int fp_read_raw_vector(Vector** result_vpp, FILE* fp)
     int     length;
     long    bytes_used_so_far;
     int     byte_order;
-    char    head_str[ KJB_DATA_HEAD_SIZE ];
+    char    head_str[ IVI_DATA_HEAD_SIZE ];
     int     pad;
     off_t num_bytes;
 
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
-    if (num_bytes < KJB_DATA_HEAD_SIZE) return NOT_FOUND;
+    if (num_bytes < IVI_DATA_HEAD_SIZE) return NOT_FOUND;
 
-    ERE(kjb_fread_exact(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fread_exact(fp, head_str, sizeof(head_str)));
     head_str[ sizeof(head_str) - 1 ] = '\0';
 
-    if ( ! STRCMP_EQ(head_str, KJB_RAW_VECTOR_STRING))
+    if ( ! STRCMP_EQ(head_str, IVI_RAW_VECTOR_STRING))
     {
         return NOT_FOUND;
     }
@@ -321,7 +321,7 @@ int fp_read_raw_vector(Vector** result_vpp, FILE* fp)
     ERE(FIELD_READ(fp, pad));
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
@@ -350,7 +350,7 @@ int fp_read_raw_vector(Vector** result_vpp, FILE* fp)
 
         if (length > 0)
         {
-            ERE(kjb_fread_exact(fp, (*result_vpp)->elements,
+            ERE(ivi_fread_exact(fp, (*result_vpp)->elements,
                                 length * sizeof(double)));
         }
     }
@@ -493,7 +493,7 @@ static int fp_read_ascii_vector_2(Vector** result_vpp, FILE* fp, int length)
  * pointer.  The vector must already exist, and the file must already be opened.
  *
  * "fp" points to a file structure associated with the input stream as returned
- * by "kjb_fopen".
+ * by "ivi_fopen".
  *
  * "vp" is a pointer to a vector. This vector must already exist, and
  * have length "vp->length".
@@ -587,11 +587,11 @@ int fp_write_row_vector_with_title
     {
          if (title != NULL)
          {
-             ERE(kjb_fprintf(fp, title));
-             ERE(kjb_fprintf(fp, ": "));
+             ERE(ivi_fprintf(fp, title));
+             ERE(ivi_fprintf(fp, ": "));
          }
 
-         ERE(kjb_fprintf(fp, "NULL\n"));
+         ERE(ivi_fprintf(fp, "NULL\n"));
 
          return NO_ERROR;
      }
@@ -613,24 +613,24 @@ int fp_write_row_vector_with_title
 
     if (title != NULL)
     {
-        ERE(kjb_fprintf(fp, title));
-        ERE(kjb_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, title));
+        ERE(ivi_fprintf(fp, "\n"));
     }
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp,format_str, vp->elements[i]));
+        ERE(ivi_fprintf(fp,format_str, vp->elements[i]));
 
         if (i < (vp->length-1))
         {
-            ERE(kjb_fprintf(fp,"  "));
+            ERE(ivi_fprintf(fp,"  "));
         }
         else
         {
-            ERE(kjb_fprintf(fp,"\n"));
+            ERE(ivi_fprintf(fp,"\n"));
         }
     }
-    ERE(kjb_fprintf(fp, "\n"));
+    ERE(ivi_fprintf(fp, "\n"));
 
     return NO_ERROR;
 }
@@ -644,7 +644,7 @@ int fp_write_col_vector_with_title
     const char*   title
 )
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     int   i;
 #ifdef FOR_AUTO_FORMAT
     double  max;
@@ -654,16 +654,16 @@ int fp_write_col_vector_with_title
 
     if (title != NULL)
     {
-        ERE(kjb_fprintf(fp, "%c\n", kjb_comment_char));
-        ERE(kjb_fprintf(fp, "%c ", kjb_comment_char));
-        ERE(kjb_fprintf(fp, title));
-        ERE(kjb_fprintf(fp, "\n"));
-        ERE(kjb_fprintf(fp, "%c\n", kjb_comment_char));
+        ERE(ivi_fprintf(fp, "%c\n", ivi_comment_char));
+        ERE(ivi_fprintf(fp, "%c ", ivi_comment_char));
+        ERE(ivi_fprintf(fp, title));
+        ERE(ivi_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, "%c\n", ivi_comment_char));
     }
 
     if (vp == NULL)
     {
-        ERE(kjb_fprintf(fp, "NULL\n"));
+        ERE(ivi_fprintf(fp, "NULL\n"));
         return NO_ERROR;
     }
 
@@ -684,9 +684,9 @@ int fp_write_col_vector_with_title
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp,format_str, vp->elements[i]));
+        ERE(ivi_fprintf(fp,format_str, vp->elements[i]));
     }
-    ERE(kjb_fprintf(fp, "\n"));
+    ERE(ivi_fprintf(fp, "\n"));
 
     return NO_ERROR;
 }
@@ -734,7 +734,7 @@ int write_row_vector(const Vector* vp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_row_vector(vp, fp);
@@ -746,7 +746,7 @@ int write_row_vector(const Vector* vp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -811,15 +811,15 @@ int fp_write_row_vector(const Vector* vp, FILE* fp)
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp,format_str, vp->elements[i]));
+        ERE(ivi_fprintf(fp,format_str, vp->elements[i]));
 
         if (i < (vp->length-1))
         {
-            ERE(kjb_fprintf(fp,"  "));
+            ERE(ivi_fprintf(fp,"  "));
         }
         else
         {
-            ERE(kjb_fprintf(fp,"\n"));
+            ERE(ivi_fprintf(fp,"\n"));
         }
     }
 
@@ -873,7 +873,7 @@ int write_indexed_vector(const Indexed_vector* ivp, const char* file_name)
             return NO_ERROR;
         }
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_indexed_vector(ivp, fp);
@@ -885,7 +885,7 @@ int write_indexed_vector(const Indexed_vector* ivp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -961,7 +961,7 @@ int fp_write_indexed_vector(const Indexed_vector* ivp, FILE* fp)
 
     for (i=0; i<ivp->length; i++)
     {
-        ERE(kjb_fprintf(fp,format_str, ivp->elements[i].index, ivp->elements[i].element));
+        ERE(ivi_fprintf(fp,format_str, ivp->elements[i].index, ivp->elements[i].element));
     }
 
     return NO_ERROR;
@@ -1013,7 +1013,7 @@ int write_col_vector(const Vector* vp, const char* file_name)
             return NO_ERROR;
         }
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_col_vector(vp, fp);
@@ -1025,7 +1025,7 @@ int write_col_vector(const Vector* vp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -1091,7 +1091,7 @@ int fp_write_col_vector(const Vector* vp, FILE* fp)
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp,format_str, vp->elements[i]));
+        ERE(ivi_fprintf(fp,format_str, vp->elements[i]));
     }
 
     return NO_ERROR;
@@ -1150,7 +1150,7 @@ int write_col_vector_with_header(const Vector* vp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_col_vector_with_header(vp, fp);
@@ -1162,7 +1162,7 @@ int write_col_vector_with_header(const Vector* vp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -1268,7 +1268,7 @@ int write_raw_vector(const Vector* vp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_raw_vector(vp, fp);
@@ -1280,7 +1280,7 @@ int write_raw_vector(const Vector* vp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -1323,7 +1323,7 @@ int fp_write_raw_vector(const Vector* vp, FILE* fp)
 {
     int i;
     int         byte_order = 1;
-    char        head_str[ KJB_DATA_HEAD_SIZE ];
+    char        head_str[ IVI_DATA_HEAD_SIZE ];
     int         pad = 0;
     int         length = 0;
 
@@ -1333,14 +1333,14 @@ int fp_write_raw_vector(const Vector* vp, FILE* fp)
         length = vp->length;
     }
 
-    for (i = 0; i < KJB_DATA_HEAD_SIZE; i++)
+    for (i = 0; i < IVI_DATA_HEAD_SIZE; i++)
     {
         head_str[ i ] = '\0';
     }
 
-    BUFF_CPY(head_str, KJB_RAW_VECTOR_STRING);
+    BUFF_CPY(head_str, IVI_RAW_VECTOR_STRING);
 
-    ERE(kjb_fwrite(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fwrite(fp, head_str, sizeof(head_str)));
 
     ERE(FIELD_WRITE(fp, byte_order));
     ERE(FIELD_WRITE(fp, pad));
@@ -1349,7 +1349,7 @@ int fp_write_raw_vector(const Vector* vp, FILE* fp)
 
     if (length > 0)
     {
-        ERE(kjb_fwrite_2(fp, vp->elements, sizeof(double) * length, NULL));
+        ERE(ivi_fwrite_2(fp, vp->elements, sizeof(double) * length, NULL));
     }
 
     return NO_ERROR;
@@ -1401,7 +1401,7 @@ int write_row_vector_full_precision
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_row_vector_full_precision(vp, fp);
@@ -1413,7 +1413,7 @@ int write_row_vector_full_precision
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -1461,19 +1461,19 @@ int fp_write_row_vector_full_precision(const Vector* vp, FILE* fp)
     char format_str[30];
 
 
-    ERE(kjb_sprintf(format_str, sizeof(format_str), "%%.%de", DBL_DIG));
+    ERE(ivi_sprintf(format_str, sizeof(format_str), "%%.%de", DBL_DIG));
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp,format_str, vp->elements[i]));
+        ERE(ivi_fprintf(fp,format_str, vp->elements[i]));
 
         if (i < (vp->length-1))
         {
-            ERE(kjb_fprintf(fp,"  "));
+            ERE(ivi_fprintf(fp,"  "));
         }
         else
         {
-            ERE(kjb_fprintf(fp,"\n"));
+            ERE(ivi_fprintf(fp,"\n"));
         }
     }
 
@@ -1527,7 +1527,7 @@ int write_col_vector_full_precision
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_col_vector_full_precision(vp, fp);
@@ -1539,7 +1539,7 @@ int write_col_vector_full_precision
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -1592,11 +1592,11 @@ int fp_write_col_vector_full_precision(const Vector* vp, FILE* fp)
 
     if (vp == NULL) return NO_ERROR;
 
-    ERE(kjb_sprintf(format_str, sizeof(format_str), "%%.%de\n", DBL_DIG));
+    ERE(ivi_sprintf(format_str, sizeof(format_str), "%%.%de\n", DBL_DIG));
 
     for (i=0; i<vp->length; i++)
     {
-        ERE(kjb_fprintf(fp,format_str, vp->elements[i]));
+        ERE(ivi_fprintf(fp,format_str, vp->elements[i]));
     }
 
     return NO_ERROR;
@@ -1692,7 +1692,7 @@ int read_vector_vector_from_config_file
     }
     else if (config_file_name != NULL)
     {
-        kjb_strncpy(config_file_name, temp_config_file_name,
+        ivi_strncpy(config_file_name, temp_config_file_name,
                     config_file_name_size);
     }
 
@@ -1751,14 +1751,14 @@ int read_vector_vector
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_vector_vector(result_vvpp, fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return: Only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return: Only reading. */
     }
 
     return result;
@@ -1818,7 +1818,7 @@ int fp_read_vector_vector(Vector_vector** result_vvpp, FILE* fp)
         result = ERROR;
     }
 
-    ERE(save_file_pos = kjb_ftell(fp));
+    ERE(save_file_pos = ivi_ftell(fp));
 
     if (result == NOT_FOUND)
     {
@@ -1826,7 +1826,7 @@ int fp_read_vector_vector(Vector_vector** result_vvpp, FILE* fp)
 
         if (result == NOT_FOUND)
         {
-            ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+            ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
         }
     }
 
@@ -1865,23 +1865,23 @@ int fp_read_raw_vector_vector(Vector_vector** vvpp, FILE* fp)
     int     i;
     long    bytes_used_so_far;
     int     byte_order;
-    char    head_str[ KJB_DATA_HEAD_SIZE ];
+    char    head_str[ IVI_DATA_HEAD_SIZE ];
     int     pad;
     off_t   num_bytes;
     int     result = NO_ERROR;
 
 
     ERE(fp_get_byte_size(fp, &num_bytes));
-    ERE(bytes_used_so_far = kjb_ftell(fp));
+    ERE(bytes_used_so_far = ivi_ftell(fp));
 
     num_bytes -= bytes_used_so_far;
 
-    if (num_bytes < KJB_DATA_HEAD_SIZE) return NOT_FOUND;
+    if (num_bytes < IVI_DATA_HEAD_SIZE) return NOT_FOUND;
 
-    ERE(kjb_fread_exact(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fread_exact(fp, head_str, sizeof(head_str)));
     head_str[ sizeof(head_str) - 1 ] = '\0';
 
-    if ( ! STRCMP_EQ(head_str, KJB_RAW_VECTOR_VECTOR_STRING))
+    if ( ! STRCMP_EQ(head_str, IVI_RAW_VECTOR_VECTOR_STRING))
     {
         return NOT_FOUND;
     }
@@ -2084,21 +2084,21 @@ int fp_write_vector_vector_with_title
     {
         if (title != NULL)
         {
-            ERE(kjb_fprintf(fp, title));
-            ERE(kjb_fprintf(fp, ": "));
+            ERE(ivi_fprintf(fp, title));
+            ERE(ivi_fprintf(fp, ": "));
         }
-        ERE(kjb_fprintf(fp, "NULL\n"));
+        ERE(ivi_fprintf(fp, "NULL\n"));
 
         return NO_ERROR;
     }
 
     if (title != NULL)
     {
-        ERE(kjb_fprintf(fp, "%c\n", kjb_comment_char));
-        ERE(kjb_fprintf(fp, "%c ", kjb_comment_char));
-        ERE(kjb_fprintf(fp, title));
-        ERE(kjb_fprintf(fp, "\n"));
-        ERE(kjb_fprintf(fp, "%c\n", kjb_comment_char));
+        ERE(ivi_fprintf(fp, "%c\n", ivi_comment_char));
+        ERE(ivi_fprintf(fp, "%c ", ivi_comment_char));
+        ERE(ivi_fprintf(fp, title));
+        ERE(ivi_fprintf(fp, "\n"));
+        ERE(ivi_fprintf(fp, "%c\n", ivi_comment_char));
     }
 
     for (i=0; i<vvp->length; i++)
@@ -2107,7 +2107,7 @@ int fp_write_vector_vector_with_title
 
         if (vp == NULL)
         {
-            ERE(kjb_fprintf(fp, "NULL\n"));
+            ERE(ivi_fprintf(fp, "NULL\n"));
         }
         else
         {
@@ -2115,7 +2115,7 @@ int fp_write_vector_vector_with_title
         }
     }
 
-    ERE(kjb_fprintf(fp, "\n"));
+    ERE(ivi_fprintf(fp, "\n"));
 
     return NO_ERROR;
 }
@@ -2170,12 +2170,12 @@ int write_vector_vector(const Vector_vector* vvp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_vector_vector(vvp, fp);
 
-    kjb_fflush(fp);
+    ivi_fflush(fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
@@ -2184,7 +2184,7 @@ int write_vector_vector(const Vector_vector* vvp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -2212,7 +2212,7 @@ int write_vector_vector(const Vector_vector* vvp, const char* file_name)
  * This routine outputs a Vector_vector to a file specified by a pointer to a
  * FILE.
  *
- * "fp" is a pointer to a FILE as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "vvp" is a pointer to the Vector_vector to output. The pointer is
@@ -2240,7 +2240,7 @@ int fp_write_vector_vector(const Vector_vector* vvp, FILE* fp)
 
         if (vp == NULL)
         {
-            ERE(kjb_fprintf(fp, "NULL\n"));
+            ERE(ivi_fprintf(fp, "NULL\n"));
         }
         else
         {
@@ -2302,12 +2302,12 @@ int write_raw_vector_vector(const Vector_vector* vvp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_raw_result = fp_write_raw_vector_vector(vvp, fp);
 
-    kjb_fflush(fp);
+    ivi_fflush(fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
@@ -2316,7 +2316,7 @@ int write_raw_vector_vector(const Vector_vector* vvp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_raw_result == ERROR)
         {
@@ -2344,7 +2344,7 @@ int write_raw_vector_vector(const Vector_vector* vvp, const char* file_name)
  * This routine outputs a vector vector to a file specified by a pointer to
  * FILE as raw data.
  *
- * "fp" is a pointer to a FILE as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "vvp" is a pointer to the vector vector to output. The pointer is assumed to
@@ -2401,21 +2401,21 @@ int fp_write_raw_vector_vector(const Vector_vector* vvp, FILE* fp)
 int fp_write_raw_vector_vector_header(int num_vectors, FILE* fp)
 {
     int byte_order = 1;
-    char head_str[ KJB_DATA_HEAD_SIZE ];
+    char head_str[ IVI_DATA_HEAD_SIZE ];
     int  pad = 0;
     int  i;
 
 
     UNTESTED_CODE();
 
-    for (i = 0; i < KJB_DATA_HEAD_SIZE; i++)
+    for (i = 0; i < IVI_DATA_HEAD_SIZE; i++)
     {
         head_str[ i ] = '\0';
     }
 
-    BUFF_CPY(head_str, KJB_RAW_VECTOR_VECTOR_STRING);
+    BUFF_CPY(head_str, IVI_RAW_VECTOR_VECTOR_STRING);
 
-    ERE(kjb_fwrite(fp, head_str, sizeof(head_str)));
+    ERE(ivi_fwrite(fp, head_str, sizeof(head_str)));
 
     ERE(FIELD_WRITE(fp, byte_order));
     ERE(FIELD_WRITE(fp, pad));
@@ -2478,12 +2478,12 @@ int write_vector_vector_full_precision
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_vector_vector_full_precision(vvp, fp);
 
-    kjb_fflush(fp);
+    ivi_fflush(fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
@@ -2492,7 +2492,7 @@ int write_vector_vector_full_precision
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -2520,7 +2520,7 @@ int write_vector_vector_full_precision
  * This routine outputs a Vector_vector to a file specified by a pointer to a
  * FILE.
  *
- * "fp" is a pointer to a FILE as returned by "kjb_fopen". It
+ * "fp" is a pointer to a FILE as returned by "ivi_fopen". It
  * is assumed that this file pointer is valid.
  *
  * "vvp" is a pointer to the Vector_vector to output. The pointer is
@@ -2552,7 +2552,7 @@ int fp_write_vector_vector_full_precision
 
         if (vp == NULL)
         {
-            ERE(kjb_fprintf(fp, "NULL\n"));
+            ERE(ivi_fprintf(fp, "NULL\n"));
         }
         else
         {
@@ -2580,7 +2580,7 @@ int write_v3(const V_v_v* vvvp, const char* file_name)
     {
         if (skip_because_no_overwrite(file_name)) return NO_ERROR;
 
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_v3(vvvp, fp);
@@ -2592,7 +2592,7 @@ int write_v3(const V_v_v* vvvp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -2614,8 +2614,8 @@ int write_v3(const V_v_v* vvvp, const char* file_name)
 
 int fp_write_v3(const V_v_v* vvvp, FILE* fp)
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int        num_vector_vectors = vvvp->length;
     int        i;
 
@@ -2626,15 +2626,15 @@ int fp_write_v3(const V_v_v* vvvp, FILE* fp)
         return ERROR;
     }
 
-    ERE(kjb_fprintf(fp, "%c%c num_vector_vectors=%d\n\n",
-                    kjb_comment_char, kjb_header_char, vvvp->length));
+    ERE(ivi_fprintf(fp, "%c%c num_vector_vectors=%d\n\n",
+                    ivi_comment_char, ivi_header_char, vvvp->length));
 
     for (i=0; i<num_vector_vectors; i++)
     {
         ERE(fp_write_vector_vector(vvvp->elements[ i ], fp));
 
-        ERE(kjb_fprintf(fp, "\n%c%ceof\n\n",
-                        kjb_comment_char, kjb_header_char));
+        ERE(ivi_fprintf(fp, "\n%c%ceof\n\n",
+                        ivi_comment_char, ivi_header_char));
     }
 
     return NO_ERROR;
@@ -2655,7 +2655,7 @@ int write_v3_full_precision(const V_v_v* vvvp, const char* file_name)
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "w"));
+        NRE(fp = ivi_fopen(file_name, "w"));
     }
 
     write_result = fp_write_v3_full_precision(vvvp, fp);
@@ -2667,7 +2667,7 @@ int write_v3_full_precision(const V_v_v* vvvp, const char* file_name)
             push_error_action(FORCE_ADD_ERROR_ON_ERROR);
         }
 
-        close_result = kjb_fclose(fp);
+        close_result = ivi_fclose(fp);
 
         if (write_result == ERROR)
         {
@@ -2689,8 +2689,8 @@ int write_v3_full_precision(const V_v_v* vvvp, const char* file_name)
 
 int fp_write_v3_full_precision(const V_v_v* vvvp, FILE* fp)
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int        num_vector_vectors = vvvp->length;
     int        i;
 
@@ -2701,15 +2701,15 @@ int fp_write_v3_full_precision(const V_v_v* vvvp, FILE* fp)
         return ERROR;
     }
 
-    ERE(kjb_fprintf(fp, "%c%c num_vector_vectors=%d\n\n",
-                    kjb_comment_char, kjb_header_char, vvvp->length));
+    ERE(ivi_fprintf(fp, "%c%c num_vector_vectors=%d\n\n",
+                    ivi_comment_char, ivi_header_char, vvvp->length));
 
     for (i=0; i<num_vector_vectors; i++)
     {
         ERE(fp_write_vector_vector_full_precision(vvvp->elements[ i ], fp));
 
-        ERE(kjb_fprintf(fp, "\n%c%ceof\n\n",
-                        kjb_comment_char, kjb_header_char));
+        ERE(ivi_fprintf(fp, "\n%c%ceof\n\n",
+                        ivi_comment_char, ivi_header_char));
     }
 
     return NO_ERROR;
@@ -2729,14 +2729,14 @@ int read_v3(V_v_v** vvvpp, const char* file_name)
     }
     else
     {
-        NRE(fp = kjb_fopen(file_name, "r"));
+        NRE(fp = ivi_fopen(file_name, "r"));
     }
 
     result = fp_read_v3(vvvpp, fp);
 
     if ((file_name != NULL) && (*file_name != '\0'))
     {
-        (void)kjb_fclose(fp);  /* Ignore return: Only reading. */
+        (void)ivi_fclose(fp);  /* Ignore return: Only reading. */
     }
 
     return result;
@@ -2746,7 +2746,7 @@ int read_v3(V_v_v** vvvpp, const char* file_name)
 
 int fp_read_v3(V_v_v** vvvpp, FILE* fp)
 {
-    IMPORT int kjb_comment_char;
+    IMPORT int ivi_comment_char;
     V_v_v* vvvp;
     int            num_vector_vectors = NOT_SET;
     int            i;
@@ -2787,7 +2787,7 @@ int fp_read_v3(V_v_v** vvvpp, FILE* fp)
             /*EMPTY*/
             ;  /* Do nothing. */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
 
@@ -2829,7 +2829,7 @@ int fp_read_v3(V_v_v** vvvpp, FILE* fp)
                 free_options(num_options, option_list, value_list);
 
             } /* if (*line_pos == '!') */
-        } /* else if (*line_pos == kjb_comment_char) */
+        } /* else if (*line_pos == ivi_comment_char) */
         else
         {
             set_error("Cannot find header with num_vector_vectors in %F.", fp);

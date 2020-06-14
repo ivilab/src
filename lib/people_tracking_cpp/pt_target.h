@@ -15,7 +15,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_target.h 21107 2017-01-23 05:45:47Z ernesto $ */
+/* $Id: pt_target.h 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef PT_TARGET_H_
 #define PT_TARGET_H_
@@ -38,7 +38,7 @@
 #include <flow_cpp/flow_integral_flow.h>
 #include <boost/optional.hpp>
 
-namespace kjb {
+namespace ivi {
 namespace pt {
 
 // forward declarations
@@ -337,7 +337,7 @@ private:
     mutable Vector hessian_;
 };
 
-/** @brief  Helper function -- gets the position from CS as a kjb::Vector. */
+/** @brief  Helper function -- gets the position from CS as a ivi::Vector. */
 inline
 Vector get_cs_position(const Complete_state& cs)
 {
@@ -345,7 +345,7 @@ Vector get_cs_position(const Complete_state& cs)
     return Vector(cs.position[0], cs.position[2]);
 }
 
-/** @brief  Helper function -- gets the face_dir from CS as a kjb::Vector. */
+/** @brief  Helper function -- gets the face_dir from CS as a ivi::Vector. */
 inline
 Vector get_cs_face_dir(const Complete_state& cs)
 {
@@ -460,7 +460,7 @@ size_t dims
     return infer_head ? 5*(ef - sf + 1) : 2*(ef - sf + 1);
 }
 
-}} //namespace kjb::pt
+}} //namespace ivi::pt
 
 #endif /*PT_TARGET_H_ */
 

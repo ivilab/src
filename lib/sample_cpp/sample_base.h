@@ -1,4 +1,4 @@
-/* $Id: sample_base.h 17393 2014-08-23 20:19:14Z predoehl $ */
+/* $Id: sample_base.h 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -314,7 +314,7 @@ struct Model_dimension
 template <typename Model>
 struct Model_parameter_evaluator
 {
-    typedef boost::function1<kjb::Vector, const Model&> Type;
+    typedef boost::function1<ivi::Vector, const Model&> Type;
 };
 
 

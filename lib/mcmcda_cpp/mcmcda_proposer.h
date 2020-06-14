@@ -48,7 +48,7 @@
 #include <boost/bimap/set_of.hpp>
 #include <boost/bimap/multiset_of.hpp>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #else
 // if we don't have libergo installed, this still compiles
@@ -67,7 +67,7 @@ struct mh_proposal_result
 }
 #endif
 
-namespace kjb {
+namespace ivi {
 namespace mcmcda {
 
 #warning "[Code police] scoped enums are a c++0x feature."
@@ -188,7 +188,7 @@ public:
     size_t sample_move(const Assoc& w) const
     {
         size_t K = w.size() < 2 ? w.size() : 2;
-        return kjb::sample(m_p_move[K]);
+        return ivi::sample(m_p_move[K]);
     }
 
     /** @brief  Compute the log pdf of a move type. */
@@ -719,7 +719,7 @@ ergo::mh_proposal_result Proposer<Track>::operator()
 
             default:
             {
-                KJB_THROW_3(Runtime_error,
+                IVI_THROW_3(Runtime_error,
                             "MCMCDA: move %d does not exist.", (m));
                 break;
             }
@@ -739,12 +739,12 @@ ergo::mh_proposal_result Proposer<Track>::operator()
 template <class Track>
 double Proposer<Track>::propose_birth(const Assoc& w, Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     Track new_track = def_track;
 
     // pick first point in new track
-    size_t t_1 = kjb::sample(
+    size_t t_1 = ivi::sample(
         Categorical_distribution<size_t>(1, w.get_data().size(), 1));
 
     std::set<const Element*> L_1 = w.get_dead_points_at_time(t_1);
@@ -757,7 +757,7 @@ double Proposer<Track>::propose_birth(const Assoc& w, Assoc& w_p) const
     //const Element* x_1 = *element_uar(L_1.begin(), L_1.size());
     std::vector<double> ps(L_1.size(), 1.0);
     Categorical_distribution<size_t> P(ps, 0);
-    size_t n = kjb::sample(P);
+    size_t n = ivi::sample(P);
     typename std::set<const Element*>::const_iterator x_1_p = L_1.begin();
 
     std::advance(x_1_p, n);
@@ -789,7 +789,7 @@ double Proposer<Track>::propose_birth(const Assoc& w, Assoc& w_p) const
 template <class Track>
 double Proposer<Track>::propose_death(const Assoc& w, Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     if(w.empty())
     {
@@ -813,7 +813,7 @@ double Proposer<Track>::propose_death(const Assoc& w, Assoc& w_p) const
 template <class Track>
 double Proposer<Track>::propose_split(const Assoc& w, Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     if(w.empty())
     {
@@ -828,7 +828,7 @@ double Proposer<Track>::propose_split(const Assoc& w, Assoc& w_p) const
     }
 
     // pick random split point and compute it
-    size_t n = kjb::sample(Categorical_distribution<size_t>(1, nsp, 1));
+    size_t n = ivi::sample(Categorical_distribution<size_t>(1, nsp, 1));
 
     w_p = w;
     Assoc_const_iterator track_p;
@@ -895,7 +895,7 @@ double Proposer<Track>::propose_split(const Assoc& w, Assoc& w_p) const
 template <class Track>
 double Proposer<Track>::propose_merge(const Assoc& w, Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     if(w.size() < 2)
     {
@@ -966,7 +966,7 @@ double Proposer<Track>::propose_extension
     Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     if(w.empty())
     {
@@ -985,7 +985,7 @@ double Proposer<Track>::propose_extension
     // grow track
     int dir;
     int prev_end;
-    double u = kjb::sample(Uniform_distribution());
+    double u = ivi::sample(Uniform_distribution());
     if(u < 0.5)
     {
         dir = GROW_FORWARD;
@@ -1033,7 +1033,7 @@ double Proposer<Track>::propose_reduction
     Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     if(w.empty())
     {
@@ -1055,12 +1055,12 @@ double Proposer<Track>::propose_reduction
 
     Track reduced_track = *track_p;
     size_t rtsz = reduced_track.real_size();
-    size_t n = kjb::sample(Categorical_distribution<size_t>(2, rtsz - 1, 1));
+    size_t n = ivi::sample(Categorical_distribution<size_t>(2, rtsz - 1, 1));
     int t = reduced_track.get_nth_time(n);
 
     // choose direction and reduce
     int dir;
-    if(kjb::sample(Uniform_distribution()) <= 0.5)
+    if(ivi::sample(Uniform_distribution()) <= 0.5)
     {
         reduced_track.erase(reduced_track.upper_bound(t), reduced_track.end());
         dir = GROW_FORWARD;
@@ -1100,7 +1100,7 @@ double Proposer<Track>::propose_switch
     Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     using namespace boost;
 
@@ -1205,7 +1205,7 @@ double Proposer<Track>::propose_secretion
     Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     if(w.empty())
     {
@@ -1282,7 +1282,7 @@ double Proposer<Track>::propose_secretion
     orig_track.insert(orig_p->begin(), ++small_p);
 
     Uniform_distribution U;
-    if(kjb::sample(U) < 0.5)
+    if(ivi::sample(U) < 0.5)
     {
         orig_track.insert(++big_p, orig_p->end());
     }
@@ -1295,7 +1295,7 @@ double Proposer<Track>::propose_secretion
     size_t win_sz = 0;
     while(small_p != big_p)
     {
-        if(kjb::sample(U) < 0.5)
+        if(ivi::sample(U) < 0.5)
         {
             orig_track.insert(*small_p);
         }
@@ -1342,7 +1342,7 @@ double Proposer<Track>::propose_absorption
     Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
     if(w.size() < 2)
     {
@@ -1475,7 +1475,7 @@ double Proposer<Track>::propose_absorption
                    std::ptr_fun<double, double>(std::exp));
 
     // choose a candidate pair and merge its tracks into a single track
-    size_t idx = kjb::sample(Categorical_distribution<size_t>(ps));
+    size_t idx = ivi::sample(Categorical_distribution<size_t>(ps));
     typename std::list<iit_tuple>::iterator tuple_p = M.begin();
     std::advance(tuple_p, idx - 1);
     iit_tuple& ttm = *tuple_p;
@@ -1529,8 +1529,8 @@ double Proposer<Track>::propose_absorption
 template <class Track>
 double Proposer<Track>::p_birth(const Assoc& w, const Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_birth(w, w_p))
@@ -1569,8 +1569,8 @@ double Proposer<Track>::p_birth(const Assoc& w, const Assoc& w_p) const
 template <class Track>
 double Proposer<Track>::p_death(const Assoc& w, const Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_death(w, w_p))
@@ -1588,8 +1588,8 @@ double Proposer<Track>::p_death(const Assoc& w, const Assoc& w_p) const
 template <class Track>
 double Proposer<Track>::p_split(const Assoc& w, const Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_split(w, w_p))
@@ -1613,8 +1613,8 @@ double Proposer<Track>::p_split(const Assoc& w, const Assoc& w_p) const
 template <class Track>
 double Proposer<Track>::p_merge(const Assoc& w, const Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_merge(w, w_p))
@@ -1642,8 +1642,8 @@ double Proposer<Track>::p_extension
     const Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_extension(w, w_p))
@@ -1679,8 +1679,8 @@ double Proposer<Track>::p_reduction
     const Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_reduction(w, w_p))
@@ -1699,8 +1699,8 @@ double Proposer<Track>::p_reduction
 template <class Track>
 double Proposer<Track>::p_switch(const Assoc& w, const Assoc& w_p) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_switch(w, w_p))
@@ -1728,8 +1728,8 @@ double Proposer<Track>::p_secretion
     const Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_secretion(w, w_p))
@@ -1760,8 +1760,8 @@ double Proposer<Track>::p_absorption
     const Assoc& w_p
 ) const
 {
-    //KJB(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
-    //KJB(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
+    //IVI(ASSERT(w_p.is_valid(m_v_bar, m_d_bar, m_noise_sigma, m_convert)));
 
 #ifdef TEST
     if(!is_valid_absorption(w, w_p))
@@ -2113,7 +2113,7 @@ void Proposer<Track>::grow_track_forward
             double p_det = std::exp(pr.first);
             if(p_det > 0.15)
             {
-                if(kjb::sample(Uniform_distribution()) < p_det)
+                if(ivi::sample(Uniform_distribution()) < p_det)
                 {
                     track.insert(std::make_pair(t, pr.second));
                     num_added++;
@@ -2125,7 +2125,7 @@ void Proposer<Track>::grow_track_forward
         if(num_added == 0)
         {
             // stop with probability gamma
-            if(kjb::sample(Uniform_distribution()) < m_gamma) break;
+            if(ivi::sample(Uniform_distribution()) < m_gamma) break;
         }
 
         if(t == w.get_data().size()) break;
@@ -2169,7 +2169,7 @@ void Proposer<Track>::grow_track_backward
         {
             double p_det = std::exp(pr.first);
 
-            if(kjb::sample(Uniform_distribution()) < p_det)
+            if(ivi::sample(Uniform_distribution()) < p_det)
             {
                 track.insert(std::make_pair(t, pr.second));
                 num_added++;
@@ -2180,7 +2180,7 @@ void Proposer<Track>::grow_track_backward
         if(num_added == 0)
         {
             // stop with probability gamma
-            if(kjb::sample(Uniform_distribution()) < m_gamma) break;
+            if(ivi::sample(Uniform_distribution()) < m_gamma) break;
         }
 
         if(t == 1) break;
@@ -3124,7 +3124,7 @@ size_t Proposer<Track>::count_absorption_pairs(const Assoc& w) const
     return (w.size() * (w.size() - 1)) / 2;
 }
 
-}} //namespace kjb::mcmcda
+}} //namespace ivi::mcmcda
 
 #endif /*MCMCDA_PROPOSER_H_INCLUDED */
 

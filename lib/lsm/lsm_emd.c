@@ -1,5 +1,5 @@
 
-/* $Id: lsm_emd.c 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: lsm_emd.c 25499 2020-06-14 13:26:04Z kobus $ */
 
 #ifndef DONT_LINT_SHARED
 
@@ -68,7 +68,7 @@ static void prepare_memory_cleanup(void);
 
 /*
 // The following functions are Yossi Rubner's EMD functions modified to use
-// the KJB library data types, and extended to dynamically allocate memory
+// the IVI library data types, and extended to dynamically allocate memory
 // for arbitrary sized data structures.
 */
 static int find_initial_solution
@@ -171,7 +171,7 @@ static int allocate_static_data(Signature* sig1, Signature* sig2)
         DLLNode* temp_vars_np;
 
         NRE( temp_vars_np = N_TYPE_MALLOC(DLLNode, 2 * (max_sig_size + 1)) );
-        kjb_free(basic_vars_np);
+        ivi_free(basic_vars_np);
         basic_vars_np = temp_vars_np;
     }
 
@@ -190,7 +190,7 @@ static int allocate_static_data(Signature* sig1, Signature* sig2)
         DLLNode** temp_RowsX_np_ptr;
 
         NRE( temp_RowsX_np_ptr = N_TYPE_MALLOC(DLLNode*, (max_sig_size + 1)) );
-        kjb_free(RowsX_np_ptr);
+        ivi_free(RowsX_np_ptr);
         RowsX_np_ptr = temp_RowsX_np_ptr;
     }
 
@@ -209,7 +209,7 @@ static int allocate_static_data(Signature* sig1, Signature* sig2)
         DLLNode** temp_ColsX_np_ptr;
 
         NRE( temp_ColsX_np_ptr = N_TYPE_MALLOC(DLLNode*, (max_sig_size + 1)) );
-        kjb_free(ColsX_np_ptr);
+        ivi_free(ColsX_np_ptr);
         ColsX_np_ptr = temp_ColsX_np_ptr;
     }
 
@@ -266,9 +266,9 @@ static void free_allocated_static_emd_data(void)
     extern unsigned char**   is_X;
 
     free_matrix(costs_mp);
-    kjb_free(basic_vars_np);
-    kjb_free(RowsX_np_ptr);
-    kjb_free(ColsX_np_ptr);
+    ivi_free(basic_vars_np);
+    ivi_free(RowsX_np_ptr);
+    ivi_free(ColsX_np_ptr);
     free_2D_byte_array(is_X);
 }
 #endif
@@ -476,8 +476,8 @@ int get_earthmover_distance
         *em_distance_ptr = (total_cost / initial_cost);
     }
 
-    kjb_free(row_list);
-    kjb_free(col_list);
+    ivi_free(row_list);
+    ivi_free(col_list);
 
 
     return result;
@@ -910,7 +910,7 @@ static int improve_solution(void)
     /* Set enter_X to be the new empty slot */
     enter_X = LeaveX;
 
-    kjb_free(Loop);
+    ivi_free(Loop);
 
     return NO_ERROR;
 }
@@ -1013,7 +1013,7 @@ static int find_loop(DLLNode** Loop, int* num_steps_ptr)
     else
         *num_steps_ptr = num_steps;
 
-    kjb_free(is_used);
+    ivi_free(is_used);
 
     return result;
 }
@@ -1197,8 +1197,8 @@ static int russel(Vector* supply_vp, Vector* demand_vp)
     } while (row_head.next != NULL || col_head.next != NULL);
 
     free_matrix(delta);
-    kjb_free(row_list);
-    kjb_free(col_list);
+    ivi_free(row_list);
+    ivi_free(col_list);
 
     return NO_ERROR;
 }
@@ -1290,7 +1290,7 @@ static int add_basic_variable
  * Computes the Euclidean distance between two features.
  *
  * This routine computes the Euclidean distance between two features which are
- * implemented as KJB Vectors. Included as the default distance function used
+ * implemented as IVI Vectors. Included as the default distance function used
  * by the earthmover's distance code.
  *
  * Returns:
@@ -1356,7 +1356,7 @@ int euclidean_distance
  * Gets target signature.
  *
  * This routine implements the creation/over-writing semantics used in
- * the KJB library in the case of signatures. If *target_sig_ptr_ptr
+ * the IVI library in the case of signatures. If *target_sig_ptr_ptr
  * is NULL, then this routine creates the signature. If the target signature
  * is not NULL and is the correct size, then this routine does nothing
  * (recycles the memory). If the target signature is the wrong size, then it
@@ -1374,7 +1374,7 @@ int euclidean_distance
  * |        double*    weights_vec;  Pointer to array of feature weights
  * |    } Signature;
  *
- * In the emd_lib.c module, a "feature" is simply a KJB Vector. All features
+ * In the emd_lib.c module, a "feature" is simply a IVI Vector. All features
  * should have the same length.
  *
  * Each feature in a signature has a corresponding weight indicating its relative
@@ -1496,8 +1496,8 @@ int get_target_signature
             free_vector(old_vp);
         }
 
-        kjb_free(out_sig_ptr->feature_vec);
-        kjb_free(out_sig_ptr->weights_vec);
+        ivi_free(out_sig_ptr->feature_vec);
+        ivi_free(out_sig_ptr->weights_vec);
 
         out_sig_ptr->num_features = num_features;
         out_sig_ptr->feature_vec  = temp_feature_vec;
@@ -1585,7 +1585,7 @@ void free_signature(Signature* signature_ptr)
                 signature_ptr->feature_vec[i] = NULL;
             }
 
-            kjb_free(signature_ptr->feature_vec);
+            ivi_free(signature_ptr->feature_vec);
             signature_ptr->feature_vec = NULL;
         }
 
@@ -1598,11 +1598,11 @@ void free_signature(Signature* signature_ptr)
 #endif
 #endif
 
-            kjb_free(signature_ptr->weights_vec);
+            ivi_free(signature_ptr->weights_vec);
             signature_ptr->weights_vec = NULL;
         }
 
-        kjb_free(signature_ptr);
+        ivi_free(signature_ptr);
         signature_ptr = NULL;
     }
 }
@@ -1673,7 +1673,7 @@ int copy_signature
         || ( source_sig_ptr->weights_vec == NULL )
        )
     {
-        kjb_clear_error();
+        ivi_clear_error();
 
         set_error("emd_lib.c::copy_signature() - Invalid source signature:");
 
@@ -1728,7 +1728,7 @@ int copy_signature
  *
  * This routine sets the feature vector of the signature pointed to by
  * target_sig_ptr to the values contained in the input Matrix feature_data_mp.
- * Each row in the input Matrix is copied to a KJB Vector and stored as an
+ * Each row in the input Matrix is copied to a IVI Vector and stored as an
  * element in the signature's feature vector.
  *
  * Preconditions:
@@ -2137,7 +2137,7 @@ void verbose_psig(int cut_off, Signature* sig_ptr)
     Vector* cur_ftr_vp;
     int     i, j;
 
-    if (cut_off > kjb_get_verbose_level ())
+    if (cut_off > ivi_get_verbose_level ())
         return;
 
     if (sig_ptr == NULL)
@@ -2356,7 +2356,7 @@ int convert_spectrum_to_signature
  * Gets target signature database.
  *
  * This routine implements the creation/over-writing semantics used in
- * the KJB library in the case of signature databases.
+ * the IVI library in the case of signature databases.
  * If *target_sig_db_ptr_ptr is NULL, then this routine creates the signature
  * database. If the target signature database is not NULL and is the correct
  * size, then this routine does nothing (recycles the memory). If the target
@@ -2384,8 +2384,8 @@ int convert_spectrum_to_signature
  *
  * Each signature database contains the illuminant data from which it was
  * constructed. The illuminant data can be in one of two forms:
- * | 1) a KJB Spectra containing the illuminant spectra, or
- * | 2) a KJB Matrix containing the RGB of each illuminant.
+ * | 1) a IVI Spectra containing the illuminant spectra, or
+ * | 2) a IVI Matrix containing the RGB of each illuminant.
  *
  * The data_origin field of the Signature_db indicates the storage format of
  * the illuminant data and can have the following values:
@@ -2502,7 +2502,7 @@ int get_target_signature_db
 
         NRE(temp_sig_ptr_vec = N_TYPE_MALLOC(Signature*, num_signatures));
 
-        kjb_free(out_sig_db->signature_ptr_vec);
+        ivi_free(out_sig_db->signature_ptr_vec);
 
         out_sig_db->signature_ptr_vec = temp_sig_ptr_vec;
     }
@@ -2591,7 +2591,7 @@ void free_signature_db(Signature_db* sig_db_ptr)
 
         }
 
-        kjb_free(sig_db_ptr->signature_ptr_vec);
+        ivi_free(sig_db_ptr->signature_ptr_vec);
         sig_db_ptr->signature_ptr_vec = NULL;
 
         if (sig_db_ptr->data_origin == EMD_FROM_RGB)
@@ -2605,7 +2605,7 @@ void free_signature_db(Signature_db* sig_db_ptr)
             sig_db_ptr->illum_data.illum_sp = NULL;
         }
 
-        kjb_free(sig_db_ptr);
+        ivi_free(sig_db_ptr);
         sig_db_ptr = NULL;
 
 #ifdef PROGRAMMER_IS_colour
@@ -3195,7 +3195,7 @@ int write_signature_db
 #endif
 #endif
 
-    fp = kjb_fopen(file_name, "w");
+    fp = ivi_fopen(file_name, "w");
 
     if (fp == NULL)
     {
@@ -3272,7 +3272,7 @@ int write_signature_db
 #endif
 #endif
 
-    return kjb_fclose(fp);
+    return ivi_fclose(fp);
 }
 
 /* /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\  */
@@ -3285,8 +3285,8 @@ static int fp_read_signature_db_header
     Emd_data_origin*    data_origin_ptr /* Ptr to origin of illum db     */
 )
 {
-    IMPORT int kjb_comment_char;
-    IMPORT int kjb_header_char;
+    IMPORT int ivi_comment_char;
+    IMPORT int ivi_header_char;
     int    i;
     int    num_options;
     char** option_list;
@@ -3312,7 +3312,7 @@ static int fp_read_signature_db_header
         return ERROR;
     }
 
-    ERE(top_file_pos = kjb_ftell(fp));
+    ERE(top_file_pos = ivi_ftell(fp));
 
     while ( still_looking_for_header )
     {
@@ -3334,7 +3334,7 @@ static int fp_read_signature_db_header
             break;
         }
 
-        save_file_pos = kjb_ftell(fp);
+        save_file_pos = ivi_ftell(fp);
 
         if (save_file_pos == ERROR)
         {
@@ -3351,13 +3351,13 @@ static int fp_read_signature_db_header
             /*EMPTY*/
             ;  /* Do nothing. */
         }
-        else if (*line_pos == kjb_comment_char)
+        else if (*line_pos == ivi_comment_char)
         {
             line_pos++;
 
             trim_beg(&line_pos);
 
-            if (*line_pos == kjb_header_char)
+            if (*line_pos == ivi_header_char)
             {
                 line_pos++;
 
@@ -3433,26 +3433,26 @@ static int fp_read_signature_db_header
 
     if (result != ERROR)
     {
-        if (KJB_IS_SET(num_signatures))
+        if (IVI_IS_SET(num_signatures))
         {
             *num_signatures_ptr = num_signatures;
         }
 
-        if (KJB_IS_SET(cluster_method))
+        if (IVI_IS_SET(cluster_method))
         {
             *cluster_method_ptr = (Emd_cluster_method)cluster_method;
         }
 
-        if (KJB_IS_SET(data_origin))
+        if (IVI_IS_SET(data_origin))
         {
             *data_origin_ptr = (Emd_data_origin)data_origin;
         }
 
-        ERE(kjb_fseek(fp, save_file_pos, SEEK_SET));
+        ERE(ivi_fseek(fp, save_file_pos, SEEK_SET));
     }
     else
     {
-        ERE(kjb_fseek(fp, top_file_pos, SEEK_SET));
+        ERE(ivi_fseek(fp, top_file_pos, SEEK_SET));
     }
 
     return result;
@@ -3477,13 +3477,13 @@ static int fp_write_signature_db_header
     }
 
     /* Write out the header. */
-    ERE(kjb_fprintf(fp, "#!"));
-    ERE(kjb_fprintf(fp, " emd_nos=%d",     source_sig_db_ptr->num_signatures));
-    ERE(kjb_fprintf(fp, " emd_clm=%d",     source_sig_db_ptr->cluster_method));
-    ERE(kjb_fprintf(fp, " emd_ido=%d\n\n", source_sig_db_ptr->data_origin));
+    ERE(ivi_fprintf(fp, "#!"));
+    ERE(ivi_fprintf(fp, " emd_nos=%d",     source_sig_db_ptr->num_signatures));
+    ERE(ivi_fprintf(fp, " emd_clm=%d",     source_sig_db_ptr->cluster_method));
+    ERE(ivi_fprintf(fp, " emd_ido=%d\n\n", source_sig_db_ptr->data_origin));
 
     /* Write out human-readable comments. */
-    ERE(kjb_fprintf(fp, "# (emd_nos) Number of signatures: %d\n",
+    ERE(ivi_fprintf(fp, "# (emd_nos) Number of signatures: %d\n",
                     source_sig_db_ptr->num_signatures));
 
     switch( source_sig_db_ptr->cluster_method ) {
@@ -3515,16 +3515,16 @@ static int fp_write_signature_db_header
     if ( result == NO_ERROR )
     {
 
-        ERE(kjb_fprintf(fp, "# (emd_clm) %s\n", comment_str));
+        ERE(ivi_fprintf(fp, "# (emd_clm) %s\n", comment_str));
 
         if ( source_sig_db_ptr->data_origin == EMD_FROM_RGB )
         {
-            ERE(kjb_fprintf(fp, "# (emd_ido) %s\n\n", "Data from RGB"));
+            ERE(ivi_fprintf(fp, "# (emd_ido) %s\n\n", "Data from RGB"));
         }
 
         else if ( source_sig_db_ptr->data_origin == EMD_FROM_SPECTRA )
         {
-            ERE(kjb_fprintf(fp, "# (emd_ido) %s\n\n", "Data from spectra"));
+            ERE(ivi_fprintf(fp, "# (emd_ido) %s\n\n", "Data from spectra"));
         }
 
         else

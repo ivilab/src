@@ -4,17 +4,17 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: gsl_randist.h 17393 2014-08-23 20:19:14Z predoehl $
+ * $Id: gsl_randist.h 25499 2020-06-14 13:26:04Z kobus $
  */
 
-#ifndef GSL_RANDIST_H_INCLUDED_LIBKJB_UOFARIZONAVISION
-#define GSL_RANDIST_H_INCLUDED_LIBKJB_UOFARIZONAVISION
+#ifndef GSL_RANDIST_H_INCLUDED_LIBIVI_UOFARIZONAVISION
+#define GSL_RANDIST_H_INCLUDED_LIBIVI_UOFARIZONAVISION
 
 #include <l_cpp/l_exception.h>
 #include <m_cpp/m_vector.h>
 #include <gsl_cpp/gsl_rng.h>
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
 // these are GSL headers, not our wrapper
 #include "gsl/gsl_randist.h"
 #else
@@ -22,7 +22,7 @@
 #endif
 
 
-namespace kjb {
+namespace ivi {
 
 /**
  * @brief Randomly sample discrete events with an empirical distribution.
@@ -36,7 +36,7 @@ namespace kjb {
  */
 class Gsl_ran_discrete {
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     gsl_ran_discrete_t* m_opaque;
 #endif
 
@@ -48,14 +48,14 @@ public:
      * Event weights do not need to be normalized to sum to 1.
      */
     Gsl_ran_discrete( size_t event_count, const double* event_probs )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_opaque( gsl_ran_discrete_preproc( event_count, event_probs ) )
     {
         ETX_2( 00 == m_opaque, "Gsl_ran_discrete ctor:  bad alloc" );
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -65,7 +65,7 @@ public:
      * Event weights do not need to be normalized to sum to 1.
      */
     Gsl_ran_discrete( const Vector& event_probs )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_opaque( 00 )
     {
         Gsl_ran_discrete grd(
@@ -76,7 +76,7 @@ public:
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -87,7 +87,7 @@ public:
      * Event weights do not need to be normalized to sum to 1.
      */
     Gsl_ran_discrete( const std::vector< double >& event_probs )
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     :   m_opaque( 00 )
     {
         // Herb Sutter tells me the following code is legit:
@@ -97,7 +97,7 @@ public:
     }
 #else
     {
-        KJB_THROW_2( Missing_dependency, "GNU GSL" );
+        IVI_THROW_2( Missing_dependency, "GNU GSL" );
     }
 #endif
 
@@ -114,7 +114,7 @@ public:
      */
     double sample( const gsl_rng* rng )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_ran_discrete( rng, m_opaque );
 #endif
     }
@@ -127,7 +127,7 @@ public:
      */
     double pdf( size_t k )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         return gsl_ran_discrete_pdf( k, m_opaque );
 #endif
     }
@@ -136,7 +136,7 @@ public:
     /// @brief swap the internal state of two of these objects
     void swap( Gsl_ran_discrete& that )
     {
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
         using std::swap;
 
         swap( m_opaque, that.m_opaque );
@@ -144,7 +144,7 @@ public:
     }
 
 
-#ifdef KJB_HAVE_GSL
+#ifdef IVI_HAVE_GSL
     /// @brief dtor frees the resources used by internal tables, etc.
     ~Gsl_ran_discrete()
     {
@@ -155,6 +155,6 @@ public:
 };
 
 
-} // end ns kjb
+} // end ns ivi
 
-#endif /* GSL_RANDIST_H_INCLUDED_LIBKJB_UOFARIZONAVISION */
+#endif /* GSL_RANDIST_H_INCLUDED_LIBIVI_UOFARIZONAVISION */

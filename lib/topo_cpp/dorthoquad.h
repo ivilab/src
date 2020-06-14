@@ -24,7 +24,7 @@
 #include <boost/scoped_ptr.hpp>
 
 
-namespace kjb
+namespace ivi
 {
 namespace TopoFusion
 {
@@ -96,7 +96,7 @@ public:
     /**
      * @brief Open the tile cache index, if possible on the IVI lab fileserver.
      * @param dir OPTIONAL pathname to tile cache.  Usually omitted; see below.
-     * @throws KJB_error if we cannot initialize (and lots of steps can fail).
+     * @throws IVI_error if we cannot initialize (and lots of steps can fail).
      *
      * In typical use, you should NOT supply a dir argument; instead, you
      * should accept the default.  The default will test whether the files we
@@ -307,9 +307,9 @@ public:
 
     int as_matrix( Int_matrix* ) const;
 
-    kjb_c::Pixel read_color( unsigned, unsigned ) const;
+    ivi_c::Pixel read_color( unsigned, unsigned ) const;
 
-    kjb_c::Pixel read_abs_color( long, long ) const;
+    ivi_c::Pixel read_abs_color( long, long ) const;
 
     Pixel read( unsigned, unsigned ) const;
 
@@ -324,7 +324,7 @@ public:
     }
 
     /// @brief access internal buffer, but with clunky name to discourage you
-    const kjb::Image& debug_access_internal_image_buffer() const
+    const ivi::Image& debug_access_internal_image_buffer() const
     {
         return m_doq;
     }
@@ -341,6 +341,6 @@ Image get_topographic_map_detail(const pt&, size_t, size_t);
 
 
 } // end namespace TopoFusion
-} // end namespace kjb
+} // end namespace ivi
 
 #endif

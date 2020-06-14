@@ -1,4 +1,4 @@
-/* $Id: edge_lines_likelihood.cpp 21596 2017-07-30 23:33:36Z kobus $ */
+/* $Id: edge_lines_likelihood.cpp 25499 2020-06-14 13:26:04Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -23,10 +23,10 @@
 #include <cmath>
 #include <iostream>
 
-#define KJB_LS_MAX_RGB_VALUE 255
+#define IVI_LS_MAX_RGB_VALUE 255
 #define M_PI_7 M_PI/7.0
 
-using namespace kjb;
+using namespace ivi;
 
 /**
  * @brief Compare the corresponding Line_bin based on the x position of 
@@ -91,9 +91,9 @@ Line_correspondence::Line_bin::Line_bin
 {
     Vector center = image_edge_segment.get_centre();
     distance = model_edge_segment.get_distance_from_point(center);
-    kjb_c::gaussian_pdf(&gauss_distance, distance, 0, dist_sigma);
+    ivi_c::gaussian_pdf(&gauss_distance, distance, 0, dist_sigma);
     angle = image_edge_segment.get_angle_between_line(model_edge_segment);
-    kjb_c::gaussian_pdf(&gauss_angle, angle, 0, angle_sigma);
+    ivi_c::gaussian_pdf(&gauss_angle, angle, 0, angle_sigma);
 }
 
 /**
@@ -351,7 +351,7 @@ void Edge_lines_likelihood::draw_correspondence
 )
 {
     if(model_edges.size() == 0)
-        KJB_THROW_2(Illegal_argument,"model_edges's size is 0 for Edge_lines_likelihood");
+        IVI_THROW_2(Illegal_argument,"model_edges's size is 0 for Edge_lines_likelihood");
 
     m_line_correspondence.find_model_corresponding_image_edges(model_edges);
     
@@ -370,9 +370,9 @@ void Edge_lines_likelihood::draw_correspondence
             const Model_edge& model_edge = model_edges[(*iter_outer).front()->model_edge_segment_index];
         
             //Create a random color to draw the model_edge
-            double tempr =(double)kjb_c::kjb_rand()*KJB_LS_MAX_RGB_VALUE;
-            double tempg =(double)kjb_c::kjb_rand()*KJB_LS_MAX_RGB_VALUE;
-            double tempb =(double)kjb_c::kjb_rand()*KJB_LS_MAX_RGB_VALUE;
+            double tempr =(double)ivi_c::ivi_rand()*IVI_LS_MAX_RGB_VALUE;
+            double tempg =(double)ivi_c::ivi_rand()*IVI_LS_MAX_RGB_VALUE;
+            double tempb =(double)ivi_c::ivi_rand()*IVI_LS_MAX_RGB_VALUE;
 
             if( (tempr < 50.0) && (tempg < 50.0) && (tempb < 50.0) )
             {
