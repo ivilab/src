@@ -262,8 +262,8 @@ setenv PRODUCTION 1
 setenv NO_LIBS 0
 setenv NO_BOOST 0
 
-if (! $?FORCE_MAKE_SRC_DIST ) then
-    setenv FORCE_MAKE_SRC_DIST 0
+if (! $?FORCE_MAKE_IVI ) then
+    setenv FORCE_MAKE_IVI 0
 endif 
 
 cd
@@ -997,7 +997,6 @@ echo MSD: Compiling IVI sub-libraries.
 echo ---------------------------------------------------------------
 
 foreach sub_lib_dir (*)
-
     if (! -d "${sub_lib_dir}") continue
 
     echo 
@@ -1056,13 +1055,13 @@ foreach sub_lib_dir (*)
         continue
     endif 
 
-    if ((! ${FORCE_MAKE_SRC_DIST}) && (-e "${sub_lib_dir}/SKIP_MAKE_SRC_DIST")) then
-        echo "MSD: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_SRC_DIST exists."
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI")) then
+        echo "MSD: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI exists."
         continue
     endif 
 
-    if ((! ${FORCE_MAKE_SRC_DIST}) && (-e "${sub_lib_dir}/SKIP_MAKE_SRC_DIST.${OS}")) then
-        echo "MSD: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_SRC_DIST.${OS} exists."
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI.${OS}")) then
+        echo "MSD: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${OS} exists."
         continue
     endif 
 
@@ -1269,13 +1268,13 @@ foreach sub_lib_dir (*)
         echo MSD: Considering sub-sub dir lib/${sub_lib_dir}/${sub_sub_dir}
         echo 
 
-        if ((! ${FORCE_MAKE_SRC_DIST}) && (-e "${sub_sub_dir}/SKIP_MAKE_SRC_DIST")) then
-            echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_SRC_DIST exists."
+        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
+            echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
             continue
         endif 
 
-        if ((! ${FORCE_MAKE_SRC_DIST}) && (-e "${sub_sub_dir}/SKIP_MAKE_SRC_DIST.${OS}")) then
-            echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_SRC_DIST.${OS} exists."
+        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
+            echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
             continue
         endif 
 
@@ -1618,6 +1617,16 @@ foreach sub_lib_dir (*)
                 continue
             endif
 
+            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
+                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
+                continue
+            endif 
+
+            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
+                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+                continue
+            endif 
+
             pushd ${sub_sub_dir} > /dev/null
             if (${status}) then
                 echo "Command failed in `pwd`: pushd ${sub_sub_dir} > /dev/null" | tee -a ${error_file}
@@ -1653,6 +1662,16 @@ foreach sub_lib_dir (*)
             if ( ! -d "${sub_sub_dir}") then
                 continue
             endif
+
+            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
+                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
+                continue
+            endif 
+
+            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
+                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+                continue
+            endif 
 
             pushd ${sub_sub_dir} > /dev/null
             if (${status}) then
@@ -1724,6 +1743,7 @@ echo -------------------------------------------------------
 echo MSD: Compiling programs
 echo -------------------------------------------------------
 
+XXX
 foreach msd_dir ($prog_dirs)
     if (! -d "${msd_dir}") then
         if ("${msd_dir}" != "src_dist_files") then 
