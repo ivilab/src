@@ -1,6 +1,11 @@
 #!/bin/tcsh
 
 # This script must be run in your src directory. Typically, that is $HOME/src,
-# but it need not be, especially if you fell the need to have multiple versions.
+# but it need not be, especially if you feel the need to have multiple versions.
+# If you run this script in a different directory, then it will create some
+# files and directories that you will need to remove. 
+#
+# This script relies on the fact that svn check out also serves fine as svn
+# update. 
 #
 svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/Make/trunk Make

@@ -130,6 +130,9 @@
 #           disables that. Of course, makefiles that are out of date will be
 #           built regardless of this directive.
 #
+# |      skip_depend
+#           This disables forced makefile building 
+#
 # |      skip_depend_lib
 #           This disables forced makefile building in the library directory. 
 #           If you are most interested in testing builds at the program level,
@@ -724,7 +727,7 @@ if (${do_export}) then
 
     set export_dir_count =  0
 
-    echo "    MSD: Export dirs:"
+    echo "    Make_ivi: Export dirs:"
 
     foreach export_prog_dir (${export_prog_dirs})
         echo "        ${export_prog_dir}"
@@ -732,13 +735,13 @@ if (${do_export}) then
     end 
 
 #     if (${export_dir_count} > 1) then
-#         echo "    MSD: Multiple program dirs to export. We will create a baby version of src."
+#         echo "    Make_ivi: Multiple program dirs to export. We will create a baby version of src."
 #     else if (${export_dir_count} == 1)
-#         echo "    MSD: Exporting a single program dir. We will create a program centric version."
+#         echo "    Make_ivi: Exporting a single program dir. We will create a program centric version."
 #     else 
 
     if (${export_dir_count} == 0) then
-        echo "    MSD: Program export requested, but not programs to export. This could be a bug."
+        echo "    Make_ivi: Program export requested, but not programs to export. This could be a bug."
     endif 
 else 
     echo "    MSL Program export is not requested."
@@ -758,14 +761,14 @@ echo " "
 #
 
 echo -------------------------------------------------------------
-echo MSD: Making the tools. Also make everything very clean if needed. 
+echo Make_ivi: Making the tools. Also make everything very clean if needed. 
 echo ------------------------------------------------------------
 echo
 
 if (${?KJB_ENVIRONMENT}) then
-    echo "MSD: KJB_ENVIRONMENT is set to ${KJB_ENVIRONMENT}"
+    echo "Make_ivi: KJB_ENVIRONMENT is set to ${KJB_ENVIRONMENT}"
 else 
-    echo "MSD: KJB_ENVIRONMENT is NOT set"
+    echo "Make_ivi: KJB_ENVIRONMENT is NOT set"
 endif 
 
 pushd Make/util > /dev/null
@@ -776,7 +779,7 @@ if (${status}) then
 endif 
 
 echo " " 
-echo "MSD: Now in directory"`pwd`
+echo "Make_ivi: Now in directory"`pwd`
 echo " " 
 
 if (! ${skip_depend}) then
@@ -799,7 +802,7 @@ if (! ${skip_doc}) then
     endif 
 
     echo " " 
-    echo "MSD: Now in directory"`pwd`
+    echo "Make_ivi: Now in directory"`pwd`
     echo " " 
 
     ${IVI_MAKE} make_bin 
@@ -817,7 +820,7 @@ if (! ${skip_doc}) then
     endif 
 
     echo " " 
-    echo "MSD: Now in directory"`pwd`
+    echo "Make_ivi: Now in directory"`pwd`
     echo " " 
 endif 
 
@@ -837,14 +840,14 @@ if (${status}) then
 endif 
 
 echo " " 
-echo "MSD: Now in directory"`pwd`
+echo "Make_ivi: Now in directory"`pwd`
 echo " " 
 
 ###############################################################################
 
 if (! $skip_regress) then
     echo -------------------------------------------------------
-    echo MSD: Setting up for running tests 
+    echo Make_ivi: Setting up for running tests 
     echo -------------------------------------------------------
 
     if (-e ${regress_failure_log}) then
@@ -861,7 +864,7 @@ endif
 set src_dist_file_dir = `pwd`
 
 echo ------------------------------------------------------------------
-echo MSD: Collecting files into ${src_dist_file_dir}/src_dist_files
+echo Make_ivi: Collecting files into ${src_dist_file_dir}/src_dist_files
 echo ------------------------------------------------------------------
 
 if ($collect_files) then
@@ -961,7 +964,7 @@ if ($collect_files) then
         if (-e "Make/util/${build_file}") then
             echo Make/util/${build_file} >> ${src_dist_file_dir}/src_dist_files
         else 
-            echo "MSD: Warning: Missing file Make/util/${build_file}."
+            echo "Make_ivi: Warning: Missing file Make/util/${build_file}."
         endif 
     end 
 
@@ -993,7 +996,7 @@ if (${status}) then
 endif 
 
 echo ---------------------------------------------------------------
-echo MSD: Compiling IVI sub-libraries.
+echo Make_ivi: Compiling IVI sub-libraries.
 echo ---------------------------------------------------------------
 
 foreach sub_lib_dir (*)
@@ -1001,11 +1004,11 @@ foreach sub_lib_dir (*)
 
     echo 
     echo -------------------------------------------------------
-    echo MSD: Considering compiling lib/$sub_lib_dir
+    echo Make_ivi: Considering compiling lib/$sub_lib_dir
     echo 
 
     if (${skip_sub_dirs}) then
-        echo "MSD: Skipping ${sub_lib_dir} because we are skipping sub lib dirs."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because we are skipping sub lib dirs."
         continue
     endif
 
@@ -1013,55 +1016,55 @@ foreach sub_lib_dir (*)
 
     if (${skip_cpp_dirs}) then
         if ("${is_cpp_dir}" != "")  then
-            echo "MSD: Skipping ${sub_lib_dir} because we are skipping cpp dirs."
+            echo "Make_ivi: Skipping ${sub_lib_dir} because we are skipping cpp dirs."
             continue
         endif
     endif
 
     if (! -e "${sub_lib_dir}/Makefile") then
-        echo "MSD: Skipping ${sub_lib_dir} because no Makefile."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because no Makefile."
         continue
     endif
 
     if (! -e "${sub_lib_dir}/Makefile-2") then
-        echo "MSD: Skipping ${sub_lib_dir} because no Makefile-2."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because no Makefile-2."
         continue
     endif
 
     if (! -e "${sub_lib_dir}/Makefile-include") then
-        echo "MSD: Skipping ${sub_lib_dir} because no Makefile-include."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because no Makefile-include."
         continue
     endif
 
     if (! -e "${sub_lib_dir}/build") then
-        echo "MSD: Skipping ${sub_lib_dir} because no 'build'."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because no 'build'."
         continue
     endif
 
     # Obsolete or not ready dirs are handled next.
 
     if (("${sub_lib_dir}" == "rpc") || ("${sub_lib_dir}" == "cpp_m")) then
-        echo "MSD: Skipping ${sub_lib_dir} because it is either obsolete or not ready."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because it is either obsolete or not ready."
         continue
     endif 
 
     if ((${gxx_major} < 3) && ("${sub_lib_dir}" == "wrap_sift")) then
-        echo "MSD: Skipping ${sub_lib_dir} because GXX version is ${gxx_version}"
+        echo "Make_ivi: Skipping ${sub_lib_dir} because GXX version is ${gxx_version}"
         continue
     endif 
 
     if (("${OS}" == "sun5") && ("${sub_lib_dir}" == "wrap_sift")) then
-        echo "MSD: Skipping ${sub_lib_dir} because we have not made it work on SUN5."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because we have not made it work on SUN5."
         continue
     endif 
 
     if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI")) then
-        echo "MSD: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI exists."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI exists."
         continue
     endif 
 
     if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI.${OS}")) then
-        echo "MSD: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${OS} exists."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${OS} exists."
         continue
     endif 
 
@@ -1083,7 +1086,7 @@ foreach sub_lib_dir (*)
     endif 
 
     if ("${have_code}" == "") then
-        echo "MSD: Skipping ${sub_lib_dir} because it has no source files."
+        echo "Make_ivi: Skipping ${sub_lib_dir} because it has no source files."
         continue
     endif 
 
@@ -1107,7 +1110,7 @@ foreach sub_lib_dir (*)
             if (! ${keep_going}) goto end_of_script
         endif
     else
-        echo "MSD Skipping make depend in `pwd` due to options."
+        echo "Script make_ivi skipping make depend in `pwd` due to options."
     endif
 
     if (! ${skip_make}) then
@@ -1205,7 +1208,7 @@ foreach sub_lib_dir (*)
         # This seems to do nothing?
         set sub_lib_dir = "${sub_lib_dir}"
     else
-        echo "MSD: Skipping make in `pwd` due to options."
+        echo "Make_ivi: Skipping make in `pwd` due to options."
     endif
 
     if (($do_doc) && ("${is_cpp_dir}" == "") && (! -e "SKIP_C2MAN"))  then
@@ -1217,7 +1220,7 @@ foreach sub_lib_dir (*)
             if (! ${keep_going}) goto end_of_script
         endif
     else
-        echo "MSD: Skipping doc in `pwd` due to options."
+        echo "Make_ivi: Skipping doc in `pwd` due to options."
     endif
 
     if ($do_ctags) then
@@ -1233,11 +1236,11 @@ foreach sub_lib_dir (*)
             ### echo lib/${sub_lib_dir}/tags >> ${src_dist_file_dir}/src_dist_files
         endif
     else
-        echo "MSD: Skipping ctags in `pwd` due to options."
+        echo "Make_ivi: Skipping ctags in `pwd` due to options."
     endif
 
     if ($collect_files) then
-        echo "MSD: Collecting files in `pwd` due to options."
+        echo "Make_ivi: Collecting files in `pwd` due to options."
 
         foreach file (*.[chC] *.[chit]pp *.cxx)
             echo lib/${sub_lib_dir}/${file} >> ${src_dist_file_dir}/src_dist_files
@@ -1247,7 +1250,7 @@ foreach sub_lib_dir (*)
             if (-e "${build_file}") then
                 echo lib/${sub_lib_dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
             else
-                echo "MSD: Warning: Missing file lib/${sub_lib_dir}/${build_file}."
+                echo "Make_ivi: Warning: Missing file lib/${sub_lib_dir}/${build_file}."
             endif 
         end 
     endif
@@ -1265,16 +1268,16 @@ foreach sub_lib_dir (*)
 
         echo 
         echo -------------------------------------------------------
-        echo MSD: Considering sub-sub dir lib/${sub_lib_dir}/${sub_sub_dir}
+        echo Make_ivi: Considering sub-sub dir lib/${sub_lib_dir}/${sub_sub_dir}
         echo 
 
         if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
-            echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
+            echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
             continue
         endif 
 
         if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
-            echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+            echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
             continue
         endif 
 
@@ -1429,7 +1432,7 @@ foreach sub_lib_dir (*)
                         if (-e "${build_file}") then
                             echo lib/${sub_lib_dir}/${sub_sub_dir}/${build_file} >> ${src_dist_file_dir}/${tar_list_file}
                         else if ("${build_file}" != "Makefile-include") then
-                            echo "MSD: Warning: Missing file lib/${sub_lib_dir}/${sub_sub_dir}/${build_file}."
+                            echo "Make_ivi: Warning: Missing file lib/${sub_lib_dir}/${sub_sub_dir}/${build_file}."
                         endif 
                     end 
                 endif
@@ -1618,12 +1621,12 @@ foreach sub_lib_dir (*)
             endif
 
             if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
-                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
+                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
                 continue
             endif 
 
             if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
-                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
                 continue
             endif 
 
@@ -1664,12 +1667,12 @@ foreach sub_lib_dir (*)
             endif
 
             if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
-                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
+                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
                 continue
             endif 
 
             if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
-                echo "MSD: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
                 continue
             endif 
 
@@ -1740,36 +1743,46 @@ endif
 ###############################################################################
 
 echo -------------------------------------------------------
-echo MSD: Compiling programs
+echo Make_ivi: Compiling programs
 echo -------------------------------------------------------
 
 XXX
 foreach msd_dir ($prog_dirs)
     if (! -d "${msd_dir}") then
         if ("${msd_dir}" != "src_dist_files") then 
-            echo "MSD: Warning ${msd_dir} does not seem to be a subdir of ${cwd}" 
+            echo "Make_ivi: Warning ${msd_dir} does not seem to be a subdir of ${cwd}" 
         endif 
 
         continue
     endif 
 
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${msd_dir}/SKIP_MAKE_IVI")) then
+        echo "Make_ivi: Skipping ${msd_dir} because ${sub_lib_dir}/${msd_dir}/SKIP_MAKE_IVI exists."
+        continue
+    endif 
+
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${msd_dir}/SKIP_MAKE_IVI.${OS}")) then
+        echo "Make_ivi: Skipping ${msd_dir} because ${sub_lib_dir}/${msd_dir}/SKIP_MAKE_IVI.${OS} exists."
+        continue
+    endif 
+
     if (! -e "${msd_dir}/Makefile-2") then
-        echo "MSD: ${msd_dir}/Makefile-2 not found."
-        echo "MSD: Skipping ${msd_dir}"
+        echo "Make_ivi: ${msd_dir}/Makefile-2 not found."
+        echo "Make_ivi: Skipping ${msd_dir}"
         continue
     endif 
 
     set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s ${msd_dir}`
 
     if ("${have_code}" == "") then
-        echo "MSD: ${msd_dir} does not have source files."
-        echo "MSD: Skipping it."
+        echo "Make_ivi: ${msd_dir} does not have source files."
+        echo "Make_ivi: Skipping it."
         continue
     endif 
 
     echo 
     echo -------------------------------------------------------
-    echo MSD: Compiling in $msd_dir 
+    echo Make_ivi: Compiling in $msd_dir 
 
     set collected_prog_dirs = "${collected_prog_dirs} ${msd_dir}"
 
@@ -1780,7 +1793,7 @@ foreach msd_dir ($prog_dirs)
         goto end_of_script
     endif 
 
-    echo "MSD: Now in directory `pwd`"
+    echo "Make_ivi: Now in directory `pwd`"
     echo -------------------------------------------------------
     echo 
 
@@ -2008,7 +2021,7 @@ end
 
 if ("${compile_res}" != "") then
     echo " "
-    echo "MSD:           Summary of warnings."
+    echo "Make_ivi:           Summary of warnings."
     echo " "
     #
     # TODO. This is too gcc specific.
@@ -2024,7 +2037,7 @@ endif
 
 if ("${compile_cxx_res}" != "") then
     echo " "
-    echo "MSD:           Summary of cxx warnings."
+    echo "Make_ivi:           Summary of cxx warnings."
     echo " "
     #
     # TODO. This is too gcc specific.
@@ -2045,7 +2058,7 @@ if (! ${skip_regress}) then
     echo ""
     echo =======================================================
     echo ""
-    echo MSD: Reporting regression test results. 
+    echo Make_ivi: Reporting regression test results. 
     echo ""
 
     if ( ! -z ${regress_failure_log}) then
@@ -2064,7 +2077,7 @@ if (! ${skip_regress}) then
         if (! ${keep_going}) goto end_of_script
     else 
         echo " "
-        echo "MSD: No failed tests."
+        echo "Make_ivi: No failed tests."
         echo " "
         echo =======================================================
     endif 
@@ -2075,38 +2088,42 @@ endif
 if ($do_doc) then
     echo 
     echo -------------------------------------------------------
-    echo "MSD: (doc) IVI"
+    echo "Make_ivi: (doc) IVI"
     echo -------------------------------------------------------
     echo 
 
-    pushd IVI > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd IVI > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
+    set doc_dirs = "Make/scripts IVI IVI_cpp"
 
-    ${IVI_MAKE} doc 
+    foreach doc_dir (${doc_dirs}) 
+        pushd "${doc_dir}" > /dev/null
+        if (${status}) then
+            echo "Command failed in `pwd`: pushd ${doc_dir} > /dev/null" | tee -a ${error_file}
+            set exit_status = 1
+            goto end_of_script
+        endif 
 
-    if (${status}) then
-        echo "Make doc failed in ${cwd}." | tee -a ${error_file}
-        set exit_status = 1
-        if (! ${keep_going}) goto end_of_script
-    endif
+        ${IVI_MAKE} doc 
 
-    popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
+        if (${status}) then
+            echo "Make doc failed in ${cwd}." | tee -a ${error_file}
+            set exit_status = 1
+            if (! ${keep_going}) goto end_of_script
+        endif
+
+        popd > /dev/null
+        if (${status}) then
+            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
+            set exit_status = 1
+            goto end_of_script
+        endif 
+    end
 endif
 
 ###############################################################################
 
 if ($do_lib) then
     echo -------------------------------------------------------
-    echo MSD: Building the exported version of the ivi library
+    echo Make_ivi: Building the exported version of the ivi library
     echo -------------------------------------------------------
 
     pushd IVI > /dev/null
@@ -2194,7 +2211,7 @@ if ($do_lib) then
             endif 
 
             echo -----------------------------------------------------------------
-            echo MSD: Updating includes for ${IVI_LIB_PATH}$dir in ${include_path}
+            echo Make_ivi: Updating includes for ${IVI_LIB_PATH}$dir in ${include_path}
             echo -----------------------------------------------------------------
 
             ${IVI_MKDIR}  ${include_path}/ivi/${dir}
@@ -2271,7 +2288,7 @@ if ($do_lib) then
 
     foreach load_path ($load_paths)
         echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        echo MSD: Updating libIVI.a in ${load_path}
+        echo Make_ivi: Updating libIVI.a in ${load_path}
         echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
         ${MAKE_SCRIPT_PATH}update_bin ${LD_OBJ_DIR}libIVI.a  ${load_path}/libIVI.a
@@ -2294,7 +2311,7 @@ endif
 if ($collect_files) then
     foreach dir ($collected_prog_dirs)
         if (! -d "${dir}") then 
-            echo "MSD: Warning: ${dir} does not seem to be a sub-dir of ${cwd}" 
+            echo "Make_ivi: Warning: ${dir} does not seem to be a sub-dir of ${cwd}" 
             continue
         endif 
 
@@ -2313,7 +2330,7 @@ if ($collect_files) then
             if (-e "${build_file}") then
                 echo ${dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
             else if ("${build_file}" != "Makefile-include") then
-                echo "MSD: Warning: Missing file ${dir}/${build_file}."
+                echo "Make_ivi: Warning: Missing file ${dir}/${build_file}."
             endif 
         end 
 
@@ -2329,7 +2346,7 @@ if ($collect_files) then
 
             foreach sub_dir (${sub_dirs}) 
                 if (-l ${sub_dir}) then
-                    echo "MSD: Ignoring link ${dir}/lib/${sub_dir}"
+                    echo "Make_ivi: Ignoring link ${dir}/lib/${sub_dir}"
                 else if (-d ${sub_dir}) then
                     pushd ${sub_dir} > /dev/null
                     if (${status}) then
@@ -2353,7 +2370,7 @@ if ($collect_files) then
                                 if (-e "${build_file}") then
                                     echo ${dir}/lib/${sub_dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
                                 else
-                                    echo "MSD: Warning: Missing file ${dir}/lib/${sub_dir}/${build_file}."
+                                    echo "Make_ivi: Warning: Missing file ${dir}/lib/${sub_dir}/${build_file}."
                                 endif 
                             end 
                         endif 
@@ -2389,7 +2406,7 @@ endif
 
 if ($do_archive) then
     echo -------------------------------------------------------
-    echo MSD: Archiving
+    echo Make_ivi: Archiving
     echo -------------------------------------------------------
 
     ${IVI_MKDIR} ${TMPDIR}/${USER}/src
@@ -2500,7 +2517,7 @@ if ($do_archive) then
         
         foreach dir (${collected_prog_dirs})
             if (! -d "${dir}") then
-                 echo "MSD: Warning: ${dir} does not seem to be a sub-dir of ${cwd}" 
+                 echo "Make_ivi: Warning: ${dir} does not seem to be a sub-dir of ${cwd}" 
                  continue
             endif  
         end 
@@ -2513,7 +2530,7 @@ if ($do_archive) then
         endif 
 
         foreach dir ($collected_prog_dirs)
-            echo "MSD: processing collected program dir: $dir" 
+            echo "Make_ivi: processing collected program dir: $dir" 
 
             ${IVI_MKDIR} $dir
 
@@ -2563,8 +2580,8 @@ endif
 
 if ($do_export) then
     echo -------------------------------------------------------
-    echo MSD: Building exported versions of programs. 
-    echo MSD:     We are exporting: ${export_prog_dirs}
+    echo Make_ivi: Building exported versions of programs. 
+    echo Make_ivi:     We are exporting: ${export_prog_dirs}
     echo -------------------------------------------------------
 
     if (${?KJB_ENVIRONMENT}) then
@@ -2676,8 +2693,8 @@ if ($do_export) then
         goto end_of_script
     endif 
 
-    echo "MSD: Now in `pwd`"
-    echo "MSD: Editing the build script for export."
+    echo "Make_ivi: Now in `pwd`"
+    echo "Make_ivi: Editing the build script for export."
     ${VIM_FOR_MAKE} -e -c :%s/ivi_setenv NOT_EXPORTED_SOURCE/ivi_setenv EXPORTED_SOURCE/ -c :wq Make/init_compile < /dev/null >& /dev/null
     echo " "
     
@@ -2702,7 +2719,7 @@ if ($do_export) then
         end
 
         if (! $found) then
-           echo "MSD: Removing ${prog_dir} from ${cwd} as it is not exported."
+           echo "Make_ivi: Removing ${prog_dir} from ${cwd} as it is not exported."
            /bin/rm -R -f ${prog_dir}
         else 
             pushd ${prog_dir} > /dev/null
@@ -2713,7 +2730,7 @@ if ($do_export) then
             endif 
 
             echo " "
-            echo "MSD: Building Include_lines/sub_libs_needed for ${prog_dir} in ${cwd}" 
+            echo "Make_ivi: Building Include_lines/sub_libs_needed for ${prog_dir} in ${cwd}" 
             echo "" 
 
             ${IVI_MAKE} depend_clean  
@@ -2756,13 +2773,13 @@ if ($do_export) then
             goto end_of_script
         endif 
 
-        echo "MSD: Now in `pwd`"
+        echo "Make_ivi: Now in `pwd`"
 
         if (! -e Include_lines/sub_libs_needed) then
             echo
-            echo "MSD: Missing  Include_lines/sub_libs_needed in `pwd`"
-            echo "MSD: Possibly due to options restricting them getting built earlier."
-            echo "MSD: Doing a make depend."
+            echo "Make_ivi: Missing  Include_lines/sub_libs_needed in `pwd`"
+            echo "Make_ivi: Possibly due to options restricting them getting built earlier."
+            echo "Make_ivi: Doing a make depend."
             echo
 
             ${IVI_MAKE} depend  
@@ -2815,7 +2832,7 @@ if ($do_export) then
     endif 
 
     echo " "
-    echo "MSD: Sub-libs needed for export : ${all_sub_libs_needed}" 
+    echo "Make_ivi: Sub-libs needed for export : ${all_sub_libs_needed}" 
     echo " " 
 
     foreach lib_dir (*)
@@ -2830,7 +2847,7 @@ if ($do_export) then
             end
 
             if (! $found) then
-               echo "MSD: Removing ${lib_dir} from ${cwd} as it is not needed by an exported program."
+               echo "Make_ivi: Removing ${lib_dir} from ${cwd} as it is not needed by an exported program."
                /bin/rm -R -f ${lib_dir}
             endif 
         endif 
@@ -2843,8 +2860,8 @@ if ($do_export) then
         goto end_of_script
     endif 
     
-    echo "MSD: We should be in ${TMPDIR}/kobus/src. Check against `pwd`"
-    echo "MSD: The files here are:"
+    echo "Make_ivi: We should be in ${TMPDIR}/kobus/src. Check against `pwd`"
+    echo "Make_ivi: The files here are:"
     /bin/ls
     echo " "
 
@@ -3020,7 +3037,7 @@ if ($do_export) then
             goto end_of_script
         endif 
 
-        echo "MSD: Now in `pwd`"
+        echo "Make_ivi: Now in `pwd`"
 
         # Because of the cleaning for export, we need to rebuild the makefiles.
         #
@@ -3089,9 +3106,9 @@ if ($do_export) then
 
         if (! -e Include_lines/sub_libs_needed) then
             echo
-            echo "MSD: Missing  Include_lines/sub_libs_needed in `pwd`"
-            echo "MSD: Possibly due to options restricting them getting built earlier."
-            echo "MSD: Doing a make depend."
+            echo "Make_ivi: Missing  Include_lines/sub_libs_needed in `pwd`"
+            echo "Make_ivi: Possibly due to options restricting them getting built earlier."
+            echo "Make_ivi: Doing a make depend."
             echo
 
             ${IVI_MAKE} depend  
@@ -3142,7 +3159,7 @@ if ($do_export) then
             end
 
             if (! $found) then
-               echo "MSD: Removing ${lib_dir} from ${cwd} is it is not needed by an exported program."
+               echo "Make_ivi: Removing ${lib_dir} from ${cwd} is it is not needed by an exported program."
                /bin/rm -R -f ${lib_dir}
             endif 
         endif 
@@ -3180,8 +3197,8 @@ if ($do_export) then
         set export_prog_names = "${export_prog_names} ${export_prog_name}"
 
         echo ------------------------------------------------------
-        echo "MSD: Working on export dir: ${export_prog_dir} in `pwd`."
-        echo "MSD: Temporary export name is: ${export_prog_name} in `pwd`."
+        echo "Make_ivi: Working on export dir: ${export_prog_dir} in `pwd`."
+        echo "Make_ivi: Temporary export name is: ${export_prog_name} in `pwd`."
 
         echo "src/Make" > ${TMPDIR}/${USER}/src/${export_prog_name}_files
 
@@ -3200,9 +3217,9 @@ if ($do_export) then
 
         if (! -e Include_lines/sub_libs_needed) then
             echo
-            echo "MSD: Missing  Include_lines/sub_libs_needed in `pwd`"
-            echo "MSD: Possibly due to options restricting them getting built earlier."
-            echo "MSD: Doing a make depend."
+            echo "Make_ivi: Missing  Include_lines/sub_libs_needed in `pwd`"
+            echo "Make_ivi: Possibly due to options restricting them getting built earlier."
+            echo "Make_ivi: Doing a make depend."
             echo
 
             ${IVI_MAKE} depend  
@@ -3237,7 +3254,7 @@ if ($do_export) then
         touch include_after/fake_out_glob
 
         echo " "
-        echo "MSD: Retaining the files include_after that are included, and hence might be needed."
+        echo "Make_ivi: Retaining the files include_after that are included, and hence might be needed."
         echo " "
 
         foreach inc_dir (include_after/*)
@@ -3259,7 +3276,7 @@ if ($do_export) then
 
                     if ("${grep_res}" != "") then
                         echo "src/include_after/${inc_dir_name}" >> ${TMPDIR}/${USER}/src/${export_prog_name}_files
-                        echo "MSD: Keeping src/include_after/${inc_dir_name} due to lib/${ivi_sub_lib}"
+                        echo "Make_ivi: Keeping src/include_after/${inc_dir_name} due to lib/${ivi_sub_lib}"
                         break
                     else if (-d lib/${ivi_sub_lib}/test) then
                         set grep_res = `grep -w -l ${inc_dir_name} lib/${ivi_sub_lib}/test/*.[chC] lib/${ivi_sub_lib}/test/*.cpp lib/${ivi_sub_lib}/test/*.cxx  |& grep -v 'No match'`
@@ -3267,7 +3284,7 @@ if ($do_export) then
 
                         if ("${grep_res}" != "") then
                              echo "src/include_after/${inc_dir_name}" >> ${TMPDIR}/${USER}/src/${export_prog_name}_files
-                             echo "MSD: Keeping src/include_after/${inc_dir_name} due to lib/${ivi_sub_lib}/test"
+                             echo "Make_ivi: Keeping src/include_after/${inc_dir_name} due to lib/${ivi_sub_lib}/test"
                              break
                         endif 
                     endif 
@@ -3318,14 +3335,14 @@ if ($do_export) then
     if (${export_standalone}) then 
         foreach export_prog_name (${export_prog_names})
             echo ------------------------------------------------------
-            echo "MSD: Working on export prog name: ${export_prog_name} in `pwd`."
+            echo "Make_ivi: Working on export prog name: ${export_prog_name} in `pwd`."
             /bin/ls 
             echo " "
 
             ${IVI_MKDIR} ${export_prog_name}
 
             echo ------------------------------------------------------
-            echo "MSD: Moving  ${export_prog_name}.tar to ${export_prog_name}."
+            echo "Make_ivi: Moving  ${export_prog_name}.tar to ${export_prog_name}."
             echo " "
 
             /bin/mv ${export_prog_name}.tar ${export_prog_name}
@@ -3340,13 +3357,13 @@ if ($do_export) then
             endif 
 
                 echo ------------------------------------------------------
-                echo "MSD: Now in `pwd`."
+                echo "Make_ivi: Now in `pwd`."
                 echo " "
 
                 tar xf ${export_prog_name}.tar
 
                 if ((-d src/lib) && (-d src/${export_prog_name}/lib)) then
-                    echo "MSD: Moving program lib files to generic lib dir in `pwd`."
+                    echo "Make_ivi: Moving program lib files to generic lib dir in `pwd`."
                     /bin/mv src/${export_prog_name}/lib/* src/lib 
                     if ${status} exit ${status}
                     ${IVI_RM} src/${export_prog_name}/lib 
@@ -3396,7 +3413,7 @@ if ($do_export) then
                 endif 
 
                 if (${export_doc}) then
-                    echo "MSD: Building documentation due to option export_doc in `pwd`."
+                    echo "Make_ivi: Building documentation due to option export_doc in `pwd`."
                     echo " "
 
                     ${IVI_MAKE} doc 
@@ -3456,7 +3473,7 @@ if ($do_export) then
                     endif 
                 endif 
 
-                echo "MSD: Doing a make clean in `pwd`."
+                echo "Make_ivi: Doing a make clean in `pwd`."
                 echo " "
 
                 ${IVI_MAKE} clean 
@@ -3598,7 +3615,7 @@ endif
 
 if ($do_backup) then
     echo -------------------------------------------------------
-    echo MSD: Backing up 
+    echo Make_ivi: Backing up 
     echo -------------------------------------------------------
 
     pushd ${TMPDIR}/${USER}/src/ > /dev/null
@@ -3696,18 +3713,18 @@ echo ""
 echo ""
 
 if (${exit_status}) then
-    echo "MSD: Script make_ivi failed." 
+    echo "Make_ivi: Script make_ivi failed." 
     echo " "
     echo "Error summary: "
     echo " "
     cat ${error_file}
     echo " "
 else 
-    echo "MSD: Script make_ivi finished successfully." 
+    echo "Make_ivi: Script make_ivi finished successfully." 
     echo " "
 
     if ($do_export) then
-        echo MSD: ${export_prog_dirs} exported to ${export_dir}
+        echo Make_ivi: ${export_prog_dirs} exported to ${export_dir}
         echo ""
     endif 
 

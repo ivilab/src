@@ -422,6 +422,7 @@ set count = 1
 
 set need_depend_bootstrap = 0
 set need_depend = 0
+set error_found = 0
 
 while ($count <=  ${num_args}) 
     set arg = $argv[${count}]
@@ -730,11 +731,18 @@ while ($count <=  ${num_args})
     endif 
 end
 
-${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
-
 if (${need_depend}) then
     set need_depend_bootstrap = 1
 endif 
+
+if (${error_found}) then
+    exit ${error_found}
+else if ((! ${need_depend_bootstrap}) && ("${adjusted_args}" == "")) then
+    ${VERBOSE_ECHO} "Script build-2 is exiting with success as there is nothing left to do."
+    exit 0
+endif 
+
+${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
 
 if (${need_depend_bootstrap}) then
     if (! -e Makefile-dirs) then
@@ -944,12 +952,15 @@ else
     set build_adjusted_args = "${adjusted_args}" 
 endif 
 
-if ($?IVI_VERBOSE) then
-    if ("${build_adjusted_args}" != "") then 
+if ("${build_adjusted_args}" != "") then 
+    if ($?IVI_VERBOSE) then
         echo "Script build-2 args continuing with build_adjusted_targets: ${build_adjusted_args}"
-    else 
-        echo "Script build-2 is done processing targets/"
     endif
+else 
+    if ($?IVI_VERBOSE) then
+        echo "Script build-2 is done processing targets."
+        exit ${error_found} 
+    endif 
 endif
 
 foreach arg (${build_adjusted_args}) 
