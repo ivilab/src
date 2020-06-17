@@ -1,0 +1,6 @@
+#!/bin/tcsh
+
+# This script must be run in your src directory. Typically, that is $HOME/src,
+# but it need not be, especially if you fell the need to have multiple versions.
+#
+svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/Make/trunk Make
