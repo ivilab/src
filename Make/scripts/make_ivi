@@ -3,7 +3,7 @@
 ##############################################################################
 #
 # Identification:
-#     A script to make vision code distributions
+#     A script to make, test, and export IVILAB software components, 
 #
 # Description:
 #     This script nominally makes vision code distributions, but to do that, it
@@ -226,8 +226,8 @@
 #     extra checking of library code, assuming we are in the src direction and
 #     that we are using bash: 
 #
-# |       Make/scripts/make_src_dist export_only projects/hdp_hmm_lt \
-# |           1>make_src_dist.stdout 2>make_src_dist.stderr &
+# |       Make/scripts/make_ivi export_only projects/hdp_hmm_lt \
+# |           1>make_ivi.stdout 2>make_ivi.stderr &
 # 
 # Author:
 #     Kobus Barnard 
@@ -241,7 +241,7 @@ endif
 
 set exit_status = 0
 
-set error_file = "`\pwd`/make_src_dist.err"
+set error_file = "`\pwd`/make_ivi.err"
 cat /dev/null > ${error_file}
 
 # One might think that we want to control build variables for reproducible
@@ -645,7 +645,7 @@ set lib_build_files = "build Makefile Makefile-2 Makefile-include"
 echo " "
 echo "===================================================================="
 echo " "
-echo "Script make_src_dist"
+echo "Script make_ivi"
 echo " "
 echo "    Run on ${HOST} (${MACHINE})"
 echo " "
@@ -681,7 +681,7 @@ if (${do_export}) then
 
         foreach svn_dir (${svn_dirs}) 
             if (${svn_error}) break
-            svn commit -m 'Commit of linguring changes via script make_src_dist' ${svn_dir} < /dev/null
+            svn commit -m 'Commit of linguring changes via script make_ivi' ${svn_dir} < /dev/null
             if ($status) set svn_error = 1
         end
 
@@ -903,7 +903,7 @@ if ($collect_files) then
 
     # Not yet exported (should we export them)?
     #     ivi_add_makefiles
-    #     make_src_dist (this file)
+    #     make_ivi (this file)
     
     echo Make/scripts/assert_non_null_arg >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/boost_warn_filter.pl >> ${src_dist_file_dir}/src_dist_files
@@ -3696,14 +3696,14 @@ echo ""
 echo ""
 
 if (${exit_status}) then
-    echo "MSD: Script make_src_dist failed." 
+    echo "MSD: Script make_ivi failed." 
     echo " "
     echo "Error summary: "
     echo " "
     cat ${error_file}
     echo " "
 else 
-    echo "MSD: Script make_src_dist finished successfully." 
+    echo "MSD: Script make_ivi finished successfully." 
     echo " "
 
     if ($do_export) then
