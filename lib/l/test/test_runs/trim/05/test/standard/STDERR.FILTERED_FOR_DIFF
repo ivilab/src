@@ -1,0 +1,54 @@
+(no-ivi) dbi: res is 33 on source line 23 of trim.c
+
+(no-ivi) dbs: line_ptr is ->@@@###!adas!@#234234dasdasd#@!677<- on source line 25 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 33 on source line 26 of trim.c
+(no-ivi) dbi: line_trim_len is 33 on source line 28 of trim.c
+
+gen_trim_beg
+(no-ivi) dbs: line_ptr is ->adas!@#234234dasdasd#@!677<- on source line 33 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 26 on source line 35 of trim.c
+(no-ivi) dbi: line_trim_len is 26 on source line 36 of trim.c
+(no-ivi) dbi: trim_count is 7 on source line 37 of trim.c
+
+gen_trim_end
+(no-ivi) dbs: line_ptr is ->adas!@#234234dasdasd#@!677<- on source line 42 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 26 on source line 44 of trim.c
+(no-ivi) dbi: line_trim_len is 26 on source line 45 of trim.c
+(no-ivi) dbi: trim_count is 0 on source line 46 of trim.c
+-------------------------------Test Ends Here
+(no-ivi) dbi: res is 13 on source line 23 of trim.c
+
+(no-ivi) dbs: line_ptr is ->@#!#!#%669@*$<- on source line 25 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 13 on source line 26 of trim.c
+(no-ivi) dbi: line_trim_len is 13 on source line 28 of trim.c
+
+gen_trim_beg
+(no-ivi) dbs: line_ptr is ->%669@*$<- on source line 33 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 7 on source line 35 of trim.c
+(no-ivi) dbi: line_trim_len is 7 on source line 36 of trim.c
+(no-ivi) dbi: trim_count is 6 on source line 37 of trim.c
+
+gen_trim_end
+(no-ivi) dbs: line_ptr is ->%669@*$<- on source line 42 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 7 on source line 44 of trim.c
+(no-ivi) dbi: line_trim_len is 7 on source line 45 of trim.c
+(no-ivi) dbi: trim_count is 0 on source line 46 of trim.c
+-------------------------------Test Ends Here
+(no-ivi) dbi: res is 7 on source line 23 of trim.c
+
+(no-ivi) dbs: line_ptr is ->abcd@#!<- on source line 25 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 7 on source line 26 of trim.c
+(no-ivi) dbi: line_trim_len is 7 on source line 28 of trim.c
+
+gen_trim_beg
+(no-ivi) dbs: line_ptr is ->abcd@#!<- on source line 33 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 7 on source line 35 of trim.c
+(no-ivi) dbi: line_trim_len is 7 on source line 36 of trim.c
+(no-ivi) dbi: trim_count is 0 on source line 37 of trim.c
+
+gen_trim_end
+(no-ivi) dbs: line_ptr is ->abcd<- on source line 42 of trim.c
+(no-ivi) dbi: strlen(line_ptr) is 4 on source line 44 of trim.c
+(no-ivi) dbi: line_trim_len is 4 on source line 45 of trim.c
+(no-ivi) dbi: trim_count is 3 on source line 46 of trim.c
+-------------------------------Test Ends Here

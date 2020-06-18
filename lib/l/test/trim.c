@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 
         dbp("");
         dbp("gen_trim_beg");
-        trim_count = gen_trim_beg(&line_ptr, " ");
+        trim_count = gen_trim_beg(&line_ptr, "!@#");
         dbs(line_ptr);
         line_trim_len = trim_len(line_ptr);
         dbi(strlen(line_ptr));
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
         dbp("");
         dbp("gen_trim_end");
-        trim_count = gen_trim_end(line_ptr, " ");
+        trim_count = gen_trim_end(line_ptr, "!@#");
         dbs(line_ptr);
         line_trim_len = trim_len(line_ptr);
         dbi(strlen(line_ptr));

@@ -7,7 +7,7 @@ Script test_program_2 test_type is svn.
 Adding files that are ready for svn.
 Adding files that are ready for svn for trim with input 01 succeeded
  
-Time span: 17:41:19 to 17:41:19
+Time span: 18:07:21 to 18:07:21
  
 Leaving script test_program_2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
