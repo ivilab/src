@@ -1,10 +1,10 @@
 
-/* $Id: concat_matrices_vertically.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: concat_matrices_vertically.c 25562 2020-06-18 15:49:40Z shreeya $ */
 
 
 #include "m/m_incl.h" 
 
-#define NUM_MATRICES 5
+#define NUM_MATRICES 3
 #define NUM_ROWS 3
 #define NUM_COLS 5
 
