@@ -2,6 +2,7 @@
 /* $Id: concat_matrices_vertically.c 25499 2020-06-14 13:26:04Z kobus $ 
  * 
  * Author: Shreeya Jain
+ * Date: June 17, 2020
  * Purpose: Tests the concat_matrices_vertically subroutine on various inputs
  * non-interactively. 
  * NOTE: The function (in m_mat_vector.c) returns an argument error if the
@@ -84,11 +85,9 @@ int main(void)
     diff = max_abs_matrix_difference(mp, concat);
 	if (diff != 0.0)
 	{
-		p_stderr("Test failed. Program does not vertically concatenate the matrices correctly!\n");
+		p_stderr("Test failed!\n");
         return EXIT_BUG;
     }
-    else
-    	printf("Program vertically concatenates the matrices correctly!\n");
     
     /* Cleanup */
     free_matrix(mp);
