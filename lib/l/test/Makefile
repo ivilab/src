@@ -42,6 +42,7 @@
 .PHONY : shared
 .PHONY : dynamic
 .PHONY : static
+.PHONY : ivi
 .PHONY : ivi_all
 .PHONY : ivi_doc
 .PHONY : ivi_tags
@@ -62,6 +63,8 @@ test test_clean test_very_clean check_clean regress regress_clean test_svn :
 
 static dynamic shared :
 	$(ECHO_MAKE_CMD)./build $@
+
+ivi : ivi_all 
 
 ivi_all : ivi_doc ivi_code ivi_tags ivi_regress
 

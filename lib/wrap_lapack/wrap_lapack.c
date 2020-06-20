@@ -1,5 +1,5 @@
 
-/* $Id: wrap_lapack.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: wrap_lapack.c 25581 2020-06-20 22:14:04Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -1210,13 +1210,15 @@ int lapack_qr_decompose
     N = mp->num_cols;
     min_m_n = MIN(M,N);
 
+
+    UNTESTED_CODE(); /* Since a bit of cleanup with pointer conventions. */
+
     /*  VARIABLE SETUP */
     NB = ilaenv_(&ONE, DGEQRF, OPTS, &M, &N, &MINUS_ONE, &MINUS_ONE
 #ifndef LAPACK_USES_C_CONVENTIONS
             , strlen(DGEQRF), strlen(OPTS)
 #endif
             );
-
 
     NRE(A = get_fortran_1D_dp_array_from_matrix(mp));
 
@@ -1240,9 +1242,7 @@ int lapack_qr_decompose
         Vector* V    = NULL;
         Matrix* temp_mp = NULL;
 
-
         ERE(get_matrix_from_fortran_1D_dp_array(&A_mp, M, N, A));
-        
 
         if(Q_mpp != NULL)
         {
@@ -1278,12 +1278,6 @@ int lapack_qr_decompose
                 ERE(multiply_matrices(Q_mpp, *Q_mpp, H));
             }
 
-            free_matrix(H);
-            H = NULL;
-            free_vector(V);
-            V = NULL;
-            free_matrix(temp_mp);
-            temp_mp = NULL;
         }
         else
         {
@@ -1300,26 +1294,30 @@ int lapack_qr_decompose
 
         if(R_mpp != NULL)
         {
+            UNTESTED_CODE(); /* Since redoing concat_matrices_vertically() to purge trickery. */
             copy_matrix_block(R_mpp, A_mp, 0, 0, min_m_n, N);
-
 
             if(M > N)
             {
                 const Matrix* two_m[2];
+                Matrix* R_copy_mp = NULL;
 
-                get_zero_matrix(&temp_mp, M - min_m_n, N);
+                ERE(copy_matrix(&R_copy_mp, *R_mpp));
+                ERE(get_zero_matrix(&temp_mp, M - min_m_n, N));
 
-                two_m[0] = *R_mpp;
+                two_m[0] = R_copy_mp; 
                 two_m[1] = temp_mp;
                 ERE(concat_matrices_vertically(R_mpp, 2, two_m));
 
                 free_matrix(temp_mp);
-                temp_mp = NULL;
+                free_matrix(R_copy_mp);
             }
         }
 
+        free_matrix(H);
+        free_vector(V);
         free_matrix(A_mp);
-        A_mp = NULL;
+        free_matrix(temp_mp);
     }
     else
     {
@@ -1334,7 +1332,6 @@ int lapack_qr_decompose
     ivi_free(A);
     ivi_free(TAU);
     ivi_free(WORK);
-
 
 
     if(INFO == 0)

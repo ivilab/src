@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_vector.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_mat_vector.h 25581 2020-06-20 22:14:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -144,14 +144,14 @@ int concat_matrices_vertically
 (
     Matrix**      mpp,
     int           num_matrices,
-    const Matrix* matrix_list[] 
+    const Matrix* const matrix_list[] 
 );
 
 int concat_matrices_horizontally
 (
     Matrix**      mpp,
     int           num_matrices,
-    const Matrix* matrix_list[] 
+    const Matrix* const matrix_list[] 
 );
 
 int get_matrix_from_matrix_vector(Matrix** mpp, const Matrix_vector* mvp);

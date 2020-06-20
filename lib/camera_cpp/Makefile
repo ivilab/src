@@ -25,6 +25,7 @@
 .PHONY : depend
 .PHONY : depend_again
 .PHONY : doc
+.PHONY : tags
 .PHONY : doc_dir_made
 .PHONY : lint
 .PHONY : proto
@@ -41,19 +42,35 @@
 .PHONY : shared
 .PHONY : dynamic
 .PHONY : static
+.PHONY : ivi
+.PHONY : ivi_all
+.PHONY : ivi_doc
+.PHONY : ivi_tags
+.PHONY : ivi_regress
+.PHONY : ivi_test
+.PHONY : ivi_code
 
 # Some targets, such as confess are implemented in build-2. 
 #
 # Each target in the following lists needs to be declared .PHONY above. So, if
 # you add one, you need to add a .PHONY line above. 
 #
-all dir_made init_clean confess depend_very_clean depend_clean obj_clean clean code depend depend_again doc doc_dir_made lint proto bin work misc :
+all dir_made init_clean confess depend_very_clean depend_clean obj_clean clean code depend depend_again doc tags doc_dir_made lint proto bin work misc :
 	$(ECHO_MAKE_CMD)./build $@
 
 test test_clean test_very_clean check_clean regress regress_clean test_svn :
 	$(ECHO_MAKE_CMD)./build $@
 
 static dynamic shared :
+	$(ECHO_MAKE_CMD)./build $@
+
+ivi : ivi_all 
+
+ivi_all : ivi_doc ivi_code ivi_tags ivi_regress
+
+ivi_test : ivi_regress
+
+ivi_doc ivi_code ivi_tags ivi_regress :
 	$(ECHO_MAKE_CMD)./build $@
 
 # We cannot have the real dependency for Makefile because we do not know where

@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_mat_vector.c 25581 2020-06-20 22:14:04Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -836,6 +836,8 @@ int interleave_matrix_cols
  * The matrix array may contain any number of NULL matrices. If there are only
  * NULL matrices, or if num_matrices is zero, then the target matrix is freed
  * and set to NULL.  All non-null matrices must have the same number of columns.
+ * The matrix array may also contain duplicates. However, a pointer to the
+ * target matrix, which used to be valid, is now treated as a bug.
  *
  * Note:
  *     More often then not, one wants to concatentate the matrices in a matrix
@@ -858,15 +860,13 @@ int concat_matrices_vertically
 (
     Matrix**      mpp,
     int           num_matrices,
-    const Matrix* matrix_list[] 
+    const Matrix* const matrix_list[] 
 )
 {
     int i, j, k, count;
     int num_rows = 0;
     int num_cols = NOT_SET;
     Matrix* mp;
-    Matrix* temp_mp = NULL;
-
 
     if (num_matrices <= 0)
     {
@@ -879,10 +879,14 @@ int concat_matrices_vertically
     {
         if (matrix_list[ i ] != NULL)
         {
-            if(matrix_list[ i ] == *mpp && NULL == temp_mp)
+            /* This catches old code that relied on a disabled features where
+             * one could concat the matrix pointed to by the output matrix
+             * pointer.
+            */
+            if (matrix_list[ i ] == *mpp) 
             {
-                copy_matrix(&temp_mp, *mpp);
-                matrix_list[ i ] = temp_mp;
+                SET_ARGUMENT_BUG();
+                return ERROR;
             }
 
             if (num_cols == NOT_SET)
@@ -904,7 +908,6 @@ int concat_matrices_vertically
         *mpp = NULL;
         return NO_ERROR;
     }
-
 
     ERE(get_target_matrix(mpp, num_rows, num_cols));
     mp = *mpp;
@@ -930,7 +933,6 @@ int concat_matrices_vertically
         }
     }
 
-    free_matrix(temp_mp);
     return NO_ERROR;
 }
 
@@ -952,6 +954,8 @@ int concat_matrices_vertically
  * The matrix array may contain any number of NULL matrices. If there are only
  * NULL matrices, or if num_matrices is zero, then the target matrix is freed
  * and set to NULL.  All non-null matrices must have the same number of rows.
+ * The matrix array may also contain duplicates. However, a pointer to the
+ * target matrix, which used to be valid, is now treated as a bug.
  *
  * Note:
  *     More often then not, one wants to concatentate the matrices in a matrix
@@ -974,14 +978,13 @@ int concat_matrices_horizontally
 (
     Matrix**      mpp,
     int           num_matrices,
-    const Matrix* matrix_list[] 
+    const Matrix* const matrix_list[] 
 )
 {
     int i, j, k, count;
     int num_cols = 0;
     int num_rows = NOT_SET;
     Matrix* mp;
-    Matrix* temp_mp = NULL;
 
 
     if (num_matrices <= 0)
@@ -995,10 +998,14 @@ int concat_matrices_horizontally
     {
         if (matrix_list[ i ] != NULL)
         {
-            if (matrix_list[ i ] == *mpp && NULL == temp_mp)
+            /* This catches old code that relied on a disabled features where
+             * one could concat the matrix pointed to by the output matrix
+             * pointer.
+            */
+            if (matrix_list[ i ] == *mpp) 
             {
-                copy_matrix(&temp_mp, *mpp);
-                matrix_list[ i ] = temp_mp;
+                SET_ARGUMENT_BUG();
+                return ERROR;
             }
 
             if (num_rows == NOT_SET)
@@ -1046,7 +1053,6 @@ int concat_matrices_horizontally
         }
     }
 
-    free_matrix(temp_mp);
     return NO_ERROR;
 }
 
