@@ -4,7 +4,7 @@
  * Author: Shreeya Jain
  * Date: June 17, 2020
  * Purpose: Tests the concat_matrices_horizontally subroutine on various inputs
- * non-interactively. 
+ * non-interactively
  * NOTE: The function (in m_mat_vector.c) returns an argument error if the
  * number of rows are not equal (test case 03).
  * TODO: Improve the automation of this test
@@ -68,7 +68,7 @@ int main(void)
         free_matrix(temp);
     }
     
-    EPETE(concat_matrices_horizontally(&mp, NUM_MATRICES, matrix_list));
+    EPETE(concat_matrices_horizontally(&mp, NUM_MATRICES, (const Matrix* const*) matrix_list));
 
 	/*
 	 * concat stores the expected matrix after concatenation
