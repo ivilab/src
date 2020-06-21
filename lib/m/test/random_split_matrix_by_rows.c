@@ -87,6 +87,12 @@ int main(int argc, char **argv)
             return EXIT_BUG;
         }       
     }
+    
+    if (i_t1 != num_rows_t1 || i_t2 != num_rows_t2)
+    {
+    	p_stderr("Error in source_mp at {%d, %d}\n", i, j);
+    	return EXIT_BUG;
+    }
     /* program reaches here only if no error was encountered, thus test successful! */
         
     free_matrix(source_mp); 
