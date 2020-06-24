@@ -101,12 +101,12 @@
 # |     lib (also "library") 
 #          This builds an exportable version of the library code, i.e., libIVI.a. 
 #
-# |     ctags
+# |     ctags (also "tags") 
 #          This requests doing ctags. This is not always done by default, but
 #          options that build distributions (e.g., archive, export, lib)
 #          will also set this option. 
 #
-# |     skip_ctags
+# |     skip_ctags (also "skip_tags")
 #           Forces no ctags. 
 #
 # |     doc
@@ -1048,16 +1048,6 @@ foreach sub_lib_dir (*)
         continue
     endif 
 
-    if ((${gxx_major} < 3) && ("${sub_lib_dir}" == "wrap_sift")) then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because GXX version is ${gxx_version}"
-        continue
-    endif 
-
-    if (("${OS}" == "sun5") && ("${sub_lib_dir}" == "wrap_sift")) then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because we have not made it work on SUN5."
-        continue
-    endif 
-
     if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI")) then
         echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI exists."
         continue
@@ -1258,7 +1248,7 @@ foreach sub_lib_dir (*)
     set sub_sub_dir_list = "" 
 
     if (! ${skip_test_dirs}) then
-        set sub_sub_dir_list = "${sub_sub_dir_list} test"
+        set sub_sub_dir_list = "${sub_sub_dir_list} test test/interactive test/int_mat_io"
     endif 
 
     foreach sub_sub_dir (${sub_sub_dir_list})
@@ -1269,6 +1259,9 @@ foreach sub_lib_dir (*)
         echo 
         echo -------------------------------------------------------
         echo Make_ivi: Considering sub-sub dir lib/${sub_lib_dir}/${sub_sub_dir}
+        echo 
+
+        echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
         echo 
 
         if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then

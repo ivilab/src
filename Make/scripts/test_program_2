@@ -60,16 +60,20 @@ if ($?SKIP_BROKEN_TESTS) then
 
         goto end_of_script
     endif
-else if ($?SKIP_FAILING_TESTS) then
-    set is_broken_test = `echo ${input_dir} | grep -c '\.fails$'`
-    if (${is_broken_test}) then
+endif 
+
+if ($?SKIP_FAILING_TESTS) then
+    set is_failing_test = `echo ${input_dir} | grep -c '\.fails$'`
+    if (${is_failing_test}) then
         if (! ${test_quietly} ) then 
             echo "Skipping failing test ${input_dir} for program ${program}"
         endif 
 
         goto end_of_script
     endif
-else if ($?SKIP_SLOW_TESTS) then
+endif
+
+if ($?SKIP_SLOW_TESTS) then
     set is_slow_test = `echo ${input_dir} | grep -c '\.slow$'`
     if (${is_slow_test}) then
         if (! ${test_quietly} ) then 

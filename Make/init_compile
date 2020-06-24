@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25496 2020-06-14 13:11:00Z kobus $
+# $Id: init_compile 25589 2020-06-24 02:29:29Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -89,7 +89,6 @@ else
     source ${IVI_SRC_PATH}/Make/init_scripts
     if ($status) exit $status
 endif 
-
 
 pushd ${IVI_SRC_PATH} > /dev/null
    if ($?EXPORTED_SOURCE) then
@@ -314,6 +313,8 @@ if ("${IVI_BOOST_VERSION}" != "") then
 
     ${VERBOSE_ECHO} IVI_BOOST_VERSION being forced to: ${IVI_BOOST_VERSION}
 endif 
+
+setenv VAR_CACHE_SUFFIX "${suffix}"
 
 if ($do_cache) then
     set cache_fname = "$tmp/ivi_env${suffix}"
@@ -2788,40 +2789,40 @@ endif
 ivi_setenv CXX_BASE_FLAGS "${CXX_MISC_FLAGS}  -DCOMPILING_CPLUSPLUS_SOURCE ${CXX_MD_FLAGS} ${MD_DEFINES}"
 ivi_setenv F77_BASE_FLAGS "${F77_MISC_FLAGS} -DCOMPILING_F77_SOURCE ${F77_MD_FLAGS} ${MD_DEFINES}"
 
-# Defaults that are overwritten in build-2 if the user sets a warn level.
-# Changes here should be paralleled in build-2.
-
-if (${IVI_WARN_LEVEL} == 0) then
-    ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_0}"
-    ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_0}"
-    ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_0}"
-    ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
-else if (${IVI_WARN_LEVEL} == 1) then
-    ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_1}"
-    ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_1}"
-    ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_1}"
-    ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
-else if (${IVI_WARN_LEVEL} == 2) then
-    ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_2}"
-    ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_2}"
-    ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_2}"
-    ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
-else if (${IVI_WARN_LEVEL} == 3) then
-    ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_3}"
-    ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_3}"
-    ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_3}"
-    ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
-else if (${IVI_WARN_LEVEL} == 4) then
-    ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_4}"
-    ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_4}"
-    ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_4}"
-    ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
-else if (${IVI_WARN_LEVEL} >= 5) then
-    ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_5}"
-    ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_5}"
-    ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_5}"
-    ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
-endif
+# # Defaults that are overwritten in build-2 if the user sets a warn level.
+# # Changes here should be paralleled in build-2.
+# 
+# if (${IVI_WARN_LEVEL} == 0) then
+#     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_0}"
+#     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_0}"
+#     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_0}"
+#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+# else if (${IVI_WARN_LEVEL} == 1) then
+#     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_1}"
+#     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_1}"
+#     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_1}"
+#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+# else if (${IVI_WARN_LEVEL} == 2) then
+#     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_2}"
+#     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_2}"
+#     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_2}"
+#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+# else if (${IVI_WARN_LEVEL} == 3) then
+#     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_3}"
+#     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_3}"
+#     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_3}"
+#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+# else if (${IVI_WARN_LEVEL} == 4) then
+#     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_4}"
+#     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_4}"
+#     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_4}"
+#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
+# else if (${IVI_WARN_LEVEL} >= 5) then
+#     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_5}"
+#     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_5}"
+#     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_5}"
+#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
+# endif
 
 ################################################################################
 
@@ -3107,16 +3108,16 @@ ivi_setenv F77_TEST_OR_OPTIMIZE "${TRACK_MEMORY} ${TEST} ${F77_DEBUG} ${F77_OPTI
 ivi_setenv F77_DONT_OPTIMIZE    "${TEST} ${F77_DEBUG}"
 ivi_setenv F77_ALWAYS_OPTIMIZE  "${F77_OPTIMIZATION}"
 
-if ($USE_SHARED_WARNINGS) then 
-    ivi_setenv CC_SHARED_WARNINGS "${CC_IVI_WARNINGS}"
-else 
-    ivi_setenv CC_SHARED_WARNINGS "${CC_IVI_WARN_0}" 
-    ivi_setenv LINT_FLAGS "${LINT_FLAGS} -DDONT_LINT_SHARED"
-
-    if ($?LC_LINT_FLAGS) then 
-        ivi_setenv LC_LINT_FLAGS "${LC_LINT_FLAGS} -DDONT_LINT_SHARED"
-    endif
-endif
+# if ($USE_SHARED_WARNINGS) then 
+#     ivi_setenv CC_SHARED_WARNINGS "${CC_IVI_WARNINGS}"
+# else 
+#     ivi_setenv CC_SHARED_WARNINGS "${CC_IVI_WARN_0}" 
+#     ivi_setenv LINT_FLAGS "${LINT_FLAGS} -DDONT_LINT_SHARED"
+# 
+#     if ($?LC_LINT_FLAGS) then 
+#         ivi_setenv LC_LINT_FLAGS "${LC_LINT_FLAGS} -DDONT_LINT_SHARED"
+#     endif
+# endif
 
 
 # =============================================================================

@@ -28,7 +28,7 @@ shared       : shared_xxx
 # We include $(MAKE_PATH)Makefile-defs once per compile, so this include belongs
 # in Makefefile-2. Note that we rely on late binding of make variables, as
 # the proper definition of symbols in $(MAKE_PATH)Makefile-defs require values in
-# Makefile-libs-needed, which is included later. 
+# Makefile-libs-needed$(VAR_CACHE_SUFFIX), which is included later. 
 #
 include $(MAKE_PATH)Makefile-defs
 

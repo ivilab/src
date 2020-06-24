@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25496 2020-06-14 13:11:00Z kobus $
+# $Id: Makefile-program 25589 2020-06-24 02:29:29Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -590,28 +590,28 @@ include Makefile-depend
 
 ################################################################################
 #
-# Build and include Makefile-libs-needed.
+# Build and include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX).
 #
 
 # This is needed for Makefile-depend. 
-Include_lines/Makefile-libs-needed.state : 
+Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX) : 
 	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
 	$(IVI_TOUCH_1990) $@
 
 
 # Dependencies on the tools needed to build it. 
 #
-Makefile-libs-needed : \
+Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : \
       $(MAKE_PATH)init_compile \
       $(MAKE_SCRIPT_PATH)build_makefile_libs_needed 
 
 
-Makefile-libs-needed : Include_lines/include_lines
+Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed.state
+	$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
-include Makefile-libs-needed
+include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 
 ################################################################################
 #
@@ -667,20 +667,21 @@ $(PCH_DIR)%.h.gch : %.h
 #
 # Default build (may be overridden in program specific makefiles). 
 
-# The dependency Makefile-libs-needed is build from source files, so, if the
-# source file changes, then the object file is also out of date, and so it
-# appears that the dependency is not really needed. However, since it is
-# included, the previous version could be active, and then we would forget that
-# the targets are out of date. This is mitigated by the seqence enforced in
-# the script build-2, but we make explicit the need there also, in case this
-# makefile gets used without the script. 
+# The dependency
+# Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) is
+# build from source files, so, if the source file changes, then the object file
+# is also out of date, and so it appears that the dependency is not really
+# needed. However, since it is included, the previous version could be active,
+# and then we would forget that the targets are out of date. This is mitigated
+# by the seqence enforced in the script build-2, but we make explicit the need
+# there also, in case this makefile gets used without the script. 
 #
 
 # We used to do this, but this is not robust, especially for mixed C/C++. Now we
 # handle it in Makefile-depend. 
 #
-# $(OBJ_DIR)%.o : $(OBJ_DIR)c_dir_made Makefile-libs-needed
-# $(CXX_OBJ_DIR)%.o : $(CXX_OBJ_DIR)cxx_dir_made Makefile-libs-needed
+# $(OBJ_DIR)%.o : $(OBJ_DIR)c_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed.$(VAR_CACHE_SUFFIX)
+# $(CXX_OBJ_DIR)%.o : $(CXX_OBJ_DIR)cxx_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 
 $(OBJ_DIR)%.o : %.c 
 	@$(IVI_ECHO)
@@ -762,7 +763,7 @@ $(CXX_OBJ_DIR)%.o : %.cc
 # It looks a bit tricky. Perhaps insisting on keeping version as a C file is
 # easiest. 
 #
-$(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Makefile-libs-needed
+$(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 	$(IVI_CC)  --version |& head -1 
 	$(IVI_CC) version.c -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
@@ -985,7 +986,7 @@ $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_A
 # currently propagating the dependency on *_incl.h. 
 #
 #
-program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Makefile-libs-needed $(PROGRAMS)
+program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
 
 ################################################################################
 #                       User target
@@ -993,7 +994,7 @@ program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile
 $(USER_BIN_DIR)% : $(LD_OBJ_DIR)%
 	$(MAKE_SCRIPT_PATH)update_bin $< $@
 
-bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Makefile-libs-needed $(USER_PROGRAMS)
+bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(USER_PROGRAMS)
 
 ################################################################################
 #                       Misc bin target
@@ -1002,7 +1003,7 @@ $(MISC_BIN_DIR)% : $(LD_OBJ_DIR)%
 	$(MAKE_SCRIPT_PATH)update_bin $< $@
 	$(IVI_PERMIT_EXECUTION) $@
 
-misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Makefile-libs-needed $(MISC_PROGRAMS)
+misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MISC_PROGRAMS)
 
 ################################################################################
 #                       Install target
@@ -1011,7 +1012,7 @@ $(INSTALL_BIN_DIR)% : $(LD_OBJ_DIR)%
 	$(MAKE_SCRIPT_PATH)update_bin $< $@
 	$(IVI_PERMIT_EXECUTION) $@
 
-install : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Makefile-libs-needed $(INSTALL_PROGRAMS)
+install : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(INSTALL_PROGRAMS)
 
 ################################################################################
 

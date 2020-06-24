@@ -3,8 +3,9 @@
 # We assume that if the version of "test" does not like the
 # input, the status will be greater than one. 
 
+# set echo
 
-test "$1" -ot "$2" 
+${IVI_TEST} "$1" -ot "$2" 
 
 set system_test_status = $status
 

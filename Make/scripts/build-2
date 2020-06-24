@@ -31,6 +31,7 @@
 # On the subject of faster compiline, if we call make with the target "code"
 # then the makefiles are not checked for being up to date.
 #
+
 if ($?IVI_HAVE_MACHINE) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
     if ($?IVI_VERBOSE_2) then
@@ -211,44 +212,60 @@ endif
 
 ################################################################################
 
-# The default warn level is 2. To simplify changing the warn level, we check it
-# everytime, which is a bit excessive. However, it is better than forcing
-# cleaning the cache. Changes here should be paralleled in init_compile. 
+# The default warn level is set to 2 in init_scripts. To simplify changing the
+# warn level, we check it everytime, which is a bit excessive. However, it is
+# better than forcing cleaning the cache. Changes here should be paralleled in
+# init_compile (being phased out!). 
+
+# IVI_CC_WARN_LEVEL allows us to override the warn level in case of C code. 
+if (! $?IVI_CC_WARN_LEVEL) then
+    setenv IVI_CC_WARN_LEVEL ${IVI_WARN_LEVEL}
+endif 
+
+if (${IVI_CC_WARN_LEVEL} == 0) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_0}"
+else if (${IVI_CC_WARN_LEVEL} == 1) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_1}"
+else if (${IVI_CC_WARN_LEVEL} == 2) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_2}"
+else if (${IVI_CC_WARN_LEVEL} == 3) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_3}"
+else if (${IVI_CC_WARN_LEVEL} == 4) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_4}"
+else if (${IVI_CC_WARN_LEVEL} >= 5) then
+    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_5}"
+endif 
 
 if (${IVI_WARN_LEVEL} == 0) then
-    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_0}"
     setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_0}"
     setenv F77_IVI_WARNINGS "${F77_IVI_WARN_0}"
     setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
 else if (${IVI_WARN_LEVEL} == 1) then
-    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_1}"
     setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_1}"
     setenv F77_IVI_WARNINGS "${F77_IVI_WARN_1}"
     setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
 else if (${IVI_WARN_LEVEL} == 2) then
-    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_2}"
     setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_2}"
     setenv F77_IVI_WARNINGS "${F77_IVI_WARN_2}"
     setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
 else if (${IVI_WARN_LEVEL} == 3) then
-    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_3}"
     setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_3}"
     setenv F77_IVI_WARNINGS "${F77_IVI_WARN_3}"
     setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
 else if (${IVI_WARN_LEVEL} == 4) then
-    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_4}"
     setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_4}"
     setenv F77_IVI_WARNINGS "${F77_IVI_WARN_4}"
     setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
 else if (${IVI_WARN_LEVEL} >= 5) then
-    setenv CC_IVI_WARNINGS "${CC_IVI_WARN_5}"
     setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_5}"
     setenv F77_IVI_WARNINGS "${F77_IVI_WARN_5}"
     setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
 endif 
 
 if ($USE_SHARED_WARNINGS) then 
-    ivi_setenv CC_SHARED_WARNINGS "${CC_IVI_WARNINGS}"
+    setenv CC_SHARED_WARNINGS "${CC_IVI_WARNINGS}"
+else 
+    setenv CC_SHARED_WARNINGS "${CC_IVI_WARN_0}"
 endif 
 
 ################################################################################
@@ -300,6 +317,7 @@ if ($?IVI_VERBOSE) then
     echo "MAN_DIR:                ${MAN_DIR}"
     echo "HTML_MAN_DIR:           ${HTML_MAN_DIR}"
     echo "IVI_WARN_LEVEL:         ${IVI_WARN_LEVEL}"
+    echo "IVI_CC_WARN_LEVEL:      ${IVI_CC_WARN_LEVEL}"
     echo "CC_IVI_WARNINGS:        ${CC_IVI_WARNINGS}"
     echo "CXX_IVI_WARNINGS:       ${CXX_IVI_WARNINGS}"
     echo "IVI_CPP_MESSAGE_FILTER: ${IVI_CPP_MESSAGE_FILTER}"
@@ -463,6 +481,22 @@ while ($count <=  ${num_args})
         set need_depend = 1
         # Do nothing special. Common case that would fall through, but we skip
         # all the processing. 
+    else if ("${arg}" == "ivi_code") then
+        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs
+        if (${status}) exit 1
+        continue
+    else if ("${arg}" == "ivi_doc") then
+        ${MAKE_SCRIPT_PATH}make_ivi skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs doc
+        if (${status}) exit 1
+        continue skip_no_libs skip_prog_no_libs
+    else if ("${arg}" == "ivi_tags") then
+        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs tags
+        if (${status}) exit 1
+        continue
+    else if ("${arg}" == "ivi_regress") then
+        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_depend skip_no_libs skip_prog_no_libs skip_prog_dirs regress
+        if (${status}) exit 1
+        continue
     else if ("${arg}" == "confess") then
         setenv IVI_VERBOSE 1
         

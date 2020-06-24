@@ -6,7 +6,8 @@
 #     A script to build the file Makefile-libs-needed
 #
 # Description:
-#     This script builds the file Makefile-libs-needed" in the directory given
+#     This script builds the file Makefile-libs-needed" (technically,
+#     Makefile-libs-needed${VAR_CACHE_SUFFIX}) in the directory given
 #     by the first parameter, or the current directory if there are no
 #     parameters. In this description we will simply refer to "this directory." 
 #
@@ -56,18 +57,18 @@ set build_dir_path = "${cwd}"
 set ppid = `ps -p $$ -o ppid=`
 ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} entering script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 
-if (($?IVI_LOCK_TIME_STAMP) && (-e Makefile-libs-needed)) then
-    set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-libs-needed`
+if (($?IVI_LOCK_TIME_STAMP) && (-e Makefile-libs-needed${VAR_CACHE_SUFFIX})) then
+    set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-libs-needed${VAR_CACHE_SUFFIX}`
 
     if (${can_skip}) then
-        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Skipping build_makefile_libs_needed_2 in `pwd` as Makefile-libs-needed is new."
+        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Skipping build_makefile_libs_needed_2 in `pwd` as Makefile-libs-needed${VAR_CACHE_SUFFIX} is new."
         # set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
         # echo $BEEP
         
         exit 0
     endif 
 else 
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} reports Makefile-libs-needed does not exist in script build_makefile_libs_needed_2 with directory ${build_dir_path}."
+    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} reports Makefile-libs-needed${VAR_CACHE_SUFFIX} does not exist in script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 endif 
 
 ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} continuing with script build_makefile_libs_needed_2 with directory ${build_dir_path}."
@@ -81,7 +82,7 @@ ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} continuing wi
 # in the build system. So we reduce the chance of conflicts, and enable printing
 # a message when this occurs, by building the results in a temporary file. 
 #
-${IVI_RM} Makefile-libs-needed
+${IVI_RM} Makefile-libs-needed${VAR_CACHE_SUFFIX}
 set output_file_name = Makefile-libs-needed.$$
 
 set cur_time = `date`
@@ -437,21 +438,30 @@ echo ${symbolic_lib}Include_lines/cache.state : ${cache_depend} >> ${output_file
 echo '	$(IVI_TOUCH) $@' >> ${output_file_name}
 echo " "  >> ${output_file_name}
 
-if (-e Makefile-libs-needed) then
+if (-e Makefile-libs-needed${VAR_CACHE_SUFFIX}) then
     echo " "
-    echo "Moving Makefile-libs-needed, which must of been created by a different process, to Makefile-libs-needed-SAVE.$$."
-    ${IVI_MV} Makefile-libs-needed Makefile-libs-needed-SAVE.$$ 
+    echo "Moving Makefile-libs-needed${VAR_CACHE_SUFFIX}, which must of been created by a different process, to Makefile-libs-needed${VAR_CACHE_SUFFIX}-SAVE.$$."
+    ${IVI_MV} Makefile-libs-needed${VAR_CACHE_SUFFIX} Makefile-libs-needed${VAR_CACHE_SUFFIX}-SAVE.$$ 
     echo "Directory is ${cwd}."
     echo " "
 endif 
 
-${IVI_MV} ${output_file_name} Makefile-libs-needed
+# We now put environment dependent versions of Makefile-libs-needed in
+# Include_lines/Makefile-libs-needed/ as the environment suffix can be long
+# leading to very long file names. We also remove any linguring ones with the
+# old names. The line for that can be removed soon. 
+#
+${IVI_RM} Makefile-libs-needed
+${IVI_MKDIR} Include_lines/Makefile-libs-needed
+${IVI_MV} ${output_file_name} Include_lines/Makefile-libs-needed/Makefile-libs-needed${VAR_CACHE_SUFFIX}
 
 unset noglob 
 
-${IVI_RM} .missing_includes
-${IVI_RM} Makefile-libs-needed-depend
-${IVI_RM} Makefile-libs-needed-depend.bak
+# Looks obsolete.
+#
+# ${IVI_RM} .missing_includes
+# ${IVI_RM} Makefile-libs-needed-depend
+# ${IVI_RM} Makefile-libs-needed-depend.bak
 
 cleanup:
 

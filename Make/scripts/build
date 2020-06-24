@@ -9,7 +9,7 @@
 #
 # This file is generally called by "make". It can also be called directly. The
 # main purpose is to normalize the make environment, and to implement some
-# functionality that is difficult to do in efficiently, or robustly, or portably
+# functionality that is difficult to do efficiently, or robustly, or portably
 # using make. 
 #
 # This file should be a copy of: 
@@ -107,6 +107,7 @@ popd > /dev/null
 
 # Check that this file ($0) is up to date compared to the reference one.
 set need_to_replace_myself = `${IVI_SRC_PATH}Make/scripts/test_older_than "$0" "${IVI_SRC_PATH}Make/build"`
+if (${status}) exit 1 
      
 if (${need_to_replace_myself}) then
     # We could make this even more automated using the defunct script

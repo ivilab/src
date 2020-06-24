@@ -86,7 +86,7 @@ test_svn : $(TEST_SVN_TARGETS)
 .PHONY : test_clean
 test_clean : regress_clean
 	@$(ECHO_UNLESS_QUIET) "Cleaning some test book keeping files, but leaving 'output_checked' as is."
-	@$(ECHO_UNLESS_QUIET) "Use target 'test_invalid' to remove `output_checked' files."
+	@$(ECHO_UNLESS_QUIET) "Use target 'test_invalid' to remove 'output_checked' files."
 	@$(ECHO_UNLESS_QUIET) "Use target 'test_very_clean' to kill everying (not advised if you can avoid it due to SVN)."
 	find test_runs -name 'run_succeeded' -exec ${MAKE_SCRIPT_PATH}ivi_svn_rm  {} \;
 
