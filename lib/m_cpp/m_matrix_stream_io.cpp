@@ -1,4 +1,4 @@
-/* $Id: m_matrix_stream_io.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_matrix_stream_io.cpp 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -168,7 +168,7 @@ void Matrix_stream_io::write_matrix(std::ostream& out, const Matrix & imat)
              double value = imat(i,j);
              if(! ivi_is_bigendian() )
              {
-                 bswap_u64((uint64_t*)&(value));
+                 bswap_u64((ivi_uint64*)&(value));
              }
              out.write((char*)&value, sizeof(double));
              if(out.fail() || out.eof())
@@ -226,7 +226,7 @@ void Matrix_stream_io::read_matrix(std::istream& in, Matrix & imat)
 
             if(! ivi_is_bigendian() )
             {
-                bswap_u64((uint64_t*)&(value));
+                bswap_u64((ivi_uint64*)&(value));
             }
             imat(i,j) = value;
         }

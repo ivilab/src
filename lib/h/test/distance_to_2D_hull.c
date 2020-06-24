@@ -1,5 +1,5 @@
 
-/* $Id: distance_to_2D_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: distance_to_2D_hull.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -12,7 +12,6 @@
 #define STEP 0.01
 #define BASE_NUM_TRIES   1000
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int status = EXIT_SUCCESS;

@@ -1,5 +1,5 @@
 
-/* $Id: quadratic2.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: quadratic2.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -11,7 +11,6 @@
 #define MAX_SIZE  500
 #define BASE_NUM_TRIES   3
 
-/*ARGSUSED*/
 int main(int argc, char *argv[])
 {
     int status = EXIT_SUCCESS;

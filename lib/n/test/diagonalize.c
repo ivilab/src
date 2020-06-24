@@ -1,5 +1,5 @@
 
-/* $Id: diagonalize.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: diagonalize.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 /* Suspicious code --- calling diagonalize() multiple times on the mac (yet to
@@ -47,7 +47,6 @@
 #define FIRST_COL      1
 #define BASE_NUM_TRIES   1000
 
-/*ARGSUSED*/
 int main(int argc, char* argv[])
 {
     int status = EXIT_SUCCESS;

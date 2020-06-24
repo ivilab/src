@@ -1,5 +1,5 @@
 
-/* $Id: m2_ncc.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m2_ncc.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -109,7 +109,7 @@ static int fourier_convolve_mat
     int           cpos
 );
 
-static int fourier_convolve_img_channel
+static int fourier_convolve_img_channels
 (
     IVI_image* in_mp,
     const Matrix* mask_mp,
@@ -210,7 +210,7 @@ cleanup:
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 #ifdef IVI_HAVE_FFTW
-static int fourier_convolve_img_channel
+static int fourier_convolve_img_channels
 (
     IVI_image* img_ip,
     const Matrix* mask_mp,
@@ -447,14 +447,10 @@ int fourier_convolve_image
     const Matrix* mask_mp
 )
 {
-    int channel;
-
     ERE(ivi_copy_image(out_ipp, in_ip));
 
     /* convolve with each channel */
-    /* TODO: do this loop inside of fourier_convolve_img, to avoid extra malloc/frees */
-    ERE(fourier_convolve_img_channel(*out_ipp, mask_mp, UPPER_LEFT_CENTER));
-
+    ERE(fourier_convolve_img_channels(*out_ipp, mask_mp, UPPER_LEFT_CENTER));
 
     return NO_ERROR;
 }
@@ -691,7 +687,7 @@ static int padding_image_channel_to_fttw_vector
                     break;
                 default:
                     set_error("channel must be 0, 1, or 2.");
-                    break;
+                    return ERROR;
             }
 
             out[i*pad_num_cols+j][0] = color;

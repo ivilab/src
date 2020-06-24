@@ -1,5 +1,5 @@
 
-/* $Id: justify.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: justify.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
@@ -8,7 +8,6 @@
 #define justify left_justify
 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     char  big_buff[ 100000 ]     = { '\0' };

@@ -1,20 +1,19 @@
 
-/* $Id: scan.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: scan.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 
 #include "l/l_incl.h" 
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     char line[ 200 ]; 
     ivi_uint64 uint64_res; 
-    ivi_uint32 uint32_res; 
-    ivi_uint16 uint16_res; 
     ivi_int64 int64_res; 
+    ivi_uint32 uint32_res; 
     ivi_int32 int32_res; 
     ivi_int16 int16_res; 
+    ivi_uint16 uint16_res; 
     int scan_res; 
     float float_res;
     double double_res; 

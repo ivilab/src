@@ -1,5 +1,5 @@
 
-/* $Id: queue.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: queue.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 
@@ -23,7 +23,6 @@ static int compare_queue_strings       (const void* str1, const void* str2);
 
 /* -------------------------------------------------------------------------- */
 
-/*ARGSUSED*/
 int main(void)
 {
     char           line[ 100 ];

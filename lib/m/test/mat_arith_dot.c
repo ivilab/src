@@ -1,5 +1,5 @@
 
-/* $Id: mat_arith_dot.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: mat_arith_dot.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -7,7 +7,6 @@
 #define NUM_LOOPS_FOR_MULT_TEST    20
 #define BASE_NUM_TRIES              5
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int num_rows;

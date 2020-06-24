@@ -1,5 +1,5 @@
 
-/* $Id: mat_arith_vector.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: mat_arith_vector.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "m/m_incl.h"
@@ -15,7 +15,6 @@
 static void test_bug_handler(const char* mess);
 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int status = EXIT_SUCCESS;

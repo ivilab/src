@@ -1,5 +1,5 @@
 
-/* $Id: sample_misc.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: sample_misc.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -369,7 +369,7 @@ double sample_gamma_pdf_small_alpha(double alpha, double beta)
 {
     /* method for sampling from gamma distribution with small alpha */
     /* see wikipedia: Gamma Distribution, c. Sept 15, 2009 */
-    double x;
+    double x = 0.0;
 
     while(alpha >= 1)
     {

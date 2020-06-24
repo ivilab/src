@@ -127,16 +127,18 @@ int main(int argc, char** argv)
     log_pdf(P, mu);
 
     ivi_c::init_real_time();
+    // Kobus.I assume the cref we want is the boost one?
     G = gradient_ffd_mt(
-            bind(negative_log_pdf, cref(P), _1), x, vector<double>(D, dx));
+            bind(negative_log_pdf, boost::cref(P), _1), x, vector<double>(D, dx));
     long t = ivi_c::get_real_time();
 
     double pgt = t / 1000.0;
     er = vector_distance(G, matrix_inverse(S)*(x - mu));
 
     ivi_c::init_real_time();
+    // Kobus.I assume the cref we want is the boost one?
     M = gradient_ffd(
-            bind(negative_log_pdf, cref(P), _1), x, vector<double>(D, dx));
+            bind(negative_log_pdf, boost::cref(P), _1), x, vector<double>(D, dx));
     t = ivi_c::get_real_time();
 
     double sgt = t / 1000.0;

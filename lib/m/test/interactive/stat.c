@@ -1,10 +1,9 @@
 
-/* $Id: stat.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: stat.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "m/m_incl.h" 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     Vector* first_vp    = NULL;

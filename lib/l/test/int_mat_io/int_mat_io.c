@@ -1,5 +1,5 @@
 
-/* $Id: int_mat_io.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: int_mat_io.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 /*
@@ -12,8 +12,6 @@ int main(argc, argv)
     char *argv[];
 {
     Int_matrix* mp       = NULL;
-    int     num_rows;
-    int     num_cols;
 
     ivi_init();
     check_num_args(argc, 1, 2, NULL); 

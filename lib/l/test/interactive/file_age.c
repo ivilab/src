@@ -1,10 +1,9 @@
 
-/* $Id: file_age.c 25508 2020-06-14 15:15:09Z kobus $ */
+/* $Id: file_age.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     time_t file_age; 

@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_lib.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_lib.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -1970,7 +1970,6 @@ void ivi_cleanup_for_abort(void)
 #ifdef TRACK_MEMORY_ALLOCATION
 static void ivi_cleanup_guts(int abort_flag)
 #else
-/*ARGSUSED*/
 static void ivi_cleanup_guts(int __attribute__((unused)) dummy_abort_flag)
 #endif
 {

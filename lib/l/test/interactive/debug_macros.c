@@ -1,15 +1,15 @@
 
-/* $Id: debug_macros.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: debug_macros.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     short j=-5; 
     int i=-5;
     long k=-5;
-    char *s;
+    const char *s;
     float f = -5.0;
     double d = -5.0;
 

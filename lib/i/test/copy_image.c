@@ -1,5 +1,5 @@
 
-/* $Id: copy_image.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: copy_image.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "i/i_incl.h" 
@@ -8,7 +8,6 @@
 #define NUM_COLS   2000
 #define BASE_NUM_TRIES   100
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     IVI_image* ip = NULL;

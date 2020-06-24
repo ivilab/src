@@ -1,5 +1,5 @@
 
-/* $Id: t3_segment.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: t3_segment.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /*
      Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -3459,7 +3459,6 @@ static int neighbourhood_is_smooth
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 #ifdef NOT_USED_YET
-/*ARGSUSED*/
 static int segment_is_sliver
 (
     int**         seg_map,

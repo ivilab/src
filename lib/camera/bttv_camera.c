@@ -1,5 +1,5 @@
 
-/* $Id: bttv_camera.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: bttv_camera.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -145,9 +145,9 @@ static int errsv = 0;
  * -----------------------------------------------------------------------------
 */
 
+#ifdef LINUX
 int init_bttv_camera(Bttv_camera **my_camera, int width, int height, char* camera_id, char* machine, char* device, int usd)
 {
-#ifdef LINUX
     if(my_camera == NULL)
     {
         add_error("Dbl pointer to camera structure in init_bttv_camera is NULL!");
@@ -176,14 +176,21 @@ int init_bttv_camera(Bttv_camera **my_camera, int width, int height, char* camer
         return ERROR;
     }
     return NO_ERROR;
-
+}
 #else  /* Case no LINUX follows. */
-
+int init_bttv_camera(Bttv_camera ** __attribute__((unused)) dummy_my_camera,
+                     int  __attribute__((unused)) dummy_width,
+                     int  __attribute__((unused)) dummy_height,
+                     char*  __attribute__((unused)) dummy_camera_id, 
+                     char*  __attribute__((unused)) dummy_machine, char* 
+                     __attribute__((unused)) dummy_device, int 
+                     __attribute__((unused)) dummy_usd)
+{
     set_error("Bttv camera support is only available on linux.");
     return ERROR;
 
-#endif 
 }
+#endif 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -209,9 +216,9 @@ int init_bttv_camera(Bttv_camera **my_camera, int width, int height, char* camer
  * -----------------------------------------------------------------------------
 */
 
+#ifdef LINUX
 int init_bttv_camera_from_config_file(Bttv_camera **camera, int width, int height, const char* file_name)
 {
-#ifdef LINUX
     FILE * config_fp = NULL;
     char line[100];
     char *token = NULL, *token2 = NULL, *token3 = NULL;
@@ -284,14 +291,18 @@ int init_bttv_camera_from_config_file(Bttv_camera **camera, int width, int heigh
     }
 
     return NO_ERROR;
+}
 #else  /* Case no LINUX follows. */
-
+int init_bttv_camera_from_config_file(Bttv_camera ** __attribute__((unused)) dummy_camera, 
+                                      int  __attribute__((unused)) dummy_width,
+                                      int  __attribute__((unused)) dummy_height, 
+                                      const char*  __attribute__((unused)) dummy_file_name)
+{
     set_error("Bttv camera support is only available on linux.");
     return ERROR;
-
+}
 #endif 
 
-}
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -363,9 +374,9 @@ static int internal_init_bttv_camera(Bttv_camera *camera)
  * -----------------------------------------------------------------------------
 */
 
+#ifdef LINUX
 int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
 {
-#ifdef LINUX
     char *p;
     static int n=0;
     Bttv_camera_info *this_camera = NULL;
@@ -437,14 +448,19 @@ int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
     n = (n+1)%CAMERA_BUFFERS;
 
     return NO_ERROR;
+}
 
 #else  /* Case no LINUX follows. */
 
+int get_image_from_bttv_camera (Bw_byte_image * __attribute__((unused)) dummy_image, 
+                                Bttv_camera * __attribute__((unused)) dummy_camera)
+{
     set_error("Bttv camera support is only available on linux.");
     return ERROR;
 
-#endif 
 } 
+
+#endif 
 
 /*****************************************************************************/
 
@@ -477,10 +493,9 @@ int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
  * -----------------------------------------------------------------------------
 */
 
+#ifdef LINUX
 int get_image_from_bttv_camera_2 (Camera_bw_byte_image * image, Bttv_camera *camera)
 {
-#ifdef LINUX
-
     if(image != NULL)
     {
         get_image_from_bttv_camera(image->data, camera);
@@ -495,14 +510,15 @@ int get_image_from_bttv_camera_2 (Camera_bw_byte_image * image, Bttv_camera *cam
         return ERROR;
     }
     return NO_ERROR;
-
+}
 #else  /* Case no LINUX follows. */
-
+int get_image_from_bttv_camera_2 (Camera_bw_byte_image *  __attribute__((unused)) dummy_image, Bttv_camera * __attribute__((unused)) dummy_camera)
+{
     set_error("Bttv camera support is only available on linux.");
     return ERROR;
-
-#endif 
 }
+#endif 
+
 /*****************************************************************************/
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -535,39 +551,42 @@ int get_image_from_bttv_camera_2 (Camera_bw_byte_image * image, Bttv_camera *cam
  * -----------------------------------------------------------------------------
 */
 
+#ifdef LINUX
 int get_images_from_all_bttv_cameras(Bw_byte_image *image[], Bttv_camera *camera[], int num_cameras)
 {
-#ifdef LINUX
     int i;
     for (i = 0; i < num_cameras; i++)
     {
         ERE(get_image_from_bttv_camera(image[i], camera[i]));
     }
     return NO_ERROR;
+}
 #else
-
+int get_images_from_all_bttv_cameras(Bw_byte_image * __attribute__((unused)) dummy_image[], Bttv_camera * __attribute__((unused)) dummy_camera[], int  __attribute__((unused)) dummy_num_cameras)
+{
     set_error("Bttv camera support is only available on linux.");
     return ERROR;
 
-#endif 
 }
+#endif 
 
+#ifdef LINUX
 int get_images_from_all_bttv_cameras_2(Camera_bw_byte_image * image[], Bttv_camera *camera[], int num_cameras)
 {
-#ifdef LINUX
     int i;
     for (i = 0; i < num_cameras; i++)
     {
         ERE(get_image_from_bttv_camera_2(image[i], camera[i]));
     }
     return NO_ERROR;
+}
 #else
-
+int get_images_from_all_bttv_cameras_2(Camera_bw_byte_image *  __attribute__((unused)) dummy_image[], Bttv_camera * __attribute__((unused)) dummy_camera[], int  __attribute__((unused)) dummy_num_cameras)
+{
     set_error("Bttv camera support is only available on linux.");
     return ERROR;
-
-#endif 
 }
+#endif 
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -602,17 +621,22 @@ static int do_bttv_channel_change(int channel, Bttv_camera *camera)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
+#ifdef LINUX
 void free_bttv_camera(Bttv_camera *camera)
 {
-#ifdef LINUX
   if(camera != NULL)
     {
       free_bttv_camera_info(camera->camera_info);
-      free_vector(camera->position_vp);
+      free_ __attribute__((unused)) dummy_vector(camera->position_vp);
       ivi_free(camera);
     }
-#endif  /* End of case LINUX. */
 }
+#else 
+void free_bttv_camera(Bttv_camera *  __attribute__((unused)) dummy_camera)
+{
+
+}
+#endif  /* End of case LINUX. */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -846,10 +870,14 @@ static int internal_init_bttv_camera_info(Bttv_camera *camera)
 }
 #endif  /* End of case LINUX. */
 
+#ifdef LINUX
+#ifdef IVI_HAVE_OPENGL
 /* Global variables needed to display cameras using openGL. */
 static Bttv_camera** all_cameras;
 static Camera_bw_byte_image* all_images[MAXIMUM_NUMBER_OF_CAMERAS] = {NULL, NULL, NULL, NULL};
 static int number_of_cameras;
+#endif
+#endif 
 
 
  /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -877,9 +905,9 @@ static int number_of_cameras;
  * -----------------------------------------------------------------------------
 */
 
+#ifdef LINUX
 void display_cameras_opengl(int argc, char **argv, int my_width, int my_height, Bttv_camera *all_cameras_in[MAXIMUM_NUMBER_OF_CAMERAS], int num_cams)
 {
-#ifdef LINUX
 #ifdef IVI_HAVE_OPENGL
     int i;
 
@@ -914,9 +942,17 @@ void display_cameras_opengl(int argc, char **argv, int my_width, int my_height, 
     add_error("display_cameras_opengl(..) uses OPENGL and it doesn't seem you have OPENGL on your system.\n ");
     ivi_print_error();
 #endif
-
-#endif    
 }
+#else
+void display_cameras_opengl(int  __attribute__((unused)) dummy_argc, 
+                            char ** __attribute__((unused)) dummy_argv,
+                            int  __attribute__((unused)) dummy_my_width,
+                            int  __attribute__((unused)) dummy_my_height,
+                            Bttv_camera * __attribute__((unused)) dummy_all_cameras_in[MAXIMUM_NUMBER_OF_CAMERAS],
+                            int  __attribute__((unused)) dummy_num_cams)
+{
+}
+#endif    
 
 #ifdef LINUX
 #ifdef IVI_HAVE_OPENGL

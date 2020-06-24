@@ -1,10 +1,9 @@
 
-/* $Id: nap.c 20773 2016-08-03 17:37:22Z kobus $ */
+/* $Id: nap.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
 
-/*ARGSUSED*/
 int  main(void)
 {
 

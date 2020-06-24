@@ -1,13 +1,12 @@
 
-/* $Id: fget_line.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: fget_line.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
 
 TRAP_FN_RETURN_TYPE test_atn_fn(int);
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     char line[ 30 ];
     int  res;
@@ -37,8 +36,7 @@ int main(int argc, char **argv)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-TRAP_FN_RETURN_TYPE test_atn_fn(int dummy_sig_arg)
+TRAP_FN_RETURN_TYPE test_atn_fn(int __attribute__((unused)) dummy_sig_arg)
 {
 
     term_puts("Trapped.\n");

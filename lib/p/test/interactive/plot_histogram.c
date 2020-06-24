@@ -1,11 +1,10 @@
-/* $Id: plot_histogram.c 21491 2017-07-20 13:19:02Z kobus $ */
+/* $Id: plot_histogram.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 #include "p/p_incl.h"
 /* 
  * Generate a vector of random numbers and plot the histogram. 
  */
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     Vector *scale_vp = NULL;

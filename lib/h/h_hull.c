@@ -1,5 +1,5 @@
 
-/* $Id: h_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: h_hull.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -2339,7 +2339,6 @@ int find_hull_bounds(const Hull* hp, Vector** min_vpp, Vector** max_vpp)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/   /* Usually have "sig" as "int" as first arg (always on UNIX) */
 static TRAP_FN_RETURN_TYPE qhull_crash_fn(TRAP_FN_DUMMY_ARGS)
 {
     allow_abort_sig();

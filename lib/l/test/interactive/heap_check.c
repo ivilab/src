@@ -6,7 +6,7 @@
 
 #define BASE_NUM_TRIES  1
 
-int main(int argc, char **argv)
+int main(void)
 {
     Int_vector* a_vp = NULL; 
     Int_vector* b_vp = NULL; 

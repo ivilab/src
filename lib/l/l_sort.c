@@ -1,5 +1,5 @@
 
-/* $Id: l_sort.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sort.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -205,7 +205,6 @@ static int fs_sort_rec_comparison_count = 0;
  */
 
 #ifdef IVI_HAVE_QSORT
-/*ARGSUSED*/
 int ivi_sort(void* array, int num_elements, size_t element_size,
              int (*cmp_fn) (const void *, const void *),
              int __attribute__((unused)) interrupt_action)

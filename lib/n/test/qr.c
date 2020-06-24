@@ -64,7 +64,6 @@ Matrix* temp_mp = NULL;
 Matrix* result_mp = NULL;
 int status = EXIT_SUCCESS;
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     ivi_init();

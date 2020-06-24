@@ -1,5 +1,5 @@
 
-/* $Id: im_io.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: im_io.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 #ifndef __C2MAN__
 
@@ -290,9 +290,9 @@ Byte_image* im_read_byte_image
 
 Byte_image* im_read_byte_image
 (
-    Byte_image*      dummy_ip,
-    char*            dummy_file_name_and_sub_image,
-    Image_file_info* dummy_image_file_info_ptr
+    Byte_image*      __attribute__((unused)) dummy_ip,
+    char*            __attribute__((unused)) dummy_file_name_and_sub_image,
+    Image_file_info* __attribute__((unused)) dummy_image_file_info_ptr
 )
 {
     set_error("Routine im_read_byte_image() needs to be compiled with X11.");
@@ -498,12 +498,11 @@ int im_write_byte_image
 
 #else
 
-/*ARGSUSED*/
 int im_write_byte_image
 (
-    Byte_image*      dummy_ip,
-    char*            dummy_file_name,
-    Image_file_info* dummy_image_file_info_ptr
+    Byte_image*      __attribute__((unused)) dummy_ip,
+    char*            __attribute__((unused)) dummy_file_name,
+    Image_file_info* __attribute__((unused)) dummy_image_file_info_ptr
 )
 {
     set_error("Routine im_write_byte_image() needs to be compiled with X11.");
@@ -516,11 +515,10 @@ int im_write_byte_image
 
 #ifdef IVI_HAVE_X11
 
-/*ARGSUSED*/
 IM_displayed_image* im_display_byte_image
 (
     Byte_image* ip,
-    char*       dummy_title,
+    char*       __attribute__((unused)) dummy_title,
     int         pipe_needed
 )
 {
@@ -663,12 +661,11 @@ IM_displayed_image* im_display_byte_image
 
 #else
 
-/*ARGSUSED*/
 IM_displayed_image* im_display_byte_image
 (
-    Byte_image* dummy_ip,
-    char*       dummy_title,
-    int         dummy_pipe_needed
+    Byte_image* __attribute__((unused)) dummy_ip,
+    char*       __attribute__((unused)) dummy_title,
+    int         __attribute__((unused)) dummy_pipe_needed
 )
 {
     set_error("Routine im_display_byte_image() needs to be compiled with X11.");
@@ -697,8 +694,7 @@ int im_fork_close(IM_displayed_image* displayed_image_ptr)
 
 #else
 
-/*ARGSUSED*/
-int im_fork_close(IM_displayed_image* dummy_displayed_image_ptr)
+int im_fork_close(IM_displayed_image* __attribute__((unused)) dummy_displayed_image_ptr)
 {
     set_error("Routine im_fork_close() needs to be compiled with X11.");
     return ERROR;
@@ -729,7 +725,6 @@ int im_fork_close_all(void)
 
 #else
 
-/*ARGSUSED*/
 int im_fork_close_all(void)
 {
     set_error("Routine im_fork_close_all() needs to be compiled with X11.");

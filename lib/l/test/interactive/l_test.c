@@ -1,5 +1,5 @@
 
-/* $Id: l_test.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_test.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 /* =========================================================================== *
@@ -32,7 +32,7 @@ static const char* default_options[ ] =
   
 /* -------------------------------------------------------------------------- */
 
-int main(int argc, char **argv)
+int main(void)
 {
     const char** cur_option;
     FILE*        option_fp;

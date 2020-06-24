@@ -124,8 +124,9 @@ int main(int argc, char** argv)
     // force cache (not needed here)
     //log_pdf(P, mu);
 
+    // Kobus.I assume the cref we want is the boost one?
     G = gradient_cfd(
-                bind(negative_log_pdf, cref(P), _1),
+                bind(negative_log_pdf, boost::cref(P), _1),
                 x, vector<double>(D, dx));
 
     er = vector_distance(G, matrix_inverse(S)*(x - mu));
@@ -153,8 +154,9 @@ int main(int argc, char** argv)
     // force cache (not needed here)
     //log_pdf(Q, mu);
 
+    // Kobus.I assume the cref we want is the boost one?
     G = gradient_ind_cfd(
-                    bind(negative_log_pdf_ind, cref(Q), _1, _2),
+                    bind(negative_log_pdf_ind, boost::cref(Q), _1, _2),
                     x, vector<double>(D, dx));
 
     S = Q.get_covariance_matrix();

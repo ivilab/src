@@ -1,5 +1,5 @@
 
-/* $Id: c2_sharp.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: c2_sharp.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -1224,7 +1224,6 @@ int get_standard_perfect_sharp_transform
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
 static int perfect_sharpen_guts
 (
     Matrix**      sharpen_post_map_mpp,

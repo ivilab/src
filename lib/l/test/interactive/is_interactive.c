@@ -1,9 +1,9 @@
-/* $Id: is_interactive.c 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: is_interactive.c 25587 2020-06-24 02:28:42Z kobus $
  */
 #include <l/l_sys_lib.h>
 #include <l/l_sys_io.h>
 
-int main(int argc, char** argv)
+int main(void)
 {
 	ivi_printf("is_interactive() returns %d.\n", is_interactive());
 	return EXIT_SUCCESS;

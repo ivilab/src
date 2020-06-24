@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_err.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_err.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -305,7 +305,6 @@ void set_bug_handler(void (*bug_handler)(const char*))
  */
 
 #ifndef HANDLE_BUGS
-/*ARGSUSED*/
 #endif
 void default_bug_handler(const char* message)
 {

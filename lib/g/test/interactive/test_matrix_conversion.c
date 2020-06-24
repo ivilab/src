@@ -14,19 +14,9 @@ Matrix *scale_proj=0;
 char *read_str=0;
 int tests_failed=0;
 
-int runTest(int);
-void freeAll();
-
-void PASS_OR_FAIL(int pof)
-{
-    if (pof)
-    {
-        printf("Pass\n");
-    } else {
-        printf("FAIL!\n");
-        tests_failed++;
-    }
-}
+static int runTest(int);
+static void PASS_OR_FAIL(int pof);
+static void freeAll();
 
 int main()
 {
@@ -64,10 +54,12 @@ int main()
 
 }
 
-int runTest(int test_id)
+static int runTest(int test_id)
 {
     int check,i,j;
-    double scalar1,scalar2,scalar3;
+    double scalar1 = DBL_NOT_SET;
+    double scalar2 = DBL_NOT_SET;
+    double scalar3 = DBL_NOT_SET;
 
     printf("Test %d:\n\n", test_id);
     read_str[IDX] = '0'+test_id;
@@ -161,7 +153,18 @@ int runTest(int test_id)
     return NO_ERROR;
 }
 
-void freeAll()
+static void PASS_OR_FAIL(int pof)
+{
+    if (pof)
+    {
+        printf("Pass\n");
+    } else {
+        printf("FAIL!\n");
+        tests_failed++;
+    }
+}
+
+static void freeAll()
 {
     free_matrix(p_proj);
     free_matrix(l_proj);

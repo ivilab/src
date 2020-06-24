@@ -1,5 +1,5 @@
 
-/* $Id: get_interior_distance_to_hull.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: get_interior_distance_to_hull.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -8,7 +8,6 @@
 #define STEP_3D 0.05
 #define BASE_NUM_TRIES  500
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int status = EXIT_SUCCESS;

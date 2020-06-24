@@ -5,7 +5,7 @@
 #include "l/l_incl.h" 
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
 
     pso("Hello world.\n"); 

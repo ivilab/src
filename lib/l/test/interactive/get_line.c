@@ -1,5 +1,5 @@
 
-/* $Id: get_line.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: get_line.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h"
@@ -10,8 +10,7 @@ static void print_read_result(int res);
 
 /* -------------------------------------------------------------------------- */
 
-/*ARGSUSED*/  /* Usually have "sig" as "int" as first arg (always on UNIX) */
-static TRAP_FN_RETURN_TYPE atn_fn( TRAP_FN_ARGS )
+static TRAP_FN_RETURN_TYPE atn_fn( __attribute__((unused)) TRAP_FN_ARGS )
 {
 
     p_stderr("Interupted\n");
@@ -19,7 +18,6 @@ static TRAP_FN_RETURN_TYPE atn_fn( TRAP_FN_ARGS )
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     FILE* fp;

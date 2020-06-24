@@ -1,5 +1,5 @@
 
-/* $Id: matlab_invert.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: matlab_invert.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #define NUM_ITS 100000000
@@ -7,7 +7,6 @@
 
 #include "n2/n2_incl.h" 
 
-/*ARGSUSED*/
 int main(void)
 {
 #ifdef IVI_HAVE_MATLAB

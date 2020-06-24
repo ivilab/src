@@ -1,12 +1,12 @@
 
-/* $Id: int_matrix.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: int_matrix.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
 
 #define MAX_SIZE 7
 
-int main(int argc, char **argv)
+int main(void)
 {
     int dim, r, c;
     int num_rows;

@@ -4,7 +4,6 @@
 
 #include "m/m_incl.h" 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     Matrix* mp = NULL;

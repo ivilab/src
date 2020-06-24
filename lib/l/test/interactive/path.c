@@ -1,11 +1,10 @@
 
-/* $Id: path.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: path.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     char line[ 3000 ]; 
     char path[ 100 ]; 

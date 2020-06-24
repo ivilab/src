@@ -1,5 +1,5 @@
 
-/* $Id: round.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: round.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 /* =========================================================================== *
@@ -14,7 +14,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-int main(int argc, char **argv)
+int main(void)
 {
     char line[ 1000 ];
     double d;
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            pso("%d == %d?\n", ivi_rint(d), (int)rint(d));
+            pso("%d == %.1f?\n", ivi_rint(d), rint(d));
         }
     }
     

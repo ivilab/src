@@ -1,5 +1,5 @@
 
-/* $Id: trap2.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: trap2.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 
@@ -16,8 +16,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_7(int);
 static TRAP_FN_RETURN_TYPE trap_fn_8(int); 
 
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     char line [ 100 ];
     ivi_int32 res; 
@@ -78,8 +77,7 @@ int main(int argc, char **argv)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_0(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_0(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Zero.\n"); 
@@ -87,8 +85,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_0(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_1(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_1(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("One.\n"); 
@@ -96,8 +93,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_1(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_2(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_2(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Two.\n"); 
@@ -105,8 +101,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_2(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_3(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_3(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Three.\n"); 
@@ -114,8 +109,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_3(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_4(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_4(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Four.\n"); 
@@ -123,8 +117,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_4(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_5(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_5(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Five.\n"); 
@@ -132,8 +125,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_5(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_6(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_6(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Six.\n"); 
@@ -141,8 +133,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_6(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_7(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_7(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Seven.\n"); 
@@ -150,8 +141,7 @@ static TRAP_FN_RETURN_TYPE trap_fn_7(TRAP_FN_ARGS)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-static TRAP_FN_RETURN_TYPE trap_fn_8(TRAP_FN_ARGS) 
+static TRAP_FN_RETURN_TYPE trap_fn_8(__attribute__((unused)) TRAP_FN_ARGS) 
 {
 
     p_stderr("Eight.\n"); 

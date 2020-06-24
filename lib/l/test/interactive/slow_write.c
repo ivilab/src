@@ -1,12 +1,11 @@
 
-/* $Id: slow_write.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: slow_write.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 
 #include "l/l_incl.h" 
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     char str[ 100 ];
     char *str_pos;

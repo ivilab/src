@@ -59,20 +59,23 @@ int main(int argc, char** argv)
     Vector x = create_random_vector(D);
     vector<double> dx(D, 0.0001);
 
+    // Kobus.I assume the cref we want is the boost one?
+    // (Added "boost::" to get things to compile in 2020. 
+    //
     ivi_c::init_real_time();
-    Vector G0 = gradient_cfd(bind(nlpdfs, cref(Ps), _1), x, dx);
+    Vector G0 = gradient_cfd(bind(nlpdfs, boost::cref(Ps), _1), x, dx);
     double t0 = ivi_c::get_real_time() / 1000.0;
 
     ivi_c::init_real_time();
-    Vector G1 = gradient_cfd_mt(bind(nlpdfs, cref(Ps), _1), x, dx, nt);
+    Vector G1 = gradient_cfd_mt(bind(nlpdfs, boost::cref(Ps), _1), x, dx, nt);
     double t1 = ivi_c::get_real_time() / 1000.0;
 
     ivi_c::init_real_time();
-    Vector G2 = gradient_ind_cfd(bind(nlpdfs1, cref(Ps), _1, _2), x, dx);
+    Vector G2 = gradient_ind_cfd(bind(nlpdfs1, boost::cref(Ps), _1, _2), x, dx);
     double t2 = ivi_c::get_real_time() / 1000.0;
 
     ivi_c::init_real_time();
-    Vector G3 = gradient_ind_cfd_mt(bind(nlpdfs1, cref(Ps), _1, _2), x, dx, nt);
+    Vector G3 = gradient_ind_cfd_mt(bind(nlpdfs1, boost::cref(Ps), _1, _2), x, dx, nt);
     double t3 = ivi_c::get_real_time() / 1000.0;
 
     cout << "D = " << D << endl;

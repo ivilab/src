@@ -16,7 +16,7 @@
    |  Author:  Jinyan Guan
  * =========================================================================== */
 
-/* $Id: msvc-compat.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: msvc-compat.h 25587 2020-06-24 02:28:42Z kobus $ */
 
 #ifndef FLANDMAR_MSVC_COMPAT
 #define FLANDMAR_MSVC_COMPAT
@@ -31,7 +31,7 @@ typedef unsigned __int16 uint16_t;
 typedef __int16 int16_t;
 typedef unsigned __int32 uint32_t;
 typedef __int32 int32_t;
-typedef unsigned __int64 uint64_t;
+typedef unsigned __int64 ivi_uint64;
 typedef __int64 int64_t;
 
 }} //namespace ivi::flandmark

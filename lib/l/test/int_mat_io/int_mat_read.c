@@ -1,5 +1,5 @@
 
-/* $Id: int_mat_read.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: int_mat_read.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "i/i_incl.h" 
@@ -7,8 +7,11 @@
 int main(int argc, char *argv[])
 {
     Int_matrix* mp       = NULL;
-    int         read_res;
 
+
+    ivi_init();
+
+    check_num_args(argc, 1, 1, NULL); 
 
     create_image_display(); 
 

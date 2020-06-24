@@ -6,7 +6,7 @@
 
 #define MAX_SIZE 20
 
-int main(int argc, char **argv)
+int main(void)
 {
     int dim;
     Int_vector* row_vp = NULL;

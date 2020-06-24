@@ -1,12 +1,11 @@
 
-/* $Id: is_point_in_segment.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: is_point_in_segment.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "g/g_incl.h" 
 
 #define BASE_NUM_TESTS  10000
 
-/*ARGSUSED*/
 int main(int argc, char* argv[])
 {
     int     i;

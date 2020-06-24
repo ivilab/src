@@ -1,13 +1,12 @@
 
-/* $Id: slatec_machine_constants.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: slatec_machine_constants.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "wrap_slatec/wrap_slatec.h"
 
 #define RELATIVE_TOLERENCE  (2.0 * DBL_EPSILON)   
 
-/*ARGSUSED*/
-int main(int argc, char *argv[])
+int main(void)
 {
     int i;
     double dbl_machine_constant;

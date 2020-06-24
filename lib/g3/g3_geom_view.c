@@ -1,5 +1,5 @@
 
-/* $Id: g3_geom_view.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g3_geom_view.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -713,7 +713,6 @@ int geom_view_write(const Geom_view* geom_view_ptr, const char* buff)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
 TRAP_FN_RETURN_TYPE geom_view_sigpipe_fn(int __attribute__((unused)) dummy_sig)
 {
 

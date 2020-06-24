@@ -1,12 +1,11 @@
 
-/* $Id: find_3D_max_coord_prod.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: find_3D_max_coord_prod.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "h2/h2_incl.h" 
 
 #define BASE_NUM_TRIES   5000
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int     i;

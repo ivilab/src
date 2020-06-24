@@ -1,10 +1,10 @@
 
-/* $Id: ivi_rand.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: ivi_rand.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     int i;
 

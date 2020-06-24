@@ -9,7 +9,7 @@
  * and ended up here only because, as a byproduct, it also found an error
  * in the (old) sort routine.
  *
- * $Id: break_sort.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: break_sort.c 25587 2020-06-24 02:28:42Z kobus $
  */
 #include <l/l_sys_io.h>
 #include <l/l_sys_debug.h>
@@ -312,9 +312,8 @@ static int sls_sort(struct S_list* d)
 
 
 
-int main(int argc, char** argv)
+int main(void)
 {
-	int i;
     struct S_list l;
     struct Seed *p, tab[] = {
         {       0,      0,      {   20, 37, 40  } },

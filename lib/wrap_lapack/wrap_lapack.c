@@ -1,5 +1,5 @@
 
-/* $Id: wrap_lapack.c 25581 2020-06-20 22:14:04Z kobus $ */
+/* $Id: wrap_lapack.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -163,7 +163,6 @@ static int lapack_solve_triangular_general(
         Matrix** X_mpp, 
         char upper_lower)
 #else 
-/*ARGSUSED*/
 static int lapack_solve_triangular_general
 (
     const Matrix* __attribute__((unused)) dummy_A_mp,
@@ -360,7 +359,6 @@ int lapack_solve_symmetric(
         const Matrix* B_mp,
         Matrix** X_mpp)
 #else 
-/*ARGSUSED*/
 int lapack_solve_symmetric
 (
     const Matrix* __attribute__((unused)) dummy_A_mp,
@@ -499,7 +497,6 @@ int lapack_solve_symmetric_pd(
         const Matrix* B_mp,
         Matrix** X_mpp)
 #else 
-/*ARGSUSED*/
 int lapack_solve_symmetric_pd
 (
     const Matrix* __attribute__((unused)) dummy_A_mp,
@@ -630,7 +627,6 @@ int lapack_solve
         const Matrix* B_mp,
         Matrix** X_mpp)
 #else 
-/*ARGSUSED*/
 int lapack_solve
 (
     const Matrix* __attribute__((unused)) dummy_A_mp,
@@ -755,7 +751,6 @@ int lapack_diagonalize
      Vector** D_vpp
 )
 #else 
-/*ARGSUSED*/
 int lapack_diagonalize
 (
     const Matrix* __attribute__((unused)) dummy_mp,
@@ -939,7 +934,6 @@ int lapack_diagonalize_2
     Vector**      D_im_vpp
 )
 #else
-/*ARGSUSED*/
 int lapack_diagonalize_2
 (
     const Matrix* __attribute__((unused)) dummy_mp,
@@ -1179,7 +1173,6 @@ int lapack_qr_decompose
     Matrix** R_mpp
 )
 #else
-/*ARGSUSED*/
 int lapack_qr_decompose
 (
     const Matrix* __attribute__((unused)) dummy_mp,
@@ -1373,7 +1366,6 @@ int lapack_qr_decompose
 #ifdef HAVE_LAPACK_ARGS
 int lapack_diagonalize_symmetric(const Matrix* mp, Matrix** E_mpp, Vector** D_vpp)
 #else
-/*ARGSUSED*/
 int lapack_diagonalize_symmetric
 (
     const Matrix* __attribute__((unused)) dummy_mp,
@@ -1788,7 +1780,6 @@ int do_lapack_matrix_inversion_2
     int* det_sign
 )
 #else
-/*ARGSUSED*/
 int do_lapack_matrix_inversion_2
 (
     Matrix**      __attribute__((unused)) dummy_target_mpp,
@@ -1973,7 +1964,6 @@ int do_lapack_cholesky_decomposition
     Matrix* input_mp
 )
 #else
-/*ARGSUSED*/
 int do_lapack_cholesky_decomposition
 (
     Matrix* __attribute__((unused)) dummy_input_mp
@@ -2141,7 +2131,6 @@ int do_lapack_dot_product
     double *dp_ptr
 )
 #else
-/*ARGSUSED*/
 int do_lapack_dot_product
 (
     const Vector* __attribute__((unused)) vp1,

@@ -2,6 +2,7 @@
 #include <l_cpp/l_exception.h>
 #include <l_cpp/l_iterator.h>
 #include <gr_cpp/gr_opengl.h>
+#include "gr_cpp/gr_opengl_texture.h"
 #include <gr_cpp/gr_glut.h>
 #include <edge_cpp/line_segment.h>
 #include <edge_cpp/collinear_segment_chain.h>
@@ -96,11 +97,24 @@ void display_scene()
         Chain_vector chains;
         if(show_chains)
         {
+            // Kobus changed the below version to this to see if it can compile.
+            //
+            std::vector<Collinear_segment_chain> chains 
+                 = find_collinear_segment_chains(segments->begin(),
+                                                 segments->end(),
+                                                 distance_threshold,
+                                                 orientation_threshold);
+
+
+            /*
+             * How it was earlier in 2020.
+             *
             chains = find_collinear_segment_chains(segments->begin(),
                                                    segments->end(),
                                                    distance_threshold,
                                                    orientation_threshold,
                                                    gap_threshold);
+            */
 
             glLineStipple(1, solid_stipple);
             std::for_each(chains.begin(), chains.end(),

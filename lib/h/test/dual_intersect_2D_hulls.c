@@ -1,5 +1,5 @@
 
-/* $Id: dual_intersect_2D_hulls.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: dual_intersect_2D_hulls.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -10,7 +10,6 @@
 
 #define DISTANCE_TO_INTERSECTION_TOL  1e-5
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int status = EXIT_SUCCESS;

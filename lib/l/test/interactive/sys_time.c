@@ -1,11 +1,10 @@
 
-/* $Id: sys_time.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: sys_time.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "l/l_incl.h"
 
-/*ARGSUSED*/
-int  main(int argc, char **argv)
+int  main(void)
 {
     int  i, j;
     int  real_time;

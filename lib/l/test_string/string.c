@@ -6,7 +6,6 @@
 
 #include "l/l_incl.h" 
 
-/*ARGSUSED*/
 main(int argc, char **argv)
 {
     char line[ 100 ]; 

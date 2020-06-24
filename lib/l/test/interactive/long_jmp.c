@@ -1,5 +1,5 @@
 
-/* $Id: long_jmp.c 21602 2017-07-31 20:36:24Z kobus $ */
+/* $Id: long_jmp.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 
@@ -8,8 +8,7 @@
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     IMPORT jmp_buf timer_interupt_env;
     char           line[ 200 ];

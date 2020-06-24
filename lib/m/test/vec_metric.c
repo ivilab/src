@@ -1,5 +1,5 @@
 
-/* $Id: vec_metric.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: vec_metric.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 /*
@@ -34,7 +34,6 @@ static double IH_VectorMag   (Vector* vect);
 
 /* -------------------------------------------------------------------------- */
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int status = EXIT_SUCCESS;

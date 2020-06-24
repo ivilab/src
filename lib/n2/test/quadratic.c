@@ -1,12 +1,11 @@
 
-/* $Id: quadratic.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: quadratic.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "n/n_incl.h"
 #include "n2/n2_incl.h"
 #include "wrap_slatec/wrap_slatec.h"
 
-/*ARGSUSED*/
 int main(void)
 {
     Matrix *mp, *le_constraint_mp;

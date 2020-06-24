@@ -46,7 +46,10 @@ void gradient_cfd_mt_worker
 )
 {
     // copy to avoid concurrent access
-    Func g = f;
+    // Kobus, summer 2020, this was:
+    //     Func g = f;
+    // My naive attempt to get it to compile: 
+    const Func& g = f;
     Model y = x;
     Adapter aptr = adapter;
 
@@ -82,7 +85,11 @@ void gradient_ffd_mt_worker
 )
 {
     // copy to avoid concurrent access
-    Func g = f;
+    // copy to avoid concurrent access
+    // Kobus, summer 2020, this was:
+    //     Func g = f;
+    // My naive attempt to get it to compile: 
+    const Func& g = f;
     Model y = x;
     Adapter aptr = adapter;
 

@@ -1,13 +1,13 @@
 
-/* $Id: ivi_err.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: ivi_err.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 
 #include "l/l_gen.h" 
 
-int main(int argc, char *argv[])
+int main(void)
 {
-    char *test_str; 
+    const char *test_str; 
     char buff[ 1000 ]; 
 
     int err_strlen;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
     if ( err_strlen != signed_strlen( buff ) )
     {
-        ivi_printf( stderr, "Failure:  strlen prediction was %d, "
+        ivi_fprintf( stderr, "Failure:  strlen prediction was %d, "
                         "actual was %d\n", err_strlen, signed_strlen( buff ) );
         return EXIT_FAILURE;
     }

@@ -1064,7 +1064,6 @@ int reset_restart_on_sig(int sig)
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/ /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE record_signal( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1098,7 +1097,6 @@ TRAP_FN_RETURN_TYPE record_signal( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/  /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE io_atn_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int     recorded_signal;
@@ -1143,7 +1141,6 @@ TRAP_FN_RETURN_TYPE io_atn_fn( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/  /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE iteration_atn_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1182,7 +1179,6 @@ TRAP_FN_RETURN_TYPE iteration_atn_fn( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/  /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE yes_no_query_atn_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1224,7 +1220,6 @@ TRAP_FN_RETURN_TYPE yes_no_query_atn_fn( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/  /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE confirm_exit_sig_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1259,7 +1254,6 @@ TRAP_FN_RETURN_TYPE confirm_exit_sig_fn( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/  /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE sort_atn_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile Bool sort_atn_flag;
@@ -1294,7 +1288,6 @@ TRAP_FN_RETURN_TYPE sort_atn_fn( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE safe_default_sig_fn(TRAP_FN_ARGS)
 {
 
@@ -1329,7 +1322,6 @@ TRAP_FN_RETURN_TYPE safe_default_sig_fn(TRAP_FN_ARGS)
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE safe_exit_fn(TRAP_FN_DUMMY_ARGS)
 {
 
@@ -1353,7 +1345,6 @@ TRAP_FN_RETURN_TYPE safe_exit_fn(TRAP_FN_DUMMY_ARGS)
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE default_abort_fn(TRAP_FN_DUMMY_ARGS)
 {
     IMPORT void (*ivi_bug_handler)(const char*);
@@ -1389,7 +1380,6 @@ TRAP_FN_RETURN_TYPE default_abort_fn(TRAP_FN_DUMMY_ARGS)
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE reset_terminal_size_on_sig_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1427,7 +1417,6 @@ TRAP_FN_RETURN_TYPE reset_terminal_size_on_sig_fn( TRAP_FN_ARGS )
 
 #ifdef UNIX
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE cooked_mode_sig_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1501,7 +1490,6 @@ TRAP_FN_RETURN_TYPE cooked_mode_sig_fn( TRAP_FN_ARGS )
 
 /* Still in UNIX only (for now) */
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE raw_mode_with_echo_sig_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1574,7 +1562,6 @@ TRAP_FN_RETURN_TYPE raw_mode_with_echo_sig_fn( TRAP_FN_ARGS )
 
 /* Still in UNIX only (for now) */
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_sig_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile int recorded_signal;
@@ -1654,7 +1641,6 @@ TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_sig_fn( TRAP_FN_ARGS )
 //  UNIX.
 */
 
-/*ARGSUSED*/  /* (We assume we have "sig" as "int" as first arg (always on UNIX)) */
 TRAP_FN_RETURN_TYPE reset_term_before_default_sig_fn( TRAP_FN_ARGS )
 {
 
@@ -1689,7 +1675,6 @@ TRAP_FN_RETURN_TYPE reset_term_before_default_sig_fn( TRAP_FN_ARGS )
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/   /* We assume we have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE raw_mode_with_no_echo_default_sig_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile Bool term_no_block_flag;

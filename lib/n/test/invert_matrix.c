@@ -1,5 +1,5 @@
 
-/* $Id: invert_matrix.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: invert_matrix.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* Suspicious code --- calling XXX multiple times on the mac (yet to
  * study on linux) with the same input leads to slightly different answers?
@@ -34,7 +34,6 @@
 #define TOLERENCE  (100.0 * DBL_EPSILON)
 
 
-/*ARGSUSED*/
 int main(int argc, char* argv[ ])
 {
     int status = EXIT_SUCCESS;

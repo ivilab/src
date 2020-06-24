@@ -1,5 +1,5 @@
 
-/* $Id: c_sensor.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: c_sensor.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -1029,7 +1029,6 @@ int get_RGB_from_spectrum
 
 /* FIX: This does not do anything yet. */
 
-/*ARGSUSED*/
 int get_ct_from_spectrum
 (
     Vector* __attribute__((unused)) dummy_spectrum_vp,

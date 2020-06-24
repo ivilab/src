@@ -1,6 +1,7 @@
 #include <flow_cpp/flow_dense.h>
 #include <m_cpp/m_matrix.h>
 #include <l/l_sys_io.h>
+#include <i_cpp/i_image.h>
 #include <string>
 
 using namespace ivi;

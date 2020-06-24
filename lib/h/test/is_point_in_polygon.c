@@ -1,5 +1,5 @@
 
-/* $Id: is_point_in_polygon.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: is_point_in_polygon.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "g/g_incl.h" 
@@ -15,7 +15,6 @@
 #define NUM_SUB_TESTS  50
 #define BASE_NUM_TRIES  1000
 
-/*ARGSUSED*/
 int main(int argc, char *argv[])
 {
     int     status      = EXIT_SUCCESS;

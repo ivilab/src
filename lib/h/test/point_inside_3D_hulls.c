@@ -1,5 +1,5 @@
 
-/* $Id: point_inside_3D_hulls.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: point_inside_3D_hulls.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -9,7 +9,6 @@
 static void call_free_hull (void* ptr);
 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int status = EXIT_SUCCESS;

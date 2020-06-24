@@ -9,8 +9,9 @@
 #define NUM_CASES 5
 #define NUM_ERRS 2
 
-int test_values(Vector*, Vector*);
-void free_all();
+ static void PASS_OR_FAIL(int); 
+static int test_values(Vector*, Vector*);
+static void free_all();
 
 Vector* to_test=0;
 Vector* target=0;
@@ -22,16 +23,7 @@ char* exp_str=0;
 char* err_str=0;
 int tests_failed=0;
 
-void PASS_OR_FAIL(int pof)
-{
-    if (pof)
-    {
-        printf("Pass\n");
-    } else {
-        printf("FAIL!\n");
-        tests_failed++;
-    }
-}
+
 
 int main()
 {
@@ -130,7 +122,18 @@ int main()
 
 }
 
-int test_values(Vector *actual, Vector *expected)
+static void PASS_OR_FAIL(int pof)
+{
+    if (pof)
+    {
+        printf("Pass\n");
+    } else {
+        printf("FAIL!\n");
+        tests_failed++;
+    }
+}
+
+static int test_values(Vector *actual, Vector *expected)
 {
     int i;
 
@@ -150,7 +153,7 @@ int test_values(Vector *actual, Vector *expected)
     return NO_ERROR;
 }
 
-void free_all()
+static void free_all()
 {
     free_vector(to_test);
     free_vector(target);
@@ -160,3 +163,4 @@ void free_all()
     free(exp_str);
     free(err_str);
 }
+

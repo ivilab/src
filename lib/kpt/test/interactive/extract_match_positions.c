@@ -1,7 +1,6 @@
 #include "kpt/kpt_incl.h" 
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     int result = EXIT_SUCCESS;
     Keypoint_vector* kpt1_kvp = NULL;

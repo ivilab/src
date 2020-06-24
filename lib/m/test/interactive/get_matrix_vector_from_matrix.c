@@ -1,5 +1,5 @@
 
-/* $Id: get_matrix_vector_from_matrix.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: get_matrix_vector_from_matrix.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -7,7 +7,6 @@
 #define NUM_ROWS   10
 #define NUM_COLS   5
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     Matrix_vector* mvp = NULL; 

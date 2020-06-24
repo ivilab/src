@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_std.h 22174 2018-07-01 21:49:18Z kobus $ */
+/* $Id: l_sys_std.h 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -137,7 +137,7 @@ extern "C" {
 /*
 // Maximally conforming ANSI does not have long long, and so <sys/types.h>
 // defines longlong_t and u_longlong_t in order to support ANSI level 1 as well
-// as 0. However, int64_t and uint64_t do not get defined. This is a problem,
+// as 0. However, int64_t and ivi_uint64 do not get defined. This is a problem,
 // because some include files do not prepare for this case. As of 13/07/99, the
 // only problematic file required is <sys/kstat.h> called from <sys/vm.h> called
 // from <sys/swap.h> called from Mike's videograb code (actually, code that
@@ -145,7 +145,7 @@ extern "C" {
 // also be turfed.
 */
 typedef longlong_t int64_t;
-typedef u_longlong_t uint64_t;
+typedef u_longlong_t ivi_uint64;
 #endif
 #endif
 

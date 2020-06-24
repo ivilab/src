@@ -26,6 +26,10 @@
  *
  **/
 
+#ifdef MAC_OSX
+#define GL_SILENCE_DEPRECATION
+#endif 
+
 #include <m/m_incl.h>
 #include <l/l_incl.h>
 #include <l_cpp/l_cpp_incl.h>
@@ -37,7 +41,6 @@
 #include <g/g_chamfer.h>
 #include <stdlib.h>
 #include <unistd.h> /* for usleep() */
-
 
 #ifdef IVI_HAVE_OPENGL
 /*

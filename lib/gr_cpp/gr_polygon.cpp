@@ -1,4 +1,4 @@
-/* $Id: gr_polygon.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: gr_polygon.cpp 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -158,7 +158,7 @@ Polygon* Polygon::clone() const
 {
     using namespace ivi_c;
 
-    ASSERT(sizeof(double) == sizeof(uint64_t));
+    ASSERT(sizeof(double) == sizeof(ivi_uint64));
 
     double x, y, z, w;
 
@@ -194,10 +194,10 @@ Polygon* Polygon::clone() const
 
         if(! ivi_is_bigendian() )
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
     pt(0) = x;
@@ -222,10 +222,10 @@ Polygon* Polygon::clone() const
 
         if(! ivi_is_bigendian() )
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
         pt(0) = x;
@@ -249,10 +249,10 @@ Polygon* Polygon::clone() const
 
         if(! ivi_is_bigendian() )
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
         pt(0) = x;
@@ -288,7 +288,7 @@ void Polygon::write(std::ostream& out) const throw (ivi::IO_error)
 {
     using namespace ivi_c;
 
-    ASSERT(sizeof(double) == sizeof(uint64_t));
+    ASSERT(sizeof(double) == sizeof(ivi_uint64));
 
     double x, y, z, w;
 
@@ -317,10 +317,10 @@ void Polygon::write(std::ostream& out) const throw (ivi::IO_error)
 
         if(! ivi_is_bigendian() )
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
         out.write((char*)&x, sizeof(double));
@@ -349,10 +349,10 @@ void Polygon::write(std::ostream& out) const throw (ivi::IO_error)
 
         if(! ivi_is_bigendian() )
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
         out.write((char*)&x, sizeof(double));
@@ -381,10 +381,10 @@ void Polygon::write(std::ostream& out) const throw (ivi::IO_error)
 
         if(! ivi_is_bigendian() )
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
         out.write((char*)&x, sizeof(double));

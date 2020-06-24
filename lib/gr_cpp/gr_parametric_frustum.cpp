@@ -413,7 +413,7 @@ void Frustum::read(std::istream& in) throw (ivi::IO_error,
 
     Polymesh::read(in);
 
-    ASSERT(sizeof(double) == sizeof(uint64_t));
+    ASSERT(sizeof(double) == sizeof(ivi_uint64));
 
     double x, y, z, w;
 
@@ -430,10 +430,10 @@ void Frustum::read(std::istream& in) throw (ivi::IO_error,
 
         if(!ivi_is_bigendian())
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
         points[i].zero_out(4);
@@ -454,10 +454,10 @@ void Frustum::read(std::istream& in) throw (ivi::IO_error,
 
     if(!ivi_is_bigendian())
     {
-        bswap_u64((uint64_t*)&(x));
-        bswap_u64((uint64_t*)&(y));
-        bswap_u64((uint64_t*)&(z));
-        bswap_u64((uint64_t*)&(w));
+        bswap_u64((ivi_uint64*)&(x));
+        bswap_u64((ivi_uint64*)&(y));
+        bswap_u64((ivi_uint64*)&(z));
+        bswap_u64((ivi_uint64*)&(w));
     }
 
     center.zero_out(4);
@@ -483,7 +483,7 @@ void Frustum::write(std::ostream& out) const throw (ivi::IO_error)
 
     Polymesh::write(out);
 
-    ASSERT(sizeof(double) == sizeof(uint64_t));
+    ASSERT(sizeof(double) == sizeof(ivi_uint64));
 
     for (size_t i = 0; i < nv*2; i++)
     {
@@ -494,10 +494,10 @@ void Frustum::write(std::ostream& out) const throw (ivi::IO_error)
 
         if(!ivi_is_bigendian())
         {
-            bswap_u64((uint64_t*)&(x));
-            bswap_u64((uint64_t*)&(y));
-            bswap_u64((uint64_t*)&(z));
-            bswap_u64((uint64_t*)&(w));
+            bswap_u64((ivi_uint64*)&(x));
+            bswap_u64((ivi_uint64*)&(y));
+            bswap_u64((ivi_uint64*)&(z));
+            bswap_u64((ivi_uint64*)&(w));
         }
 
         out.write((char*)&x, sizeof(double));
@@ -517,10 +517,10 @@ void Frustum::write(std::ostream& out) const throw (ivi::IO_error)
 
     if(!ivi_is_bigendian())
     {
-        bswap_u64((uint64_t*)&(x));
-        bswap_u64((uint64_t*)&(y));
-        bswap_u64((uint64_t*)&(z));
-        bswap_u64((uint64_t*)&(w));
+        bswap_u64((ivi_uint64*)&(x));
+        bswap_u64((ivi_uint64*)&(y));
+        bswap_u64((ivi_uint64*)&(z));
+        bswap_u64((ivi_uint64*)&(w));
     }
 
     out.write((char*)&x, sizeof(double));

@@ -1,5 +1,5 @@
 
-/* $Id: interleave_matrix_cols.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: interleave_matrix_cols.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -8,7 +8,6 @@
 #define NUM_ROWS 3
 #define NUM_COLS 5
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
 #ifdef HAVE_INTERLEAVE_MATRIX_COLS_2

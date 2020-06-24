@@ -1,4 +1,4 @@
-/* $Id: m_vector_stream_io.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_vector_stream_io.cpp 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -155,7 +155,7 @@ void Vector_stream_io::write_vector(std::ostream& out, const Vector & ivec)
          double value = ivec(i);
          if(! ivi_is_bigendian() )
          {
-             bswap_u64((uint64_t*)&(value));
+             bswap_u64((ivi_uint64*)&(value));
          }
          out.write((char*)&value, sizeof(double));
          if(out.fail() || out.eof())
@@ -208,7 +208,7 @@ void Vector_stream_io::read_vector(std::istream& in, Vector & ivec)
 
         if(! ivi_is_bigendian() )
         {
-            bswap_u64((uint64_t*)&(value));
+            bswap_u64((ivi_uint64*)&(value));
         }
         ivec(i) = value;
     }

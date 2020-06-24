@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_tsig.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_tsig.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -146,7 +146,6 @@ extern "C" {
 
 #ifdef UNIX
 
-/*ARGSUSED*/ /* Usually have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE time_out_fn( TRAP_FN_ARGS )
 {
     IMPORT volatile Bool ivi_timed_out;
@@ -222,7 +221,6 @@ TRAP_FN_RETURN_TYPE time_out_fn( TRAP_FN_ARGS )
 
 #ifdef UNIX
 
-/*ARGSUSED*/ /* Usually have "sig" as "int" as first arg (always on UNIX) */
 TRAP_FN_RETURN_TYPE time_out_long_jump_fn( TRAP_FN_ARGS )
 {
     IMPORT jmp_buf timer_interupt_env;

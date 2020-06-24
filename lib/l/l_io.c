@@ -1,5 +1,5 @@
 
-/* $Id: l_io.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_io.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -2313,7 +2313,6 @@ Continue_query_response continue_query(void)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-/*ARGSUSED*/
 static TRAP_FN_RETURN_TYPE alternate_file_read_atn_fn( TRAP_FN_DUMMY_ARGS )
 {
 

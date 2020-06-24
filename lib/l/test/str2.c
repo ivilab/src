@@ -7,7 +7,6 @@
 #include "l/l_incl.h" 
 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     char  line_copy[ 20000 ];

@@ -1,5 +1,5 @@
 
-/* $Id: vec_arith_ow_ew.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: vec_arith_ow_ew.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 
@@ -17,7 +17,6 @@ static void test_bug_handler(const char* mess);
 #define BASE_NUM_TRIES   100
 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     int status = EXIT_SUCCESS;

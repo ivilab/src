@@ -5,7 +5,6 @@
 #include "m/m_incl.h" 
 #include "kpt/kpt_incl.h" 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     Keypoint_vector* kpt1_kvp = NULL;

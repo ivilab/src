@@ -1,5 +1,5 @@
 
-/* $Id: gauss_rand.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: gauss_rand.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #define NUM_TO_TRY (10000000)
@@ -8,8 +8,7 @@
 #include "p/p_incl.h" 
 #include "sample/sample_incl.h"
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     Vector* vp = NULL; 
     int plot_id, plot_id_2; 

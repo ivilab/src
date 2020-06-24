@@ -1,10 +1,9 @@
 
-/* $Id: 3d.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: 3d.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "p/p_incl.h" 
 
-/*ARGSUSED*/
 int main(int argc, char **argv)
 {
     Matrix* mp = NULL;

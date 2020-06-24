@@ -1,4 +1,4 @@
-/* $Id: l_cpp_bits.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_cpp_bits.h 25587 2020-06-24 02:28:42Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -59,7 +59,7 @@ inline void swap_bytes_dispatch<4>(void* value)
 template<>
 inline void swap_bytes_dispatch<8>(void* value)
 {
-    ivi_c::bswap_u64(static_cast<uint64_t*>(value));
+    ivi_c::bswap_u64(static_cast<ivi_c::ivi_uint64*>(value));
 }
 
 /**

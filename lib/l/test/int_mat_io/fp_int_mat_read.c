@@ -1,18 +1,18 @@
 
-/* $Id: fp_int_mat_read.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: fp_int_mat_read.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 #include "i/i_incl.h" 
 
-int main(int argc, char *argv[ ])
+int main(int argc, char *argv[])
 {
     Int_matrix* mp       = NULL;
-    int         read_res;
     FILE* fp; 
+    int read_res; 
 
 
-    create_image_display(); 
-
+    ivi_init();
+    check_num_args(argc, 1, 1, NULL); 
     NPETE(fp = ivi_fopen(argv[ 1 ], "r")); 
 
     while ((read_res = fp_read_int_matrix(&mp, fp)) != EOF)

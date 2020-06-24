@@ -1,5 +1,5 @@
 
-/* $Id: ivi_fprintf.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: ivi_fprintf.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 
 /*
@@ -17,20 +17,18 @@ int main(void)
     short       i16;
     float       fl;
     long_double ldb;
-    char*       s1;
+    const char* s1 = "Hi there everybody !!!";;
     int         res;
     int         i;
     int         j;
     int         count;
-    char*       zap     = "zap";
-    char*       longish = "longish";
+    const char* zap     = "zap";
+    const char* longish = "longish";
     int         twelve  = 12;
     int         five    = 5;
 
 
     pso("%%ABC\n");
-
-    s1 = "Hi there everybody !!!";
 
     i32 = 666; 
     i16 = 666;

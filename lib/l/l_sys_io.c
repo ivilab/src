@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_io.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_io.c 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -1686,7 +1686,6 @@ int ivi_ioctl(int file_des, IOCTL_REQUEST_TYPE request, void* arg)
 */
 
 
-/*ARGSUSED*/
 int ivi_ioctl(int file_des, IOCTL_REQUEST_TYPE  request, void* arg)
 {
 
@@ -3300,7 +3299,6 @@ FILE* ivi_freopen(const char* fd_name, const char* mode, FILE* stream)
  * -----------------------------------------------------------------------------
 */
 
-/*ARGSUSED*/
 FILE* ivi_fdopen(FILE* old_fp, const char* mode)
 {
     FILE* new_fp;

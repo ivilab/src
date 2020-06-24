@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_def.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_def.h 25587 2020-06-24 02:28:42Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -201,10 +201,13 @@ typedef double Always_double;
 
 
 #ifdef __LP64__
+#    define LONG_LONG_IS_64_BITS
 #    define LONG_IS_64_BITS
 #    define PTR_IS_64_BITS
 #    define SIZE_T_IS_64_BITS
 #else
+     /* Assume LP32, but if we are not LP64 or LP32 then things might break! */
+#    define LONG_LONG_IS_64_BITS
 #    define LONG_IS_32_BITS
 #    define PTR_IS_32_BITS
 #    define SIZE_T_IS_32_BITS
@@ -1329,46 +1332,40 @@ typedef double Always_double;
 
 /* ----------------------  Supplementary integer types  --------------------- */
 
-#ifdef LONG_IS_64_BITS   
-#   define INT64_IS_LONG
-#   define HAVE_64_BIT_INT
-#else
+/* 64 bit integer types. */
+
+/* Originally we went with the system provided one if it was available, based on
+ * whether _UINT64_T and _INT64_T are defined.  However, this might force us to
+ * call 64 bit integers "long long" where "long" suffices. So we sort out 64 bit
+ * sizes for ourselves. Currently we use system ones for 32 and 16 (a bit
+ * inconsistet).
+*/
+
 #ifdef INT_IS_64_BITS   /* Pretty rare. */
 #   define INT64_IS_INT
 #   define HAVE_64_BIT_INT
-#endif 
-#endif 
-
-#ifdef _UINT64_T
-    typedef uint64_t ivi_uint64;
-    #ifndef HAVE_64_BIT_INT
-        #define HAVE_64_BIT_INT
-    #endif 
-#else 
-#ifdef LONG_IS_64_BITS   
-    typedef unsigned long ivi_uint64;
-#else
-#ifdef INT_IS_64_BITS   /* Pretty rare. */
     typedef unsigned int ivi_uint64;
-#endif
-#endif
-#endif
-
-#ifdef _INT64_T
-    typedef int64_t ivi_int64;
-    #ifndef HAVE_64_BIT_INT
-        #define HAVE_64_BIT_INT
-    #endif 
-#else 
+    typedef int ivi_int64;
+#else
+/* Often (e.g., _LP64) both long and "long long" are 64 bits. If so, we use
+ * long. */
 #ifdef LONG_IS_64_BITS   
+#   define INT64_IS_LONG
+#   define HAVE_64_BIT_INT
+    typedef unsigned long ivi_uint64;
     typedef long ivi_int64;
 #else
-#ifdef INT_IS_64_BITS   /* Pretty rare. */
-    typedef int ivi_int64;
+#ifdef LONG_LONG_IS_64_BITS   
+#   define INT64_IS_LONG_LONG
+#   define HAVE_64_BIT_INT
+    typedef unsigned long long ivi_uint64;
+    typedef long long ivi_int64;
 #endif
 #endif
 #endif
 
+
+/* 32 bit integer types. */
 
 #ifdef LONG_IS_32_BITS
 #   define INT32_IS_LONG
@@ -1409,6 +1406,8 @@ typedef double Always_double;
 #endif
 #endif
 #endif
+
+/* 16 bit integer types. */
 
 #ifdef SHORT_IS_16_BITS
 #   define INT16_IS_SHORT
@@ -1458,6 +1457,8 @@ typedef double Always_double;
 #endif
 #endif
 #endif
+
+/* 8 bit integer types. */
 
 typedef signed char ivi_int8;
 typedef unsigned char ivi_uint8;

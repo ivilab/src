@@ -9,7 +9,6 @@
 #define MAX_NUM_COLS   500
 #define BASE_NUM_TRIES 500
 
-/*ARGSUSED*/
 int main(void)
 {
     Matrix_vector* mats = NULL;
