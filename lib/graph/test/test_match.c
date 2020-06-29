@@ -1,5 +1,5 @@
 
-/* $Id: test_match.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: test_match.c 25592 2020-06-29 19:12:01Z kobus $ */
 
 
 /* =========================================================================== *
@@ -40,7 +40,10 @@ int main(int argc, char *argv[])
     Int_vector* int_jv_lap_row_vp = NULL; 
     int result = EXIT_SUCCESS;
     double hungarian_cost; 
+#ifdef TEST_DBL_HUNGARIAN
+    double dbl_hungarian_cost_check = 0.0; 
     double dbl_hungarian_cost; 
+#endif
     double jv_lap_cost; 
     double greedy_cost; 
     double int_hungarian_cost; 
@@ -49,7 +52,6 @@ int main(int argc, char *argv[])
     int    int_int_hungarian_cost;
     int int_int_jv_lap_cost; 
     int int_int_greedy_cost; 
-    double dbl_hungarian_cost_check = 0.0; 
     int i, m, n, count; 
     long dbl_hungarian_cpu = 0;
     long hungarian_cpu = 0;
@@ -191,10 +193,10 @@ int main(int argc, char *argv[])
         }
 
         hungarian_cpu += get_cpu_time(); 
-        /* dbe(hungarian_cost - dbl_hungarian_cost); */
-
 
 #ifdef TEST_DBL_HUNGARIAN
+        /* dbe(hungarian_cost - dbl_hungarian_cost); */
+
         init_cpu_time(); 
 
         if (dbl_hungarian(mp, &dbl_hungarian_row_vp, &dbl_hungarian_cost) == ERROR)

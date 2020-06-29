@@ -21,7 +21,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-int main(int argc, char** argv)
+int main(void)
 {
     IVI_image* ip = NULL;
     int read_res, i, j;

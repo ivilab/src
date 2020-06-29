@@ -1,4 +1,4 @@
-/* $Id: fundamental_matrix.c 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: fundamental_matrix.c 25592 2020-06-29 19:12:01Z kobus $
  */
 #include "slic/fundamental_matrix.h"
 
@@ -146,7 +146,6 @@ static int get_Sampson_distance
 )
 {
     Vector *xF_vp = NULL;
-    Vector *yF_vp = NULL;
     Vector *yFt_vp = NULL;
     int i;
     double a;
@@ -185,7 +184,6 @@ int get_fundamental_matrix_distance
 )
 {
     int i;
-    int j;
     int num = x_mp->num_rows;
     Vector *dist_vp = NULL;
     Vector *x_vp = NULL;
@@ -227,7 +225,6 @@ int get_fundamental_matrix_fitting_error
 )
 {
     Vector *dist_vp = NULL;
-    int result;
 
     if(fit_err_ptr == NULL) return NO_ERROR;
 
@@ -242,13 +239,13 @@ int get_fundamental_matrix_fitting_error
 
 int is_fundamental_matrix_degenerate
 (
-    const Matrix *x_mp
+    const Matrix* __attribute__((unused)) x_mp
 )
 {
     return 0;
 }
 
-int test_fundamental_matrix()
+int test_fundamental_matrix(void)
 {
     Matrix *x_mp = NULL;
     Matrix *y_mp = NULL;

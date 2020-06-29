@@ -17,7 +17,11 @@
 #define DEFAULT_LINES_MAX 12
 #define DEFAULT_ITERATIONS 500000
 #define DEFAULT_TOLERANCE 0.00001
+/* Kobus, summer 2020. I do not know where this number comes from, but it does
+ * not quite fit into uint32. So I am dropping the last two digits.
 #define TEST_CORR_RANDOM_SEED 114213378528
+*/
+#define TEST_CORR_RANDOM_SEED 1142133785
 
 void runTest(int);
 void PASS_OR_FAIL(int);
@@ -146,8 +150,6 @@ void runTest(int test_id) {
     double maxerr=0.0;
     double curerr=0.0;
     double totErr=0.0;
-    double ptErr=0.0;
-    double lnErr=0.0;
     Matrix* temp=0;
     Vector_vector* p2dt=0;
     Vector_vector* p3dt=0;
@@ -390,3 +392,4 @@ void PASS_OR_FAIL(int pof)
         tests_failed++;
     }
 }
+

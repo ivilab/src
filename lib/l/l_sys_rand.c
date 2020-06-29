@@ -68,6 +68,7 @@ static double (*ivi_rand_2_function)(void) = &ivi_rand_2_st;
 
 typedef union Seed_union
 {
+    ivi_uint32 u32;
     ivi_int32 i32;
     ivi_uint16 u16[ 2 ];
 }
@@ -451,8 +452,8 @@ double ivi_rand(void)
 
 void ivi_seed_rand_with_tod(void)
 {
-    ivi_int32 first_value;
-    ivi_int32 second_value;
+    ivi_uint32 first_value;
+    ivi_uint32 second_value;
 
     first_value = time((time_t *)NULL);
     second_value = time((time_t *)NULL);
@@ -486,12 +487,12 @@ void ivi_seed_rand_with_tod(void)
  * -----------------------------------------------------------------------------
 */
 
-void ivi_seed_rand(ivi_int32 first_seed_value, ivi_int32 second_seed_value)
+void ivi_seed_rand(ivi_uint32 first_seed_value, ivi_uint32 second_seed_value)
 {
     Seed_union first_seed, second_seed;
 
-    first_seed.i32 = first_seed_value;
-    second_seed.i32 = second_seed_value;
+    first_seed.u32 = first_seed_value;
+    second_seed.u32 = second_seed_value;
 
 
 #ifdef MSB_FIRST

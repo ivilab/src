@@ -1,13 +1,13 @@
 #include <graph/hungarian.h>
 
 /*
- * $Id: test_hun2.c 13646 2013-01-24 04:56:05Z predoehl $
+ * $Id: test_hun2.c 25592 2020-06-29 19:12:01Z kobus $
  */
 
 #define NRW 6   /* number of rows       */
 #define NCL NRW /* number of columns    */
 
-int main( int argc, char** argv )
+int main(void)
 {
     int iii, jjj, nnn, cost;
     Int_matrix *wt = NULL;
@@ -57,12 +57,14 @@ int main( int argc, char** argv )
     EPETE( int_hungarian( wt, &as, &cost ) );
     EPETE( as -> length == NRW ? NO_ERROR : ERROR );
 
-    test_pso( "cost = %d\n", cost );
+    TEST_PSO(("cost = %d\n", cost));
 
+#ifdef TEST
     for( iii = 0; iii < NRW; ++iii )
     {
-        test_pso( "assign row %d to column %d.\n", iii, as[ iii ] );
+        TEST_PSO(("assign row %d to column %d.\n", iii, as[ iii ]));
     }
+#endif
 
     return EXIT_SUCCESS;
 }

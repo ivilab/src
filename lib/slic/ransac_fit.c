@@ -1,4 +1,4 @@
-/* $Id: ransac_fit.c 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: ransac_fit.c 25592 2020-06-29 19:12:01Z kobus $
  */
 #include "slic/ransac_fit.h"
 
@@ -117,8 +117,7 @@ int set_ransac_options(const char* option, const char* value)
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-int calculate_max_num_iterations(int min_num_samples);
-int calculate_max_num_iterations(int min_num_samples)
+static int calculate_max_num_iterations(int min_num_samples)
 {
   /* probability that any selected data point is an inlier, w */
   /* double frac = ((double)fs_minimum_num_inliers_percentage) / num_points; /\* (# of inliers) / (total # of points) *\/ */

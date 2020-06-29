@@ -1,4 +1,4 @@
-/* $Id: fundamental_matrix.h 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: fundamental_matrix.h 25592 2020-06-29 19:12:01Z kobus $
  */
 #ifndef SLIC_FUNDAMENTAL_MATRIX_DEFINED_H_
 #define SLIC_FUNDAMENTAL_MATRIX_DEFINED_H_
@@ -42,7 +42,7 @@ int is_fundamental_matrix_degenerate
     const Matrix *x_mp
 );
 
-int test_fundamental_matrix();
+int test_fundamental_matrix(void);
 
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE

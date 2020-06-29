@@ -1,5 +1,5 @@
 
-/* $Id: a4-sep.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: a4-sep.c 25592 2020-06-29 19:12:01Z kobus $ */
 
 
 /* =========================================================================== *
@@ -22,7 +22,7 @@
 #define NUM_SCALES      5
 
 
-int main(int argc, char** argv)
+int main(void)
 {
     int        num_rows, num_cols;
     Matrix*    mp        = NULL;

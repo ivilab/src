@@ -1,5 +1,5 @@
 
-/* $Id: read_image_null.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: read_image_null.c 25592 2020-06-29 19:12:01Z kobus $ */
 
 
 #include "i/i_incl.h"
@@ -9,7 +9,7 @@
  * null name. 
 */
 
-int main(int argc, char** argv)
+int main(void)
 {
     IVI_image* ip = NULL;
 

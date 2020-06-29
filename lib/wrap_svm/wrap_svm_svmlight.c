@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_svmlight.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: wrap_svm_svmlight.c 25592 2020-06-29 19:12:01Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -45,9 +45,9 @@ extern "C" {
 
 int do_svmlight_svm_computation
 (
-    const char* dummy_training_file_name,
-    const char* dummy_model_file_name,
-    const char* dummy_scale_path
+    const char* __attribute__((unused)) dummy_training_file_name,
+    const char* __attribute__((unused)) dummy_model_file_name,
+    const char* __attribute__((unused)) dummy_scale_path
 )
 {
     set_error("SVM light is not currently supported.");
@@ -63,10 +63,10 @@ int do_svmlight_svm_computation
 
 int do_svmlight_svm_prediction
 (
-    const char* dummy_input_file_name,
-    const char* dummy_model_file_name,
-    const char* dummy_prediction_file_name,
-    const char* dummy_scale_path
+    const char* __attribute__((unused)) dummy_input_file_name,
+    const char* __attribute__((unused)) dummy_model_file_name,
+    const char* __attribute__((unused)) dummy_prediction_file_name,
+    const char* __attribute__((unused)) dummy_scale_path
 )
 {
     set_error("SVM light is not currently supported.");

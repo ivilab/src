@@ -15,7 +15,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-int main(int argc, char* argv[])
+int main(void)
 {
     IVI_image* ip = NULL; 
 

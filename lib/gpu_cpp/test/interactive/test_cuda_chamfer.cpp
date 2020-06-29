@@ -50,9 +50,6 @@
 #ifdef IVI_HAVE_CUDA
 #include <cuda.h>
 #include <cudaGL.h>
-#else
-#error "cuda required"
-#endif
 
 using namespace ivi;
 using namespace ivi::opengl;
@@ -501,3 +498,11 @@ int main(int argc, char* argv[])
     
     return 0;
 }
+
+#else  // Case no IVI_HAVE_CUDA
+int main(void)
+{
+    std::cerr << "This test program needs cudo to do anything.\n";
+    return EXIT_FAILURE;
+}
+#endif

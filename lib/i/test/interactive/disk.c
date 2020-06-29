@@ -1,12 +1,12 @@
 /*
- * $Id: disk.c 25499 2020-06-14 13:26:04Z kobus $ 
+ * $Id: disk.c 25592 2020-06-29 19:12:01Z kobus $ 
  */
 
 #include <i/i_float.h>
 #include <i/i_draw.h>
 #include <i/i_float_io.h>
 
-int main(int argc, char** argv)
+int main(void)
 {
     IVI_image *i = NULL;
 

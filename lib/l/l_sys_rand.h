@@ -41,8 +41,8 @@ void   ivi_seed_rand_with_tod    (void);
 
 void   ivi_seed_rand
 (
-    ivi_int32 first_seed_value,
-    ivi_int32 second_seed_value
+    ivi_uint32 first_seed_value,
+    ivi_uint32 second_seed_value
 );
 
 void   ivi_seed_rand_with_3_short(unsigned short buff[ 3 ]);

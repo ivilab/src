@@ -1,10 +1,10 @@
 
-/* $Id: expand_hull.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: expand_hull.c 25592 2020-06-29 19:12:01Z kobus $ */
 
 
 #include "h/h_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     Hull* hp;
     Hull* new_hp; 

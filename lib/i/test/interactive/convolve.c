@@ -1,5 +1,5 @@
 
-/* $Id: convolve.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: convolve.c 25592 2020-06-29 19:12:01Z kobus $ */
 
 
 /* =========================================================================== *
@@ -104,7 +104,9 @@ static int old_gauss_convolve_image
             double r_sum      = 0.0;
             double g_sum      = 0.0;
             double b_sum      = 0.0;
+#ifdef OBSOLETE_NORMALIZE_CONVOLUTIONS 
             double weight_sum = 0.0;
+#endif 
             double weight; 
 
             for (mi = 0; mi < mask_size; mi++)

@@ -1,4 +1,4 @@
-/* $Id: ransac_fit.h 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: ransac_fit.h 25592 2020-06-29 19:12:01Z kobus $
  */
 #ifndef SLIC_RANSAC_DEFINED_H_
 #define SLIC_RANSAC_DEFINED_H_
@@ -89,6 +89,18 @@ int ransac_fit_error
 /*     Int_vector   **index_ivpp, */
 /*     double       *fit_err_ptr */
 /* ); */
+
+int ransac_fit_2
+(
+    const Matrix *x_mp,
+    const Matrix *y_mp,
+    int          max_num_tries,
+    int          min_num_samples,
+    double       good_fit_threshold,
+    Matrix       **a_mpp,
+    Int_vector   **index_ivpp,
+    double       *fit_err_ptr
+);
 
 int ransac_fit_constrained
 (

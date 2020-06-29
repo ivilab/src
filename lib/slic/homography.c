@@ -1,4 +1,4 @@
-/* $Id: homography.c 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: homography.c 25592 2020-06-29 19:12:01Z kobus $
  */
 #include "slic/homography.h"
 #include "slic/affine.h"
@@ -201,8 +201,8 @@ int normalize_2Dpoints
 
     ERE(ow_multiply_vector_by_scalar(mean_vp, -1.0));
     ERE(ow_subtract_row_vector_from_matrix(ext_pts_mp, mean_vp)); /*make it be the original matrix */
-    if(new_pts_mpp != NULL) ERE(multiply_by_transpose(new_pts_mpp, ext_pts_mp, t_mp));
-    if(t_mpp != NULL) ERE(copy_matrix(t_mpp, t_mp));
+    if (new_pts_mpp != NULL) { ERE(multiply_by_transpose(new_pts_mpp, ext_pts_mp, t_mp)); }
+    if (t_mpp != NULL) { ERE(copy_matrix(t_mpp, t_mp)); }
 
     free_matrix(ext_pts_mp);
     free_matrix(t_mp);
@@ -653,11 +653,11 @@ int verify_homography
 )
 {
     Vector *dist_vp = NULL;
-    int id;
+    int id = ERROR;
 
     ERE(get_homography_distance(x_mp, y_mp,H_mp, &dist_vp));
 
-    if(err_ptr)
+    if (err_ptr)
     {
         id = get_max_vector_element(dist_vp, err_ptr);
     }
@@ -704,7 +704,7 @@ int verify_homography_set
         }
     }
 
-    if(err_vpp != NULL) ERE(copy_vector(err_vpp, err_vp));
+    if (err_vpp != NULL) { ERE(copy_vector(err_vpp, err_vp)); }
 
     free_vector(err_vp);
 

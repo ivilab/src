@@ -1,4 +1,4 @@
-/* $Id: affine.c 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: affine.c 25592 2020-06-29 19:12:01Z kobus $
  */
 #include "slic/affine.h"
 
@@ -172,6 +172,7 @@ int fit_affine
     return result;
 }
 
+#ifdef UNUSED
 /* Compute the affine transformation between two data sets x and y, which
    follow,
    y1=a11 * x1 + a12 * x2 + a13 * x3 + ... + a1n * xn + c1
@@ -189,7 +190,7 @@ int fit_affine
 
    Note if x and y are colinear, an error will be thrown out.
 */
-int fit_n_dimension_affine
+static int fit_n_dimension_affine
 (
     const Matrix *x_mp,
     const Matrix *y_mp,
@@ -266,6 +267,7 @@ int fit_n_dimension_affine
 
     return result;
 }
+#endif 
 
 /* inverse affine */
 int affine_inverse
@@ -902,7 +904,8 @@ int do_color_constancy
     return result;
 }
 
-int do_color_constancy_with_position
+#ifdef UNUSED
+static int do_color_constancy_with_position
 (
     const IVI_image *src_img,
     const IVI_image *target_img,
@@ -996,6 +999,7 @@ int do_color_constancy_with_position
 
     return result;
 }
+#endif
 
 
 int constraint_affine_2
@@ -1059,7 +1063,8 @@ int constraint_affine_2
 }
 
 
-int main1(int argc, char *argv[])
+#ifdef UNUSED
+static int main1(int __attribute__((unused)) argc, char *argv[])
 {
     Matrix *A_mp = NULL;
     Matrix *R_mp = NULL;
@@ -1132,3 +1137,4 @@ int main1(int argc, char *argv[])
     
     return 0;
 }
+#endif 

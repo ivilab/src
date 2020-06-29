@@ -1,18 +1,9 @@
-/* $Id: image_interp.c 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: image_interp.c 25592 2020-06-29 19:12:01Z kobus $
  */
 #include "l/l_sys_debug.h"   /* For ASSERT */
 #include "slic/affine.h"
 #include "slic/homography.h"
 #include "slic/image_interp.h"
-
-#warning "[code police] Better to use MIN_OF, MAX_OF in lib/l/l_def.h"
-#warning "[code police] Also, PI appears unused, but if it is needed, it is"
-#warning "[code police] better to use standard symbol M_PI."
-
-/* Struct and Constants*/
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define PI 3.1415926535897932
 
 typedef struct point
 {
@@ -20,18 +11,17 @@ typedef struct point
     double y;
 } point;
 
-
-#warning "[code police] Private (file-scope) functions should be made static."
-/* These are private functions */
-void sum_triangle1 ( const IVI_image * src, double top, double bottom, double left, double right,
-             double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-void sum_triangle2 ( const IVI_image * src, double top, double bottom, double left, double right,
-             double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-void sum_triangle3 ( const IVI_image * src, double top, double bottom, double left, double right,
-             double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-void sum_triangle4 ( const IVI_image * src, double top, double bottom, double left, double right,
-             double * dest_r, double * dest_g, double * dest_b, double * dest_w );
-int transform ( const IVI_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp );
+static void sum_triangle1 (const IVI_image * src, double top, double bottom, double left, double right,
+                           double * dest_r, double * dest_g, double * dest_b, double * dest_w );
+static void sum_triangle2 (const IVI_image * src, double top, double bottom, double left, double right,
+                           double * dest_r, double * dest_g, double * dest_b, double * dest_w );
+static void sum_triangle3 (const IVI_image * src, double top, double bottom, double left, double right,
+                           double * dest_r, double * dest_g, double * dest_b, double * dest_w );
+static void sum_triangle4 (const IVI_image * src, double top, double bottom, double left, double right,
+                           double * dest_r, double * dest_g, double * dest_b, double * dest_w );
+static void sum_rectangle (const IVI_image * src, double bottom, double top, double left, double right,
+                           double * dest_r, double * dest_g, double * dest_b, double * dest_w);
+static int transform (const IVI_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp );
 
 
 
@@ -194,7 +184,7 @@ cleanup:
 }
 
 
-int transform ( const IVI_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp )
+static int transform ( const IVI_image * src, int dest_x, int dest_y, point * p, const Matrix * trans_mp )
 {
     Vector *v = NULL, *v2 = NULL;
     
@@ -231,7 +221,7 @@ int transform ( const IVI_image * src, int dest_x, int dest_y, point * p, const 
 }
 /* fixme: combine triangle functions into 1 */
 
-void sum_triangle4 ( const IVI_image * src, double top, double bottom, double left, double right,
+static void sum_triangle4 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -243,16 +233,16 @@ void sum_triangle4 ( const IVI_image * src, double top, double bottom, double le
     */
     
     int ibottom, itop, ileft, imid, iright, i, j;
-    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dx3, dy, dy2, 
+    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dy, dy2, 
         r = 0.0, g = 0.0, b = 0.0, w = 0.0, bb, db;
     
-    itop = (int)floor(top);
-    ibottom = (int)floor(bottom);
-    iright = (int)floor(right);
+    itop = ivi_rint(floor(top));
+    ibottom = ivi_rint(floor(bottom));
+    iright = ivi_rint(floor(right));
     
     /* special case: single pixel */
     
-    if ((itop == ibottom) && (iright == (int)floor(left)))
+    if ((itop == ibottom) && (iright == ivi_rint(floor(left))))
     {   
         if ((itop >= 0) && (itop < src->num_rows) && (iright >= 0) && (iright < src->num_cols))
         {
@@ -299,8 +289,8 @@ void sum_triangle4 ( const IVI_image * src, double top, double bottom, double le
             goto last;
         
         /*ASSERT(((i == ibottom) || (mid <= right)));*/
-        imid = (int)floor(mid);
-        ileft = (int)floor(x);
+        imid = ivi_rint(floor(mid));
+        ileft = ivi_rint(floor(x));
         
         /* section 0: right side */
         
@@ -401,7 +391,7 @@ void sum_triangle4 ( const IVI_image * src, double top, double bottom, double le
                 
             ASSERT((weight >= 0.0) && (weight <= 1.0));
                 
-            for (j = min(iright - 1, src->num_cols - 1); (j > imid) && (j >= 0); j--)
+            for (j = MIN_OF(iright - 1, src->num_cols - 1); (j > imid) && (j >= 0); j--)
             {
                 r += src->pixels[i][j].r * weight;
                 g += src->pixels[i][j].g * weight;
@@ -437,8 +427,8 @@ void sum_triangle4 ( const IVI_image * src, double top, double bottom, double le
         /* section 3: trapezoids */
         
         if (i == ibottom)
-            j = min(iright - 1, src->num_cols - 1); else
-            j = min(imid - 1, src->num_cols - 1);
+            j = MIN_OF(iright - 1, src->num_cols - 1); else
+            j = MIN_OF(imid - 1, src->num_cols - 1);
             
         y_left = top - (j + 1 - left) * m;
         
@@ -516,7 +506,7 @@ last:
     *dest_w = w;
 }
 
-void sum_triangle3 ( const IVI_image * src, double top, double bottom, double left, double right,
+static void sum_triangle3 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -528,16 +518,16 @@ void sum_triangle3 ( const IVI_image * src, double top, double bottom, double le
     */
     
     int ibottom, itop, ileft, imid, iright, i, j;
-    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dx3, dy, dy2, 
+    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dy, dy2, 
         r = 0.0, g = 0.0, b = 0.0, w = 0.0, bb, db;
     
-    itop = (int)floor(top);
-    ibottom = (int)floor(bottom);
-    ileft = (int)floor(left);
+    itop = ivi_rint(floor(top));
+    ibottom = ivi_rint(floor(bottom));
+    ileft = ivi_rint(floor(left));
     
     /* special case: single pixel */
     
-    if ((itop == ibottom) && (ileft == (int)floor(right)))
+    if ((itop == ibottom) && (ileft == ivi_rint(floor(right))))
     {   
         if ((itop >= 0) && (itop < src->num_rows) && (ileft >= 0) && (ileft < src->num_cols))
         {
@@ -584,8 +574,8 @@ void sum_triangle3 ( const IVI_image * src, double top, double bottom, double le
             goto last;
         
         /*ASSERT(((i == ibottom) || (left <= mid)));*/
-        imid = (int)floor(mid);
-        iright = (int)floor(x);
+        imid = ivi_rint(floor(mid));
+        iright = ivi_rint(floor(x));
         
         /* section 0: left side */
         
@@ -686,7 +676,7 @@ void sum_triangle3 ( const IVI_image * src, double top, double bottom, double le
                 
             ASSERT((weight >= 0.0) && (weight <= 1.0));
                 
-            for (j = max(ileft + 1, 0); (j < imid) && (j < src->num_cols); j++)
+            for (j = MAX_OF(ileft + 1, 0); (j < imid) && (j < src->num_cols); j++)
             {
                 r += src->pixels[i][j].r * weight;
                 g += src->pixels[i][j].g * weight;
@@ -722,8 +712,8 @@ void sum_triangle3 ( const IVI_image * src, double top, double bottom, double le
         /* section 3: trapezoids */
         
         if (i == ibottom)
-            j = max(ileft + 1, 0); else
-            j = max(imid + 1, 0);
+            j = MAX_OF(ileft + 1, 0); else
+            j = MAX_OF(imid + 1, 0);
             
         y_right = top - (right - j) * m;
         
@@ -801,7 +791,7 @@ last:
     *dest_w = w;
 }
 
-void sum_triangle2 ( const IVI_image * src, double top, double bottom, double left, double right,
+static void sum_triangle2 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -813,16 +803,16 @@ void sum_triangle2 ( const IVI_image * src, double top, double bottom, double le
     */
     
     int ibottom, itop, ileft, imid, iright, i, j;
-    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dx3, dy, dy2, 
+    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dy, dy2, 
         r = 0.0, g = 0.0, b = 0.0, w = 0.0, bb, db;
     
-    itop = (int)floor(top);
-    ibottom = (int)floor(bottom);
-    iright = (int)floor(right);
+    itop = ivi_rint(floor(top));
+    ibottom = ivi_rint(floor(bottom));
+    iright = ivi_rint(floor(right));
     
     /* special case: single pixel */
     
-    if ((itop == ibottom) && (iright == (int)floor(left)))
+    if ((itop == ibottom) && (iright == ivi_rint(floor(left))))
     {   
         if ((itop >= 0) && (itop < src->num_rows) && (iright >= 0) && (iright < src->num_cols))
         {
@@ -869,8 +859,8 @@ void sum_triangle2 ( const IVI_image * src, double top, double bottom, double le
             goto last;
         
         /*ASSERT(((i == itop) || (mid <= right)));*/
-        imid = (int)floor(mid);
-        ileft = (int)floor(x);
+        imid = ivi_rint(floor(mid));
+        ileft = ivi_rint(floor(x));
         
         /* section 0: right side */
         
@@ -971,7 +961,7 @@ void sum_triangle2 ( const IVI_image * src, double top, double bottom, double le
                 
             ASSERT((weight >= 0.0) && (weight <= 1.0));
                 
-            for (j = min(iright - 1, src->num_cols - 1); (j > imid) && (j >= 0); j--)
+            for (j = MIN_OF(iright - 1, src->num_cols - 1); (j > imid) && (j >= 0); j--)
             {
                 r += src->pixels[i][j].r * weight;
                 g += src->pixels[i][j].g * weight;
@@ -1007,8 +997,8 @@ void sum_triangle2 ( const IVI_image * src, double top, double bottom, double le
         /* section 3: trapezoids */
         
         if (i == itop)
-            j = min(iright - 1, src->num_cols - 1); else
-            j = min(imid - 1, src->num_cols - 1);
+            j = MIN_OF(iright - 1, src->num_cols - 1); else
+            j = MIN_OF(imid - 1, src->num_cols - 1);
             
         y_left = (j + 1 - left) * m + bottom;
         
@@ -1086,7 +1076,7 @@ last:
     *dest_w = w;
 }
 
-void sum_triangle1 ( const IVI_image * src, double top, double bottom, double left, double right,
+static void sum_triangle1 ( const IVI_image * src, double top, double bottom, double left, double right,
     double * dest_r, double * dest_g, double * dest_b, double * dest_w )
 {
     /*
@@ -1098,16 +1088,16 @@ void sum_triangle1 ( const IVI_image * src, double top, double bottom, double le
     */
     
     int ibottom, itop, ileft, imid, iright, i, j;
-    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dx3, dy, dy2, 
+    double inv_m, m, x, y_left, y_right, mid, weight, dx, dx2, dy, dy2, 
         r = 0.0, g = 0.0, b = 0.0, w = 0.0, bb, db;
     
-    itop = (int)floor(top);
-    ibottom = (int)floor(bottom);
-    ileft = (int)floor(left);
+    itop = ivi_rint(floor(top));
+    ibottom = ivi_rint(floor(bottom));
+    ileft = ivi_rint(floor(left));
     
     /* special case: single pixel */
     
-    if ((itop == ibottom) && (ileft == (int)floor(right)))
+    if ((itop == ibottom) && (ileft == ivi_rint(floor(right))))
     {   
         if ((itop >= 0) && (itop < src->num_rows) && (ileft >= 0) && (ileft < src->num_cols))
         {
@@ -1154,8 +1144,8 @@ void sum_triangle1 ( const IVI_image * src, double top, double bottom, double le
             goto last;
         
         /*ASSERT(((i == itop) || (left <= mid)));*/
-        imid = (int)floor(mid);
-        iright = (int)floor(x);
+        imid = ivi_rint(floor(mid));
+        iright = ivi_rint(floor(x));
         
         /* section 0: left side */
         
@@ -1256,7 +1246,7 @@ void sum_triangle1 ( const IVI_image * src, double top, double bottom, double le
                 
             ASSERT((weight >= 0.0) && (weight <= 1.0));
                 
-            for (j = max(ileft + 1, 0); (j < imid) && (j < src->num_cols); j++)
+            for (j = MAX_OF(ileft + 1, 0); (j < imid) && (j < src->num_cols); j++)
             {
                 r += src->pixels[i][j].r * weight;
                 g += src->pixels[i][j].g * weight;
@@ -1292,8 +1282,8 @@ void sum_triangle1 ( const IVI_image * src, double top, double bottom, double le
         /* section 3: trapezoids */
         
         if (i == itop)
-            j = max(ileft + 1, 0); else
-            j = max(imid + 1, 0);
+            j = MAX_OF(ileft + 1, 0); else
+            j = MAX_OF(imid + 1, 0);
             
         y_right = (right - j) * m + bottom;
         
@@ -1371,17 +1361,17 @@ last:
     *dest_w = w;
 }
 
-void sum_rectangle ( const IVI_image * src, double bottom, double top, double left, double right,
-    double * dest_r, double * dest_g, double * dest_b, double * dest_w )
+static void sum_rectangle (const IVI_image * src, double bottom, double top, double left, double right,
+    double * dest_r, double * dest_g, double * dest_b, double * dest_w)
 {
     int itop, ileft, iright, ibottom, i, j;
     double weight, dx_left, dx_right, dy_top, dy_bottom;
     double r = 0.0, g = 0.0, b = 0.0, w = 0.0;
 
-    itop = (int)floor(top);
-    ibottom = (int)floor(bottom);
-    ileft = (int)floor(left);
-    iright = (int)floor(right);
+    itop = ivi_rint(floor(top));
+    ibottom = ivi_rint(floor(bottom));
+    ileft = ivi_rint(floor(left));
+    iright = ivi_rint(floor(right));
 
     if ((ibottom >= src->num_rows) || (ileft >= src->num_cols))
     {
@@ -1441,7 +1431,7 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
 
             /* middle row */
 
-            for (i = max(ileft + 1, 0); (i < iright) && (i < src->num_cols); i++)
+            for (i = MAX_OF(ileft + 1, 0); (i < iright) && (i < src->num_cols); i++)
             {
                 r += src->pixels[ibottom][i].r * dy_bottom;
                 g += src->pixels[ibottom][i].g * dy_bottom;
@@ -1490,7 +1480,7 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
 
             /* middle column */
 
-            for (i = max(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
+            for (i = MAX_OF(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
             {
                 r += src->pixels[i][ileft].r * dx_left;
                 g += src->pixels[i][ileft].g * dx_left;
@@ -1539,7 +1529,7 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
 
         /* top middle row */
         
-        for (i = max(ileft + 1, 0); (i < iright) && (i < src->num_cols); i++)
+        for (i = MAX_OF(ileft + 1, 0); (i < iright) && (i < src->num_cols); i++)
         {           
             r += src->pixels[itop][i].r * dy_top;
             g += src->pixels[itop][i].g * dy_top;
@@ -1563,7 +1553,7 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
     
     if (ileft >= 0)
     {
-        for (i = max(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
+        for (i = MAX_OF(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
         {           
             r += src->pixels[i][ileft].r * dx_left;
             g += src->pixels[i][ileft].g * dx_left;
@@ -1574,9 +1564,9 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
 
     /* center area */
     
-    for (i = max(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
+    for (i = MAX_OF(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
     {   
-        for (j = max(ileft + 1, 0); (j < iright) && (j < src->num_cols); j++)
+        for (j = MAX_OF(ileft + 1, 0); (j < iright) && (j < src->num_cols); j++)
         {       
             r += src->pixels[i][j].r;
             g += src->pixels[i][j].g;
@@ -1589,7 +1579,7 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
     
     if ((iright >= 0) && (iright < src->num_cols))
     {
-        for (i = max(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
+        for (i = MAX_OF(ibottom + 1, 0); (i < itop) && (i < src->num_rows); i++)
         {
             r += src->pixels[i][iright].r * dx_right;
             g += src->pixels[i][iright].g * dx_right;
@@ -1613,7 +1603,7 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
 
         /* bottom middle row */
 
-        for (i = max(ileft + 1, 0); (i < iright) && (i < src->num_cols); i++)
+        for (i = MAX_OF(ileft + 1, 0); (i < iright) && (i < src->num_cols); i++)
         {
             r += src->pixels[ibottom][i].r * dy_bottom;
             g += src->pixels[ibottom][i].g * dy_bottom;
@@ -1641,31 +1631,23 @@ void sum_rectangle ( const IVI_image * src, double bottom, double top, double le
 
 int interp
 (
-    const IVI_image *src_ip,
-    const Matrix     *trans_mp,
+    const IVI_image* src_ip,
+    const Matrix*    __attribute__((unused)) trans_mp,
     int              width,
     int              height,
-    const Matrix     *trans_rect_mp,
-    IVI_image        **target_ipp,
-    Int_matrix       **mask_impp,
-    const Matrix    *t_mp
+    const Matrix*    trans_rect_mp,
+    IVI_image**      target_ipp,
+    Int_matrix**     mask_impp,
+    const Matrix*    t_mp
 )
 {
     int result = NO_ERROR;
     int i, j, k, k_next, bounds;
-    int id;
     IVI_image *target_ip = NULL;
-    double x, y;
-    double normx, normy;
-    int p1x, p1y;
-    Pixel p1, p2;
-    double t1_r, t1_g, t1_b, t2_r, t2_g, t2_b;
-    int num_rows = src_ip->num_rows;
-    int num_cols = src_ip->num_cols;
     Int_matrix *mask_imp = NULL;
     int startx, starty, endx, endy;
     Matrix *inv_mp = NULL;
-    point corners[4], p;
+    point corners[4];
     double box_left, box_right, box_top, box_bottom, r_sum, g_sum, b_sum, w_sum, r, g, b, w;
 
     if(target_ipp == NULL) return NO_ERROR;

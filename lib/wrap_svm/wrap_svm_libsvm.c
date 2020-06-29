@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_libsvm.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: wrap_svm_libsvm.c 25592 2020-06-29 19:12:01Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -105,12 +105,32 @@ static void libsvm_output(int, double, const double *, const double  *, FILE *);
 static char *libsvm_readline( FILE *);
 /* -------------------------------------------------------------------------- */
 
+#else 
+
+/* -----------------------------------------------------------------------------
+|                              no LIBSVM
+|                                  ||
+|                                 \||/
+|                                  \/
+*/
+static void set_dont_have_libsvm_error(void)
+{
+    set_error("Operation failed because the program was built without ");
+    cat_error("the LIBSVM interface.");
+    add_error("(Appropriate re-compiling is needed to fix this.)");
+}
+/*
+|                                  /\
+|                                 /||\
+|                                  ||
+|                              no LIBSVM
+----------------------------------------------------------------------------- */
 #endif
 
+#ifdef IVI_HAVE_LIBSVM
 int set_libsvm_options(const char* option, const char* value)
 {
     int  result         = NOT_FOUND;
-#ifdef IVI_HAVE_LIBSVM
     char lc_option[ 100 ];
     int  temp_int_value;
     double temp_double_value;
@@ -192,32 +212,30 @@ int set_libsvm_options(const char* option, const char* value)
         }
         result = NO_ERROR;
     }
-#endif
 
     return result;
 }
-
-
-#ifndef IVI_HAVE_LIBSVM
+/*
+|                                  /\
+|                                 /||\
+|                                  ||
+|                              IVI_HAVE_LIBSVM
+----------------------------------------------------------------------------- */
+#else
 /* -----------------------------------------------------------------------------
 |                              no LIBSVM
 |                                  ||
 |                                 \||/
 |                                  \/
 */
-static void set_dont_have_libsvm_error(void)
+int set_libsvm_options(const char* __attribute__((unused)) option, const char* __attribute__((unused)) value)
 {
-    set_error("Operation failed because the program was built without ");
-    cat_error("the LIBSVM interface.");
-    add_error("(Appropriate re-compiling is needed to fix this.)");
+    set_dont_have_libsvm_error();
+    return ERROR;
 }
-/*
-|                                  /\
-|                                 /||\
-|                                  ||
-|                              no LIBSVM
------------------------------------------------------------------------------ */
 #endif
+
+
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -334,7 +352,6 @@ int do_libsvm_svm_computation
 |                                 \||/
 |                                  \/
 */
-
 int do_libsvm_svm_computation
 (
     const char* __attribute__((unused)) dummy_training_file_name,
@@ -342,7 +359,6 @@ int do_libsvm_svm_computation
     const char* __attribute__((unused)) dummy_scale_path
 )
 {
-
 
     set_dont_have_libsvm_error();
     return ERROR;

@@ -136,6 +136,7 @@ int get_enlarged_frame_dimensions
     enlarged_frame_dimensions_imp->elements[1][0] = frame_height*ratio;
   }
 
+  return NO_ERROR;
 }
 
 int back_project_frame_slide_to_slide_enlarged
@@ -161,7 +162,6 @@ int back_project_frame_slide_to_slide_enlarged
     IVI_image       *tmp_bp_ip = NULL;
     IVI_image       *scaled_frame_ip = NULL;
     int i,j;
-    double enlarged_frame_width, enlarged_frame_height;
     Int_matrix *enlarged_frame_dimensions = NULL;
     double frame_ratio;
     Matrix    *scaled_H_mp = NULL;

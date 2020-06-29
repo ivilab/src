@@ -6,7 +6,10 @@ static int (*fitting_func)(const Matrix *, const Matrix *, Matrix **, double *) 
 static int (*dist_func)(const Matrix *, const Matrix *, const Matrix *, Vector **) = get_homography_distance; 
 static int (*degen_func)(const Matrix *) = is_homography_degenerate;
 
+#ifdef MOT_USED
 static int fs_max_random_trials = 100; 
+#endif
+
 static double fs_prob = 0.99; /* Desired probability of choosing at least one
                               sample free from outliers */ 
 
@@ -20,12 +23,14 @@ static double fs_prob = 0.99; /* Desired probability of choosing at least one
     Matrix       **rand_y_mpp
 );*/
 
+#ifdef MOT_USED
 static int generate_random_index
 (
     int              m,
     int              n,
     Int_vector       **index_ivpp
 );
+#endif 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
@@ -74,13 +79,16 @@ int ransac_fit_constrained
     Matrix *B_mp = NULL;
     Matrix *a_mp = NULL;
     Int_vector *index_ivp = NULL;
-    int i;
     int try_num = 0; /* counter for trials */
     int count;
     int new_count;
     int max_inliers = 0;
     int result;
     int N = INT_MAX; /* dummy initialization for number of trials */
+/* Kobus. Summer 2020. This should proabaly go into the test directory?
+ * Declaring it to be static for now. 
+*/
+
     double pNoOutliers;
     double frac;
     double d_N;
@@ -332,23 +340,29 @@ int ransac_fit_constrained_homography
 
 
 
-int main21(int argc, char *argv[])
+#ifdef NOT_USED
+/* Kobus. This should proabaly go into the test directory? Declaring it to be
+ * static for now. 
+*/
+static int main21(int argc, char *argv[])
 {
     Matrix *x_mp = NULL;
     Matrix *y_mp = NULL;
     Matrix *a_mp = NULL;
-    Matrix *x_fit_mp = NULL;
+    /* Matrix *x_fit_mp = NULL; */
     Matrix *y_fit_mp = NULL;
     Int_vector *index_ivp = NULL;
     int i;
     double tmp;
-    int id;
     IVI_image *src_ip = NULL;
     IVI_image *dst_ip = NULL;
     int num_rows, num_cols;
     int warp_type;
     Vector *dist_vp = NULL;
     Matrix *inv_mp = NULL;
+
+    /* Kobus. Avoid crashing. */
+    check_num_args(argc, 2, 2, NULL);
 
     read_matrix(&x_mp, argv[1]);
     read_matrix(&y_mp, argv[2]);
@@ -447,4 +461,7 @@ int main21(int argc, char *argv[])
 
     return 0;
 }
+#endif 
+
+
 

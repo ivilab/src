@@ -23,7 +23,7 @@
 #include <i/i_float.h>
 #include <i/i_float_io.h>
 
-int main (int argc, char *argv[])
+int main(void)
 {
     IVI_image* ip = NULL;
     const int NUM_ROWS = 256;
