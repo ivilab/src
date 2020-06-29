@@ -6,12 +6,13 @@
 #     A script to build the file Makefile-libs-needed
 #
 # Description:
-#     This script builds the file Makefile-libs-needed" (technically,
-#     Makefile-libs-needed${VAR_CACHE_SUFFIX}) in the directory given
-#     by the first parameter, or the current directory if there are no
-#     parameters. In this description we will simply refer to "this directory." 
+#     This script builds the file Makefile-libs-needed (technically,
+#     Include_lines/Makefile-libs-needed/Makefile-libs-needed${VAR_CACHE_SUFFIX}) 
+#     in the directory given by the first parameter, or the current directory if
+#     there are no parameters. In this description we will simply refer to "this
+#     directory" and "Makefile-libs-needed".
 #
-#     Makefile-libs-needed contains symbols for all all optional external
+#     Makefile-libs-needed contains symbols for all optional external
 #     libraries needed by the code in this directory, as well as symbols for
 #     propagating what is needed by code that depends on this directory.
 #
@@ -25,7 +26,7 @@
 #     Makefile-libs-needed is set to ensure the linker is appropriate for C++.
 #
 #     Part two: For any IVI_HAVE_XXX found in this directory, a symbol for the
-#     compile like to provide the definitions of those symbols  is set.  
+#     compile line to provide the definitions of those symbols is set.  
 #
 #     Part three: Because IVI_HAVE_XXX may not always be used as it should, and
 #     also because the use of IVI_HAVE_XXX does not necessarily mean that the
@@ -417,7 +418,7 @@ endif
 echo " "  >> ${output_file_name}
 echo " "  >> ${output_file_name}
 
-${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 wrapping up."
+${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 is wrapping up."
 
 set is_lib = `echo ${cwd} | grep -c '^.*/lib/[^/][^/]*$'`
 
@@ -433,7 +434,7 @@ endif
 # cache.state file, which depends on the variable cache. If we are running into
 # problems, then we may need to redo this a bit. 
 #
-set cache_depend = '$(VAR_CACHE_FNAME)'
+set cache_depend = '$(VAR_CACHE_SHADOW)'
 echo ${symbolic_lib}Include_lines/cache.state : ${cache_depend} >> ${output_file_name}
 echo '	$(IVI_TOUCH) $@' >> ${output_file_name}
 echo " "  >> ${output_file_name}
@@ -462,8 +463,6 @@ unset noglob
 # ${IVI_RM} .missing_includes
 # ${IVI_RM} Makefile-libs-needed-depend
 # ${IVI_RM} Makefile-libs-needed-depend.bak
-
-cleanup:
 
 ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} leaving script build_makefile_libs_needed_2."
 

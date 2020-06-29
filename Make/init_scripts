@@ -1,16 +1,16 @@
 
-# It is easiest if this file does not emit any output. 
+# It is easiest if this file does not emit any output unless there is a fatal
+# error. 
 #
 # This file cannot assume that IVI_SRC_PATH is set, as root does not use
 # IVI_SRC_PATH. But it does assume that we have MAKE_PATH.
 #
 # This file contains overlap between what general scripts need and what
 # compiling needs. It is sourced from init_compile, and possibly from other
-# scripts, and often from .cshrc/.tcshrc.
+# scripts, and often from .cshrc or .tcshrc.
 #
 # Rather than select exactly the overlap, we include all members of a logical
 # group, e.g., all variables about Make paths or general system commands. 
-
 
 # Invariably we have IVI_HAVE_MACHINE, but if we do not, the we need to source
 # init_machine as to be standalone. This could be a different copy than the one
@@ -20,6 +20,45 @@ if (! $?IVI_HAVE_MACHINE) then
     source ${MAKE_PATH}init_machine
     if ($status) exit $status
 endif 
+
+set error_found = 0
+
+# ##############################################################################
+#
+# The construction of a list of places to look for software should be consistent
+# with Kobus's login scripts. 
+
+set path_dirs = ""
+
+# For Ocelote, probably obsolete, needs checking. TODO
+set path_dirs = "${path_dirs} /cm/local/apps/gcc/current/bin /cm/shared/apps/pbspro/current/sbin  /cm/shared/apps/pbspro/current/bin /cm/shared/uabin"
+
+# These are for El Gato. Almost certainly obsolete. TODO 
+set path_dirs = "${path_dirs} /shared/ibm/platform_lsf/9.1/linux2.6-glibc2.3-x86_64/etc /shared/ibm/platform_lsf/9.1/linux2.6-glibc2.3-x86_64/bin"
+
+# "LOCAL" paths and /misc with the string "local" in them are checked first, 
+# followed by other dirs such as those under "opt".  
+
+set path_dirs = "${path_dirs} /opt/local/bin /opt/local/sbin /opt/local/texbin /opt/bin /opt/gcc/bin /opt/java/bin /opt/X11/bin "
+set path_dirs = "${path_dirs} /usr/local/texbin /usr/local/cuda/bin /usr/local/bin /usr/local/sbin /usr/local/X11R6/bin /usr/local/X11/bin"
+set path_dirs = "${path_dirs} /misc/local/bin /misc/loca/sbin /misc/local/texbin"
+
+# Once all places that could reasonably expect to sometimes override the
+# standard places have been checked, add the standard places.
+
+set path_dirs = "${path_dirs} /usr/texbin /usr/contrib/bin /usr/contrib/bin/X11 /Developer/usr/bin"
+set path_dirs = "${path_dirs} /usr/bin /usr/sbin /usr/X11R6/bin /usr/X11/bin"
+set path_dirs = "${path_dirs} /bin /sbin"
+set path_dirs = "${path_dirs} ${HOME}/yyy"
+
+setenv IVI_PATH_DIRS ""
+foreach path_dir (${path_dirs}) 
+    if (-d "${path_dir}") then
+        setenv IVI_PATH_DIRS "${IVI_PATH_DIRS} ${path_dir}"
+    endif 
+end
+
+# ##############################################################################
 
 if (! $?IVI_WARN_LEVEL) then
     setenv IVI_WARN_LEVEL 2
@@ -62,81 +101,114 @@ else
     setenv ECHO "eval echo > /dev/null"
 endif 
 
-if(! $?TMPDIR) then
-    setenv TMPDIR "/tmp"
-endif
-
 # --------------------------------------------------------------------------------------------
 
-# It is good to declare a path to "test" if you can find one, as people often
-# create test programs called "test"!!!
-#
-if (-x "/usr/bin/test") then 
-    setenv IVI_TEST "/usr/bin/test"
-else if (-x "/bin/test") then 
-    setenv IVI_TEST "/bin/test"
-else 
-    setenv IVI_TEST "test"
-endif 
-    
 setenv IVI_ECHO             "echo"
-setenv IVI_CAT              "cat"
+
+# Which is builtin, so "which which" may not work. On Kobus's mac, tcsh's
+# builtin which does not properly support '-s'. So we avoid -s, but also try to
+# use the canonical one if we can find it.
+
+if (-x /usr/bin/which) then
+    setenv IVI_WHICH /usr/bin/which
+else
+    setenv IVI_WHICH which
+endif 
+
+# These programs are common in scripts without full path or "IVI_" and/or the
+# "IVI_" versions defined below might not have paths to reduce clutter and/or we
+# will assume that we have a valid path if we to create a version that will
+# never get confused by an alias. So we need to check that they are in our PATH. 
+#
+# Currently, if they are not in PATH, we add them, which is a bit risky, as we
+# would reall prefer the user sort out their path. This choice may change. 
+
+set needed_progs = "test cat cp mv rm mkdir file grep egrep sed ls ln touch chmod gzip makedepend"
+
+foreach needed_prog (${needed_progs})
+    set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
+    if (${status}) then
+        set found = 0
+        foreach path_dir (${IVI_PATH_DIRS})
+            if (-x "${path_dir}/${needed_prog}") then
+                setenv PATH "${PATH}:${path_dir}"
+
+                if ($?BASE_PATH) then 
+                    setenv BASE_PATH "${BASE_PATH}:${path_dir}"
+                endif 
+
+                set found =  1
+                break
+            endif 
+        end 
+
+        if (${found}) then 
+            set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
+        else
+            ${P_STDERR} "Script init_scripts cannot find ${needed_prog}."
+            set error_found = 1
+        endif 
+    endif
+
+    set uc_needed_prog = `echo ${needed_prog} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
+    eval "setenv IVI_${uc_needed_prog}_PATH ${prog_path}"
+end
+        
+# It is good to declare a path to "test" if you can find one, as people often
+# create test programs called "test"!!!} is not in PATH, nor 
+
+setenv IVI_TEST "${IVI_TEST_PATH}"
+
+setenv IVI_CAT  "${IVI_CAT_PATH}"
 
 # Copy where links point to, not their contents. 
 if ("${OS}" == "mac_osx") then
-    setenv IVI_CP               "cp -f -R"
+    setenv IVI_CP               "${IVI_CP_PATH} -f -R"
 else if (("${OS}" == "linux_x86_64") || ("${OS}" == "linux_386")) then
-    setenv IVI_CP               "cp -r -f -d"
+    setenv IVI_CP               "${IVI_CP_PATH} -r -f -d"
 else
-    setenv IVI_CP               "cp -r -f"
+    setenv IVI_CP               "${IVI_CP_PATH} -r -f"
 endif 
 
-setenv IVI_CREATE           "cp /dev/null"
+setenv IVI_CREATE           "${IVI_CP_PATH} /dev/null"
+
+setenv IVI_MV               "${IVI_MV_PATH}"
+setenv IVI_RM               "${IVI_RM_PATH} -r -f"
+
 setenv IVI_GREP             "grep"
 setenv IVI_EGREP            "egrep"
-setenv IVI_FILE             "file"
+setenv IVI_FILE             "${IVI_FILE_PATH}"
+
 # A version of ls that outputs one file per line. Most if not all ls's do so
 # when the output is not a terminal. However, we can use the '-1' option for
 # clarity and robustness.
-setenv IVI_LS               "ls -1"
-setenv IVI_LN               "ln -s -f"
-setenv IVI_MV               "mv"
-setenv IVI_RM               "rm -r -f"
-setenv IVI_TOUCH            "touch"
-setenv IVI_TOUCH_1990       "touch -t 199001010000"
-setenv IVI_PERMIT_EXECUTION "chmod -R a+rx"
-setenv IVI_PERMIT_READ      "chmod -R a+rX"
-setenv IVI_MKDIR            "mkdir -p"
-setenv IVI_SED              "sed"
+setenv IVI_LS               "${IVI_LS_PATH} -1"
+setenv IVI_LN               "${IVI_LN_PATH} -s -f"
+setenv IVI_TOUCH            "${IVI_TOUCH_PATH}"
+setenv IVI_TOUCH_1990       "${IVI_TOUCH_PATH} -t 199001010000"
+setenv IVI_PERMIT_EXECUTION "${IVI_CHMOD_PATH} -R a+rx"
+setenv IVI_PERMIT_READ      "${IVI_CHMOD_PATH} -R a+rX"
+setenv IVI_MKDIR            "${IVI_MKDIR_PATH} -p"
+setenv IVI_SED              "${IVI_SED_PATH}"
 
 # setenv IVI_COMPRESS bzip2
 # setenv IVI_COMPRESS_SUFFIX bz2
 #
 # Back to gzip --- It does not compress quite as well, but is more convenient
 #
-setenv IVI_COMPRESS             "gzip"
+setenv IVI_COMPRESS             "${IVI_GZIP_PATH}"
 setenv IVI_COMPRESS_SUFFIX      "gz"
 
 # ---------------------------------------------------------------------
 
-# Perhaps this should be made more efficient now that we do not cache IVI_STAT
-# and IVI_STAT_FLAVOR. 
+# Stat is not essential, so we do not have it in the above list of programs. 
 
-set test_paths = `echo ${PATH} | sed 's/:/ /g'`
-   
 setenv IVI_STAT "stat"
 setenv IVI_STAT_FLAVOR "NONE"
 
-set have_stat = 0 
+set stat_path = `unalias stat; ${IVI_WHICH} stat`
 
-foreach test_path ( $test_paths )
-    if (-x ${test_path}/stat) then
-        set have_stat = 1
-        break
-    endif
-end
-
-if (${have_stat}) then
+if (! ${status}) then 
     set gnu_stat = `${IVI_STAT} --version |& grep 'GNU coreutils'`
     if ((! ${status} ) && ("${gnu_stat}" != "")) then
         setenv IVI_STAT_FLAVOR "gnu"
@@ -150,5 +222,32 @@ endif
 
 # ---------------------------------------------------------------------
 
-setenv IVI_HAVE_INIT_SCRIPT 1 
+if (! $?TMPDIR) then
+    setenv TMPDIR "/tmp"
+endif
+
+if (! $?USER) then
+    ${ECHO} 'Script init_scripts reports $USER variable not defined.'
+    set error_found = 1
+endif
+
+setenv USER_TEMP_PATH  "$TMPDIR/$USER/"
+    
+if (! -e "${USER_TEMP_PATH}") then
+    ${IVI_MKDIR} "${USER_TEMP_PATH}"
+    if (${status}) then
+        ${P_STDERR} "Creation of $USER_TEMP_PATH failed in init_scripts."
+        set error_found = 1
+    endif
+else if (! -w "${USER_TEMP_PATH}") then
+    ${P_STDERR} "Script init_scripts reports ${USER_TEMP_PATH} is not writable."
+    set error_found = 1
+endif
+
+# --------------------------------------------------------------------------------------------
+
+if (${error_found}) exit 1 
+
+setenv IVI_HAVE_INIT_SCRIPTS 1 
+
 

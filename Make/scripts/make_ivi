@@ -6,7 +6,7 @@
 #     A script to make, test, and export IVILAB software components, 
 #
 # Description:
-#     This script nominally makes vision code distributions, but to do that, it
+#     This script nominally makes IVILAB code distributions, but to do that, it
 #     typically first proves that it can build the makefile, compile the code
 #     under different conditions, run regression tests, and build the
 #     documentation. Hence it has also grown into a convenient way to check the
@@ -14,7 +14,7 @@
 #     flexibility through a number of options. For some common cases, see
 #     EXAMPLES below.
 #
-#     Specific to making vision code distributions, there are two variants. The
+#     Specific to making IVILAB code distributions, there are two variants. The
 #     argument "archive" requests a snapshot of the code for backup or
 #     archiving. This is perhaps less relevant now that everything is under svn.
 #     
@@ -309,13 +309,18 @@ else
     endif 
 endif 
 
-Make/scripts/clean_cache all 
 
-source Make/init_machine
+# Calling clean_cache is too harsh as it removes all cache files, forcing all
+# code to be rebuilt through the Makefile-libs-needed dependency, even if the
+# rebuilt cache is the same as the previous one. We can force rebuilding caches
+# that replace existing ones using FORCE_CACHE_REBUILD, but this would then be
+# done for every call to init_compile. Instead, we arrange the caches to be out
+# of date om the first call with each environment by touching a file that
+# init_compile checks as a dependency. 
 
+source Make/init_scripts
+${IVI_TOUCH} ${USER_TEMP_PATH}cache_rebuild_depend
 source Make/init_compile
-
-setenv FORCE_INIT_COMPILE 1
 
 set time_stamp = `date +%y-%m-%d-%H-%M`
 
@@ -331,8 +336,6 @@ if (! -w "${TMPDIR}") then
 endif
 
 ###############################################################################
-
-setenv SKIP_DEPEND_RETRY
 
 set cp_with_follow = "/bin/cp -f -R -p"
 
@@ -1172,7 +1175,11 @@ foreach sub_lib_dir (*)
             setenv NO_BOOST 0
         endif
 
-        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
+        # Recent versions of clang++ have depricated compiling .c files. Since
+        # we are often calling warnigs errors for C files, we will simply skip
+        # this test for now. 
+        #
+        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
             setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
@@ -1372,7 +1379,11 @@ foreach sub_lib_dir (*)
                         setenv NO_BOOST 0
                     endif 
 
-                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX")) then
+                    # Recent versions of clang++ have depricated compiling .c files. Since
+                    # we are often calling warnigs errors for C files, we will simply skip
+                    # this test for now. 
+                    #
+                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
                         setenv IVI_PREFER_CXX 1
 
                         if (${do_clean}) then
@@ -1541,7 +1552,11 @@ foreach sub_lib_dir (*)
                         setenv NO_BOOST 0
                     endif 
 
-                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX")) then
+                    # Recent versions of clang++ have depricated compiling .c files. Since
+                    # we are often calling warnigs errors for C files, we will simply skip
+                    # this test for now. 
+                    #
+                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
                         setenv IVI_PREFER_CXX 1
 
                         if (${do_clean}) then
@@ -1893,7 +1908,11 @@ foreach msd_dir ($prog_dirs)
             endif 
         endif 
 
-        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
+        # Recent versions of clang++ have depricated compiling .c files. Since
+        # we are often calling warnigs errors for C files, we will simply skip
+        # this test for now. 
+        #
+        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
             setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then

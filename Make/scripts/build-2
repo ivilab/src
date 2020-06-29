@@ -12,25 +12,6 @@
 # The main purpose of the build scripts is to normalize the make environment,
 # and to implement some functionality that is difficult to do in a robust
 # portable way for all flavors of make. 
-#
-# We first set up the environment for the compile using the scripts init_machine
-# and init_compile. 
-#
-# Sourcing init_machine and init_compile is often redundant. It is safest to do
-# it every compile, but this takes a bit of time. If we are using Kobus's
-# environment  we compile faster by not sourcing those files everytime. In this
-# case, we can use set_gcc to update things if we expect that the external
-# enviroment has changed. To force sourcing init_machine and init_compile
-# everytime, one can set the environment variable IVI_FORCE_INIT. 
-#
-# Kobus's environment also provides an alternative way to compile through "mk"
-# which assumes that Makefiles are up to date and calls make directly and also
-# provides additional control over where errors go and some filtering of them.
-# (Some of the capability is making its way into this script). 
-#
-# On the subject of faster compiline, if we call make with the target "code"
-# then the makefiles are not checked for being up to date.
-#
 
 if ($?IVI_HAVE_MACHINE) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
@@ -111,7 +92,7 @@ if ($?BOOST_VERSION) then
         # here. It would conceptually be simpler to wrap this into finding boost as
         # we do below, but since it is tied to the build string, cache dirs, etc.,
         # we need to peek at what bosts we may be able to find. We will assume that
-        # the first headers 
+        # the first headers we find is from the version to use. 
 
         set multiple_boost = `echo ${BOOST_VERSION} | grep -c ':'`
     endif
@@ -144,7 +125,10 @@ if (${multiple_boost}) then
     endif 
 else
     source ${IVI_SRC_PATH}/Make/init_compile
-    if (${status}) exit ${status}
+    if (${status}) then 
+        echo "Sourcing ${IVI_SRC_PATH}/Make/init_compile returned failure."
+        exit 1
+    endif 
 endif 
 
 setenv CWD "${cwd}"
@@ -473,7 +457,6 @@ while ($count <=  ${num_args})
     if (("${PRODUCTION}" != "${save_production}") || ("${IVI_CC}" != "${save_ivi_cc}")) then
         setenv IVI_CC "${save_ivi_cc}" 
         setenv PRODUCTION "${save_production}"
-        setenv FORCE_INIT_COMPILE
         source ${IVI_SRC_PATH}/Make/init_compile
     endif 
 
@@ -1029,7 +1012,7 @@ foreach arg (${build_adjusted_args})
                     # compiler and production mode. The setting of IVI_CC to empty asks
                     # init_comple to choose the compiler. 
                     #
-                    (setenv IVI_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${IVI_SRC_PATH}/Make/init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                    (setenv IVI_CC ""; setenv PRODUCTION 1; source ${IVI_SRC_PATH}/Make/init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
                     
                     if (${status}) then 
                         ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
@@ -1046,7 +1029,7 @@ foreach arg (${build_adjusted_args})
                 # compiler and production mode. The setting of IVI_CC to empty asks
                 # init_comple to choose the compiler. 
                 #
-                (setenv IVI_CC ""; setenv PRODUCTION 1; setenv FORCE_INIT_COMPILE; source ${IVI_SRC_PATH}/Make/init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                (setenv IVI_CC ""; setenv PRODUCTION 1; source ${IVI_SRC_PATH}/Make/init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
                 
                 if (${status}) then 
                     ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"

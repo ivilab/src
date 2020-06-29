@@ -15,7 +15,6 @@ int main(int argc, char** argv)
     int   star_found;
     int   blank_found;
     int   in_typedef = FALSE;
-    int   in_typedef_parens = FALSE;
     int   first_item_in_typedef = TRUE;
     int   comment_beg_col;
     int   comment_end_col;

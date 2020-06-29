@@ -66,7 +66,8 @@ endif
 ##############################################################################
 
 # This next part is shared by all files in Make whose names begin with "build",
-# AND ivi_add_makefiles. Updates should be propogated. 
+# AND scripts ivi_add_makefiles, create_library, and create_program. Updates
+# should be propogated. 
 
 if ($?FORCE_IVI_SRC_DIR) then 
     if (-e "${FORCE_IVI_SRC_DIR}/Make/init_compile") then 
@@ -87,12 +88,28 @@ else
     # directory that has one of the directories in IVI_DIRS as a subdir, which
     # itself has Make as a sub-dir and Make/init_compile as a file in that. 
 
+    # We want to use pure "cd", and so if cd has been aliase'd we want to save that
+    # fact and unalias cd. 
+    #
+    set cd_alias = `alias cd`
+    if ("${cd_alias}" != "") then
+       unalias cd
+    endif 
+
+    # We want to block going above the user's home directory because it might cause
+    # a mount request that we don't want. If we are not below their home, then it is
+    # fine to ga to the root. 
+    #
+    pushd ${HOME} >& /dev/null
+    set home_pwd = `pwd`
+    popd >& /dev/null
+
     set found = 0
     set ivi_top = ""
 
     pushd `pwd` > /dev/null
 
-    while ("`pwd`" != "/")
+    while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
         foreach ivi_dir (${IVI_DIRS}) 
             if ("${ivi_dir}" == ".") then
                 set ivi_dir = ""
@@ -109,11 +126,15 @@ else
         if (${found}) break
 
         set ivi_top = "../${ivi_top}"
-
         cd ..
     end
 
     popd > /dev/null
+
+    # Restore cd alias.
+    if ("${cd_alias}" != "") then
+       alias cd "$cd_alias"
+    endif 
 
     if (${found}) then
         if ("${ivi_dir}" == "") then
@@ -136,6 +157,8 @@ pushd ${IVI_SRC_PATH} > /dev/null
     setenv IVI_SRC_PATH "${cwd}/"
 popd > /dev/null
 
+###############################################################################
+
 # Check that this file ($0) is up to date compared to the reference one.
 set need_to_replace_myself = `${IVI_SRC_PATH}Make/scripts/test_older_than "$0" "${IVI_SRC_PATH}Make/build"`
 if (${status}) exit 1 
@@ -154,34 +177,19 @@ endif
 
 ##############################################################################
 
-set need_init = 1
-
-if (! $?FORCE_INIT_COMPILE) then 
-    if (($?IVI_HAVE_MACHINE) && ($?INIT_SRC_DIR)) then
-        if ("${IVI_SRC_PATH}" == "${INIT_SRC_DIR}") then 
-            if ($?IVI_VERBOSE) then
-                echo "" 
-                echo "Skipping source of init_machine and init_compile."
-            endif 
-
-            set need_init = 0
-        endif 
-    endif 
+if ($?IVI_VERBOSE) then
+    echo "Script $0 is sourcing ${IVI_SRC_PATH}Make/init_compile"
 endif 
-     
-if (${need_init}) then
-    if ($?IVI_VERBOSE) then
-        echo "" 
-        echo "Sourcing ${IVI_SRC_PATH}Make/init_machine"
-    endif 
 
-    source ${IVI_SRC_PATH}Make/init_machine
+source ${IVI_SRC_PATH}/Make/init_compile
 
-    if ($?IVI_VERBOSE) then
-        echo "Sourcing ${IVI_SRC_PATH}Make/init_compile"
-    endif 
+if (${status}) then 
+    echo "Sourcing ${IVI_SRC_PATH}/Make/init_compile returned failure."
+    exit 1
+endif 
 
-    source ${IVI_SRC_PATH}Make/init_compile
+if ($?IVI_VERBOSE) then
+    echo "Sourcing ${IVI_SRC_PATH}Make/init_compile finished successfully."
 endif 
 
 ${VERBOSE_ECHO} "ivi_add_makefiles key paths:"

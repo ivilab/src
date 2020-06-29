@@ -99,93 +99,117 @@ endif
 
 ##############################################################################
 
-set IVI_SRC_PATH = ""
+# This next part is shared by all files in Make whose names begin with "build",
+# AND scripts ivi_add_makefiles, create_library, and create_program. Updates
+# should be propogated. 
 
-# We want to use pure "cd", and so if cd has been aliase'd we want to save that
-# fact and unalias cd. 
-#
-set cd_alias = `alias cd`
+if ($?FORCE_IVI_SRC_DIR) then 
+    if (-e "${FORCE_IVI_SRC_DIR}/Make/init_compile") then 
+        setenv IVI_SRC_PATH "${FORCE_IVI_SRC_DIR}"
+    else 
+        bash -c 'echo "Env var FORCE_IVI_SRC_DIR is set to ${FORCE_IVI_SRC_DIR}, but ${FORCE_IVI_SRC_DIR}/Make/init_compile does not exist." >&2'
+        exit 1 
+    endif 
+else  
+    # Use env var for IVI_DIRS for better error reporting via bash sub-shell.
+    if ($?FORCE_IVI_DIR) then
+        setenv IVI_DIRS "${FORCE_IVI_DIR}"
+    else
+        setenv IVI_DIRS ". kjb KJB ivi IVI src"
+    endif 
 
-if ("${cd_alias}" != "") then
-   # echo removing cd alias
-   unalias cd
-endif 
+    # Find out where we are in the source tree. In particular, we want to find a
+    # directory that has one of the directories in IVI_DIRS as a subdir, which
+    # itself has Make as a sub-dir and Make/init_compile as a file in that. 
 
-# We want to block going above the user's home directory because it might cause
-# a mount request that we don't want.  
-#
-pushd ${HOME} >& /dev/null
-set home_pwd = `pwd`
-popd >& /dev/null
+    # We want to use pure "cd", and so if cd has been aliase'd we want to save that
+    # fact and unalias cd. 
+    #
+    set cd_alias = `alias cd`
+    if ("${cd_alias}" != "") then
+       unalias cd
+    endif 
 
-# Save were we are. 
-pushd `pwd` >& /dev/null
+    # We want to block going above the user's home directory because it might cause
+    # a mount request that we don't want. If we are not below their home, then it is
+    # fine to ga to the root. 
+    #
+    pushd ${HOME} >& /dev/null
+    set home_pwd = `pwd`
+    popd >& /dev/null
 
-while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
-    # echo pwd: `pwd`
-    if ((-d Make) && (-d lib)) then 
-        if ((-e Make/init_compile) && (-e Make/init_machine)) then
-            set IVI_SRC_PATH = `pwd`
-            break
+    set found = 0
+    set ivi_top = ""
+
+    pushd `pwd` > /dev/null
+
+    while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
+        foreach ivi_dir (${IVI_DIRS}) 
+            if ("${ivi_dir}" == ".") then
+                set ivi_dir = ""
+            else
+                set ivi_dir = "${ivi_dir}/"
+            endif 
+
+            if (-e "${ivi_dir}Make/init_compile") then
+                set found = 1
+                break
+            endif 
+        end
+
+        if (${found}) break
+
+        set ivi_top = "../${ivi_top}"
+        cd ..
+    end
+
+    popd > /dev/null
+
+    # Restore cd alias.
+    if ("${cd_alias}" != "") then
+       alias cd "$cd_alias"
+    endif 
+
+    if (${found}) then
+        if ("${ivi_dir}" == "") then
+            set ivi_dir = "./"
         endif 
-    endif
 
-    cd ..
-end
-
-# Reset were we were. 
-popd >& /dev/null
-
-# Restore cd alias.
-
-if ("${cd_alias}" != "") then
-   # echo restoring cd alias
-   alias cd "$cd_alias"
-   # alias cd 
+        setenv IVI_SRC_PATH "${ivi_top}${ivi_dir}"
+    else 
+        # We cannot use P_STDERR here because we might not have defined it yet.
+        bash -c 'echo " " >&2'
+        bash -c 'echo "This directory is not below a directory with IVI installed." >&2'
+        bash -c 'echo "Valid directories for IVI in this context: ${IVI_DIRS}." >&2'
+        bash -c 'echo "To experiment with a temporary fix, try setting FORCE_IVI_SRC_DIR." >&2'
+        bash -c 'echo "For a more permanent fix, edit $0 or contact Kobus." >&2'
+        exit 1
+    endif 
 endif 
 
-# echo init_compile: ${init_compile}
+pushd ${IVI_SRC_PATH} > /dev/null
+    setenv IVI_SRC_PATH "${cwd}/"
+popd > /dev/null
 
-if ("${IVI_SRC_PATH}" == "") then
-    ${P_STDERR} "Cannot find dirs lib and Make \(and files Make/init_machine and Make/init_compile\) in higher dirs."
-    ${P_STDERR} "Either you are not in a source directory or you need to check these out using svn."
+###############################################################################
+
+if ($?IVI_VERBOSE) then
+    echo "Script $0 is sourcing ${IVI_SRC_PATH}Make/init_compile"
+endif 
+
+source ${IVI_SRC_PATH}/Make/init_compile
+
+if (${status}) then 
+    echo "Sourcing ${IVI_SRC_PATH}/Make/init_compile returned failure."
     exit 1
 endif 
 
-setenv IVI_SRC_PATH "${IVI_SRC_PATH}/"
-
-set need_init = 1
-
-if (! $?FORCE_INIT_COMPILE) then 
-    if (($?IVI_HAVE_MACHINE) && ($?INIT_SRC_DIR)) then
-        if ("${IVI_SRC_PATH}" == "${INIT_SRC_DIR}") then 
-            if ($?IVI_VERBOSE) then
-                echo "" 
-                echo "Skipping source of init_machine and init_compile."
-            endif 
-
-            set need_init = 0
-        endif 
-    endif 
-endif 
-     
-if (${need_init}) then
-    if ($?IVI_VERBOSE) then
-        echo "" 
-        echo "Sourcing ${IVI_SRC_PATH}Make/init_machine"
-    endif 
-
-    source ${IVI_SRC_PATH}Make/init_machine
-
-    if ($?IVI_VERBOSE) then
-        echo "Sourcing ${IVI_SRC_PATH}Make/init_compile"
-    endif 
-
-    source ${IVI_SRC_PATH}Make/init_compile
+if ($?IVI_VERBOSE) then
+    echo "Sourcing ${IVI_SRC_PATH}Make/init_compile finished successfully."
 endif 
 
 echo "Now:"
-echo "   SRC_PATH: ${SRC_PATH}"
+echo "   IVI_SRC_PATH: ${IVI_SRC_PATH}"
 echo "   MAKE_PATH: ${MAKE_PATH}"
 echo "   MAKE_SCRIPT_PATH: ${MAKE_SCRIPT_PATH}"
 echo " "

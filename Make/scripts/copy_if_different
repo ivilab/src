@@ -2,18 +2,19 @@
 
 set num_args = $#argv
 
+if (! $?IVI_VERBOSE_INDENT) then
+    setenv IVI_VERBOSE_INDENT ""
+endif 
+
 if ("${num_args}" != "2") then
-    ${P_STDERR} "Script copy_if_different should have exactly 2 arguments."
+    ${P_STDERR} "Script copy_if_different called with ${num_args} arguments."
+    ${P_STDERR} "It should have exactly 2 arguments."
     exit 1
 endif 
 
 if (! -e $1) then
     ${P_STDERR} "First arg to copy_if_different \(${1}\) is not a file."
     exit 1
-endif 
-
-if (! $?IVI_VERBOSE_INDENT) then
-    setenv IVI_VERBOSE_INDENT ""
 endif 
 
 if (-e $2) then

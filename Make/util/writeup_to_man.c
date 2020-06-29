@@ -170,7 +170,7 @@ static int writeup_to_man_guts
     ERE(read_res = ivi_fread(writeup_fp, initial_buff, effective_buff_size));
 
     if (read_res < 0) ivi_exit(EXIT_FAILURE);
-    ASSERT(read_res < sizeof(initial_buff)); 
+    ASSERT((size_t)read_res < sizeof(initial_buff)); 
     initial_buff[ read_res ] = '\0'; 
 
     if (HEAD_CMP_EQ(initial_buff, "#!/"))

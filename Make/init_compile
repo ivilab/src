@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25589 2020-06-24 02:29:29Z kobus $
+# $Id: init_compile 25594 2020-06-29 19:20:15Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -73,7 +73,8 @@ setenv MAKE_EDIT_PATH ${MAKE_PATH}/vim/
 # ${IVI_SRC_PATH}/Make/init_scripts, as it is shared with a lot of scripts that
 # do not do anything about compiling, and sourcing this file to get that stuff
 # is causing grief. We do not check that init_scripts is available, as it is
-# essential and there is no reasonable recovery. 
+# essential and there is no reasonable recovery. Init_scripts calls init_machine
+# if needed. 
 
 if ($?IVI_HAVE_INIT_SCRIPTS) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
@@ -87,7 +88,13 @@ else
     endif 
 
     source ${IVI_SRC_PATH}/Make/init_scripts
-    if ($status) exit $status
+
+    if ($status) then
+        if ($?IVI_VERBOSE) then
+            echo "Script init_compile is exiting due to init_scripts failure."
+        endif 
+        exit 1
+    endif 
 endif 
 
 pushd ${IVI_SRC_PATH} > /dev/null
@@ -170,38 +177,20 @@ if ($?DONT_CACHE ) then
     endif
 endif
 
-# could relax $USER constraint below if it is guaranteed to be there
-if (($do_cache && ! $?USER) ) then
-    ${ECHO} '$USER variable not defined. Suppressing environment variable caching.'
-    set do_cache = 0
-endif
-
-if ($do_cache ) then
-    if (! -w $TMPDIR ) then
-        ${ECHO} 'Writable temp directory not found. Suppressing environment variable caching.'
-        set do_cache = 0
-    endif
-endif
-
-if ($do_cache ) then
-    set tmp = "$TMPDIR/$USER"
-    
-    if (! -e $tmp) then
-        mkdir $tmp
-    else if (! -w $tmp ) then
-        ${ECHO} 'Writable temp directory not found. Suppressing environment variable caching.'
-        set do_cache = 0
-    endif
-endif
-
 if ($do_cache ) then
     set suffix=""
 
-    if($?IVI_CC) then
+    if ($?IVI_PREFER_CXX != 0) then
+        if (${IVI_PREFER_CXX}) then
+            set suffix = "${suffix}.PREFER_CXX.${IVI_PREFER_CXX}"
+        endif
+    endif
+
+    if ($?IVI_CC) then
         set suffix = "${suffix}.IVI_CC.${IVI_CC}"
     endif
 
-    if($?IVI_CXX) then
+    if ($?IVI_CXX) then
         set suffix = "${suffix}.IVI_CXX.${IVI_CXX}"
     endif
 endif
@@ -317,7 +306,7 @@ endif
 setenv VAR_CACHE_SUFFIX "${suffix}"
 
 if ($do_cache) then
-    set cache_fname = "$tmp/ivi_env${suffix}"
+    set cache_fname = "${USER_TEMP_PATH}ivi_env${suffix}"
 
     # handle unwritable cache file
     if ( -e "${cache_fname}" && ! -w "${cache_fname}") then
@@ -340,7 +329,7 @@ if ($do_cache ) then
             ${ECHO} "Random sleep failed." 
         endif
 
-        set cache_lock_file =  "${tmp}/cache_lock"
+        set cache_lock_file =  "${USER_TEMP_PATH}cache_lock"
 
         if (-e ${cache_lock_file}) then
             set max_age = 100
@@ -356,7 +345,7 @@ if ($do_cache ) then
             else if ("${locked}" == "") then
                 ${ECHO} "Ignoring cache lock because it is older than ${max_age} seconds." 
             else
-                set lock_proc = `cat ${cache_lock_file}`
+                set lock_proc = `$IVI_CAT ${cache_lock_file}`
 
                 set count = 1
                 # Wait up to N seconds to get the lock. 
@@ -399,23 +388,12 @@ if ($do_cache ) then
     endif
 
     if (-e "${cache_fname}") then
-        # Kobus. Added a check that the cache is newer than this file. However,
-        # we must use the system "test". If someone's program is test.c, then
-        # weird things can happen. Fortunately, system test should be available
-        # in a few common places.
-        #
-        set cache_is_old = 0
-        set test_prog_dirs = "/bin /usr/bin /usr/X11/bin"
-        set test_prog = ""
+        if ($?FORCE_CACHE_REBUILD) then 
+            ${VERBOSE_ECHO} "Forcing rebuild of $cache_fname."
+            set cache_is_old = 1
+        else
+            set cache_is_old = 0
 
-        foreach test_prog_dir (${test_prog_dirs})
-            if (-x ${test_prog_dir}/test) then
-                set test_prog = " ${test_prog_dir}/test"
-                break
-            endif
-        end 
-
-        if ("${test_prog}" != "") then
             # FIXME
             #
             # The dependency on init_ua_hpc should be studied. If it can be
@@ -426,6 +404,13 @@ if ($do_cache ) then
             # be considered.
             #
             set init_dependencies = "${IVI_SRC_PATH}/Make/init_scripts ${IVI_SRC_PATH}/Make/init_machine ${IVI_SRC_PATH}/Make/init_compile ${IVI_SRC_PATH}/Make/init_ua_hpc"
+
+            # Build scripts, such as make_ivi, can touch this file to force
+            # caches to rebuild ony once.
+            #
+            if (-e "${USER_TEMP_PATH}cache_rebuild_depend") then
+                set init_dependencies = "${init_dependencies} ${USER_TEMP_PATH}cache_rebuild_depend"
+            endif 
 
             # TODO: Improve the precision of this test. 
             if ("${OS}" != "mac_osx") then
@@ -440,8 +425,8 @@ if ($do_cache ) then
                 #
                 ${VERBOSE_ECHO} "Using alternative method for loading ALL_LIBS from cache."
 
-                cat $cache_fname | grep ALL_LIBS > ${tmp}/ivi_env.setenv_all_libs
-                source ${tmp}/ivi_env.setenv_all_libs
+                $IVI_CAT $cache_fname | grep ALL_LIBS > "${USER_TEMP_PATH}ivi_env.setenv_all_libs"
+                source "${USER_TEMP_PATH}ivi_env.setenv_all_libs"
 
                 if ($?ALL_LIBS) then 
                     ${VERBOSE_ECHO} "Loading of ALL_LIBS from cache succeeded."
@@ -453,7 +438,7 @@ if ($do_cache ) then
                     
             ### else
                 # Kyle.  Load only the ALL_LIBS variable from the cache
-                ### set cmd = `cat $cache_fname | grep ALL_LIBS`
+                ### set cmd = `$IVI_CAT $cache_fname | grep ALL_LIBS`
                 ### eval "${cmd}"
             ## endif
 
@@ -467,7 +452,7 @@ if ($do_cache ) then
 
             foreach init_dependency (${init_dependencies}) 
                 if (-e "${init_dependency}") then
-                    ${test_prog_dir}/test ${init_dependency} -ot ${cache_fname}
+                    ${IVI_TEST} ${init_dependency} -ot ${cache_fname}
 
                     if (${status} == 1) then 
                         ${ECHO} "${cache_fname} is older than ${init_dependency}. Regenerating ..."
@@ -481,10 +466,7 @@ if ($do_cache ) then
                     break
                 endif
             end 
-
-            # End of case that we have a test program that can check times of
-            # init dependencies.  
-        endif
+        endif 
 
         if (${cache_is_old}) then
             # Kyle. We'll rebuild the cache, so start with a "clean" set of
@@ -494,8 +476,7 @@ if ($do_cache ) then
             ${VERBOSE_ECHO} "Using cache file: $cache_fname."
 
             source $cache_fname
-            sed < ${cache_fname} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "$tmp/ivi_env.sh"
-
+            sed < ${cache_fname} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "${USER_TEMP_PATH}ivi_env.sh"
 
             if ($?IVI_UA_HPC) then
                 if ($?EXTRA_PATH) then
@@ -526,7 +507,7 @@ if ($do_cache ) then
             if ($?DO_CACHE_LOCK) then
                 if (-e "${cache_lock_file}") then
                     ${VERBOSE_ECHO} "Removing the cache lock" 
-                    /bin/rm -f "${cache_lock_file}"
+                    ${IVI_RM} "${cache_lock_file}"
                 endif
             endif
 
@@ -534,19 +515,20 @@ if ($do_cache ) then
         endif
     endif
     # create a file to store names of environment variables
-    set varname_fname = "$tmp/ivi_varnames_$$"
-    cat /dev/null >! "${varname_fname}"
+    set varname_fname = "${USER_TEMP_PATH}ivi_varnames_$$"
+    $IVI_CAT /dev/null >! "${varname_fname}"
 
-    ${ECHO} "Generating environment variable cache in ${varname_fname} which will be written to ${cache_fname}."
+    ${ECHO} "Generating a new cache file which will update the one in ${cache_fname} if needed."
 
     alias ivi_setenv 'setenv \!*; echo \!:1 >>! $varname_fname;'
 else
     # Case that we do not want a cache. 
     alias ivi_setenv 'setenv \!*;'
-    ${IVI_RM} ${tmp}/ivi_env.sh 
+    ${IVI_RM} "${USER_TEMP_PATH}ivi_env.sh"
 endif
 
 ivi_setenv VAR_CACHE_FNAME "${cache_fname}"
+ivi_setenv VAR_CACHE_SHADOW "${cache_fname}.shadow"
 
 # Done setting up environment variable cache. Everything that follows is only
 # done if we are not grabbing the environment variables from the cache. This
@@ -722,7 +704,7 @@ endif
 # this, but it will take some work and we need to modularize this script anyway,
 # so best to do it after that. 
 
-# set filter_non_devel = " cat "
+# set filter_non_devel = " $IVI_CAT "
 set filter_non_devel = " grep -v \.so\."
 
 ################################################################################
@@ -771,7 +753,7 @@ echo `hostname` | grep tacc.utexas.edu$
 if (! ${status}) then
     ivi_setenv IVI_TACC_HPC 1
     if ( ! $do_cache ) then
-        ${ECHO} "Warning: you cannot use DONT_CACHE on HPC, sorry."
+        ${ECHO} "Warning: you cannot use DONT_CACHE on TACC, sorry."
     endif
 endif
 
@@ -951,48 +933,50 @@ endif
 ################################################################################
 
 
-# Ensure that needed programs exist, are not aliased, and have the right options
-# for the current system. 
+# # Ensure that needed programs exist, are not aliased, and have the right options
+# # for the current system. 
+# 
+# set needed_progs = "rm cat grep egrep sed ls ln touch chmod mkdir ar makedepend ${IVI_MAKE_PROG} cpp" 
+# 
+# # Patch paths if needed.  This whole section needs to be restructured to work
+# # better with the choosing of a compiler below. 
+# 
+# set more_paths = "/usr/ucb /usr/css/bin /usr/bin/X11 /usr/X11/bin /usr/X11R6/bin /usr/local/bin /usr/local/X11/bin /usr/local/X11R6/bin"
+# 
+# foreach needed_prog (${needed_progs})
+#     set have_prog = 0
+# 
+#     # Note: If sed is not in our "bootstrap list", this could fail. 
+#     set test_paths = `echo ${PATH} | sed 's/:/ /g'`
+#        
+#     foreach test_path ( $test_paths )
+#         if (-x ${test_path}/${needed_prog}) then
+#             set have_prog = 1
+#             break
+#         endif
+#     end
+# 
+#     if ( ! ${have_prog}) then
+#         set found_prog = 0
+# 
+#         foreach test_path ( $more_paths )
+#             if (-x ${test_path}/${needed_prog}) then
+#                 ivi_setenv PATH "${PATH}:${test_path}"
+#                 ${VERBOSE_ECHO} "Adding ${test_path} to PATH for ${needed_prog}."
+# 
+#                 set found_prog = 1
+#                 
+#                 break
+#             endif
+#         end
+# 
+#         if (! ${found_prog} ) then
+#             ${ECHO} "Warning: Cannot find a path to ${needed_prog}."
+#         endif
+#     endif
+# end
+# 
 
-set needed_progs = "rm cat grep egrep sed ls ln touch chmod mkdir ar makedepend ${IVI_MAKE_PROG} cpp" 
-
-# Patch paths if needed.  This whole section needs to be restructured to work
-# better with the choosing of a compiler below. 
-
-set more_paths = "/usr/ucb /usr/css/bin /usr/bin/X11 /usr/X11/bin /usr/X11R6/bin /usr/local/bin /usr/local/X11/bin /usr/local/X11R6/bin"
-
-foreach needed_prog (${needed_progs})
-    set have_prog = 0
-
-    # Note: If sed is not in our "bootstrap list", this could fail. 
-    set test_paths = `echo ${PATH} | sed 's/:/ /g'`
-       
-    foreach test_path ( $test_paths )
-        if (-x ${test_path}/${needed_prog}) then
-            set have_prog = 1
-            break
-        endif
-    end
-
-    if ( ! ${have_prog}) then
-        set found_prog = 0
-
-        foreach test_path ( $more_paths )
-            if (-x ${test_path}/${needed_prog}) then
-                ivi_setenv PATH "${PATH}:${test_path}"
-                ${VERBOSE_ECHO} "Adding ${test_path} to PATH for ${needed_prog}."
-
-                set found_prog = 1
-                
-                break
-            endif
-        end
-
-        if (! ${found_prog} ) then
-            ${ECHO} "Warning: Cannot find a path to ${needed_prog}."
-        endif
-    endif
-end
 
 # ------------------------------------------------------------------
 # I don't think this is relevant anymore. Trying with it disabled.
@@ -1043,8 +1027,6 @@ end
 
 ################################################################################
 #
-# I often use a sym link for this one, but it is /usr/local/X11R6/bin/makedepend
-# on sun5 and hp
 
 ivi_setenv MAKEDEPEND makedepend
 
@@ -1227,11 +1209,15 @@ ivi_setenv MAKEDEPEND_OUTPUT  '>& /dev/null'
 
 # ---------------------------------------------------------------------
 #
+# TODO 
+#
 # Locking tools. Under construction! It is not clear if we can get away with
 # defining locking commands, or whether we need to embed the logic of different
 # options in locking scripts. 
 #
 # Sync this code with that in ivi_lock!
+# 
+# Should this be in init_scripts?
 
 if (`${MAKE_SCRIPT_PATH}can_execute flock`) then
     ivi_setenv IVI_LOCKING_METHOD "flock" 
@@ -1241,13 +1227,12 @@ else
     ivi_setenv IVI_LOCKING_METHOD "fallback"
 endif 
 
-setenv IVI_LOCKFILE_PATH ${TMPDIR}/${USER}/lockfiles/
+# Do we know/care if this exists? Should this be in init_scripts.
+setenv IVI_LOCKFILE_PATH "${USER_TEMP_PATH}lockfiles/"
 
 # ---------------------------------------------------------------------
 
-#
 # Sort out compilers. 
-#
 
 if ($?IVI_CC == 0) then
     ivi_setenv IVI_CC ""
@@ -1356,7 +1341,7 @@ endif
 ivi_setenv IVI_CXX ${ivi_c_plus_plus} 
 
 if ($?IVI_PREFER_CXX != 0) then
-    if ("${IVI_PREFER_CXX}") then
+    if (${IVI_PREFER_CXX}) then
         ivi_setenv IVI_CC "${IVI_CXX}"
     endif
 endif
@@ -2905,7 +2890,6 @@ else
     ivi_setenv LD_SHARED_FLAGS ""
     ivi_setenv LD_SONAME_FLAG ""
 endif
-
 
 ################################################################################
 
@@ -10587,28 +10571,32 @@ ivi_setenv VIM_PATH_EXTRA `echo ${CC_COMPILER_INCLUDES} ${used_inc_dirs} | sed '
 # -----------------------------------------------------------------------------
 
 if ($do_cache ) then
-    ${VERBOSE_ECHO} "Building Environment Variable Cache into ${cache_fname}."
+    ${VERBOSE_ECHO} "Building environment variable cache into ${VAR_CACHE_FNAME}."
 
-    echo "# IVI Environment Variable Cache." >! "$cache_fname"
+    echo "# IVI Environment Variable Cache." >! "${VAR_CACHE_FNAME}"
 
-    foreach line (`cat $varname_fname`)
-    ### foreach line (`cat $varname_fname | sort | uniq`)
+    foreach line (`$IVI_CAT $varname_fname`)
+    ### foreach line (`$IVI_CAT $varname_fname | sort | uniq`)
         # Sed explanation
         # 1: escape exclamation point ("!")
         # 2: escape nested single quotes
         # 3: convert "key=value" to "setenv key 'value' "
-        setenv | grep "^$line=" | sed -e "s/\!/\\\!/g" -e "s/'/'\\\''/g" -e "s/^\([^=]*\)=\(.*\)/setenv \1 '\2'/g" >>! "$cache_fname"
+        setenv | grep "^$line=" | sed -e "s/\!/\\\!/g" -e "s/'/'\\\''/g" -e "s/^\([^=]*\)=\(.*\)/setenv \1 '\2'/g" >>! "${VAR_CACHE_FNAME}"
     end
 
-    /bin/rm -f $varname_fname
 
-    sed < ${cache_fname} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "$tmp/ivi_env.sh"
+    ${MAKE_SCRIPT_PATH}copy_if_different ${VAR_CACHE_FNAME} ${VAR_CACHE_SHADOW}
+    if (${status}) exit ${status}
+
+    sed < ${VAR_CACHE_FNAME} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "${USER_TEMP_PATH}ivi_env.sh"
+
+    ${IVI_RM} ${varname_fname}
 
     if ($?DO_CACHE_LOCK) then
         if (-e "${cache_lock_file}") then
             ${VERBOSE_ECHO} "Removing the cache lock" 
 
-            /bin/rm -f "${cache_lock_file}"
+            ${IVI_RM} "${cache_lock_file}"
         endif
     endif
 endif
