@@ -1,5 +1,5 @@
 /*
- * $Id: putative_match.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: putative_match.c 25595 2020-06-29 20:01:40Z kobus $
  */
 
 #include "kpt/putative_match.h"
@@ -1069,51 +1069,19 @@ int get_constrained_keypoint_match
 }
 
 
-/* =============================================================================
- *               extract_match_positions
- *
- * The function extracts the (x,y) coordinates of the VLFeat keypoints
- * based on the values stored in the mask_mp. If mask_mp[i] is < 0, then the
- * value in the keypoint vector at position i will not be stored into the 
- * pos_mpp matrix. In the resulting matrix, the keypoint location of each element
- * of the target_pos_mp matches the corresponding element's location of the 
- * candidate_pos_mp, i.e. target_pos_mp[0] is matched to candidate_pos_mp[0], etc.
- *
- * Input parameters: 
- *  Matrix**   target_pos_mpp - stores the position of the target image keypoints 
- *  Matrix**   candidate_pos_mpp - stores the position of the candidate matches' keypoints 
- *  Keypoint_vector *target_kvp - contains target image keypoints and descriptors
- *  Keypoint_vector *candidate_kvp - contains matched keypoints and descriptors
- *  Int_matrix   *mask_imp - a 2-column matrix that stores the indices of the matched 
- *                           Keypoint_vector elements (first column - target indices,
- *                           second column - corresponding candidate indices) that need 
- *                           to be copied. If the index value == NOT_SET, then the 
- *                           keypoint is ignored. 
- *  int num_matches - the number of elements in the mask_imp matrix whose value is >=0.
- *                    If num_matches is set to something that's less than 0, then mask_imp 
- *                    is used to calculate the value internally.
- *
- * Returns: an error code.
- *
- * Index: keypoints
- *
- * ---------------------------------------------------------------------------*/
 int print_keypoint_parameters
 (
     const Keypoint_vector     *target_kvp,
     const Keypoint_vector     *candidate_kvp,
     const Int_matrix          *mask_imp,
-    const int                 num_matches
+    const int                 __attribute__((unused)) num_matches
 )
 {
     int result = NO_ERROR;
     int i;
     int num_elements = 0 ;
-    int num_cols = 2; /* how many columns to create in the resulting matrix */
     int target_idx = 0; /* the index value extracted from the mask */
     int candidate_idx = 0;
-    int count = 0; /* an index that's used to fill in the *_pos_mpp */
-    int n_matches = 0;
     float diff = 0;
     float abs_diff = 0;
 

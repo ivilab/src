@@ -1,4 +1,4 @@
-/* $Id: image_interp.c 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: image_interp.c 25595 2020-06-29 20:01:40Z kobus $
  */
 #include "l/l_sys_debug.h"   /* For ASSERT */
 #include "slic/affine.h"
@@ -2268,6 +2268,7 @@ int get_slide_bound
     return NO_ERROR;
 }
 
+/* Kobus: get_bound() is too generic a name. */
 
 /*             get_bound
  * 

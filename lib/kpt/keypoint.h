@@ -167,7 +167,6 @@ Keypoint_vector_vector* create_keypoint_vector_vector(int length);
 
 void free_keypoint_vector_vector(Keypoint_vector_vector* kvvp);
 
-/*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 int draw_oriented_keypoint 
 ( 
     IVI_image* ip, 
@@ -215,10 +214,6 @@ int draw_vl_keypoint_vector_with_mask_value
   const int                 val
 );
 
-/*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
-/*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
-/*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
- 
 int keypoint_euclidean_distance
 (
     Vector* kpt1_descr_vp,
@@ -240,7 +235,6 @@ int get_local_keypoint_match
     const double          dist_ratio,
     const double          dist_thresh
 );
-/*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 int draw_keypoint_correspondences
 (
@@ -270,14 +264,17 @@ int draw_keypoint_matches_1
     const Int_vector          *match_ivp,
     IVI_image                 **result_ip
 );
-/*
-int set_keypoint_color
+
+int draw_ransac_matches
 (
-    const int red,
-    const int green,
-    const int blue
+    const IVI_image  *img1_ip,
+    const IVI_image  *img2_ip,
+    const Matrix     *img1_mp,
+    const Matrix     *img2_mp,
+    const Int_vector *match_ivp,
+    IVI_image        **result_ip
 );
-*/
+
 int set_keypoint_color
 (
     const char* red,

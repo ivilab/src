@@ -81,6 +81,14 @@ int get_constrained_keypoint_match
     const double          dist_radius
 );
 
+int print_keypoint_parameters
+(
+    const Keypoint_vector     *target_kvp,
+    const Keypoint_vector     *candidate_kvp,
+    const Int_matrix          *mask_imp,
+    const int                 num_matches
+);
+
 #ifdef __cplusplus
 #ifdef COMPILING_CPLUSPLUS_SOURCE
 }

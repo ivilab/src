@@ -3,13 +3,14 @@
 #include <i_geometric/i_geometric_mapping.h>
 
 /*
- * We need to move slice stuff elsewhere and move lib/slic to src/projects/SLIC.
+ * We need to move slic stuff elsewhere and move lib/slic to src/projects/SLIC.
 */
 #include <slic/homography.h>
 #include <slic/basic.h>
 
+#include <slic/image_interp.h>   /* For get_bound(). */
+
 /*
-#include <slic/image_interp.h>
 #include <slic/rotation.h>
 */
 
@@ -108,7 +109,7 @@ int transform_image_homography
     const Matrix    *t_mp,
     int             width,
     int             height,
-    const Matrix     *trans_rect_mp,
+    const Matrix*   __attribute__((unused)) trans_rect_mp,
     int             inter_method,
     IVI_image       **target_ipp,
     Int_matrix      **mask_impp
