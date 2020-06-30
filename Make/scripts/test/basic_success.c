@@ -21,13 +21,13 @@
 int main(int argc, char* argv[])
 {
 
-    kjb_init();   /* Best to do this if using KJB library. */
+    ivi_init();   /* Best to do this if using IVI library. */
 
 
 
 
 
-    kjb_cleanup(); /* Almost never needed, but doing it twice is OK. */
+    ivi_cleanup(); /* Almost never needed, but doing it twice is OK. */
 
     return EXIT_SUCCESS;
 }

@@ -1,0 +1,175 @@
+#!/bin/tcsh -f 
+
+##############################################################################
+#
+# Identification:
+#     Remvoes the semaphore that blocks cooperating processes from proceeding 
+#
+# Description:
+#     This is the script of a pair for locking blocks of script code that is not
+#     conveniently expressed as a command (otherwise use ivi_lock). It works
+#     much as lockfile-remove, and in fact, is implmented using lockfile-remove
+#     if it is available. The main justification for this script is that locking
+#     is not universally available. Most notably good locking facilities are not
+#     available in the mac OS. Hence, this script also implements a fall back
+#     method that is less than ideal, but usually works. 
+#
+#     The argument to ivi_lock_remove needs to be the same as for the preceeding
+#     call to lockfile-create. 
+#
+#     I might have called this script ivi_lock_destroy, but since it is similar
+#     to lockfile-remove, I have gone with ivi_lock_remove. 
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+# This script must be kept in sync with ivi_lock_create
+#
+# set echo
+
+if ($# < 1) then
+    ${P_STDERR} "Script ivi_lock_remove needs at least one argument."
+    exit 1
+endif 
+
+set lock_label = "$1"
+
+set exit_status = 0
+
+if ($?IVI_VERBOSE) then
+    if ($?IVI_VERBOSE_INDENT) then
+        set verbose_indent = "${IVI_VERBOSE_INDENT}"
+    else
+        set verbose_indent = ""
+    endif
+endif 
+
+if ($?IVI_DONT_LOCK) then
+    ${VERBOSE_ECHO} "${verbose_indent}IVI_DONT_LOCK is set, so ivi_lock_remove is not locking: $*"
+    exit 0
+endif
+
+if (! $?IVI_LOCKING_METHOD) then
+    # Sync this code with that in init_compile!
+
+    if ((`${MAKE_SCRIPT_PATH}can_execute lockfile-create`) && (`${MAKE_SCRIPT_PATH}can_execute lockfile-remove`)) then
+        setenv IVI_LOCKING_METHOD "lockfile-progs" 
+    else
+        setenv IVI_LOCKING_METHOD "fallback"
+    endif 
+endif 
+
+if (! $?IVI_LOCKFILE_DIR) then
+    setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
+endif 
+
+# ${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
+# 
+# if ($status) then
+#     $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
+#     exit 1
+# endif 
+
+set dir_str = `echo ${cwd} | sed 's#.*/##'`
+
+# setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock.$$"
+# ${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
+
+if ($?IVI_LOCKFILE_NAME) then
+    set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
+    set looks_like_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '/'`
+
+    if (${looks_like_abs_path}) then
+        set lock_file = "${IVI_LOCKFILE_NAME}"
+    else if (${looks_like_path}) then
+        set lock_file = "`pwd`/${IVI_LOCKFILE_NAME}"
+    else 
+        set lock_file = ${IVI_LOCKFILE_DIR}/${IVI_LOCKFILE_NAME}.lock
+    endif 
+else
+    set lock_file = ${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock
+endif 
+
+onintr bail
+
+# Best not to use VERBOSE_PSO here.
+if ($?IVI_VERBOSE) then
+    echo "${verbose_indent}Script ivi_lock_remove process $$ running ivi_lock_remove ${lock_label}"
+    echo "${verbose_indent}    in `pwd` using lockfile '${lock_file}'"
+endif
+
+if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
+    if ($?IVI_VERBOSE) then
+        echo "Process $$ running ivi_lock_remove ${lock_label} in `pwd` using lockfile-progs"
+    endif 
+
+    lockfile-remove ${lock_file}
+
+    if ((! ${status}) && ($?IVI_VERBOSE)) then
+        echo "${verbose_indent}Process $$ successfully removed ${lock_label} in `pwd` using lockfile-remove."
+    endif
+else 
+    # Fallback locking method. Doing locking robustly in scripts is hard, but
+    # often (e.g., mac) we do not have a good solution. The following is better
+    # than nothing.
+
+    # Best not to use VERBOSE_PSO here.
+    if ($?IVI_VERBOSE) then
+        echo "${verbose_indent}Process $$ running ivi_lock_remove ${lock_label} in `pwd` using fallback locking system."
+    endif
+
+    # Reduce the chances of everyone wanting to start at the same time.
+    # I do not know how likely this is to fail, or even to return success
+    # without doing the right thing, but it seems to work on the mac. 
+    set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
+    if (${status}) then
+        ${P_STDERR} "Fractional sleep failed in ivi_lock_remove." 
+        set exit_status = 1
+        goto cleanup
+    endif
+
+    set ppid = `ps -p $$ -o ppid=`
+
+    while (-e "${lock_file}") 
+        set lock_proc = `cat ${lock_file}`
+
+        if (${status}) then
+            echo "Script ivi_lock_remove reporrts lock file ${lock_file} to be removed does not exist."
+            break
+        else if (${lock_proc} != ${ppid}) then 
+            echo "Script ivi_lock_remove not removing lock file ${lock_file} for process ${ppid} as it belongs to ${lock_proc}."
+            break
+        else 
+            if ($?IVI_VERBOSE) then
+                echo "${verbose_indent}Process $$ removing lock file ${lock_file}."
+            endif 
+
+            ${IVI_RM} "${lock_file}"
+        endif 
+    end
+
+    if ($?IVI_VERBOSE) then
+        echo "${verbose_indent}Process $$ successfully ran ivi_lock_remove ${lock_label} in `pwd` using fallback locking method."
+    endif
+endif 
+
+cleanup: 
+    
+exit ${exit_status}
+
+# We should not be here unless onintr
+
+bail:
+
+if (-e "${lock_file}") then 
+    echo "Script ivi_lock_remove process $$ removing lock file ${lock_file} because of interrupt."
+    echo " "
+    ${IVI_RM} "${lock_file}"
+endif 
+
+exit 1
+
+
+   

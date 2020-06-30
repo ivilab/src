@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25594 2020-06-29 19:20:15Z kobus $
+# $Id: init_compile 25596 2020-06-30 23:29:58Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -312,8 +312,12 @@ if ($do_cache) then
     if ( -e "${cache_fname}" && ! -w "${cache_fname}") then
         ${ECHO} 'Cache file not writable.  Suppressing environment variable caching.'
         set do_cache = 0
+    else 
+        ${VERBOSE_ECHO} "Init_compile cache file name: ${cache_fname}"
     endif
 endif
+
+setenv DO_CACHE_LOCK
 
 if ($do_cache ) then
     if ($?DO_CACHE_LOCK) then
@@ -399,7 +403,7 @@ if ($do_cache ) then
             # The dependency on init_ua_hpc should be studied. If it can be
             # removed, then remove the copying of it inside make_src_dist. 
             # Also, the first two must exist, but down below we assume
-            # non-existance means out of date, which is true for other
+            # non-existence means out of date, which is true for other
             # dependencies added later. Perhaps two kinds of dependencies should
             # be considered.
             #
@@ -473,9 +477,9 @@ if ($do_cache ) then
             # environment variables by unsetting any variables we set above
             unsetenv ALL_LIBS
         else 
-            ${VERBOSE_ECHO} "Using cache file: $cache_fname."
+            ${VERBOSE_ECHO} "Using already up to date cache file: ${cache_fname}."
 
-            source $cache_fname
+            source ${cache_fname}
             sed < ${cache_fname} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "${USER_TEMP_PATH}ivi_env.sh"
 
             if ($?IVI_UA_HPC) then
@@ -511,6 +515,7 @@ if ($do_cache ) then
                 endif
             endif
 
+            ${VERBOSE_ECHO} "Early exit from init_compile due to cache being OK."
             exit
         endif
     endif
@@ -518,7 +523,7 @@ if ($do_cache ) then
     set varname_fname = "${USER_TEMP_PATH}ivi_varnames_$$"
     $IVI_CAT /dev/null >! "${varname_fname}"
 
-    ${ECHO} "Generating a new cache file which will update the one in ${cache_fname} if needed."
+    ${ECHO} "Generating a new cache file which will update ${cache_fname}.shadow if needed."
 
     alias ivi_setenv 'setenv \!*; echo \!:1 >>! $varname_fname;'
 else
@@ -1988,13 +1993,7 @@ endif
 # TODO, FIXME, CHECK --- c++11 is not so good with clang++. Currently we are
 # letting compilers choose (should we be?).
 #
-if (! $?IVI_PREFER_CXX11) then
-    if ("${IVI_CXX}" == "g++") then
-        setenv IVI_PREFER_CXX11
-    endif 
-endif
-
-if ($?IVI_PREFER_CXX11) then
+if (($?IVI_PREFER_CXX11) && ("${IVI_CXX}" != "clang++")) then
     set cxx11_flags = ""
     foreach flag (c++11 c++0x) 
         # test for: lambdas, automatic type inference, and rvalue references

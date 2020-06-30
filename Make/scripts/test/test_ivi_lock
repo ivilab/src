@@ -2,30 +2,29 @@
 
 # We assume that we have sourced init_compile. 
 
-setenv KJB_LOCKING_METHOD "lockfile-progs"
-setenv KJB_LOCKING_METHOD "flock"
-setenv KJB_LOCKING_METHOD "fallback"
+setenv IVI_LOCKING_METHOD "lockfile-progs"
+setenv IVI_LOCKING_METHOD "flock"
+setenv IVI_LOCKING_METHOD "fallback"
 
-setenv KJB_LOCKFILE_NAME "dodo"
-setenv KJB_LOCKFILE_NAME "test/dodo.lock"
-unsetenv KJB_LOCKFILE_NAME 
+setenv IVI_LOCKFILE_NAME "dodo"
+setenv IVI_LOCKFILE_NAME "test/dodo.lock"
+unsetenv IVI_LOCKFILE_NAME 
 
-# Each instant of test_kjb_lock_2 will add its PID to this file, which needs to
-# we remove here to start. 
-$KJB_RM test_kjb_lock.result
+# Each instant of test_ivi_lock_2 will add its PID to this file.
+$IVI_CREATE test_ivi_lock.result
 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}test/test_kjb_lock_2 & 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}test/test_kjb_lock_2 & 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}test/test_kjb_lock_2 & 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}test/test_kjb_lock_2 & 
-${MAKE_SCRIPT_PATH}kjb_lock ${MAKE_SCRIPT_PATH}test/test_kjb_lock_2 & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
 
-echo "Script test_kjb_lock is now doing a wait."
+echo "Script test_ivi_lock is now waiting."
 
 wait
 
 echo "=============="
-${KJB_CAT} test_kjb_lock.result
+${IVI_CAT} test_ivi_lock.result
 echo "=============="
 
 

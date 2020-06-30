@@ -16,7 +16,7 @@
 #
 #     The argument to ivi_lock is the command to be executed including its
 #     arguments. This script supports two forms of simple locking. One is based
-#     on the command, and the other is based on a resource labled by the value
+#     on the command, and the other is based on a resource labeled by the value
 #     of the environment variable IVI_LOCKFILE_NAME. 
 #
 #     For command based locking (simplest), this script constructs a lock name
@@ -29,10 +29,10 @@
 #     However, command based locking does not support multiple scripts that
 #     share a resource that needs to be protected. For this scenario, the set of
 #     scripts can set a specific named lock via the environment variable
-#     IVI_LOCKFILE_NAME. Usually this is a an informative string (no slashes
+#     IVI_LOCKFILE_NAME. Usually this is an informative string (no slashes
 #     are allowed). However, if IVI_LOCKFILE_NAME holds a path, then that path
 #     is taken as the precise lockfile, and the behaviour is similar to "flock",
-#     especially if flock is the underlying implemenation.
+#     especially if flock is the underlying implementation.
 #
 #     Unlike flock, this script sets an environment variable IVI_LOCK_TIME_STAMP
 #     that holds the path to a process specific file that timestamps the locking
@@ -51,18 +51,19 @@
 #     its value as a directory to create lockfiles in. Otherwise, this script
 #     will use ${TMPDIR}/${USER}/lockfiles/, creating it if needed.
 #
-#     Finally, if the environment variable IVI_DONT_LOCK is set, then ths
+#     Finally, if the environment variable IVI_DONT_LOCK is set, then this
 #     script runs the argument without any locking. The main purpose of this is
 #     to avoid deadlock when we effectively call scripts recursively. Normally
 #     there is a better way to accomplish what you want to do, but one instance
-#     where such a way is yet to be discovered is in repository synching where
+#     where such a way is yet to be discovered is in repository synch'ing where
 #     we want 'to' and 'from' processes to share locks, but also call each
 #     other.
 #
 # Deficiencies
 #     The current implementation locks all runs of a command operating in a
 #     given sub-directory, irrespective of arguments or parent directory, which
-#     is is not a big issue as it is simply overly conservative. 
+#     is is not a big issue as it is simply overly conservative. If this becomes
+#     an issue, we can put more path components in the lockfile name. 
 #
 #     If IVI_LOCKFILE_NAME looks like a path, we do not add ".lock" to the name,
 #     but if it is a simple string without '/', then we do add '.lock'. This
@@ -101,7 +102,8 @@ if ($?IVI_DONT_LOCK) then
 endif
 
 if (! $?IVI_LOCKING_METHOD) then
-    # Sync this code with that in init_compile!
+    # Sync this code with that in init_compile (or init_scripts as it might
+    # move)!
 
     if (`${MAKE_SCRIPT_PATH}can_execute flock`) then
         setenv IVI_LOCKING_METHOD "flock" 
@@ -112,20 +114,20 @@ if (! $?IVI_LOCKING_METHOD) then
     endif 
 endif 
 
-# Even if we give use a lockfile , we still need to have a directory to put the
+# Even if we are given a lockfile , we still need to have a directory to put the
 # lock timestamp file. 
 #
 if (! $?IVI_LOCKFILE_DIR) then
     setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
 endif 
 
+${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
+
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 set cmd_str = `echo ${1} | sed 's#.*/##'`
 
 setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${cmd_str}_${dir_str}.lock.$$"
 ${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
-
-${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
 
 if ($status) then
     $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
@@ -195,112 +197,133 @@ else
     # Fallback locking method. Doing locking robustly in scripts is hard, but
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
+    
+    if ($?NEW_LOCK) then
+        set version = "NEW"
+    else
+        set version = "OLD"
+    endif 
 
     # Best not to use VERBOSE_PSO here.
     if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ running ${cmd_str} in `pwd` using fallback locking system."
+        echo "${verbose_indent}Process $$ running ${cmd_str} in `pwd` using ${version} fallback locking system."
     endif
 
-    # Reduce the chances of everyone wanting to start at the same time.
-    # I do not know how likely this is to fail, or even to return success
-    # without doing the right thing, but it seems to work on the mac. 
-    set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
-    if (${status}) then
-        ${P_STDERR} "Fractional sleep failed in ivi_lock." 
-        set exit_status = 1
-        goto cleanup
-    endif
+    if ($?NEW_LOCK) then
+        ${MAKE_SCRIPT_PATH}ivi_lock_create ${lock_file}
+        $*
+        set exit_status = $status 
+        ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_file}
 
-    if (! -e "${lock_file}") then
-        echo $$ >! ${lock_file}
-
-        if ($?IVI_VERBOSE) then
-            echo "${verbose_indent}Process $$ setting lock file ${lock_file}."
-            # ps -l $$
-        endif 
-    else 
-        set count = 0
-        set got_it = 0
-
-        while (-e "${lock_file}")
-            set lock_proc = `cat ${lock_file}`
-
-            # Happens! 
-            if ($status) then 
-                echo $$ >! ${lock_file}
-                echo "Lock file ${lock_file} disappeared! Taking the lock."
-                set got_it = 1
-                break
-            endif 
-
-            if ($?IVI_VERBOSE_2) then
-                echo "${verbose_indent}Lock file ${lock_file} exists."
-                echo "${verbose_indent}Checking on lock file process ${lock_proc}." 
-            endif 
-
-            ps ${lock_proc} >& /dev/null
-            set ps_status = "${status}" 
-
-            if (${ps_status}) then
-                echo $$ >! ${lock_file}
-
-                if ($?IVI_VERBOSE) then
-                    echo "${verbose_indent}Process $$ resetting lock file ${lock_file} as process ${lock_proc} does not exist."
-                endif 
-
-                set got_it = 1
-                break
-            else if (${count} > 180) then
-                echo "Process $$ waited too long for ${lock_file}. "
-                echo "Information about the process holding the lock:"
-                ps -l ${lock_proc} 
-                echo "Sleeping for one minute for debugging" 
-                sleep 60
-                echo "Ignoring the lock."
-                echo $$ >! ${lock_file}
-                set got_it = 1
-                break
-            else  
-                if ($?IVI_VERBOSE) then
-                    echo "${verbose_indent}Process $$ waiting for ${lock_file} held by process ${lock_proc}."
-                endif 
-
-                # Add some fractional seconds to reduce the chances of everyone
-                # wanting to start at the same time.
-                set x = $$ ; @ x %= 100 ; sleep 1.$x >& /dev/null
-                if (${status}) then
-                    ${P_STDERR} "Fractional sleep failed in ivi_lock." 
-                    set exit_status = 1
-                    goto cleanup
-                endif
-
-                @ count ++
+        if (! ${exit_status}) then 
+            # Best not to use VERBOSE_PSO here.
+            if ($?IVI_VERBOSE) then
+                echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using ${version} fallback locking method."
             endif
-        end
+        endif 
+        
+    else
+        # Reduce the chances of everyone wanting to start at the same time.
+        # I do not know how likely this is to fail, or even to return success
+        # without doing the right thing, but it seems to work on the mac. 
+        set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
+        if (${status}) then
+            ${P_STDERR} "Fractional sleep failed in ivi_lock." 
+            set exit_status = 1
+            goto cleanup
+        endif
 
-        # If we got_it is still false, then the lock file was removed by the
-        # process we were waiting on.
-        #
-        if (! ${got_it}) then
+        if (! -e "${lock_file}") then
             echo $$ >! ${lock_file}
 
             if ($?IVI_VERBOSE) then
-                echo "${verbose_indent}Process $$ setting lock file ${lock_file} as it no longer exists."
+                echo "${verbose_indent}Process $$ setting lock file ${lock_file}."
+                # ps -l $$
+            endif 
+        else 
+            set count = 0
+            set got_it = 0
+
+            while (-e "${lock_file}")
+                set lock_proc = `cat ${lock_file}`
+
+                # Happens! 
+                if ($status) then 
+                    echo $$ >! ${lock_file}
+                    echo "Lock file ${lock_file} disappeared! Taking the lock."
+                    set got_it = 1
+                    break
+                endif 
+
+                if ($?IVI_VERBOSE_2) then
+                    echo "${verbose_indent}Lock file ${lock_file} exists."
+                    echo "${verbose_indent}Checking on lock file process ${lock_proc}." 
+                endif 
+
+                ps ${lock_proc} >& /dev/null
+                set ps_status = "${status}" 
+
+                if (${ps_status}) then
+                    echo $$ >! ${lock_file}
+
+                    if ($?IVI_VERBOSE) then
+                        echo "${verbose_indent}Process $$ resetting lock file ${lock_file} as process ${lock_proc} does not exist."
+                    endif 
+
+                    set got_it = 1
+                    break
+                else if (${count} > 180) then
+                    echo "Process $$ waited too long for ${lock_file}. "
+                    echo "Information about the process holding the lock:"
+                    ps -l ${lock_proc} 
+                    echo "Sleeping for one minute for debugging" 
+                    sleep 60
+                    echo "Ignoring the lock."
+                    echo $$ >! ${lock_file}
+                    set got_it = 1
+                    break
+                else  
+                    if ($?IVI_VERBOSE) then
+                        echo "${verbose_indent}Process $$ waiting for ${lock_file} held by process ${lock_proc}."
+                    endif 
+
+                    # Add some fractional seconds to reduce the chances of everyone
+                    # wanting to start at the same time.
+                    set x = $$ ; @ x %= 100 ; sleep 1.$x >& /dev/null
+                    if (${status}) then
+                        ${P_STDERR} "Fractional sleep failed in ivi_lock." 
+                        set exit_status = 1
+                        goto cleanup
+                    endif
+
+                    @ count ++
+                endif
+            end
+
+            # If we got_it is still false, then the lock file was removed by the
+            # process we were waiting on.
+            #
+            if (! ${got_it}) then
+                echo $$ >! ${lock_file}
+
+                if ($?IVI_VERBOSE) then
+                    echo "${verbose_indent}Process $$ setting lock file ${lock_file} as it no longer exists."
+                endif 
             endif 
         endif 
-    endif 
 
-    # Run the command
-    $*
-    set exit_status = $status
+        # Run the command
+        $*
+        set exit_status = $status
 
-    ${IVI_RM} "${lock_file}"
-   
-    if (${exit_status}) exit 1
+        ${IVI_RM} "${lock_file}"
+       
+        if (${exit_status}) exit 1
+    endif
 
     # Best not to use VERBOSE_PSO here.
     if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
+        echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using ${version} fallback locking method."
     endif
 endif 
 

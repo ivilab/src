@@ -4,26 +4,24 @@
 
 # Using stderr for unbuffered output. 
 
-${P_STDERR} "--- Process $$ is in test_kjb_lock_2."
+${P_STDERR} "--- Process $$ is in test_ivi_lock_2."
 
-if (($?KJB_LOCK_TIME_STAMP) && (-e test_kjb_lock.result)) then
-    set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${KJB_LOCK_TIME_STAMP} "test_kjb_lock.result"`
+if (($?IVI_LOCK_TIME_STAMP) && (-e test_ivi_lock.result)) then
+    echo IVI_LOCK_TIME_STAMP: $IVI_LOCK_TIME_STAMP
+    set i_am_first = `${MAKE_SCRIPT_PATH}test_older_than "test_ivi_lock.result" "${IVI_LOCK_TIME_STAMP}"`
 
-    if (${can_skip}) then
-        ${P_STDERR} "^^^ Process $$ is skipping touching test_kjb_lock.result as it is new."
-        set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
-        echo $BEEP
-        exit 0
+    if (${i_am_first}) then
+        ${P_STDERR} "^^^ Process $$ is first to touch test_ivi_lock.result."
     endif 
 endif 
 
-${P_STDERR} "@@@ Process $$ is continuing in test_kjb_lock_2."
+${P_STDERR} "@@@ Process $$ is continuing in test_ivi_lock_2."
 
 # The sleeps should hold up the exit of all other processes. 
-${P_STDERR} "@@@ Process $$ will add to test_kjb_lock.result after sleeping"
+${P_STDERR} "@@@ Process $$ will add to test_ivi_lock.result after sleeping"
 sleep 2
-${P_STDERR} "@@@ Process $$ is adding to test_kjb_lock.result" 
-echo $$ >> test_kjb_lock.result
+${P_STDERR} "@@@ Process $$ is adding to test_ivi_lock.result" 
+echo $$ >> test_ivi_lock.result
 sleep 2
 ${P_STDERR} "@@@ Process $$ is done" 
 

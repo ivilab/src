@@ -437,6 +437,7 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)Include_lines/
 	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets
 #	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-4
 #
+#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend-SAVE
 	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend \
 	        $(VIM_IO_REDIRECTION)
 #	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend-SAVE-2

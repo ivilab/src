@@ -244,6 +244,8 @@ endif
 
 set exit_status = 0
 
+set start_time = `date +%H:%M:%S`
+
 set error_file = "`\pwd`/make_ivi.err"
 cat /dev/null > ${error_file}
 
@@ -260,6 +262,7 @@ cat /dev/null > ${error_file}
 
 setenv IVI_PREFER_CXX 0
 unsetenv IVI_CC
+unsetenv IVI_CXX
 setenv PRODUCTION 1
 
 setenv NO_LIBS 0
@@ -319,7 +322,7 @@ endif
 # init_compile checks as a dependency. 
 
 source Make/init_scripts
-${IVI_TOUCH} ${USER_TEMP_PATH}cache_rebuild_depend
+# ${IVI_TOUCH} ${USER_TEMP_PATH}cache_rebuild_depend
 source Make/init_compile
 
 set time_stamp = `date +%y-%m-%d-%H-%M`
@@ -3720,12 +3723,16 @@ endif
 
 end_of_script:
 
+set end_time = `date +%H:%M:%S`
+
 echo "=============================================================================="
 echo ""
 echo ""
 
 if (${exit_status}) then
     echo "Make_ivi: Script make_ivi failed." 
+    echo "    Start time: ${start_time}"
+    echo "    End time:   ${end_time}"
     echo " "
     echo "Error summary: "
     echo " "
@@ -3733,6 +3740,8 @@ if (${exit_status}) then
     echo " "
 else 
     echo "Make_ivi: Script make_ivi finished successfully." 
+    echo "    Start time: ${start_time}"
+    echo "    End time:   ${end_time}"
     echo " "
 
     if ($do_export) then
