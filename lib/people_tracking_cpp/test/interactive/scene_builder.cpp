@@ -16,7 +16,7 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-/* $Id: scene_builder.cpp 25597 2020-06-30 23:31:45Z kobus $ */
+/* $Id: scene_builder.cpp 25600 2020-06-30 23:55:43Z kobus $ */
 
 #include <people_tracking_cpp/pt_association.h>
 #include <mcmcda_cpp/mcmcda_proposer.h>
@@ -405,7 +405,7 @@ vector<string> display_growing(Bp_map& box_props, Tp_map& trail_props)
     Ascn::iterator temp_tg_p = w.begin();
     if(!w_p->empty())
     {
-        advance(temp_tg_p, distance(w_p->begin(), cur_tg_p));
+        boost::advance(temp_tg_p, boost::distance(w_p->begin(), cur_tg_p));
         w.erase(temp_tg_p);
         w.insert(cur_sh_tg);
 

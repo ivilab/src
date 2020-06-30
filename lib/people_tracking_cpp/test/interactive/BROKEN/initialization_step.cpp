@@ -165,7 +165,7 @@ int main(int argc, char** argv)
         Scene_viewer viewer(gt_scene, img_width, img_height);
         viewer.set_flows(flows_x, flows_y);
         viewer.set_facemarks(fm_data);
-        viewer.set_key_callback(bind(handle_key, ref(viewer), _1, _2, _3));
+        viewer.set_key_callback(bind(handle_key, boost::ref(viewer), _1, _2, _3));
         update_viewer(viewer);
         if(!frame_fps.empty())
         {

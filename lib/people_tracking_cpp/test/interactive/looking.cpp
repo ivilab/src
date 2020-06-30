@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         Scene_viewer viewer(scene, win_width, win_height);
         viewer.set_target_style(*scene.association.begin(), red, 1.0);
         viewer.set_target_style(*scene.association.rbegin(), blue, 1.0);
-        viewer.set_key_callback(bind(handle_key, ref(viewer), _1, _2, _3));
+        viewer.set_key_callback(bind(handle_key, boost::ref(viewer), _1, _2, _3));
 
         glutMainLoop();
 #endif
