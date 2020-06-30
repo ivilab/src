@@ -1,15 +1,14 @@
 
-/* $Id: plot_matrix_values.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: plot_matrix_values.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "m/m_incl.h" 
 #include "p/p_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     Matrix* mp = NULL;
     int   plot_id; 
-    int i, j; 
 
 
     EPETE(ivi_l_set("verbose", "1000"));

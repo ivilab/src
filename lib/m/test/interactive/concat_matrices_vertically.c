@@ -1,5 +1,5 @@
 
-/* $Id: concat_matrices_vertically.c 25562 2020-06-18 15:49:40Z shreeya $ */
+/* $Id: concat_matrices_vertically.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -8,8 +8,7 @@
 #define NUM_ROWS 3
 #define NUM_COLS 5
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     Matrix* matrix_list[ NUM_MATRICES ]; 
     Matrix* mp = NULL;
@@ -46,7 +45,7 @@ int main(int argc, char **argv)
 
         dbp("--------");
 
-        EPETE(concat_matrices_vertically(&mp, j, matrix_list));
+        EPETE(concat_matrices_vertically(&mp, j, (const Matrix* const*) matrix_list));
 
         db_mat(mp); 
         dbp("===================");

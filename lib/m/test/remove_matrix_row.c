@@ -4,7 +4,7 @@
 
 #include "m/m_incl.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     int i,j,k;
 
@@ -12,11 +12,15 @@ int main(int argc, char *argv[])
     Vector* vp = NULL;
     Matrix* cp = NULL;
 
+    /* Kobus: Check arguments, otherwise this program can crash. */
+    check_num_args(argc, 4, 4, NULL);
+
     /* Assigns variables to the argument inputs
      * Note that the last input is either 1 for storing in vp or 0 to not store
      * it (e.g. we pass (Vector**)NULL 
      * Also note that we assume all test cases/input to be well-formed. */
 
+    /* Kobus: Switch atoi, atof, to ivi library scan fumctions. */
     int rows = atoi(argv[1]);
     int cols = atoi(argv[2]);
     int row_to_remove = atoi(argv[3]);

@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: gsl_vector.h 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: gsl_vector.h 25597 2020-06-30 23:31:45Z kobus $
  */
 
 #ifndef GSL_VECTOR_WRAP_H_IVILIB_UARIZONAVISION
@@ -500,7 +500,7 @@ public:
 
             // 3 Nov. 2015 -- predoehl -- this macro is causing trouble again. :-(
             // Hopefully the std namespace will get the job done.
-            if ( /*isnand( x )*/ std::isnan(x) || ! finite( x ) )
+            if ( /*isnand( x )*/ std::isnan(x) || ! isfinite( x ) )
             {
                 return false;
             }

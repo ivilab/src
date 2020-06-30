@@ -2,7 +2,7 @@
  * This is a demonstration program showing how to use error-handling macros
  * ERN, NRN, and NPETE in a multi-thread program.
  *
- * $Id: failure.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: failure.c 25597 2020-06-30 23:31:45Z kobus $
  */
 
 #include <l/l_incl.h>
@@ -31,24 +31,37 @@ static void* t_fun(void* arg)
 }
 
 
-int main(int argc, char** argv)
+int main(void)
 {
     int i;
-    const char* arg[] = {"odd", "even"};
     ivi_pthread_t tid[THREAD_CT];
+#ifdef MAKE_COMPILER_COMPLAIN    /* Not defined by default. */
+    const char* arg[] = {"odd", "even"};
+#else 
+    char* arg[2];
+
+    arg[0]=ivi_strdup("odd");
+    arg[1]=ivi_strdup("even");
+#endif 
 
     EPETE(set_random_options("seed-2", "*"));
 
     for (i = 0; i < THREAD_CT; ++i)
     {
-        EPETE(ivi_pthread_create(tid+i, NULL, t_fun, (void*) arg[i&1]));
+        EPETE(ivi_pthread_create(tid+i, NULL, t_fun, arg[i&1]));
     }
+
     for (i = 0; i < THREAD_CT; ++i)
     {
         void *v;
         EPETE(ivi_pthread_join(tid[i], &v));
         NPETE(v);
     }
+
+#ifndef MAKE_COMPILER_COMPLAIN    /* Not defined by default. */
+    ivi_free(arg[0]);
+    ivi_free(arg[1]);
+#endif
 
     return EXIT_SUCCESS;
 }

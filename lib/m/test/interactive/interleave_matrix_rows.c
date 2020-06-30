@@ -1,5 +1,5 @@
 
-/* $Id: interleave_matrix_rows.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: interleave_matrix_rows.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -8,7 +8,7 @@
 #define NUM_ROWS 5
 #define NUM_COLS 3
 
-int main(int argc, char **argv)
+int main(void)
 {
 #ifdef HAVE_INTERLEAVE_MATRIX_COLS_2
     Matrix* list[ NUM_MATRICES ]; 

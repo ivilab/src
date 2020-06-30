@@ -7,20 +7,20 @@
  */
 
 /*
- * $Id: gsl_multimin.h 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: gsl_multimin.h 25597 2020-06-30 23:31:45Z kobus $
  */
 
 #ifndef GSL_MULTIMIN_WRAP_H_IVILIB_UARIZONAVISION
 #define GSL_MULTIMIN_WRAP_H_IVILIB_UARIZONAVISION
 
-#include <l_cpp/l_exception.h>
-#include <gsl_cpp/gsl_util.h>
-#include <gsl_cpp/gsl_vector.h>
+#include "l_cpp/l_exception.h"
+#include "gsl_cpp/gsl_util.h"
+#include "gsl_cpp/gsl_vector.h"
 
 #include <boost/function/function1.hpp>
 
 #ifdef IVI_HAVE_GSL
-#include "gsl/gsl_multimin.h" /* no need for extern "C" */
+#include <gsl/gsl_multimin.h> /* no need for extern "C" */
 #else
 #warning "Gnu Scientific Library is absent, yet essential to this program."
 

@@ -1,10 +1,10 @@
 
-/* $Id: get_matrix_from_matrix_vector.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: get_matrix_from_matrix_vector.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "m/m_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     Matrix_vector* mvp = NULL; 
     Matrix* mp = NULL;

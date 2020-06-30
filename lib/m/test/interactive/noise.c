@@ -1,11 +1,10 @@
 
-/* $Id: noise.c 9312 2011-04-13 06:49:57Z kobus $ */
+/* $Id: noise.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "sample/sample_incl.h" 
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     int i; 
 

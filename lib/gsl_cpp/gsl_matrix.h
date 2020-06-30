@@ -17,7 +17,7 @@
  * ===========================================================================
  */
 
-/* $Id: gsl_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: gsl_matrix.h 25597 2020-06-30 23:31:45Z kobus $ */
 
 #ifndef IVI_CPP_GSL_MATRIX_H
 #define IVI_CPP_GSL_MATRIX_H
@@ -429,7 +429,7 @@ public:
                 // 2016-02-01 Predoehl -- sorry, cannot use the ivi wrapper;
                 // this macro is causing trouble again. :-(
                 // Hopefully the std namespace will get the job done.
-                if ( /*isnand( x )*/ std::isnan(x) || ! finite( x ) )
+                if ( /*isnand( x )*/ std::isnan(x) || ! isfinite( x ) )
                 {
                     return false;
                 }

@@ -481,10 +481,12 @@ void update_viewer(Scene_viewer& viewer)
     size_t num_frames = viewer.scene().association.get_data().size();
     size_t fr = viewer.frame();
     size_t num_tracks = viewer.scene().association.size();
-    size_t tr = distance(viewer.scene().association.begin(),
+
+    // Kobus. Assuming we want boost::distance
+    size_t tr = boost::distance(viewer.scene().association.begin(),
                          active_target_p.get_iterator());
     size_t num_boxes = viewer.scene().association.get_data()[fr - 1].size();
-    size_t bx = distance(viewer.scene().association.get_data()[fr - 1].begin(),
+    size_t bx = boost::distance(viewer.scene().association.get_data()[fr - 1].begin(),
                          active_databox_p.get_iterator());
 
     info_text[0] = "Frame: " + lexical_cast<string>(fr) + "/"

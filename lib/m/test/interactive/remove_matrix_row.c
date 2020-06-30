@@ -1,11 +1,10 @@
 
-/* $Id: remove_matrix_row.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: remove_matrix_row.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "m/m_incl.h" 
 
-/*ARGSUSED*/
-int main(int argc, char **argv)
+int main(void)
 {
     Matrix* mp = NULL;
     Vector* vp = NULL; 

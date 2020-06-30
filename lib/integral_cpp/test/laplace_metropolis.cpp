@@ -26,6 +26,7 @@
 #include <prob_cpp/prob_pdf.h>
 #include <prob_cpp/prob_sample.h>
 #include <iostream>
+#include <boost/bind.hpp>
 
 using namespace std;
 using namespace ivi;

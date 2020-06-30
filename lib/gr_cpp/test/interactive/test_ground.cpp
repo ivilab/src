@@ -24,6 +24,7 @@
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_glut.h>
 #include <gr_cpp/gr_primitive.h>
+#include "gr_cpp/gr_opengl_headers.h"
 #include <iostream>
 
 using namespace std;

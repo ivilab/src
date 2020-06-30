@@ -4,7 +4,7 @@
 
 #include "m/m_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     Matrix* mp = NULL;
     Matrix* s1_mp = NULL;

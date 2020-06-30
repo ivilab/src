@@ -6,7 +6,10 @@
  * inputs non-interactively.
  */
 
+/* Kobus 20/06/30. Adjusted code to compile without warnings. */
+
 #include "m/m_incl.h" 
+
 #define MAX_FILENAME_LEN 256
 
 /*
@@ -15,12 +18,21 @@
  * path in this case means the necessary prefix is attached to find the
  * input file in test_input/mat_error/check_same_matrix_dimensions/
  */
-void set_file_path(char* matrix_file, char* filename){
+static void set_file_path(char matrix_file[ MAX_FILENAME_LEN ], 
+                          const char* filename)
+{
   char base_path[] = "test_input/mat_error/check_same_matrix_dimensions/";
+
+  /* Kobus:
+   * Copying strings without considering sizes is dangerous. These are the
+   * famous buffer oveflow security vulnerablitiesl One way is to use
+   * ivi_strcpy. 
 
   strcpy(matrix_file, base_path);
   strcat(matrix_file, filename);
-
+  */ 
+  ivi_strncpy(matrix_file, base_path, MAX_FILENAME_LEN);
+  ivi_strncat(matrix_file, filename, MAX_FILENAME_LEN);
 }
 
 /*
@@ -30,7 +42,13 @@ int main()
 {
     Matrix* mp1 = NULL;
     Matrix* mp2 = NULL;
+
+    /* Kobus: You want an array of characters, not an array of pointers to
+     * characters,
+
     char *matrix_file[MAX_FILENAME_LEN];
+    */
+    char matrix_file[MAX_FILENAME_LEN];
     
 
     /* Tests expected to pass */

@@ -28,20 +28,20 @@
 #include <gr_cpp/gr_primitive.h>
 
 #include <gr_cpp/gr_glut.h>
+#include "gr_cpp/gr_opengl_headers.h"
 
 
 #include <boost/shared_ptr.hpp>
 
 using namespace std;
 using ivi::opengl::Glut_window;
-using boost::shared_ptr;
 
 // These must be global, so we can pass to DEFINE_GLUT_CALLBACKS macro later.
 // Glut_windows can't be copied and must be initialized 
 // during construction. We aren't ready to initialize here,
 // we we must make them constant.
-shared_ptr<Glut_window> wnd; // use smart pointers when possible
-shared_ptr<Glut_window> wnd2;
+boost::shared_ptr<Glut_window> wnd; // use smart pointers when possible
+boost::shared_ptr<Glut_window> wnd2;
 
 // These macros define a large set of C-style functions that simply call
 // the Glut_window's member functions.  Later we'll associate
@@ -97,8 +97,7 @@ int main()
 
 // WINDOW #1
     // Step 1: Construct a window
-    Glut_window wnd;
-
+    Glut_window wnd("Test glut window");
     // Step 2: set display handler
     wnd.set_display_callback(draw2);
 

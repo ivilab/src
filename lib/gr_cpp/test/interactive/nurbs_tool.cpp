@@ -1,8 +1,10 @@
 #define DEBUG
 
 #include <m_cpp/m_vector.h>
+#include <i_cpp/i_image.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_spline.h>
+#include "gr_cpp/gr_opengl_headers.h"
 //#include <geom_model.h>
 #include <iostream>
 #include <ostream>

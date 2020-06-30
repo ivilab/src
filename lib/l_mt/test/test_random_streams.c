@@ -11,7 +11,7 @@
  * thread via macro symbol STREAM_CT.  The output size is proportional to the
  * product of these values.  They each have defaults as you can see below.
  *
- * $Id: test_random_streams.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: test_random_streams.c 25597 2020-06-30 23:31:45Z kobus $
  */
 #include "l/l_sys_io.h"
 #include "l/l_sys_debug.h"
@@ -526,6 +526,7 @@ static int is_interacto(void)
     return ii;
 }
 
+#ifdef LOOKS_BUGGY_TO_KOBUS
 /* return value is undefined if d does not contain an element. */
 static struct Seed sls_back(struct S_list* d)
 {
@@ -537,6 +538,19 @@ static struct Seed sls_back(struct S_list* d)
     }
     return seed;
 }
+#else
+/* Still looks dangerous, but lets at least define what we should get returned. */
+static struct Seed sls_back(struct S_list* d)
+{
+    struct Seed seed = {0, 0, {0, 0, 0}};
+    if (d && sls_not_empty(d))
+    {
+        ASSERT(d -> tail_size);
+        return d -> tail -> b[d -> tail_size - 1];
+    }
+    return seed;
+}
+#endif 
 
 /* function called by many threads -- must be reentrant */
 static void* work_fun(void* arg)

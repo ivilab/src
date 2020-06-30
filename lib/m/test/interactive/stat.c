@@ -1,10 +1,10 @@
 
-/* $Id: stat.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: stat.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "m/m_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     Vector* first_vp    = NULL;
     Vector* second_vp   = NULL;

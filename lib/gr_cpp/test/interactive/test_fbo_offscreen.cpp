@@ -1,4 +1,4 @@
-/* $Id: test_fbo_offscreen.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: test_fbo_offscreen.cpp 25597 2020-06-30 23:31:45Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,12 +22,17 @@
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_glut.h>
 #include <gr_cpp/gr_fbo_offscreen.h>
+#include "gr_cpp/gr_opengl_headers.h"
+
+
 
 using namespace ivi::opengl;
+
 int main(int argc, char** argv)
 {
-    Glut_window wnd;
-//    Fbo_offscreen_buffer fbo(500, 500, false);
+#ifdef IVI_HAVE_GLEW
+    Glut_window wnd("Test fbo offscreen");
+    Fbo_offscreen_buffer fbo(500, 500, false);
     Fbo_offscreen_buffer fbo(500, 500, false);
     fbo.bind();
 
@@ -38,4 +43,7 @@ int main(int argc, char** argv)
     fbo.unbind();
 
     return 0;
+#else
+    return ivi_c::ERROR;
+#endif 
 }

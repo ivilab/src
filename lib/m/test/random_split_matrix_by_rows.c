@@ -11,12 +11,16 @@
 #include "m/m_incl.h" 
 
 /*ARGSUSED*/
-int main(int argc, char **argv)
+int main(int argc, char* argv[])
 {
     Matrix* source_mp 	= NULL;		/* source matrix */
     Matrix* t1_mp 		= NULL;		/* target 1 matrix */
     Matrix* t2_mp 		= NULL;		/* target 2 matrix */
 
+    /* Kobus: Check arguments, otherwise this program can crash. */
+    check_num_args(argc, 3, 3, NULL);
+
+    /* Kobus: Switch atoi, atof, to ivi library scan fumctions. */
 	/*
 	 * Number of rows and columns of the source matrix
 	 */

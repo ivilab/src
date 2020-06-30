@@ -1,5 +1,5 @@
 
-/* $Id: sort_indexed_vector.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: sort_indexed_vector.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 #include "m/m_incl.h" 
@@ -7,7 +7,7 @@
 #define LENGTH 1000
 #define LOOPS 10
 
-int main(int argc, char **argv)
+int main(void)
 {
     Indexed_vector* vp = NULL;
     int i;

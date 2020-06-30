@@ -19,6 +19,7 @@
 
 #include <gr_cpp/gr_sprite.h>
 #include <gr_cpp/gr_glut.h>
+#include "gr_cpp/gr_opengl_headers.h"
 #include <unistd.h>
 
 #include <string>
@@ -82,7 +83,7 @@ void key_handler(unsigned char k, int x, int y)
 int main()
 {
     ivi::opengl::Glut::set_init_window_size(WIDTH, HEIGHT);
-    Glut_window wnd;
+    Glut_window wnd("Demo");
     wnd.set_size(WIDTH, HEIGHT);
 
     // set up callbacks

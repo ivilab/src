@@ -9,7 +9,7 @@
  |                                                                          |
  * ======================================================================== */
 
-/* $Id: test_spline.cpp 25497 2020-06-14 13:20:50Z kobus $ */
+/* $Id: test_spline.cpp 25597 2020-06-30 23:31:45Z kobus $ */
 
 #define DEBUG
 
@@ -20,9 +20,9 @@
 #include "l/l_sys_rand.h"
 #include "m_cpp/m_vector.h"
 #include "gr_cpp/gr_opengl.h"
+#include "l_cpp/l_test.h" 
 #include <vector>
 
-#include "test.h"
 
 #if 0 /* ------------------------------------------------------------*/
 #define TEST_SUCCESS(line) \

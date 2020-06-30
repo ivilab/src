@@ -176,7 +176,7 @@ int main(int argc, char** argv)
                 hpts.begin(),
                 hpts.end(),
                 hpts.begin(),
-                bind(project_point, cref(cam), _1));
+                bind(project_point, boost::cref(cam), _1));
             tot_time += ivi_c::get_real_time();
         }
         cout << "  project head pts: " << tot_time/1000.0 << endl;
@@ -344,7 +344,7 @@ int main(int argc, char** argv)
         for_each(
             ascn.begin(),
             ascn.end(),
-            bind(&Target::update_boxes, _1, cref(cam)));
+            bind(&Target::update_boxes, _1, boost::cref(cam)));
         tot_time = ivi_c::get_real_time();
         cout << "Update boxes: " << tot_time/1000.0 << endl;
 
@@ -353,7 +353,7 @@ int main(int argc, char** argv)
         for_each(
             ascn.begin(),
             ascn.end(),
-            bind(&Target::update_faces, _1, cref(cam)));
+            bind(&Target::update_faces, _1, boost::cref(cam)));
         tot_time = ivi_c::get_real_time();
         cout << "Update faces: " << tot_time/1000.0 << endl;
 

@@ -6,9 +6,10 @@
  * There is a fully-automatic version of this in the test directory.
  */
 /*
- * $Id: test_reflection.cpp 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: test_reflection.cpp 25597 2020-06-30 23:31:45Z kobus $
  */
 
+#include <l_cpp/l_util.h>
 #include <m_cpp/m_convolve.h>
 #include <iostream>
 

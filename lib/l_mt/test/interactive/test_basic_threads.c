@@ -1,5 +1,5 @@
 /*
- * $Id: test_basic_threads.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: test_basic_threads.c 25597 2020-06-30 23:31:45Z kobus $
  */
 
 #include <l/l_sys_lib.h>
@@ -15,7 +15,7 @@ ivi_pthread_mutex_t mtx = IVI_PTHREAD_MUTEX_INITIALIZER;
 
 static void* thready_work(void* p)
 {
-    union { void* v; int i; } u;
+    union { void* v; size_t i; } u;
     u.v = p;
 
     EPETE(ivi_pthread_mutex_lock(&mtx));
@@ -25,9 +25,9 @@ static void* thready_work(void* p)
     return NULL;
 }
 
-int main(int argc, char** argv)
+int main(void)
 {
-    int i;
+    size_t i;
     ivi_pthread_t worker_bees[HIVE_SIZE];
 
     if (! is_interactive()) 

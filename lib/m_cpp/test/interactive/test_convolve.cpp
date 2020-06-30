@@ -1,4 +1,4 @@
-/* $Id: test_convolve.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: test_convolve.cpp 25597 2020-06-30 23:31:45Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -24,6 +24,7 @@
 #include <m2/m2_ncc.h>
 #include <i_cpp/i_image.h>
 #include <l/l_sys_time.h>
+#include <iostream>
 
 
 int main(int argc, char** argv)

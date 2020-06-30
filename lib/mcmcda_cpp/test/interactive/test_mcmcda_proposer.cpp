@@ -20,7 +20,9 @@
 #include <mcmcda_cpp/mcmcda_association.h>
 #include <mcmcda_cpp/mcmcda_proposer.h>
 #include <m_cpp/m_vector.h>
+#include "gr_cpp/gr_opengl_headers.h"
 #include <gr_cpp/gr_glut.h>
+#include <gr_cpp/gr_opengl.h>
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_pdf.h>
 #include <prob_cpp/prob_sample.h>

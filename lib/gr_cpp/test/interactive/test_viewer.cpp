@@ -19,15 +19,19 @@
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
 
+#ifdef CAN_FIND_VIEWER
 #include <gr_cpp/gr_viewer.h>
+#endif 
+
 #include <gr_cpp/gr_glut.h>
 #include <gr_cpp/gr_primitive.h>
 
 using namespace ivi;
 using namespace ivi::opengl;
 
-int main()
+int main(void)
 {
+#ifdef CAN_FIND_VIEWER
     Viewer viewer(500, 500);
 
     glEnable(GL_LIGHTING);
@@ -42,4 +46,7 @@ int main()
     glutMainLoop();
 
     return 0;
+#else
+    return ivi_c::ERROR;
+#endif
 }

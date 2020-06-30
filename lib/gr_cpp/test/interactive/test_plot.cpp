@@ -17,13 +17,15 @@
 |
 * =========================================================================== */
 
-/* $Id: test_plot.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: test_plot.cpp 25597 2020-06-30 23:31:45Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <gr_cpp/gr_opengl.h>
 #include <gr_cpp/gr_plot.h>
 #include <algorithm>
 #include <cmath>
+
+#include "gr_cpp/gr_opengl_headers.h"
 
 using namespace ivi;
 using namespace ivi::opengl;

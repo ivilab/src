@@ -129,7 +129,7 @@ int main(int argc, char** argv)
         viewer.draw_facemarks(true);
         viewer.draw_images(true);
         viewer.draw_text(true);
-        viewer.set_key_callback(bind(handle_key, ref(viewer), _1, _2, _3));
+        viewer.set_key_callback(bind(handle_key, boost::ref(viewer), _1, _2, _3));
 
         // active stuff
         active_databox_p = make_const_circular_iterator(
@@ -317,12 +317,11 @@ void update_viewer(Scene_viewer& viewer)
     size_t fr = viewer.frame();
 
     size_t num_fmarks = (*fm_data_p)[fr - 1].size();
-    size_t fm = distance(
-                (*fm_data_p)[fr - 1].begin(),
-                active_fmark_p.get_iterator());
+    size_t fm = boost::distance((*fm_data_p)[fr - 1].begin(),
+                                active_fmark_p.get_iterator());
 
     size_t num_boxes = viewer.scene().association.get_data()[fr - 1].size();
-    size_t bx = distance(
+    size_t bx = boost::distance(
                     viewer.scene().association.get_data()[fr - 1].begin(),
                     active_databox_p.get_iterator());
 

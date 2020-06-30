@@ -2,7 +2,7 @@
 
 #include "m/m_incl.h"
 
-int test_get_correlation_coefficient() 
+static int test_get_correlation_coefficient() 
 {
     Vector* a = NULL;
     Vector* b = NULL;
@@ -18,7 +18,7 @@ int test_get_correlation_coefficient()
     return NO_ERROR;
 }
 
-int test_get_mahalanobis_distance_sqrd()
+static int test_get_mahalanobis_distance_sqrd()
 {
     Vector* x = NULL;
     Vector* mu = NULL;
@@ -37,7 +37,7 @@ int test_get_mahalanobis_distance_sqrd()
     return NO_ERROR;
 }
 
-int test_get_mahalanobis_distance()
+static int test_get_mahalanobis_distance()
 {
     Vector* x = NULL;
     Vector* mu = NULL;
@@ -56,7 +56,7 @@ int test_get_mahalanobis_distance()
     return NO_ERROR;
 }
 
-int test_get_log_gaussian_density()
+static int test_get_log_gaussian_density()
 {
     Vector* x = NULL;
     Vector* mu = NULL;
@@ -77,7 +77,7 @@ int test_get_log_gaussian_density()
    
 }
 
-int test_get_gaussian_density()
+static int test_get_gaussian_density()
 {
     Vector* x = NULL;
     Vector* mu = NULL;
@@ -97,7 +97,7 @@ int test_get_gaussian_density()
    
 }
 
-int test_get_mahalanobis_distance_sqrd_2()
+static int test_get_mahalanobis_distance_sqrd_2()
 {
     Vector* x = NULL;
     Vector* mu = NULL;
@@ -118,7 +118,7 @@ int test_get_mahalanobis_distance_sqrd_2()
     return NO_ERROR;
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
     EPETE(test_get_correlation_coefficient())
     EPETE(test_get_mahalanobis_distance_sqrd())

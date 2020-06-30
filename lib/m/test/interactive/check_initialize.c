@@ -1,5 +1,5 @@
 
-/* $Id: check_initialize.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: check_initialize.c 25597 2020-06-30 23:31:45Z kobus $ */
 
 
 /*
@@ -11,7 +11,7 @@
 
 #include "m/m_incl.h" 
 
-int main(int argc, char **argv)
+int main(void)
 {
     Vector* vp = NULL; 
     Matrix* mp = NULL; 
