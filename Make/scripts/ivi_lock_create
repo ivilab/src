@@ -80,8 +80,8 @@ endif
 
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 
-# setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock.$$"
-# ${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
+setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock.$$"
+${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
 
 if ($?IVI_LOCKFILE_NAME) then
     set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`

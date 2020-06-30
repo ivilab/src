@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25596 2020-06-30 23:29:58Z kobus $
+# $Id: init_compile 25599 2020-06-30 23:55:00Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -317,79 +317,84 @@ if ($do_cache) then
     endif
 endif
 
-setenv DO_CACHE_LOCK
+if ("${USER}" == "kobus") then
+    setenv DO_CACHE_LOCK
+endif 
 
 if ($do_cache ) then
     if ($?DO_CACHE_LOCK) then
-        # Kobus. Experimental. Implement a dumb lock. It is not perfect.
-        #
-        # Sleep a small amount, which is likely to be different (roughly one
-        # chance in the magic number below, currently 30).  This does not
-        # work on all systems, but it is not critical, although without it,
-        # there is a high chance the locking will not happen.. 
-        #
-        set x = $$ ; @ x %= 30 ; sleep 0.$x >& /dev/null
-        if (${status}) then
-            ${ECHO} "Random sleep failed." 
-        endif
+        ${MAKE_SCRIPT_PATH}ivi_lock_create init_compile
+    endif 
 
-        set cache_lock_file =  "${USER_TEMP_PATH}cache_lock"
-
-        if (-e ${cache_lock_file}) then
-            set max_age = 100
-
-            # If the lock is older than max_age seconds, ignore it. 
-            set locked = `tools younger_than ${max_age} ${cache_lock_file}`
-
-            if (${status}) then
-                # If this command fails we assume that this is due to the lockfile being removed since
-                # we checked for it due to the process that had it finally
-                # finishing, which does happen. In this case we do nothing.
-                ${ECHO} "Cache file disappeared while getting its age." 
-            else if ("${locked}" == "") then
-                ${ECHO} "Ignoring cache lock because it is older than ${max_age} seconds." 
-            else
-                set lock_proc = `$IVI_CAT ${cache_lock_file}`
-
-                set count = 1
-                # Wait up to N seconds to get the lock. 
-                set wait_in_seconds = 30 
-
-                while (${count} < ${wait_in_seconds})
-                    ps ${lock_proc} >& /dev/null
-                    if (${status}) then
-                        ${ECHO} "Resetting lock file ${cache_lock_file} as process ${lock_proc} does not exist." 
-                        break 
-                    else if ("${lock_proc}" == "$$") then
-                        ${ECHO} "Resetting lock file ${cache_lock_file} as the process that owns it is this one." 
-                        ${ECHO} "This is likely due to early or forced exit of init_compile followed by sourcing init_compile." 
-                        break 
-                    endif
-
-                    sleep 1
-
-                    if (! -e "${cache_lock_file}") then
-                        ${VERBOSE_ECHO} "Got the cache lock" 
-                        break
-                    endif
-
-                    ${ECHO} "Waiting for the cache lock (${count}/${wait_in_seconds})" 
-
-                    @ count += 1
-                end
-
-                if (${count} >= ${wait_in_seconds}) then
-                    ${ECHO} "Ignoring cache lock due to time out." 
-                endif
-            endif
-        endif
-
-        ${VERBOSE_ECHO} "Setting cache lock." 
-
-        echo $$ >! ${cache_lock_file}
-
-        # End of optional activity of using a lock file for the cache. 
-    endif
+#         # Kobus. Experimental. Implement a dumb lock. It is not perfect.
+#         #
+#         # Sleep a small amount, which is likely to be different (roughly one
+#         # chance in the magic number below, currently 30).  This does not
+#         # work on all systems, but it is not critical, although without it,
+#         # there is a high chance the locking will not happen.. 
+#         #
+#         set x = $$ ; @ x %= 30 ; sleep 0.$x >& /dev/null
+#         if (${status}) then
+#             ${ECHO} "Random sleep failed." 
+#         endif
+# 
+#         set cache_lock_file =  "${USER_TEMP_PATH}cache_lock"
+# 
+#         if (-e ${cache_lock_file}) then
+#             set max_age = 100
+# 
+#             # If the lock is older than max_age seconds, ignore it. 
+#             set locked = `tools younger_than ${max_age} ${cache_lock_file}`
+# 
+#             if (${status}) then
+#                 # If this command fails we assume that this is due to the lockfile being removed since
+#                 # we checked for it due to the process that had it finally
+#                 # finishing, which does happen. In this case we do nothing.
+#                 ${ECHO} "Cache file disappeared while getting its age." 
+#             else if ("${locked}" == "") then
+#                 ${ECHO} "Ignoring cache lock because it is older than ${max_age} seconds." 
+#             else
+#                 set lock_proc = `$IVI_CAT ${cache_lock_file}`
+# 
+#                 set count = 1
+#                 # Wait up to N seconds to get the lock. 
+#                 set wait_in_seconds = 30 
+# 
+#                 while (${count} < ${wait_in_seconds})
+#                     ps ${lock_proc} >& /dev/null
+#                     if (${status}) then
+#                         ${ECHO} "Resetting lock file ${cache_lock_file} as process ${lock_proc} does not exist." 
+#                         break 
+#                     else if ("${lock_proc}" == "$$") then
+#                         ${ECHO} "Resetting lock file ${cache_lock_file} as the process that owns it is this one." 
+#                         ${ECHO} "This is likely due to early or forced exit of init_compile followed by sourcing init_compile." 
+#                         break 
+#                     endif
+# 
+#                     sleep 1
+# 
+#                     if (! -e "${cache_lock_file}") then
+#                         ${VERBOSE_ECHO} "Got the cache lock" 
+#                         break
+#                     endif
+# 
+#                     ${ECHO} "Waiting for the cache lock (${count}/${wait_in_seconds})" 
+# 
+#                     @ count += 1
+#                 end
+# 
+#                 if (${count} >= ${wait_in_seconds}) then
+#                     ${ECHO} "Ignoring cache lock due to time out." 
+#                 endif
+#             endif
+#         endif
+# 
+#         ${VERBOSE_ECHO} "Setting cache lock." 
+# 
+#         echo $$ >! ${cache_lock_file}
+# 
+#         # End of optional activity of using a lock file for the cache. 
+#     endif
 
     if (-e "${cache_fname}") then
         if ($?FORCE_CACHE_REBUILD) then 
@@ -509,10 +514,8 @@ if ($do_cache ) then
             endif
 
             if ($?DO_CACHE_LOCK) then
-                if (-e "${cache_lock_file}") then
-                    ${VERBOSE_ECHO} "Removing the cache lock" 
-                    ${IVI_RM} "${cache_lock_file}"
-                endif
+                ${VERBOSE_ECHO} "Removing the cache lock" 
+                ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
             endif
 
             ${VERBOSE_ECHO} "Early exit from init_compile due to cache being OK."
@@ -10592,13 +10595,11 @@ if ($do_cache ) then
     ${IVI_RM} ${varname_fname}
 
     if ($?DO_CACHE_LOCK) then
-        if (-e "${cache_lock_file}") then
-            ${VERBOSE_ECHO} "Removing the cache lock" 
-
-            ${IVI_RM} "${cache_lock_file}"
-        endif
+        ${VERBOSE_ECHO} "Removing the cache lock" 
+        ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
     endif
 endif
 
 unalias ivi_setenv
+
 
