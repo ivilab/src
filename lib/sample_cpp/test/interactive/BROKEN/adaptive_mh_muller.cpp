@@ -1,4 +1,4 @@
-/* $Id: adaptive_mh_muller.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: adaptive_mh_muller.cpp 25609 2020-07-03 19:17:54Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)

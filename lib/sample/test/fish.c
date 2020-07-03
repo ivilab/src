@@ -1,11 +1,11 @@
 /*
- * $Id: fish.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: fish.c 25609 2020-07-03 19:17:54Z kobus $
  */
 
 #include <l/l_sys_io.h>
 #include <sample/sample_misc.h>
 
-int main(int argc, char** argv)
+int main(void)
 {
     int histo[10] = {0,0,0,0,0,0,0,0,0,0};
     int j;

@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <sample_cpp/sample_dynamics.h> 
+#include <sample_cpp/dynamics_moves.h> 
 #include <likelihood_cpp/edge_points_likelihood.h>
 #include <st_cpp/st_parapiped.h>
 #include <st_cpp/st_perspective_camera.h>

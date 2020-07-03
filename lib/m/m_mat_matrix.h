@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_mat_matrix.h 25609 2020-07-03 19:17:54Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -183,7 +183,9 @@ Int_matrix*** debug_allocate_2D_int_mp_array
 */
 /* FIXME. The debug allocation versions seem unfinished.  */
 Int_matrix*** allocate_2D_int_mp_array(int num_rows, int num_cols);
-/*#endif*/
+/*
+#endif
+*/
 /* #ifdef TRACK_MEMORY_ALLOCATION ... #else ... */
 
 void free_2D_int_mp_array(Int_matrix*** array);

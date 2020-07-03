@@ -8,11 +8,13 @@
  * Copyright (C) 2012 Michal Uricar
  */
 
+#ifdef HAV_OPENCV 
+
 //#include <cv.h>
 //#include <cvaux.h>
 //#include <highgui.h>
-#include <wrap_opencv_cpp/cv.h>
-#include <wrap_flandmark_cpp/flandmark_detector.h>
+#include "wrap_opencv_cpp/cv.h>
+#include "wrap_flandmark_cpp/flandmark_detector.h>
 
 #include <cstring>
 #include <cmath>
@@ -148,3 +150,20 @@ int main( int argc, char** argv )
     cvReleaseHaarClassifierCascade(&faceCascade);
     flandmark_free(model);
 }
+
+#else 
+
+#include "l/l_gen.h"
+#include <iostream>
+
+int main(void)
+{
+    std::cerr << "This test program needs to be compiled with OPENCV.";
+
+    return EXIT_FAILURE;
+}
+
+#endif 
+
+
+

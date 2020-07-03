@@ -1,4 +1,4 @@
-/* $Id: test_von_mises_fisher.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: test_von_mises_fisher.cpp 25609 2020-07-03 19:17:54Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2012 by Kobus Barnard (author)
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     ivi::Von_mises_fisher_distribution<D> dist(mu, kappa);
     ivi::sample(dist, N, std::back_inserter(samples));
 
-    ivi::opengl::Glut_window wnd;
+    ivi::opengl::Glut_window wnd(320, 320, "Test Von Mises Fischer");
     ivi::gui::Viewer viewer(500, 500);
     viewer.attach(wnd);
 
@@ -70,3 +70,4 @@ int main(int argc, char** argv)
 
     return 0;
 }
+
