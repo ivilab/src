@@ -3,15 +3,15 @@
 # UNIX makefile for manual page generator
 # Note: any changes made here will be lost next time Configure is run!.
 
-CC=$(KJB_CC) -O $(CC_C89_FLAGS)
-YACC=$(KJB_YACC)
+CC=$(IVI_CC) -O $(CC_C89_FLAGS)
+YACC=$(IVI_YACC)
 # LEX=/usr/bin/flex -8
 LEX=flex -8
-SED=$(KJB_SED)
+SED=$(IVI_SED)
 CAT=/bin/cat
-RM=$(KJB_RM)
-MV=$(KJB_MV)
-CP=$(KJB_CP)
+RM=$(IVI_RM)
+MV=$(IVI_MV)
+CP=$(IVI_CP)
 ECHO=/bin/echo
 MKDEP=./mkdep
 
@@ -77,9 +77,9 @@ all: $(OBJ_DIR) $(OBJ_DIR)c2man c2man.1
 make_bin: $(OBJ_DIR) $(MAKE_DIR)bin/$(MACHINE)/c2man
 
 $(MAKE_DIR)bin/$(MACHINE)/c2man: $(OBJ_DIR)c2man
-	$(KJB_MKDIR) $(MAKE_DIR)bin/$(MACHINE)
-	$(KJB_CP) $(OBJ_DIR)c2man $@
-	$(KJB_PERMIT_EXECUTION) $@
+	$(IVI_MKDIR) $(MAKE_DIR)bin/$(MACHINE)
+	$(IVI_CP) $(OBJ_DIR)c2man $@
+	$(IVI_PERMIT_EXECUTION) $@
 
 install: all
 	$(CP) $(OBJ_DIR)c2man $(bin)
@@ -101,7 +101,7 @@ $(OBJ_DIR)c2man: $(OBJECTS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LIBS)
 
 $(OBJ_DIR):
-	$(KJB_MKDIR) $(OBJ_DIR)
+	$(IVI_MKDIR) $(OBJ_DIR)
 
 c2man.1: c2man.man $(OBJ_DIR)c2man example.inc ctype_ex.inc flatten.sed
 	$(SED) -f flatten.sed < c2man.man > c2man.1

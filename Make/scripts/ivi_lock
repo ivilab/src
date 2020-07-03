@@ -123,6 +123,11 @@ endif
 
 ${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
 
+if ($status) then
+    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
+    exit 1
+endif 
+
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 set cmd_str = `echo ${1} | sed 's#.*/##'`
 
@@ -130,7 +135,7 @@ setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${cmd_str}_${dir_str}.lock.$$"
 ${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
 
 if ($status) then
-    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
+    $P_STDERR "Unable to touch ${IVI_LOCK_TIME_STAMP}"
     exit 1
 endif 
 
@@ -182,10 +187,10 @@ else if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
 #     echo "Exiting with error as this is unfinished."
 #     exit 1
 
-    lockfile-create ${lock_file}
+    lockfile-create ${cmd_str}
     $*
     set exit_status = $status 
-    lockfile-remove ${lock_file}
+    lockfile-remove ${cmd_str}
 
     if (! ${exit_status}) then 
         # Best not to use VERBOSE_PSO here.
@@ -198,132 +203,28 @@ else
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
     
-    if ($?NEW_LOCK) then
-        set version = "NEW"
-    else
-        set version = "OLD"
-    endif 
 
     # Best not to use VERBOSE_PSO here.
     if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ running ${cmd_str} in `pwd` using ${version} fallback locking system."
+        echo "${verbose_indent}Process $$ running ${cmd_str} in `pwd` using fallback locking system."
     endif
 
-    if ($?NEW_LOCK) then
-        ${MAKE_SCRIPT_PATH}ivi_lock_create ${lock_file}
-        $*
-        set exit_status = $status 
-        ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_file}
+    set requesting_pid = `ps -p $$ -o ppid=`
+    ${MAKE_SCRIPT_PATH}ivi_lock_create ${cmd_str} ${requesting_pid}
+    $*
+    set exit_status = $status 
+    ${MAKE_SCRIPT_PATH}ivi_lock_remove ${cmd_str} ${requesting_pid}
 
-        if (! ${exit_status}) then 
-            # Best not to use VERBOSE_PSO here.
-            if ($?IVI_VERBOSE) then
-                echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using ${version} fallback locking method."
-            endif
-        endif 
-        
-    else
-        # Reduce the chances of everyone wanting to start at the same time.
-        # I do not know how likely this is to fail, or even to return success
-        # without doing the right thing, but it seems to work on the mac. 
-        set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
-        if (${status}) then
-            ${P_STDERR} "Fractional sleep failed in ivi_lock." 
-            set exit_status = 1
-            goto cleanup
+    if (! ${exit_status}) then 
+        # Best not to use VERBOSE_PSO here.
+        if ($?IVI_VERBOSE) then
+            echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
         endif
-
-        if (! -e "${lock_file}") then
-            echo $$ >! ${lock_file}
-
-            if ($?IVI_VERBOSE) then
-                echo "${verbose_indent}Process $$ setting lock file ${lock_file}."
-                # ps -l $$
-            endif 
-        else 
-            set count = 0
-            set got_it = 0
-
-            while (-e "${lock_file}")
-                set lock_proc = `cat ${lock_file}`
-
-                # Happens! 
-                if ($status) then 
-                    echo $$ >! ${lock_file}
-                    echo "Lock file ${lock_file} disappeared! Taking the lock."
-                    set got_it = 1
-                    break
-                endif 
-
-                if ($?IVI_VERBOSE_2) then
-                    echo "${verbose_indent}Lock file ${lock_file} exists."
-                    echo "${verbose_indent}Checking on lock file process ${lock_proc}." 
-                endif 
-
-                ps ${lock_proc} >& /dev/null
-                set ps_status = "${status}" 
-
-                if (${ps_status}) then
-                    echo $$ >! ${lock_file}
-
-                    if ($?IVI_VERBOSE) then
-                        echo "${verbose_indent}Process $$ resetting lock file ${lock_file} as process ${lock_proc} does not exist."
-                    endif 
-
-                    set got_it = 1
-                    break
-                else if (${count} > 180) then
-                    echo "Process $$ waited too long for ${lock_file}. "
-                    echo "Information about the process holding the lock:"
-                    ps -l ${lock_proc} 
-                    echo "Sleeping for one minute for debugging" 
-                    sleep 60
-                    echo "Ignoring the lock."
-                    echo $$ >! ${lock_file}
-                    set got_it = 1
-                    break
-                else  
-                    if ($?IVI_VERBOSE) then
-                        echo "${verbose_indent}Process $$ waiting for ${lock_file} held by process ${lock_proc}."
-                    endif 
-
-                    # Add some fractional seconds to reduce the chances of everyone
-                    # wanting to start at the same time.
-                    set x = $$ ; @ x %= 100 ; sleep 1.$x >& /dev/null
-                    if (${status}) then
-                        ${P_STDERR} "Fractional sleep failed in ivi_lock." 
-                        set exit_status = 1
-                        goto cleanup
-                    endif
-
-                    @ count ++
-                endif
-            end
-
-            # If we got_it is still false, then the lock file was removed by the
-            # process we were waiting on.
-            #
-            if (! ${got_it}) then
-                echo $$ >! ${lock_file}
-
-                if ($?IVI_VERBOSE) then
-                    echo "${verbose_indent}Process $$ setting lock file ${lock_file} as it no longer exists."
-                endif 
-            endif 
-        endif 
-
-        # Run the command
-        $*
-        set exit_status = $status
-
-        ${IVI_RM} "${lock_file}"
-       
-        if (${exit_status}) exit 1
-    endif
-
+    endif 
+        
     # Best not to use VERBOSE_PSO here.
     if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using ${version} fallback locking method."
+        echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
     endif
 endif 
 

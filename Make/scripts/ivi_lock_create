@@ -38,11 +38,18 @@
 if ($# < 1) then
     ${P_STDERR} "Script ivi_lock_create needs at least one argument."
     exit 1
+else if ($# < 2) then
+    set requesting_pid = `ps -p $$ -o ppid=`
+else 
+    set requesting_pid = $2 
 endif 
 
 set lock_label = "$1"
 
 set exit_status = 0
+
+
+set noclober
 
 if ($?IVI_VERBOSE) then
     if ($?IVI_VERBOSE_INDENT) then
@@ -83,6 +90,11 @@ set dir_str = `echo ${cwd} | sed 's#.*/##'`
 setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock.$$"
 ${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
 
+if ($status) then
+    $P_STDERR "Unable to touch ${IVI_LOCK_TIME_STAMP}"
+    exit 1
+endif 
+
 if ($?IVI_LOCKFILE_NAME) then
     set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
     set looks_like_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '/'`
@@ -105,7 +117,7 @@ onintr bail
 
 # Best not to use VERBOSE_PSO here.
 if ($?IVI_VERBOSE) then
-    echo "${verbose_indent}Script ivi_lock_create process $$ running lock_create ${lock_label}"
+    echo "${verbose_indent}Script ivi_lock_create process $$ running lock_create ${lock_label} for ${requesting_pid}."
     echo "${verbose_indent}    in `pwd` using lockfile '${lock_file}'"
 endif
 
@@ -134,21 +146,49 @@ else
     # Reduce the chances of everyone wanting to start at the same time.
     # I do not know how likely this is to fail, or even to return success
     # without doing the right thing, but it seems to work on the mac. 
-    set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
+
+    set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
+
+    if ($?IVI_VERBOSE) then
+        echo "${verbose_indent}Process $$ sleeping for ${sleep_time} seconds"
+    endif 
+
+    sleep ${sleep_time}
+
     if (${status}) then
         ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
         set exit_status = 1
         goto cleanup
     endif
 
-    set ppid = `ps -p $$ -o ppid=`
 
     while (1) 
         if (! -e "${lock_file}") then
-            echo ${ppid} >! ${lock_file}
+            echo ${requesting_pid} > ${lock_file}
+
+            # Someone else might have just written the file. 
+            if (${status}) then
+                echo "Reqesting process `cat ${lock_file}` snuck in before me (${requesting_pid}). Sleeping."
+
+                set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
+
+                if ($?IVI_VERBOSE) then
+                    echo "${verbose_indent}Process $$ sleeping for ${sleep_time} seconds for ${requesting_pid}."
+                endif 
+
+                sleep ${sleep_time}
+
+                if (${status}) then
+                    ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
+                    set exit_status = 1
+                    goto cleanup
+                endif
+
+                continue
+            endif 
 
             if ($?IVI_VERBOSE) then
-                echo "${verbose_indent}Process $$ setting lock file ${lock_file}."
+                echo "${verbose_indent}Process $$ tentatively set lock file ${lock_file} for ${requesting_pid}."
                 # ps -l $$
             endif 
         else 
@@ -160,7 +200,7 @@ else
 
                 # Happens! 
                 if ($status) then 
-                    echo ${ppid} >! ${lock_file}
+                    echo ${requesting_pid} >! ${lock_file}
                     echo "Lock file ${lock_file} disappeared! Taking the lock."
                     set got_it = 1
                     break
@@ -175,10 +215,10 @@ else
                 set ps_status = "${status}" 
 
                 if (${ps_status}) then
-                    echo ${ppid} >! ${lock_file}
+                    echo ${requesting_pid} >! ${lock_file}
 
                     if ($?IVI_VERBOSE) then
-                        echo "${verbose_indent}Process $$ resetting lock file ${lock_file} for process ${ppid} as process ${lock_proc} does not exist."
+                        echo "${verbose_indent}Process $$ resetting lock file ${lock_file} for process ${requesting_pid} as process ${lock_proc} does not exist."
                     endif 
 
                     set got_it = 1
@@ -190,21 +230,30 @@ else
                     echo "Sleeping for one minute for debugging" 
                     sleep 60
                     echo "Ignoring the lock."
-                    echo ${ppid} >! ${lock_file}
+                    echo ${requesting_pid} >! ${lock_file}
                     set got_it = 1
                     break
                 else  
                     if ($?IVI_VERBOSE) then
-                        echo "${verbose_indent}Process $$ waiting for ${lock_file} held by process ${lock_proc} on behalf of process ${ppid} ."
+                        echo "${verbose_indent}Process $$ waiting for ${lock_file} held by process ${lock_proc} on behalf of process ${requesting_pid} ."
                     endif 
 
                     # Add some fractional seconds to reduce the chances of everyone
                     # wanting to start at the same time.
-                    set x = $$ ; @ x %= 100 ; sleep 1.$x >& /dev/null
+                    set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
+
+                    if ($?IVI_VERBOSE) then
+                        echo "${verbose_indent}Process $$ sleeping for ${sleep_time}"
+                    endif 
+
+                    sleep ${sleep_time} >& /dev/null
+                    # set x = $$ ; @ x %= 100 ; sleep 1.$x >& /dev/null
+
                     if (${status}) then
                         ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
                         set exit_status = 1
                         goto cleanup
+                    
                     endif
 
                     @ count ++
@@ -215,7 +264,7 @@ else
             # process we were waiting on.
             #
             if (! ${got_it}) then
-                echo ${ppid} >! ${lock_file}
+                echo ${requesting_pid} >! ${lock_file}
 
                 if ($?IVI_VERBOSE) then
                     echo "${verbose_indent}Process $$ setting lock file ${lock_file} for process ${lock_proc} as the lock file no longer exists."
@@ -226,9 +275,9 @@ else
         # Check for clash. 
         set lock_proc = `cat ${lock_file}`
         if (${status}) then
-            # Could happn.
+            # Could happen.
             echo "Lock file ${lock_file} disappeared. Trying again to get the lock."
-        else if (${lock_proc} != ${ppid}) then 
+        else if (${lock_proc} != ${requesting_pid}) then 
             echo "Process ${lock_proc} beat us to it. Resuming waiting."
         else 
             break
@@ -236,7 +285,7 @@ else
     end
 
     if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ successfully set ${lock_label} on behalf of process ${ppid} in `pwd` using fallback locking method."
+        echo "${verbose_indent}Process $$ successfully set ${lock_label} on behalf of process ${requesting_pid} in `pwd` using fallback locking method."
     endif
 endif 
 

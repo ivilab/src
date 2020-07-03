@@ -26,13 +26,13 @@ $spitshell >Makefile <<!GROK!THIS!
 # Note: any changes made here will be lost next time Configure is run!.
 
 CC=$cc $optimize
-YACC=\$(KJB_YACC)
+YACC=\$(IVI_YACC)
 LEX=$lex $lexflags
-SED=\$(KJB_SED)
+SED=\$(IVI_SED)
 CAT=$cat
-RM=\$(KJB_RM)
-MV=\$(KJB_MV)
-CP=\$(KJB_CP)
+RM=\$(IVI_RM)
+MV=\$(IVI_MV)
+CP=\$(IVI_CP)
 ECHO=$echo
 MKDEP=./mkdep
 
@@ -102,8 +102,8 @@ all: $(OBJ_DIR) $(OBJ_DIR)c2man c2man.1
 bin: $(OBJ_DIR) $(MAKE_DIR)bin/$(MACHINE)/c2man
 
 $(MAKE_DIR)bin/$(MACHINE)/c2man: $(OBJ_DIR)c2man
-	$(KJB_MKDIR) $(MAKE_DIR)bin/$(MACHINE)
-	$(KJB_CP) $< $@
+	$(IVI_MKDIR) $(MAKE_DIR)bin/$(MACHINE)
+	$(IVI_CP) $< $@
 
 install: all
 	$(CP) $(OBJ_DIR)c2man $(bin)
@@ -125,7 +125,7 @@ $(OBJ_DIR)c2man: $(OBJECTS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LIBS)
 
 $(OBJ_DIR):
-	$(KJB_MKDIR) $(OBJ_DIR)
+	$(IVI_MKDIR) $(OBJ_DIR)
 
 c2man.1: c2man.man $(OBJ_DIR)c2man example.inc ctype_ex.inc flatten.sed
 	$(SED) -f flatten.sed < c2man.man > c2man.1

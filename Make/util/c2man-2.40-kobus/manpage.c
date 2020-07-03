@@ -858,19 +858,19 @@ output_manpage(firstpage, basepage, input_files, title, section)
 
     /* Kobus */
     {
-        extern char kjb_compile_line[ 50 ][ 1000 ];  
-        extern int  kjb_num_compile_lines; 
+        extern char ivi_compile_line[ 50 ][ 1000 ];  
+        extern int  ivi_num_compile_lines; 
         int i;
 
-        if (kjb_num_compile_lines > 0)
+        if (ivi_num_compile_lines > 0)
         {
             output->text("\nExample compile flags (system dependent):\n");
         }
 
-        for (i = 0; i < kjb_num_compile_lines; i++)
+        for (i = 0; i < ivi_num_compile_lines; i++)
         {
             output->text("  ");
-            output->text(kjb_compile_line[ i ]);
+            output->text(ivi_compile_line[ i ]);
             output->text("\n");
         }
         output->text("\n");

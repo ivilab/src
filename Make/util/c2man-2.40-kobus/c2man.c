@@ -121,9 +121,9 @@ struct Output_Object_Info output_object[_OBJECT_NUM] =
     {'V', "static variable"}
 };
 
-int kjb_auto_see_also              = FALSE;      /* Kobus */
-char kjb_compile_line[ 50 ][ 1000 ];             /* Kobus */
-int  kjb_num_compile_lines         = 0;          /* Kobus */
+int ivi_auto_see_also              = FALSE;      /* Kobus */
+char ivi_compile_line[ 50 ][ 1000 ];             /* Kobus */
+int  ivi_num_compile_lines         = 0;          /* Kobus */
 
 
 /* Include file directories */
@@ -649,9 +649,9 @@ char **argv;
     extern int yydebug;
 #endif
 
-    extern int  kjb_auto_see_also;               /* Kobus */
-    extern char kjb_compile_line[ 50 ][ 1000 ];  /* Kobus */
-    extern int  kjb_num_compile_lines;           /* Kobus */
+    extern int  ivi_auto_see_also;               /* Kobus */
+    extern char ivi_compile_line[ 50 ][ 1000 ];  /* Kobus */
+    extern int  ivi_num_compile_lines;           /* Kobus */
 
     /* initialise CPP options with -D__C2MAN__ */
     cbuf[0] = VERSION + '0';
@@ -675,11 +675,11 @@ char **argv;
     {
 	switch (c) {
 	case 'A':     /* Kobus */
-            kjb_auto_see_also = TRUE;
+            ivi_auto_see_also = TRUE;
             break;
         case 'C':     /* Kobus */
-            strcpy(kjb_compile_line[ kjb_num_compile_lines ] , optarg);
-            kjb_num_compile_lines++;
+            strcpy(ivi_compile_line[ ivi_num_compile_lines ] , optarg);
+            ivi_num_compile_lines++;
             break;
 	case 'I':
 	case 'D':

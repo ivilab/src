@@ -1,0 +1,21 @@
+#!/bin/tcsh -f
+
+# We assume that we have sourced init_compile. 
+
+set num_iterations = 10 
+
+@ num_args = ${#argv}
+
+if ($num_args > 0) then
+    set num_iterations = $1
+endif 
+
+@ iteration = 0
+
+while ($iteration < $num_iterations)
+    @ iteration += 1
+    echo iteration: $iteration
+    ${LOCK_PROGRAM} ./increment_file_line 
+end 
+
+

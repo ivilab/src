@@ -1,0 +1,14 @@
+#!/bin/tcsh -f
+
+# We assume that we have sourced init_compile. 
+
+@ base = 10001
+@ num_lines = `cat test_ivi_lock_2.result | wc -l`
+
+@ base_plus_num_lines = $base + $num_lines
+
+set ppid = `ps -p $$ -o ppid=`
+
+echo $base_plus_num_lines : $ppid >>! ${TEST_LOCK_RESULT_FILE}
+
+

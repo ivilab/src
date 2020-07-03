@@ -2,28 +2,66 @@
 
 # We assume that we have sourced init_compile. 
 
-# Using stderr for unbuffered output. 
+set num_procs = 5
+set num_iterations = 10 
 
-${P_STDERR} "--- Process $$ is in test_ivi_lock_2."
+@ num_args = ${#argv}
 
-if (($?IVI_LOCK_TIME_STAMP) && (-e test_ivi_lock.result)) then
-    echo IVI_LOCK_TIME_STAMP: $IVI_LOCK_TIME_STAMP
-    set i_am_first = `${MAKE_SCRIPT_PATH}test_older_than "test_ivi_lock.result" "${IVI_LOCK_TIME_STAMP}"`
-
-    if (${i_am_first}) then
-        ${P_STDERR} "^^^ Process $$ is first to touch test_ivi_lock.result."
-    endif 
+if ($num_args > 1) then
+    set num_iterations = $2
 endif 
 
-${P_STDERR} "@@@ Process $$ is continuing in test_ivi_lock_2."
+if ($num_args > 0) then
+    set num_procs = $1
+endif 
 
-# The sleeps should hold up the exit of all other processes. 
-${P_STDERR} "@@@ Process $$ will add to test_ivi_lock.result after sleeping"
-sleep 2
-${P_STDERR} "@@@ Process $$ is adding to test_ivi_lock.result" 
-echo $$ >> test_ivi_lock.result
-sleep 2
-${P_STDERR} "@@@ Process $$ is done" 
+if ($?TEST_LOCK_NO_LOCK) then
+   setenv LOCK_PROGRAM ""
+else 
+   setenv LOCK_PROGRAM "${MAKE_SCRIPT_PATH}ivi_lock"
+endif 
+
+setenv TEST_LOCK_RESULT_FILE "${0}.result"
+
+set test_lock_output_file = "${0}.output"
+set test_lock_answer_file = "${0}.answer"
+set test_lock_check_file = "${0}.check"
+
+${IVI_CREATE} "${TEST_LOCK_RESULT_FILE}"
+${IVI_CREATE} "${test_lock_output_file}"
+${IVI_CREATE} "${test_lock_answer_file}"
+
+@ proc_count = 0
+
+while ($proc_count < $num_procs)
+    ./test_ivi_lock_2_helper $num_iterations !>>& "${test_lock_output_file}" & 
+    @ proc_count += 1
+    echo proc_count: $proc_count
+end 
+
+wait 
+
+@ num_total_iterations = $proc_count * $num_iterations
+
+@ base = 10001
+@ iteration_count = 0
+while ($iteration_count < $num_total_iterations)
+    @ base_plus_count = $base + $iteration_count
+    echo $base_plus_count >>! ${test_lock_answer_file}
+    @ iteration_count += 1
+end 
+
+sed < "${TEST_LOCK_RESULT_FILE}" 's/ .*$//' > "${test_lock_check_file}"
+
+diff -q ${test_lock_answer_file} ${test_lock_check_file}
+
+if (${status}) then
+    # echo "Files ${test_lock_check_file} and ${test_lock_answer_file} differ."
+    exit 1
+endif 
+
+ 
+
 
 
 

@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25601 2020-06-30 23:57:18Z kobus $
+# $Id: init_compile 25606 2020-07-03 19:08:09Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -317,10 +317,7 @@ if ($do_cache) then
     endif
 endif
 
-if ("${USER}" == "kobus") then
-    setenv DO_CACHE_LOCK
-    setenv NEW_LOCK
-endif 
+setenv DO_CACHE_LOCK
 
 if ($do_cache ) then
     if ($?DO_CACHE_LOCK) then

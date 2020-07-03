@@ -1,0 +1,29 @@
+#!/bin/tcsh -f
+
+# We assume that we have sourced init_compile. 
+
+# Using stderr for unbuffered output. 
+
+${P_STDERR} "--- Process $$ is in test_ivi_lock_2."
+
+if (($?IVI_LOCK_TIME_STAMP) && (-e test_ivi_lock.result)) then
+    echo IVI_LOCK_TIME_STAMP: $IVI_LOCK_TIME_STAMP
+    set i_am_first = `${MAKE_SCRIPT_PATH}test_older_than "test_ivi_lock.result" "${IVI_LOCK_TIME_STAMP}"`
+
+    if (${i_am_first}) then
+        ${P_STDERR} "^^^ Process $$ is first to touch test_ivi_lock.result."
+    endif 
+endif 
+
+${P_STDERR} "@@@ Process $$ is continuing in test_ivi_lock_2."
+
+# The sleeps should hold up the exit of all other processes. 
+${P_STDERR} "@@@ Process $$ will add to test_ivi_lock.result after sleeping"
+sleep 2
+${P_STDERR} "@@@ Process $$ is adding to test_ivi_lock.result" 
+echo $$ >> test_ivi_lock.result
+sleep 2
+${P_STDERR} "@@@ Process $$ is done" 
+
+
+

@@ -13,11 +13,11 @@ unsetenv IVI_LOCKFILE_NAME
 # Each instant of test_ivi_lock_2 will add its PID to this file.
 $IVI_CREATE test_ivi_lock.result
 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_2 & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
 
 echo "Script test_ivi_lock is now waiting."
 
