@@ -9,7 +9,7 @@
 # Description:
 #     This is a simple script for locking blocks of script code that is not
 #     conveniently expressed as a command (otherwise use ivi_lock). It works
-#     much like lockfile-create, and in fact, is implmented using
+#     much like lockfile-create, and in fact, is implemented using
 #     lockfile-create if it is available. The main justification for this script
 #     is that locking is not universally available. Most notably good locking
 #     facilities are not available in the mac OS. Hence, this script also
@@ -17,8 +17,21 @@
 #
 #     The argument to ivi_lock_create is simply a label (often just the name of the
 #     script), which is combined with the current directory to create a lockfile
-#     name. At the end of the protected code, you mjust call ivi_lock_remove
+#     name. At the end of the protected code, you must call ivi_lock_remove
 #     with exactly the same argument. 
+#
+#     If the environment variable IVI_LOCKING_METHOD is set, this script will
+#     use its value for the locking method. Otherwise it will try
+#     lockfile-progs, and then the built in fall back method. 
+#
+#     If the environment variable IVI_LOCKFILE_DIR is set, this script will use
+#     its value as a directory to create lockfiles in. Otherwise, this script
+#     will use ${TMPDIR}/${USER}/lockfiles/, creating it if needed.
+#
+#     Finally, if the environment variable IVI_DONT_LOCK is set, then this
+#     script essentially does nothing. The main purpose of this is to avoid
+#     deadlock when we effectively call scripts recursively. Normally there is a
+#     better way to accomplish what you want to do.
 #
 # Deficiencies
 #     The current implementation locks all runs of a command operating in a
@@ -60,7 +73,7 @@ if ($?IVI_VERBOSE) then
 endif 
 
 if ($?IVI_DONT_LOCK) then
-    ${VERBOSE_ECHO} "${verbose_indent}IVI_DONT_LOCK is set, so ivi_lock_create is not locking: $*"
+    ${VERBOSE_ECHO} "${verbose_indent}IVI_DONT_LOCK is set, so ivi_lock_create is not doing anything"
     exit 0
 endif
 

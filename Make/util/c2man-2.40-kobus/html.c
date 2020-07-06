@@ -10,12 +10,6 @@ static int html_in_code = 0;
 
 #define LEADING_BAR_MEANS_PREFORMATTED  /* Kobus */
 
-#ifdef LEADING_BAR_MEANS_PREFORMATTED  /* Kobus */
-static int fs_new_line = TRUE; 
-static int fs_preformatted = FALSE;
-#endif 
-
-
 void html_terse_sep();
 void html_description _((const char *text));
 
@@ -36,22 +30,6 @@ const int c;
   case '"':
     put_string("&quot;");
     break;
-#ifdef LEADING_BAR_MEANS_PREFORMATTED  /* Kobus */
-  case '|':
-    if (fs_new_line)
-    {
-        if (! fs_preformatted)
-        {
-            fs_preformatted = TRUE;
-            put_string("<pre>\n");
-        }
-    }
-    else 
-    {
-        putchar(c); 
-    }
-    break;
-#endif /* Kobus */
   default:
     putchar(c);
     break;
@@ -63,37 +41,63 @@ const char *text;
 {
 
 #ifdef LEADING_BAR_MEANS_PREFORMATTED  /* Kobus */
-  fs_new_line = TRUE;
+  int kjb_new_line = TRUE;
+  int kjb_preformatted = FALSE;
 #endif 
 
   while(*text)
   {
 #ifdef LEADING_BAR_MEANS_PREFORMATTED  /* Kobus */
-    if ((fs_new_line) && (fs_preformatted))
-     {
-        if (*text != '|')
+    if (kjb_new_line) 
+    {
+        if (kjb_preformatted)
         {
-          put_string("</pre>\n");
-          fs_preformatted = FALSE;
+            if (*text == '|') 
+            {
+                text++;
+            }
+            else if (*text != '\n')
+            {
+                put_string("</pre>\n");
+                kjb_preformatted = FALSE;
+            }
+        }
+        else 
+        {
+            if (*text == '|')
+            {
+                put_string("<pre>\n");
+                kjb_preformatted = TRUE;
+                text++;
+                if (! *text) break;
+            }
         }
     }
-#endif 
 
-    html_char(*text++);
-
-#ifdef LEADING_BAR_MEANS_PREFORMATTED  /* Kobus */
     if (*text == '\n') 
     {
-        fs_new_line = TRUE;
+        kjb_new_line = TRUE;
+        /*
         html_char(*text);
         text++;
+        */
     }
     else 
     {
-        fs_new_line = FALSE; 
+        kjb_new_line = FALSE; 
     }
 #endif 
+    html_char(*text++);
   }
+
+#ifdef LEADING_BAR_MEANS_PREFORMATTED  /* Kobus */
+  if (kjb_preformatted)
+  {
+      put_string("\n</pre>\n");
+      kjb_preformatted = FALSE;
+  }
+#endif 
+
 }
 
 
@@ -135,17 +139,17 @@ void html_dash()
 void html_section(name)
 const char         *name;
 {
-  put_string("<h1>");
+  put_string("<h2>");
   html_text(name);
-  put_string("</h1>\n");
+  put_string("</h2>\n");
 }
 
 void html_sub_section(name)
 const char *name;
 {
-  put_string("<h2>");
+  put_string("<h3>");
   html_text(name);
-  put_string("</h2>");
+  put_string("</h3>");
 }
 
 void html_break_line()
@@ -502,5 +506,9 @@ struct Output       html_output =
   html_reference,      
   html_emphasized,
   html_description,
-  html_returns
+  /* Kobus: We do not do html_returns in any special way, as we would then need
+   * to sort out processing "|". For now, using html_text seems OK. 
+   */
+  /* html_returns */
+  html_text
   };

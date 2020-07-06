@@ -115,17 +115,40 @@ else
     setenv IVI_WHICH which
 endif 
 
-# These programs are common in scripts without full path or "IVI_" and/or the
+# Essential programs are ones that are relied on by init_compile, basic program
+# building, and scripts that need to run as daemons or via cron jobs (e.g.,
+# git/svn sync. Many of them are common in scripts without full path or "IVI_" and/or the
 # "IVI_" versions defined below might not have paths to reduce clutter and/or we
 # will assume that we have a valid path if we to create a version that will
-# never get confused by an alias. So we need to check that they are in our PATH. 
+# never get confused by an alias. So we need to check that they are in our PATH.
+# If an essential program is not found, this script will eventually exit with
+# error. 
 #
-# Currently, if they are not in PATH, we add them, which is a bit risky, as we
-# would reall prefer the user sort out their path. This choice may change. 
+# Desired programs are handled similarly, but their absence is reported as a
+# warning, and there absence does not lead to error exit. 
+#
+# In the list below, essential and desired programs are separated by ":"
+#
+# Currently, if the programs that we look for are not in PATH, we add them,
+# which is a bit risky, as we would really prefer the user sort out their path.
+# This choice may change. 
+#
 
-set needed_progs = "test cat cp mv rm mkdir file grep egrep sed ls ln touch chmod gzip makedepend"
+# Essential.
+set needed_progs = "test cat cp mv rm mkdir file grep sed ls ln touch chmod gzip makedepend"
+
+# Desired (used often enough that a warning makes sense). The colon begins the
+# optional ones. 
+set needed_progs = "${needed_progs} : awk egrep stat tail"
+
+set essential =  1
 
 foreach needed_prog (${needed_progs})
+    if ("${needed_prog}" == ":") then
+        set essential = 0
+        continue
+    endif 
+
     set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
     if (${status}) then
         set found = 0
@@ -144,22 +167,30 @@ foreach needed_prog (${needed_progs})
 
         if (${found}) then 
             set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
-        else
-            ${P_STDERR} "Script init_scripts cannot find ${needed_prog}."
+        else if (${essential}) then
+            ${P_STDERR} "Script init_scripts cannot find essential program ${needed_prog}."
             set error_found = 1
+        else 
+            ${P_STDERR} "Warning: Script init_scripts cannot find non-essential program ${needed_prog}."
+            ${P_STDERR} "    Some things you might do will break."
         endif 
     endif
 
     set uc_needed_prog = `echo ${needed_prog} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
     eval "setenv IVI_${uc_needed_prog}_PATH ${prog_path}"
+
+    # This default gets overwritten below if we want to specify program options. 
+    eval "setenv IVI_${uc_needed_prog} ${prog_path}"
 end
         
 # It is good to declare a path to "test" if you can find one, as people often
 # create test programs called "test"!!!} is not in PATH, nor 
 
-setenv IVI_TEST "${IVI_TEST_PATH}"
+# Default
+# setenv IVI_TEST "${IVI_TEST_PATH}"
 
-setenv IVI_CAT  "${IVI_CAT_PATH}"
+# Default
+# setenv IVI_CAT  "${IVI_CAT_PATH}"
 
 # Copy where links point to, not their contents. 
 if ("${OS}" == "mac_osx") then
@@ -172,9 +203,12 @@ endif
 
 setenv IVI_CREATE           "${IVI_CP_PATH} /dev/null"
 
-setenv IVI_MV               "${IVI_MV_PATH}"
+# Default
+# setenv IVI_MV               "${IVI_MV_PATH}"
+
 setenv IVI_RM               "${IVI_RM_PATH} -r -f"
 
+# More readable? There is a trade-off here, but this is how we do it. 
 setenv IVI_GREP             "grep"
 setenv IVI_EGREP            "egrep"
 setenv IVI_FILE             "${IVI_FILE_PATH}"
@@ -189,10 +223,12 @@ setenv IVI_TOUCH_1990       "${IVI_TOUCH_PATH} -t 199001010000"
 setenv IVI_PERMIT_EXECUTION "${IVI_CHMOD_PATH} -R a+rx"
 setenv IVI_PERMIT_READ      "${IVI_CHMOD_PATH} -R a+rX"
 setenv IVI_MKDIR            "${IVI_MKDIR_PATH} -p"
-setenv IVI_SED              "${IVI_SED_PATH}"
+
+# Default
+# setenv IVI_SED              "${IVI_SED_PATH}"
 
 # setenv IVI_COMPRESS bzip2
-# setenv IVI_COMPRESS_SUFFIX bz2
+# setenv IVI_COMPRESS_SUFFIX bz2IVI}_${uc_needed_pro
 #
 # Back to gzip --- It does not compress quite as well, but is more convenient
 #
@@ -201,14 +237,9 @@ setenv IVI_COMPRESS_SUFFIX      "gz"
 
 # ---------------------------------------------------------------------
 
-# Stat is not essential, so we do not have it in the above list of programs. 
-
-setenv IVI_STAT "stat"
 setenv IVI_STAT_FLAVOR "NONE"
 
-set stat_path = `unalias stat; ${IVI_WHICH} stat`
-
-if (! ${status}) then 
+if ("${IVI_STAT}" != "") then 
     set gnu_stat = `${IVI_STAT} --version |& grep 'GNU coreutils'`
     if ((! ${status} ) && ("${gnu_stat}" != "")) then
         setenv IVI_STAT_FLAVOR "gnu"

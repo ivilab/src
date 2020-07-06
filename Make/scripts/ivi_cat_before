@@ -1,0 +1,57 @@
+#!/bin/tcsh -f 
+
+##############################################################################
+#
+# Identification:
+#     Echo lines up and including a match to the argument 
+#
+# Description:
+#     This script reads from stdin and echos output until the pattern specified
+#     as the last argument is found, after which there is no more output. The
+#     first line matching the patter is is also echoed as the last line unless
+#     the first argument is "-b" (really before). 
+#
+#     This script assumes that "init_scripts" has been sourced (or P_STDERR and
+#     IVI_SED has been set by some other means). 
+#
+#     We implement this functionality with "sed" line, but wrapping this in a
+#     script means we can do something else if we run across a system where this
+#     does not work.
+#
+# Notes:
+#     We could implement the ivi_cat_before/ivi_cat_after functionality with
+#     "split", but that program does something different, and is not commonly
+#     used, so it may not be available.
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+# set echo
+
+set skip_last_line = 0
+
+if (${#argv} == 1) then
+    set pattern = "${1}"
+else if (${#argv} == 2) then
+    if ($argv[1] == "-a") then
+        set skip_last_line = 1
+        set pattern = "${2}"
+    else 
+        ${P_STDERR} "Script ivi_cat_before option ${argv[1]} not recognized."
+        exit 1
+    endif 
+else 
+    ${P_STDERR} "Script ivi_cat_before requires either one or two arguments."
+    exit 1
+endif 
+
+if (${skip_last_line}) then
+else 
+    ${IVI_SED} "/${pattern}/q"  | ${IVI_SED} "/${pattern}/d"
+endif 
+
+if ($status) exit 1 
+
+

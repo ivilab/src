@@ -1,0 +1,62 @@
+#!/bin/tcsh -f 
+
+##############################################################################
+#
+# Identification:
+#     Echo lines once a match to the argument is found
+#
+# Description:
+#     This script reads from stdin and does nothing until the pattern specified
+#     in the first argument is found, which is echoed unless the first argument
+#     is argument is '-a' (really "after"). The last argument is the pattern.
+#
+#     This script requires assumes that "init_scripts" has been sourced (or
+#     P_STDERR, IVI_TAIL, and IVI_AWK have been set by some other means). 
+#
+#     We implement this functionality with "awk", but wrapping this in a script
+#     means we can do something else if we run across a system where this does
+#     not work.
+#
+# Notes:
+#     We could implement the ivi_cat_before/ivi_cat_after functionality with
+#     "split", but that program does something different, and is not commonly
+#     used, so it may not be available.
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+# set echo
+
+set skip_first_line = 0
+
+if (${#argv} == 1) then
+    set pattern = "${1}"
+else if (${#argv} == 2) then
+    if ($argv[1] == "-a") then
+        set skip_first_line = 1
+        set pattern = "${2}"
+    else 
+        ${P_STDERR} "Script ivi_cat_after option ${argv[1]} not recognized."
+        exit 1
+    endif 
+else 
+    ${P_STDERR} "Script ivi_cat_after requires either one or two arguments."
+    exit 1
+endif 
+
+if ("${IVI_AWK}" == "") then
+    ${P_STDERR} "Script ivi_cat_after needs awk, but IVI_AWK is empty string."
+    exit 1
+endif 
+
+if (${skip_first_line}) then
+    ${IVI_AWK} "/${pattern}/",eof | ${IVI_TAIL} +2 
+else 
+    ${IVI_AWK} "/${pattern}/",eof 
+endif 
+
+if ($status) exit 1 
+
+

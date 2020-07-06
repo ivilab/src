@@ -3,18 +3,18 @@
 ##############################################################################
 #
 # Identification:
-#     Remvoes the semaphore that blocks cooperating processes from proceeding 
+#     Removes the semaphore that blocks cooperating processes from proceeding 
 #
 # Description:
 #     This is the script of a pair for locking blocks of script code that is not
 #     conveniently expressed as a command (otherwise use ivi_lock). It works
-#     much as lockfile-remove, and in fact, is implmented using lockfile-remove
+#     much as lockfile-remove, and in fact, is implemented using lockfile-remove
 #     if it is available. The main justification for this script is that locking
 #     is not universally available. Most notably good locking facilities are not
 #     available in the mac OS. Hence, this script also implements a fall back
 #     method that is less than ideal, but usually works. 
 #
-#     The argument to ivi_lock_remove needs to be the same as for the preceeding
+#     The argument to ivi_lock_remove needs to be the same as for the proceeding
 #     call to lockfile-create. 
 #
 #     I might have called this script ivi_lock_destroy, but since it is similar
@@ -51,7 +51,7 @@ if ($?IVI_VERBOSE) then
 endif 
 
 if ($?IVI_DONT_LOCK) then
-    ${VERBOSE_ECHO} "${verbose_indent}IVI_DONT_LOCK is set, so ivi_lock_remove is not locking: $*"
+    ${VERBOSE_ECHO} "${verbose_indent}IVI_DONT_LOCK is set, so ivi_lock_remove is not doing anything"
     exit 0
 endif
 

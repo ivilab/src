@@ -883,86 +883,107 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.c.made : $(LIB_COMPONENT_SRC_DIR)$(MAKE
 
 COMPILE_INFO = \
   -C"$(MD_DEFINES) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS)" \
-  -C" -I/home/kobus/include" \
+  -C" -I/usr/local/include/IVI" \
   -C"$(MAN_PAGE_LOAD_DIRS)" \
   -C"-lIVI $(LIBS)" 
 
 
-# The utils in MAKE_BIN_DIR are magically up to date because build-2 buids them
-# whenever documation is being built. Making them dependencies might be
-# misleading. Hence this comment. 
+
+# Getting the very old c2man program to document code that uses changing and
+# possibly buggy system header files takes a lot of trickery. There is probably
+# too much trickery, but redoing it differently (using doxygen?) would be a lot
+# of work.
 #
-$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.c.made : $(MAKE_BIN_DIR)c2man $(MAKE_BIN_DIR)include_def  $(MAKE_BIN_DIR)c2man_in
+$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.c.made : $(MAKE_BIN_DIR)c2man $(MAKE_BIN_DIR)include_def $(MAKE_BIN_DIR)c2man_in
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
-	$(MAKE_SCRIPT_PATH)assert_non_null_arg $(MAKE_DOC_DIR) 
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$*.c | $(MAKE_BIN_DIR)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_cmd_in
-	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_cmd_in \
-        -D$(UC_MACHINE) -D$(UC_OS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
-        $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(IVI_MKDIR) $(MAN_DIR)
-	$(MAKE_BIN_DIR)c2man \
-         $(C2MAN_FLAGS) \
-         $(COMPILE_INFO) \
-         $(LIB_COMPONENT_NEED_HAVE) \
-         -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
-         -o$(MAN_DIR) \
-         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$*.c | $(MAKE_BIN_DIR)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index  > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_cmd_in_html
-	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_cmd_in_html \
-         -D$(UC_MACHINE) -D$(UC_OS) \
-         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
-    $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(IVI_MKDIR) $(HTML_MAN_DIR)
-	$(MAKE_BIN_DIR)c2man -Th \
-         -Th $(C2MAN_FLAGS) \
-         $(COMPILE_INFO) \
-         $(LIB_COMPONENT_NEED_HAVE) \
-         -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
-         -o$(HTML_MAN_DIR) \
-         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
-	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in_html
+## IN PROGRESS ##	$(MAKE_SCRIPT_PATH)assert_non_null_arg $(MAKE_DOC_DIR) 
+## IN PROGRESS ##	$(IVI_SED) < $(LIB_COMPONENT_SRC_DIR)$*.c '/Hide from c2man/d'| $(IVI_SED) < $(LIB_COMPONENT_SRC_DIR)$*.c 's/"End of includes for c2man/MAKE DOC CUT LINE/' >  $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_cpp_in.c
+## IN PROGRESS ##	$(MAKE_SCRIPT_PATH)ivi_cat_before "End of includes for c2man" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_trimmed.c > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_includes.h
+## IN PROGRESS ##	$(MAKE_SCRIPT_PATH)ivi_cat_after -a "End of includes for c2man" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_trimmed.c > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_code.c
+## IN PROGRESS ##	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_preprocessed.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
+## IN PROGRESS ##	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_code.c | $(MAKE_BIN_DIR)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
+## IN PROGRESS ##	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_includes.h \
+## IN PROGRESS ##        -D$(UC_MACHINE) -D$(UC_OS) \
+## IN PROGRESS ##        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
+## IN PROGRESS ##        $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_preprocessed.h
+## IN PROGRESS ### 	$(C2MAN_CPP_CMD) -dM $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_includes.h \
+## IN PROGRESS ###         -D$(UC_MACHINE) -D$(UC_OS) \
+## IN PROGRESS ###         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) >> \
+## IN PROGRESS ###         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_preprocessed.h
+## IN PROGRESS ##	$(IVI_MKDIR) $(MAN_DIR)
+## IN PROGRESS ##	$(MAKE_BIN_DIR)c2man \
+## IN PROGRESS ##         $(C2MAN_FLAGS) \
+## IN PROGRESS ##         $(COMPILE_INFO) \
+## IN PROGRESS ##         $(LIB_COMPONENT_NEED_HAVE) \
+## IN PROGRESS ##         $(BASE_INCLUDES) \
+## IN PROGRESS ##         -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
+## IN PROGRESS ##         -o$(MAN_DIR) \
+## IN PROGRESS ##         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
+## IN PROGRESS ##	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in
+#
+# HTML
+# 
+## 	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_preprocessed.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
+## 	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c_code.c | $(MAKE_BIN_DIR)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
+## 	$(IVI_MKDIR) $(HTML_MAN_DIR)
+## 	$(MAKE_BIN_DIR)c2man -Th \
+##          -Th $(C2MAN_FLAGS) \
+##          $(COMPILE_INFO) \
+##          $(LIB_COMPONENT_NEED_HAVE) \
+##          $(BASE_INCLUDES) \
+##          -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
+##          -o$(HTML_MAN_DIR) \
+##          $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c
+## 	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in_html
 	$(IVI_TOUCH) $@
 
-# The utils in MAKE_BIN_DIR are magically up to date because build-2 buids them
-# whenever documation is being built. Making them dependencies might be
-# misleading. Hence this comment. 
+# Header file documentation. We coerce c2man to documenting header files
+# properly through a variety of tricks. There is probably too much trickery, but
+# redoing it differently (using doxygen?) would be a lot of work.
 #
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.h.made : $(MAKE_BIN_DIR)c2man $(MAKE_BIN_DIR)include_def  $(MAKE_BIN_DIR)c2man_in	$(MAKE_SCRIPT_PATH)fix_header_man_pages $(MAKE_SCRIPT_PATH)fix_header_html_pages
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h  
-	$(MAKE_SCRIPT_PATH)assert_non_null_arg $(MAKE_DOC_DIR) 
-	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$*.h | $(MAKE_BIN_DIR)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in
-	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in \
-        -D$(UC_MACHINE) -D$(UC_OS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
-        $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
-	$(MAKE_BIN_DIR)c2man \
-        $(C2MAN_FLAGS) \
-        $(COMPILE_INFO) \
-        $(LIB_COMPONENT_NEED_HAVE) \
-        -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
-        -o$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h \
-        $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
-	$(MAKE_SCRIPT_PATH)fix_header_man_pages $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
-	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$*.h | $(MAKE_BIN_DIR)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in_html
-	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_cmd_in_html \
-        -D$(UC_MACHINE) -D$(UC_OS) \
-         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
-        $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
-	$(MAKE_BIN_DIR)c2man -Th \
-        $(C2MAN_FLAGS) \
-        $(COMPILE_INFO) \
-        $(LIB_COMPONENT_NEED_HAVE) \
-        -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
-        -o$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h \
-        $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
-	$(MAKE_SCRIPT_PATH)fix_header_html_pages $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
-	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in_html
+### 	$(MAKE_SCRIPT_PATH)assert_non_null_arg $(MAKE_DOC_DIR) 
+### 	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
+### 	$(MAKE_SCRIPT_PATH)ivi_cat_after -a "Start for c2man" < $(LIB_COMPONENT_SRC_DIR)$*.h | $(MAKE_SCRIPT_PATH)ivi_cat_before "End for c2man" > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_trimmed.h
+### 	$(MAKE_SCRIPT_PATH)ivi_cat_before "End of includes for c2man" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_trimmed.h > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_includes.h
+### 	$(MAKE_SCRIPT_PATH)ivi_cat_after -a "End of includes for c2man" <$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_trimmed.h > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_code.c
+### 	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_preprocessed.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
+### 	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_code.c | $(MAKE_BIN_DIR)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c*
+### 	$(IVI_MKDIR) $(HTML_MAN_DIR)
+### 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_includes.h \
+###         -D$(UC_MACHINE) -D$(UC_OS) \
+###         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
+###         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_preprocessed.h
+### 	$(C2MAN_CPP_CMD) -dM $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_includes.h \
+###         -D$(UC_MACHINE) -D$(UC_OS) \
+###         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) >> \
+###         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_preprocessed.h
+### 	$(MAKE_BIN_DIR)c2man \
+###         $(C2MAN_FLAGS) \
+###         $(COMPILE_INFO) \
+###         $(LIB_COMPONENT_NEED_HAVE) \
+###         -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
+###         -o$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h \
+###         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
+### 	$(MAKE_SCRIPT_PATH)fix_header_man_pages $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
+### 	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in
+### #
+### # Header files HTML
+### # 
+### 	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_preprocessed.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
+### 	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_h_code.c | $(MAKE_BIN_DIR)c2man_in -i -h $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c*
+### 	$(MAKE_BIN_DIR)c2man -Th \
+###         $(C2MAN_FLAGS) \
+###         $(COMPILE_INFO) \
+###         $(LIB_COMPONENT_NEED_HAVE) \
+###         -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
+###         -o$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h \
+###         $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c
+### 	$(MAKE_SCRIPT_PATH)fix_header_html_pages $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
+### 	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*-HEADER.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.c2man_in_html
 	$(IVI_TOUCH) $@
 
 ################################################################################

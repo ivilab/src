@@ -864,12 +864,13 @@ output_manpage(firstpage, basepage, input_files, title, section)
 
         if (ivi_num_compile_lines > 0)
         {
-            output->text("\nExample compile flags (system dependent):\n");
+            output->text("\nUse with IVI code base and build system.\n");
+            output->text("\nOtherwise, here are example system dependent compile flags to get you started.\n");
         }
 
         for (i = 0; i < ivi_num_compile_lines; i++)
         {
-            output->text("  ");
+            output->text("    ");
             output->text(ivi_compile_line[ i ]);
             output->text("\n");
         }

@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25606 2020-07-03 19:08:09Z kobus $
+# $Id: init_compile 25613 2020-07-06 22:19:25Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -1961,13 +1961,12 @@ endif
 ivi_setenv IVI_CPP_DEFAULT_MSG_FILTER "${MAKE_SCRIPT_PATH}boost_warn_filter.pl"
 
 # Set up the allpass filter, which lets all the Boost messages show up.
-set ivi_awk = `which awk`
-if (! ${status}) then
+if ("${IVI_AWK}" != "") then
     ivi_setenv IVI_CPP_ALLPASS_MSG_FILTER \
-            "${ivi_awk} "'"{print}/Compile status is: [^0]/{exit 1}"'
+            "${IVI_AWK} "'"{print}/Compile status is: [^0]/{exit 1}"'
 else
     # This system lacks basic cmds, so sabotage the output filter.
-    ${ECHO} "Warning: system lacks awk(1), which we currently use for filtering boost warnings."
+    ${P_STDERR} "Warning: system lacks awk(1), which we currently use for filtering boost warnings."
     ivi_setenv IVI_CPP_ALLPASS_MSG_FILTER "false"
 endif
 

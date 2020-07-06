@@ -44,7 +44,6 @@ int main(int argc, char** argv)
     ivi_debug_level = 2;
 #endif 
 
-
     BUFF_CPY(name, "(unknown)");
     BUFF_CPY(author, "Kobus Barnard");
     BUFF_CPY(documentor, "Kobus Barnard");
@@ -398,10 +397,15 @@ int main(int argc, char** argv)
             {
                 if (doing_html)
                 {
+                    /* 
+                     * Now handled by hacking c2man code. 
+
                     if (! doing_formatted) 
                     {
                         put_line("<pre>");
                     }
+
+                    */
                 }
                 else
                 {
@@ -414,7 +418,12 @@ int main(int argc, char** argv)
             {
                 if (doing_html)
                 {
+                    /* 
+                     * Now handled by hacking c2man code. 
+
                     put_line("</pre>");
+
+                    */
                 }
                 else
                 {
