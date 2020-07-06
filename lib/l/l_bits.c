@@ -66,6 +66,8 @@
 #include "l/l_global.h"
 #include "l/l_bits.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

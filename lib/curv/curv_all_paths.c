@@ -1,5 +1,5 @@
 
-/* $Id: curv_all_paths.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: curv_all_paths.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -15,6 +15,8 @@
 
 #include "curv/curv_gen.h"
 #include "curv/curv_all_paths.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

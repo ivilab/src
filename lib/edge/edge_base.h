@@ -1,4 +1,4 @@
-/* $Id: edge_base.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: edge_base.h 25612 2020-07-06 22:17:23Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -54,11 +54,15 @@
 #ifndef IVI_EDGE_H 
 #define IVI_EDGE_H 
 
+/* Start for c2man */
+
 #include <stdlib.h>
 #include <inttypes.h>
 
 #include "i/i_float.h"
 #include "m/m_matrix.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -324,6 +328,8 @@ Edge_set * create_edge_set
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

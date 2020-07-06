@@ -1,5 +1,5 @@
 
-/* $Id: l_2D_arr.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_2D_arr.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,12 @@
 #ifndef L_2D_ARRAY_INCLUDED
 #define L_2D_ARRAY_INCLUDED
 
+/* Start for c2man */
 
 #include "l/l_def.h"
 #include "l/l_sys_mal.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,7 +49,7 @@ namespace ivi_c {
  *    common form of a two-dimensional array in "C" where each row is allocated
  *    separately. Here the storage area is contiguous. This allows for certain
  *    operations to be done quickly, but note the following IMPORTANT point:
- *    num_rows cannot be swapped by simply swapping row pointers!
+ *    rows cannot be swapped by simply swapping row pointers!
  *
  * Returns:
  *    On error, this routine returns NULL, with an error message being set.
@@ -327,6 +330,7 @@ void free_2D_ptr_array(void***);
 }
 #endif
 
+/* End for c2man */
 
 #endif
 

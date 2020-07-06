@@ -1,5 +1,5 @@
 
-/* $Id: seg_spots.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: seg_spots.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,12 +21,16 @@
 #ifndef SEG_SPOTS_INCLUDED
 #define SEG_SPOTS_INCLUDED
 
+/* Start for c2man */
+
 
 #include <l/l_int_matrix.h>
 #include <m/m_matrix.h>
 #include <m/m_vector.h>
 #include <i/i_float.h>
 #include <i/i_seq.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,6 +73,8 @@ int find_bright_spots_in_image_sequence
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

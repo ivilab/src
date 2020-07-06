@@ -17,10 +17,14 @@
 |
 * =========================================================================== */
 
-#ifndef WN_TREE
-#define WN_TREE
+#ifndef WN_TREE_INCLUDED
+#define WN_TREE_INCLUDED
+
+/* Start for c2man */
 
 #include "i/i_type.h" 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -130,6 +134,8 @@ void *search_tree_with_depth
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 

@@ -1,5 +1,5 @@
 
-/* $Id: axis_camera.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: axis_camera.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 #include "m/m_incl.h"
 #include "i/i_float.h"
@@ -12,6 +12,8 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

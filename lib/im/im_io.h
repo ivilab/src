@@ -1,8 +1,10 @@
 
-/* $Id: im_io.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: im_io.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 #ifndef IM_IO_INCLUDED
 #define IM_IO_INCLUDED
+
+/* Start for c2man */
 
 #ifndef __C2MAN__
 
@@ -16,6 +18,8 @@
 
 
 #include "im/im_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -80,6 +84,8 @@ int im_fork_close_all(void);
 #endif
 
 #endif   /* #ifndef __C2MAN__ */
+
+/* End for c2man */
 
 #endif   /* Include this file. */
 

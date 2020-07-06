@@ -1,5 +1,5 @@
 
-/* $Id: base64.c 4723 2009-11-16 18:57:09Z kobus $ */
+/* $Id: base64.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
  *  RFC 1521 base64 encoding/decoding
@@ -26,6 +26,8 @@
 #endif
 
 #include "camera/base64.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

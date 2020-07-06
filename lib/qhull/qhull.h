@@ -1,5 +1,5 @@
 
-/* $Id: qhull.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: qhull.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -83,6 +83,8 @@
 #endif
 
 #include "qhull/user.h"      /* user defineable constants */
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

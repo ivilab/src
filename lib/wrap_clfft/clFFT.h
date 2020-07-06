@@ -49,8 +49,12 @@
 #ifndef __CLFFT_H
 #define __CLFFT_H
 
+/* Start for c2man */
+
 #ifdef IVI_HAVE_OPENCL
 #include <gpu_cpp/gpu_opencl.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -127,6 +131,8 @@ void clFFT_DumpPlan( clFFT_Plan plan, FILE *file);
 #ifdef __cplusplus
 }
 #endif
+
+/* End for c2man */
 
 #endif
 #endif /* IVI_HAVE_OPENCL */

@@ -1,5 +1,5 @@
 
-/* $Id: x_complex.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: x_complex.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,10 @@
 
 #ifndef X_COMPLEX_INCLUDED
 #define X_COMPLEX_INCLUDED
+
+/* Start for c2man */
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,6 +70,8 @@ IVI_complex multiply_complex_by_real(IVI_complex z, double s);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

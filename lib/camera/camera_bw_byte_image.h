@@ -1,5 +1,5 @@
 
-/* $Id: camera_bw_byte_image.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: camera_bw_byte_image.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -16,6 +16,8 @@
 
 #ifndef CAMERA_BW_BYTE_IMAGE_H_INCLUDED
 #define CAMERA_BW_BYTE_IMAGE_H_INCLUDED
+
+/* Start for c2man */
 
 
 #include "i/i_gen.h"
@@ -35,6 +37,8 @@
 #else
 #    include <sys/time.h>
 #endif 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,6 +83,8 @@ void ivi_free_camera_bw_byte_image(Camera_bw_byte_image* ip);
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

@@ -1,5 +1,5 @@
 
-/* $Id: c_projection.c 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: c_projection.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,6 +27,8 @@
 
 #define TRUNCATE_RATIO(x, y, max) \
             ((ABS_OF(x) >= max * (y)) ? (max) : (x) / (y))
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

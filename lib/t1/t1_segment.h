@@ -1,5 +1,5 @@
 
-/* $Id: t1_segment.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: t1_segment.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,13 @@
 #ifndef T1_SEGMENT_INCLUDED
 #define T1_SEGMENT_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 #include "i/i_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -111,6 +115,8 @@ void t1_free_segmentation       (Segmentation_t1* segmentation_ptr);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

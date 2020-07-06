@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_set.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: wrap_svm_set.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -29,6 +29,8 @@
 #include "wrap_svm/wrap_svm_set.h"
 
 #include "wrap_svm/wrap_svm.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

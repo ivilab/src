@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_vector.c 25581 2020-06-20 22:14:04Z kobus $ */
+/* $Id: m_mat_vector.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #include "l/l_incl.h"
 #include "m/m_mat_vector.h"
 #include "m/m_mat_basic.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

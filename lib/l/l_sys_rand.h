@@ -21,8 +21,12 @@
 #ifndef L_SYS_RANDOM_INCLUDED
 #define L_SYS_RANDOM_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,6 +66,8 @@ int    ivi_set_rand_2_function   (double (*f)(void));
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

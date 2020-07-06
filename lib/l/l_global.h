@@ -1,5 +1,5 @@
 
-/* $Id: l_global.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_global.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #ifndef L_GLOBAL_INCLUDED
 #define L_GLOBAL_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_sys_def.h"    /* For system type. */
 
@@ -33,6 +35,8 @@
 
 #include "l/l_sys_sig.h"    /* For SIGNAL_ARRAY_SIZE    */
 #include "l/l_sys_err.h"    /* For default_bug_handler  */
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -169,6 +173,8 @@ GLOBAL_DEF int ivi_header_char                     GLOBAL_INIT( = '!' );
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

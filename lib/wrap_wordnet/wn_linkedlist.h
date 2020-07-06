@@ -18,12 +18,16 @@
 |
 * =========================================================================== */
 
-#ifndef WN_LINKED_LIST
-#define WN_LINKED_LIST
+#ifndef WN_LINKED_LIST_INCLUDED
+#define WN_LINKED_LIST_INCLUDED
+
+/* Start for c2man */
 
 #include "i/i_type.h" 
 #include "wrap_wordnet/wn_array.h"
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -117,6 +121,8 @@ void print_linkedlist
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

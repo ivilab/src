@@ -1,5 +1,5 @@
 
-/* $Id: sample_misc.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: sample_misc.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,6 +22,8 @@
 #include "sample/sample_misc.h"
 #include "l/l_sys_rand.h"
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

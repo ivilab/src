@@ -1,6 +1,10 @@
 #ifndef LIB_PUTATIVE_MATCH_H_
 #define LIB_PUTATIVE_MATCH_H_
 
+/* Start for c2man */
+
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -94,6 +98,8 @@ int print_keypoint_parameters
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif /* LIB_PUTATIVE_MATCH_H_ */

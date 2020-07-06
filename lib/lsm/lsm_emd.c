@@ -1,7 +1,7 @@
 
-/* $Id: lsm_emd.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: lsm_emd.c 25612 2020-07-06 22:17:23Z kobus $ */
 
-#ifndef DONT_LINT_SHARED
+#ifndef DONT_LINT_SHARED     /* Hide from c2man */
 
 /*
     emd.c
@@ -3543,5 +3543,5 @@ static int fp_write_signature_db_header
 }
 #endif
 
-#endif  /* #ifndef DONT_LINT_SHARED */
+#endif  /* #ifndef DONT_LINT_SHARED */     /* Hide from c2man */
 

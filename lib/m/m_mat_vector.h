@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_vector.h 25581 2020-06-20 22:14:04Z kobus $ */
+/* $Id: m_mat_vector.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,10 +21,14 @@
 #ifndef M_MAT_VECTOR_INCLUDED
 #define M_MAT_VECTOR_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_gen.h"
 #include "m/m_vector.h"
 #include "m/m_matrix.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -203,6 +207,8 @@ int std_dev_matrices
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

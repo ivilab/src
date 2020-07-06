@@ -1,11 +1,15 @@
 
-/* $Id: base64.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: base64.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /**
  * \file base64.h
  */
 #ifndef IVILAB_BASE64_H_INCLUDED
 #define IVILAB_BASE64_H_INCLUDED 1
+
+/* Start for c2man */
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,6 +70,8 @@ int base64_self_test( void );
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif /* base64.h */

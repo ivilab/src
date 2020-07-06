@@ -1,5 +1,5 @@
 
-/* $Id: h2_hull_max_coord_prod.c 21545 2017-07-23 21:57:31Z kobus $ */
+/* $Id: h2_hull_max_coord_prod.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,8 @@
 
 #include "h2/h2_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "h2/h2_hull_max_coord_prod.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

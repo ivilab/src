@@ -1,5 +1,5 @@
 
-/* $Id: n_det.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: n_det.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #include "n/n_det.h"
 #include "n/n_diagonalize.h"
 #include "n/n_invert.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

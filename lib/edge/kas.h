@@ -16,8 +16,12 @@
 #ifndef KAS_H
 #define KAS_H
 
+/* Start for c2man */
+
 
 #include "edge/line_segment.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,6 +78,8 @@ Kas_s;
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

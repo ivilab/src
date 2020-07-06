@@ -21,7 +21,11 @@
 #ifndef _INCLUDED_ARRAY_H_
 #define _INCLUDED_ARRAY_H_
 
+/* Start for c2man */
+
 #include "i/i_type.h" 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,6 +83,8 @@ void print_array
 }
 #endif
 }
+
+/* End for c2man */
 
 #endif
 

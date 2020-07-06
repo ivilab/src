@@ -1,5 +1,5 @@
 
-/* $Id: g3_geom_view.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: g3_geom_view.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -15,6 +15,8 @@
 
 #include "m/m_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "g3/g3_geom_view.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

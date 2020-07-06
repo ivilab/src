@@ -1,5 +1,5 @@
 
-/* $Id: s2_set.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: s2_set.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,10 @@
 #ifndef S2_SET_INCLUDED
 #define S2_SET_INCLUDED
 
+/* Start for c2man */
+
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -38,6 +42,8 @@ int ivi_s2_set(const char* option, const char* value);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

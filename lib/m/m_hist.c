@@ -1,5 +1,5 @@
 
-/* $Id: m_hist.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_hist.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #include "m/m_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "m/m_convolve.h"
 #include "m/m_hist.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

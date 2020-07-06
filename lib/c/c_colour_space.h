@@ -1,5 +1,5 @@
 
-/* $Id: c_colour_space.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: c_colour_space.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef C_COLOUR_SPACE_INCLUDED
 #define C_COLOUR_SPACE_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,6 +76,8 @@ int convert_vector_rgb_to_xyz(Vector** out_vpp, const Vector* in_vp);
 #endif 
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

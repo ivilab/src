@@ -1,5 +1,5 @@
 
-/* $Id: l_set_aux.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_set_aux.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef L_SET_AUX_INCLUDED
 #define L_SET_AUX_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,6 +80,8 @@ int parse_method_option
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

@@ -1,5 +1,5 @@
 
-/* $Id: sample_misc.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: sample_misc.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef SAMPLE_MISC_INCLUDED
 #define SAMPLE_MISC_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,6 +67,8 @@ int pick_m_from_n(Int_vector ** m_indexes, int m, int n);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

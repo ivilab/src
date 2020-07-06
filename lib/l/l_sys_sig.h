@@ -21,6 +21,8 @@
 #ifndef L_SYS_SIG_INCLUDED
 #define L_SYS_SIG_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 
@@ -33,10 +35,10 @@
 #endif 
 
 #include <signal.h>
-#ifdef NeXT
-#    include <sys/signal.h>
-#endif
+
 #endif   /* ! MAKE_DEPEND */
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -338,6 +340,8 @@ int ivi_signal
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

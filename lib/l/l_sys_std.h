@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_std.h 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: l_sys_std.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,11 +27,15 @@
 #ifndef L_SYS_STANDARD_INCLUDED
 #define L_SYS_STANDARD_INCLUDED
 
+/* Start for c2man */
+
 /* The file l/l_sys_sys.h canonicalizes some definitions. It does not include
 // any system includes, so we are still set up for including system includes
 // after this point.
 */
 #include "l/l_sys_sys.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -311,6 +315,8 @@ typedef u_longlong_t ivi_uint64;
 #ifdef __cplusplus
 }
 #endif
+
+/* End for c2man */
 
 #endif    /* Include this file. */
 

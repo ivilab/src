@@ -1,5 +1,5 @@
 
-/* $Id: m_find.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_find.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,13 @@
 #ifndef M_FIND_INCLUDED
 #define M_FIND_INCLUDED
 
+/* Start for c2man */
+
 #include "l/l_incl.h"
 #include "m/m_matrix.h"
 #include "m/m_vector.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,6 +120,8 @@ int is_matrix_element_less_than(const Matrix* mp, int row, int col, void* params
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif /* M_FIND_INCLUDED */
 

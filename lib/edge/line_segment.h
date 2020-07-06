@@ -16,9 +16,13 @@
 #ifndef LINE_SEGMENT_H
 #define LINE_SEGMENT_H
 
+/* Start for c2man */
+
 
 #include "i/i_float.h"
 #include "edge/edge_base.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -97,6 +101,8 @@ void compute_extrema
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

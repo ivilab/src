@@ -1,5 +1,5 @@
 
-/* $Id: i_set_aux.c 5831 2010-05-02 21:52:24Z ksimek $ */
+/* $Id: i_set_aux.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #include "i/i_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "i/i_set_aux.h"
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

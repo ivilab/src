@@ -1,5 +1,5 @@
 
-/* $Id: m_hist.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_hist.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,13 @@
 #ifndef M_HIST_INCLUDED
 #define M_HIST_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_type.h"
 #include "m/m_vector.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,6 +56,8 @@ int get_1D_hist
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

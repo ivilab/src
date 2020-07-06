@@ -1,5 +1,5 @@
 
-/* $Id: gp_gaussian_processes.c 6352 2010-07-11 20:13:21Z kobus $ */
+/* $Id: gp_gaussian_processes.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -16,6 +16,8 @@
 #include "l/l_incl.h"
 #include "n/n_incl.h"
 #include "sample/sample_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
 
-/* $Id: i_video.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: i_video.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #ifndef I_VIDEO_INCLUDED
 #define I_VIDEO_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 #include "i/i_type.h"
@@ -34,6 +36,8 @@
 
 #    include "mike/libMBvg-big1.h"
 #endif
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -77,6 +81,8 @@ int capture_image(IVI_image** ipp, Image_window* image_window_ptr);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

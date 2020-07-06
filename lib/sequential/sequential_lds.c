@@ -1,5 +1,5 @@
 
-/* $Id: sequential_lds.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: sequential_lds.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,6 +22,8 @@
 #include "sequential/sequential_lds.h"
 #include "n/n_invert.h"
 #include "sample/sample_gauss.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

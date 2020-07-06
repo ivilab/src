@@ -1,9 +1,13 @@
 /* $Id$ */
 
-#ifndef SLIC_ROTATION_DEFINED
-#define SLIC_ROTATION_DEFINED
+#ifndef SLIC_ROTATION_INCLUDED
+#define SLIC_ROTATION_INCLUDED
+
+/* Start for c2man */
 
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,6 +43,8 @@ int compute_rotation_set_focal_length
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

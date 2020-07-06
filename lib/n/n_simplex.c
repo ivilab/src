@@ -1,5 +1,5 @@
 
-/* $Id: n_simplex.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: n_simplex.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
    Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -13,6 +13,8 @@
 #include "n/n_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "n/n_invert.h"
 #include "n/n_simplex.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

@@ -21,7 +21,11 @@
 #ifndef SEQUENTIAL_PARTICLES_INCLUDED
 #define SEQUENTIAL_PARTICLES_INCLUDED
 
+/* Start for c2man */
+
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +52,8 @@ int SIR_particle_filter
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

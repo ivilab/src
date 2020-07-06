@@ -1,7 +1,9 @@
-/* $Id: ransac_fit.h 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: ransac_fit.h 25612 2020-07-06 22:17:23Z kobus $
  */
 #ifndef SLIC_RANSAC_DEFINED_H_
 #define SLIC_RANSAC_DEFINED_H_
+
+/* Start for c2man */
 
 #include "m/m_incl.h"
 #include "n/n_incl.h" 
@@ -14,6 +16,8 @@
 #include "slic/fundamental_matrix.h"
 #include "slic/image_interp.h"
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -250,6 +254,8 @@ int get_fitting_data
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

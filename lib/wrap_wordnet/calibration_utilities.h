@@ -1,10 +1,15 @@
-#ifndef IVI_CALIBRATION_UTILITIES
-#define IVI_CALIBRATION_UTILITIES
+
+#ifndef IVI_CALIBRATION_UTILITIE_INCLUDEDS
+#define IVI_CALIBRATION_UTILITIES_INCLUDED
+
+/* Start for c2man */
 
 #include <l/l_incl.h>
 #include <m/m_vector.h>
 #include <wrap_wordnet/wn_array.h>
 #include <wrap_wordnet/wn_word_sense.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -100,6 +105,8 @@ ssize_t getline(char **linep, size_t *np, FILE *stream);
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif/* IVI_CALIBRATION_UTILITIES */

@@ -1,5 +1,5 @@
 
-/* $Id: n_roots.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: n_roots.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,10 @@
 #ifndef N_ROOTS_INCLUDED
 #define N_ROOTS_INCLUDED
 
+/* Start for c2man */
+
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -38,6 +42,8 @@ int real_roots_of_real_polynomial(int, double*, double*);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

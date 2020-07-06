@@ -17,11 +17,15 @@
 |
 * =========================================================================== */
 
-#ifndef WN_PATH
-#define WN_PATH
+#ifndef WN_PATH_INCLUDED
+#define WN_PATH_INCLUDED
+
+/* Start for c2man */
 
 #include "i/i_type.h" 
 #include "wrap_wordnet/wn_word_sense.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,6 +77,8 @@ void free_path_node
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 

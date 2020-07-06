@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_stat.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_mat_stat.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,6 +22,8 @@
 #include "m/m_vec_stat.h"
 #include "m/m_mat_stat.h"
 #include "m/m_missing.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

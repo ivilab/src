@@ -8,14 +8,18 @@
  * Originally from TopoFusion code.
  */
 /*
- * $Id: master.h 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: master.h 25612 2020-07-06 22:17:23Z kobus $
  */
 
 #ifndef MASTER_H_INCLUDED_UOFARIZONAVISION
 #define MASTER_H_INCLUDED_UOFARIZONAVISION
 
+/* Start for c2man */
+
 /* C2MAN */
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -145,6 +149,8 @@ extern char gTheFileName[2048];
 } /* namespace ivi_c */
 #endif
 } /* extern "C" */
+/* End for c2man */
+
 #endif
 
 

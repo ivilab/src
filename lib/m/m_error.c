@@ -1,5 +1,5 @@
 
-/* $Id: m_error.c 20840 2016-09-04 18:27:14Z kobus $ */
+/* $Id: m_error.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,6 +22,8 @@
 
 #include "m/m_vec_metric.h"
 #include "m/m_error.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

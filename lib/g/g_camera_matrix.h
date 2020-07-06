@@ -1,6 +1,4 @@
 
-#ifndef G_CAMERA_MATRIX_H
-#define G_CAMERA_MATRIX_H
 /* =============================================================================
  *                              g_camera_matrix
  *
@@ -25,6 +23,11 @@
  *
  * -------------------------------------------------------------------------- */
 
+#ifndef G_CAMERA_MATRIX_H
+#define G_CAMERA_MATRIX_H
+
+/* Start for c2man */
+
 #include "l/l_gen.h"
 #include "l/l_int_vector.h"
 #include "m/m_gen.h"
@@ -32,6 +35,8 @@
 #include "n/n_diagonalize.h"
 #include "sample/sample_misc.h"
 #include "g/g_homogeneous_point.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,6 +63,8 @@ double error_check_vectors(const Vector* vp1, const Vector* vp2, int i);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

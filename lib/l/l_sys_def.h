@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_def.h 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: l_sys_def.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,9 @@
 #ifndef L_SYS_DEF_INCLUDED
 #define L_SYS_DEF_INCLUDED
 
+/* Start for c2man */
+
+
 #ifdef __cplusplus
 #    ifndef IVI_CPLUSPLUS
 #        define IVI_CPLUSPLUS
@@ -36,6 +39,8 @@
 
 
 #include "l/l_sys_std.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -121,7 +126,6 @@ typedef double Always_double;
 */
 
 /* ----------------------------- MAC_OSX -------------------------------- */
-
 #ifdef MAC_OSX
 
 #    ifndef MAC
@@ -1605,6 +1609,8 @@ typedef unsigned char ivi_uint8;
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif   /* Include this file */
 

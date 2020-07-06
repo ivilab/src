@@ -1,5 +1,5 @@
 
-/* $Id: m_convolve.c 21160 2017-01-29 22:58:17Z kobus $ */
+/* $Id: m_convolve.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,8 @@
 
 #include "m/m_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "m/m_convolve.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

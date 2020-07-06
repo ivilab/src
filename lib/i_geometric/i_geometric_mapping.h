@@ -1,9 +1,13 @@
 
-#ifndef I_GEOMETRIC_MAPPING
-#define I_GEOMETRIC_MAPPING
+#ifndef I_GEOMETRIC_MAPPING_INCLUDED
+#define I_GEOMETRIC_MAPPING_INCLUDED
+
+/* Start for c2man */
 
 #include <i/i_incl.h>
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,6 +64,8 @@ int bilinear_interpolation
 }
 #endif
 
+
+/* End for c2man */
 
 #endif
 

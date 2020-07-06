@@ -1,5 +1,5 @@
 
-/* $Id: magick.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: magick.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -14,6 +14,8 @@
 
 #ifndef MAGICK_MAGICK_INCLUDED   /* Kobus */
 #define MAGICK_MAGICK_INCLUDED   /* Kobus */
+
+/* Start for c2man */
 
 
 /*
@@ -69,6 +71,8 @@
 /*
   ImageMagick include declarations.
 */
+/* End of includes for c2man */
+
 #if __STDC__ || defined(sgi) || defined(_AIX) || __cplusplus
 #define _Declare(formal_parameters) formal_parameters
 #else
@@ -242,6 +246,8 @@ static char
 /* -------------------------------------------------------------------------- */
 
 #endif   /* #ifdef IVI_HAVE_X11  */
+
+/* End for c2man */
 
 #endif   /* #ifndef __C2MAN__  */
 

@@ -1,5 +1,5 @@
 
-/* $Id: v_chunk.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: v_chunk.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
      Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -11,6 +11,8 @@
 
 #include "v/v_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "v/v_chunk.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,4 +1,4 @@
-/* $Id: r2_gmm_em.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: r2_gmm_em.h 25612 2020-07-06 22:17:23Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,12 +20,17 @@
    |      Yekaterina Kharitonova
    |      Jinyan Guan  
  * =========================================================================== */
+
 #ifndef R_GMM_EM_H
 #define R_GMM_EM_H
+
+/* Start for c2man */
 
 #include <l_mt/l_mt_pthread.h>
 #include "m/m_gen.h"
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -222,6 +227,8 @@ void *create_independent_GMM_thread (void *arg);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

@@ -1,6 +1,8 @@
-#ifndef SLIC_BACKPROJECT_DEFINED_H_
-#define SLIC_BACKPROJECT_DEFINED_H_
+#ifndef SLIC_BACKPROJECT_INCLUDED
+#define SLIC_BACKPROJECT_INCLUDED
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,6 +88,8 @@ int get_enlarged_frame_dimensions
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

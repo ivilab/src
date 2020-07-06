@@ -1,5 +1,5 @@
 
-/* $Id: c2_fluorescence.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: c2_fluorescence.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,13 @@
 #ifndef C2_FLUORESCENCE_INCLUDED
 #define C2_FLUORESCENCE_INCLUDED
 
+/* Start for c2man */
+
 
 #include "c2/c2_gen.h"
 #include "s2/s2_fluorescence.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,6 +53,8 @@ int generate_fluorescent_RGB_data
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

@@ -13,6 +13,8 @@
 
 #ifndef __C2MAN__
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE

@@ -1,5 +1,5 @@
 
-/* $Id: n_cholesky.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: n_cholesky.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef N_CHOLESKY_INCLUDED
 #define N_CHOLESKY_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,6 +47,8 @@ int do_native_cholesky_decomposition(Matrix** L, const Matrix* A);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

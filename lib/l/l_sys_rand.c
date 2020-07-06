@@ -52,6 +52,8 @@
 #include "l/l_parse.h"
 #include "l/l_sys_rand.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

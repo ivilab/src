@@ -1,5 +1,5 @@
 
-/* $Id: l_io.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: l_io.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -32,6 +32,8 @@
 #include "l/l_sys_sig.h"
 
 #include "l/l_io.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

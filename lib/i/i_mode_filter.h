@@ -20,10 +20,14 @@
 #ifndef I_MEDIAN_FILTER_INCLUDED
 #define I_MEDIAN_FILTER_INCLUDED
 
+/* Start for c2man */
+
 #include "i/i_float.h"
 #include "i/i_vector.h"
 #include "l/l_def.h"
 #include "l/l_int_vector.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,6 +48,8 @@ int  mode_filter
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

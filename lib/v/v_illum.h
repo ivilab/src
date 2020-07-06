@@ -1,5 +1,5 @@
 
-/* $Id: v_illum.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: v_illum.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -12,10 +12,14 @@
 #ifndef V_ILLUM_INCLUDED
 #define V_ILLUM_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 
 #include "h/h_hull.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,6 +67,8 @@ int is_possible_shadow_ratio
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

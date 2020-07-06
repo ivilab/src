@@ -1,5 +1,5 @@
 
-/* $Id: XWDFile.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: XWDFile.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 #ifndef __C2MAN__     
 
@@ -14,6 +14,8 @@
 
 #ifndef MAGICK_XWDFILE_INCLUDED   /* Kobus */
 #define MAGICK_XWDFILE_INCLUDED   /* Kobus */
+
+/* Start for c2man */
 
 
 /* $XConsortium: XWDFile.h,v 1.17 94/04/17 20:10:49 dpw Exp $ */
@@ -56,6 +58,8 @@ in this Software without prior written authorization from the X Consortium.
  */
 
 #include <X11/Xmd.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -164,6 +168,8 @@ typedef struct {
 /* -------------------------------------------------------------------------- */
 
 #endif   /* #ifdef IVI_HAVE_X11  */
+
+/* End for c2man */
 
 #endif   /* #ifndef __C2MAN__  */
 

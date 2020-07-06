@@ -1,5 +1,5 @@
 
-/* $Id: n_invert.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: n_invert.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -20,6 +20,10 @@
 
 #ifndef N_INVERT_INCLUDED 
 #define N_INVERT_INCLUDED 
+
+/* Start for c2man */
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 #endif 
@@ -66,6 +70,8 @@ int get_MP_inverse_of_transpose(Matrix** result_mpp, const Matrix* mp);
 #endif
 }
 #endif 
+
+/* End for c2man */
 
 #endif
 

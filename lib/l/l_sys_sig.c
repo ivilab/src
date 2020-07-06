@@ -27,6 +27,8 @@
 #include "l/l_queue.h"
 
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

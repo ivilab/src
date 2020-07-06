@@ -1,5 +1,5 @@
 
-/* $Id: i_display.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: i_display.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,13 @@
 #ifndef I_DISPLAY_INCLUDED
 #define I_DISPLAY_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 #include "i/i_type.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,6 +66,8 @@ int fork_display_any_image
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

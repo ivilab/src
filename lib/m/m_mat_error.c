@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_error.c 20654 2016-05-05 23:13:43Z kobus $ */
+/* $Id: m_mat_error.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,8 @@
 
 #include "m/m_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "m/m_mat_error.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

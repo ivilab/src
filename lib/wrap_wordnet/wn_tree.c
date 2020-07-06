@@ -54,6 +54,8 @@
 #include "wrap_wordnet/wn_tree.h"
 #include "wrap_wordnet/wn_word_sense.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

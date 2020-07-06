@@ -1,5 +1,5 @@
 
-/* $Id: g3_geom_view.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g3_geom_view.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
    Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -12,8 +12,12 @@
 #ifndef G3_GEOM_VIEW_INCLUDED
 #define G3_GEOM_VIEW_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,6 +88,8 @@ TRAP_FN_RETURN_TYPE geom_view_sigpipe_fn(int);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

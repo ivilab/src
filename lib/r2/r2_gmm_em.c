@@ -32,6 +32,8 @@
 
 #include "l/l_sys_time.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

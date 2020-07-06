@@ -53,6 +53,8 @@
 
 #include "wrap_wordnet/wn_path.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

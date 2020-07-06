@@ -1,5 +1,5 @@
 
-/* $Id: curv_global.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: curv_global.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #define CURV_ALLOCATE_GLOBAL_STORAGE
 
 #include "curv/curv_global.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

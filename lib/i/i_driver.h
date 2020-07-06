@@ -1,5 +1,5 @@
 
-/* $Id: i_driver.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: i_driver.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -18,11 +18,15 @@
 |
 * =========================================================================== */
 
-#ifndef I_DRIVER
-#define I_DRIVER
+#ifndef I_DRIVER_INCLUDED
+#define I_DRIVER_INCLUDED
+
+/* Start for c2man */
 
 
 #include "i/i_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,6 +53,8 @@ int ivi_image_program_driver
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

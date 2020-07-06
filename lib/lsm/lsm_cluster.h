@@ -1,11 +1,15 @@
 
-/* $Id: lsm_cluster.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: lsm_cluster.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 #ifndef LSM_CLUSTER_H
 #define LSM_CLUSTER_H
 
+/* Start for c2man */
+
 
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,6 +72,8 @@ int get_3D_histogram_clusters
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

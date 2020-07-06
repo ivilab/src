@@ -1,5 +1,5 @@
 
-/* $Id: n2_quadratic.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: n2_quadratic.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,7 +22,8 @@
 #include "wrap_slatec/wrap_slatec.h"
 #include "n2/n2_quadratic.h"
 
-/* For declared function pointers. Generally harmless. */
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

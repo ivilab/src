@@ -59,6 +59,8 @@
 #include "wrap_wordnet/wn_dont_have.h"
 #endif
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

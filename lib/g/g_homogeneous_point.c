@@ -14,8 +14,9 @@
  *
  * -------------------------------------------------------------------------- */
 
-/*Includes*/
 #include <g/g_homogeneous_point.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

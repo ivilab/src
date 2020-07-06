@@ -1,5 +1,5 @@
 
-/* $Id: l_verbose.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_verbose.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef L_VERBOSE_INCLUDED
 #define L_VERBOSE_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,6 +69,8 @@ long interactive_puts(const char* buff);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

@@ -1,5 +1,5 @@
 
-/* $Id: c_sensor.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: c_sensor.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,8 @@
 
 #include "c/c_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "c/c_sensor.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

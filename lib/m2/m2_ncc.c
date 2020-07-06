@@ -1,5 +1,5 @@
 
-/* $Id: m2_ncc.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: m2_ncc.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -27,6 +27,8 @@
 #endif
 
 #include "m2/m2_ncc.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

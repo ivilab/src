@@ -23,6 +23,10 @@
 #ifndef IVI_G_G_AREA_H
 #define IVI_G_G_AREA_H
 
+/* Start for c2man */
+
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -38,6 +42,8 @@ double unit_sphere_surface_area(unsigned int dimension);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

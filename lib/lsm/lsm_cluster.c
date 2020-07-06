@@ -1,7 +1,7 @@
 
-/* $Id: lsm_cluster.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: lsm_cluster.c 25612 2020-07-06 22:17:23Z kobus $ */
 
-#ifndef DONT_LINT_SHARED
+#ifndef DONT_LINT_SHARED     /* Hide from c2man */
 
 /* Only safe as the first include of a .c file. */
 #include "s/s_incl.h"  /* Includes l_incl.h */
@@ -1496,6 +1496,6 @@ static int euclidean_distance
 }
 #endif
 
-#endif   /* #ifndef DONT_LINT_SHARED */
+#endif   /* #ifndef DONT_LINT_SHARED */     /* Hide from c2man */
 
 

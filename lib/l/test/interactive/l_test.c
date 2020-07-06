@@ -1,5 +1,5 @@
 
-/* $Id: l_test.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: l_test.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 
 /* =========================================================================== *
@@ -12,7 +12,8 @@
 
 #include "l/l_incl.h" 
 
-/* For declared function pointers. Generally harmless. */
+/* End of includes for c2man */
+
 #ifdef __cplusplus     
 extern "C" {
 #endif 

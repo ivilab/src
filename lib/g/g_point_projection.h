@@ -30,9 +30,13 @@
 #ifndef G_POINT_PROJECTION_H
 #define G_POINT_PROJECTION_H
 
+/* Start for c2man */
+
 #include "l/l_gen.h"
 #include "m/m_gen.h"
 #include "g/g_plucker.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,6 +66,8 @@ int point_projection_matrix_from_line_projection_matrix(Matrix **point_projectio
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

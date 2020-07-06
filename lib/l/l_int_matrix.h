@@ -1,5 +1,5 @@
 
-/* $Id: l_int_matrix.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_int_matrix.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,13 @@
 #ifndef L_INT_ARRAY_INCLUDED
 #define L_INT_ARRAY_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 #include "l/l_int_vector.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -580,6 +584,8 @@ int check_same_int_matrix_dimensions
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

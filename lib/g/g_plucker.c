@@ -44,8 +44,9 @@
  *
  * -------------------------------------------------------------------------- */
 
-/*Includes*/
 #include <g/g_plucker.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

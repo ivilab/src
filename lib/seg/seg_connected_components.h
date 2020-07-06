@@ -1,5 +1,5 @@
 
-/* $Id: seg_connected_components.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: seg_connected_components.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -16,6 +16,8 @@
 #ifndef CONNECTED_COMPONENTS_MODULE_INCLUDED
 #define CONNECTED_COMPONENTS_MODULE_INCLUDED
 
+/* Start for c2man */
+
 
 /*
 // Exported interfaces go here.
@@ -24,6 +26,8 @@
 #include "m/m_incl.h"
 #include "n/n_incl.h"
 #include "t3/t3_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,6 +92,8 @@ int label_eight_connected_regions
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif    /*   #include this file            */
 

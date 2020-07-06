@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_module.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: wrap_svm_module.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -31,6 +31,8 @@
 #ifdef IVI_HAVE_SVM
 #undef IVI_HAVE_SVM
 #endif
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

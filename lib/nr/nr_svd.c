@@ -1,9 +1,11 @@
 
-/* $Id: nr_svd.c 4725 2009-11-16 19:50:08Z kobus $ */
+/* $Id: nr_svd.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 
 #include "nr/nr_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "nr/nr_svd.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

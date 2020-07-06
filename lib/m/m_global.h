@@ -1,5 +1,5 @@
 
-/* $Id: m_global.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_global.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef M_GLOBAL_INCLUDED
 #define M_GLOBAL_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,6 +78,8 @@ GLOBAL_DEF int ivi_respect_missing_values   GLOBAL_INIT( = FALSE);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

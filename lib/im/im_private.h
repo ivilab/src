@@ -1,11 +1,15 @@
 
-/* $Id: im_private.h 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: im_private.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 #ifndef IM_PRIVATE_INCLUDED
 #define IM_PRIVATE_INCLUDED
 
+/* Start for c2man */
+
 #ifndef __C2MAN__ 
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -1272,6 +1276,8 @@ static void
 
 #endif   /* #ifndef __C2MAN__ */
 
+
+/* End for c2man */
 
 #endif   /* Include this file. */
 

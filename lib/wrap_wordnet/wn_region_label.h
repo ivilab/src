@@ -17,8 +17,10 @@
 |
 * =========================================================================== */
 
-#ifndef WN_REGION_LABEL
-#define WN_REGION_LABEL
+#ifndef WN_REGION_LABEL_INCLUDED
+#define WN_REGION_LABEL_INCLUDED
+
+/* Start for c2man */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -36,6 +38,8 @@
 #ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -246,6 +250,8 @@ int index_word_array
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

@@ -1,9 +1,13 @@
-/* $Id: affine.h 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: affine.h 25612 2020-07-06 22:17:23Z kobus $
  */
-#ifndef SLIC_AFFINE_DEFINED_H_
-#define SLIC_AFFINE_DEFINED_H_
+#ifndef SLIC_AFFINE_INCLUDED
+#define SLIC_AFFINE_INCLUDED
+
+/* Start for c2man */
 
 #include "slic/basic.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -120,6 +124,8 @@ int do_color_constancy
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

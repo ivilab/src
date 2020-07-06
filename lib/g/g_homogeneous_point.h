@@ -20,8 +20,12 @@
 #ifndef G_HOMOGENEOUS_POINT_H
 #define G_HOMOGENEOUS_POINT_H
 
+/* Start for c2man */
+
 #include "l/l_gen.h"
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,6 +48,8 @@ int homogenize_vector_at_index(Vector **homogenized_vector_address, const Vector
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 

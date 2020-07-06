@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_time.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_time.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,8 +20,8 @@
 
 #include "l/l_gen.h"     /* Only safe as first include in a ".c" file. */
 
-/*Some versions of makedepend cannot be trusted to honor the "-Y" option. */
-#ifndef MAKE_DEPEND
+/* Some versions of makedepend cannot be trusted to honor the "-Y" option. */
+#ifndef MAKE_DEPEND   /* Hide from c2man */
 
 #include <time.h>
 #include "l/l_sys_time.h"
@@ -61,30 +61,20 @@
 
 /* -------------------------------------------------------------------------- */
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* -------------------------------------------------------------------------- */
 
-#ifdef  SUN
-/* Following   /usr/lib/lint/llib-lc     */
-/*
-time_t  time();
-long    clock();
-*/
-#endif  /* SUN */
-
-#ifdef NeXT
-extern int ftime(struct timeb* tp);
-#endif
 
 #ifdef SYSV
 #ifdef __GNUC__
 extern long _sysconf(int);
 #endif
 #endif  /* SYSV */
-
 
 /* What? ANSI standard enviroment? Well we still need this. */
 #ifdef CLK_TCK
@@ -93,8 +83,7 @@ extern long _sysconf(int);
 
 #define CLK_TCK (sysconf(_SC_CLK_TCK))   /* 3B2 clock ticks per second */
 
-
-#endif   /* UNIX */
+#endif   /* MAKE_DEPEND */   /* Hide from c2man */
 
 
 #ifdef UNIX

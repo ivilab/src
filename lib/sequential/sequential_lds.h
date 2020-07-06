@@ -21,7 +21,11 @@
 #ifndef SEQUENTIAL_LDS_INCLUDED
 #define SEQUENTIAL_LDS_INCLUDED
 
+/* Start for c2man */
+
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -118,6 +122,8 @@ int compute_kalman_filter_2_stable
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

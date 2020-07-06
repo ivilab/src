@@ -1,5 +1,5 @@
 
-/* $Id: t2_set.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: t2_set.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
    Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -12,8 +12,12 @@
 #ifndef T2_SET_INCLUDED
 #define T2_SET_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +36,8 @@ int ivi_t2_set(const char* option, const char* value);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

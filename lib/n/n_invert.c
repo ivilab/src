@@ -1,5 +1,5 @@
 
-/* $Id: n_invert.c 15478 2013-10-03 00:06:51Z predoehl $ */
+/* $Id: n_invert.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,6 +24,8 @@
 #include "wrap_lapack/wrap_lapack.h"
 
 /* For declared function pointers. Generally harmless. */
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

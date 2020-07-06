@@ -1,5 +1,5 @@
 
-/* $Id: t3_segment.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: t3_segment.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -12,9 +12,13 @@
 #ifndef T3_SEGMENT_INCLUDED
 #define T3_SEGMENT_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 #include "i/i_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -210,6 +214,8 @@ int  t3_image_draw_image_segment_neighbours
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

@@ -6,7 +6,7 @@
  * generally not call it unless one serializes access by holding the
  * 'thread_master_lock' mutex.
  *
- * $Id: l_mt_pthread.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: l_mt_pthread.c 25612 2020-07-06 22:17:23Z kobus $
  */
 
 #include "l/l_sys_debug.h"
@@ -46,6 +46,8 @@
  */
 #define SCRAMBLE(m) (((ivi_uint16)(m) * 421 + 17117) % 81000 & 0xFFFF)
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

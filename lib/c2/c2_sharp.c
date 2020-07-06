@@ -1,5 +1,5 @@
 
-/* $Id: c2_sharp.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: c2_sharp.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -24,6 +24,8 @@
 #include "n/n_fit.h"
 #include "n/n_invert.h"
 #include "n/n_diagonalize.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,11 +1,13 @@
 
-/* $Id: nr_roots.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: nr_roots.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 
 #include "nr/nr_gen.h"      /*  Only safe if first #include in a ".c" file  */
 
 #include "x/x_complex.h"
 #include "nr/nr_roots.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_sys.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_sys.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #ifndef L_SYS_SYS_INCLUDED
 #define L_SYS_SYS_INCLUDED
 
+/* Start for c2man */
+
 /*
  * This file MUST be included BEFORE any system files. 
  *
@@ -38,6 +40,8 @@
 */
 
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -677,6 +681,8 @@ namespace ivi_c {
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif   /* Include this file */
 

@@ -1,5 +1,5 @@
 
-/* $Id: l_debug.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_debug.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,8 @@
 
 #ifndef L_DEBUG_INCLUDED
 #define L_DEBUG_INCLUDED
+
+/* Start for c2man */
 
 
 #include "l/l_def.h"
@@ -149,6 +151,7 @@
 #endif   /* Case that we are NOT exported. */
 
 
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -190,6 +193,8 @@ void flag_suspect_code (int line_num, const char* file_name);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

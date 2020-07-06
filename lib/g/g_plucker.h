@@ -50,8 +50,12 @@
 #ifndef G_PLUCKER_H
 #define G_PLUCKER_H
 
+/* Start for c2man */
+
 #include "l/l_gen.h"
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -81,6 +85,8 @@ int forward_line_projection(Vector **target_vector, const Matrix *line_projectio
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

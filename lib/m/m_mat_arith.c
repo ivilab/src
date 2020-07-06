@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_arith.c 21522 2017-07-22 15:14:27Z kobus $ */
+/* $Id: m_mat_arith.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #include "m/m_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "m/m_mat_arith.h"
 #include "m/m_missing.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

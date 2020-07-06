@@ -1,5 +1,5 @@
 
-/* $Id: r_cluster_lib.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: r_cluster_lib.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -34,7 +34,11 @@
 #ifndef R_CLUSTER_LIB_INCLUDED
 #define R_CLUSTER_LIB_INCLUDED
 
+/* Start for c2man */
+
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -129,6 +133,8 @@ int plot_log_likelihood
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

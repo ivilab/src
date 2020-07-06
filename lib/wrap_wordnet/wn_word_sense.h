@@ -17,8 +17,10 @@
 |
 * =========================================================================== */
 
-#ifndef WN_WORD_SENSE
-#define WN_WORD_SENSE
+#ifndef WN_WORD_SENSE_INCLUDED
+#define WN_WORD_SENSE_INCLUDED
+
+/* Start for c2man */
 
 #include "m/m_incl.h"
 #include "n/n_incl.h" 
@@ -30,6 +32,8 @@
 #ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -145,6 +149,8 @@ int compare_word_synonym
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

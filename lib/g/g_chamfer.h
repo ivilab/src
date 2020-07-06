@@ -21,9 +21,13 @@
 #ifndef G_CHAMFER_H
 #define G_CHAMFER_H
 
+/* Start for c2man */
+
 #include "m/m_matrix.h"
 #include "i/i_matrix.h"
 #include "edge/edge_base.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -89,6 +93,8 @@ int oriented_sum_sq_distance(
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

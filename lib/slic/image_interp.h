@@ -1,9 +1,13 @@
-/* $Id: image_interp.h 25499 2020-06-14 13:26:04Z kobus $
+/* $Id: image_interp.h 25612 2020-07-06 22:17:23Z kobus $
  */
-#ifndef SLIC_IMAGE_INTERP_DEFINED_H_
-#define SLIC_IMAGE_INTERP_DEFINED_H_
+#ifndef SLIC_IMAGE_INTERP_INCLUDED
+#define SLIC_IMAGE_INTERP_INCLUDED
+
+/* Start for c2man */
 
 #include "slic/basic.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -190,6 +194,8 @@ int SM_get_images_difference_1
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

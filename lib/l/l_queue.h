@@ -1,5 +1,5 @@
 
-/* $Id: l_queue.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_queue.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef L_QUEUE_INCLUDED
 #define L_QUEUE_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -253,6 +257,8 @@ int print_queue(Queue_element* head_ptr, int (*print_fn) (const void*));
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

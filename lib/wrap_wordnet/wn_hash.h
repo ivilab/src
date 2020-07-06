@@ -17,11 +17,16 @@
 |
 * =========================================================================== */
 
-#ifndef WN_HASH
-#define WN_HASH
+#ifndef WN_HASH_INCLUDED
+#define WN_HASH_INCLUDED
+
+/* Start for c2man */
+
 #include "l/l_incl.h"
 #include "wrap_wordnet/wn_linkedlist.h"
 #include "wrap_wordnet/wn_array.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -81,6 +86,8 @@ int from_array_to_hashtable(
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 

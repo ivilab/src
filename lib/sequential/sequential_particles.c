@@ -1,5 +1,5 @@
 
-/* $Id: sequential_particles.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: sequential_particles.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,6 +21,8 @@
 #include "l/l_incl.h"
 #include "sequential/sequential_particles.h"
 #include "sample/sample_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

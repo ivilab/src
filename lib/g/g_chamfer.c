@@ -29,6 +29,8 @@
 #define MEAN_SQ_DISTANCE 3
 #define SUM_DISTANCE 4
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -1,5 +1,5 @@
 
-/* $Id: seg_ncuts.c 15487 2013-10-03 22:04:16Z predoehl $ */
+/* $Id: seg_ncuts.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -14,6 +14,8 @@
 
 
 #include "seg/seg_ncuts.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

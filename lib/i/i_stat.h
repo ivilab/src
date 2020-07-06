@@ -1,5 +1,5 @@
 
-/* $Id: i_stat.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: i_stat.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,11 +21,15 @@
 #ifndef I_STAT_INCLUDED
 #define I_STAT_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 #include "m/m_matrix.h"
 #include "i/i_type.h"
 #include "i/i_float.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,6 +88,8 @@ int get_ave_sum_ratio_without_invalid
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

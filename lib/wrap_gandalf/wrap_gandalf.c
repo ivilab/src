@@ -1,5 +1,5 @@
 
-/* $Id: wrap_gandalf.c 25592 2020-06-29 19:12:01Z kobus $ */
+/* $Id: wrap_gandalf.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -25,6 +25,8 @@
 /* Kobus: Summer 2020: Gandalf might be dead. */
 
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

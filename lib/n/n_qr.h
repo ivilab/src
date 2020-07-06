@@ -1,5 +1,5 @@
 
-/* $Id: n_qr.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: n_qr.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,7 +22,11 @@
 #ifndef N_QR_INCLUDED
 #define N_QR_INCLUDED
 
+/* Start for c2man */
+
 #include "m/m_matrix.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +45,8 @@ int lq_decompose(const Matrix* mp, Matrix** L_mpp, Matrix** Q_mpp);
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

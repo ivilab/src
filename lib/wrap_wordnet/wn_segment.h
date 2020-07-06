@@ -18,8 +18,10 @@
 |
 * =========================================================================== */
 
-#ifndef WN_SEGMENT
-#define WN_SEGMENT
+#ifndef WN_SEGMENT_INCLUDED
+#define WN_SEGMENT_INCLUDED
+
+/* Start for c2man */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,6 +31,8 @@
 #include "i/i_incl.h" 
 #include "i/i_float.h"
 #include "wrap_wordnet/wn_array.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -114,6 +118,8 @@ int read_UCB_num_segments
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

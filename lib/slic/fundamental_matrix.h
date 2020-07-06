@@ -1,10 +1,14 @@
-/* $Id: fundamental_matrix.h 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: fundamental_matrix.h 25612 2020-07-06 22:17:23Z kobus $
  */
 #ifndef SLIC_FUNDAMENTAL_MATRIX_DEFINED_H_
 #define SLIC_FUNDAMENTAL_MATRIX_DEFINED_H_
 
+/* Start for c2man */
+
 #include "slic/basic.h"
 #include "slic/homography.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,6 +53,8 @@ int test_fundamental_matrix(void);
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

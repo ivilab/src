@@ -1,5 +1,5 @@
 
-/* $Id: wrap_svm_libsvm.c 25592 2020-06-29 19:12:01Z kobus $ */
+/* $Id: wrap_svm_libsvm.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -39,6 +39,8 @@
 #include "n/n_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "wrap_svm/wrap_svm.h"
 #include "wrap_svm/wrap_svm_libsvm.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_basic.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_vec_basic.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef M_VEC_BASIC_INCLUDED
 #define M_VEC_BASIC_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -169,6 +173,8 @@ int is_vector_vector_consistent(const Vector_vector* vvp);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

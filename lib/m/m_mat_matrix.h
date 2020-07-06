@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_matrix.h 25609 2020-07-03 19:17:54Z kobus $ */
+/* $Id: m_mat_matrix.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,10 +21,14 @@
 #ifndef M_MAT_MATRIX_INCLUDED
 #define M_MAT_MATRIX_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_gen.h"
 #include "l/l_int_matrix.h"
 #include "m/m_matrix.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -213,6 +217,8 @@ void free_int_matrix_matrix (Int_matrix_matrix* mmp);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

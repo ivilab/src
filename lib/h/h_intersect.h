@@ -1,5 +1,5 @@
 
-/* $Id: h_intersect.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: h_intersect.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef H_INTERSECT_INCLUDED
 #define H_INTERSECT_INCLUDED
 
+/* Start for c2man */
+
 
 #include "h/h_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -94,6 +98,8 @@ int find_point_in_3D_hull_intersection
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

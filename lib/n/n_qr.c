@@ -1,5 +1,5 @@
 
-/* $Id: n_qr.c 17811 2014-10-22 05:22:59Z ksimek $ */
+/* $Id: n_qr.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,6 +22,8 @@
 #include "n/n_gen.h"      /*  Only safe if first #include in a ".c" file  */
 #include "wrap_lapack/wrap_lapack.h"
 #include "n/n_qr.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

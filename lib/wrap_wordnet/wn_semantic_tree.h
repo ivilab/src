@@ -17,8 +17,10 @@
 |
 * =========================================================================== */
 
-#ifndef WN_SEMANTIC_TREE
-#define WN_SEMANTIC_TREE
+#ifndef WN_SEMANTIC_TREE_INCLUDED
+#define WN_SEMANTIC_TREE_INCLUDED
+
+/* Start for c2man */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -38,6 +40,8 @@
 #ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,6 +86,8 @@ int generate_dot_file
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif

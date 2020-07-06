@@ -1,5 +1,5 @@
 
-/* $Id: i_html.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: i_html.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,8 @@
 
 #include "i/i_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "i/i_html.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

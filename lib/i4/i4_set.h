@@ -1,5 +1,5 @@
 
-/* $Id: i4_set.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: i4_set.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef I4_SET_INCLUDED
 #define I4_SET_INCLUDED
 
+/* Start for c2man */
+
 
 #include "i4/i4_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +45,8 @@ int ivi_i4_set(const char* option, const char* value);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

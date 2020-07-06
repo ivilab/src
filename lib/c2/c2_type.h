@@ -1,5 +1,5 @@
 
-/* $Id: c2_type.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: c2_type.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef C2_TYPE_INCLUDED
 #define C2_TYPE_INCLUDED
 
+/* Start for c2man */
+
 
 #include "c2/c2_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,6 +42,8 @@ namespace ivi_c {
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

@@ -1,12 +1,16 @@
 /*
- * $Id: l_mt_util.h 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: l_mt_util.h 25612 2020-07-06 22:17:23Z kobus $
  */
 
 #ifndef L_MT_UTIL_H_LIBIVI_INCLUDED
 #define L_MT_UTIL_H_LIBIVI_INCLUDED 1
 
+/* Start for c2man */
+
 #include <l/l_sys_def.h>
 #include <l/l_sys_io.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,6 +58,8 @@ int ivi_mt_fclose(FILE *fp);
 }
 #endif
 
+
+/* End for c2man */
 
 #endif /* L_MT_UTIL_H_LIBIVI_INCLUDED */
 

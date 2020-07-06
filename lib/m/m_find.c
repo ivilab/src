@@ -1,5 +1,5 @@
 
-/* $Id: m_find.c 21524 2017-07-22 15:52:39Z kobus $ */
+/* $Id: m_find.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -22,7 +22,8 @@
 #include "m/m_vec_basic.h"
 #include "m/m_mat_basic.h"
 
-/* Some C++ compilers need this. (not g++). */
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

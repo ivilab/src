@@ -10,7 +10,7 @@
  */
 
 /*
- * $Id: index.c 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: index.c 25612 2020-07-06 22:17:23Z kobus $
  *
  * Recommended tab width:  4
  */
@@ -28,6 +28,8 @@
 
 #include "topo/master.h"
 #include "topo/index.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

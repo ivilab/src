@@ -16,8 +16,12 @@
 #ifndef EDGE_DETECTOR_H
 #define EDGE_DETECTOR_H
 
+/* Start for c2man */
+
 
 #include "i/i_float.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -142,6 +146,8 @@ void color_edge_points_DEPRECATED
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

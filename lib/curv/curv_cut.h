@@ -1,5 +1,5 @@
 
-/* $Id: curv_cut.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: curv_cut.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -16,8 +16,12 @@
 #ifndef CURV_CUT_INCLUDED
 #define CURV_CUT_INCLUDED
 
+/* Start for c2man */
+
 
 #include "i/i_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,6 +43,8 @@ int cut_neuron
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

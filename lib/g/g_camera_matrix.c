@@ -25,6 +25,8 @@
 #include <g/g_camera_matrix.h>
 #include <g/g_plucker.h>
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

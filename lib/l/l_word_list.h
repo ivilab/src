@@ -1,5 +1,5 @@
 
-/* $Id: l_word_list.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_word_list.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,9 +21,13 @@
 #ifndef L_WORD_LIST_INCLUDED
 #define L_WORD_LIST_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
 #include "l/l_int_vector.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -146,6 +150,8 @@ int  fp_write_word_list     (const Word_list* word_list_ptr, FILE* fp);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

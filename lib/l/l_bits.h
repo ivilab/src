@@ -63,9 +63,13 @@
 #ifndef IVI_BITS_INCLUDED
 #define IVI_BITS_INCLUDED
 
+/* Start for c2man */
+
 #include "l/l_sys_def.h"
 
 
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -102,7 +106,9 @@ void bswap_u64(ivi_uint64* x);
 }
 #endif
 }
+
 #endif
 
+/* End for c2man */
 
 #endif

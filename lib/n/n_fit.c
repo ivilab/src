@@ -1,5 +1,5 @@
 
-/* $Id: n_fit.c 16766 2014-05-09 23:26:39Z ksimek $ */
+/* $Id: n_fit.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -25,6 +25,8 @@
 #include "n/n_svd.h"
 
 /* For declared function pointers. Generally harmless. */
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

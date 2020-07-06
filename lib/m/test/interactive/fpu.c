@@ -1,5 +1,5 @@
 
-/* $Id: fpu.c 25597 2020-06-30 23:31:45Z kobus $ */
+/* $Id: fpu.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 
 /* =========================================================================== *
@@ -16,7 +16,8 @@
 #    include "fpu_control.h"
 #endif 
 
-/* For declared function pointers. Generally harmless. */
+/* End of includes for c2man */
+
 #ifdef __cplusplus     
 using namespace ivi_c;
 extern "C" {

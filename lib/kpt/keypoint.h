@@ -3,8 +3,12 @@
 #ifndef LIB_KEYPOINT_DEFINED_H_
 #define LIB_KEYPOINT_DEFINED_H_
 
+/* Start for c2man */
+
 #include <m/m_incl.h>
 #include <i/i_incl.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -287,6 +291,8 @@ int set_keypoint_color
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif /* LIB_KEYPOINT_DEFINED_H_ */

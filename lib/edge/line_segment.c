@@ -16,6 +16,8 @@
 #include "edge/line_segment.h"
 #include "l/l_math.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

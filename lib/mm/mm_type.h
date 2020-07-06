@@ -1,5 +1,5 @@
 
-/* $Id: mm_type.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: mm_type.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef MM_TYPE_INCLUDED
 #define MM_TYPE_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -236,6 +240,8 @@ Multi_modal_model;
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

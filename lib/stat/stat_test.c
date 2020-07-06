@@ -1,5 +1,5 @@
 
-/* $Id: stat_test.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: stat_test.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -16,6 +16,8 @@
 #include "m/m_incl.h"
 #include "stat/stat_test.h"
 #include "wrap_gsl/wrap_gsl_rnd.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

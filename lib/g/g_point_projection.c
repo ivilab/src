@@ -27,6 +27,8 @@
 
 #include <g/g_point_projection.h>
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

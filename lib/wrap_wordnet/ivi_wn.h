@@ -18,14 +18,18 @@
 |
 * =========================================================================== */
 
-#ifndef IVI_WORDNET
-#define IVI_WORDNET
+#ifndef IVI_WORDNET_INCLUDED
+#define IVI_WORDNET_INCLUDED
+
+/* Start for c2man */
 
 #include "wrap_wordnet/wn_region_label.h"
 
 #ifdef IVI_HAVE_WN
 #include "wn.h"
 #endif
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,6 +73,8 @@ int recursively_find_word_in_subtree(const char * word, int sense, const char * 
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif /** Define Worndet */
 

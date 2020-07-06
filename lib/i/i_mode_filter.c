@@ -20,6 +20,8 @@
 #include "i/i_gen.h"
 #include "i/i_mode_filter.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

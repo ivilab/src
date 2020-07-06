@@ -1,5 +1,5 @@
 
-/* $Id: seg_ncuts.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: seg_ncuts.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -16,6 +16,8 @@
 #ifndef NCUT_MODULE_INCLUDED
 #define NCUT_MODULE_INCLUDED
 
+/* Start for c2man */
+
 
 /*
 // Exported interfaces go here.
@@ -23,6 +25,8 @@
 
 #include "m/m_incl.h"
 #include "n/n_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,6 +47,8 @@ int ncut_dense_bipartition
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif    /*   #include this file            */
 

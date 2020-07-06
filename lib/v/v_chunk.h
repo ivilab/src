@@ -1,5 +1,5 @@
 
-/* $Id: v_chunk.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: v_chunk.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -12,7 +12,11 @@
 #ifndef V_CHUNK_INCLUDED
 #define V_CHUNK_INCLUDED
 
+/* Start for c2man */
+
 #include "i/i_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,6 +95,8 @@ void free_image_chunk_info(Image_chunk_info* image_chunk_info_ptr);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

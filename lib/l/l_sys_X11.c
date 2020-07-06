@@ -35,6 +35,8 @@
 
 #include "l/l_sys_X11.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,11 +51,10 @@ extern "C" {
  * This routine returns true if code was compiled with X11.
  *
  * Returns:
- *    TRUE  if X11 seesm to work. 
- *    FALSE otherwise. 
+ *    | TRUE  if X11 seems to work. 
+ *    | FALSE otherwise. 
  *
- * Index:
- *     X11 
+ * Index: *     X11 
  *
  * -----------------------------------------------------------------------------
 */

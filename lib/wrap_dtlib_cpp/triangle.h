@@ -248,6 +248,10 @@
 #ifndef _DTLIB_TRIANGLE_H
 #define _DTLIB_TRIANGLE_H
 
+/* Start for c2man */
+
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -293,5 +297,7 @@ void triangulate();
 
 #ifdef __cplusplus
 }
+/* End for c2man */
+
 #endif
 #endif /* #ifndef _TRIANGLE_H */

@@ -1,5 +1,5 @@
 
-/* $Id: v_ellipse.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: v_ellipse.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /*
     Copyright (c) 1994-2008 by Kobus Barnard (author).
@@ -12,10 +12,14 @@
 #ifndef V_ELLIPSE_INCLUDED
 #define V_ELLIPSE_INCLUDED
 
+/* Start for c2man */
+
 
 #include "v/v_gen.h"
 #include "g2/g2_ellipse.h"
 #include "t3/t3_segment.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,6 +67,8 @@ int image_draw_ellipse_2
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_err.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: l_sys_err.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -44,6 +44,8 @@
 #include "l/l_sys_err.h"
 
 #include "l/l_queue.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

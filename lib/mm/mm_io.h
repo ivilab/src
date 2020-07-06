@@ -1,5 +1,5 @@
 
-/* $Id: mm_io.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: mm_io.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -11,8 +11,12 @@
 #ifndef MM_IO_INCLUDED
 #define MM_IO_INCLUDED
 
+/* Start for c2man */
+
 
 #include "mm/mm_type.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +44,8 @@ int output_multi_modal_model
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

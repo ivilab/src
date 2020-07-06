@@ -23,6 +23,8 @@
 #include "i/i_seq.h"
 #include "i/i_matrix.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

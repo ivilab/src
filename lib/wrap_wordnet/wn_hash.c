@@ -53,6 +53,8 @@
 
 #include "wrap_wordnet/wn_hash.h"
 
+/* End of includes for c2man */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

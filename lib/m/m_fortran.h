@@ -1,5 +1,5 @@
 
-/* $Id: m_fortran.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: m_fortran.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef M_FORTRAN_INCLUDED
 #define M_FORTRAN_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,6 +69,8 @@ Matrix* create_matrix_from_fortran_1D_dp_array
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

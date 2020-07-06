@@ -21,8 +21,12 @@
 #ifndef L_SYS_X11_INCLUDED
 #define L_SYS_X11_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,6 +46,8 @@ int ring_X11_bell(void);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

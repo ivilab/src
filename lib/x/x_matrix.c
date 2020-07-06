@@ -1,5 +1,5 @@
 
-/* $Id: x_matrix.c 4727 2009-11-16 20:53:54Z kobus $ */
+/* $Id: x_matrix.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,8 @@
 
 #include "x/x_gen.h"
 #include "x/x_matrix.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_time.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_sys_time.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -21,8 +21,12 @@
 #ifndef L_SYS_TIME_INCLUDED
 #define L_SYS_TIME_INCLUDED
 
+/* Start for c2man */
+
 
 #include "l/l_def.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,6 +87,8 @@ int get_time_2(char* time_buff, size_t max_len, const char* format_str);
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

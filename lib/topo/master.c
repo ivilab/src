@@ -8,7 +8,7 @@
  */
 
 /*
- * $Id: master.c 20654 2016-05-05 23:13:43Z kobus $
+ * $Id: master.c 25612 2020-07-06 22:17:23Z kobus $
  */
 
 #include <l/l_sys_io.h>
@@ -20,6 +20,8 @@
 
 #include <topo/master.h>
 #include <topo/index.h>
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

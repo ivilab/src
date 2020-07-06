@@ -1,5 +1,5 @@
 
-/* $Id: wrap_lapack.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: wrap_lapack.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -25,8 +25,12 @@
 #ifndef WRAP_LAPACK_INCLUDED
 #define WRAP_LAPACK_INCLUDED
 
+/* Start for c2man */
+
 
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -146,6 +150,8 @@ int do_lapack_dot_product
 #endif
 }
 #endif
+
+/* End for c2man */
 
 #endif
 

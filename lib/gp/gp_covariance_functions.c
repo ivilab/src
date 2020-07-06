@@ -1,5 +1,5 @@
 
-/* $Id: gp_covariance_functions.c 14738 2013-06-13 23:37:46Z predoehl $ */
+/* $Id: gp_covariance_functions.c 25612 2020-07-06 22:17:23Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -14,6 +14,8 @@
 
 #include "gp/gp_covariance_functions.h"
 #include "l/l_incl.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

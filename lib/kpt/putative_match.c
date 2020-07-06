@@ -1,8 +1,10 @@
 /*
- * $Id: putative_match.c 25595 2020-06-29 20:01:40Z kobus $
+ * $Id: putative_match.c 25612 2020-07-06 22:17:23Z kobus $
  */
 
 #include "kpt/putative_match.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

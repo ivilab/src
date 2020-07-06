@@ -1,11 +1,15 @@
 
-/* $Id: axis_camera.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: axis_camera.h 25612 2020-07-06 22:17:23Z kobus $ */
 
 #ifndef AXIS_CAMERA_H_INCLUDED
 #define AXIS_CAMERA_H_INCLUDED
 
+/* Start for c2man */
+
 
 #include "camera/camera_bw_byte_image.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,6 +38,8 @@ int get_image_from_axis_camera ( Camera_bw_byte_image ** image, Axis_camera * ca
 }
 #endif
 }
+/* End for c2man */
+
 #endif
 
 #endif
