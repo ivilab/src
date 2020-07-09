@@ -1,5 +1,5 @@
 
-/* $Id: bttv_camera.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: bttv_camera.c 25618 2020-07-09 19:21:03Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -42,7 +42,7 @@
 #include "camera/camera_gen.h"
 #include "camera/bttv_camera.h" 
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 
 #ifdef __STRICT_ANSI__
 #define FOO__STRICT_ANSI__
