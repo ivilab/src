@@ -7,7 +7,7 @@
 #     This script was created for updating "build" automatically, but we
 #     currently do not use it for that. Kobus is keeping this file around for a
 #     bit, as it might be useful, if only as an example of updating a file that
-#     is being executing. 
+#     is being executed. 
 
 # This script cannot use P_STDERR as it might not be defined yet. However, since
 # we are in src/Make/scripts, we will assume that IVI_SRC_PATH is valid.

@@ -56,7 +56,8 @@ sed < "${TEST_LOCK_RESULT_FILE}" 's/ .*$//' > "${test_lock_check_file}"
 diff -q ${test_lock_answer_file} ${test_lock_check_file}
 
 if (${status}) then
-    # echo "Files ${test_lock_check_file} and ${test_lock_answer_file} differ."
+    echo "Inspect with:"
+    echo "    vimdiff ${test_lock_check_file} ${test_lock_answer_file}"
     exit 1
 endif 
 

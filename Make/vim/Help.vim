@@ -11,8 +11,8 @@
 :" blank line."
 :g/fake_out_glob/d
 :
-:" Change *.help ==> *.help.made, which forms input to produce *.made"
-:%s/\.\<help\>/&.made/ge
+:" Change *.help ==> *.help.1, which forms input to produce *.1"
+:%s/\.\<help\>/&.1/ge
 :
 :" Shift. "
 :%s/^/        /e

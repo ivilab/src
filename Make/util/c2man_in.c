@@ -1,10 +1,22 @@
 
+/* =============================================================================
+ *                             c2man_in
+ *
+ * Filter to massage comments for c2man
+ *
+ * This program filters library code to adjust comments for c2man. It also
+ * creates an index file that can be combined with others to create an index for
+ * all IVI library code. 
+ *
+ * This process does not work on program files (like this one). We need to do a
+ * bit of work here. 
+ *
+ * -----------------------------------------------------------------------------
+*/
+
+
 #include "l/l_incl.h"
 
-
-/*
-*/
-#define DEBUG
 
 int main(int argc, char** argv)
 {
@@ -22,7 +34,7 @@ int main(int argc, char** argv)
     Queue_element* typdef_queue_head = NULL;
     Queue_element* typdef_queue_tail = NULL;
     char  author[ 1000 ];
-    char  documentor[ 1000 ];
+    char  documenter[ 1000 ];
     Bool  have_disclaimer = FALSE;
     Bool  have_author = FALSE;
     Bool  have_documenter = FALSE;
@@ -40,13 +52,11 @@ int main(int argc, char** argv)
     char value_buff[ MAX_FILE_NAME_SIZE ]; 
     extern int ivi_debug_level; 
 
-#ifdef DEBUG
-    ivi_debug_level = 2;
-#endif 
+    /* Defaults. */
 
     BUFF_CPY(name, "(unknown)");
     BUFF_CPY(author, "Kobus Barnard");
-    BUFF_CPY(documentor, "Kobus Barnard");
+    BUFF_CPY(documenter, "Kobus Barnard");
     BUFF_CPY(index_file_name, "index"); 
 
     while ((option = ivi_getopts(argc, argv, "-hi:", NULL,
@@ -82,8 +92,8 @@ int main(int argc, char** argv)
         {
             if (in_typedef)
             {
-                p_stderr("Preprocesor directives inside typedef defeat c2man_in's documenting of them.\n"); 
-                p_stderr("You need to to rewite the code so that any # lines are outside the typedef paren block.\n"); 
+                p_stderr("Preprocessor directives inside typedef defeat c2man_in's documenting of them.\n"); 
+                p_stderr("You need to to rewrite the code so that any # lines are outside the typedef block.\n"); 
                 free_queue(&typdef_queue_head, &typdef_queue_tail, ivi_free);
                 ivi_exit(EXIT_FAILURE); 
             }
@@ -97,9 +107,9 @@ int main(int argc, char** argv)
             /* 
              * Assume nothing interesting happens until our first '#' line. In
              * particular, skip copyright header--it looks too much like a
-             * documenation block.  Technically, we remove everything that
-             * preceeds the first '#' since, I believe all files have a '#'
-             * before any code. 
+             * documentation block.  Technically, we remove everything that
+             * precedes the first '#' since, I believe all library files have a
+             * '#' before any code. 
             */
             continue;
         }
@@ -110,7 +120,7 @@ int main(int argc, char** argv)
         comment_beg_col = find_char_pair(line_pos, '/', '*');
         comment_end_col = find_char_pair(line_pos, '*', '/');
 
-        /* Reasoble to use '1' because we trimmed before looking. */
+        /* Reasonable to use '1' because we trimmed before looking. */
         if (comment_beg_col == 1) 
         {
             /*
@@ -118,7 +128,7 @@ int main(int argc, char** argv)
             // (as is often the case in complex #ifdef's in Kobus's code). These
             // screw up c2man, so replace the comments with blanks. If we only
             // have a comments on the line, but we have both the begin and the
-            // end, then the line gets ignored implicilty. 
+            // end, then the line gets ignored implicitly. 
             */
             if (comment_end_col)
             {
@@ -156,6 +166,7 @@ int main(int argc, char** argv)
             ivi_exit(EXIT_FAILURE); 
         }
 #ifdef DEF_OUT
+        {
         if (in_comment)
             {
             }
@@ -187,12 +198,12 @@ int main(int argc, char** argv)
                 if (test_level < 3)
                 {
                     put_line("    This software is not adequately tested.");
-                    put_line("    It is recomended that results are checked independantly.");
+                    put_line("    It is recommended that results are checked independently.");
                 }
                 else 
                 {
                     put_line("    This software is somewhat tested.");
-                    put_line("    Nonetheless, it is recomended that results are checked independantly.");
+                    put_line("    Nonetheless, it is recommended that results are checked independently.");
                 }
                 ivi_puts("\n");
             }
@@ -213,10 +224,6 @@ int main(int argc, char** argv)
 
             if (! have_documenter) 
             {
-                /*
-                 * Documentor or Documenter? Usage varies. Seems to be a trend
-                 * towards Documenter. 
-                */
                 put_line("Documenter:"); 
                 put_line("    Kobus Barnard");
                 ivi_puts("\n");
@@ -244,7 +251,7 @@ int main(int argc, char** argv)
 
             if (*line_pos != '\0')
             {
-                p_stderr("Apparant code after comment end in line:\n");
+                p_stderr("Apparent code after comment end in line:\n");
                 fput_line(stderr, line);
                 p_stderr("\n");
                 ivi_exit(EXIT_FAILURE); 
@@ -268,13 +275,14 @@ int main(int argc, char** argv)
 
             trim_beg(&line_pos);
 
+
             if (first_block_line)
             {
                 first_block_line = FALSE; 
 
-                if (isalpha(*name))
+                if (isalpha(*line_pos))
                 {
-                    BUFF_CPY(name, line); 
+                    BUFF_CPY(name, line_pos); 
                 }
                 else 
                 {

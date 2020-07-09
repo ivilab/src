@@ -34,15 +34,6 @@
 #     is taken as the precise lockfile, and the behaviour is similar to "flock",
 #     especially if flock is the underlying implementation.
 #
-#     Unlike flock, this script sets an environment variable IVI_LOCK_TIME_STAMP
-#     that holds the path to a process specific file that timestamps the locking
-#     process. This environment variable is (only) available to the command that
-#     ivi_lock executes. The purpose of this is to enable processes that are
-#     hoping to modify the same resource to test the modification time against
-#     the lock time stamp, and back off from modifying the resource if it is
-#     newer than the lock, under the assumption that it was just created by a
-#     different instance of the same process. 
-#
 #     If the environment variable IVI_LOCKING_METHOD is set, this script will
 #     use its value for the locking method. Otherwise it will try flock, then
 #     lockfile-progs, and then the built in fall back method. 
@@ -78,7 +69,9 @@
 #
 ##############################################################################
 
-# set echo
+if ($?IVI_SET_ECHO) then
+    set echo
+endif 
 
 if ($# < 1) then
     ${P_STDERR} "Script ivi_lock needs at least one argument."
@@ -131,12 +124,11 @@ endif
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 set cmd_str = `echo ${1} | sed 's#.*/##'`
 
-setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${cmd_str}_${dir_str}.lock.$$"
-${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
-
-if ($status) then
-    $P_STDERR "Unable to touch ${IVI_LOCK_TIME_STAMP}"
-    exit 1
+if ($# > 1) then
+    set first_arg = `echo ${2} | sed 's#//*$##' | sed 's#.*/##' `
+    set cmd_plus_arg = "${cmd_str}_${first_arg}"
+else 
+    set cmd_plus_arg = "${cmd_str}"
 endif 
 
 if ($?IVI_LOCKFILE_NAME) then
@@ -151,7 +143,7 @@ if ($?IVI_LOCKFILE_NAME) then
         set lock_file = ${IVI_LOCKFILE_DIR}/${IVI_LOCKFILE_NAME}.lock
     endif 
 else
-    set lock_file = ${IVI_LOCKFILE_DIR}/${cmd_str}_${dir_str}.lock
+    set lock_file = ${IVI_LOCKFILE_DIR}/${cmd_plus_arg}_${dir_str}.lock
 endif 
 
 # Mostly for testing and debugging.
@@ -159,9 +151,9 @@ setenv IVI_LOCKFILE_PATH "${lock_file}"
 
 onintr bail
 
-# Best not to use VERBOSE_PSO here.
+# Best not to use VERBOSE_PSO in this script due to '-f'.
 if ($?IVI_VERBOSE) then
-    echo "${verbose_indent}Script ivi_lock process $$ running ${cmd_str}"
+    echo "${verbose_indent}Script ivi_lock process $$ running $*"
     echo "${verbose_indent}    in `pwd` using lockfile '${lock_file}'"
 endif
 
@@ -230,22 +222,17 @@ endif
 
 cleanup: 
     
-${IVI_RM} ${IVI_LOCK_TIME_STAMP}
-
 exit ${exit_status}
-
 
 # We should not be here unless onintr
 
 bail:
 
 if (-e "${lock_file}") then 
-    echo "Script ivi_lock process $$ removing lock file ${lock_file} because of interrupt."
-    echo " "
+    ${P_STDERR} "Script ivi_lock process $$ removing lock file ${lock_file} because of interrupt."
+    ${P_STDERR} " "
     ${IVI_RM} "${lock_file}"
 endif 
-
-${IVI_RM} ${IVI_LOCK_TIME_STAMP}
 
 exit 1
 

@@ -137,6 +137,7 @@ endif
 # Essential.
 set needed_progs = "test cat cp mv rm mkdir file grep sed ls ln touch chmod gzip makedepend"
 
+
 # Desired (used often enough that a warning makes sense). The colon begins the
 # optional ones. 
 set needed_progs = "${needed_progs} : awk egrep stat tail"

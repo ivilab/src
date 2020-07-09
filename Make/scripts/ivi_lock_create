@@ -100,14 +100,6 @@ endif
 
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 
-setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock.$$"
-${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
-
-if ($status) then
-    $P_STDERR "Unable to touch ${IVI_LOCK_TIME_STAMP}"
-    exit 1
-endif 
-
 if ($?IVI_LOCKFILE_NAME) then
     set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
     set looks_like_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '/'`
@@ -128,19 +120,16 @@ setenv IVI_LOCKFILE_PATH "${lock_file}"
 
 onintr bail
 
-# Best not to use VERBOSE_PSO here.
+# Best not to use VERBOSE_PSO in this script due to '-f'.
 if ($?IVI_VERBOSE) then
     echo "${verbose_indent}Script ivi_lock_create process $$ running lock_create ${lock_label} for ${requesting_pid}."
     echo "${verbose_indent}    in `pwd` using lockfile '${lock_file}'"
 endif
 
 if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
-    # if ($?IVI_VERBOSE) then
-        echo "Process $$ running lock_create ${lock_label} in `pwd` using lockfile-progs"
-    # endif 
-#     echo "Exiting with error as this is unfinished."
-#     exit 1
-
+    if ($?IVI_VERBOSE) then
+        echo "${verbose_indent}Process $$ running lock_create ${lock_label} in `pwd` using lockfile-progs"
+    endif 
     lockfile-create ${lock_file}
 
     if ((! ${status}) && ($?IVI_VERBOSE)) then
@@ -151,7 +140,7 @@ else
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
 
-    # Best not to use VERBOSE_PSO here.
+    # Best not to use VERBOSE_PSO in this script due to '-f'.
     if ($?IVI_VERBOSE) then
         echo "${verbose_indent}Process $$ running lock_create ${lock_label} in `pwd` using fallback locking system."
     endif
@@ -174,14 +163,22 @@ else
         goto cleanup
     endif
 
-
     while (1) 
         if (! -e "${lock_file}") then
+            # Unlike some of the similar lines below, we do not have an '!'
+            # after the '>', as we want to fail due to noclober.
+            #
             echo ${requesting_pid} > ${lock_file}
 
             # Someone else might have just written the file. 
             if (${status}) then
-                echo "Reqesting process `cat ${lock_file}` snuck in before me (${requesting_pid}). Sleeping."
+                #  I have not found a safe way to ignore error output. 
+                set apparent_lock_owner = `cat ${lock_file}`
+                if (${status}) then
+                    echo "Someone might have snuck in before me (${requesting_pid}). Sleeping."
+                else
+                    echo "Requesting process ${apparent_lock_owner} snuck in before me (${requesting_pid}). Sleeping."
+                endif 
 
                 set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
 
@@ -209,12 +206,23 @@ else
             set got_it = 0
 
             while (-e "${lock_file}")
+                #  I have not found a safe way to ignore error output. 
                 set lock_proc = `cat ${lock_file}`
 
                 # Happens! 
                 if ($status) then 
                     echo ${requesting_pid} >! ${lock_file}
                     echo "Lock file ${lock_file} disappeared! Taking the lock."
+                    set got_it = 1
+                    break
+                endif 
+
+                # If the contents is bogus, then the ps below will fail. But if
+                # it is empty, ps will not fail. So we check here. 
+                #
+                if ("${lock_proc}" == "") then
+                    echo ${requesting_pid} >! ${lock_file}
+                    echo "Cannot read a process id from lock file. Assuming it is stale."
                     set got_it = 1
                     break
                 endif 
@@ -236,12 +244,12 @@ else
 
                     set got_it = 1
                     break
-                else if (${count} > 180) then
+                else if (${count} > 30) then
                     echo "Process $$ waited too long for ${lock_file}. "
                     echo "Information about the process holding the lock:"
                     ps -l ${lock_proc} 
-                    echo "Sleeping for one minute for debugging" 
-                    sleep 60
+                    echo "Sleeping for 30 seconds for debugging" 
+                    sleep 30
                     echo "Ignoring the lock."
                     echo ${requesting_pid} >! ${lock_file}
                     set got_it = 1
@@ -285,13 +293,17 @@ else
             endif 
         endif 
 
-        # Check for clash. 
-        set lock_proc = `cat ${lock_file}`
+        # Check for clash. I have not found a safe way to ignore error output. 
+        set lock_proc = `cat ${lock_file}` 
         if (${status}) then
             # Could happen.
-            echo "Lock file ${lock_file} disappeared. Trying again to get the lock."
+            if ($?IVI_VERBOSE) then
+                echo "${verbose_indent}Lock file ${lock_file} disappeared. Trying again to get the lock."
+            endif 
         else if (${lock_proc} != ${requesting_pid}) then 
-            echo "Process ${lock_proc} beat us to it. Resuming waiting."
+            if ($?IVI_VERBOSE) then
+                echo "${verbose_indent}Process ${lock_proc} beat us to the lock on ${lock_file}. Resuming waiting."
+            endif 
         else 
             break
         endif 
@@ -304,8 +316,6 @@ endif
 
 cleanup: 
     
-${IVI_RM} ${IVI_LOCK_TIME_STAMP}
-
 exit ${exit_status}
 
 # We should not be here unless onintr
@@ -317,8 +327,6 @@ if (-e "${lock_file}") then
     echo " "
     ${IVI_RM} "${lock_file}"
 endif 
-
-${IVI_RM} ${IVI_LOCK_TIME_STAMP}
 
 exit 1
 

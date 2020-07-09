@@ -69,17 +69,7 @@ if (! $?IVI_LOCKFILE_DIR) then
     setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
 endif 
 
-# ${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
-# 
-# if ($status) then
-#     $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
-#     exit 1
-# endif 
-
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
-
-# setenv IVI_LOCK_TIME_STAMP "${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock.$$"
-# ${IVI_TOUCH} ${IVI_LOCK_TIME_STAMP}
 
 if ($?IVI_LOCKFILE_NAME) then
     set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
@@ -135,10 +125,11 @@ else
     endif
 
     while (-e "${lock_file}") 
+        #  I have not found a safe way to ignore error output. 
         set lock_proc = `cat ${lock_file}`
 
         if (${status}) then
-            echo "Script ivi_lock_remove reporrts lock file ${lock_file} to be removed does not exist."
+            echo "Script ivi_lock_remove reports lock file ${lock_file} to be removed does not exist."
             break
         else if (${lock_proc} != ${requesting_pid}) then 
             echo "Script ivi_lock_remove not removing lock file ${lock_file} for process ${requesting_pid} as it belongs to ${lock_proc}."

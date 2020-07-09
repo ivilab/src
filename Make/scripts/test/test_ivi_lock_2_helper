@@ -14,7 +14,7 @@ endif
 
 while ($iteration < $num_iterations)
     @ iteration += 1
-    echo iteration: $iteration
+    echo prock $$ iteration: $iteration
     ${LOCK_PROGRAM} ./increment_file_line 
 end 
 

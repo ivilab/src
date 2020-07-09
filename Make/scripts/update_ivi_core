@@ -1,13 +1,33 @@
-#!/bin/tcsh
+#!/bin/tcsh -f
 
-# This script must be run in your src directory. Typically, that is $HOME/src,
-# but it need not be, especially if you feel the need to have multiple versions.
-# If you run this script in a different directory, then it will create some
-# files and directories that you will need to remove. 
+##############################################################################
 #
-# This script relies on the fact that svn check out also serves fine as svn
-# update. 
+# Identification:
+#     A script to update core IVI software
 #
+# Description:
+#     This script updates the core IVI software using SVN. The "core" system is
+#     the build system, the library, some utility programs ("tools"), and some
+#     example programs. It currently excludes programs for research projects,
+#     but this might change. Alternatively, we might write a script
+#     "update_ivi_all". 
+#
+#     This script must be run in your source directory. Typically, that is
+#     $HOME/src, but it need not be, especially if you feel the need to have
+#     multiple versions.  If you accidentally run this script in an unintended
+#     directory, then you will need to remove the directories that it created.
+#
+#     If you have already checked out "Make" into your source directory, and you
+#     are in that directory, then this script can be run as:
+#     |    Make/scripts/update_ivi_core
+#     Alternatively, and probably ideally, some instance of "Make/scripts" is in
+#     your path. 
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
 svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/Make/trunk Make
 svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/lib/trunk lib
 svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/include_before/trunk include_before

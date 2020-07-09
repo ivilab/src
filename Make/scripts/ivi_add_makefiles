@@ -22,7 +22,7 @@
 #
 # Bugs:
 #     As we climb up the directory tree from the current directory we are
-#     looking for a ancestor that has the sub-directory "Make". If we happen to
+#     looking for an ancestor that has the sub-directory "Make". If we happen to
 #     back up through a symbolic link, then this script will probably fail. 
 #
 ##############################################################################

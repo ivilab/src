@@ -1,4 +1,16 @@
 
+/* =============================================================================
+ *                             include_def
+ *
+ * Filter for CPP like processing assuming that the argument is defined
+ *
+ * This program filters stdin like CPP processing assuming that the first
+ * argument is defined. It is thus does the opposite filtering from the program
+ * skip_def. 
+ *
+ * -----------------------------------------------------------------------------
+*/
+
 #include "l/l_incl.h"
 
 int main(int argc, char** argv)
@@ -14,7 +26,6 @@ int main(int argc, char** argv)
     int  negated = FALSE;
     int  skip_count = 0;
     int  in_block = FALSE;
-
 
     check_num_args(argc, 1, 1, (char*)NULL);
 

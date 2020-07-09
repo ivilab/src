@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25613 2020-07-06 22:19:25Z kobus $
+# $Id: init_compile 25614 2020-07-09 19:10:52Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -2653,9 +2653,11 @@ if ("${OS}" == "mac_osx") then
     #
     # ivi_setenv C2MAN_CPP_CMD "cpp -std=c89 -C -D__C2MAN__ -D'__builtin_va_list=void*' -D'__asm(X)=' -D'__GNUC_VA_LIST'"
     ivi_setenv C2MAN_CPP_CMD "cpp -std=c89 -C -D__C2MAN__"
+    ivi_setenv C2MAN_CPP_CMD_2 "cpp -std=c89 -E -D__C2MAN__"
 else
     ivi_setenv C2MAN_MD_DEFINES ""
     ivi_setenv C2MAN_CPP_CMD "cpp -std=c89 -C -D__C2MAN__"
+    ivi_setenv C2MAN_CPP_CMD_2 "cpp -std=c89 -E -D__C2MAN__"
 endif
 
 ################################################################################

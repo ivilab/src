@@ -265,7 +265,7 @@ endif
 
 ################################################################################
 
-if ($?IVI_VERBOSE) then
+if ($?IVI_VERBOSE_2) then
     echo "" 
     echo =================  variable values in build-2 =========================
     echo "" 

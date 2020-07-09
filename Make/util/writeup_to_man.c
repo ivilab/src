@@ -1,4 +1,32 @@
 
+/* =============================================================================
+ *                             writeup_to_man
+ *
+ * Lightweight formatter to create man pages from text files. 
+ *
+ * Description:
+ *     This program converts text files with very simple formatting to man
+ *     pages. Technically, this program should have been called writeup_to_cat,
+ *     as the pages created are more appropriate for the "cat1" directory as
+ *     they are already formatted. 
+ * 
+ * Design notes:
+ *     This program assumes that the writeup author might not want to  bother
+ *     putting formatting directives into their writeup, which entails
+ *     remembering what they are, and which system to use (e.g., md).
+ *     Rather we assume a very simple format, illustrated by this very
+ *     text, and trust the formatter to do something adequate. 
+ *
+ *     Having said that, a nice extension would be to have this program guess
+ *     the notation  (e.g., troff, md, , or NONE), and farm out the formatting
+ *     as appropriate. 
+ *
+ * Index: build utilities
+ *
+ * -----------------------------------------------------------------------------
+*/
+
+
 #include "l/l_incl.h"
 
 /* ------------------------------------------------------------------------- */
@@ -49,7 +77,6 @@ int main(int argc, char** argv)
         switch (flag)
         {
             case 't':
-                dbw();
                 argv++;
                 argc--;
                 BUFF_CPY(title, *argv);
@@ -164,12 +191,22 @@ static int writeup_to_man_guts
      * However, the following attempts swallows the whole file, and we do not
      * attempt to read another line. So it is hard to declare a buffer that is
      * large enough, except that we can assume that the documentation is at the
-     * begining. So, we assume that we have it, if we read effective_buff_size
+     * beginning. So, we assume that we have it, if we read effective_buff_size
      * characters. 
     */
     ERE(read_res = ivi_fread(writeup_fp, initial_buff, effective_buff_size));
 
-    if (read_res < 0) ivi_exit(EXIT_FAILURE);
+    if (read_res == EOF) 
+    {
+        set_error("Writeup to man is not able to read any data. Likey working on an empty file.\n");
+        return ERROR;
+    }
+    else if (read_res < 0) 
+    {
+        set_error("Read returned %d in writeup_to_man.\n", read_res);
+        return ERROR;
+    }
+
     ASSERT((size_t)read_res < sizeof(initial_buff)); 
     initial_buff[ read_res ] = '\0'; 
 
@@ -193,9 +230,9 @@ static int writeup_to_man_guts
         ivi_strncpy(writeup_buff, initial_buff, sizeof(writeup_buff));
     }
 
-    EPETE(man_print_title(stdout, title, section));
+    ERE(man_print_title(stdout, title, section));
 
-    EPETE(left_justify(writeup_buff, MAN_OUTPUT_WIDTH, 0, "|", 1, 0,
+    ERE(left_justify(writeup_buff, MAN_OUTPUT_WIDTH, 0, "|", 1, 0,
                        formatted_buff,
                        sizeof(formatted_buff)));
 
@@ -213,13 +250,20 @@ static int writeup_to_man_guts
            )
         {
             writeup_line_pos[ last_char_index ] = '\0';
-            EPETE(man_print_heading(stdout, writeup_line_pos));
+            ERE(man_print_heading(stdout, writeup_line_pos));
         }
         else
         {
-            line_finished = FALSE;
-
             writeup_line_pos = writeup_line;
+
+            /* 
+             * Echo blanks so we can deal with a DONT_FORMAT_CHAR that is
+             * indented.
+            */
+            while ((*writeup_line_pos) && (*writeup_line_pos == ' ')) 
+            {
+                ivi_putc(*writeup_line_pos++);
+            }
 
             if (*writeup_line_pos == DONT_FORMAT_CHAR)
             {
@@ -238,6 +282,7 @@ static int writeup_to_man_guts
                 writeup_line_pos++;
             }
 
+            line_finished = FALSE;
 
              while ( ! line_finished)
              {

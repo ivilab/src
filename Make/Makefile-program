@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25589 2020-06-24 02:29:29Z kobus $
+# $Id: Makefile-program 25614 2020-07-09 19:10:52Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -546,10 +546,8 @@ Makefile-depend : Include_lines/file_list Include_lines/include_lines $(TEST_SUB
 	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX) Makefile-writeup-targets \
 	        $(VIM_IO_REDIRECTION)
 	$(IVI_ECHO) " " >> Makefile-writeup-targets
-#	$(MAKE_SCRIPT_PATH)stream_script_names | sed '/\<build\>/d' | sed 's/\(.*\)/doc_program : $$(MAKE_DOC_DIR)\1.shell.made/' >> Makefile-writeup-targets
-	$(MAKE_SCRIPT_PATH)stream_script_names | sed '/\<build\>/d' | sed 's/\(.*\)/doc_program : $$(PROGRAM_CAT_DIR)\1\.1/' >> Makefile-writeup-targets
+	$(MAKE_SCRIPT_PATH)stream_script_names | sed '/\<build\>/d' | sed 's/\(.*\)/$$(MAKE_DOC_DIR)doc_program.made : $$(MAKE_DOC_DIR)\1\.shell.1/' >> Makefile-writeup-targets
 	$(IVI_ECHO) " " >> Makefile-writeup-targets
-#	$(MAKE_SCRIPT_PATH)stream_script_names | sed '/\<build\>/d' | sed 's/\(.*\)/$$(PROGRAM_CAT_DIR)\1\.1 : $$(MAKE_DOC_DIR)\1.shell.made/' >> Makefile-writeup-targets
 	$(IVI_ECHO) " " >> Makefile-writeup-targets
 #
 	$(IVI_CAT) /dev/null > Makefile-depend-headers 
@@ -595,7 +593,7 @@ include Makefile-depend
 
 # This is needed for Makefile-depend. 
 Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX) : 
-	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
+	$(IVI_MKDIR) Include_lines
 	$(IVI_TOUCH_1990) $@
 
 
@@ -620,7 +618,12 @@ include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFI
 # flavors because of the include. Note that Makefile-depend is how we are
 # currently propagating the dependency on *_incl.h. 
 #
-depend_program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-depend 
+# DEPEND_TARGETS come from Makefile-dirs, and contain essentially phony targets,
+# so any action will always be done. This is probably a defficieny, but keep
+# depend_program PHONY for now.
+#
+.PHONY : depend_program
+depend_program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-depend  
 
 ################################################################################
 #                       Object directory 
@@ -630,7 +633,7 @@ depend_program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-depend
 # becoming the common case. The target dir_made is never made, so it is always
 # out of date. 
 #
-dir_made :  $(DIR_MADE_TARGETS) $(OBJ_DIR)c_dir_made $(CXX_OBJ_DIR)cxx_dir_made $(LD_OBJ_DIR)ld_dir_made 
+dir_made :  $(DIR_MADE_TARGETS) $(OBJ_DIR)c_dir_made $(CXX_OBJ_DIR)cxx_dir_made $(LD_OBJ_DIR)ld_dir_made
 
 # We use "c_dir_made" in the following because $(OBJ_DIR) may be a symbolic link.
 $(OBJ_DIR)c_dir_made : 
@@ -985,6 +988,7 @@ $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_A
 # flavors because of the include. Note that Makefile-depend is how we are
 # currently propagating the dependency on *_incl.h. 
 #
+# DEPEND_TARGETS comes from Makefile-dirs.
 #
 program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
 
@@ -1064,17 +1068,18 @@ tags: Include_lines/sub_libs_needed $(PROGRAM_FILES)
 #                       Man pages
 #
 
+.PHONY : doc_program
+doc_program : $(MAKE_DOC_DIR)doc_program.made
+
 # A target for making sure that directories exist. This is only used for
 # parallel makes, but most machines now have more than one core, so this is
 # becoming the common case. The target doc_dir_made is never made, so it is
 # always out of date. 
 #
+.PHONY : doc_dir_made
 doc_dir_made : $(DOC_DIR_MADE_TARGETS) $(MAKE_DOC_DIR)doc_dir_made
 
-#
-# For program builds the make_doc dir is not necessarily used for anything other
-# than keeping track of things.  We use "doc_dir_made" because $(MAKE_DOC_DIR)
-# may be a symbolic link.
+# We use "doc_dir_made" because $(MAKE_DOC_DIR) may be a symbolic link.
 #
 $(MAKE_DOC_DIR)doc_dir_made : 
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_MAKE_DOC_DIR)" "$(MAKE_DOC)" .
@@ -1083,47 +1088,43 @@ $(MAKE_DOC_DIR)doc_dir_made :
 $(PROGRAM_CAT_DIR) :
 	$(IVI_MKDIR) $(PROGRAM_CAT_DIR)
 
-$(MAKE_DOC_DIR)%.w.made : $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR)
+# Do not merge with the next line due to '$<'
+$(MAKE_DOC_DIR)%.w.1 : $(MAKE_PATH)Makefile Makefile-depend $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR) $(MAKE_BIN_DIR)writeup_to_man 
 
-# The version of $(PROGRAM_CAT_DIR) is made as a side effect. 
-$(MAKE_DOC_DIR)%.w.made : %.w
-#   Utils in MAKE_BIN_DIR are magically up to date because build-2 buids them
-#   whenever documation is being built. 
+$(MAKE_DOC_DIR)%.w.1 : %.w
+	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
 	$(MAKE_BIN_DIR)writeup_to_man $< > $@
 	$(IVI_CP) $@ $(PROGRAM_CAT_DIR)$*.1
 
-$(MAKE_DOC_DIR)%.help.made : $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR)
+# Do not merge with the next line due to '$<'
+$(MAKE_DOC_DIR)%.help.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_DIR)help_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR)
 
-# The version of $(PROGRAM_CAT_DIR) is made as a side effect. 
-$(MAKE_DOC_DIR)%.help.made : %.help
-#   Utils in MAKE_BIN_DIR are magically up to date because build-2 buids them
-#   whenever documation is being built. 
+$(MAKE_DOC_DIR)%.help.1 : %.help
+	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
 	$(MAKE_BIN_DIR)help_to_man $< > $@
 	$(IVI_CP) $@ $(PROGRAM_CAT_DIR)$*.1
 
-$(MAKE_DOC_DIR)%.shell.made : $(MAKE_DOC_DIR)doc_dir_made 
+# Do not merge with the next line due to '$<'
+$(MAKE_DOC_DIR)%.shell.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_DIR)writeup_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR)
 
-$(PROGRAM_CAT_DIR)%.1 : $(PROGRAM_CAT_DIR)
-
-$(PROGRAM_CAT_DIR)%.1 : $(MAKE_DOC_DIR)%.shell.made
-	$(MAKE_SCRIPT_PATH)copy_if_not_empty $< $@
-
-$(MAKE_DOC_DIR)%.shell.made : %
-#   Utils in MAKE_BIN_DIR are magically up to date because build-2 builds them
-#   whenever documentation is being built. 
+$(MAKE_DOC_DIR)%.shell.1 : %
+	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
 	$(MAKE_BIN_DIR)writeup_to_man $< > $@
+	$(IVI_CP) $@  $(PROGRAM_CAT_DIR)
 
-# Additional dependencies of doc_program may be in Makefile-depend. 
-doc_program : depend_program $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR) $(MAN_FROM_HELP_FILES) $(MAN_FROM_WRITEUP_FILES)
+# Additional dependencies of doc_program.made may be in Makefile-depend. 
+$(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR) $(MAN_FROM_HELP_FILES) $(MAN_FROM_WRITEUP_FILES)
+	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
+	$(IVI_TOUCH) $@
 
-misc_doc_program : doc_program
+misc_doc_program : $(MAKE_DOC_DIR)doc_program.made
 	rsync -rl -u $(DOC_DIR)doxygen/ $(MISC_DOC_DIR)doxygen 
 	rsync -rl -u $(DOC_DIR)man/ $(MISC_DOC_DIR)man 
 
 ################################################################################
 #                   Protoize
 #
-# We have not used this in quite some time. It is probably broken. 
+# We have not used this in quite some time. It is most certainly broken. 
 #
 proto: 
 	protoize -c "-DPROTOIZE $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) $(MD_DEFINES) $(IVI_HAVE) $(DEFAULT_OPT_INCLUDES) $(BASE_INCLUDES) $(EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES)" *.c
