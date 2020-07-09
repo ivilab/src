@@ -2,6 +2,9 @@
  */
 #include "slic/ransac_fit.h"
 
+
+/* End of includes for c2man */
+
 static int (*fitting_func)(const Matrix *, const Matrix *, Matrix **, double *) = fit_homography; 
 static int (*dist_func)(const Matrix *, const Matrix *, const Matrix *, Vector **) = get_homography_distance; 
 static int (*degen_func)(const Matrix *) = is_homography_degenerate;

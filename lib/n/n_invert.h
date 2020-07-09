@@ -1,5 +1,5 @@
 
-/* $Id: n_invert.h 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: n_invert.h 25615 2020-07-09 19:12:05Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -23,12 +23,6 @@
 
 /* Start for c2man */
 
-/* End of includes for c2man */
-
-#ifdef __cplusplus
-#endif 
-
-
 #include "m/m_gen.h"
 
 #ifdef __cplusplus
@@ -38,6 +32,7 @@ namespace ivi_c {
 #endif
 #endif
 
+/* End of includes for c2man */
 
 int set_matrix_inversion_options(const char* option, const char* value);
 

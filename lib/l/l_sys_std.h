@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_std.h 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: l_sys_std.h 25615 2020-07-09 19:12:05Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -34,8 +34,6 @@
 // after this point.
 */
 #include "l/l_sys_sys.h"
-
-/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -316,7 +314,10 @@ typedef u_longlong_t ivi_uint64;
 }
 #endif
 
-/* End for c2man */
-
 #endif    /* Include this file. */
+
+/* There is nothing here to document!! */
+
+/* End of includes for c2man */
+
 

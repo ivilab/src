@@ -1,5 +1,5 @@
 
-/* $Id: l_2D_arr.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_2D_arr.c 25615 2020-07-09 19:12:05Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -20,6 +20,9 @@
 
 #include "l/l_gen.h"     /* Only safe as first include in a ".c" file. */
 #include "l/l_2D_arr.h"
+
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

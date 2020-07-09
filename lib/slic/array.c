@@ -1,7 +1,9 @@
-/* $Id: array.c 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: array.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "l/l_incl.h"
 #include "slic/array.h"
+
+/* End of includes for c2man */
 
 Array *create_array
 (

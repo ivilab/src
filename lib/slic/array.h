@@ -1,13 +1,9 @@
-/* $Id: array.h 25612 2020-07-06 22:17:23Z kobus $
+/* $Id: array.h 25615 2020-07-09 19:12:05Z kobus $
  */
 #ifndef SLIC_INCLUDED_ARRAY_H_
 #define SLIC_INCLUDED_ARRAY_H_
 
 /* Start for c2man */
-
-
-
-/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,9 +12,10 @@ namespace ivi_c {
 #endif
 #endif
 
-#ifdef __C2MAN__
-#    include "l/l_def.h"
-#endif 
+#include "l/l_def.h"
+
+
+/* End of includes for c2man */
 
 
 typedef struct Array 

@@ -5,6 +5,9 @@
 #include "slic/rotation.h"
 #include "n/n_invert.h"
 
+
+/* End of includes for c2man */
+
 int compute_rotation
 (
     double angle,

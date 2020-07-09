@@ -23,6 +23,9 @@
  * slic elsewhere. For now, I have renamed the version in
  * lib/i_geometric/i_geometric_maping.c to "back_project_image_new". 
 */
+
+/* End of includes for c2man */
+
 int back_project_frame_slide_to_slide
  (
   const IVI_image *frame_ip,

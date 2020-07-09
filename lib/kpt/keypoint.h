@@ -8,8 +8,6 @@
 #include <m/m_incl.h>
 #include <i/i_incl.h>
 
-/* End of includes for c2man */
-
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -19,6 +17,8 @@ namespace ivi_c {
 
 
 #define KEYPOINT_DESCRIP_LENGTH 128
+
+/* End of includes for c2man */
 
 /* -------------------------------------------------------------------------- */
 

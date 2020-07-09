@@ -1,5 +1,5 @@
 
-/* $Id: l_justify.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: l_justify.c 25615 2020-07-09 19:12:05Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -187,6 +187,8 @@ int left_justify
 
         line_in_pos = fs_buff;
 
+        blank_count = trim_beg(&line_in_pos);
+
         if (*line_in_pos)
         {
             int no_format_char_num = find_char(no_format_chars, *line_in_pos);
@@ -197,8 +199,6 @@ int left_justify
                 no_format_char = no_format_chars[ no_format_char_num - 1 ];
             }
         }
-
-        blank_count = trim_beg(&line_in_pos);
 
         if (    no_format_char
              ||

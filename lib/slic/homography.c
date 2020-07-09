@@ -1,4 +1,4 @@
-/* $Id: homography.c 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: homography.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "slic/homography.h"
 #include "slic/affine.h"
@@ -9,6 +9,9 @@
 /* Compute 2D homography
    y=H*x
 */
+
+/* End of includes for c2man */
+
 int fit_homography
 (
     const Matrix *x_mp,

@@ -1,4 +1,4 @@
-/* $Id: affine.c 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: affine.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "slic/affine.h"
 
@@ -19,6 +19,9 @@
 
    Note if x and y are colinear, an error will be thrown out.
 */
+
+/* End of includes for c2man */
+
 int fit_affine
 (
     const Matrix *x_mp,

@@ -1,6 +1,9 @@
-/* $Id: ransac_fit.c 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: ransac_fit.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "slic/ransac_fit.h"
+
+
+/* End of includes for c2man */
 
 /* Kobus: I hope these commented out values are correct, because before they
  * were declared in ransac_fit.h but without value. 

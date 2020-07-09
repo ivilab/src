@@ -1,10 +1,13 @@
-/* $Id: similarity.c 15688 2013-10-14 08:46:32Z predoehl $
+/* $Id: similarity.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "slic/similarity.h"
 #include "slic/affine.h"
 
 #define COVECTOR(a, b) \
 (fabs((a)[0]*(b)[1] -(a)[1]*(b)[0]) <= 0.00001)
+
+
+/* End of includes for c2man */
 
 /* Compute the similarity transformation between two data sets x and y, which
    follow,

@@ -1,5 +1,5 @@
 
-/* $Id: m_io.h 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: m_io.h 25615 2020-07-09 19:12:05Z kobus $ */
 
 /* =========================================================================== *
 |  
@@ -23,13 +23,9 @@
 
 /* Start for c2man */
 
-/* End of includes for c2man */
-
-#ifdef __cplusplus
-#endif 
-
-
 #include "m/m_gen.h"
+
+/* End of includes for c2man */
 
 #ifdef __cplusplus
 extern "C" {

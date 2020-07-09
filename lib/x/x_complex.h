@@ -1,5 +1,5 @@
 
-/* $Id: x_complex.h 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: x_complex.h 25615 2020-07-09 19:12:05Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -23,8 +23,6 @@
 
 /* Start for c2man */
 
-/* End of includes for c2man */
-
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -32,9 +30,9 @@ namespace ivi_c {
 #endif
 #endif
 
-#ifdef __C2MAN__
-#    include "l/l_def.h"
-#endif 
+#include "l/l_def.h"
+
+/* End of includes for c2man */
 
 /*
 // We can't use the preferred name "Complex", since it has a conflict with many

@@ -1,5 +1,5 @@
 
-/* $Id: h_ave.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: h_ave.c 25615 2020-07-09 19:12:05Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -111,6 +111,24 @@ static int find_3D_constrained_hull_average
 
 /* -------------------------------------------------------------------------- */
 
+/* =============================================================================
+ *                           set_hull_ave_options
+ *
+ * Sets options for hull averaging.
+ *
+ * This routine sets options for hull averaging. Currently, the only option is
+ * "hull-average-resolution". 
+ *
+ * Related:
+ *    Hull,  approximate_hull_average, get_hull_CM_and_volume
+ *
+ * Index: geometry, convex hulls
+ *
+ * Documenter:
+ *    Lindsay Martin and Kobus Barnard
+ *
+ * -----------------------------------------------------------------------------
+*/
 int set_hull_ave_options(const char* option, const char* value)
 {
     char lc_option[ 100 ];

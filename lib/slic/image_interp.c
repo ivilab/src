@@ -1,9 +1,12 @@
-/* $Id: image_interp.c 25595 2020-06-29 20:01:40Z kobus $
+/* $Id: image_interp.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "l/l_sys_debug.h"   /* For ASSERT */
 #include "slic/affine.h"
 #include "slic/homography.h"
 #include "slic/image_interp.h"
+
+
+/* End of includes for c2man */
 
 typedef struct point
 {

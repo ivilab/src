@@ -3,8 +3,6 @@
 
 /* Start for c2man */
 
-/* End of includes for c2man */
-
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -13,6 +11,8 @@ namespace ivi_c {
 #endif
 
 #include "kpt/keypoint.h"
+
+/* End of includes for c2man */
 
 int get_putative_matches
 (

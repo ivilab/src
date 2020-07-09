@@ -2,8 +2,6 @@
 #define SLIC_BACKPROJECT_INCLUDED
 
 
-/* End of includes for c2man */
-
 #ifdef __cplusplus
 extern "C" {
 #ifdef COMPILING_CPLUSPLUS_SOURCE
@@ -14,6 +12,8 @@ namespace ivi_c {
 /* Kobus. Dot H files should be stand alone. */
 
 #include "i/i_incl.h" 
+
+/* End of includes for c2man */
 
 int back_project_frame_slide_to_slide
  (

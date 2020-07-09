@@ -1,5 +1,8 @@
-/* $Id: ransac_fundamental_matrix.c 21596 2017-07-30 23:33:36Z kobus $  */
+/* $Id: ransac_fundamental_matrix.c 25615 2020-07-09 19:12:05Z kobus $  */
 #include "slic/ransac_fit.h"
+
+
+/* End of includes for c2man */
 
 int ransac_fit_fundamental_matrix
 (

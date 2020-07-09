@@ -1,8 +1,11 @@
-/* $Id: sift_keypoints.c 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: sift_keypoints.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "slic/sift_keypoints.h"
 #include "i/i_float_io.h"
 #include "i/i_draw.h"
+
+
+/* End of includes for c2man */
 
 int get_target_SIFT_kp(SIFT_kp **kpp, float row, float col, float scale, 
                        float orientation, Int_vector* vp)

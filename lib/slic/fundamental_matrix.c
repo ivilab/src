@@ -1,6 +1,9 @@
-/* $Id: fundamental_matrix.c 25592 2020-06-29 19:12:01Z kobus $
+/* $Id: fundamental_matrix.c 25615 2020-07-09 19:12:05Z kobus $
  */
 #include "slic/fundamental_matrix.h"
+
+
+/* End of includes for c2man */
 
 static int get_Sampson_distance
 (
