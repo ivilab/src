@@ -12,6 +12,9 @@
 # Rather than select exactly the overlap, we include all members of a logical
 # group, e.g., all variables about Make paths or general system commands. 
 
+# Usually we have MAKE_PATH but not always.
+#
+
 # Invariably we have IVI_HAVE_MACHINE, but if we do not, the we need to source
 # init_machine as to be standalone. This could be a different copy than the one
 # that build sources before sourcing this file (init_scripts).
