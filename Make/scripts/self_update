@@ -1,17 +1,29 @@
 #!/bin/tcsh -f
 
-# Atomic update via copy, followed by execute a command (e.g., make). 
-# Likely it only makes sense to call this file using "exec"
+##############################################################################
 #
-# This script is not currently used:
-#     This script was created for updating "build" automatically, but we
-#     currently do not use it for that. Kobus is keeping this file around for a
-#     bit, as it might be useful, if only as an example of updating a file that
-#     is being executed. 
+# Identification:
+#     A script to replace a running script with an updated version
+#
+# Description:
+#     This script does an atomic update via copy, followed by execute a command
+#     (e.g., build).  Likely it only makes sense to call this file using "exec".
+#     Currently this script is used in build. See that script for an example
+#     use. 
+#
+# Basic invocation:
+#    | exec self_update $0 [ref] $0 $argv[1-$#]
+#
+#     Here "ref" is the path to the master copy of the program, e.g., Make/build
+#     for "build" in a code directory.
+#
+##############################################################################
+
+set gaurd_file = ".self_update_gaurd" 
 
 # This script cannot use P_STDERR as it might not be defined yet. However, since
 # we are in src/Make/scripts, we will assume that IVI_SRC_PATH is valid.
-
+#
 if ($# < 2) then
     ${IVI_SRC_PATH}Make/scripts/p_stderr "Script self_update needs at least two arguments."
     exit 1
@@ -26,13 +38,31 @@ else if (! -r "$2") then
     exit 1
 endif 
 
-if ($?IVI_VERBOSE) then
-    echo 'Script self_update is executing: '/bin/cp \"$2\" \"$1\" 
+if ("${1}" == "${2}") then
+    echo "Source and target are the same in script self_update"
+    exit 1 
+else 
+    if ($?IVI_VERBOSE) then
+        echo 'Script self_update is executing: '/bin/cp \"$2\" \"$1\" 
+    endif 
+
+    # We cannot use IVI_CP, as it might not be defined yet.  
+    /bin/cp "$2" "$1"
+    if ($status) exit 1
 endif 
 
-# Also, we cannot use IVI_CP, as it might not be defined yet.  
-/bin/cp "$2" "$1"
-if ($status) exit 1
+if (-e "${gaurd_file}") then
+    echo "Possible recursion into self_update."
+    echo "This is too dangerous. You will have to enter your command again."
+    /bin/rm ${gaurd_file}
+    exit 1
+endif 
+
+if ($?IVI_VERBOSE) then
+    echo "Script self_update is touching `pwd`/${gaurd_file}"
+endif 
+
+touch "${gaurd_file}"
 
 if ($# > 2) then
     if ($?IVI_VERBOSE) then
@@ -40,6 +70,15 @@ if ($# > 2) then
     endif 
 
     $argv[3-$#]
+
+    set execution_status = $status
+
+    if ($?IVI_VERBOSE) then
+        echo "Script self_update is removing `pwd`/${gaurd_file}"
+    endif 
+
+    /bin/rm "${gaurd_file}" 
+
     if ($status) exit 1
 endif
 

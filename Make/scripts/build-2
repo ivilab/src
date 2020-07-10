@@ -465,19 +465,63 @@ while ($count <=  ${num_args})
         # Do nothing special. Common case that would fall through, but we skip
         # all the processing. 
     else if ("${arg}" == "ivi_code") then
-        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs
+        # We do IVI and IVI_cpp first, which is completely optional, as this
+        # manages the parallel build of the basic code more efficiently than
+        # make_ivi, which would also build it, but checks the build of
+        # additional code (.e.g., test code). 
+        #
+        pushd ${IVI_SRC_PATH}IVI > /dev/null
+        make 
+        if ($status) exit 1 
+        popd > /dev/null
+
+        pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
+        make 
+        if ($status) exit 1 
+        popd > /dev/null
+        
+        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs 
         if (${status}) exit 1
+
         continue
     else if ("${arg}" == "ivi_doc") then
-        ${MAKE_SCRIPT_PATH}make_ivi skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs doc
-        if (${status}) exit 1
-        continue skip_no_libs skip_prog_no_libs
+        pushd ${MAKE_SCRIPT_PATH} > /dev/null
+        make doc 
+        if ($status) exit 1 
+        popd > /dev/null
+
+        # We need to get IVI and IVI_cpp to make C/C++ documentation because
+        # that is currently the only place where we build the index. The script
+        # make_ivi does not know about any more directories for documentation,
+        # so we do not need to use it. 
+        #
+        pushd ${IVI_SRC_PATH}IVI > /dev/null
+        make doc 
+        if ($status) exit 1 
+        popd > /dev/null
+        pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
+        make doc 
+        if ($status) exit 1 
+        popd > /dev/null
+
+        continue
     else if ("${arg}" == "ivi_tags") then
-        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs tags
+        # We do IVI and IVI_cpp first, which is completely optional, for speed.
+        pushd ${IVI_SRC_PATH}IVI > /dev/null
+        make tags 
+        if ($status) exit 1 
+        popd > /dev/null
+        pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
+        make tags 
+        if ($status) exit 1 
+        popd > /dev/null
+
+        ${MAKE_SCRIPT_PATH}make_ivi tags skip_code skip_doc skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs 
         if (${status}) exit 1
+
         continue
     else if ("${arg}" == "ivi_regress") then
-        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_depend skip_no_libs skip_prog_no_libs skip_prog_dirs regress
+        ${MAKE_SCRIPT_PATH}make_ivi regress skip_doc skip_tags skip_depend skip_no_libs skip_prog_no_libs skip_prog_dirs 
         if (${status}) exit 1
         continue
     else if ("${arg}" == "confess") then

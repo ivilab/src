@@ -244,12 +244,12 @@ else
 
                     set got_it = 1
                     break
-                else if (${count} > 30) then
+                else if (${count} > 500) then
                     echo "Process $$ waited too long for ${lock_file}. "
                     echo "Information about the process holding the lock:"
                     ps -l ${lock_proc} 
-                    echo "Sleeping for 30 seconds for debugging" 
-                    sleep 30
+                    echo "Sleeping for 20 seconds for debugging" 
+                    sleep 20
                     echo "Ignoring the lock."
                     echo ${requesting_pid} >! ${lock_file}
                     set got_it = 1

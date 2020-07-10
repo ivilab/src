@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25614 2020-07-09 19:10:52Z kobus $
+# $Id: Makefile-program 25619 2020-07-10 17:12:30Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -1110,7 +1110,7 @@ $(MAKE_DOC_DIR)%.shell.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_DIR)
 $(MAKE_DOC_DIR)%.shell.1 : %
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
 	$(MAKE_BIN_DIR)writeup_to_man $< > $@
-	$(IVI_CP) $@  $(PROGRAM_CAT_DIR)
+	$(IVI_CP) $@  $(PROGRAM_CAT_DIR)$*.1
 
 # Additional dependencies of doc_program.made may be in Makefile-depend. 
 $(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR) $(MAN_FROM_HELP_FILES) $(MAN_FROM_WRITEUP_FILES)
