@@ -34,4 +34,4 @@ svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/include_before/trunk include
 svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/include_after/trunk include_after
 svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/IVI/trunk IVI
 svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/IVI_cpp/trunk IVI_cpp
-svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/tools/trunk tools
+svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/examples/trunk examples
