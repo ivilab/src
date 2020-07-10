@@ -129,7 +129,7 @@ popd > /dev/null
 ###############################################################################
 
 if (! $?MAKE_PATH) then
-    setenv MAKE_PATH ${IVI_SRC_PATH}Make
+    setenv MAKE_PATH ${IVI_SRC_PATH}Make/
 endif 
 
 if ( ! $?IVI_HAVE_INIT_SCRIPTS) then
