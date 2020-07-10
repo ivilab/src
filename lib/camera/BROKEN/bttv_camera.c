@@ -1,5 +1,5 @@
 
-/* $Id: bttv_camera.c 25618 2020-07-09 19:21:03Z kobus $ */
+/* $Id: bttv_camera.c 25620 2020-07-10 17:14:52Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -73,7 +73,7 @@
 #endif
 
 
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
 
 
@@ -91,7 +91,7 @@ extern "C" {
 /* The size of the circular frame stream buffer */
 #define FRAME_STREAM_LENGTH 60
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 
 /******************************* Local functions **************************/
 static int internal_init_bttv_camera (Bttv_camera *camera);
@@ -116,7 +116,7 @@ static int no_frame_grabbers = 0;
 /* for ioctl errors, stores "errno"*/
 static int errsv = 0;
 
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
@@ -147,7 +147,7 @@ static int errsv = 0;
  * -----------------------------------------------------------------------------
 */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 int init_bttv_camera(Bttv_camera **my_camera, int width, int height, char* camera_id, char* machine, char* device, int usd)
 {
     if(my_camera == NULL)
@@ -179,7 +179,7 @@ int init_bttv_camera(Bttv_camera **my_camera, int width, int height, char* camer
     }
     return NO_ERROR;
 }
-#else  /* Case no LINUX follows. */
+#else  /* Case no DO_BROKEN_STUFF follows. */
 int init_bttv_camera(Bttv_camera ** __attribute__((unused)) dummy_my_camera,
                      int  __attribute__((unused)) dummy_width,
                      int  __attribute__((unused)) dummy_height,
@@ -218,7 +218,7 @@ int init_bttv_camera(Bttv_camera ** __attribute__((unused)) dummy_my_camera,
  * -----------------------------------------------------------------------------
 */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 int init_bttv_camera_from_config_file(Bttv_camera **camera, int width, int height, const char* file_name)
 {
     FILE * config_fp = NULL;
@@ -294,7 +294,7 @@ int init_bttv_camera_from_config_file(Bttv_camera **camera, int width, int heigh
 
     return NO_ERROR;
 }
-#else  /* Case no LINUX follows. */
+#else  /* Case no DO_BROKEN_STUFF follows. */
 int init_bttv_camera_from_config_file(Bttv_camera ** __attribute__((unused)) dummy_camera, 
                                       int  __attribute__((unused)) dummy_width,
                                       int  __attribute__((unused)) dummy_height, 
@@ -308,7 +308,7 @@ int init_bttv_camera_from_config_file(Bttv_camera ** __attribute__((unused)) dum
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 
 static int internal_init_bttv_camera(Bttv_camera *camera)
 {
@@ -376,7 +376,7 @@ static int internal_init_bttv_camera(Bttv_camera *camera)
  * -----------------------------------------------------------------------------
 */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
 {
     char *p;
@@ -452,7 +452,7 @@ int get_image_from_bttv_camera (Bw_byte_image * image, Bttv_camera *camera)
     return NO_ERROR;
 }
 
-#else  /* Case no LINUX follows. */
+#else  /* Case no DO_BROKEN_STUFF follows. */
 
 int get_image_from_bttv_camera (Bw_byte_image * __attribute__((unused)) dummy_image, 
                                 Bttv_camera * __attribute__((unused)) dummy_camera)
@@ -495,7 +495,7 @@ int get_image_from_bttv_camera (Bw_byte_image * __attribute__((unused)) dummy_im
  * -----------------------------------------------------------------------------
 */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 int get_image_from_bttv_camera_2 (Camera_bw_byte_image * image, Bttv_camera *camera)
 {
     if(image != NULL)
@@ -513,7 +513,7 @@ int get_image_from_bttv_camera_2 (Camera_bw_byte_image * image, Bttv_camera *cam
     }
     return NO_ERROR;
 }
-#else  /* Case no LINUX follows. */
+#else  /* Case no DO_BROKEN_STUFF follows. */
 int get_image_from_bttv_camera_2 (Camera_bw_byte_image *  __attribute__((unused)) dummy_image, Bttv_camera * __attribute__((unused)) dummy_camera)
 {
     set_error("Bttv camera support is only available on linux.");
@@ -553,7 +553,7 @@ int get_image_from_bttv_camera_2 (Camera_bw_byte_image *  __attribute__((unused)
  * -----------------------------------------------------------------------------
 */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 int get_images_from_all_bttv_cameras(Bw_byte_image *image[], Bttv_camera *camera[], int num_cameras)
 {
     int i;
@@ -572,7 +572,7 @@ int get_images_from_all_bttv_cameras(Bw_byte_image * __attribute__((unused)) dum
 }
 #endif 
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 int get_images_from_all_bttv_cameras_2(Camera_bw_byte_image * image[], Bttv_camera *camera[], int num_cameras)
 {
     int i;
@@ -593,7 +593,7 @@ int get_images_from_all_bttv_cameras_2(Camera_bw_byte_image *  __attribute__((un
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 
 /*not sure what this does...*/
 static int do_bttv_channel_change(int channel, Bttv_camera *camera) 
@@ -619,11 +619,11 @@ static int do_bttv_channel_change(int channel, Bttv_camera *camera)
   return NO_ERROR;
 }
 
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 void free_bttv_camera(Bttv_camera *camera)
 {
   if(camera != NULL)
@@ -638,11 +638,11 @@ void free_bttv_camera(Bttv_camera *  __attribute__((unused)) dummy_camera)
 {
 
 }
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 
 static int free_bttv_camera_info(Bttv_camera_info *camera_struct)
 {
@@ -690,9 +690,9 @@ static int free_bttv_camera_info(Bttv_camera_info *camera_struct)
     }
     return NO_ERROR;
 }
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 static void add_ioctl_error(int errsv, const char * argument)
 {
     add_error("ioctl with argument %s returned an error.\n", argument);
@@ -703,11 +703,11 @@ static void add_ioctl_error(int errsv, const char * argument)
     if(errsv ==  ENOTTY) add_error("ioctl error: The specified request does not apply to the kind of object that the descriptor d references.\n");
 
   }
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 static int internal_init_bttv_camera_info(Bttv_camera *camera) 
 {
     int n = 0;
@@ -870,9 +870,9 @@ static int internal_init_bttv_camera_info(Bttv_camera *camera)
     }
     return NO_ERROR;
 }
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 #ifdef IVI_HAVE_OPENGL
 /* Global variables needed to display cameras using openGL. */
 static Bttv_camera** all_cameras;
@@ -907,7 +907,7 @@ static int number_of_cameras;
  * -----------------------------------------------------------------------------
 */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 void display_cameras_opengl(int argc, char **argv, int my_width, int my_height, Bttv_camera *all_cameras_in[MAXIMUM_NUMBER_OF_CAMERAS], int num_cams)
 {
 #ifdef IVI_HAVE_OPENGL
@@ -956,7 +956,7 @@ void display_cameras_opengl(int  __attribute__((unused)) dummy_argc,
 }
 #endif    
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 #ifdef IVI_HAVE_OPENGL
 static void display_cameras_opengl_CB(void)
 {
@@ -1003,9 +1003,9 @@ static void display_cameras_opengl_CB(void)
     glutSwapBuffers();
 }
 #endif /*case IVI_HAVE_OPENGL*/
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 #ifdef IVI_HAVE_OPENGL
 static void reshape_cameras_opengl_CB(int width, int height)
 {
@@ -1014,9 +1014,9 @@ static void reshape_cameras_opengl_CB(int width, int height)
     gluOrtho2D(0,0,width+1,height+1);  
 }
 #endif /*case IVI_HAVE_OPENGL*/
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
-#ifdef LINUX
+#ifdef DO_BROKEN_STUFF
 #ifdef IVI_HAVE_OPENGL
 static void key_cameras_opengl_CB(unsigned char key, int x, int y)
 {
@@ -1037,7 +1037,7 @@ static void key_cameras_opengl_CB(unsigned char key, int x, int y)
     }
 }
 #endif /*case IVI_HAVE_OPENGL*/
-#endif  /* End of case LINUX. */
+#endif  /* End of case DO_BROKEN_STUFF. */
 
 
 #ifdef __cplusplus
