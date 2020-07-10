@@ -1,4 +1,4 @@
-/* $Id: gpu_cuda.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: gpu_cuda.h 25633 2020-07-10 21:41:47Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,6 +20,7 @@
 #ifndef IVI_CUDA_H
 #define IVI_CUDA_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 
