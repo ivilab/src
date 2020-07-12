@@ -128,16 +128,27 @@ popd > /dev/null
 
 ###############################################################################
 
+if (! $?MAKE_PATH) then
+    setenv MAKE_PATH ${IVI_SRC_PATH}Make/
+endif 
+
+if ( ! $?IVI_HAVE_INIT_SCRIPTS) then
+    source ${MAKE_PATH}init_scripts
+    if ($status) exit 1 
+endif 
+
+###############################################################################
+
 # Check that this file ($0) is up to date compared to the reference one.
-set need_to_replace_myself = `${IVI_SRC_PATH}Make/scripts/test_older_than "$0" "${IVI_SRC_PATH}Make/build"`
+set need_to_replace_myself = `${MAKE_SCRIPT_PATH}test_older_than "$0" "${MAKE_PATH}build"`
 if (${status}) exit 1 
      
 if (${need_to_replace_myself}) then
     echo "Script $0 is attempting to rebuild itself and re-execute."
-    exec ${IVI_SRC_PATH}Make/scripts/self_update "$0" "${IVI_SRC_PATH}Make/build" $0 $argv[1-$#]
+    exec ${MAKE_SCRIPT_PATH}ivi_self_update "$0" "${MAKE_PATH}build" $0 $argv[1-$#]
 endif 
 
 # echo IVI_SRC_PATH: $IVI_SRC_PATH       
 
-source ${IVI_SRC_PATH}Make/scripts/build-2
+source ${MAKE_SCRIPT_PATH}build-2
 
