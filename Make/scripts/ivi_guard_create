@@ -1,0 +1,84 @@
+#!/bin/tcsh -f 
+
+##############################################################################
+#
+# Identification:
+#     Creates a file that typically is used to block recursive reentry
+#
+# Usage:
+#     ivi_guard_create [label] 
+#
+#     The label argument is typically the name of the calling script.
+#
+# Description:
+#     This script creates a guard file that is meant to block a recursive
+#     call of a script that should not do that. If the guard file exists, then
+#     this script exits 1.
+#
+#     The reason to put this functionality into a script is to standardize the
+#     naming and location of such files. In particular, we prefer not to make
+#     them in the directory that the script is being run because this changes
+#     the time stamp of the directory, which, while not being a critical issue,
+#     can lead to confusing rebuilding. Doing so thus would be a small violation
+#     of the principle of least astonishment. Finally, all guard files are put
+#     in the same location (usually something like /tmp/$USER/guardfiles)
+#     enabling simpler cleanup and debugging.
+#
+#     Once the code that needs to be guarded against reentry is finished, the
+#     guard file should be removed by calling ivi_guard_remove with exactly the
+#     same label argument.
+#
+#     This script was derived from ivi_lock_create, hence there are the
+#     following fancy features that might never get used.
+#
+#     If the environment variable IVI_GUARDFILE_DIR is set, this script will use
+#     its value as a directory to create guardfiles in. Otherwise, this script
+#     will use ${TMPDIR}/${USER}/guardfiles/, creating it if needed.
+#
+#     if the environment variable IVI_GUARDFILE_NAME is set, then it overrides
+#     the default heuristics for constructing the guard file name. If
+#     IVI_GUARDFILE_NAME looks like a path it is used as is. Otherwise, we append
+#     the string ".guard" to $IVI_GUARDFILE_NAME, and use that for a guardfile in
+#     the guardfile directory.
+#
+# Returns:
+#     This script exits with status 0 on success, or 1 if the guard file already
+#     exists, or if there is an issue creating the guard file. Each failure case
+#     leads to an error message for stderr. 
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+# This script must be kept in sync with ivi_guard_remove
+
+# set echo
+
+# We assume that init_scripts has been called as this script is largely used as
+# part of the IVI build system reflected by the fact that it lives in Make.
+# Thus, we have P_STDERR, VERBOSE_ECHO, and MAKE_SCRIPT_PATH. 
+
+if ($# < 1) then
+    ${P_STDERR} "Script ivi_guard_create needs at least one argument."
+    exit 1
+endif 
+
+# Shared block of code with create and destroy
+source ${MAKE_SCRIPT_PATH}set_guard_file_name
+if (${status}) exit 1
+
+if (-e "${guard_file}") then
+    ${P_STDERR} "Possible recursion into self_update."
+    ${IVI_RM} ${guard_file}
+    exit 1
+endif 
+
+${VERBOSE_ECHO} "Script ivi_guard_create is creating ${guard_file}"
+
+${IVI_CREATE} "${guard_file}"
+if (${status} exit status
+
+
+
+

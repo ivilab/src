@@ -85,6 +85,8 @@ else
     setenv VERBOSE_ECHO "eval echo > /dev/null "
 endif 
 
+setenv VERBOSE_INDENT ""
+
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
 # Kobus needs to sync this code with duplicated code in his .cshrc
 if ($?IVI_VERBOSE_2) then

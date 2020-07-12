@@ -1,0 +1,66 @@
+#!/bin/tcsh -f
+
+##############################################################################
+#
+# Identification:
+#     A script to replace a running script with an updated version
+#
+# Description:
+#     This script does an atomic update via copy, followed by execute a command
+#     (e.g., build).  Likely it only makes sense to call this file using "exec".
+#     Currently this script is used in build. See that script for an example
+#     use. 
+#
+# Basic invocation:
+#    | exec self_update $0 [ref] $0 $argv[1-$#]
+#
+#     Here "ref" is the path to the master copy of the program, e.g., Make/build
+#     for "build" in a code directory.
+#
+##############################################################################
+
+# We assume that init_scripts has been called as this script is largely used as
+# part of the IVI build system reflected by the fact that it lives in Make.
+# Thus, we have P_STDERR, VERBOSE_ECHO, and MAKE_SCRIPT_PATH. 
+
+if ($# < 2) then
+    ${P_STDERR} "Script $0 needs at least two arguments."
+    exit 1
+endif 
+
+# We need both files to exist.
+if (! -r "$1") then
+    ${P_STDERR} "Script $0 cannot find file: $1" 
+    exit 1
+else if (! -r "$2") then
+    ${P_STDERR} "Script $0 cannot find file: $2"
+    exit 1
+endif 
+
+if ("${1}" == "${2}") then
+    echo "Source and target are the same in script $0"
+    exit 1 
+else 
+    ${VERBOSE_ECHO} "Script $0 is executing: ${IVI_CP} $2 $1" 
+
+    ${IVI_CP} "$2" "$1"
+    if ($status) exit 1
+endif 
+
+${MAKE_SCRIPT_PATH}ivi_guard_create $0 
+if (${status}) exit 1
+
+if ($# > 2) then
+    if ($?IVI_VERBOSE) then
+        echo "Script $0 is executing: $argv[3-$#]" 
+    endif 
+
+    $argv[3-$#]
+
+    set new_execution_status = $status
+endif 
+
+${MAKE_SCRIPT_PATH}ivi_guard_remove $0 
+
+if (${status} || ${new_execution_status}) exit 1
+

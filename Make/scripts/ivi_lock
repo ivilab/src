@@ -69,6 +69,10 @@
 #
 ##############################################################################
 
+# We assume that init_scripts has been called as this script is largely used as
+# part of the IVI build system reflected by the fact that it lives in Make.
+# Thus, we have P_STDERR, VERBOSE_ECHO, and MAKE_SCRIPT_PATH. 
+
 if ($?IVI_SET_ECHO) then
     set echo
 endif 
@@ -80,16 +84,8 @@ endif
 
 set exit_status = 0
 
-if ($?IVI_VERBOSE) then
-    if ($?IVI_VERBOSE_INDENT) then
-        set verbose_indent = "${IVI_VERBOSE_INDENT}"
-    else
-        set verbose_indent = ""
-    endif
-endif 
-
 if ($?IVI_DONT_LOCK) then
-    ${VERBOSE_ECHO} "${verbose_indent}IVI_DONT_LOCK is set, so ivi_lock is not locking: $*"
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock is not locking: $*"
     $*
     exit ${status}
 endif
@@ -117,7 +113,7 @@ endif
 ${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
 
 if ($status) then
-    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
+    ${P_STDERR} "Unable to make directory ${IVI_LOCKFILE_DIR}"
     exit 1
 endif 
 
@@ -126,6 +122,12 @@ set cmd_str = `echo ${1} | sed 's#.*/##'`
 
 if ($# > 1) then
     set first_arg = `echo ${2} | sed 's#//*$##' | sed 's#.*/##' `
+
+    if ("${first_arg}" == "") then
+        ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$2|"
+        exit 1
+    endif 
+
     set cmd_plus_arg = "${cmd_str}_${first_arg}"
 else 
     set cmd_plus_arg = "${cmd_str}"
@@ -151,33 +153,20 @@ setenv IVI_LOCKFILE_PATH "${lock_file}"
 
 onintr bail
 
-# Best not to use VERBOSE_PSO in this script due to '-f'.
-if ($?IVI_VERBOSE) then
-    echo "${verbose_indent}Script ivi_lock process $$ running $*"
-    echo "${verbose_indent}    in `pwd` using lockfile '${lock_file}'"
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ running $*"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
 
 if  ("${IVI_LOCKING_METHOD}" == "flock") then
-    # Best not to use VERBOSE_PSO here.
-    if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ running ${cmd_str} in `pwd` using 'flock'"
-    endif
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using 'flock'"
 
     flock ${lock_file} $*
     set exit_status = ${status}
 
     if (! ${exit_status}) then
-        # Best not to use VERBOSE_PSO here.
-        if ($?IVI_VERBOSE) then
-            echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using 'flock'"
-        endif
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using 'flock'"
     endif
 else if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
-    # if ($?IVI_VERBOSE) then
-        echo "Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
-    # endif 
-#     echo "Exiting with error as this is unfinished."
-#     exit 1
+    echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
 
     lockfile-create ${cmd_str}
     $*
@@ -186,9 +175,7 @@ else if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
 
     if (! ${exit_status}) then 
         # Best not to use VERBOSE_PSO here.
-        if ($?IVI_VERBOSE) then
-            echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using lockfile-progs locking method."
-        endif
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using lockfile-progs locking method."
     endif 
 else 
     # Fallback locking method. Doing locking robustly in scripts is hard, but
@@ -196,28 +183,20 @@ else
     # than nothing.
     
 
-    # Best not to use VERBOSE_PSO here.
-    if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ running ${cmd_str} in `pwd` using fallback locking system."
-    endif
+    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using fallback locking system."
 
     set requesting_pid = `ps -p $$ -o ppid=`
     ${MAKE_SCRIPT_PATH}ivi_lock_create ${cmd_str} ${requesting_pid}
+    if ($status) exit 1
     $*
     set exit_status = $status 
     ${MAKE_SCRIPT_PATH}ivi_lock_remove ${cmd_str} ${requesting_pid}
 
     if (! ${exit_status}) then 
-        # Best not to use VERBOSE_PSO here.
-        if ($?IVI_VERBOSE) then
-            echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
-        endif
+        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
     endif 
         
-    # Best not to use VERBOSE_PSO here.
-    if ($?IVI_VERBOSE) then
-        echo "${verbose_indent}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
-    endif
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
 endif 
 
 cleanup: 

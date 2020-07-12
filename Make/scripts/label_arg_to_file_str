@@ -1,0 +1,13 @@
+#!/bin/tcsh -f 
+
+# We assume that init_scripts has been called as this script is largely used as
+# part of the IVI build system reflected by the fact that it lives in Make.
+# Thus, we have P_STDERR, VERBOSE_ECHO, and MAKE_SCRIPT_PATH. 
+
+if ($# < 1) then
+    ${P_STDERR} "Script label_arg_to_file_str needs at least one argument."
+    exit 1
+endif 
+
+echo ${1} | sed 's#^\./##'` | `sed 's#^//##'` | `sed 's#/#_#g'
+

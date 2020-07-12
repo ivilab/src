@@ -1,0 +1,44 @@
+#!/bin/tcsh -f 
+
+##############################################################################
+#
+# Identification:
+#     Removes the guard file 
+#
+# Description:
+#     This is one of a pair of scripts for setting up a guard to block a
+#     recursive call of a script that should not do that. This script is for
+#     removing the guard file once we are beyond the possible recursion. 
+#
+#     The argument to ivi_guard_remove needs to be the same as for the
+#     proceeding call to ivi_guard_create.
+#
+#     Some of the details of this script, such as its name, is patterned on
+#     ivi_lock_remove. 
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+# This script must be kept in sync with ivi_guard_create
+#
+# We assume that init_scripts has been called as this script is largely used as
+# part of the IVI build system reflected by the fact that it lives in Make.
+# Thus, we have P_STDERR, VERBOSE_ECHO, and MAKE_SCRIPT_PATH. 
+
+if ($# < 1) then
+    ${P_STDERR} "Script ivi_guard_remove needs at least one argument."
+    exit 1
+endif 
+
+# Shared block of code with create and destroy
+source ${MAKE_SCRIPT_PATH}set_guard_file_name
+if (${status}) exit 1
+
+${VERBOSE_ECHO} "Script ivi_guard_remove is removing ${guard_file}"
+
+${IVI_RM} "${guard_file}"
+if (${status} exit status
+
+   

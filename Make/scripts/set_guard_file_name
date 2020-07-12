@@ -1,0 +1,34 @@
+
+# Shared block of code between ivi_guard_create and ivi_guard_destroy
+
+set guard_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str $1`
+if ($status) exit 1
+
+if (! $?IVI_GUARDFILE_DIR) then
+    setenv IVI_GUARDFILE_DIR ${TMPDIR}/${USER}/guardfiles/
+endif 
+
+${IVI_MKDIR} "${IVI_GUARDFILE_DIR}"
+
+if ($status) then
+    $P_STDERR "Unable to make directory ${IVI_GUARDFILE_DIR}"
+    exit 1
+endif 
+
+# Last path component.
+set dir_str = `echo ${cwd} | sed 's#.*/##'`
+
+if ($?IVI_GUARDFILE_NAME) then
+    set looks_like_abs_path = `echo ${IVI_GUARDFILE_NAME} | grep -c '^/'`
+    set looks_like_path = `echo ${IVI_GUARDFILE_NAME} | grep -c '/'`
+
+    if (${looks_like_abs_path}) then
+        set guard_file = "${IVI_GUARDFILE_NAME}"
+    else if (${looks_like_path}) then
+        set guard_file = "`pwd`/${IVI_GUARDFILE_NAME}"
+    else 
+        set guard_file = ${IVI_GUARDFILE_DIR}/${IVI_GUARDFILE_NAME}.guard
+    endif 
+else
+    set guard_file = ${IVI_GUARDFILE_DIR}/${guard_label}_${dir_str}.guard
+endif 
