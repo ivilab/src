@@ -14,6 +14,9 @@
 
 # Usually we have MAKE_PATH but not always.
 #
+if (! $?MAKE_PATH) then
+    setenv MAKE_PATH ${IVI_SRC_PATH}Make/
+endif 
 
 # Invariably we have IVI_HAVE_MACHINE, but if we do not, the we need to source
 # init_machine as to be standalone. This could be a different copy than the one
@@ -22,6 +25,12 @@
 if (! $?IVI_HAVE_MACHINE) then
     source ${MAKE_PATH}init_machine
     if ($status) exit $status
+endif 
+
+# If we are "cold" then we do not have MAKE_SCRIPT_PATH. 
+#
+if ( ! $?MAKE_SCRIPT_PATH) then
+    setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts
 endif 
 
 set error_found = 0
