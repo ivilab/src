@@ -189,11 +189,23 @@
 #           In analogy with test_no_boost, this option test whether we
 #           can compile even if boost is not available in the case of programs. 
 #
-# |      skip_cxx 
-#           This script normally checks that C code also compiles with the C++++
-#           compiler. This option disables this check. Note that C++++ code is
-#           always compiled with the C++ compiler. This option does not disable
-#           compiling of C++++ code. 
+# |      skip_cxx
+#           We used to check that C code also compiles with the C++++ compiler,
+#           and this option used to disable doing so. But now we do not do this
+#           unless requested by the option do_cxx, and skip_cxx does nothing
+#           (unless there is a preceeding do_cxx in the options, in which case
+#           this would reset the default).  We keep skip_cxx to avoid breaking
+#           old scripts/Makefiles, but we will remove this option at some point.
+#           Note that C++++ code is always compiled with the C++ compiler and
+#           this option never disabled compiling of C++++ code. 
+#
+# |      do_cxx 
+#           We used to check that C code also compiles with the C++++ compiler.
+#           However, this is deprecated in clang, and also we suspect issuses
+#           with the linker with some versions of g++ on linux. Hence, we now do
+#           not default to doing so. This options enables this check.  Note that
+#           C++++ code is always compiled with the C++ compiler, and this option
+#           does not request compiling of C++++ code. 
 #
 # |      skip_clean_src
 #           For export, source code is cleaned up to remove code protected by a
@@ -424,7 +436,7 @@ set skip_no_libs = 0
 set test_no_boost = 0
 set skip_prog_no_libs = 0
 set test_prog_no_boost = 0
-set skip_cxx = 0
+set skip_cxx = 1
 set skip_clean_src = 0
 set skip_cpp_dirs = 0
 set skip_sub_dirs = 0
@@ -521,6 +533,8 @@ foreach option ($*)
         set skip_prog_no_libs = 1
     else if ("${option}" == "test_prog_no_boost") then
         set test_prog_no_boost = 1
+    else if (("${option}" == "do_cxx") || ("${option}" == "do_cpp") ) then
+        set skip_cxx = 0
     else if (("${option}" == "skip_cxx") || ("${option}" == "skip_cpp") ) then
         set skip_cxx = 1
     else if ("${option}" == "skip_clean_src") then
@@ -1191,12 +1205,8 @@ foreach sub_lib_dir (*)
             setenv NO_BOOST 0
         endif
 
-        # Recent versions of clang++ have depricated compiling .c files. Since
-        # we are often calling warnigs errors for C files, we will simply skip
-        # this test for now. 
-        #
-        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-            # setenv IVI_PREFER_CXX 1
+        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
+            setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
                 ${IVI_MAKE} clean 
@@ -1395,12 +1405,8 @@ foreach sub_lib_dir (*)
                         setenv NO_BOOST 0
                     endif 
 
-                    # Recent versions of clang++ have depricated compiling .c files. Since
-                    # we are often calling warnigs errors for C files, we will simply skip
-                    # this test for now. 
-                    #
-                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-                        # setenv IVI_PREFER_CXX 1
+                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX")) then
+                        setenv IVI_PREFER_CXX 1
 
                         if (${do_clean}) then
                             ${IVI_MAKE} clean 
@@ -1569,12 +1575,8 @@ foreach sub_lib_dir (*)
                             setenv NO_BOOST 0
                         endif 
 
-                        # Recent versions of clang++ have depricated compiling .c files. Since
-                        # we are often calling warnigs errors for C files, we will simply skip
-                        # this test for now. 
-                        #
-                        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-                            # setenv IVI_PREFER_CXX 1
+                        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX")) then
+                            setenv IVI_PREFER_CXX 1
 
                             if (${do_clean}) then
                                 ${IVI_MAKE} clean 
@@ -1931,12 +1933,8 @@ foreach mi_dir ($prog_dirs)
             endif 
         endif 
 
-        # Recent versions of clang++ have depricated compiling .c files. Since
-        # we are often calling warnigs errors for C files, we will simply skip
-        # this test for now. 
-        #
-        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-            # setenv IVI_PREFER_CXX 1
+        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
+            setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
                 ${IVI_MAKE} clean 
