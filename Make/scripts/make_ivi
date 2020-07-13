@@ -1196,7 +1196,7 @@ foreach sub_lib_dir (*)
         # this test for now. 
         #
         if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-            setenv IVI_PREFER_CXX 1
+            # setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
                 ${IVI_MAKE} clean 
@@ -1400,7 +1400,7 @@ foreach sub_lib_dir (*)
                     # this test for now. 
                     #
                     if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-                        setenv IVI_PREFER_CXX 1
+                        # setenv IVI_PREFER_CXX 1
 
                         if (${do_clean}) then
                             ${IVI_MAKE} clean 
@@ -1574,7 +1574,7 @@ foreach sub_lib_dir (*)
                         # this test for now. 
                         #
                         if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-                            setenv IVI_PREFER_CXX 1
+                            # setenv IVI_PREFER_CXX 1
 
                             if (${do_clean}) then
                                 ${IVI_MAKE} clean 
@@ -1936,7 +1936,7 @@ foreach mi_dir ($prog_dirs)
         # this test for now. 
         #
         if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ("${IVI_CXX}" != "clang++")) then
-            setenv IVI_PREFER_CXX 1
+            # setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
                 ${IVI_MAKE} clean 
