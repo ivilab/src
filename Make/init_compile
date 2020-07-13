@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25614 2020-07-09 19:10:52Z kobus $
+# $Id: init_compile 25642 2020-07-13 21:38:19Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -7765,10 +7765,8 @@ if (! ${NO_BOOST}) then
         set ivi_have_bst_thread = "-DIVI_HAVE_BST_THREAD"
         set lib_bst_thread = "-lboost_thread${use_bst_thread_mt} -lboost_system${use_bst_thread_mt}"
 
-        if ($?UBUNTU_RELEASE) then
-           if ("${UBUNTU_RELEASE}" == "14.04") then
-               set lib_bst_thread = "${lib_bst_thread} -lpthread"
-           endif
+        if ((${OS} == "linux_x86_64") || (${OS} == "linux_386")) then
+           set lib_bst_thread = "${lib_bst_thread} -lpthread"
         endif
 
         set needed_inc_dirs = "${needed_inc_dirs} ${bst_thread_inc_dir}"
