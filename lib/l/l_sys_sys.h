@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_sys.h 25650 2020-07-14 15:54:06Z kobus $ */
+/* $Id: l_sys_sys.h 25652 2020-07-14 17:01:11Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -67,10 +67,12 @@ namespace ivi_c {
 #    define __asm(X)
 #    define __asm__(X)
 
+     typedef void* __builtin_va_list;
+     typedef void* __gnuc_va_list;
+#    define __GNUC_VA_LIST
+
+
 #    ifdef MAC_OSX
-        typedef void* __builtin_va_list;
-        typedef void* __gnuc_va_list;
-#       define __GNUC_VA_LIST
 
         typedef enum
         {
