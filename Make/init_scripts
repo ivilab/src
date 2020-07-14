@@ -30,7 +30,7 @@ endif
 # If we are "cold" then we do not have MAKE_SCRIPT_PATH. 
 #
 if ( ! $?MAKE_SCRIPT_PATH) then
-    setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts
+    setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
 endif 
 
 set error_found = 0
