@@ -52,7 +52,7 @@ if ("${IVI_AWK}" == "") then
 endif 
 
 if (${skip_first_line}) then
-    ${IVI_AWK} "/${pattern}/",eof | ${IVI_TAIL} +2 
+    ${IVI_AWK} "/${pattern}/",eof | ${IVI_TAIL} -n +2 
 else 
     ${IVI_AWK} "/${pattern}/",eof 
 endif 
