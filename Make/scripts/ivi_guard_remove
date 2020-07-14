@@ -39,6 +39,6 @@ if (${status}) exit 1
 ${VERBOSE_ECHO} "Script ivi_guard_remove is removing ${guard_file}"
 
 ${IVI_RM} "${guard_file}"
-if (${status} exit status
+if (${status}) exit status
 
    
