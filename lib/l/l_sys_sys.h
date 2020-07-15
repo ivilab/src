@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_sys.h 25652 2020-07-14 17:01:11Z kobus $ */
+/* $Id: l_sys_sys.h 25653 2020-07-15 16:41:11Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -69,8 +69,8 @@ namespace ivi_c {
 
      typedef void* __builtin_va_list;
      typedef void* __gnuc_va_list;
-#    define __GNUC_VA_LIST
 
+#    define __GNUC_VA_LIST
 
 #    ifdef MAC_OSX
 
@@ -82,10 +82,7 @@ namespace ivi_c {
         _Bool;
 
         typedef _Bool bool;
-#    else
-        typedef void* __builtin_va_list;
 #    endif 
-
 #endif    /* __C2MAN__ */
 
 /*
