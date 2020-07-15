@@ -74,16 +74,7 @@ endif
 
 ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} continuing with script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 
-##########################################################
-
-# 2019/06/15. It is not clear if this is still possible given the locking
-# system? 
-#
-# It is possible that this script can be run in two threads due to imperfections
-# in the build system. So we reduce the chance of conflicts, and enable printing
-# a message when this occurs, by building the results in a temporary file. 
-#
-${IVI_RM} Makefile-libs-needed${VAR_CACHE_SUFFIX}
+set target_file_name =  "Include_lines/Makefile-libs-needed/Makefile-libs-needed${VAR_CACHE_SUFFIX}"
 set output_file_name = Makefile-libs-needed.$$
 
 set cur_time = `date`
@@ -101,7 +92,6 @@ endif
 
 set test_main = `${MAKE_SCRIPT_PATH}stream_file_names -s -m`
 if (${status}) then
-    ${IVI_RM} "${lock_file}"
     ${P_STDERR} "Script stream_file_names failed with options -s -m  in script build_makefile_libs_needed_2."
     exit 1
 endif 
@@ -439,10 +429,10 @@ echo ${symbolic_lib}Include_lines/cache.state : ${cache_depend} >> ${output_file
 echo '	$(IVI_TOUCH) $@' >> ${output_file_name}
 echo " "  >> ${output_file_name}
 
-if (-e Makefile-libs-needed${VAR_CACHE_SUFFIX}) then
+if (-e "${target_file_name}") then
     echo " "
-    echo "Moving Makefile-libs-needed${VAR_CACHE_SUFFIX}, which must of been created by a different process, to Makefile-libs-needed${VAR_CACHE_SUFFIX}-SAVE.$$."
-    ${IVI_MV} Makefile-libs-needed${VAR_CACHE_SUFFIX} Makefile-libs-needed${VAR_CACHE_SUFFIX}-SAVE.$$ 
+    echo "Moving ${target_file_name}, which must of been created by a different process, to ${target_file_name}-SAVE.$$."
+    ${IVI_MV} "${target_file_name}" "${target_file_name}-SAVE.$$" 
     echo "Directory is ${cwd}."
     echo " "
 endif 
@@ -454,7 +444,7 @@ endif
 #
 ${IVI_RM} Makefile-libs-needed
 ${IVI_MKDIR} Include_lines/Makefile-libs-needed
-${IVI_MV} ${output_file_name} Include_lines/Makefile-libs-needed/Makefile-libs-needed${VAR_CACHE_SUFFIX}
+${IVI_MV} ${output_file_name} ${target_file_name}
 
 unset noglob 
 

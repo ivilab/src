@@ -79,8 +79,6 @@ end
 
 ${VERBOSE_ECHO} "Script build-2 is sourcing ${IVI_SRC_PATH}/Make/init_compile"
 
-set multiple_boost = 0
-
 set found_workable_boost = 0 
 
 if ($?IVI_BOOST_VERSION) then
@@ -89,13 +87,20 @@ if ($?IVI_BOOST_VERSION) then
 
         foreach boost_candidate (${boost_candidates}) 
             if (! $?IVI_QUIET ) then
-                echo "Script build-2 is trying boost_candidate ${boost_candidate} by setting IVI_BOOST_VERSION to that and sourcing build-2."
+                echo "Script build-2 is trying boost_candidate ${boost_candidate} by setting IVI_BOOST_VERSION to that and sourcing init_compile."
             endif 
 
             setenv IVI_BOOST_VERSION "${boost_candidate}"
 
             source ${IVI_SRC_PATH}/Make/init_compile
-            if (! ${status}) then
+            if (${status}) then
+                if (! $?IVI_QUIET ) then
+                    echo "Script build-2 did not fine boost_candidate ${boost_candidate}."
+                endif 
+            else
+                if (! $?IVI_QUIET ) then
+                    echo "Script build-2 accepting boost_candidate ${boost_candidate}."
+                endif 
                 set found_workable_boost = 1
                 break
             endif 
@@ -302,6 +307,7 @@ if ($?IVI_VERBOSE_2) then
     echo "LIB_BASE_INCLUDES:      ${LIB_BASE_INCLUDES}"
     echo "DEFAULT_OPT_INCLUDES:   ${DEFAULT_OPT_INCLUDES}"
     echo "LOAD_DIRS:              ${LOAD_DIRS}"
+    echo "IVI_ACTUAL_BOOST:       ${IVI_ACTUAL_BOOST}"
     echo "" 
     echo "Default make command:   ${IVI_MAKE}" 
     echo "Serial make command:    ${IVI_MAKE_SERIAL}" 
