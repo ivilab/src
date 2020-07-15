@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25642 2020-07-13 21:38:19Z kobus $
+# $Id: init_compile 25655 2020-07-15 21:57:01Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -38,6 +38,8 @@
 # -----------------------------------------------------------------------------
 
 # set echo 
+
+set exit_status = 0
 
 # Kobus. Unfortunately, for absolute robustness, we cannot cache the path to the
 # library and the tools because we might be operating on two or more valid
@@ -160,6 +162,11 @@ endif
 ${VERBOSE_ECHO} 
 ${VERBOSE_ECHO} PATH for build is: ${PATH}
 ${VERBOSE_ECHO} 
+
+################################################################################
+
+# From now on, we cannot just exit. We need to go via the cleanup code at the
+# end.
 
 ################################################################################
 #  
@@ -1155,7 +1162,8 @@ set vim_major_version = `vim --version |& grep 'VIM - Vi IMproved' | sed 's/VIM 
 if (${status}) then
     ${P_STDERR} "Unable to get the vim version. Check that vim is installed."
     ${P_STDERR} "Aborting."
-    exit 1
+    set exit_status = 1
+    goto end_of_script
 endif
 
 #
@@ -1810,7 +1818,8 @@ if ($?FORCE_OBJ_DIR != 0) then
         ivi_setenv EXEC_DIR "${FORCE_OBJ_DIR}"
     else
         ${P_STDERR} "If FORCE_OBJ_DIR is set, it must be reasonable directory string."
-        exit 1
+        set exit_status = 1
+        goto end_of_script
     endif
 
 #     ivi_setenv GPU_OBJ_DIR "${OBJ_DIR}"
@@ -7223,7 +7232,7 @@ set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_BOOST"
 set lib_boost = ""
 ivi_setenv OPTIONS_BOOST ""
 ivi_setenv CC_FLAGS_BOOST ""
-# 
+ 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
 #
@@ -7235,7 +7244,7 @@ set optional_libs = "${optional_libs} BOOST:boost/.*\.hpp"
 
 set boost_inc_dir = ""
 
-set actual_boost_version = "UNKNOWN"
+set actual_boost_version = "NONE"
 
 if (! ${NO_BOOST}) then
     #
@@ -7299,6 +7308,7 @@ endif
 
 ivi_setenv IVI_HAVE_BOOST "${ivi_have_boost}"
 ivi_setenv LIB_BOOST "${lib_boost}"
+ivi_setenv IVI_ACTUAL_BOOST "${actual_boost_version}"
 
 if ($?IVI_VERBOSE) then
     echo ""
@@ -7322,7 +7332,8 @@ if ("${IVI_BOOST_VERSION}" != "") then
             echo "Unable to find boost includes with IVI_BOOST_VERSION=${IVI_BOOST_VERSION}."
             echo " "
         endif 
-        exit 1
+        set exit_status = 1
+        goto end_of_script
     endif 
 endif 
 
@@ -10590,13 +10601,17 @@ if ($do_cache ) then
     sed < ${VAR_CACHE_FNAME} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "${USER_TEMP_PATH}ivi_env.sh"
 
     ${IVI_RM} ${varname_fname}
+endif
 
-    if ($?DO_CACHE_LOCK) then
-        ${VERBOSE_ECHO} "Removing the cache lock" 
-        ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
-    endif
+end_of_script: 
+
+if ($?DO_CACHE_LOCK) then
+    ${VERBOSE_ECHO} "Removing the cache lock" 
+    ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
 endif
 
 unalias ivi_setenv
+
+exit ${exit_status}
 
 

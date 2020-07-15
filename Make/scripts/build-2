@@ -19,10 +19,7 @@ if ($?IVI_HAVE_MACHINE) then
         echo "Script build-2 is not sourcing ${IVI_SRC_PATH}/Make/init_machine because IVI_HAVE_MACHINE is set."
     endif 
 else 
-    # Do not use VERBOSE_ECHO as we may not have it yet. 
-    if ($?IVI_VERBOSE) then
-        echo "Script build-2 is sourcing ${IVI_SRC_PATH}/Make/init_machine."
-    endif 
+    ${VERBOSE_ECHO} "Script build-2 is sourcing ${IVI_SRC_PATH}/Make/init_machine."
 
     source ${IVI_SRC_PATH}/Make/init_machine
     if ($status) exit $status
@@ -35,8 +32,13 @@ endif
 #
 # Build options can be manipulated by changing environment variables, some of
 # which are documented in this file. If you prefer, these can be set in the
-# BUILD_ENV* files. One way to get started with this plan is to copy BUILD_ENV
-# from ${IVI_SRC_PATH}/Make/ into this directory. 
+# BUILD_ENV* files. One way to get started with this plan is to copy
+# ${IVI_SRC_PATH}/Make/BUILD_ENV.example into your program directory as
+# BUILD_ENV, possibly with suffixes for the OS or user name. 
+#
+# Since all IVI code should really share most such settings (espeicially BOOST
+# oriented ones), we first source ones in Make, then then current directory,
+# which thus can over-ride. 
 
 set shared_build_env_dirs = "BUILD_ENV BUILD_ENV.${OS} BUILD_ENV.${MACHINE} BUILD_ENV BUILD_ENV.${OS}"
 
@@ -54,78 +56,67 @@ foreach shared_build_env_dir (${shared_build_env_dirs})
     endif 
 end
 
-# Do not use VERBOSE_ECHO as we may not have it yet. 
-if ($?IVI_VERBOSE) then
-    echo "Checking for build option files in (${build_env_dirs})."
-endif
+${VERBOSE_ECHO} "Checking for build option files in (${build_env_dirs})."
+${VERBOSE_ECHO} "First we check for them in ${MAKE_PATH}, then the current directory."
 
-foreach build_env_dir (${build_env_dirs})
-    if (-e "${build_env_dir}") then
-        # Do not use VERBOSE_ECHO as we may not have it yet. 
-        if ($?IVI_VERBOSE) then
-            echo "Sourcing ${build_env_dir} in directory ${cwd}, which can overide shell settings."
-        endif 
-        source ${build_env_dir}
+set paths_for_build_env = "${MAKE_PATH} ./"
 
-        # Do not use VERBOSE_ECHO as we may not have it yet. 
-        if ($?IVI_VERBOSE) then
-            echo "Back from ${build_env_dir} in directory ${cwd}."
+foreach path_for_build_env (${paths_for_build_env})
+    foreach build_env_dir (${build_env_dirs})
+        set build_env_dir = "${path_for_build_env}${build_env_dir}"
+        if (-e "${build_env_dir}") then
+            ${VERBOSE_ECHO} "Sourcing ${build_env_dir} in directory ${cwd}, which can overide shell settings."
+            source ${build_env_dir}
+            ${VERBOSE_ECHO} "Back from ${build_env_dir} in directory ${cwd}."
+            if (${status}) exit ${status}
+        else if ($?IVI_VERBOSE_2) then
+            ${VERBOSE_ECHO_2} "No optional build file ${build_env_dir} in directory ${cwd}."
         endif 
-        if (${status}) exit ${status}
-    else if ($?IVI_VERBOSE_2) then
-        echo "No optional build file ${build_env_dir} in directory ${cwd}."
-    endif 
+    end
 end
 
 ##################################################################################
 
-# Do not use VERBOSE_ECHO as we may not have it yet. 
-if ($?IVI_VERBOSE) then
-    echo "Script build-2 is sourcing ${IVI_SRC_PATH}/Make/init_compile"
-endif 
+${VERBOSE_ECHO} "Script build-2 is sourcing ${IVI_SRC_PATH}/Make/init_compile"
 
 set multiple_boost = 0
 
-if ($?BOOST_VERSION) then
-    if ("${BOOST_VERSION}" != "") then
-        # If BOOST_VERSION points to more then one option, we need to choose it
-        # here. It would conceptually be simpler to wrap this into finding boost as
-        # we do below, but since it is tied to the build string, cache dirs, etc.,
-        # we need to peek at what bosts we may be able to find. We will assume that
-        # the first headers we find is from the version to use. 
+set found_workable_boost = 0 
 
-        set multiple_boost = `echo ${BOOST_VERSION} | grep -c ':'`
+if ($?IVI_BOOST_VERSION) then
+    if ("${IVI_BOOST_VERSION}" != "") then
+        set boost_candidates = `echo ${IVI_BOOST_VERSION} | sed 's/:/ /g'`
+
+        foreach boost_candidate (${boost_candidates}) 
+            if (! $?IVI_QUIET ) then
+                echo "Script build-2 is trying boost_candidate ${boost_candidate} by setting IVI_BOOST_VERSION to that and sourcing build-2."
+            endif 
+
+            setenv IVI_BOOST_VERSION "${boost_candidate}"
+
+            source ${IVI_SRC_PATH}/Make/init_compile
+            if (! ${status}) then
+                set found_workable_boost = 1
+                break
+            endif 
+        end
+
+        if (! ${found_workable_boost}) then
+            echo "Not able to find any of the boost candidates in (${boost_candidates})."
+            echo "Setting environment variable NO_BOOST and sourcing init_compile one more time."
+            echo "Likely things will break, even though they should not (under CONSTRUCTION)."
+            setenv NO_BOOST 1
+            unsetenv IVI_BOOST_VERSION
+        endif
     endif
-endif
-
-if (${multiple_boost}) then
-    set boost_candidates = `echo ${BOOST_VERSION} | sed 's/:/ /g'`
-
-    set found_workable_boost = 0 
-
-    foreach boost_candidate (${boost_candidates}) 
-        if (! $?IVI_QUIET ) then
-            echo "Script build-2 is trying boost_candidate ${boost_candidate} by setting BOOST_VERSION to that and sourcing build-2."
-        endif 
-
-        setenv BOOST_VERSION "${boost_candidate}"
-
-        source ${IVI_SRC_PATH}/Make/init_compile
-        if (! ${status}) then
-            set found_workable_boost = 1
-            break
-        endif 
-    end
-
-    if (! ${found_workable_boost}) then
-        echo "Not able to find any of the boost candidates in (${boost_candidates})."
-        exit 1
-    else if ($?IVI_VERBOSE) then
-        
-    endif 
-else
+endif 
+            
+# Despite the name, this is the default execution path. We would only have boost
+# at this point if we looked for it due to IVI_BOOST_VERSION.
+#
+if (! ${found_workable_boost}) then
     source ${IVI_SRC_PATH}/Make/init_compile
-    if (${status}) then 
+    if (${status}) then
         echo "Sourcing ${IVI_SRC_PATH}/Make/init_compile returned failure."
         exit 1
     endif 
