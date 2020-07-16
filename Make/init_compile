@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25655 2020-07-15 21:57:01Z kobus $
+# $Id: init_compile 25657 2020-07-16 00:44:40Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -37,7 +37,7 @@
 #
 # -----------------------------------------------------------------------------
 
-# set echo 
+if ($?IVI_SET_ECHO) set echo 
 
 set exit_status = 0
 
@@ -331,76 +331,6 @@ if ($do_cache ) then
         ${MAKE_SCRIPT_PATH}ivi_lock_create init_compile
     endif 
 
-#         # Kobus. Experimental. Implement a dumb lock. It is not perfect.
-#         #
-#         # Sleep a small amount, which is likely to be different (roughly one
-#         # chance in the magic number below, currently 30).  This does not
-#         # work on all systems, but it is not critical, although without it,
-#         # there is a high chance the locking will not happen.. 
-#         #
-#         set x = $$ ; @ x %= 30 ; sleep 0.$x >& /dev/null
-#         if (${status}) then
-#             ${ECHO} "Random sleep failed." 
-#         endif
-# 
-#         set cache_lock_file =  "${USER_TEMP_PATH}cache_lock"
-# 
-#         if (-e ${cache_lock_file}) then
-#             set max_age = 100
-# 
-#             # If the lock is older than max_age seconds, ignore it. 
-#             set locked = `tools younger_than ${max_age} ${cache_lock_file}`
-# 
-#             if (${status}) then
-#                 # If this command fails we assume that this is due to the lockfile being removed since
-#                 # we checked for it due to the process that had it finally
-#                 # finishing, which does happen. In this case we do nothing.
-#                 ${ECHO} "Cache file disappeared while getting its age." 
-#             else if ("${locked}" == "") then
-#                 ${ECHO} "Ignoring cache lock because it is older than ${max_age} seconds." 
-#             else
-#                 set lock_proc = `$IVI_CAT ${cache_lock_file}`
-# 
-#                 set count = 1
-#                 # Wait up to N seconds to get the lock. 
-#                 set wait_in_seconds = 30 
-# 
-#                 while (${count} < ${wait_in_seconds})
-#                     ps ${lock_proc} >& /dev/null
-#                     if (${status}) then
-#                         ${ECHO} "Resetting lock file ${cache_lock_file} as process ${lock_proc} does not exist." 
-#                         break 
-#                     else if ("${lock_proc}" == "$$") then
-#                         ${ECHO} "Resetting lock file ${cache_lock_file} as the process that owns it is this one." 
-#                         ${ECHO} "This is likely due to early or forced exit of init_compile followed by sourcing init_compile." 
-#                         break 
-#                     endif
-# 
-#                     sleep 1
-# 
-#                     if (! -e "${cache_lock_file}") then
-#                         ${VERBOSE_ECHO} "Got the cache lock" 
-#                         break
-#                     endif
-# 
-#                     ${ECHO} "Waiting for the cache lock (${count}/${wait_in_seconds})" 
-# 
-#                     @ count += 1
-#                 end
-# 
-#                 if (${count} >= ${wait_in_seconds}) then
-#                     ${ECHO} "Ignoring cache lock due to time out." 
-#                 endif
-#             endif
-#         endif
-# 
-#         ${VERBOSE_ECHO} "Setting cache lock." 
-# 
-#         echo $$ >! ${cache_lock_file}
-# 
-#         # End of optional activity of using a lock file for the cache. 
-#     endif
-
     if (-e "${cache_fname}") then
         if ($?FORCE_CACHE_REBUILD) then 
             ${VERBOSE_ECHO} "Forcing rebuild of $cache_fname."
@@ -490,6 +420,11 @@ if ($do_cache ) then
             ${VERBOSE_ECHO} "Using already up to date cache file: ${cache_fname}."
 
             source ${cache_fname}
+            # We could be caching the fact that this fails. 
+            if ($status) then 
+                set exit_status = 1
+            endif
+
             sed < ${cache_fname} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "${USER_TEMP_PATH}ivi_env.sh"
 
             if ($?IVI_UA_HPC) then
@@ -523,8 +458,8 @@ if ($do_cache ) then
                 ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
             endif
 
-            ${VERBOSE_ECHO} "Early exit from init_compile due to cache being OK."
-            exit
+            ${VERBOSE_ECHO} "Early exit (status ${exit_status}) from init_compile due to cache being OK."
+            exit ${exit_status}
         endif
     endif
     # create a file to store names of environment variables
@@ -10580,30 +10515,35 @@ ivi_setenv VIM_PATH_EXTRA `echo ${CC_COMPILER_INCLUDES} ${used_inc_dirs} | sed '
 
 # -----------------------------------------------------------------------------
 
+end_of_script: 
+
 if ($do_cache ) then
     ${VERBOSE_ECHO} "Building environment variable cache into ${VAR_CACHE_FNAME}."
 
     echo "# IVI Environment Variable Cache." >! "${VAR_CACHE_FNAME}"
 
-    foreach line (`$IVI_CAT $varname_fname`)
-    ### foreach line (`$IVI_CAT $varname_fname | sort | uniq`)
-        # Sed explanation
-        # 1: escape exclamation point ("!")
-        # 2: escape nested single quotes
-        # 3: convert "key=value" to "setenv key 'value' "
-        setenv | grep "^$line=" | sed -e "s/\!/\\\!/g" -e "s/'/'\\\''/g" -e "s/^\([^=]*\)=\(.*\)/setenv \1 '\2'/g" >>! "${VAR_CACHE_FNAME}"
-    end
-
+    if (${exit_status}) then
+        echo "exit 1" >>! "${VAR_CACHE_FNAME}"
+    else 
+        foreach line (`$IVI_CAT $varname_fname`)
+        ### foreach line (`$IVI_CAT $varname_fname | sort | uniq`)
+            # Sed explanation
+            # 1: escape exclamation point ("!")
+            # 2: escape nested single quotes
+            # 3: convert "key=value" to "setenv key 'value' "
+            setenv | grep "^$line=" | sed -e "s/\!/\\\!/g" -e "s/'/'\\\''/g" -e "s/^\([^=]*\)=\(.*\)/setenv \1 '\2'/g" >>! "${VAR_CACHE_FNAME}"
+        end
+    endif 
 
     ${MAKE_SCRIPT_PATH}copy_if_different ${VAR_CACHE_FNAME} ${VAR_CACHE_SHADOW}
-    if (${status}) exit ${status}
+    if (${status}) set exit_status = ${status}
 
     sed < ${VAR_CACHE_FNAME} 's/setenv  *\([^ ]*\)  */export \1=/' >!  "${USER_TEMP_PATH}ivi_env.sh"
+    if (${status}) set exit_status = ${status}
 
     ${IVI_RM} ${varname_fname}
+    if (${status}) set exit_status = ${status}
 endif
-
-end_of_script: 
 
 if ($?DO_CACHE_LOCK) then
     ${VERBOSE_ECHO} "Removing the cache lock" 

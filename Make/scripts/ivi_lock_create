@@ -153,10 +153,8 @@ else
     # I do not know how likely this is to fail, or even to return success
     # without doing the right thing, but it seems to work on the mac. 
 
-    set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
-
+    set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.0${x}"
     ${VERBOSE_ECHO} echo "${VERBOSE_INDENT}Process $$ sleeping for ${sleep_time} seconds"
-
     sleep ${sleep_time}
 
     if (${status}) then

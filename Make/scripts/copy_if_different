@@ -23,15 +23,17 @@ if (-e $2) then
         # Ensure time stamp is later than any file built by the process that
         # called this script. 
         
+        set x = $$ ; @ x %= 100 ; set sleep_time = "0.0${x}"
+
         if ($?IVI_VERBOSE) then
             echo "${IVI_VERBOSE_INDENT}Script copy_if_different found a difference with args $1 and $2."
-            echo "${IVI_VERBOSE_INDENT}Script copy_if_different is sleeping for 1 seconds."
+            echo "${IVI_VERBOSE_INDENT}Script copy_if_different is sleeping for ${sleep_time} seconds."
         endif
 
-        sleep 1
+        sleep ${sleep_time}
 
         if ($?IVI_VERBOSE) then
-            echo "${IVI_VERBOSE_INDENT}Script copy_if_different is executing  /bin/cp -f $1 $2."
+            echo "${IVI_VERBOSE_INDENT}Script copy_if_different is executing /bin/cp -f $1 $2."
         endif
 
         /bin/cp -f $1 $2

@@ -12,6 +12,10 @@
 # The main purpose of the build scripts is to normalize the make environment,
 # and to implement some functionality that is difficult to do in a robust
 # portable way for all flavors of make. 
+#
+##################################################################################
+
+if ($?IVI_SET_ECHO) set echo 
 
 if ($?IVI_HAVE_MACHINE) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
@@ -95,7 +99,7 @@ if ($?IVI_BOOST_VERSION) then
             source ${IVI_SRC_PATH}/Make/init_compile
             if (${status}) then
                 if (! $?IVI_QUIET ) then
-                    echo "Script build-2 did not fine boost_candidate ${boost_candidate}."
+                    echo "Script build-2 did not find boost_candidate ${boost_candidate}."
                 endif 
             else
                 if (! $?IVI_QUIET ) then
@@ -384,8 +388,6 @@ setenv TMP_SUB_DIRS_VISITED ""
 setenv LC_ALL C 
 
 ################################################################################
-
-# set echo 
 
 set save_production = "${PRODUCTION}"
 set save_ivi_cc = "${IVI_CC}"
