@@ -26,7 +26,11 @@
 #
 #     If the environment variable IVI_LOCKFILE_DIR is set, this script will use
 #     its value as a directory to create lockfiles in. Otherwise, this script
-#     will use ${TMPDIR}/${USER}/lockfiles/, creating it if needed.
+#     will first try /scratch/${USER}/lockfiles/ unless PREFER_LOCAL_LOCK is
+#     set, where /scratch is nominally an NSF mounted fast temporary disk on
+#     IVILAB systems. If it does not exist, or PREFER_LOCAL_LOCK is set, then we 
+#     use ${TMPDIR}/${USER}/lockfiles/. In all cases we attempt to create the
+#     $IVI_LOCKFILE_DIR path if it does not exist, and exit with 1 if we cannot. 
 #
 #     if the environment variable IVI_LOCKFILE_NAME is set, then it overrides
 #     the default heuristics for constructing the lock file name. If
@@ -100,7 +104,11 @@ if (! $?IVI_LOCKING_METHOD) then
 endif 
 
 if (! $?IVI_LOCKFILE_DIR) then
-    setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
+    if ((! $?PREFER_LOCAL_LOCK) && (-e /scratch)) then
+        setenv IVI_LOCKFILE_DIR /scratch/${USER}/lockfiles/
+    else
+        setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
+    endif
 endif 
 
 ${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"

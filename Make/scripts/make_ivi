@@ -1091,6 +1091,11 @@ foreach sub_lib_dir (*)
         continue
     endif 
 
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+        echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+        continue
+    endif 
+
     pushd ${sub_lib_dir} > /dev/null
     if (${status}) then
         echo "Command failed in `pwd`: pushd ${sub_lib_dir} > /dev/null" | tee -a ${error_file}
@@ -1304,6 +1309,11 @@ foreach sub_lib_dir (*)
 
         if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
             echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+            continue
+        endif 
+
+        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+            echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
             continue
         endif 
 
@@ -1663,6 +1673,11 @@ foreach sub_lib_dir (*)
                 continue
             endif 
 
+            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+                continue
+            endif 
+
             pushd ${sub_sub_dir} > /dev/null
             if (${status}) then
                 echo "Command failed in `pwd`: pushd ${sub_sub_dir} > /dev/null" | tee -a ${error_file}
@@ -1706,6 +1721,11 @@ foreach sub_lib_dir (*)
 
             if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
                 echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+                continue
+            endif 
+
+            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
                 continue
             endif 
 
@@ -1796,6 +1816,11 @@ foreach mi_dir ($prog_dirs)
 
     if ((! ${FORCE_MAKE_IVI}) && (-e "${mi_dir}/SKIP_MAKE_IVI.${OS}")) then
         echo "Make_ivi: Skipping ${mi_dir} because ${sub_lib_dir}/${mi_dir}/SKIP_MAKE_IVI.${OS} exists."
+        continue
+    endif 
+
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${mi_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+        echo "Make_ivi: Skipping ${mi_dir} because ${sub_lib_dir}/${mi_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
         continue
     endif 
 

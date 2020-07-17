@@ -196,9 +196,24 @@ if (${do_gpu}) then
 endif 
 
 
-
 setenv UC_OS `echo ${OS} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
 setenv UC_MACHINE `echo ${MACHINE} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
+
+
+if (! $?HOST) then
+    setenv HOST unknown
+endif
+
+if (! $?SHORT_HOST) then
+    set first_name = `echo $HOST | sed 's/\..*//'`
+
+    if ($first_name != "") then
+      setenv SHORT_HOST $first_name
+    else
+      setenv SHORT_HOST "${HOST}"
+    endif
+endif 
+
 
 setenv IVI_HAVE_MACHINE 1 
 
