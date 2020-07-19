@@ -1,0 +1,115 @@
+#!/bin/tcsh -f 
+
+##############################################################################
+#
+# Identification:
+#     A script to lock and build a target only once
+#
+# Usage:
+#     ivi_lock_for_make [ max time ] [ target ] [ command ] [ command arguments ]
+#
+#
+# Description:
+#     Locking serializes execution, but once a second process, having been
+#     assigned the same task as a first, gets the lock, it will redo the build a
+#     second time. This is wasteful and confusing. 
+#
+#     If there is only one instant of make running, and if all dependencies
+#     are exposed to make, and the makefiles are correct, then neither locking, nor ensuring only single
+#     execution of the task should be needed. However, the ivi build system has
+#     hidden targets, ans sometimes we run multiple instances of make either on
+#     purpose or by accident. Especially for hidden targets, we want to consider
+#     using this script. 
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+# We assume that init_scripts has been called as this script is largely used as
+# part of the IVI build system reflected by the fact that it lives in Make.
+# Thus, we have P_STDERR, VERBOSE_ECHO, and MAKE_SCRIPT_PATH. 
+
+if ($?IVI_SET_ECHO) then
+    set echo
+endif 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}In: $0 $*"
+
+if ($# < 3) then
+    ${P_STDERR} "Script ivi_lock_for_make needs at least three arguments."
+    exit 1
+endif 
+
+set exit_status = 0
+
+set max_time_to_wait = "$1"
+
+# Don't really need to error check as ivi_lock_create does it, but this might
+# help get to the source faster.
+#
+set max_time_to_wait = "$1"
+
+if ("${max_time_to_wait}" == "") then
+    ${P_STDERR} "Script ivi_lock_for_make received a null first argument."
+    exit 1 
+endif 
+
+set check_time_arg = `echo "${max_time_to_wait}" | sed 's/[0-9]//g'`
+if ("${check_time_arg}" != "") then
+    ${P_STDERR} "Script ivi_lock_for_make first arg (${max_time_to_wait} must be a non-negative integer."
+    exit 1 
+endif 
+
+if (! $?IVI_LOCKFILE_DIR) then
+    setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
+endif 
+
+${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
+
+set target = "$2"
+set target_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str ${target}`
+if ($status) exit 1
+
+# Last path component.
+set dir_str = `echo ${cwd} | sed 's#.*/##'`
+
+set time_stamp_file = "${target_label}_${dir_str}_time_stamp.$$"
+${IVI_CREATE} "${IVI_LOCKFILE_DIR}${time_stamp_file}"
+
+set requesting_pid = `ps -p $$ -o ppid=`
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make for lock for : ${target_label}"
+${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${target_label} ${requesting_pid}
+if ($status) exit 1
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock for : ${target_label}"
+
+set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${target}" "${time_stamp_file}"`
+
+if ($already_built) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} already built."
+else 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} needs to be built."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: $argv[3-$#] in $cwd."
+
+    if ($?IVI_VERBOSE) then
+        set start_time = `date +%H:%M:%S`
+    endif 
+
+    $argv[3-$#]
+    set exit_status = $status 
+
+    if ($?IVI_VERBOSE) then
+        set end_time = `date +%H:%M:%S`
+        set program_name = "$argv[3]"
+        echo "Script ivi_lock_for_make finished executing ${program_name} in $cwd with status ${exit_status}"
+        echo "    Ivi_lock_for_make start time for ${program_name}: ${start_time}"
+        echo "    Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
+        echo " "
+    endif 
+endif 
+
+${MAKE_SCRIPT_PATH}ivi_lock_remove ${target_label} ${requesting_pid}
+
+exit $exit_status
+
