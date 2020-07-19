@@ -112,7 +112,7 @@ else
 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ivi_lock_remove ${lock_label} in `pwd` using IVI locking system."
 
-    if (-e "${lock_file}") 
+    if (-e "${lock_file}") then
         #  I have not found a safe way to ignore error output. 
         set lock_proc = `cat ${lock_file}`
 
