@@ -112,16 +112,6 @@ else
 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ivi_lock_remove ${lock_label} in `pwd` using IVI locking system."
 
-    # Reduce the chances of everyone wanting to start at the same time.
-    # I do not know how likely this is to fail, or even to return success
-    # without doing the right thing, but it seems to work on the mac. 
-    set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
-    if (${status}) then
-        ${P_STDERR} "Fractional sleep failed in ivi_lock_remove." 
-        set exit_status = 1
-        goto cleanup
-    endif
-
     while (-e "${lock_file}") 
         #  I have not found a safe way to ignore error output. 
         set lock_proc = `cat ${lock_file}`
