@@ -4,20 +4,22 @@
 
 setenv IVI_LOCKING_METHOD "lockfile-progs"
 setenv IVI_LOCKING_METHOD "flock"
-setenv IVI_LOCKING_METHOD "fallback"
+setenv IVI_LOCKING_METHOD "ivi"
 
 setenv IVI_LOCKFILE_NAME "dodo"
 setenv IVI_LOCKFILE_NAME "test/dodo.lock"
 unsetenv IVI_LOCKFILE_NAME 
 
+set wait_time = 2
+
 # Each instant of test_ivi_lock_2 will add its PID to this file.
 $IVI_CREATE test_ivi_lock.result
 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${wait_time} ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${wait_time} ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${wait_time} ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${wait_time} ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
+${MAKE_SCRIPT_PATH}ivi_lock ${wait_time} ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
 
 echo "Script test_ivi_lock is now waiting."
 

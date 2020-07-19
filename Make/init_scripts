@@ -151,17 +151,26 @@ endif
 # Essential.
 set needed_progs = "test cat cp mv rm mkdir file grep sed ls ln touch chmod gzip makedepend"
 
-
 # Desired (used often enough that a warning makes sense). The colon begins the
 # optional ones. 
 set needed_progs = "${needed_progs} : awk egrep stat tail"
 
+# Others that we want to test if they exist, but we do not expect them to always
+# be available. 
+set needed_progs = "${needed_progs} : flock lockfile-create"
+
 set essential =  1
+set desired =  1
 
 foreach needed_prog (${needed_progs})
     if ("${needed_prog}" == ":") then
-        set essential = 0
-        continue
+        if (${essential}) then
+            set essential = 0
+            continue
+        else if (${desired}) then
+            set desired = 0
+            continue
+        endif 
     endif 
 
     set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
@@ -185,13 +194,13 @@ foreach needed_prog (${needed_progs})
         else if (${essential}) then
             ${P_STDERR} "Script init_scripts cannot find essential program ${needed_prog}."
             set error_found = 1
-        else 
+        else if (${desired}) then
             ${P_STDERR} "Warning: Script init_scripts cannot find non-essential program ${needed_prog}."
             ${P_STDERR} "    Some things you might do will break."
         endif 
     endif
 
-    set uc_needed_prog = `echo ${needed_prog} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
+    set uc_needed_prog = `echo ${needed_prog} | sed "y/abcdefghijklmnopqrstuvwxyz-/ABCDEFGHIJKLMNOPQRSTUVWXYZ_/"`
     eval "setenv IVI_${uc_needed_prog}_PATH ${prog_path}"
 
     # This default gets overwritten below if we want to specify program options. 

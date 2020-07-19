@@ -7,9 +7,9 @@
 #
 # Description:
 #     Script called by make to maintain the Include_lines/file_list. This tracks
-#     changes in the source collection. If source files are added, deleted, or
-#     renamed, then the file Include_lines/file_list gets updated which leads to
-#     a rebuild of the makefiles on the next call to make.
+#     changes to the collecton of source files. If source files are added,
+#     deleted, or renamed, then the file Include_lines/file_list gets updated
+#     which leads to a rebuild of the makefiles on the next call to make.
 #
 #     The reason why we need an additional call to make is that this script gets
 #     called whenever the directory gets updated which happens relatively
@@ -50,19 +50,20 @@ if ("${dir_arg}" != "") then
     pushd ${dir_arg} > /dev/null
 endif 
 
-if (($?IVI_LOCK_TIME_STAMP) && (-e Include_lines/file_list.new)) then
-    set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Include_lines/file_list.new`
-
-    if (${can_skip}) then
-        if ($?IVI_VERBOSE) then
-            echo "${IVI_VERBOSE_INDENT}Skipping build_file_list_2 in `pwd` as file_list.new is new."
-            set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
-            echo $BEEP
-        endif 
-
-        exit 0
-    endif 
-endif 
+# BARF --- use ivi_lock_for_make 
+# if (($?IVI_LOCK_TIME_STAMP) && (-e Include_lines/file_list.new)) then
+#     set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Include_lines/file_list.new`
+# 
+#     if (${can_skip}) then
+#         if ($?IVI_VERBOSE) then
+#             echo "${IVI_VERBOSE_INDENT}Skipping build_file_list_2 in `pwd` as file_list.new is new."
+#             set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
+#             echo $BEEP
+#         endif 
+# 
+#         exit 0
+#     endif 
+# endif 
 
 ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Entering script build_file_list_2 in directory $cwd. "
 
@@ -103,7 +104,7 @@ else if (! -e Include_lines/full_file_list) then
 else 
     # Look for an early exit. If the files that are here now are the same as the
     # last time we updated Include_lines/file_list, then we do not need to update.
-    # If the files are differnt, then we do some further work to safely determine if
+    # If the files are different, then we do some further work to safely determine if
     # any of them are source files which is more expensive. We do not even bother
     # sorting because switching machines is not very frequent. If we go beyond the
     # quick test, then Include_lines/full_file_list.new will update
@@ -147,7 +148,9 @@ if (${status}) then
     goto cleanup
 endif 
 
-# HERE
+# TODO. I have lost track of why we do this (testing?) but it is clearly
+# harmless. Ideally we should be able to be more clear in this comment.
+#
 if (-e 'input') then
     echo 'input' >> Include_lines/file_list.new
 endif 
@@ -319,9 +322,9 @@ if (${must_update}) then
 
     if ((${actually_updated}) || (! -e Include_lines/include_lines.new))  then
         if ($?IVI_VERBOSE) then
-                echo "${IVI_VERBOSE_INDENT}Script build_file_list_2 is updating Include_lines/include_lines in directory ${cwd}."
-                echo " "
-            endif
+             echo "${IVI_VERBOSE_INDENT}Script build_file_list_2 is updating Include_lines/include_lines in directory ${cwd}."
+            echo " "
+        endif
 
         ${IVI_TOUCH} Include_lines/include_lines 
         ${IVI_TOUCH} Include_lines/include_lines.new 

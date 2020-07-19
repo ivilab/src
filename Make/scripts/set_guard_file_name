@@ -1,5 +1,5 @@
 
-# Shared block of code between ivi_guard_create and ivi_guard_destroy
+# Shared block of code between ivi_guard_create and ivi_guard_remove
 
 set guard_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str $1`
 if ($status) exit 1

@@ -15,14 +15,20 @@
 #     facilities are not available in the mac OS. Hence, this script also
 #     implements a fall back method that is less than ideal, but usually works. 
 #
-#     The argument to ivi_lock_create is simply a label (often just the name of the
-#     script), which is combined with the current directory to create a lockfile
-#     name. At the end of the protected code, you must call ivi_lock_remove
-#     with exactly the same argument. 
+#     The first argument to ivi_lock_create is the max number of seconds to wait. This
+#     is to be consistent with ivi_lock.
+#
+#     The second argument to ivi_lock_create is simply a label (often just the
+#     name of the script), which is combined with the current directory to
+#     create a lockfile name. At the end of the protected code, you must call
+#     ivi_lock_remove with the second and third arguments. 
+#
+#     The third (optional argument) is the PID of the script interested in the
+#     lock. It defaults to the PID of the process that called it (this script's
+#     parent process). 
 #
 #     If the environment variable IVI_LOCKING_METHOD is set, this script will
-#     use its value for the locking method. Otherwise it will try
-#     lockfile-progs, and then the built in fall back method. 
+#     use its value for the locking method. 
 #
 #     If the environment variable IVI_LOCKFILE_DIR is set, this script will use
 #     its value as a directory to create lockfiles in. Otherwise, this script
@@ -60,108 +66,112 @@
 
 # This script must be kept in sync with ivi_lock_remove
 
-# set echo
-
-if ($# < 1) then
-    ${P_STDERR} "Script ivi_lock_create needs at least one argument."
-    exit 1
-else if ($# < 2) then
-    set requesting_pid = `ps -p $$ -o ppid=`
-else 
-    set requesting_pid = $2 
+if ($?IVI_SET_ECHO) then
+    set echo
 endif 
 
-set lock_label = "$1"
+if ($# < 2) then
+    ${P_STDERR} "Script ivi_lock_create needs at least two arguments."
+    exit 1
+else if ($# < 3) then
+    set requesting_pid = `ps -p $$ -o ppid=`
+else 
+    set requesting_pid = $3 
+endif 
+
+set max_time_to_wait = "$1"
+
+if ("${max_time_to_wait}" == "") then
+    ${P_STDERR} "Script ivi_lock_create received a null first argument."
+    exit 1 
+endif 
+
+set check_time_arg = `echo "${max_time_to_wait}" | sed 's/[0-9]//g'`
+if ("${check_time_arg}" != "") then
+    ${P_STDERR} "Script ivi_lock_create first arg (${max_time_to_wait}) must be a non-negative integer."
+    exit 1 
+endif 
+
+# For set_lockfile_name we pretend the label (arg 2) is the command.
+set cmd_str = `echo ${2} | sed 's#.*/##'`
+set lock_label = "${cmd_str}"
+set first_arg = ""
+
+# We work in units of 0.01s. 
+@ max_time_to_wait *= 100
+
+set lock_label = "$2"
 
 set exit_status = 0
 
 set noclober
 
-if ($?LOCK_WAIT_TIME) then
-    set lock_wait_time = $LOCK_WAIT_TIME
-else 
-    set lock_wait_time = 10
-endif 
-
 # The factor depends on how much we sleep. 2 is for expected value of .5
 # seconds.
 #
-@ lock_wait_iterations = 2 * ${lock_wait_time}
+# @ lock_wait_iterations = 2 * ${max_time_to_wait}
 
 if ($?IVI_DONT_LOCK) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock_create is not doing anything"
     exit 0
 endif
 
-if (! $?IVI_LOCKING_METHOD) then
-    # Sync this code with that in init_compile!
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ called with args: $*."
 
-    if ((`${MAKE_SCRIPT_PATH}can_execute lockfile-create`) && (`${MAKE_SCRIPT_PATH}can_execute lockfile-remove`)) then
-        setenv IVI_LOCKING_METHOD "lockfile-progs" 
-    else
-        setenv IVI_LOCKING_METHOD "fallback"
+set locking_method = ""
+
+if ($?IVI_LOCKING_METHOD) then
+    set  locking_method = "${IVI_LOCKING_METHOD}" 
+    if ((${locking_method} != "lockfile-progs") && (${locking_method} != "ivi")) then
+        echo "IVI_LOCKING_METHOD is set, but not to a viable locking method for ivi_lock_create. Ignoring it."
     endif 
 endif 
 
-if (! $?IVI_LOCKFILE_DIR) then
-    if ((! $?PREFER_LOCAL_LOCK) && (-e /scratch)) then
-        setenv IVI_LOCKFILE_DIR /scratch/${USER}/lockfiles/
-    else
-        setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
-    endif
+if ("${locking_method}" == "") then
+    #
+    #   Disable until we can sort out wait time.
+    #
+    #   else if  ("${IVI_LOCKFILE_CREATE}" != "") then
+    #       set locking_method = "lockfile-progs"
+    # else
+        set locking_method = "ivi"
+    # endif 
 endif 
 
-${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
-
-if ($status) then
-    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
-    exit 1
-endif 
-
-set dir_str = `echo ${cwd} | sed 's#.*/##'`
-
-if ($?IVI_LOCKFILE_NAME) then
-    set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
-    set looks_like_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '/'`
-
-    if (${looks_like_abs_path}) then
-        set lock_file = "${IVI_LOCKFILE_NAME}"
-    else if (${looks_like_path}) then
-        set lock_file = "`pwd`/${IVI_LOCKFILE_NAME}"
-    else 
-        set lock_file = ${IVI_LOCKFILE_DIR}/${IVI_LOCKFILE_NAME}.lock
-    endif 
-else
-    set lock_file = ${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock
-endif 
-
-# Mostly for testing and debugging.
-setenv IVI_LOCKFILE_PATH "${lock_file}"
+source ${MAKE_SCRIPT_PATH}set_lockfile_name
 
 onintr bail
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ running lock_create ${lock_label} for ${requesting_pid}."
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
 
-if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
+if ("${locking_method}" == "lockfile-progs") then
+    echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
+
+    # lockfile-create has its own timeout formula which defaults to 3 minutes.
+    # We may need to wrap it in a loop. 
+    echo "IGNORING timeout due to using lockfile-progs locking method."
+
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running lock_create ${lock_label} in `pwd` using lockfile-progs"
-    lockfile-create ${lock_file}
+    lockfile-create --lock-name argument ${lock_file}
 
     if (! ${status}) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully set ${lock_label} in `pwd` using lockfile-create."
     endif
 else 
-    # Fallback locking method. Doing locking robustly in scripts is hard, but
+    # IVI locking method. Doing locking robustly in scripts is hard, but
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
 
-     ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ running lock_create ${lock_label} in `pwd` using fallback locking system."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running lock_create ${lock_label} in `pwd` using IVI locking system."
+
+    set start_time = `date +%H:%M:%S`
 
     # Reduce the chances of everyone wanting to start at the same time.
     # I do not know how likely this is to fail, or even to return success
     # without doing the right thing, but it seems to work on the mac. 
 
-    set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.0${x}"
+    set x = $$ ; @ x %= 100 ; set sleep_time = "0.0${x}"
     ${VERBOSE_ECHO} echo "${VERBOSE_INDENT}Process $$ sleeping for ${sleep_time} seconds"
     sleep ${sleep_time}
 
@@ -170,6 +180,8 @@ else
         set exit_status = 1
         goto cleanup
     endif
+
+    set time_waited = 0
 
     while (1) 
         if (! -e "${lock_file}") then
@@ -189,6 +201,8 @@ else
                 endif 
 
                 set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
+
+                @ time_waited += $x
 
                 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ sleeping for ${sleep_time} seconds for ${requesting_pid}."
 
@@ -244,9 +258,12 @@ else
 
                     set got_it = 1
                     break
-                else if (${count} > ${lock_wait_iterations}) then
-                    echo "Process $$ waited too long for ${lock_file}. "
-                    echo "It waited ${lock_wait_iterations} iterations which is about ${lock_wait_time}s. "
+                # else if (${count} > ${lock_wait_iterations}) then
+                else if (${time_waited} > ${max_time_to_wait}) then
+                    echo "Process $$ waited too long for ${lock_file} on behalf of process ${requesting_pid}. "
+                    echo "It waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
+                    set end_time = `date +%H:%M:%S`
+                    echo "Specifically it waited from ${start_time} to ${end_time}." 
                     echo "Information about the process holding the lock:"
                     ps -l ${lock_proc} 
                     echo "Sleeping for 10 seconds for debugging" 
@@ -256,16 +273,17 @@ else
                     set got_it = 1
                     break
                 else  
-                    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ waiting for ${lock_file} held by process ${lock_proc} on behalf of process ${requesting_pid} ."
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ waiting for ${lock_file} held by process ${lock_proc} on behalf of process ${requesting_pid} ."
 
                     # Add some fractional seconds to reduce the chances of everyone
                     # wanting to start at the same time.
                     set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
 
-                    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ sleeping for ${sleep_time}"
-
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ sleeping for ${sleep_time} seconds"
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ slept ${time_waited}/${max_time_to_wait} x .01 seconds."
                     sleep ${sleep_time} >& /dev/null
-                    # set x = $$ ; @ x %= 100 ; sleep 1.$x >& /dev/null
+
+                    @ time_waited += $x
 
                     if (${status}) then
                         ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
@@ -299,7 +317,10 @@ else
         endif 
     end
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully set ${lock_label} on behalf of process ${requesting_pid} in `pwd` using fallback locking method."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ set ${lock_label} on for process ${requesting_pid} in `pwd`."
+    set end_time = `date +%H:%M:%S`
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ locking start time: ${start_time}."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ locking   end time: ${end_time}."
 endif 
 
 cleanup: 

@@ -14,7 +14,11 @@
 #     mac OS. Hence, this script implements a fall back method that is less than
 #     ideal, but usually works. 
 #
-#     The argument to ivi_lock is the command to be executed including its
+#     The first argument to ivi_lock is the max number of seconds to wait. This
+#     has to be first because the command can have an arbitrary number of
+#     arguments.
+#
+#     The second argument to ivi_lock is the command to be executed including its
 #     arguments. This script supports two forms of simple locking. One is based
 #     on the command, and the other is based on a resource labeled by the value
 #     of the environment variable IVI_LOCKFILE_NAME. 
@@ -35,8 +39,8 @@
 #     especially if flock is the underlying implementation.
 #
 #     If the environment variable IVI_LOCKING_METHOD is set, this script will
-#     use its value for the locking method. Otherwise it will try flock, then
-#     lockfile-progs, and then the built in fall back method. 
+#     use its value for the locking method. Current settings include "flock",
+#     "lockfile-progs", amd "ivi". 
 #
 #     If the environment variable IVI_LOCKFILE_DIR is set, this script will use
 #     its value as a directory to create lockfiles in. Otherwise, this script
@@ -77,126 +81,127 @@ if ($?IVI_SET_ECHO) then
     set echo
 endif 
 
-if ($# < 1) then
-    ${P_STDERR} "Script ivi_lock needs at least one argument."
+if ($# < 2) then
+    ${P_STDERR} "Script ivi_lock needs at least two arguments."
     exit 1
+endif 
+
+# Don't really need to error check as ivi_lock_create does it, but this might
+# help get to the source faster.
+#
+set max_time_to_wait = "$1"
+
+if ("${max_time_to_wait}" == "") then
+    ${P_STDERR} "Script ivi_lock received a null first argument."
+    exit 1 
+endif 
+
+set check_time_arg = `echo "${max_time_to_wait}" | sed 's/[0-9]//g'`
+if ("${check_time_arg}" != "") then
+    ${P_STDERR} "Script ivi_lock first arg (${max_time_to_wait} must be a non-negative integer."
+    exit 1 
+endif 
+
+set full_cmd = "$argv[2-$#]"
+set cmd_str = `echo ${2} | sed 's#.*/##'`
+
+if ($# > 2) then
+    set first_arg = `echo ${3} | sed 's#//*$##' | sed 's#.*/##' `
+
+    if ("${first_arg}" == "") then
+        ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$2|"
+        exit 1
+    endif 
+else 
+    set first_arg = ""
 endif 
 
 set exit_status = 0
 
 if ($?IVI_DONT_LOCK) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock is not locking: $*"
-    $*
+    ${full_cmd} 
     exit ${status}
 endif
 
-if (! $?IVI_LOCKING_METHOD) then
-    # Sync this code with that in init_compile (or init_scripts as it might
-    # move)!
+set locking_method = ""
 
-    if (`${MAKE_SCRIPT_PATH}can_execute flock`) then
-        setenv IVI_LOCKING_METHOD "flock" 
-    else if ((`${MAKE_SCRIPT_PATH}can_execute lockfile-create`) && (`${MAKE_SCRIPT_PATH}can_execute lockfile-remove`)) then
-        setenv IVI_LOCKING_METHOD "lockfile-progs" 
+
+if ($?IVI_LOCKING_METHOD) then
+    set  locking_method = "${IVI_LOCKING_METHOD}" 
+    echo locking_method: $locking_method
+    if ((${locking_method} != "flock") && (${locking_method} != "lockfile-progs") && (${locking_method} != "ivi")) then
+        echo "IVI_LOCKING_METHOD is set, but not to a viable locking method for ivi_lock. Ignoring it."
+    endif 
+endif 
+
+if ("${locking_method}" == "") then
+    if  ("${IVI_FLOCK}" != "") then
+        set locking_method = "flock" 
+    #
+    #   Disable until we can sort out wait time.
+    #
+    #   else if  ("${IVI_LOCKFILE_CREATE}" != "") then
+    #       set locking_method = "lockfile-progs"
     else
-        setenv IVI_LOCKING_METHOD "fallback"
+        set locking_method = "ivi"
     endif 
 endif 
-
-# Even if we are given a lockfile , we still need to have a directory to put the
-# lock timestamp file. 
-#
-if (! $?IVI_LOCKFILE_DIR) then
-    setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
-endif 
-
-${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
-
-if ($status) then
-    ${P_STDERR} "Unable to make directory ${IVI_LOCKFILE_DIR}"
-    exit 1
-endif 
-
-set dir_str = `echo ${cwd} | sed 's#.*/##'`
-set cmd_str = `echo ${1} | sed 's#.*/##'`
-
-if ($# > 1) then
-    set first_arg = `echo ${2} | sed 's#//*$##' | sed 's#.*/##' `
-
-    if ("${first_arg}" == "") then
-        ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$2|"
-        exit 1
-    endif 
-
-    set cmd_plus_arg = "${cmd_str}_${first_arg}"
-else 
-    set cmd_plus_arg = "${cmd_str}"
-endif 
-
-if ($?IVI_LOCKFILE_NAME) then
-    set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
-    set looks_like_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '/'`
-
-    if (${looks_like_abs_path}) then
-        set lock_file = "${IVI_LOCKFILE_NAME}"
-    else if (${looks_like_path}) then
-        set lock_file = "`pwd`/${IVI_LOCKFILE_NAME}"
-    else 
-        set lock_file = ${IVI_LOCKFILE_DIR}/${IVI_LOCKFILE_NAME}.lock
-    endif 
-else
-    set lock_file = ${IVI_LOCKFILE_DIR}/${cmd_plus_arg}_${dir_str}.lock
-endif 
-
-# Mostly for testing and debugging.
-setenv IVI_LOCKFILE_PATH "${lock_file}"
 
 onintr bail
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ running $*"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ called with args:"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    $*"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` "
 
-if  ("${IVI_LOCKING_METHOD}" == "flock") then
+if  ("${locking_method}" == "flock") then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using 'flock'"
 
-    flock ${lock_file} $*
+    source ${MAKE_SCRIPT_PATH}set_lockfile_name
+
+    flock -w ${max_time_to_wait} ${lock_file} ${full_cmd}
     set exit_status = ${status}
 
     if (! ${exit_status}) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using 'flock'"
     endif
-else if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
-    echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
-
-    lockfile-create ${cmd_str}
-    $*
-    set exit_status = $status 
-    lockfile-remove ${cmd_str}
-
-    if (! ${exit_status}) then 
-        # Best not to use VERBOSE_PSO here.
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using lockfile-progs locking method."
-    endif 
+# else if ("${locking_method}" == "lockfile-progs") then
+#     echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
+# 
+#     # lockfile-create has its own timeout formula which defaults to 3 minutes.
+#     # We may need to wrap it in a loop. 
+#     echo "IGNORING timeout due to using ${locking_method}"
+# 
+#     source ${MAKE_SCRIPT_PATH}set_lockfile_name
+#
+#     lockfile-create --lock-name argument ${lock_file}
+#     if (${status}) exit ${status}
+#     ${full_cmd} 
+#     set exit_status = $status 
+#     lockfile-remove --lock-name argument ${lock_file}
+# 
+#     if (! ${exit_status}) then 
+#         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using lockfile-progs locking method."
+#     endif 
 else 
-    # Fallback locking method. Doing locking robustly in scripts is hard, but
+    # IVI locking method. Doing locking robustly in scripts is hard, but
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
-    
 
-    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using fallback locking system."
+    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
 
     set requesting_pid = `ps -p $$ -o ppid=`
-    ${MAKE_SCRIPT_PATH}ivi_lock_create ${cmd_str} ${requesting_pid}
+    ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${cmd_str} ${requesting_pid}
     if ($status) exit 1
-    $*
+    ${full_cmd} 
     set exit_status = $status 
     ${MAKE_SCRIPT_PATH}ivi_lock_remove ${cmd_str} ${requesting_pid}
 
     if (! ${exit_status}) then 
-        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
+        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using IVI locking method."
     endif 
         
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using fallback locking method."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using IVI locking method."
 endif 
 
 cleanup: 

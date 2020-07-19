@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25619 2020-07-10 17:12:30Z kobus $
+# $Id: Makefile-program 25660 2020-07-19 14:38:29Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -76,16 +76,16 @@ LIBS = \
 include $(MAKE_PATH)Makefile-program.$(MAKE_FLAVOR)
 
 # The following make flavor dependent defines, set by the file just included,
-# are expanded versions of the pattern oriented symbols defined below. 
+# are expanded versions of the patterns noted. The use of such trickery is being
+# purged, in favor of scripts, but bootstrapping sometimes goes best if Make can
+# expand patterns.
 #
-#     SOURCE_FILES
-#     HEADER_FILES
-#     PROGRAM_FILES
+#     SOURCE_FILES    (used?)     [  *.[cC] *.cpp *.cxx *.cc  ]
+#     HEADER_FILES    (used?)     [ *.[h] *.[hit]pp *.[hit]xx ]
+#     PROGRAM_FILES               [ *.[chC] *[chit].pp *[chit].xx *.cc ]
+#     INCLUDE_LINE_FILES (used?)  [ Include_lines/*.[chC] Include_lines/*.[chit]pp Include_lines/*.[chit]xx ]
+#     NEW_INCLUDE_LINE_FILES      [ Include_lines/new/*.[chC] Include_lines/new/*.[chit]pp Include_lines/new/*.[chit]xx ]
 #
-SOURCE_FILE_PAT = *.[cC] *.cpp *.cxx *.cc
-HEADER_FILE_PAT = *.[h] *.[hit]pp *.[hit]xx
-PROGRAM_FILE_PAT = *.[chC] *[chit].pp *[chit].xx *.cc
-
 # A note about file pattern expansion. 
 #     File pattern expansion is make flavor dependent, and also can lead to
 #     annoying failures when the pattern does not match, but what you want is
@@ -94,10 +94,10 @@ PROGRAM_FILE_PAT = *.[chC] *[chit].pp *[chit].xx *.cc
 #     instead. 
 
 ################################################################################
-#         Synching Makefile and build with src/Make 
+#         Synchronizing Makefile and build with src/Make 
 #
 # The files "Makefile and "build" are strict copies of the ones in src/Make.  If
-# they are updated, we want to get a copy. The syncronization may not be in time
+# they are updated, we want to get a copy. The synchronization may not be in time
 # for this invocation of make, hence we provide an message about that. Note that
 # GNU make tries to update make files that it reads and rebuild the dependency
 # graphs as a result. When this works (I am not convinced it is robust), we get
@@ -108,7 +108,7 @@ PROGRAM_FILE_PAT = *.[chC] *[chit].pp *[chit].xx *.cc
 # Why are Makefile and build copies? 
 #     We cannot point to the ones in $(MAKE_PATH) because they implement
 #     figuring out the value of MAKE_PATH. 
-
+#
 Makefile : $(MAKE_PATH)Makefile
 	@$(ECHO_UNLESS_QUIET) " "
 	@$(ECHO_UNLESS_QUIET) "Updating 'Makefile' from $(MAKE_PATH)."
@@ -116,8 +116,8 @@ Makefile : $(MAKE_PATH)Makefile
 	$(IVI_CP) $(MAKE_PATH)Makefile $@ 
 	@$(ECHO_UNLESS_QUIET) " "
 
-# This won't happen very often because build updates itself, but it is not
-# impossible. 
+# This won't happen very often because build updates itself, but it is possible.
+#
 build : $(MAKE_PATH)build
 	@$(ECHO_UNLESS_QUIET) " "
 	@$(ECHO_UNLESS_QUIET) "Updating 'build' from $(MAKE_PATH)."
@@ -126,60 +126,55 @@ build : $(MAKE_PATH)build
 	@$(ECHO_UNLESS_QUIET) " "
 
 ################################################################################
-#      Include_lines/file_list (target with hidden dependencies) 
+#      Include_lines/file_list and Include_lines/file_list.new
 #
-# Include_lines/file_list tracks creating, deleting, and renaming of source code
-# files. 
-#
-# This target is built in two ways depending on whether it needs to be created or
-# whether it is being upated. If it does not exist, it can be created by its own
-# rule. Whether this actually happens depends on the make flavor.  Note that we
-# do not provide dependencies for that target so that it won't be updated by this
-# rule unless it does not exist. If it exists, it is updated as a side effect of
-# building the target Include_lines/file_list.new. This process will also able
-# to create the file if needed. 
+# These targets track creating, deleting, and renaming of source code files. 
 #
 # We explicitly hide the link between the dependencies of
-# Include_lines/file_list.new and Include_lines/file_list so that we control
-# whether the theoretical dependence matters. For example, the directory
-# timestamp matters if it changes due to a source file being moved. Responding
-# to timestamps that do not matter would be hopelessly impractical. 
-
+# Include_lines/file_list.new and Include_lines/file_list so that we can
+# implement responding to changes only when they matter to save time. For
+# example, the directory timestamp does tell us that we may need to rebuild, but
+# almost always we do not need to. Hence we ensure we get this right efficienty
+# by using multiple calls in the script build-2.
+#
 # ---------------------------------------------
 # Include_lines/file_list 
 #
-# Handle the case the dependency Include_lines/file_list does not exist and we
-# are working on something that depends on it (e.g., Makefile-depend).  Since
-# this file is further maintained only as a side effect, we do not have it
-# depend on anything other than tools.  However, since we want it to depend on
-# tools, and the script is not guaranteed to update the time stamp, we have an
-# explicit {$IVI_TOUCH). 
-
-# ==============================================================================
-
-# Hidden dependencies of tools on tools. 
-
-$(MAKE_SCRIPT_PATH)build_file_list : \
-    $(MAKE_SCRIPT_PATH)ivi_lock
-
-$(MAKE_SCRIPT_PATH)build_include_lines : \
-    $(MAKE_SCRIPT_PATH)ivi_lock
-
-$(MAKE_SCRIPT_PATH)build_include_lines_2 : \
-    $(MAKE_SCRIPT_PATH)ivi_lock
-
-# Dependency on tools that build the target. 
+# This target is built in two ways depending on whether it needs to be created
+# or whether it is being updated. If it does not exist, it can be created by its
+# own rule during the reading of the Makefile. Whether this actually happens
+# depends on the make flavor.  Note that we do not provide dependencies for this
+# target so that it won't be updated by this "creation" rule unless it does not
+# exist. If it exists, it is updated as a side effect of building the target
+# Include_lines/file_list.new. This process will also reate the file if
+# needed. 
 #
-Include_lines/file_list : \
-    $(MAKE_SCRIPT_PATH)build_file_list
+# We used to make file_list depend on tools, but using file_list.new
+# accomplishes what is needed better because file_list is not necessarily
+# updated by its build, hence the commented out IVI_TOUCH.
+
+# Include_lines/file_list : \
+#     $(MAKE_SCRIPT_PATH)build_file_list
 
 Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)build_file_list
-	$(IVI_TOUCH) $@
+#	$(MAKE_SCRIPT_PATH)build_file_list
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_file_list
+# 	$(IVI_TOUCH) $@
 
 # ---------------------------------------------
 # Include_lines/file_list.new
+#
+# This file tracks the current state of the list of files, so that it can be
+# compared with the copy in Include_lines/file_list, without updating its time
+# stamp, which should happen only if there is a difference. We basically use
+# Include_lines/file_list.new as a proxy for Include_lines/file_list so that we
+# can hide the dependency on the directory time stamp to reduce save build time. 
+
+# Hidden dependencies of tools on tools. 
+#
+$(MAKE_SCRIPT_PATH)build_file_list : \
+    $(MAKE_SCRIPT_PATH)build_file_list_2
 
 # Dependency on tools that build the target. 
 #
@@ -187,12 +182,14 @@ Include_lines/file_list.new: \
     $(MAKE_SCRIPT_PATH)build_file_list
 
 # Rule to build Include_lines/file_list.new. Note that there is no need to
-# depend on Include_lines because if that does not exist, the target does not
-# either, and the script build_file_list will create Include_lines. 
+# depend on the directory Include_lines because if that does not exist, the
+# target does not either, and the script build_file_list will create
+# Include_lines. 
 # 
 Include_lines/file_list.new : ./ $(FORCE_WITH_SUN5)
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)build_file_list 
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_file_list 
+#	$(MAKE_SCRIPT_PATH)build_file_list 
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -200,6 +197,7 @@ Include_lines/file_list.new : ./ $(FORCE_WITH_SUN5)
 # in that directory. The dummy target file_list.new should not be used as a
 # dependency.
 #
+.PHONY : file_list.new
 file_list.new: \
     build \
     Makefile \
@@ -207,15 +205,22 @@ file_list.new: \
     Include_lines/file_list.new
 
 ################################################################################
-#      Include_lines/include_lines (target with hidden dependencies) 
+#      Include_lines/include_lines and Include_lines/include_lines.new
 #
 # Include_lines/include_lines tracks the state of include lines in source files
 # which determine whether Makefile-depend is up to date. We represents the state
-# of the shadow files, two per source code file, in Include_lines. Using files
-# for each source file is necessary for complete accuracy, as Makefile-depend
-# depends on which file has which includes. If any source file has changed in
-# way that matters, then Include_lines/include_lines is updated as a side effect
-# of building the exposed target Include_lines/include_lines.new. 
+# in shadow files, two per source code file, in Include_lines. Using files for
+# each source file is necessary, as Makefile-depend depends on which file has
+# which includes. If any source file has changed in way that matters, then
+# Include_lines/include_lines is updated as a side effect of building the
+# exposed target Include_lines/include_lines.new. 
+#
+# As with file_list/file_list.new, we hide the link between the dependencies of
+# Include_lines/file_list.new and Include_lines/file_list so that we can
+# implement responding to changes only when they matter to save time. 
+#
+# ---------------------------------------------
+# Include_lines/include_lines 
 #
 # This target is built in two ways depending on whether it needs to be created or
 # whether it is being updated. If it does not exist, it can be created by its own
@@ -225,55 +230,48 @@ file_list.new: \
 # building the target Include_lines/file_list.new. This process will also able
 # to create the file if needed. 
 #
-# We explicitly hide the link between the dependencies of
-# Include_lines/include_lines.new and Include_lines/include_lines so that we
-# control whether the theoretical dependence matters. For example, the source
-# file timestamp matter if they are due to changes in include lines within the
-# file. Responding to timestamps that do not matter would be hopelessly
-# impractical. 
-
-
-# ---------------------------------------------
-# Include_lines/include_lines 
-#
-# Handle the case the dependency Include_lines/include_lines does not exist and
-# we are working on something that depends on it (e.g., Makefile-depend).  Since
-# this file is further maintained only as a side effect, we do not have it
-# depend on anything other than tools. However, since we want it to depend on
-# tools, and the script is not guaranteed to update the time stamp, we have an
-# explicit {$IVI_TOUCH). 
-#
-# Dependency on tools that build the target. 
-#
-Include_lines/include_lines : \
-    $(MAKE_SCRIPT_PATH)build_file_list \
-    $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_include_lines_2 \
-    $(MAKE_SCRIPT_PATH)build_makefile_dirs \
-    $(MAKE_SCRIPT_PATH)get_local_include_dirs \
-    $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
+# First we handle the case the dependency Include_lines/include_lines does not
+# exist and we are working on something that depends on it (e.g.,
+# Makefile-depend).  We used to make file_list depend on tools, but using
+# include_lines.new accomplishes what is needed better because file_list is not
+# necessarily updated by its build, hence the commented out IVI_TOUCH.
+# 
+# $(MAKE_SCRIPT_PATH)build_include_lines : \
+#     $(MAKE_SCRIPT_PATH)build_include_lines_2
+# 
+# Include_lines/include_lines : \
+#     $(MAKE_SCRIPT_PATH)build_file_list \
+#     $(MAKE_SCRIPT_PATH)build_include_lines \
+#     $(MAKE_SCRIPT_PATH)build_makefile_dirs \
+#     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
+#     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
  
-# The script build_include_lines updates Include_lines/include_lines only if
-# needed. Because the target is not guaranteed to be updated, but has the
-# dependencies on tools, we need to touch $@. 
-#
-Include_lines/include_lines : 
+# Include_lines/include_lines : 
+Include_lines/include_lines : Include_lines/file_list.new
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(MAKE_SCRIPT_PATH)build_file_list 
-	@$(MAKE_SCRIPT_PATH)build_include_lines
-	@$(IVI_TOUCH) $@
+# 	@$(MAKE_SCRIPT_PATH)build_file_list 
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines
+# 	@$(IVI_TOUCH) $@
 
 # ---------------------------------------------
 # Include_lines/include_lines.new 
 
+# This rule needs a comment.
+#
 Include_lines/new/% : % $(MAKE_SCRIPT_PATH)update_include_line_file
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)update_include_line_file '' $*
+#	$(MAKE_SCRIPT_PATH)update_include_line_file '' $*
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ update_include_line_file '' $*
 
-# Tools for the next target. 
+# Hidden dependencies of tools on tools for Include_lines/include_lines.new. 
+#
+$(MAKE_SCRIPT_PATH)build_include_lines : \
+    $(MAKE_SCRIPT_PATH)build_include_lines_2
+ 
+# Dependency on tools that build the target Include_lines/include_lines.new.  
+#
 Include_lines/include_lines.new : \
     $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_include_lines_2 \
     $(MAKE_SCRIPT_PATH)build_makefile_dirs \
     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
@@ -285,7 +283,8 @@ Include_lines/include_lines.new : \
 #
 Include_lines/include_lines.new : Include_lines/file_list $(NEW_INCLUDE_LINE_FILES)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(MAKE_SCRIPT_PATH)build_include_lines 
+# 	@$(MAKE_SCRIPT_PATH)build_include_lines 
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines 
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -293,6 +292,7 @@ Include_lines/include_lines.new : Include_lines/file_list $(NEW_INCLUDE_LINE_FIL
 # in that directory. The dummy target include_lines.new should not be used as a
 # dependency.
 #
+.PHONY : include_lines.new
 include_lines.new: \
     build \
     Makefile \
@@ -324,7 +324,6 @@ include_lines.new: \
 Include_lines/sub_libs_needed : \
     $(MAKE_SCRIPT_PATH)build_file_list \
     $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_include_lines_2 \
     $(MAKE_SCRIPT_PATH)build_makefile_dirs \
     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
@@ -333,10 +332,12 @@ Include_lines/sub_libs_needed : \
 # needed.  Because the target is not gaurenteed to be updated, but has the
 # dependencies on tools, we need to touch $@. 
 #
-Include_lines/sub_libs_needed :
+# Include_lines/sub_libs_needed : 
+Include_lines/sub_libs_needed : Include_lines/file_list.new 
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)build_file_list 
-	$(MAKE_SCRIPT_PATH)build_include_lines -f 
+# 	$(MAKE_SCRIPT_PATH)build_file_list 
+#	$(MAKE_SCRIPT_PATH)build_include_lines -f 
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines -f 
 	$(IVI_TOUCH) $@
 
 # Convenience dummy target used by the script build-2. Using the target directly
@@ -420,8 +421,7 @@ Makefile-depend : \
     $(MAKE_SCRIPT_PATH)stream_prog_lib_obs \
     $(MAKE_SCRIPT_PATH)update_include_line_file \
     $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_include_lines_2 \
-	$(MAKE_PATH)Makefile-program 
+    $(MAKE_PATH)Makefile-program 
 
 # -------------------------------------------
 #
@@ -601,12 +601,12 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 #
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : \
       $(MAKE_PATH)init_compile \
-      $(MAKE_SCRIPT_PATH)build_makefile_libs_needed 
-
+      $(MAKE_SCRIPT_PATH)build_makefile_libs_needed
 
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
+#	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
 	$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
@@ -619,7 +619,7 @@ include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFI
 # currently propagating the dependency on *_incl.h. 
 #
 # DEPEND_TARGETS come from Makefile-dirs, and contain essentially phony targets,
-# so any action will always be done. This is probably a defficieny, but keep
+# so any action will always be done. This is probably a deficiency, but keep
 # depend_program PHONY for now.
 #
 .PHONY : depend_program
@@ -661,7 +661,7 @@ $(PCH_DIR)%.h.gch : %.h
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
+        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -708,7 +708,7 @@ $(CXX_OBJ_DIR)%.o : %.C
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
+        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -722,7 +722,7 @@ $(CXX_OBJ_DIR)%.o : %.cpp
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
+        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -737,7 +737,7 @@ $(CXX_OBJ_DIR)%.o : %.cxx
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
+        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -751,7 +751,7 @@ $(CXX_OBJ_DIR)%.o : %.cc
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(COMPILE_STATUS_IS) ) \
+        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 

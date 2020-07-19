@@ -85,14 +85,29 @@ if ("${dir_arg}" != "") then
     cd ${dir_arg} > /dev/null
 endif 
 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_include_lines_2 ${force_build_sub_libs_arg}
-set exit_status = ${status}
+${MAKE_SCRIPT_PATH}build_include_lines_2 ${force_build_sub_libs_arg}
+if (${status}) exit $status
 
-if ($?IVI_VERBOSE) then
-    echo "${IVI_VERBOSE_INDENT}Leaving script build_include_lines in directory $cwd with status ${exit_status}."
-endif
-
-exit ${exit_status} 
+# We now do the locking in Makefiles via ivi_lock_for_make
+#
+#
+# if ($?IVI_VERBOSE) then
+#     set start_time = `date +%H:%M:%S`
+# endif 
+# 
+# ${MAKE_SCRIPT_PATH}ivi_lock 30 ${MAKE_SCRIPT_PATH}build_include_lines_2 ${force_build_sub_libs_arg}
+# set exit_status = ${status}
+# 
+# if ($?IVI_VERBOSE) then
+#     set end_time = `date +%H:%M:%S`
+#     echo "${IVI_VERBOSE_INDENT}Script build_include_lines_2 finished with status ${exit_status}"
+#     echo "${IVI_VERBOSE_INDENT}    Start time: ${start_time}"
+#     echo "${IVI_VERBOSE_INDENT}    End time:   ${end_time}"
+#     echo " "
+#     echo "${IVI_VERBOSE_INDENT}Leaving script build_include_lines in directory $cwd with status ${exit_status}."
+# endif
+# 
+# exit ${exit_status} 
 
 
 

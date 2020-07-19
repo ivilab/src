@@ -679,12 +679,6 @@ while ($count <=  ${num_args})
         if (! $?IVI_QUIET ) then
             echo "Script build-2 is switching target file_list to file_list.new"
         endif 
-    else if ("${arg}" == "file_list") then
-        set arg = "file_list.new"
-        set need_depend = 1
-        if (! $?IVI_QUIET ) then
-            echo "Script build-2 is switching target file_list to file_list.new"
-        endif 
     else if ("${arg}" == "include_lines") then
         set arg = "include_lines.new"
         set need_depend = 1
@@ -819,13 +813,13 @@ if (${need_depend_bootstrap}) then
         ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
 
         # Makefile-dirs is made as a side effect of the following.
-        ${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_file_list
+        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 30 Include_lines/file_list build_file_list
         if (${status}) then
             ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
             exit 1
         endif
 
-        ${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_include_lines
+        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 30 Include_lines/include_lines build_include_lines
         if (${status}) then
             ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
             exit 1
@@ -986,6 +980,9 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
 
                     source ${MAKE_SCRIPT_PATH}clean_global
 
+                    # No locking as it could be the problem and we are now
+                    # serial. 
+                    #
                     ${MAKE_SCRIPT_PATH}build_file_list
                     ${MAKE_SCRIPT_PATH}build_include_lines
                     ${IVI_TOUCH_1990} Makefile-depend

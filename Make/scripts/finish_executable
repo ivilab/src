@@ -9,6 +9,7 @@ set exec_path = "$1"
 set exec_name = "$2"
 
 ${IVI_PERMIT_EXECUTION} "${exec_path}" 
+if (${status}) exit $status
 
 set link_to_top = 1
 
@@ -72,7 +73,8 @@ else
 endif 
 
 pushd ${LD_OBJ_TOP_DIR} > /dev/null
-    ${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}make_link ${LD_OBJ_SUB_DIR} ${EXEC_LINK_NAME}
+    ${MAKE_SCRIPT_PATH}ivi_lock 5 ${MAKE_SCRIPT_PATH}make_link ${LD_OBJ_SUB_DIR} ${EXEC_LINK_NAME}
+    if (${status}) exit $status
 popd > /dev/null
 
 if (-e "${exec_name}") then
@@ -95,6 +97,7 @@ if (${link_to_top}) then
 
 
     ${IVI_LN} "${EXEC_LINK}/${exec_name}" .
+    if (${status}) exit $status
 
     set is_dylib = `echo ${exec_name} | grep -c '\.dylib$'`
     set is_so = `echo ${exec_name} | grep -c '\.so$'`
@@ -114,9 +117,11 @@ if (${link_to_top}) then
             endif 
 
             ${IVI_RM} "${base_name}"
+            if (${status}) exit $status
         endif 
 
         ${IVI_LN} "${exec_name}" "${base_name}"
+        if (${status}) exit $status
     endif 
 endif 
 

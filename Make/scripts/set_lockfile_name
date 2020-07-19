@@ -1,0 +1,44 @@
+
+# Shared block of code between ivi_lock_create and ivi_lock
+
+set dir_str = `echo ${cwd} | sed 's#.*/##'`
+
+if ("${first_arg}" == "") then
+    set cmd_plus_arg = "${cmd_str}"
+else 
+    set cmd_plus_arg = "${cmd_str}_${first_arg}"
+endif 
+
+if (! $?IVI_LOCKFILE_DIR) then
+    if ((! $?PREFER_LOCAL_LOCK) && (-e /scratch)) then
+        setenv IVI_LOCKFILE_DIR /scratch/${USER}/lockfiles/
+    else
+        setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
+    endif
+endif 
+
+${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
+
+if ($status) then
+    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
+    exit 1
+endif 
+
+# Last path component.
+set dir_str = `echo ${cwd} | sed 's#.*/##'`
+if ($?IVI_LOCKFILE_NAME) then
+    set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
+    set looks_like_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '/'`
+
+    if (${looks_like_abs_path}) then
+        set lock_file = "${IVI_LOCKFILE_NAME}"
+    else if (${looks_like_path}) then
+        set lock_file = "`pwd`/${IVI_LOCKFILE_NAME}"
+    else 
+        set lock_file = ${IVI_LOCKFILE_DIR}/${IVI_LOCKFILE_NAME}.lock
+    endif 
+else
+    set lock_file = ${IVI_LOCKFILE_DIR}/${cmd_plus_arg}_${dir_str}.lock
+endif 
+
+

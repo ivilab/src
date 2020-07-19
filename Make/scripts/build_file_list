@@ -25,12 +25,35 @@
 #     everything is up to date. Build-2 uses multiple calls to avoid this
 #     confusion. 
 #
+#     This script is not generally used in makefiles as we now usually call
+#     build_file_list_2 via ivi_lock_for_make directly in the Makefiles.
+#     However, the script build-2 uses it as the target is less clear there, and
+#     the build is expected not to be parallel. 
+#
 # Author:
 #     Kobus Barnard
 #
 ###############################################################################
 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_file_list_2 $* 
-exit ${status}
 
+${MAKE_SCRIPT_PATH}build_file_list_2 $*
+if (${status}) exit ${status}
 
+# We now lock outside.
+# if ($?IVI_VERBOSE) then
+#     set start_time = `date +%H:%M:%S`
+# endif 
+# 
+# ${MAKE_SCRIPT_PATH}ivi_lock 30 ${MAKE_SCRIPT_PATH}build_file_list_2 $*
+# set exit_status = ${status}
+# 
+# if ($?IVI_VERBOSE) then
+#     set end_time = `date +%H:%M:%S`
+#     echo "Script build_file_list_2 finished with status ${exit_status}"
+#     echo "    Start time: ${start_time}"
+#     echo "    End time:   ${end_time}"
+#     echo " "
+# endif 
+# 
+# exit ${exit_status}
+# 

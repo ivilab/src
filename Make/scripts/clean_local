@@ -27,6 +27,7 @@ endif
     set delete_list = `/bin/ls -1 | grep Makefile. | grep -v 'Makefile-2$' | grep -v 'Makefile-include$'`
 
     if ("${delete_list}" != "") then
+        ${VERBOSE_ECHO} "Clean local is removing: ${delete_list}"
         ${IVI_RM} ${delete_list}
     endif 
 # else 

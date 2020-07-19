@@ -8,10 +8,10 @@ ${P_STDERR} "--- Process $$ is in test_ivi_lock_2."
 
 # The sleeps should hold up the exit of all other processes. 
 ${P_STDERR} "@@@ Process $$ will add to test_ivi_lock.result after sleeping"
-sleep 2
+sleep 3
 ${P_STDERR} "@@@ Process $$ is adding to test_ivi_lock.result" 
 echo $$ >> test_ivi_lock.result
-sleep 2
+sleep 3
 ${P_STDERR} "@@@ Process $$ is done" 
 
 

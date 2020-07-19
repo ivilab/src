@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25657 2020-07-16 00:44:40Z kobus $
+# $Id: init_compile 25660 2020-07-19 14:38:29Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -40,6 +40,11 @@
 if ($?IVI_SET_ECHO) set echo 
 
 set exit_status = 0
+
+if ($?IVI_VERBOSE) then
+    set start_time = `date +%H:%M:%S`
+endif 
+
 
 # Kobus. Unfortunately, for absolute robustness, we cannot cache the path to the
 # library and the tools because we might be operating on two or more valid
@@ -328,7 +333,7 @@ setenv DO_CACHE_LOCK
 
 if ($do_cache ) then
     if ($?DO_CACHE_LOCK) then
-        ${MAKE_SCRIPT_PATH}ivi_lock_create init_compile
+        ${MAKE_SCRIPT_PATH}ivi_lock_create 15 init_compile
     endif 
 
     if (-e "${cache_fname}") then
@@ -459,7 +464,7 @@ if ($do_cache ) then
             endif
 
             ${VERBOSE_ECHO} "Early exit (status ${exit_status}) from init_compile due to cache being OK."
-            exit ${exit_status}
+            goto very_end_of_script
         endif
     endif
     # create a file to store names of environment variables
@@ -1157,30 +1162,6 @@ endif
 ivi_setenv MAKEDEPEND_OUTPUT  '>& /dev/null'
 
 # ---------------------------------------------------------------------
-#
-# TODO 
-#
-# Locking tools. Under construction! It is not clear if we can get away with
-# defining locking commands, or whether we need to embed the logic of different
-# options in locking scripts. 
-#
-# Sync this code with that in ivi_lock!
-# 
-# Should this be in init_scripts?
-
-if (`${MAKE_SCRIPT_PATH}can_execute flock`) then
-    ivi_setenv IVI_LOCKING_METHOD "flock" 
-else if ((`${MAKE_SCRIPT_PATH}can_execute lockfile-create`) && (`${MAKE_SCRIPT_PATH}can_execute lockfile-remove`)) then
-    ivi_setenv IVI_LOCKING_METHOD "lockfile-progs" 
-else
-    ivi_setenv IVI_LOCKING_METHOD "fallback"
-endif 
-
-# Do we know/care if this exists? Should this be in init_scripts.
-setenv IVI_LOCKFILE_PATH "${USER_TEMP_PATH}lockfiles/"
-
-# ---------------------------------------------------------------------
-
 # Sort out compilers. 
 
 if ($?IVI_CC == 0) then
@@ -10551,6 +10532,16 @@ if ($?DO_CACHE_LOCK) then
 endif
 
 unalias ivi_setenv
+
+very_end_of_script:
+
+if ($?IVI_VERBOSE) then
+    set end_time = `date +%H:%M:%S`
+    echo "Script init_compile finishing with status ${exit_status}"
+    echo "    Start time: ${start_time}"
+    echo "    End time:   ${end_time}"
+    echo " "
+endif 
 
 exit ${exit_status}
 

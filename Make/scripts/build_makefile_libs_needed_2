@@ -56,7 +56,7 @@ endif
 set build_dir_path = "${cwd}"
 
 set ppid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} entering script build_makefile_libs_needed_2 with directory ${build_dir_path}."
+${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} entering script build_makefile_libs_needed_2 in directory ${build_dir_path}."
 
 if (($?IVI_LOCK_TIME_STAMP) && (-e Makefile-libs-needed${VAR_CACHE_SUFFIX})) then
     set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-libs-needed${VAR_CACHE_SUFFIX}`
@@ -445,6 +445,16 @@ endif
 ${IVI_RM} Makefile-libs-needed
 ${IVI_MKDIR} Include_lines/Makefile-libs-needed
 ${IVI_MV} ${output_file_name} ${target_file_name}
+if (${status}) exit ${status}
+
+if (! -e "${target_file_name}") then
+    echo " "
+    echo "Script build_makefile_libs_needed_2 should have created: "
+    echo "     ${target_file_name}"
+    echo "but it does not exist!"
+    echo " "
+    exit 1
+endif 
 
 unset noglob 
 

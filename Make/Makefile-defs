@@ -8,13 +8,22 @@
 
 ###############################################################################
 
-# Conveneint place to make "depend_again" an alias for "depend"
+# Convenient place to make "depend_again" an alias for "depend"
 #
+.PHONY : depend_again
 depend_again : depend
 
 ###############################################################################
 
-# This uses to be in Makefile-program, but libraries need it too. 
+# The "Compile status is" string is a unique string that must be kept in sync
+# with the regular expressions in scripts/boost_warning_filter.pl and in
+# init_compile.  It's part of a workaround for a variant form of tcsh.
+COMPILE_STATUS_STR = "Compile status is: $$status"
+# COMPILE_STATUS_IS = $(IVI_ECHO) "Compile status is: $$status"
+
+###############################################################################
+
+# This used to be in Makefile-program, but libraries need it too. 
 
 # This symbol identifies all compile flags that may needed due to includes for
 # optional libraries within header files of components.  

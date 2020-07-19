@@ -6,7 +6,7 @@
 
 #
 # The patterns here need to be manually be kept consistent with those in
-# Makfile-library.
+# Makefile-library.
 #
 SOURCE_FILES := $(wildcard *.[cC] *.cpp *.cxx)
 HEADER_FILES := $(wildcard *.[h] *.[hit]pp *.[hit]xx)

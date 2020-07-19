@@ -14,6 +14,10 @@
 #     This script implements file locking for build_makefile_libs_needed_2 which
 #     does the work. 
 #
+#     This script might be OBSOLETE as we generally call
+#     build_makefile_libs_needed_2 via ivi_lock_for_make directly in the
+#     Makefiles. 
+#
 # Author:
 #     Kobus Barnard
 #
@@ -53,7 +57,26 @@ if ("${build_dir}" != "") then
     cd ${build_dir} 
 endif 
 
-${MAKE_SCRIPT_PATH}ivi_lock ${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
-exit ${status}
+${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
+if (${status}) exit ${status}
+
+# # We now lock in outside.
+# #
+# if ($?IVI_VERBOSE) then
+#     set start_time = `date +%H:%M:%S`
+# endif 
+# 
+# ${MAKE_SCRIPT_PATH}ivi_lock 10 ${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
+# set exit_status = ${status}
+# 
+# if ($?IVI_VERBOSE) then
+#     set end_time = `date +%H:%M:%S`
+#     echo "Script build_file_list finished with status ${exit_status}."
+#     echo "    Start time: ${start_time}"
+#     echo "    End time:   ${end_time}"
+#     echo " "
+# endif 
+# 
+# exit ${exit_status}
 
 

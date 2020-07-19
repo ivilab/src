@@ -15,7 +15,7 @@
 #     method that is less than ideal, but usually works. 
 #
 #     The argument to ivi_lock_remove needs to be the same as for the proceeding
-#     call to lockfile-create. 
+#     call to lockfile-create (excluding its first argument). 
 #
 #     I might have called this script ivi_lock_destroy, but since it is similar
 #     to lockfile-remove, I have gone with ivi_lock_remove. 
@@ -51,14 +51,24 @@ if ($?IVI_DONT_LOCK) then
     exit 0
 endif
 
-if (! $?IVI_LOCKING_METHOD) then
-    # Sync this code with that in init_compile!
+set locking_method = ""
 
-    if ((`${MAKE_SCRIPT_PATH}can_execute lockfile-create`) && (`${MAKE_SCRIPT_PATH}can_execute lockfile-remove`)) then
-        setenv IVI_LOCKING_METHOD "lockfile-progs" 
-    else
-        setenv IVI_LOCKING_METHOD "fallback"
+if ($?IVI_LOCKING_METHOD) then
+    set  locking_method = "${IVI_LOCKING_METHOD}" 
+    if ((${locking_method} != "lockfile-progs") && (${locking_method} != "ivi")) then
+        echo "IVI_LOCKING_METHOD is set, but not to a viable locking method for ivi_lock_remove. Ignoring it."
     endif 
+endif 
+
+if ("${locking_method}" == "") then
+    #
+    #   Disable until we can sort out wait time.
+    #
+    #   else if  ("${IVI_LOCKFILE_CREATE}" != "") then
+    #       set locking_method = "lockfile-progs"
+    # else
+        set locking_method = "ivi"
+    # endif 
 endif 
 
 if (! $?IVI_LOCKFILE_DIR) then
@@ -87,20 +97,20 @@ onintr bail
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ running ivi_lock_remove ${lock_label}"
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
 
-if ("${IVI_LOCKING_METHOD}" == "lockfile-progs") then
+if ("${locking_method}" == "lockfile-progs") then
     ${VERBOSE_ECHO} "Process $$ running ivi_lock_remove ${lock_label} in `pwd` using lockfile-progs"
 
-    lockfile-remove ${lock_file}
+    lockfile-remove --lock-name argument ${lock_file}
 
     if (! ${status}) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully removed ${lock_label} in `pwd` using lockfile-remove."
     endif
 else 
-    # Fallback locking method. Doing locking robustly in scripts is hard, but
+    # IVI locking method. Doing locking robustly in scripts is hard, but
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ivi_lock_remove ${lock_label} in `pwd` using fallback locking system."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ivi_lock_remove ${lock_label} in `pwd` using IVI locking system."
 
     # Reduce the chances of everyone wanting to start at the same time.
     # I do not know how likely this is to fail, or even to return success
@@ -128,7 +138,7 @@ else
         endif 
     end
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ivi_lock_remove ${lock_label} in `pwd` using fallback locking method."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ivi_lock_remove ${lock_label} in `pwd` using IVI locking method."
 endif 
 
 cleanup: 

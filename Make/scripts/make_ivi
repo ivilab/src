@@ -939,7 +939,6 @@ if ($collect_files) then
 
     # Not yet exported (should we export them)?
     #     ivi_add_makefiles
-    #     make_ivi (this file)
     
     echo Make/scripts/assert_non_null_arg >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/boost_warn_filter.pl >> ${src_dist_file_dir}/src_dist_files
@@ -975,11 +974,20 @@ if ($collect_files) then
     echo Make/scripts/get_link_target >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/get_local_include_dirs >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/is_link >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_guard_create >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_guard_remove >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/ivi_lock >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_lock_create >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_lock_for_make >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_lock_remove >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/ivi_self_update >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/ivi_makedepend >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/ivi_svn_rm >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/label_arg_to_file_str >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/make_ivi >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/make_src_shadow_dir >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/p_stderr >> ${src_dist_file_dir}/src_dist_files
+    echo Make/scripts/set_guard_file_name >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/stream_file_names >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/stream_script_names >> ${src_dist_file_dir}/src_dist_files
     echo Make/scripts/test_older_than >> ${src_dist_file_dir}/src_dist_files

@@ -247,7 +247,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
             set svn_command = "svn add --parents --depth=empty ${input_dir_rel_path}"
 
             if ($add_test_to_svn) then 
-                ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
+                ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
                 set svn_cmd_status = ${status} 
 
                 if (${svn_cmd_status}) then
@@ -282,7 +282,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
                 set svn_command = "svn add ${svn_add_files}"
 
                 if (${add_test_to_svn}) then
-                    ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
+                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
                     set svn_cmd_status = ${status} 
 
                     if (${svn_cmd_status}) then
@@ -785,7 +785,7 @@ else if (-e "output_checked") then
             # the case for "check", but not necessarily. 
             #
             if (${add_test_to_svn}) then
-                ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
+                ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
                 set svn_cmd_status = ${status} 
 
                 if (${svn_cmd_status}) then
@@ -819,7 +819,7 @@ else if (-e "output_checked") then
             set svn_command = "svn add ${not_in_svn}"
 
             if ($add_test_to_svn) then 
-                ${MAKE_SCRIPT_PATH}ivi_lock ${svn_command}
+                ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
                 set svn_cmd_status = ${status} 
 
                 if (${svn_cmd_status}) then
