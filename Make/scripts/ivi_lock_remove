@@ -77,20 +77,7 @@ endif
 
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 
-if ($?IVI_LOCKFILE_NAME) then
-    set looks_like_abs_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '^/'`
-    set looks_like_path = `echo ${IVI_LOCKFILE_NAME} | grep -c '/'`
-
-    if (${looks_like_abs_path}) then
-        set lock_file = "${IVI_LOCKFILE_NAME}"
-    else if (${looks_like_path}) then
-        set lock_file = "`pwd`/${IVI_LOCKFILE_NAME}"
-    else 
-        set lock_file = ${IVI_LOCKFILE_DIR}/${IVI_LOCKFILE_NAME}.lock
-    endif 
-else
-    set lock_file = ${IVI_LOCKFILE_DIR}/${lock_label}_${dir_str}.lock
-endif 
+source ${MAKE_SCRIPT_PATH}set_lockfile_name
 
 onintr bail
 
