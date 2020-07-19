@@ -112,25 +112,25 @@ else
 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ivi_lock_remove ${lock_label} in `pwd` using IVI locking system."
 
-    while (-e "${lock_file}") 
+    if (-e "${lock_file}") 
         #  I have not found a safe way to ignore error output. 
         set lock_proc = `cat ${lock_file}`
 
         if (${status}) then
-            echo "Script ivi_lock_remove reports lock file ${lock_file} to be removed does not exist."
-            break
+            echo "Script ivi_lock_remove reports lock file ${lock_file} to be removed just got removed."
         else if (${lock_proc} != ${requesting_pid}) then 
             echo "Script ivi_lock_remove not removing lock file ${lock_file} for process ${requesting_pid} as it belongs to ${lock_proc}."
-            break
         else 
             ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ removing lock file ${lock_file}."
             echo ${IVI_RM} ${lock_file}
             ${IVI_RM} ${lock_file}
             if (${status}) then
-                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ failed to remover lock file ${lock_file}."
+                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ failed to remove lock file ${lock_file}."
                 exit ${status}
             endif 
         endif 
+    else 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ reports lock file to remove (${lock_file}) does not exist."
     end
 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ivi_lock_remove ${lock_label} in `pwd` using IVI locking method."
