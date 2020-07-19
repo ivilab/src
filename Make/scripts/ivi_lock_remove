@@ -103,7 +103,7 @@ if ("${locking_method}" == "lockfile-progs") then
     lockfile-remove --lock-name argument ${lock_file}
 
     if (! ${status}) then
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully removed ${lock_label} in `pwd` using lockfile-remove."
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully removed ${lock_file} in `pwd` using lockfile-remove."
     endif
 else 
     # IVI locking method. Doing locking robustly in scripts is hard, but
@@ -124,7 +124,12 @@ else
             break
         else 
             ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ removing lock file ${lock_file}."
-            ${IVI_RM} "${lock_file}"
+            echo ${IVI_RM} ${lock_file}
+            ${IVI_RM} ${lock_file}
+            if (${status}) then
+                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ failed to remover lock file ${lock_file}."
+                exit ${status}
+            endif 
         endif 
     end
 
