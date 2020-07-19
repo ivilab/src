@@ -108,7 +108,7 @@ build : $(LIB_COMPONENT_SRC_DIR)build
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ build_file_list $(LIB_COMPONENT_SRC_DIR)
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 #	$(IVI_TOUCH) $@
 
 # ---------------------------------------------
@@ -137,7 +137,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: \
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new : $(LIB_COMPONENT_REAL_SRC_DIR) $(FORCE_WITH_SUN5)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ build_file_list $(LIB_COMPONENT_SRC_DIR)
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -199,7 +199,7 @@ file_list.new : \
 $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : Include_lines/file_list.new
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines $(LIB_COMPONENT_SRC_DIR)
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
 # 	@$(IVI_TOUCH) $@
 
 # ---------------------------------------------
@@ -236,7 +236,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : \
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines 
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines $(LIB_COMPONENT_SRC_DIR)
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
 #	@$(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
 
 # Convenience dummy target used by the script build-2. Using the target directly
@@ -292,7 +292,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed :
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 #	$(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
 	$(IVI_TOUCH) $@
 
 # Convenient dummy target that provides a synonym for
@@ -322,7 +322,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list :
 
 $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list 
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
 
 # Kobus: 19/01/02. Fine, but do we really need # Include_lines/Makefile-depend-incl-dot-h?
 #
@@ -332,7 +332,7 @@ $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)buil
 #
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h : $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list 
 	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
 
 include $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h
 
@@ -516,7 +516,7 @@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed : \
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
 	$(MAKE_SCRIPT_PATH)copy_if_different $@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 include $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)

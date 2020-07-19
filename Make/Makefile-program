@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25660 2020-07-19 14:38:29Z kobus $
+# $Id: Makefile-program 25664 2020-07-19 15:29:21Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -159,7 +159,7 @@ build : $(MAKE_PATH)build
 Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)build_file_list
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_file_list
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list
 # 	$(IVI_TOUCH) $@
 
 # ---------------------------------------------
@@ -188,7 +188,7 @@ Include_lines/file_list.new: \
 # 
 Include_lines/file_list.new : ./ $(FORCE_WITH_SUN5)
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_file_list 
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list 
 #	$(MAKE_SCRIPT_PATH)build_file_list 
 
 # Convenience dummy target used by the script build-2. Using the target directly
@@ -250,7 +250,7 @@ file_list.new: \
 Include_lines/include_lines : Include_lines/file_list.new
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list 
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines
 # 	@$(IVI_TOUCH) $@
 
 # ---------------------------------------------
@@ -261,7 +261,7 @@ Include_lines/include_lines : Include_lines/file_list.new
 Include_lines/new/% : % $(MAKE_SCRIPT_PATH)update_include_line_file
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)update_include_line_file '' $*
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ update_include_line_file '' $*
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)update_include_line_file '' $*
 
 # Hidden dependencies of tools on tools for Include_lines/include_lines.new. 
 #
@@ -284,7 +284,7 @@ Include_lines/include_lines.new : \
 Include_lines/include_lines.new : Include_lines/file_list $(NEW_INCLUDE_LINE_FILES)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_include_lines 
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines 
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines 
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -337,7 +337,7 @@ Include_lines/sub_libs_needed : Include_lines/file_list.new
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	$(MAKE_SCRIPT_PATH)build_file_list 
 #	$(MAKE_SCRIPT_PATH)build_include_lines -f 
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ build_include_lines -f 
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f 
 	$(IVI_TOUCH) $@
 
 # Convenience dummy target used by the script build-2. Using the target directly
@@ -606,7 +606,7 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : \
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
 	$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
