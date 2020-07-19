@@ -42,7 +42,10 @@ else
     set requesting_pid = $2 
 endif 
 
-set lock_label = "$1"
+# For set_lockfile_name we pretend the label is the command.
+set cmd_str = `echo ${1} | sed 's#.*/##'`
+set lock_label = "${cmd_str}"
+set first_arg = ""
 
 set exit_status = 0
 
@@ -118,7 +121,7 @@ else
         endif 
     else 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ reports lock file to remove (${lock_file}) does not exist."
-    end
+    endif
 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ivi_lock_remove ${lock_label} in `pwd` using IVI locking method."
 endif 
