@@ -54,26 +54,6 @@ if ($?IVI_DONT_LOCK) then
     exit 0
 endif
 
-set locking_method = ""
-
-if ($?IVI_LOCKING_METHOD) then
-    set  locking_method = "${IVI_LOCKING_METHOD}" 
-    if ((${locking_method} != "lockfile-progs") && (${locking_method} != "ivi")) then
-        echo "IVI_LOCKING_METHOD is set, but not to a viable locking method for ivi_lock_remove. Ignoring it."
-    endif 
-endif 
-
-if ("${locking_method}" == "") then
-    #
-    #   Disable until we can sort out wait time.
-    #
-    #   else if  ("${IVI_LOCKFILE_CREATE}" != "") then
-    #       set locking_method = "lockfile-progs"
-    # else
-        set locking_method = "ivi"
-    # endif 
-endif 
-
 if (! $?IVI_LOCKFILE_DIR) then
     setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
 endif 
@@ -87,7 +67,7 @@ onintr bail
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ running ivi_lock_remove ${lock_label}"
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
 
-if ("${locking_method}" == "lockfile-progs") then
+if ("${IVI_LOCK_PROGS_METHOD}" == "lockfile-progs") then
     ${VERBOSE_ECHO} "Process $$ running ivi_lock_remove ${lock_label} in `pwd` using lockfile-progs"
 
     lockfile-remove --lock-name argument ${lock_file}
@@ -112,7 +92,6 @@ else
             echo "Script ivi_lock_remove not removing lock file ${lock_file} for process ${requesting_pid} as it belongs to ${lock_proc}."
         else 
             ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ removing lock file ${lock_file}."
-            echo ${IVI_RM} ${lock_file}
             ${IVI_RM} ${lock_file}
             if (${status}) then
                 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ failed to remove lock file ${lock_file}."

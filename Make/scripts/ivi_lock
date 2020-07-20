@@ -38,9 +38,10 @@
 #     is taken as the precise lockfile, and the behaviour is similar to "flock",
 #     especially if flock is the underlying implementation.
 #
-#     If the environment variable IVI_LOCKING_METHOD is set, this script will
+#     If the environment variable IVI_FLOCK_METHOD is set, this script will
 #     use its value for the locking method. Current settings include "flock",
-#     "lockfile-progs", amd "ivi". 
+#     and "ivi". If "ivi" then the locking is further modifiable (on systems
+#     where there is a choice) via IVI_LOCK_PROGS_METHOD. 
 #
 #     If the environment variable IVI_LOCKFILE_DIR is set, this script will use
 #     its value as a directory to create lockfiles in. Otherwise, this script
@@ -50,8 +51,8 @@
 #     script runs the argument without any locking. The main purpose of this is
 #     to avoid deadlock when we effectively call scripts recursively. Normally
 #     there is a better way to accomplish what you want to do, but one instance
-#     where such a way is yet to be discovered is in repository synch'ing where
-#     we want 'to' and 'from' processes to share locks, but also call each
+#     where such a way is yet to be discovered is in repository synchronization
+#     where we want 'to' and 'from' processes to share locks, but also call each
 #     other.
 #
 # Deficiencies
@@ -124,37 +125,13 @@ if ($?IVI_DONT_LOCK) then
     exit ${status}
 endif
 
-set locking_method = ""
-
-
-if ($?IVI_LOCKING_METHOD) then
-    set  locking_method = "${IVI_LOCKING_METHOD}" 
-    echo locking_method: $locking_method
-    if ((${locking_method} != "flock") && (${locking_method} != "lockfile-progs") && (${locking_method} != "ivi")) then
-        echo "IVI_LOCKING_METHOD is set, but not to a viable locking method for ivi_lock. Ignoring it."
-    endif 
-endif 
-
-if ("${locking_method}" == "") then
-    if  ("${IVI_FLOCK}" != "") then
-        set locking_method = "flock" 
-    #
-    #   Disable until we can sort out wait time.
-    #
-    #   else if  ("${IVI_LOCKFILE_CREATE}" != "") then
-    #       set locking_method = "lockfile-progs"
-    else
-        set locking_method = "ivi"
-    endif 
-endif 
-
 onintr bail
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ called with args:"
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    $*"
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` "
 
-if  ("${locking_method}" == "flock") then
+if  ("${IVI_FLOCK_METHOD}" == "flock") then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using 'flock'"
 
     source ${MAKE_SCRIPT_PATH}set_lockfile_name
@@ -165,24 +142,6 @@ if  ("${locking_method}" == "flock") then
     if (! ${exit_status}) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using 'flock'"
     endif
-# else if ("${locking_method}" == "lockfile-progs") then
-#     echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
-# 
-#     # lockfile-create has its own timeout formula which defaults to 3 minutes.
-#     # We may need to wrap it in a loop. 
-#     echo "IGNORING timeout due to using ${locking_method}"
-# 
-#     source ${MAKE_SCRIPT_PATH}set_lockfile_name
-#
-#     lockfile-create --lock-name argument ${lock_file}
-#     if (${status}) exit ${status}
-#     ${full_cmd} 
-#     set exit_status = $status 
-#     lockfile-remove --lock-name argument ${lock_file}
-# 
-#     if (! ${exit_status}) then 
-#         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using lockfile-progs locking method."
-#     endif 
 else 
     # IVI locking method. Doing locking robustly in scripts is hard, but
     # often (e.g., mac) we do not have a good solution. The following is better

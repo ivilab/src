@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25668 2020-07-19 15:45:55Z kobus $
+# $Id: init_compile 25675 2020-07-20 23:46:43Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -10544,5 +10544,4 @@ if ($?IVI_VERBOSE) then
 endif 
 
 exit ${exit_status}
-
 

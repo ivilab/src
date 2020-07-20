@@ -27,7 +27,7 @@
 #     lock. It defaults to the PID of the process that called it (this script's
 #     parent process). 
 #
-#     If the environment variable IVI_LOCKING_METHOD is set, this script will
+#     If the environment variable IVI_LOCK_PROGS_METHOD is set, this script will
 #     use its value for the locking method. 
 #
 #     If the environment variable IVI_LOCKFILE_DIR is set, this script will use
@@ -118,26 +118,6 @@ endif
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ called with args: $*."
 
-set locking_method = ""
-
-if ($?IVI_LOCKING_METHOD) then
-    set  locking_method = "${IVI_LOCKING_METHOD}" 
-    if ((${locking_method} != "lockfile-progs") && (${locking_method} != "ivi")) then
-        echo "IVI_LOCKING_METHOD is set, but not to a viable locking method for ivi_lock_create. Ignoring it."
-    endif 
-endif 
-
-if ("${locking_method}" == "") then
-    #
-    #   Disable until we can sort out wait time.
-    #
-    #   else if  ("${IVI_LOCKFILE_CREATE}" != "") then
-    #       set locking_method = "lockfile-progs"
-    # else
-        set locking_method = "ivi"
-    # endif 
-endif 
-
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
 
 onintr bail
@@ -145,7 +125,7 @@ onintr bail
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ running lock_create ${lock_label} for ${requesting_pid}."
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
 
-if ("${locking_method}" == "lockfile-progs") then
+if ("${IVI_LOCK_PROGS_METHOD}" == "lockfile-progs") then
     echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
 
     # lockfile-create has its own timeout formula which defaults to 3 minutes.
@@ -317,7 +297,7 @@ else
         endif 
     end
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ set ${lock_label} on for process ${requesting_pid} in `pwd`."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ set lock with label ${lock_label} for process ${requesting_pid} in `pwd`."
     set end_time = `date +%H:%M:%S`
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ locking start time: ${start_time}."
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ locking   end time: ${end_time}."

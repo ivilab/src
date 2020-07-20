@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25664 2020-07-19 15:29:21Z kobus $
+# $Id: Makefile-program 25675 2020-07-20 23:46:43Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -247,7 +247,8 @@ file_list.new: \
 #     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
  
 # Include_lines/include_lines : 
-Include_lines/include_lines : Include_lines/file_list.new
+# Include_lines/include_lines : Include_lines/file_list.new
+Include_lines/include_lines : Include_lines/file_list
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list 
 	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines

@@ -301,6 +301,42 @@ endif
 
 # --------------------------------------------------------------------------------------------
 
+# Setting PREFER_LOCAL_LOCK may not have any effect unless you unset
+# IVI_HAVE_INIT_SCRIPTS first, as this file typically is only sourced onece. 
+#
+if (! $?IVI_LOCKFILE_DIR) then
+    if ((! $?PREFER_LOCAL_LOCK) && (-e /scratch)) then
+        setenv IVI_LOCKFILE_DIR /scratch/${USER}/lockfiles/
+    else
+        setenv IVI_LOCKFILE_DIR ${USER_TEMP_PATH}/lockfiles/
+    endif
+endif 
+
+# --------------------------------------------------------------------------------------------
+
+if (! $?IVI_FLOCK_METHOD) then
+    if  ("${IVI_FLOCK}" != "") then
+        setenv IVI_FLOCK_METHOD "flock" 
+    else
+        setenv IVI_FLOCK_METHOD "ivi"
+    endif 
+endif 
+
+if (! $?IVI_LOCK_PROGS_METHOD) then
+    #
+    #   Disable until we can sort out wait time.
+    #
+    #   if  ("${IVI_LOCKFILE_CREATE}" != "") then
+    #       set locking_method = "lockfile-progs"
+    #   else
+
+        setenv IVI_LOCK_PROGS_METHOD "ivi"
+
+    #   endif 
+endif 
+
+# --------------------------------------------------------------------------------------------
+
 if (${error_found}) exit 1 
 
 setenv IVI_HAVE_INIT_SCRIPTS 1 

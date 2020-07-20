@@ -9,13 +9,7 @@ else
     set cmd_plus_arg = "${cmd_str}_${first_arg}"
 endif 
 
-if (! $?IVI_LOCKFILE_DIR) then
-    if ((! $?PREFER_LOCAL_LOCK) && (-e /scratch)) then
-        setenv IVI_LOCKFILE_DIR /scratch/${USER}/lockfiles/
-    else
-        setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
-    endif
-endif 
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Source script set_lockfile_name using lockfile directory ${IVI_LOCKFILE_DIR}"
 
 ${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
 
@@ -41,4 +35,5 @@ else
     set lock_file = ${IVI_LOCKFILE_DIR}/${cmd_plus_arg}_${dir_str}.lock
 endif 
 
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Source script set_lockfile_name setting lock_file to ${lock_file}"
 

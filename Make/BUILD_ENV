@@ -2,10 +2,10 @@
 #               File for manipulating all IVI builds
 #               ====================================
 #
-# This file sets up environment options for all IVI builds. It can be overidden by
+# This file sets up environment options for all IVI builds. It can be overridden by
 # BUILD_ENV* files in program (like) directories, but it is too difficult and
-# hazordous for library code, so options for the library need to be in BUILD_ENV*
-# files in $MAKE_PATH. 
+# hazardous for library code, so options for the library need to be in BUILD_ENV*
+# files in $MAKE_PATH (e.g., possibly thus file). 
 
 # I am suggesting we force boost 1_69 or better.
 

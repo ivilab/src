@@ -196,7 +196,8 @@ file_list.new : \
 #     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
 
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : Include_lines/file_list.new
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : Include_lines/file_list.new
+$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
@@ -210,7 +211,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : Include_lines/file_list.ne
 $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/new/% : $(LIB_COMPONENT_REAL_SRC_DIR)% $(MAKE_SCRIPT_PATH)update_include_line_file
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	@$(MAKE_SCRIPT_PATH)update_include_line_file '$(LIB_COMPONENT_REAL_SRC_DIR)' $*
-	@$(MAKE_SCRIPT_PATH)ivi_make_for_lock 30 $@ update_include_line_file '$(LIB_COMPONENT_REAL_SRC_DIR)' $*
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ update_include_line_file '$(LIB_COMPONENT_REAL_SRC_DIR)' $*
 
 $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/file_list 
 	$(IVI_MKDIR) $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines
@@ -234,7 +235,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : \
 
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_NEW_INCLUDE_LINE_FILES)
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines 
+$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines 
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
 #	@$(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
