@@ -135,7 +135,7 @@
 #           built regardless of this directive.
 #
 # |      skip_depend
-#           This disables forced makefile building 
+#           This disables forced makefile rebuilding 
 #
 # |      skip_depend_lib
 #           This disables forced makefile building in the library directory. 
@@ -1807,7 +1807,6 @@ echo -------------------------------------------------------
 echo Make_ivi: Compiling programs
 echo -------------------------------------------------------
 
-XXX
 foreach mi_dir ($prog_dirs)
     if (! -d "${mi_dir}") then
         if ("${mi_dir}" != "src_dist_files") then 

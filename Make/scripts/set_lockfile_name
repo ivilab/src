@@ -9,12 +9,12 @@ else
     set cmd_plus_arg = "${cmd_str}_${first_arg}"
 endif 
 
-${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Source script set_lockfile_name using lockfile directory ${IVI_LOCKFILE_DIR}"
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Source script set_lockfile_name using lockfile directory ${IVI_LOCKFILE_PATH}"
 
-${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
+${IVI_MKDIR} "${IVI_LOCKFILE_PATH}"
 
 if ($status) then
-    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_DIR}"
+    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_PATH}"
     exit 1
 endif 
 
@@ -29,10 +29,10 @@ if ($?IVI_LOCKFILE_NAME) then
     else if (${looks_like_path}) then
         set lock_file = "`pwd`/${IVI_LOCKFILE_NAME}"
     else 
-        set lock_file = ${IVI_LOCKFILE_DIR}/${IVI_LOCKFILE_NAME}.lock
+        set lock_file = ${IVI_LOCKFILE_PATH}${IVI_LOCKFILE_NAME}.lock
     endif 
 else
-    set lock_file = ${IVI_LOCKFILE_DIR}/${cmd_plus_arg}_${dir_str}.lock
+    set lock_file = ${IVI_LOCKFILE_PATH}${cmd_plus_arg}_${dir_str}.lock
 endif 
 
 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Source script set_lockfile_name setting lock_file to ${lock_file}"

@@ -7,7 +7,7 @@
 #
 # This file contains overlap between what general scripts need and what
 # compiling needs. It is sourced from init_compile, and possibly from other
-# scripts, and often from .cshrc or .tcshrc.
+# scripts, and often from .tcshrc.
 #
 # Rather than select exactly the overlap, we include all members of a logical
 # group, e.g., all variables about Make paths or general system commands. 
@@ -87,7 +87,7 @@ setenv BEEP ''
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
 # Kobus needs to sync this code with duplicated code in his .cshrc
 if ($?IVI_VERBOSE) then
-    setenv VERBOSE_ECHO "echo "
+    setenv VERBOSE_ECHO "echo IVB: "
 else if ($?tcsh) then
     setenv VERBOSE_ECHO ": "
 else 
@@ -99,7 +99,7 @@ setenv VERBOSE_INDENT ""
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
 # Kobus needs to sync this code with duplicated code in his .cshrc
 if ($?IVI_VERBOSE_2) then
-    setenv VERBOSE_ECHO_2 "echo "
+    setenv VERBOSE_ECHO_2 "echo VBV2: "
 else if ($?tcsh) then
     setenv VERBOSE_ECHO_2 ": "
 else 
@@ -304,11 +304,11 @@ endif
 # Setting PREFER_LOCAL_LOCK may not have any effect unless you unset
 # IVI_HAVE_INIT_SCRIPTS first, as this file typically is only sourced onece. 
 #
-if (! $?IVI_LOCKFILE_DIR) then
+if (! $?IVI_LOCKFILE_PATH) then
     if ((! $?PREFER_LOCAL_LOCK) && (-e /scratch)) then
-        setenv IVI_LOCKFILE_DIR /scratch/${USER}/lockfiles/
+        setenv IVI_LOCKFILE_PATH /scratch/${USER}/lockfiles/
     else
-        setenv IVI_LOCKFILE_DIR ${USER_TEMP_PATH}/lockfiles/
+        setenv IVI_LOCKFILE_PATH ${USER_TEMP_PATH}lockfiles/
     endif
 endif 
 

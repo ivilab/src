@@ -44,11 +44,9 @@ if ("${num_args}" > 2) then
 endif 
 
 # This is meant to be at the top recursive level.
-setenv IVI_VERBOSE_INDENT ""
+setenv VERBOSE_INDENT ""
 
-if ($?IVI_VERBOSE) then
-    echo "Entering script build_include_lines in directory $cwd with args '$*'."
-endif
+${VERBOSE_ECHO} "Entering script build_include_lines in directory $cwd with args '$*'."
 
 set force_build_sub_libs_arg = ""
 set dir_arg = ""
@@ -66,20 +64,19 @@ end
  
 # 2019/06/15
 # Previously we had logic to reduce the number of processes, but we are not
-# currently forking in build_sub_libs_needed, and the code to do (available in
-# build_include_line_files.BROKEN_PRECOMPUTE) was unclear and brittle. So we
-# have removed it. 
+# currently forking in build_sub_libs_needed, and the code to do so was unclear
+# and brittle. So we have removed it. 
 #
 # Retrospective: This is an awkward process to make parallel as the number of
 # processes created can be large. If we want it to run faster we should consider
 # speeding up the bottleneck which is build_makefile_libs_needed, and which
 # might not even need to be part of this process. See
-# SHADDOW_BUILD_MAKEFILE_LIBS in build_include_lines_2. The main issue here
+# SHADOW_BUILD_MAKEFILE_LIBS in build_include_lines_2. The main issue here
 # might be overly relying on gmake which makes things that are included (which
 # is the case with Makefile-libs-needed). See build-2 for additional code that
 # tries to protect against this. 
 
-set exit_status = 0
+# set exit_status = 0
 
 if ("${dir_arg}" != "") then
     cd ${dir_arg} > /dev/null
@@ -100,14 +97,13 @@ if (${status}) exit $status
 # 
 # if ($?IVI_VERBOSE) then
 #     set end_time = `date +%H:%M:%S`
-#     echo "${IVI_VERBOSE_INDENT}Script build_include_lines_2 finished with status ${exit_status}"
-#     echo "${IVI_VERBOSE_INDENT}    Start time: ${start_time}"
-#     echo "${IVI_VERBOSE_INDENT}    End time:   ${end_time}"
+#     echo "${VERBOSE_INDENT}Script build_include_lines_2 finished with status ${exit_status}"
+#     echo "${VERBOSE_INDENT}    Start time: ${start_time}"
+#     echo "${VERBOSE_INDENT}    End time:   ${end_time}"
 #     echo " "
-#     echo "${IVI_VERBOSE_INDENT}Leaving script build_include_lines in directory $cwd with status ${exit_status}."
+#     echo "${VERBOSE_INDENT}Leaving script build_include_lines in directory $cwd with status ${exit_status}."
 # endif
 # 
 # exit ${exit_status} 
-
 
 

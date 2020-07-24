@@ -105,11 +105,18 @@ build : $(LIB_COMPONENT_SRC_DIR)build
 # Include_lines/file_list : \
 #     $(MAKE_SCRIPT_PATH)build_file_list
 
+# Because the target is not gaurenteed to be updated, but has dependencies on
+# tools, we could get out of date in this case. Hence we rely on build_file_list
+# to check the tools when they could have an effect. 
+#
+# Since we hide dependencies, we need to track that this has been executed for
+# ivi_lock_for_make, which we do via $@.made 
+#
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-#	$(IVI_TOUCH) $@
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@.made $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
 
 # ---------------------------------------------
 # Include_lines/file_list.new
@@ -195,13 +202,20 @@ file_list.new : \
 #     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
 #     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
 
+# Because the target is not gaurenteed to be updated, but has dependencies on
+# tools, we could get out of date in this case. Hence we rely on
+# build_include_lines to check the tools when they could have an effect. 
+#
+# Since we hide dependencies, we need to track that this has been executed for
+# ivi_lock_for_make, which we do via $@.made 
+#
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : 
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : Include_lines/file_list.new
 $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
-# 	@$(IVI_TOUCH) $@
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@.made $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
 
 # ---------------------------------------------
 # Include_lines/include_lines.new 
@@ -285,20 +299,24 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : \
    $(MAKE_SCRIPT_PATH)get_local_include_dirs \
    $(MAKE_SCRIPT_PATH)build_sub_libs_needed
 
-# The script build_include_lines updates Include_lines/sub_libs_needed only
-# if needed.  Because the target is not guaranteed to be updated, but has the
-# dependencies on tools, we need to touch $@. 
+# Because the target is not gaurenteed to be updated, but has dependencies on
+# tools, we could get out of date in this case. Hence we rely on
+# build_include_lines to check the tools when they could have an effect. 
 #
-$(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : 
+# Since we hide dependencies, we need to track that this has been executed for
+# ivi_lock_for_make, which we do via $@.made 
+#
+$(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 #	$(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-	$(IVI_TOUCH) $@
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
 
 # Convenient dummy target that provides a synonym for
 # Include_lines/sub_libs_needed.
 #
+.PHONY : sub_libs_needed
 sub_libs_needed : $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed
 
 ################################################################################
@@ -316,14 +334,17 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state :
 
 ################################################################################
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list : 
-	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
-	$(IVI_RM) $@.new
-	$(IVI_TOUCH) $@
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list : 
+# 	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)Include_lines
+# 	$(IVI_RM) $@.new
+# 	$(IVI_TOUCH) $@
 
-$(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list 
+$(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list 
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
+
+# Kobus: 20/07/22. Double fine. I am commenting out all references to
+# Makefile-depend-incl-dot-h in this file and in build_incl_dot_h. 
 
 # Kobus: 19/01/02. Fine, but do we really need # Include_lines/Makefile-depend-incl-dot-h?
 #
@@ -331,11 +352,11 @@ $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)buil
 # build_incl_dot_h only if *_incl.h does not exist. So we need to remove it
 # before calling build_incl_dot_h.
 #
-$(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h : $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list 
-	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h : $(LIB_COMPONENT_SRC_DIR)Include_lines/header_file_list 
+# 	$(ECHO_MAKE_CMD)$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h
+# 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
 
-include $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h
+# include $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h
 
 ################################################################################
 
@@ -372,6 +393,7 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
     $(MAKE_PATH)Makefile-library \
     $(MAKE_SCRIPT_PATH)stream_file_names \
     $(MAKE_SCRIPT_PATH)ivi_makedepend \
+    $(MAKE_SCRIPT_PATH)build_library_makefile_depend \
     $(LIB_COMPONENT_SRC_DIR)Makefile-library \
     $(LIB_COMPONENT_SRC_DIR)Makefile-library.$(MAKE_FLAVOR) 
 
@@ -387,102 +409,14 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
 # "SAVE" in the name. Second, the lines below containing "SAVE" can be
 # uncommented to create addtional intermediate files. 
 #
-$(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
+$(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
+# $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 	@$(IVI_ECHO)  " "
 	@$(IVI_ECHO)  "================================================================================"
-# Commented out to prevent 'word too long' errors on some systems
-# -- Kyle  Jan 15, 2011
 	@$(IVI_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend because of $?" 
 	@$(IVI_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend" 
-	@$(IVI_ECHO)  " "
-	$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -s > $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets
-	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-obj-targets.swp
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-SAVE
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets \
-	        $(VIM_IO_REDIRECTION)
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-SAVE-2
-	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend
-#
-	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-obj-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets \
-	        $(VIM_IO_REDIRECTION)
-	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_OBS/' > $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE
-#
-	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_LOCAL_OBS/' | sed 's/^\( *\)\$$(\([^)]*\)_DIR)\$$(\(.*OBJ_DIR\))/\1$$(\3)$$(\2_LIB_PREFIX)\//'  >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-2
-#
-#   Not currently used, but might be useful if we choose to build archives by
-#   changing to LD_OBJ_DIR to shorten the archive command. 
-#
-# 	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_L2_OBS/' | sed 's/^\( *\)\$$(\([^)]*\)_DIR)\$$(.*OBJ_DIR)/\1$$(\2_LIB_PREFIX)\//'  >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-# 	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-# 	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#
-	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets 's/OBS/LIB_COMPONENT_SHARED_OBS/' | sed 's/(OBJ_DIR)/&$$(SHARED_DIR)/'  | sed 's/(CXX_OBJ_DIR)/&$$(SHARED_DIR)/' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-3
-#
-	sed < $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets '/OBS = /d' | sed 's/^ *//' | sed 's/[ \\]*$$//' | sed 's/\(.*\)(\([CX_]*\)OBJ_DIR)\(.*\)$$/\1(\2OBJ_DIR)$$(SHARED_DIR)\3 : &/' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-4
-#
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend-SAVE
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend \
-	        $(VIM_IO_REDIRECTION)
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend-SAVE-2
-	$(IVI_CAT) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-obj-targets-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-5
-#
-	$(MAKE_SCRIPT_PATH)ivi_makedepend '$(LIB_COMPONENT_REAL_SRC_DIR)' -c  -Y -w20000 \ $(MD_DEFINES) -DMAKE_DEPEND $(LIB_BASE_INCLUDES) >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	$(MAKE_SCRIPT_PATH)ivi_makedepend '$(LIB_COMPONENT_REAL_SRC_DIR)' -x  -Y -w20000 \ $(MD_DEFINES) -DMAKE_DEPEND $(LIB_BASE_INCLUDES) >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-6
-#
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -c2man > $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs-SAVE
-	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-depend-c2man-obs.swp
-	@$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs \
-	        $(VIM_IO_REDIRECTION)
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs-SAVE-2
-	@$(IVI_ECHO) 'LIB_COMPONENT_DOC_FILES = \' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@sed 's/^ *\(.*)\)\([^ ]*\).*$$/    \1$$(MAKE_DOC_DIR)\2.made \\/' $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs >>  $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-c2man-obs
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-7
-#
-	$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -doxygen -t | sed 's/1/LIB_COMPONENT_DOXYGEN_TARGET = doxygen_$$(LIB_COMPONENT_PREFIX)/' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) " " >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-8
-#
-	@$(IVI_ECHO) 'LIB_COMPONENT_DOXYGEN_FILES = \' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	$(MAKE_SCRIPT_PATH)stream_file_names '$(LIB_COMPONENT_REAL_SRC_DIR)' -doxygen > $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs-SAVE
-	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR).Makefile-depend-doxygen-obs.swp
-	@$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs \
-	        $(VIM_IO_REDIRECTION)
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs-SAVE-2
-	@sed 's/^ *\(.*)\)\([^ ]*\).*$$/    \1\2 \\/' $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs >>  $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_RM) $(LIB_COMPONENT_SRC_DIR)Makefile-depend-doxygen-obs
-	@$(IVI_ECHO) ' ' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-	@$(IVI_ECHO) ' ' >> $(LIB_COMPONENT_SRC_DIR)Makefile-depend
-#	$(IVI_CP) $(LIB_COMPONENT_SRC_DIR)Makefile-depend $(LIB_COMPONENT_SRC_DIR)Makefile-depend-SAVE-9
-#
-	$(MAKE_SCRIPT_PATH)copy_if_different  $(LIB_COMPONENT_SRC_DIR)Makefile-library $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state
-#
+	@$(IVI_ECHO)  " " 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_library_makefile_depend $(LIB_COMPONENT_PREFIX) LIB_COMPONENT $(LIB_COMPONENT_REAL_SRC_DIR)
 	@$(IVI_ECHO)  " "
 	@$(IVI_ECHO)  "        $(LIB_COMPONENT_SRC_DIR)Makefile-depend is built" 
 	@$(IVI_ECHO)  "================================================================================"
@@ -517,8 +451,8 @@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed : \
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(MAKE_SCRIPT_PATH)copy_if_different $@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)copy_if_different $@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 include $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 	
@@ -536,7 +470,7 @@ depend_$(LIB_COMPONENT_PREFIX) : \
     $(LIB_COMPONENT_SRC_DIR)Makefile-library.$(MAKE_FLAVOR) \
     $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new \
     $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new \
-    $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h \
+#    $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h \
     $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 
 ################################################################################

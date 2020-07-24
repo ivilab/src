@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25675 2020-07-20 23:46:43Z kobus $
+# $Id: Makefile-program 25676 2020-07-24 17:47:13Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -116,6 +116,13 @@ Makefile : $(MAKE_PATH)Makefile
 	$(IVI_CP) $(MAKE_PATH)Makefile $@ 
 	@$(ECHO_UNLESS_QUIET) " "
 
+Makefile-2 : $(MAKE_PATH)Makefile-2
+	@$(ECHO_UNLESS_QUIET) " "
+	@$(ECHO_UNLESS_QUIET) "Updating 'Makefile-2' from $(MAKE_PATH)."
+	@$(ECHO_UNLESS_QUIET) "This will affect future compiles, but not necessarily this one."
+	$(IVI_CP) $(MAKE_PATH)Makefile-2 $@ 
+	@$(ECHO_UNLESS_QUIET) " "
+
 # This won't happen very often because build updates itself, but it is possible.
 #
 build : $(MAKE_PATH)build
@@ -156,11 +163,18 @@ build : $(MAKE_PATH)build
 # Include_lines/file_list : \
 #     $(MAKE_SCRIPT_PATH)build_file_list
 
+# Because the target is not gaurenteed to be updated, but has dependencies on
+# tools, we could get out of date in this case. Hence we rely on build_file_list
+# to check the tools when they could have an effect. 
+#
+# Since we hide dependencies, we need to track that this has been executed for
+# ivi_lock_for_make, which we do via $@.made 
+
 Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)build_file_list
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list
-# 	$(IVI_TOUCH) $@
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@.made $(MAKE_SCRIPT_PATH)build_file_list
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
 
 # ---------------------------------------------
 # Include_lines/file_list.new
@@ -188,7 +202,7 @@ Include_lines/file_list.new: \
 # 
 Include_lines/file_list.new : ./ $(FORCE_WITH_SUN5)
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list 
 #	$(MAKE_SCRIPT_PATH)build_file_list 
 
 # Convenience dummy target used by the script build-2. Using the target directly
@@ -246,13 +260,20 @@ file_list.new: \
 #     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
 #     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
  
+# Because the target is not gaurenteed to be updated, but has dependencies on
+# tools, we could get out of date in this case. Hence we rely on
+# build_include_lines to check the tools when they could have an effect. 
+#
+# Since we hide dependencies, we need to track that this has been executed for
+# ivi_lock_for_make, which we do via $@.made 
+
 # Include_lines/include_lines : 
 # Include_lines/include_lines : Include_lines/file_list.new
 Include_lines/include_lines : Include_lines/file_list
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list 
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines
-# 	@$(IVI_TOUCH) $@
+	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@.made $(MAKE_SCRIPT_PATH)build_include_lines
+	@$(IVI_TOUCH) $@.made
 
 # ---------------------------------------------
 # Include_lines/include_lines.new 
@@ -262,7 +283,7 @@ Include_lines/include_lines : Include_lines/file_list
 Include_lines/new/% : % $(MAKE_SCRIPT_PATH)update_include_line_file
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)update_include_line_file '' $*
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)update_include_line_file '' $*
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)update_include_line_file '' $*
 
 # Hidden dependencies of tools on tools for Include_lines/include_lines.new. 
 #
@@ -330,16 +351,22 @@ Include_lines/sub_libs_needed : \
     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
 
 # The script build_include_lines updates Include_lines/sub_libs_needed only if
-# needed.  Because the target is not gaurenteed to be updated, but has the
-# dependencies on tools, we need to touch $@. 
+# needed.  
 #
-# Include_lines/sub_libs_needed : 
-Include_lines/sub_libs_needed : Include_lines/file_list.new 
+# Because the target is not gaurenteed to be updated, but has dependencies on
+# tools, we could get out of date in this case. Hence we rely on
+# build_include_lines to check the tools also. 
+#
+# Since we hide dependencies, we need to track that this has been executed for
+# ivi_lock_for_make, which we do via $@.made 
+#
+# Include_lines/sub_libs_needed : Include_lines/file_list.new 
+Include_lines/sub_libs_needed : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	$(MAKE_SCRIPT_PATH)build_file_list 
 #	$(MAKE_SCRIPT_PATH)build_include_lines -f 
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f 
-	$(IVI_TOUCH) $@
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f 
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -363,12 +390,12 @@ Makefile-dirs: \
 
 # The script build_include_lines updates Include_lines/Makefile-dirs only if
 # needed. Because the target is not guaranteed to be updated, but has the
-# dependencies on various tools, we need to touch $@. 
+# dependencies on various tools, and is depended upon, we need to touch $@. 
 #
-Makefile-dirs : 
-	$(MAKE_SCRIPT_PATH)build_file_list 
-	$(MAKE_SCRIPT_PATH)build_include_lines
-	$(IVI_TOUCH) $@
+Makefile-dirs : Include_lines/sub_libs_needed 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
 
 include Makefile-dirs
 
@@ -417,6 +444,7 @@ Makefile-depend : \
     $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
 
 Makefile-depend : \
+    $(MAKE_SCRIPT_PATH)build_program_makefile_depend \
     $(MAKE_SCRIPT_PATH)ivi_makedepend \
     $(MAKE_SCRIPT_PATH)stream_file_names \
     $(MAKE_SCRIPT_PATH)stream_prog_lib_obs \
@@ -447,139 +475,10 @@ Makefile-depend : Include_lines/file_list Include_lines/include_lines $(TEST_SUB
 	@$(ECHO_UNLESS_QUIET)  "================================================================================"
 # Commented out to prevent 'word too long' errors on some systems
 # -- Kyle  Jan 15, 2011
-# 	@$(IVI_ECHO)  "Building Makefile-depend because of $?" 
-	@$(ECHO_UNLESS_QUIET)  "Building Makefile-depend" 
+	@$(IVI_ECHO)  "Building Makefile-depend because of $?" 
+# 	@$(ECHO_UNLESS_QUIET)  "Building Makefile-depend" 
 	@$(ECHO_UNLESS_QUIET)  " "
-	$(MAKE_SCRIPT_PATH)stream_file_names -s -m > Makefile-program-targets
-# 	$(IVI_CP) Makefile-program-targets Makefile-program-targets-SAVE
-	$(IVI_CP) Makefile-program-targets Makefile-misc-targets
-	$(IVI_CP) Makefile-program-targets Makefile-work-targets
-	$(IVI_CP) Makefile-program-targets Makefile-user-targets
-	$(IVI_CP) Makefile-program-targets Makefile-program-targets-depend
-#
-# 	$(IVI_CP) Makefile-program-targets Makefile-program-targets-SAVE
-# 	$(IVI_RM) .Makefile-program-targets.swp
-# 	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) Makefile-program-targets \
-# 	        $(VIM_IO_REDIRECTION)
-# 	$(IVI_CP) Makefile-program-targets Makefile-program-targets-SAVE-2
-#
-	@$(IVI_RM) .Makefile-misc-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Misc.$(VIM_SUFFIX) Makefile-misc-targets \
-	        $(VIM_IO_REDIRECTION)
-#
-	@$(IVI_RM) .Makefile-work-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Work.$(VIM_SUFFIX) Makefile-work-targets \
-	        $(VIM_IO_REDIRECTION)
-#
-	@$(IVI_RM) .Makefile-user-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)User.$(VIM_SUFFIX) Makefile-user-targets \
-	        $(VIM_IO_REDIRECTION)
-#
-	@$(IVI_RM) .Makefile-program-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Programs.$(VIM_SUFFIX) Makefile-program-targets \
-	        $(VIM_IO_REDIRECTION)
-#
-	@$(IVI_RM) .Makefile-program-targets-depend.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) Makefile-program-targets-depend \
-	        $(VIM_IO_REDIRECTION)
-	$(IVI_CAT) Makefile-program-targets-depend >> Makefile-program-targets
-#
-	$(MAKE_SCRIPT_PATH)stream_file_names -s -m -v | sed '/\<version\.[ch][px]*\>/d' > Makefile-obj-targets
-# 	$(IVI_CP) Makefile-obj-targets Makefile-obj-targets-SAVE
-	$(IVI_CP) Makefile-obj-targets Makefile-local-obs
-	@$(IVI_RM) .Makefile-local-obs.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Local_obs.$(VIM_SUFFIX) Makefile-local-obs \
-	        $(VIM_IO_REDIRECTION)
-# 	$(IVI_CP) Makefile-obj-targets Makefile-local-obs-SAVE
-	@$(IVI_RM) .Makefile-obj-targets.swp
-# 	$(IVI_CP) Makefile-obj-targets Makefile-obj-targets-SAVE-2
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) Makefile-obj-targets \
-	        $(VIM_IO_REDIRECTION)
-# 	$(IVI_CP) Makefile-obj-targets Makefile-obj-targets-SAVE-3
-	$(IVI_CP) Makefile-obj-targets Makefile-obj-targets-depend
-# 	$(IVI_CP) Makefile-obj-targets-depend Makefile-obj-targets-depend-SAVE
-	@$(IVI_RM) .Makefile-obj-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) Makefile-obj-targets \
-	        $(VIM_IO_REDIRECTION)
-# 	$(IVI_CP) Makefile-obj-targets Makefile-obj-targets-SAVE-4
-	$(IVI_CAT) Makefile-local-obs >> Makefile-program-targets
-	$(IVI_CAT) Makefile-obj-targets >> Makefile-program-targets
-#
-#   Breaking style here a bit. We could have used a vim script, but instead we use
-#   a regular script.
-	$(MAKE_SCRIPT_PATH)stream_prog_lib_obs >> Makefile-program-targets
-#
-	@$(IVI_RM) .Makefile-obj-targets-depend.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) Makefile-obj-targets-depend \
-	        $(VIM_IO_REDIRECTION)
-# 	$(IVI_CP) Makefile-obj-targets-depend Makefile-obj-targets-depend-SAVE-2
-	$(IVI_CAT) Makefile-obj-targets-depend >> Makefile-program-targets
-	@$(IVI_RM) Makefile-obj-targets-depend
-	@$(IVI_RM) Makefile-local-obs
-	@$(IVI_RM) Makefile-obj-targets
-#
-	$(MAKE_SCRIPT_PATH)stream_file_names -s -m -v | sed -n '/\<version\.[ch][px]*\>/p' > Makefile-version-obj-targets
-# 	$(IVI_CP) Makefile-version-obj-targets	Makefile-version-obj-targets-SAVE
-	@$(IVI_RM) .Makefile-version-obj-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) Makefile-version-obj-targets \
-	        $(VIM_IO_REDIRECTION)
-# 	$(IVI_CP) Makefile-version-obj-targets	Makefile-version-obj-targets-SAVE-2
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) Makefile-version-obj-targets \
-	        $(VIM_IO_REDIRECTION)
-	$(IVI_CAT) Makefile-version-obj-targets >> Makefile-program-targets
-	$(IVI_ECHO) " " >> Makefile-program-targets
-	$(IVI_ECHO) " " >> Makefile-program-targets
-	$(IVI_RM) Makefile-version-obj-targets
-	$(IVI_TOUCH) fake_out_glob.help 
-	$(IVI_LS) *.help > Makefile-help-targets
-	$(IVI_RM) fake_out_glob.help 
-	$(IVI_RM) .Makefile-help-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) Makefile-help-targets \
-	        $(VIM_IO_REDIRECTION)
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Help.$(VIM_SUFFIX) Makefile-help-targets \
-	        $(VIM_IO_REDIRECTION)
-	$(IVI_TOUCH) fake_out_glob.w 
-	$(IVI_LS) *.w > Makefile-writeup-targets
-	@$(IVI_RM) fake_out_glob.w 
-	@$(IVI_RM) .Makefile-writeup-targets.swp
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) Makefile-writeup-targets \
-	        $(VIM_IO_REDIRECTION)
-	$(VIM_FOR_MAKE) $(VIM_SCRIPT_OPERATOR) $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX) Makefile-writeup-targets \
-	        $(VIM_IO_REDIRECTION)
-	$(IVI_ECHO) " " >> Makefile-writeup-targets
-	$(MAKE_SCRIPT_PATH)stream_script_names | sed '/\<build\>/d' | sed 's/\(.*\)/$$(MAKE_DOC_DIR)doc_program.made : $$(MAKE_DOC_DIR)\1\.shell.1/' >> Makefile-writeup-targets
-	$(IVI_ECHO) " " >> Makefile-writeup-targets
-	$(IVI_ECHO) " " >> Makefile-writeup-targets
-#
-	$(IVI_CAT) /dev/null > Makefile-depend-headers 
-	$(MAKE_SCRIPT_PATH)ivi_makedepend '' -c -Y -w20000 -DMAKE_DEPEND  -DMAKE_DEPEND_GEN_H $(PROG_BASE_INCLUDES)  > Makefile-depend-src 
-	$(MAKE_SCRIPT_PATH)ivi_makedepend '' -x -Y -w20000 -DMAKE_DEPEND  -DMAKE_DEPEND_GEN_H $(PROG_BASE_INCLUDES)  >> Makefile-depend-src 
-#
-	@$(IVI_ECHO) " " > Makefile-depend
-	@$(IVI_ECHO) "#" >> Makefile-depend
-	@$(IVI_ECHO) "# Machine generated file to set make targets" >> Makefile-depend
-	@$(IVI_ECHO) "#" >> Makefile-depend
-	@$(IVI_ECHO) " " >> Makefile-depend
-	$(IVI_CAT) \
-            Makefile-misc-targets \
-            Makefile-work-targets \
-            Makefile-user-targets \
-            Makefile-program-targets \
-            Makefile-help-targets \
-            Makefile-writeup-targets \
-            Makefile-depend-headers \
-            Makefile-depend-src \
-               >> Makefile-depend 
-#
-	@$(IVI_RM) Makefile-misc-targets
-	@$(IVI_RM) Makefile-work-targets
-	@$(IVI_RM) Makefile-user-targets
-	@$(IVI_RM) Makefile-program-targets
-	@$(IVI_RM) Makefile-program-targets-depend
-	@$(IVI_RM) Makefile-help-targets
-	@$(IVI_RM) Makefile-writeup-targets
-	@$(IVI_RM) Makefile-depend-headers
-	@$(IVI_RM) Makefile-depend-src
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_program_makefile_depend
 	@$(ECHO_UNLESS_QUIET)  " "
 	@$(ECHO_UNLESS_QUIET)  "                         Makefile-depend is built" 
 	@$(ECHO_UNLESS_QUIET)  "================================================================================"
@@ -607,8 +506,8 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : \
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 

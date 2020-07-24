@@ -12,14 +12,10 @@ if (${num_args} < 2) then
     exit 1 
 endif 
 
-if (! $?IVI_VERBOSE_INDENT) then
-    setenv IVI_VERBOSE_INDENT ""
-endif 
-
 if ($?IVI_VERBOSE) then
     ${P_STDERR} " "
-    ${P_STDERR} "${IVI_VERBOSE_INDENT}Script ivi_makedepend called with arguments: $1 $2"
-    ${P_STDERR} "in directory `pwd`."
+    ${P_STDERR} "${VERBOSE_INDENT}Script ivi_makedepend called with arguments: $1 $2"
+    ${P_STDERR} "${VERBOSE_INDENT}in directory `pwd`."
 endif
 
 set dir = "$1"
@@ -67,9 +63,9 @@ if ("${files}" != "") then
 
     if ($?IVI_VERBOSE) then
         ${P_STDERR} " "
-        ${P_STDERR} "${IVI_VERBOSE_INDENT}Script ivi_makedepend is executing: "
-        ${P_STDERR} "${IVI_VERBOSE_INDENT}    ${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files}"
-        ${P_STDERR} "in directory `pwd`."
+        ${P_STDERR} "${VERBOSE_INDENT}Script ivi_makedepend is executing: "
+        ${P_STDERR} "${VERBOSE_INDENT}    ${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files}"
+        ${P_STDERR} "${VERBOSE_INDENT}in directory `pwd`."
     endif
 
     (${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files} > /dev/null) >& makedepend.err
@@ -85,7 +81,7 @@ if ("${files}" != "") then
     endif
 
     if ($?IVI_VERBOSE) then
-        ${P_STDERR} "${IVI_VERBOSE_INDENT}Done ivi_makedepend in `pwd`."
+        ${P_STDERR} "${VERBOSE_INDENT}Done ivi_makedepend in `pwd`."
         ${P_STDERR} " "
     endif
 

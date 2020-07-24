@@ -56,23 +56,22 @@ endif
 set build_dir_path = "${cwd}"
 
 set ppid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} entering script build_makefile_libs_needed_2 in directory ${build_dir_path}."
+if (${status}) exit ${status}
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_libs_needed_2 in directory ${build_dir_path}."
 
 if (($?IVI_LOCK_TIME_STAMP) && (-e Makefile-libs-needed${VAR_CACHE_SUFFIX})) then
     set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-libs-needed${VAR_CACHE_SUFFIX}`
 
     if (${can_skip}) then
-        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Skipping build_makefile_libs_needed_2 in `pwd` as Makefile-libs-needed${VAR_CACHE_SUFFIX} is new."
-        # set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
-        # echo $BEEP
-        
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Skipping build_makefile_libs_needed_2 in `pwd` as Makefile-libs-needed${VAR_CACHE_SUFFIX} is new."
         exit 0
     endif 
 else 
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} reports Makefile-libs-needed${VAR_CACHE_SUFFIX} does not exist in script build_makefile_libs_needed_2 with directory ${build_dir_path}."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ locked by ${ppid} reports Makefile-libs-needed${VAR_CACHE_SUFFIX} does not exist in script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 endif 
 
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} continuing with script build_makefile_libs_needed_2 with directory ${build_dir_path}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ locked by ${ppid} continuing with script build_makefile_libs_needed_2 with directory ${build_dir_path}."
 
 set target_file_name =  "Include_lines/Makefile-libs-needed/Makefile-libs-needed${VAR_CACHE_SUFFIX}"
 set output_file_name = Makefile-libs-needed.$$
@@ -115,7 +114,7 @@ endif
 # command for linking to deal with it. 
 #
 
-${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part one."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_makefile_libs_needed_2 part one."
 
 set have_cpp = `${MAKE_SCRIPT_PATH}stream_file_names -t -x` 
 
@@ -155,7 +154,7 @@ set noglob
 # init_compile. 
 #
 
-${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part two."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_makefile_libs_needed_2 part two."
 
 # This is not needed so far as we just propogate CUDA support and use that. 
 #
@@ -201,7 +200,7 @@ endif
 # in the directory are provided on the compile line whenever code in this
 # directory is compiled.
 
-${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part three."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_makefile_libs_needed_2 part three."
 
 foreach ivi_have (${ivi_haves})
     set lib = `echo ${ivi_have} | sed 's/IVI_HAVE_/LIB_/'`
@@ -236,7 +235,7 @@ endif
 # XXX_EXTRA_LIB_CC_FLAGS, XXX_EXTRA_LIB_CC_FLAGS, and XXX_EXTRA_LIB_CC_FLAGS.
 #
 
-${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part four."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_makefile_libs_needed_2 part four."
 
 set used_libs = ""
 set first_item = 1
@@ -322,7 +321,7 @@ endif
 # symbol(s) WITH_LIBS_HAVE_XXX that propagates compile information, much like
 # NEED_LIB_XXX propagates linking information. 
     
-${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 part five."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_makefile_libs_needed_2 part five."
 
 set have_header_files = `${MAKE_SCRIPT_PATH}stream_file_names -h Include_lines -t`
 set first_with_libs_have = 1 
@@ -408,7 +407,7 @@ endif
 echo " "  >> ${output_file_name}
 echo " "  >> ${output_file_name}
 
-${VERBOSE_ECHO_2} "${IVI_VERBOSE_INDENT}Script build_makefile_libs_needed_2 is wrapping up."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_makefile_libs_needed_2 is wrapping up."
 
 set is_lib = `echo ${cwd} | grep -c '^.*/lib/[^/][^/]*$'`
 
@@ -464,7 +463,7 @@ unset noglob
 # ${IVI_RM} Makefile-libs-needed-depend
 # ${IVI_RM} Makefile-libs-needed-depend.bak
 
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Process $$ locked by ${ppid} leaving script build_makefile_libs_needed_2."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} leaving script build_makefile_libs_needed_2."
 
 
 

@@ -1,0 +1,161 @@
+#!/bin/tcsh -f
+
+set echo 
+
+${MAKE_SCRIPT_PATH}stream_file_names -s -m > Makefile-program-targets
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-program-targets Makefile-program-targets-SAVE
+
+${IVI_CP} Makefile-program-targets Makefile-misc-targets
+if (${status}) exit ${status}
+
+${IVI_CP} Makefile-program-targets Makefile-work-targets
+if (${status}) exit ${status}
+
+${IVI_CP} Makefile-program-targets Makefile-user-targets
+if (${status}) exit ${status}
+
+${IVI_CP} Makefile-program-targets Makefile-program-targets-depend
+if (${status}) exit ${status}
+
+${IVI_RM} .Makefile-misc-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Misc.${VIM_SUFFIX} Makefile-misc-targets >& /dev/null
+if (${status}) exit ${status}
+
+${IVI_RM} .Makefile-work-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Work.${VIM_SUFFIX} Makefile-work-targets >& /dev/null
+if (${status}) exit ${status}
+
+${IVI_RM} .Makefile-user-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}User.${VIM_SUFFIX} Makefile-user-targets >& /dev/null
+if (${status}) exit ${status}
+
+${IVI_RM} .Makefile-program-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Programs.${VIM_SUFFIX} Makefile-program-targets >& /dev/null
+if (${status}) exit ${status}
+
+${IVI_RM} .Makefile-program-targets-depend.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Programs_depend.${VIM_SUFFIX} Makefile-program-targets-depend >& /dev/null
+if (${status}) exit ${status}
+
+${IVI_CAT} Makefile-program-targets-depend >> Makefile-program-targets
+if (${status}) exit ${status}
+
+${MAKE_SCRIPT_PATH}stream_file_names -s -m -v | sed '/\<version\.[ch][px]*\>/d' > Makefile-obj-targets
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-obj-targets Makefile-obj-targets-SAVE
+
+${IVI_CP} Makefile-obj-targets Makefile-local-obs
+if (${status}) exit ${status}
+
+${IVI_RM} .Makefile-local-obs.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Local_obs.${VIM_SUFFIX} Makefile-local-obs >& /dev/null
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-local-obs Makefile-local-obs-SAVE
+
+${IVI_RM} .Makefile-obj-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} Makefile-obj-targets >& /dev/null
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-obj-targets Makefile-obj-targets-SAVE-2
+
+${IVI_CP} Makefile-obj-targets Makefile-obj-targets-depend
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-obj-targets-depend Makefile-obj-targets-depend-SAVE
+
+${IVI_RM} .Makefile-obj-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Obs.${VIM_SUFFIX} Makefile-obj-targets >& /dev/null
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-obj-targets Makefile-obj-targets-SAVE-3
+
+${IVI_CAT} Makefile-local-obs >> Makefile-program-targets
+if (${status}) exit ${status}
+${IVI_CAT} Makefile-obj-targets >> Makefile-program-targets
+if (${status}) exit ${status}
+
+#   Breaking style here a bit. We could have used a vim script, but instead we use
+#   a regular script.
+${MAKE_SCRIPT_PATH}stream_prog_lib_obs >> Makefile-program-targets
+if (${status}) exit ${status}
+
+${IVI_RM} .Makefile-obj-targets-depend.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Obs_depend.${VIM_SUFFIX} Makefile-obj-targets-depend >& /dev/null
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-obj-targets-depend Makefile-obj-targets-depend-SAVE-2
+
+${IVI_CAT} Makefile-obj-targets-depend >> Makefile-program-targets
+if (${status}) exit ${status}
+
+${IVI_RM} Makefile-obj-targets-depend
+${IVI_RM} Makefile-local-obs
+${IVI_RM} Makefile-obj-targets
+#
+${MAKE_SCRIPT_PATH}stream_file_names -s -m -v | sed -n '/\<version\.[ch][px]*\>/p' > Makefile-version-obj-targets
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-version-obj-targets Makefile-version-obj-targets-SAVE
+
+${IVI_RM} .Makefile-version-obj-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} Makefile-version-obj-targets >& /dev/null
+if (${status}) exit ${status}
+# ${IVI_CP} Makefile-version-obj-targets Makefile-version-obj-targets-SAVE-2
+
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Version_obs.${VIM_SUFFIX} Makefile-version-obj-targets >& /dev/null
+${IVI_CAT} Makefile-version-obj-targets >> Makefile-program-targets
+if (${status}) exit ${status}
+
+${IVI_ECHO} " " >> Makefile-program-targets
+${IVI_ECHO} " " >> Makefile-program-targets
+
+${IVI_RM} Makefile-version-obj-targets
+
+${IVI_TOUCH} fake_out_glob.help 
+if (${status}) exit ${status}
+${IVI_LS} *.help > Makefile-help-targets
+if (${status}) exit ${status}
+${IVI_RM} fake_out_glob.help 
+${IVI_RM} .Makefile-help-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} Makefile-help-targets >& /dev/null
+if (${status}) exit ${status}
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Help.${VIM_SUFFIX} Makefile-help-targets >& /dev/null
+if (${status}) exit ${status}
+
+${IVI_TOUCH} fake_out_glob.w 
+if (${status}) exit ${status}
+${IVI_LS} *.w > Makefile-writeup-targets
+if (${status}) exit ${status}
+${IVI_RM} fake_out_glob.w 
+${IVI_RM} .Makefile-writeup-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} Makefile-writeup-targets >& /dev/null
+if (${status}) exit ${status}
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Writeup.${VIM_SUFFIX} Makefile-writeup-targets >& /dev/null
+if (${status}) exit ${status}
+${IVI_ECHO} " " >> Makefile-writeup-targets
+${MAKE_SCRIPT_PATH}stream_script_names | sed '/\<build\>/d' | sed 's/\(.*\)/$(MAKE_DOC_DIR)doc_program.made : $(MAKE_DOC_DIR)\1\.shell.1/' >> Makefile-writeup-targets
+if (${status}) exit ${status}
+${IVI_ECHO} " " >> Makefile-writeup-targets
+${IVI_ECHO} " " >> Makefile-writeup-targets
+
+${IVI_CAT} /dev/null > Makefile-depend-headers 
+if (${status}) exit ${status}
+${MAKE_SCRIPT_PATH}ivi_makedepend '' -c -Y -w20000 -DMAKE_DEPEND  -DMAKE_DEPEND_GEN_H ${PROG_BASE_INCLUDES}  > Makefile-depend-src 
+if (${status}) exit ${status}
+${MAKE_SCRIPT_PATH}ivi_makedepend '' -x -Y -w20000 -DMAKE_DEPEND  -DMAKE_DEPEND_GEN_H ${PROG_BASE_INCLUDES}  >> Makefile-depend-src 
+if (${status}) exit ${status}
+
+${IVI_ECHO} " " > Makefile-depend
+${IVI_ECHO} "#" >> Makefile-depend
+${IVI_ECHO} "# Machine generated file to set make targets" >> Makefile-depend
+${IVI_ECHO} "#" >> Makefile-depend
+${IVI_ECHO} " " >> Makefile-depend
+
+${IVI_CAT} Makefile-misc-targets Makefile-work-targets Makefile-user-targets Makefile-program-targets Makefile-help-targets Makefile-writeup-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
+if (${status}) exit ${status}
+
+${IVI_RM} Makefile-misc-targets
+${IVI_RM} Makefile-work-targets
+${IVI_RM} Makefile-user-targets
+${IVI_RM} Makefile-program-targets
+${IVI_RM} Makefile-program-targets-depend
+${IVI_RM} Makefile-help-targets
+${IVI_RM} Makefile-writeup-targets
+${IVI_RM} Makefile-depend-headers
+${IVI_RM} Makefile-depend-src

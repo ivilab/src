@@ -61,33 +61,54 @@ if ("${check_time_arg}" != "") then
     exit 1 
 endif 
 
-if (! $?IVI_LOCKFILE_DIR) then
-    setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
+${IVI_MKDIR} "${IVI_LOCKFILE_PATH}"
+if ($status) then
+    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_PATH}"
+    exit 1
 endif 
-
-${IVI_MKDIR} "${IVI_LOCKFILE_DIR}"
 
 set target = "$2"
 set target_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str ${target}`
 if ($status) exit 1
 
+if (! $?IGNORE_BUILD_START_TIME) then
+    if ($?BUILD_START_TIME_FILE) then
+        if ((-e "${BUILD_START_TIME_FILE}") && (-e "${target}")) then
+            set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${BUILD_START_TIME_FILE}" "${target}"`
+            if ($status) exit ${status}
+
+            if ($already_built) then
+                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} is newer than ${BUILD_START_TIME_FILE}."
+                exit 0
+            endif 
+        endif 
+    endif 
+endif 
+
 # Last path component.
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 
 set time_stamp_file = "${target_label}_${dir_str}_time_stamp.$$"
-${IVI_CREATE} "${IVI_LOCKFILE_DIR}${time_stamp_file}"
+set time_stamp_file = "${IVI_LOCKFILE_PATH}${time_stamp_file}"
+${IVI_CREATE} ${time_stamp_file}
 
 set requesting_pid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make for lock for : ${target_label}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock for: ${target_label}"
+
 ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${target_label} ${requesting_pid}
-if ($status) exit 1
+if ($status) exit ${status}
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock for : ${target_label}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock for: ${target}"
 
-set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${target}" "${time_stamp_file}"`
+if (! -e "${target}") then 
+    set already_built =  0
+else 
+    set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${time_stamp_file}" "${target}"`
+    if ($status) exit ${status}
+endif 
 
 if ($already_built) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} already built."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} was built while we waited for the lock."
 else 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} needs to be built."
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: $argv[3-$#] in $cwd."
@@ -96,16 +117,16 @@ else
         set start_time = `date +%H:%M:%S`
     endif 
 
-    $argv[3-$#]
+    $argv[3-$#] < /dev/null 
     set exit_status = $status 
 
     if ($?IVI_VERBOSE) then
         set end_time = `date +%H:%M:%S`
         set program_name = "$argv[3]"
-        echo "Script ivi_lock_for_make finished executing ${program_name} in $cwd with status ${exit_status}"
-        echo "    Ivi_lock_for_make start time for ${program_name}: ${start_time}"
-        echo "    Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
-        echo " "
+        echo "IVB: ${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} in $cwd with status ${exit_status}"
+        echo "IVB: ${VERBOSE_INDENT}    Ivi_lock_for_make start time for ${program_name}: ${start_time}"
+        echo "IVB: ${VERBOSE_INDENT}    Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
+        echo "IVB: ${VERBOSE_INDENT} "
     endif 
 endif 
 

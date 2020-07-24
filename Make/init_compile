@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25675 2020-07-20 23:46:43Z kobus $
+# $Id: init_compile 25676 2020-07-24 17:47:13Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -64,17 +64,17 @@ endif
 #
 setenv IVI_LIB_DIR ${IVI_SRC_PATH}/lib/
 setenv MAKE_DIR ${IVI_SRC_PATH}/Make/
-setenv MAKE_SCRIPT_DIR ${MAKE_DIR}/scripts/
-setenv MAKE_BIN_DIR ${MAKE_DIR}/bin/${MACHINE}/
-setenv MAKE_UTIL_DIR ${MAKE_DIR}/util/
-setenv MAKE_EDIT_DIR ${MAKE_DIR}/vim/
+# setenv MAKE_SCRIPT_DIR ${MAKE_DIR}/scripts/
+# setenv MAKE_BIN_DIR ${MAKE_DIR}/bin/${MACHINE}/
+# setenv MAKE_UTIL_DIR ${MAKE_DIR}/util/
+# setenv MAKE_EDIT_DIR ${MAKE_DIR}/vim/
 
-setenv IVI_LIB_PATH ${IVI_SRC_PATH}/lib/
-setenv MAKE_PATH ${IVI_SRC_PATH}/Make/
-setenv MAKE_SCRIPT_PATH ${MAKE_PATH}/scripts/
-setenv MAKE_BIN_PATH ${MAKE_PATH}/bin/${MACHINE}/
-setenv MAKE_UTIL_PATH ${MAKE_PATH}/util/
-setenv MAKE_EDIT_PATH ${MAKE_PATH}/vim/
+# setenv MAKE_PATH ${IVI_SRC_PATH}Make/
+# setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
+setenv IVI_LIB_PATH ${IVI_SRC_PATH}lib/
+setenv MAKE_BIN_PATH ${MAKE_PATH}bin/${MACHINE}/
+setenv MAKE_UTIL_PATH ${MAKE_PATH}util/
+setenv MAKE_EDIT_PATH ${MAKE_PATH}vim/
 
 # Kobus. I have moved some stuff in this file to
 # ${IVI_SRC_PATH}/Make/init_scripts, as it is shared with a lot of scripts that
@@ -86,19 +86,19 @@ setenv MAKE_EDIT_PATH ${MAKE_PATH}/vim/
 if ($?IVI_HAVE_INIT_SCRIPTS) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
     if ($?IVI_VERBOSE_2) then
-        echo "Script init_compile is not sourcing ${IVI_SRC_PATH}/Make/init_scripts because IVI_HAVE_INIT_SCRIPTS is set."
+        echo "VB2: Script init_compile is not sourcing ${IVI_SRC_PATH}/Make/init_scripts because IVI_HAVE_INIT_SCRIPTS is set."
     endif 
 else 
     # Do not use VERBOSE_ECHO as we may not have it yet. 
     if ($?IVI_VERBOSE) then
-        echo "Script init_compile is sourcing ${IVI_SRC_PATH}/Make/init_scripts."
+        echo "IVB: Script init_compile is sourcing ${IVI_SRC_PATH}/Make/init_scripts."
     endif 
 
     source ${IVI_SRC_PATH}/Make/init_scripts
 
     if ($status) then
         if ($?IVI_VERBOSE) then
-            echo "Script init_compile is exiting due to init_scripts failure."
+            echo "IVB: Script init_compile is exiting due to init_scripts failure."
         endif 
         exit 1
     endif 
@@ -812,10 +812,11 @@ else
     ivi_setenv IVI_MAKE_OPTS_DEBUG "-d"
 endif
 
-# These can get adjusted in build-2 because they do not change the cached. 
-ivi_setenv IVI_MAKE_PAR    "${IVI_MAKE_PROG} ${IVI_MAKE_OPTS} ${IVI_MAKE_OPTS_PAR}"
-ivi_setenv IVI_MAKE_SERIAL "${IVI_MAKE_PROG} ${IVI_MAKE_OPTS} ${IVI_MAKE_OPTS_SER}"
-ivi_setenv IVI_MAKE        "${IVI_MAKE_PAR}"
+# These can get adjusted in build-2 because they do not change the cache. 
+ivi_setenv IVI_MAKE_JOB_CLIENT "${IVI_MAKE_PROG} ${IVI_MAKE_OPTS}"
+ivi_setenv IVI_MAKE_PAR        "${IVI_MAKE_PROG} ${IVI_MAKE_OPTS} ${IVI_MAKE_OPTS_PAR}"
+ivi_setenv IVI_MAKE_SERIAL     "${IVI_MAKE_PROG} ${IVI_MAKE_OPTS} ${IVI_MAKE_OPTS_SER}"
+ivi_setenv IVI_MAKE            "${IVI_MAKE_PAR}"
 
 ################################################################################
 
@@ -1144,17 +1145,23 @@ if ("${prefer_ex}") then
     # 
     #  EX way. Generally best. 
     #
-    ivi_setenv VIM_FOR_MAKE "vim ${VIM_WITHOUT_X} -n -i NONE -u NONE -U NONE -e" 
-    ivi_setenv VIM_SCRIPT_OPERATOR '-s < '
+    # These are for makefile that first substitute, then execute. If we move vim
+    # stuff to scripts, we need to either put the redirection in, or use "exec".
+    # We assume exec is slower. 
+    
+    ivi_setenv VIM_FOR_MAKE "vim ${VIM_WITHOUT_X} -n -i NONE -u NONE -U NONE -e -s" 
+    ivi_setenv VIM_SCRIPT_OPERATOR ' < '
     ivi_setenv VIM_IO_REDIRECTION  '>& /dev/null'
     ivi_setenv VIM_IO_REDIRECTION_2  '< /dev/null >& /dev/null'
 else
     #
     # Vim script way. Does not work as well.  Keep this code handy for further
-    # experimentation. 
+    # experimentation. Besides '-s' is either wrong or out of date. Apparantly
+    # it should be '-S'.
     #
     ivi_setenv VIM_FOR_MAKE "vim ${VIM_WITHOUT_X} -n -i NONE -u NONE -U NONE" 
-    ivi_setenv VIM_SCRIPT_OPERATOR ' -s '
+    # [ Looks wrong ] ivi_setenv VIM_SCRIPT_OPERATOR ' -s '
+    ivi_setenv VIM_SCRIPT_OPERATOR ' -S '
     ivi_setenv VIM_IO_REDIRECTION  '< /dev/null >& /dev/null'
     ivi_setenv VIM_IO_REDIRECTION_2  '< /dev/null >& /dev/null'
 endif

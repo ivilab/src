@@ -8,7 +8,7 @@ if ("${num_args}" != 1) then
 endif 
 
 #
-# Remove traling slashes.
+# Remove trailing slashes.
 #
 set test_item = `echo ${1} | sed 's#/*$##'`
 

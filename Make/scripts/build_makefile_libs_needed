@@ -36,13 +36,17 @@ endif
 
 ##########################################################
 
-if ($?IVI_VERBOSE_INDENT) then
-    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
+if ($?VERBOSE_INDENT) then
+    setenv VERBOSE_INDENT "    ${VERBOSE_INDENT}"
 else 
-    setenv IVI_VERBOSE_INDENT ""
+    setenv VERBOSE_INDENT ""
 endif 
 
 ##########################################################
+
+set ppid = `ps -p $$ -o ppid=`
+if (${status}) exit ${status}
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_libs_needed in directory ${cwd}."
 
 set build_dir = ""
 
@@ -58,25 +62,7 @@ if ("${build_dir}" != "") then
 endif 
 
 ${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
-if (${status}) exit ${status}
+set exit_status = ${status}
 
-# # We now lock in outside.
-# #
-# if ($?IVI_VERBOSE) then
-#     set start_time = `date +%H:%M:%S`
-# endif 
-# 
-# ${MAKE_SCRIPT_PATH}ivi_lock 10 ${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
-# set exit_status = ${status}
-# 
-# if ($?IVI_VERBOSE) then
-#     set end_time = `date +%H:%M:%S`
-#     echo "Script build_file_list finished with status ${exit_status}."
-#     echo "    Start time: ${start_time}"
-#     echo "    End time:   ${end_time}"
-#     echo " "
-# endif 
-# 
-# exit ${exit_status}
-
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} leaving script build_makefile_libs_needed in directory $cwd with status ${exit_status}."
 

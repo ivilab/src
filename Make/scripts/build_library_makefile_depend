@@ -1,0 +1,153 @@
+#!/bin/tcsh -f 
+
+set lib_component_prefix = "$1"
+# echo lib_component_prefix: $lib_component_prefix
+set lib_component_str = "$2"
+# echo lib_component_str: $lib_component_str
+set lib_component_path = "$3"
+# echo lib_component_path: $lib_component_path
+
+# set echo
+
+${MAKE_SCRIPT_PATH}stream_file_names "${lib_component_path}" -s > ${lib_component_path}Makefile-obj-targets
+if (${status}) exit ${status}
+
+${IVI_RM} ${lib_component_path}.Makefile-obj-targets.swp
+${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-SAVE
+if (${status}) exit ${status}
+
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} ${lib_component_path}Makefile-obj-targets >& /dev/null
+if (${status}) exit ${status}
+
+# ${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-SAVE-2
+${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-depend
+if (${status}) exit ${status}
+
+#
+${IVI_RM} ${lib_component_path}.Makefile-obj-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Obs.${VIM_SUFFIX} ${lib_component_path}Makefile-obj-targets >& /dev/null
+if (${status}) exit ${status}
+
+${IVI_SED} < ${lib_component_path}Makefile-obj-targets "s/OBS/${lib_component_str}_OBS/" > ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE
+#
+
+${IVI_SED} < ${lib_component_path}Makefile-obj-targets "s/OBS/${lib_component_str}_LOCAL_OBS/" | ${IVI_SED} 's/^\( *\)\$(\([^)]*\)_DIR)\$(\(.*OBJ_DIR\))/\1$(\3)$(\2_LIB_PREFIX)\//'  >> ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-2
+#
+#   Not currently used, but might be useful if we choose to build archives by
+#   changing to LD_OBJ_DIR to shorten the archive command. 
+#
+# ${IVI_SED} < ${lib_component_path}Makefile-obj-targets 's/OBS/LIB_COMPONENT_L2_OBS/' | ${IVI_SED} 's/^\( *\)\$(\([^)]*\)_DIR)\$(.*OBJ_DIR)/\1$(\2_LIB_PREFIX)\//'  >> ${lib_component_path}Makefile-depend
+# ${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+# ${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+#
+${IVI_SED} < ${lib_component_path}Makefile-obj-targets "s/OBS/${lib_component_str}_SHARED_OBS/" | ${IVI_SED} 's/(OBJ_DIR)/&$(SHARED_DIR)/'  | ${IVI_SED} 's/(CXX_OBJ_DIR)/&$(SHARED_DIR)/' >> ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-3
+#
+${IVI_SED} < ${lib_component_path}Makefile-obj-targets '/OBS = /d' | ${IVI_SED} 's/^ *//' | ${IVI_SED} 's/[ \\]*$//' | ${IVI_SED} 's/\(.*\)(\([CX_]*\)OBJ_DIR)\(.*\)$/\1(\2OBJ_DIR)$(SHARED_DIR)\3 : &/' >> ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_RM} ${lib_component_path}Makefile-obj-targets
+${MAKE_SCRIPT_PATH}stream_file_names "${lib_component_path}" -s > ${lib_component_path}Makefile-obj-targets
+if (${status}) exit ${status}
+
+${IVI_RM} ${lib_component_path}.Makefile-obj-targets.swp
+#${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-SAVE
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} ${lib_component_path}Makefile-obj-targets >& /dev/null
+if (${status}) exit ${status}
+
+#${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-SAVE-2
+${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-depend
+if (${status}) exit ${status}
+
+#
+${IVI_RM} ${lib_component_path}.Makefile-obj-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Obs.${VIM_SUFFIX} ${lib_component_path}Makefile-obj-targets >& /dev/null
+if (${status}) exit ${status}
+
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-4
+#
+#${IVI_CP} ${lib_component_path}Makefile-obj-targets-depend ${lib_component_path}Makefile-obj-targets-depend-SAVE
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Obs_depend.${VIM_SUFFIX} ${lib_component_path}Makefile-obj-targets-depend >& /dev/null
+if (${status}) exit ${status}
+
+#${IVI_CP} ${lib_component_path}Makefile-obj-targets-depend ${lib_component_path}Makefile-obj-targets-depend-SAVE-2
+${IVI_CAT} ${lib_component_path}Makefile-obj-targets-depend >> ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${IVI_RM} ${lib_component_path}Makefile-obj-targets-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-5
+#
+${MAKE_SCRIPT_PATH}ivi_makedepend "${lib_component_path}" -c  -Y -w20000 \ ${MD_DEFINES} -DMAKE_DEPEND ${LIB_BASE_INCLUDES} >> ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${MAKE_SCRIPT_PATH}ivi_makedepend "${lib_component_path}" -x  -Y -w20000 \ ${MD_DEFINES} -DMAKE_DEPEND ${LIB_BASE_INCLUDES} >> ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-6
+#
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${MAKE_SCRIPT_PATH}stream_file_names "${lib_component_path}" -c2man > ${lib_component_path}Makefile-depend-c2man-obs
+if (${status}) exit ${status}
+#${IVI_CP} ${lib_component_path}Makefile-depend-c2man-obs ${lib_component_path}Makefile-depend-c2man-obs-SAVE
+
+${IVI_RM} ${lib_component_path}.Makefile-depend-c2man-obs.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} ${lib_component_path}Makefile-depend-c2man-obs >& /dev/null
+if (${status}) exit ${status}
+#${IVI_CP} ${lib_component_path}Makefile-depend-c2man-obs ${lib_component_path}Makefile-depend-c2man-obs-SAVE-2
+
+${IVI_ECHO} "${lib_component_str}_DOC_FILES = \" >> ${lib_component_path}Makefile-depend
+${IVI_SED} 's/^ *\(.*)\)\([^ ]*\).*$/    \1$(MAKE_DOC_DIR)\2.made \\/' ${lib_component_path}Makefile-depend-c2man-obs >>  ${lib_component_path}Makefile-depend
+${IVI_RM} ${lib_component_path}Makefile-depend-c2man-obs
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+# ${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-7
+#
+# This call to stream_file_names returns 1 if there are relavent files. 
+${MAKE_SCRIPT_PATH}stream_file_names "${lib_component_path}" -doxygen -t | ${IVI_SED} "s/1/${lib_component_str}_DOXYGEN_TARGET = doxygen_${lib_component_prefix}/" >> ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-8
+#
+${IVI_ECHO} "${lib_component_str}_DOXYGEN_FILES = \" >> ${lib_component_path}Makefile-depend
+${MAKE_SCRIPT_PATH}stream_file_names "${lib_component_path}" -doxygen > ${lib_component_path}Makefile-depend-doxygen-obs
+if (${status}) exit ${status}
+#${IVI_CP} ${lib_component_path}Makefile-depend-doxygen-obs ${lib_component_path}Makefile-depend-doxygen-obs-SAVE
+
+${IVI_RM} ${lib_component_path}.Makefile-depend-doxygen-obs.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} ${lib_component_path}Makefile-depend-doxygen-obs >& /dev/null
+if (${status}) exit ${status}
+#${IVI_CP} ${lib_component_path}Makefile-depend-doxygen-obs ${lib_component_path}Makefile-depend-doxygen-obs-SAVE-2
+
+${IVI_SED} 's/^ *\(.*)\)\([^ ]*\).*$/    \1\2 \\/' ${lib_component_path}Makefile-depend-doxygen-obs >>  ${lib_component_path}Makefile-depend
+if (${status}) exit ${status}
+
+${IVI_RM} ${lib_component_path}Makefile-depend-doxygen-obs
+${IVI_ECHO} ' ' >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} ' ' >> ${lib_component_path}Makefile-depend
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-9
+#
+${MAKE_SCRIPT_PATH}copy_if_different  ${lib_component_path}Makefile-library ${lib_component_path}Include_lines/Makefile-library.state
+if (${status}) exit ${status}
+
+#

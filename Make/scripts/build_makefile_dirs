@@ -29,14 +29,17 @@ if ("${num_args}" > 1) then
     exit 1
 endif 
 
-if ($?IVI_VERBOSE_INDENT) then
-    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
-else 
-    setenv IVI_VERBOSE_INDENT ""
-endif 
-
 if ($?IVI_VERBOSE) then
-    echo "${IVI_VERBOSE_INDENT}Entering script build_include_lines in directory ${cwd} with args '$*'."
+    if ($?VERBOSE_INDENT) then
+        setenv VERBOSE_INDENT "    ${VERBOSE_INDENT}"
+    else 
+        setenv VERBOSE_INDENT ""
+    endif 
+
+    set ppid = `ps -p $$ -o ppid=`
+    if (${status}) exit ${status}
+
+    echo "IVB: ${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_dirs in directory ${cwd} with args '$*'."
 endif
 
 set build_dir = ""
@@ -63,11 +66,11 @@ set exit_status = ${status}
 
 if ($?IVI_VERBOSE) then
     set end_time = `date +%H:%M:%S`
-    echo "${IVI_VERBOSE_INDENT}Script build_makefile_dirs_2 finished"
-    echo "${IVI_VERBOSE_INDENT}    Start time: ${start_time}"
-    echo "${IVI_VERBOSE_INDENT}    End time:   ${end_time}"
-    echo " "
-    echo "${IVI_VERBOSE_INDENT}Leaving script build_include_lines in directory ${cwd} with status ${exit_status}."
+    echo "IVB: ${VERBOSE_INDENT}Script build_makefile_dirs finished"
+    echo "IVB: ${VERBOSE_INDENT}    Start time: ${start_time}"
+    echo "IVB: ${VERBOSE_INDENT}    End time:   ${end_time}"
+    echo "IVB:  "
+    echo "IVB: ${VERBOSE_INDENT}Process $$ with parent ${ppid} leaving script build_makefile_dirs in directory ${cwd} with status ${exit_status}."
 endif 
 
 exit ${exit_status} 

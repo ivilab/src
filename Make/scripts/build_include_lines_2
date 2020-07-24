@@ -8,7 +8,7 @@
 # Description:
 #     This script is called by make to maintain the file
 #     Include_lines/include_lines. This file has two roles for efficiency. 1)
-#     Its existance/timestamp indicates whether the depenencies (i.e.,
+#     Its existence/timestamp indicates whether the dependencies (i.e.,
 #     Makefile-depend) are up to date. 2) Its contents tracks the sub libs
 #     mentioned in include lines, and this when this changes, it triggers the
 #     build of Makefile-dirs. 
@@ -33,6 +33,13 @@
 #
 ###############################################################################
 
+# We check the timestamps of any tools in this script. 
+#
+# Make knows which tools we depend on, and will call us if we are out of date
+# because of that. But then we need to know when to force parts of the rebuild
+# and dodge corresponding early exit. The dependency on this file is fine,
+# because we are now in it. 
+
 set force_build_sub_libs = 0
 set dir_arg = ""
 
@@ -51,46 +58,47 @@ set exit_status = 0
 setenv LC_ALL "en_US.UTF-8"
 setenv LC_CTYPE "en_US.UTF-8"
    
-if ($?IVI_VERBOSE_INDENT) then
-    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
+if ($?VERBOSE_INDENT) then
+    setenv VERBOSE_INDENT "    ${VERBOSE_INDENT}"
 else 
-    setenv IVI_VERBOSE_INDENT ""
+    setenv VERBOSE_INDENT ""
 endif 
 
 if ("${dir_arg}" != "") then
     cd ${dir_arg} > /dev/null
 endif 
 
-if (($?IVI_LOCK_TIME_STAMP) && (-e Include_lines/sub_libs_needed) && (-e Makefile-dirs)) then
-    set can_skip_1 = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Include_lines/sub_libs_needed`
-    set can_skip_2 = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-dir`
+# Now handled by calling this with ivi_lock_for_make. IVI_LOCK_TIME_STAMP is
+# obsolete,
+#
+# if (($?IVI_LOCK_TIME_STAMP) && (-e Include_lines/sub_libs_needed) && (-e Makefile-dirs)) then
+#     set can_skip_1 = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Include_lines/sub_libs_needed`
+#     set can_skip_2 = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-dir`
+# 
+#     if ((${can_skip_1}) && (${can_skip_2})) then
+#         if ($?IVI_VERBOSE) then
+#             echo "${VERBOSE_INDENT}Skipping build_include_lines_2 in `pwd` as Makefile-dirs and sub_libs_needed are new."
+#             set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
+#             echo $BEEP
+#         endif 
+# 
+#         exit 0
+#     endif 
+# endif 
 
-    if ((${can_skip_1}) && (${can_skip_2})) then
-        if ($?IVI_VERBOSE) then
-            echo "${IVI_VERBOSE_INDENT}Skipping build_include_lines_2 in `pwd` as Makefile-dirs and sub_libs_needed are new."
-            set x = $$ ; @ x %= 100 ; sleep 0.$x >& /dev/null
-            echo $BEEP
-        endif 
-
-        exit 0
-    endif 
-endif 
-
-if ($?IVI_VERBOSE) then
-    echo " "
-    echo "${IVI_VERBOSE_INDENT}Entering script build_include_lines_2 in directory $cwd with args: $*"
-endif
+${VERBOSE_ECHO} " "
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_include_lines_2 in directory $cwd with args: $*"
 
 set update_include_lines = 0
 
 pushd Include_lines > /dev/null
     if (${status}) then 
-        echo "Script build_include_lines_2 cannot push into Include_lines  in `pwd`."
+        ${P_STDERR} "Script build_include_lines_2 cannot push into Include_lines  in `pwd`."
         set exit_status = 1 
         goto cleanup
     endif 
 
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/include_lines.new in directory $cwd. " 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating Include_lines/include_lines.new in directory $cwd. " 
 
     # Three ways that should give the same result, although the first one
     # gives an error message if there is no source code. 
@@ -107,8 +115,8 @@ pushd Include_lines > /dev/null
         ${IVI_DIFF_TEST} include_lines.new include_lines > /dev/null
         if (${status}) then 
             set update_include_lines = 1
-        else if ($?IVI_VERBOSE) then
-            echo "${IVI_VERBOSE_INDENT}Not updating Include_lines/include_lines in directory $cwd because no relevant changes." 
+        else 
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Not updating Include_lines/include_lines in directory $cwd because no relevant changes." 
         endif
     else 
         set update_include_lines = 1
@@ -123,16 +131,16 @@ endif
 set update_sub_list_new = 0
 
 if ((${update_include_lines}) || (! -e Include_lines/include_lines)) then
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/include_lines in directory $cwd. " 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating Include_lines/include_lines in directory $cwd. " 
 
     ${IVI_CP} Include_lines/include_lines.new Include_lines/include_lines
 
     if ($?SHADOW_BUILD_MAKEFILE_LIBS) then
-        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Script build_include_lines_2 calling build_makefile_libs_needed in $cwd" 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 calling build_makefile_libs_needed in $cwd" 
         ${MAKE_SCRIPT_PATH}build_makefile_libs_needed 
-    else if ($?IVI_VERBOSE) then
-        echo "${IVI_VERBOSE_INDENT}Script build_include_lines_2 is skipping calling build_makefile_libs_needed in $cwd" 
-        echo "${IVI_VERBOSE_INDENT}     as gmake will build it nicely in parallel." 
+    else 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is not calling build_makefile_libs_needed in $cwd" 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}     as gmake will build it nicely in parallel." 
     endif 
     
     if (${status}) then 
@@ -155,19 +163,25 @@ if ((${update_sub_list_new}) || (! -e Include_lines/sub_lib_list.new)) then
     ${IVI_RM} Include_lines/sub_lib_list.tmp.$$
     ${IVI_CAT} /dev/null > Include_lines/sub_lib_list.tmp2.$$
 
+    # Moved this from inside the loop. 
+    set local_includes = `${MAKE_SCRIPT_PATH}get_local_include_dirs | sed 's/-I//g'`
+
     foreach include_line (${include_lines}) 
         set sub_dir = `echo ${include_line} | sed 's#\(.*\)/.*#\1#'`
 
         set found = 0
 
-        if (-e ${IVI_LIB_DIR}${include_line}) then
+        if (-e ${IVI_LIB_PATH}${include_line}) then
             set found = 1
         else if ("${include_line}" == "${sub_dir}/${sub_dir}_incl.h") then
             set found = 1
         else if (-e lib/${include_line}) then
             set found = 1
         else 
-            set local_includes = `${MAKE_SCRIPT_PATH}get_local_include_dirs | sed 's/-I//g'`
+            # This may be inefficient. Moved outside, which also deals with the
+            # dependency on the script get_local_include_dirs. 
+            #
+            # set local_includes = `${MAKE_SCRIPT_PATH}get_local_include_dirs | sed 's/-I//g'`
 
             foreach inc_dir (${local_includes})
                 if (-e ${inc_dir}/${include_line}) then
@@ -198,8 +212,11 @@ endif
 set update_sub_libs_needed = 0
 
 if ((${update_sub_list}) || (! -e Include_lines/sub_lib_list)) then
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/sub_lib_list in directory $cwd. " 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating Include_lines/sub_lib_list in directory $cwd. " 
     ${IVI_CP} Include_lines/sub_lib_list.new Include_lines/sub_lib_list
+    set update_sub_libs_needed = 1
+else if (`${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_sub_libs_needed`) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Include_lines/sub_libs_needed in $cwd is older than build_sub_libs_needed."
     set update_sub_libs_needed = 1
 endif 
 
@@ -210,31 +227,31 @@ else
 endif 
 
 if ((${update_sub_libs_needed}) || (! -e Include_lines/sub_libs_needed) || (${force_build_sub_libs})) then
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Updating Include_lines/sub_libs_needed in directory $cwd. " 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating Include_lines/sub_libs_needed in directory $cwd. " 
     ${MAKE_SCRIPT_PATH}build_sub_libs_needed 
-    set update_makefile_dirs = 1
 
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs."
-    
     if (${status}) then 
         set exit_status = 1 
         goto cleanup
     endif 
 
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Finished updating Include_lines/sub_libs_needed in directory $cwd. " 
+    set update_makefile_dirs = 1
+    
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Finished updating Include_lines/sub_libs_needed in directory $cwd. " 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs."
 endif 
 
 if (! ${update_makefile_dirs}) then 
-    # One more possiblity is that the build script has been modified. 
+    # One more possibility is that the build script has been modified. 
     set update_makefile_dirs = `${MAKE_SCRIPT_PATH}test_older_than Makefile-dirs ${MAKE_SCRIPT_PATH}build_makefile_dirs`
 
     if (${update_makefile_dirs}) then
-        ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Makefile-dirs in $cwd is older than build_makefile_dirs."
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Makefile-dirs in $cwd is older than build_makefile_dirs."
     endif 
 endif 
 
 if (${update_makefile_dirs}) then
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Script build_include_lines_2 is running build_makefile_dirs in $cwd."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is running build_makefile_dirs in $cwd."
 
     setenv CALLING_INDIRECT
     ${MAKE_SCRIPT_PATH}build_makefile_dirs
@@ -245,10 +262,13 @@ if (${update_makefile_dirs}) then
     endif 
 endif 
 
-
 cleanup:
 
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Leaving script build_include_lines_2 in directory $cwd with status ${exit_status}."
+if ($exit_status) then
+    ${IVI_TOUCH} SUB_LIB_BUILD_FAILED
+endif 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_include_lines_2 in directory $cwd with status ${exit_status}."
 
 exit ${exit_status} 
 

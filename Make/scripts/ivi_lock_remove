@@ -54,13 +54,10 @@ if ($?IVI_DONT_LOCK) then
     exit 0
 endif
 
-if (! $?IVI_LOCKFILE_DIR) then
-    setenv IVI_LOCKFILE_DIR ${TMPDIR}/${USER}/lockfiles/
-endif 
-
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
+if (${status}) exit ${status} 
 
 onintr bail
 

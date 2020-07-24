@@ -69,9 +69,7 @@ endif
 
 ###############################################################################
 
-if ($?IVI_VERBOSE) then
-    echo "Entering script update_file_include_list in directory ${cwd} with argument ${file}. "
-endif
+${VERBOSE_ECHO} "Entering script update_file_include_list in directory ${cwd} with argument ${file}. "
 
 # echo file: ${file}
 # echo file_name: ${file_name}
@@ -108,9 +106,7 @@ if (${status}) then
     exit 1 
 endif 
 
-if ($?IVI_VERBOSE) then
-    echo "${IVI_VERBOSE_INDENT}Script update_file_include_list updating ${new_inc_file} directory ${cwd}."
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script update_file_include_list updating ${new_inc_file} directory ${cwd}."
 
 sort -u ${new_inc_file}.tmp.$$ > ${new_inc_file}
 if (${status}) exit 1 
@@ -120,10 +116,8 @@ if (${status}) exit 1
 
 ${IVI_DIFF_TEST} ${inc_file} ${new_inc_file} > /dev/null
 if (${status}) then 
-    if ($?IVI_VERBOSE) then
-        echo "${IVI_VERBOSE_INDENT}Script update_file_include_list updating ${inc_file} (diff) directory ${cwd}"
-        echo "${IVI_VERBOSE_INDENT}Also removing Include_lines/include_lines to force a makedepend." 
-    endif
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script update_file_include_list updating ${inc_file} (diff) directory ${cwd}"
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Also removing Include_lines/include_lines to force a makedepend." 
 
     set try = 1
     while (1) 
@@ -158,8 +152,6 @@ endif
 # 
 ##############  ${IVI_RM} Include_lines/include_lines.new
 
-if ($?IVI_VERBOSE) then
-    echo "${IVI_VERBOSE_INDENT}Leaving script update_file_include_list directory ${cwd}."
-    echo " "
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script update_file_include_list directory ${cwd}."
+${VERBOSE_ECHO} " "
 

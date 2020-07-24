@@ -14,7 +14,7 @@ foreach dir (${IVI_LIB_PATH}*)
     endif 
 end
 
-pushd ${IVI_LIB_DIR} > /dev/null
+pushd ${IVI_LIB_PATH} > /dev/null
     set real_ivi_lib_dir = "${cwd}" 
 popd > /dev/null
 

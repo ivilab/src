@@ -5,6 +5,16 @@
 
 # set echo
 
+if (! -e "${1}") then
+    ${P_STDERR} "First argument ($1) to script test_older_than does not exist."
+    exit 1
+endif 
+
+if (! -e "${2}") then
+    ${P_STDERR} "Second argument ($2) to script test_older_than does not exist."
+    exit 1
+endif 
+
 ${IVI_TEST} "$1" -ot "$2" 
 
 set system_test_status = $status
@@ -17,7 +27,7 @@ else if (${system_test_status} > 2) then
    set have_stat = 0
 
    if ("${IVI_STAT_FLAVOR}" == "bsd") then
-       eval set `stat -s "$1"`
+       eval set `stat -s "$1"`h) Inc
        set mod_time_1 = ${st_mtime}
        eval set `stat -s "$2"`
        set mod_time_2 = ${st_mtime}

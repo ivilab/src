@@ -3,17 +3,17 @@
 ##################################################################################
 #
 # This script builds the file Include_lines/sub_libs_needed in the directory
-# given by the first parameter. If that parameter is not set or emply, then we
+# given by the first parameter. If that parameter is not set or empty, then we
 # build in the current directory. The file Include_lines/sub_libs_needed
 # contains a single line that lists sub-directories needed by the code in the
-# requested directory ordered so that sub-directory are preceeded by all
+# requested directory ordered so that sub-directory are preceded by all
 # sub-directories that it might depend on. 
 #
 # Here 'needed' goes beyond what can be found by recursively examining header
 # files, which is what the tool 'makedepend' does.  We want to know about
-# dependencies due to C files in libary sub-dirs. Further we want the library
-# sub-directories to be orderd so that dependency is expected. In particular, we
-# order the sub-dirs so that all items have all their dependencies preceeding
+# dependencies due to C files in library sub-dirs. Further we want the library
+# sub-directories to be ordered so that dependency is expected. In particular,
+# we order the sub-dirs so that all items have all their dependencies preceding
 # them. For various tasks the script build_makefile_dirs will use the list in
 # either forward or reverse order. Note that this assumes that the IVI library
 # has a tree structured dependency graph. If this is not the case, then circular
@@ -25,19 +25,13 @@
 # Include_lines/sub_libs_needed in each directory in the list. This requires
 # ensuring that these Include_lines/sub_libs_needed are up to date, and building
 # them if needed. Hence this script may be called recursively. Currently this is
-# through "make". 
-#
+# via either by a call to build_include_lines_2 which will call this script,
 
-
-# set echo
-
-
-if ($?IVI_VERBOSE_INDENT) then
-    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
+if ($?VERBOSE_INDENT) then
+    setenv VERBOSE_INDENT "    ${VERBOSE_INDENT}"
 else 
-    setenv IVI_VERBOSE_INDENT ""
+    setenv VERBOSE_INDENT ""
 endif 
-
 
 @ num_args = ${#argv}
 
@@ -60,19 +54,16 @@ if ("${build_dir}" != "") then
     # We are now in the build directory. (No popd). 
 endif 
 
-set build_path = "${cwd}"
-
-# echo "Script build_sub_libs_needed is running in dirctory: ${build_path}."
-
+# This might be OBSOLETE. 
 if ("${num_args}" >= 2) then
     set parent_sub_lib = "${2}"
 else  
     set parent_sub_lib = ""
 endif 
 
-set current_sub_lib = `echo ${build_path} | sed 's#.*/lib/\([^/]*\)$#\1#'`
+set current_sub_lib = `echo ${cwd} | sed 's#.*/lib/\([^/]*\)$#\1#'`
 
-if ("${current_sub_lib}" == "${build_path}") then
+if ("${current_sub_lib}" == "${cwd}") then
     set current_sub_lib = ""
 endif 
 
@@ -84,18 +75,15 @@ endif
 
 #########################################################
 
-echo " "
-echo "${IVI_VERBOSE_INDENT}Beginning recursive build of ${cwd}/Include_lines/sub_libs_needed"
+${VERBOSE_ECHO} " "
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Beginning recursive build of ${cwd}/Include_lines/sub_libs_needed"
 
-if ($?IVI_VERBOSE) then
-    echo "${IVI_VERBOSE_INDENT}Entering script build_sub_libs_needed with directory ${cwd}"
-    echo "${IVI_VERBOSE_INDENT}    build_dir: ${build_dir}"
-    echo "${IVI_VERBOSE_INDENT}    build_path: ${build_path}"
-    echo "${IVI_VERBOSE_INDENT}    parent_sub_lib: ${parent_sub_lib}"
-    echo "${IVI_VERBOSE_INDENT}    current_sub_lib: ${current_sub_lib}"
-    echo "${IVI_VERBOSE_INDENT}    TMP_SUB_DIRS_VISITED: ${TMP_SUB_DIRS_VISITED}"
-    echo " "
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_sub_libs_needed with directory ${cwd}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    build_dir: ${build_dir}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    parent_sub_lib: ${parent_sub_lib}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    current_sub_lib: ${current_sub_lib}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    TMP_SUB_DIRS_VISITED: ${TMP_SUB_DIRS_VISITED}"
+${VERBOSE_ECHO} " "
 
 #########################################################
 
@@ -131,23 +119,6 @@ setenv TMP_SUB_DIRS_VISITED "${TMP_SUB_DIRS_VISITED} ${current_sub_lib}"
 
 #########################################################
 
-if ((-d ${IVI_LIB_PATH}) && (-r ${IVI_LIB_PATH}) && (-x ${IVI_LIB_PATH})) then
-    pushd ${IVI_LIB_PATH} > /dev/null
-    # Insure no trailing slash.
-    set real_ivi_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
-    # Add a trailing slash. 
-    set real_ivi_lib_dir = "${real_ivi_lib_dir}/"
-    popd > /dev/null
-else
-    set real_ivi_lib_dir = ""
-endif 
-
-# echo build_sub_libs_needed: real_ivi_lib_dir: ${real_ivi_lib_dir} 
-
-#########################################################
-
-set sub_libs_needed = ""
-
 if (-e Include_lines/sub_lib_list) then
     if ("${current_sub_lib}" != "") then
         set skip_str = "\<${current_sub_lib}\>"
@@ -157,168 +128,20 @@ if (-e Include_lines/sub_lib_list) then
     endif 
 else 
     ${P_STDERR} "Script build_sub_libs_needed requires Include_lines/sub_lib_list"
-    ${P_STDERR} "Error occured in directory $cwd"
+    ${P_STDERR} "Error occurred in directory $cwd"
     exit 1
 endif 
 
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Recurse dirs in ${cwd} are: ${recurse_dirs}" 
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Recurse dirs in ${cwd} are: " 
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    ${recurse_dirs}" 
 
-foreach recurse_dir (${recurse_dirs})
-    set test_places = "${real_ivi_lib_dir} lib/ ../lib/ ../../lib/ ../../../lib/ ../../../../lib/ ../../../../../lib/"
+if (! $?FORCE_SERIAL) then
+    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_parallel ${recurse_dirs}
+    if (${status}) exit ${status}
+else
+    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_serial ${recurse_dirs}
+    if (${status}) exit ${status}
+endif 
 
-    set recurse_dir_str = ""
-
-    foreach test_place (${test_places}) 
-        if (-d "${test_place}${recurse_dir}") then
-            # Expensive, but need to test for links due to legacy code. 
-            # We could copy the code for "is_link" to speed things up a bit.
-            set is_link = `${MAKE_SCRIPT_PATH}is_link ${test_place}${recurse_dir}`
-
-            if (! ${is_link} ) then
-               set recurse_dir_str = "${test_place}${recurse_dir}"
-               break
-            endif 
-        endif 
-    end 
-
-    if ("${recurse_dir_str}" == "") then
-        if ($?IVI_VERBOSE) then
-            echo "${IVI_VERBOSE_INDENT}Script build_sub_libs_needed skipping ${recurse_dir} because it does not exist."
-        endif
-
-        continue
-    endif 
-
-    pushd ${recurse_dir_str} > /dev/null
-    if (${status}) exit 1
-    set recurse_dir_path = "${cwd}"
-    popd  > /dev/null
-    if (${status}) exit 1
-
-    # echo "-------------------------------------"
-    # echo recurse_dir_path: ${recurse_dir_path}
-    # echo build_path:    ${build_path} 
-
-    if ("${build_path}" == "${recurse_dir_path}") then 
-        continue
-    endif 
-
-    pushd ${recurse_dir_str} > /dev/null
-        set need_make = 1
-
-        if (-e Include_lines/sub_libs_needed) then 
-           # echo "Found $cwd/Include_lines/sub_libs_needed" 
-           
-           # This is not entirely foolproof because we are relying on the entire
-           # system to ensure that if sub_lib_list exists, it is up to date.
-           # However, this should be the case the way we typically build in
-           # three stages, and if the assumption is not true, then changes
-           # should get propogated with successive makes.
-           #
-           if (-e Include_lines/sub_lib_list) then
-               set need_make = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/sub_lib_list` 
-               if (${status}) exit 1
-           endif
-        endif 
-
-        if (${need_make}) then
-            if ($?IVI_VERBOSE) then
-                echo " "
-                echo "${IVI_VERBOSE_INDENT}------- Script build_sub_libs_needed recursing into ${recurse_dir_str} ----------"
-                echo " "
-            endif 
-
-            ${MAKE_SCRIPT_PATH}build_file_list
-            if (${status}) exit 1
-
-            # This is the recursive call, as build_include_lines_2 calls
-            # build_sub_libs_needed.
-            #
-            ${MAKE_SCRIPT_PATH}build_include_lines_2
-            if (${status}) then
-                if (-e Include_lines) then
-                    ${P_STDERR} "Removing ${cwd}/Include_lines due to failure of build_include_lines_2."
-                    find Include_lines -delete
-                endif 
-
-                exit 1 
-            endif 
-            
-            if ($?IVI_VERBOSE) then
-                 echo " "
-                 echo "${IVI_VERBOSE_INDENT}------- Script build_sub_libs_needed finished with ${recurse_dir_str} ----------"
-                 echo " "
-            endif 
-        else if ($?IVI_VERBOSE) then
-            echo " "
-            echo "${IVI_VERBOSE_INDENT}------- Directory ${recurse_dir_str} already visited (no recursion needed) ----------"
-            echo " "
-        endif 
-    popd  > /dev/null
-
-    if (-e ${recurse_dir_str}/Include_lines/sub_libs_needed) then
-        set inherited_sub_libs = `${IVI_CAT} ${recurse_dir_str}/Include_lines/sub_libs_needed`
-    else 
-        # Seems like an error.
-        echo "Warning: Script build_sub_libs_needed expected ${recurse_dir_str}/Include_lines/sub_libs_needed to exist by now."
-        set inherited_sub_libs = ""
-    endif 
-
-    # If we just built ${recurse_dir}/Include_lines/sub_libs_needed, then we
-    # should have spotted the problem, but if, for some reason we got fooled
-    # into believing that file to be correct when it is not (legacy?), then we
-    # need to check. It does not seem likely that we would not have caught it by
-    # now though, hence the warning.
-    #
-    foreach inherited_sub_lib (${inherited_sub_libs})
-        if ("${inherited_sub_lib}" == "${current_sub_lib}") then
-            ${P_STDERR} " "
-            ${P_STDERR} "Circular include spotted while building Include_lines/sub_libs_needed in ${cwd}."
-            ${P_STDERR} "We have read these dirs from ${recurse_dir_str}/Include_lines/sub_libs_needed: ${inherited_sub_libs}"
-            ${P_STDERR} "Directory ${current_sub_lib} needs ${recurse_dir}."
-            ${P_STDERR} "But directory ${recurse_dir} needs ${current_sub_lib}."
-
-
-#             echo " "
-#             echo "Warning: We probably should have caught this problem earlier."
-#             echo "         There may be a bug in build_sub_libs_needed."
-#             echo "         Or perhaps this is due to linguring out of date files." 
-            ${P_STDERR} " "
-
-            if (-e Include_lines) then
-                ${P_STDERR} "Removing ${cwd}/Include_lines due to failure of build_include_lines_2."
-                find Include_lines -delete
-            endif 
-
-            ${P_STDERR} " "
-
-            exit 1
-        endif 
-    end
-
-    foreach test_item (${inherited_sub_libs} ${recurse_dir}) 
-        set found = 0
-
-        foreach item (${sub_libs_needed}) 
-            if ("${item}" == "${test_item}") then
-                set found = 1
-                break
-            endif 
-        end
-
-        if (${found}) continue
-
-        set sub_libs_needed = "${sub_libs_needed} ${test_item}"
-    end 
-
-    ${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}After recurse dir ${recurse_dir} inferred sub_libs_needed by ${cwd} are: ${sub_libs_needed}" 
-end 
-
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Writing ${cwd}/Include_lines/sub_libs_needed"
-echo "${sub_libs_needed}" > Include_lines/sub_libs_needed 
-
-# /bin/rm -f Makefile-dirs-depend
-# /bin/rm -f Makefile-dirs-depend.bak
-
-${VERBOSE_ECHO} "${IVI_VERBOSE_INDENT}Leaving script build_sub_libs_needed."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed in ${cwd} with success."
 

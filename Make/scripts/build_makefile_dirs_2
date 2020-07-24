@@ -27,6 +27,8 @@ if ("${num_args}" > 0) then
     exit 1
 endif 
 
+set exit_status = 0
+
 ##########################################################
 
 set src_dir_sed_str = "s#${IVI_SRC_PATH}#"'$(IVI_SRC_PATH)'"#"
@@ -41,8 +43,11 @@ set real_ivi_lib_dir = `echo ${IVI_LIB_PATH} | sed 's/\/*$//'`
 set build_dir_path = "${cwd}"
 
 if ($?IVI_VERBOSE) then
+    set ppid = `ps -p $$ -o ppid=`
+    if (${status}) exit ${status}
+
     echo " "
-    echo "${IVI_VERBOSE_INDENT}Entering script build_makefile_dirs_2 in directory ${build_dir_path}."
+    echo "IVB: ${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_dirs_2 in directory ${build_dir_path}."
 endif
 
 ##########################################################
@@ -122,7 +127,7 @@ if (-e Makefile-include) then
     # library sub-dirs. 
     #
     if (${in_ivi_lib_sub_dir}) then
-        echo "${uc_lib_sub_dir}_DIR = "'$(IVI_LIB_DIR)'${lib_sub_dir}'$(IVI_DIR_STR)' >> ${output_file_name}
+        echo "${uc_lib_sub_dir}_DIR = "'$(IVI_LIB_PATH)'${lib_sub_dir}'$(IVI_DIR_STR)' >> ${output_file_name}
     else 
         echo "${uc_lib_sub_dir}_DIR = ${cwd_for_make}"'$(IVI_DIR_STR)' >> ${output_file_name}
     endif 
@@ -142,7 +147,7 @@ if (-e Makefile-include) then
     # library sub-dirs. 
     #
     if (${in_ivi_lib_sub_dir}) then
-        echo "${uc_lib_sub_dir}_LIB_PARENT_DIR = "'$(IVI_LIB_DIR)' >> ${output_file_name}
+        echo "${uc_lib_sub_dir}_LIB_PARENT_DIR = "'$(IVI_LIB_PATH)' >> ${output_file_name}
     else 
         echo "${uc_lib_sub_dir}_LIB_PARENT_DIR = ${lib_dir}" >> ${output_file_name}
     endif 
@@ -188,7 +193,7 @@ endif
 if (! -e Include_lines/sub_libs_needed) then
     if ($?IVI_VERBOSE) then
         echo " "
-        echo "${IVI_VERBOSE_INDENT}Leaving script build_makefile_dirs_2 early due to no sub_libs_needed."
+        echo "${VERBOSE_INDENT}Leaving script build_makefile_dirs_2 early due to no sub_libs_needed."
     endif
 
     ${IVI_RM} "${lock_file}"
@@ -677,17 +682,19 @@ if (-e Makefile-dirs) then
     echo "Directory is ${cwd}."
     echo " "
     ${IVI_MV} Makefile-dirs Makefile-dirs-SAVE.$$ 
+    if (${status}) set exit_status = ${status} 
     echo " "
 endif 
 
 ${IVI_MV} ${output_file_name} Makefile-dirs
-
-echo "${IVI_VERBOSE_INDENT}Makefile-dirs installed in ${cwd} by process $$."
+if (${status}) set exit_status = ${status} 
 
 if ($?IVI_VERBOSE) then
-    echo "${IVI_VERBOSE_INDENT}Leaving script build_makefile_dirs_2 in ${build_dir_path}."
-    echo " "
+    echo "IVB: ${VERBOSE_INDENT}Makefile-dirs installed in ${cwd} by process $$."
+    echo "IVB: ${VERBOSE_INDENT}Process $$ with parent ${ppid} leaving script build_makefile_dirs_2 in ${build_dir_path} with status ${exit_status}."
+    echo "IVB: "
 endif
 
+exit ${exit_status}
 
 

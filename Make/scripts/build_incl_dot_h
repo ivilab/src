@@ -20,7 +20,7 @@
 #     in the build systems. First, it transfers the dependencies of the dot h
 #     files in the sub lib directory to targets depending on
 #     <sub_lib_name>_incl.h. Second, it must track whether it is up to date. We
-#     could simply force a rebuild in both cases, but the second case occurs
+#     could simplyMakefile-depend-incl-dot-h force a rebuild in both cases, but the second case occurs
 #     much more often, and the forced rebuild would be a bit confusing and takes
 #     a bit of time (not much).
 #
@@ -41,18 +41,10 @@ else
     set build_dir = `pwd`
 endif 
 
-
-if ($?IVI_VERBOSE_INDENT) then
-    setenv IVI_VERBOSE_INDENT "    ${IVI_VERBOSE_INDENT}"
-else 
-    setenv IVI_VERBOSE_INDENT ""
-endif 
-
 if ($?IVI_VERBOSE) then
     echo " "
-    echo "${IVI_VERBOSE_INDENT}Entering script build_incl_dot_h for directory ${build_dir}. "
+    echo "${VERBOSE_INDENT}Entering script build_incl_dot_h for directory ${build_dir}. "
 endif
-
 
 set build_dir = `echo ${build_dir} | sed 's#/*$##'`
 set dir = `echo ${build_dir} | sed "s/.*\/\(.*\)/\1/"`
@@ -60,17 +52,18 @@ set dir = `echo ${build_dir} | sed "s/.*\/\(.*\)/\1/"`
 set uc_dir = `echo ${dir} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
 set incl_file = "${dir}_incl.h"
 
+# Retrospective summer 2020. This now looks wrong to me!
 # If ${incl_file} exists, then we just touch it. 
 #
-if (-e "${incl_file}") then
+# if (-e "${incl_file}") then
+#     if ($?IVI_VERBOSE) then
+#         echo "${VERBOSE_INDENT}Script build_incl_dot_h is only touching ${incl_file} because it exists"
+#     endif
+# 
+#     ${IVI_TOUCH} "${incl_file}"
+# else 
     if ($?IVI_VERBOSE) then
-        echo "${IVI_VERBOSE_INDENT}Script build_incl_dot_h is only touching ${incl_file} because it exists"
-    endif
-
-    ${IVI_TOUCH} "${incl_file}"
-else 
-    if ($?IVI_VERBOSE) then
-        echo "${IVI_VERBOSE_INDENT}Script build_incl_dot_h is rebulding ${incl_file} and Include_lines/Makefile-incl-dot-h"
+        echo "${VERBOSE_INDENT}Script build_incl_dot_h is rebulding ${incl_file} and Include_lines/Makefile-incl-dot-h"
     endif
 
     echo "" > ${incl_file}
@@ -98,7 +91,7 @@ else
 
     foreach skip_name (${incl_skip_names_1} ${incl_skip_names_2})
         if ($?IVI_VERBOSE) then
-            echo "${IVI_VERBOSE_INDENT}Skipping adding ${skip_name} to ${incl_file} due to private header string."
+            echo "${VERBOSE_INDENT}Skipping adding ${skip_name} to ${incl_file} due to private header string."
         endif
 
         grep -v "${skip_name}"  .tmp.$$.incl.h  > .tmp.$$_2.incl.h
@@ -107,9 +100,12 @@ else
 
     sed "s#^#${dir}/#" .tmp.$$.incl.h | sed 's/\(.*\)/#include "\1"/' >> ${incl_file}
 
-    ${IVI_MKDIR} Include_lines 
-    set symbolized_dir = '$('${uc_dir}'_DIR)'
-    sed "s/\(.*\)/${symbolized_dir}${incl_file} : ${symbolized_dir}\1/" < .tmp.$$.incl.h > Include_lines/Makefile-depend-incl-dot-h
+#     20-07-22: Makefile-depend-incl-dot-h does not seem useful any more.
+#     Commenting it out here, and in Makefile-library. 
+#
+#     ${IVI_MKDIR} Include_lines 
+#     set symbolized_dir = '$('${uc_dir}'_DIR)'
+#     sed "s/\(.*\)/${symbolized_dir}${incl_file} : ${symbolized_dir}\1/" < .tmp.$$.incl.h > Include_lines/Makefile-depend-incl-dot-h
 
     ${IVI_RM}  .tmp.$$.incl.h
 
@@ -119,11 +115,11 @@ else
 
 
     # cat ${incl_file}
-endif 
+# endif 
 
 
 if ($?IVI_VERBOSE) then
-    echo "${IVI_VERBOSE_INDENT}Leaving script build_incl_dot_h  for directory ${build_dir}. "
+    echo "${VERBOSE_INDENT}Leaving script build_incl_dot_h  for directory ${build_dir}. "
     echo " "
 endif
 
