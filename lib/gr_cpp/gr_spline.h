@@ -1,4 +1,4 @@
-/* $Id: gr_spline.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: gr_spline.h 25677 2020-07-24 18:18:30Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -20,11 +20,12 @@
 #ifndef IVI_gr_spline_H
 #define IVI_gr_spline_H
 
-#include <m2_cpp/m2_spline.h>
-#include <gr_cpp/gr_renderable.h>
-#include <gr_cpp/gr_opengl_headers.h>
-#include <l_cpp/l_cloneable.h>
-#include <m_cpp/m_vector.h>
+#include "m2_cpp/m2_spline.h"
+#include "gr_cpp/gr_renderable.h"
+#include "gr_cpp/gr_opengl_headers.h"
+#include "l_cpp/l_cloneable.h"
+#include "m_cpp/m_vector.h"
+
 #include <vector>
 
 #ifdef IVI_HAVE_OPENGL
