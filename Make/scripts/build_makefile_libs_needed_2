@@ -428,14 +428,6 @@ echo ${symbolic_lib}Include_lines/cache.state : ${cache_depend} >> ${output_file
 echo '	$(IVI_TOUCH) $@' >> ${output_file_name}
 echo " "  >> ${output_file_name}
 
-if (-e "${target_file_name}") then
-    echo " "
-    echo "Moving ${target_file_name}, which must of been created by a different process, to ${target_file_name}-SAVE.$$."
-    ${IVI_MV} "${target_file_name}" "${target_file_name}-SAVE.$$" 
-    echo "Directory is ${cwd}."
-    echo " "
-endif 
-
 # We now put environment dependent versions of Makefile-libs-needed in
 # Include_lines/Makefile-libs-needed/ as the environment suffix can be long
 # leading to very long file names. We also remove any linguring ones with the
@@ -443,8 +435,20 @@ endif
 #
 ${IVI_RM} Makefile-libs-needed
 ${IVI_MKDIR} Include_lines/Makefile-libs-needed
-${IVI_MV} ${output_file_name} ${target_file_name}
-if (${status}) exit ${status}
+
+if (-e "${target_file_name}") then
+    ${VERBOSE_ECHO} "${cwd}/${target_file_name} already exists (not sure if this is indicative of an issue)."
+    ${MAKE_SCRIPT_PATH}copy_if_different ${output_file_name} ${target_file_name}
+#     echo " "
+#     echo "Moving ${target_file_name}, which must of been created by a different process, to ${target_file_name}-SAVE.$$."
+#     ${IVI_MV} "${target_file_name}" "${target_file_name}-SAVE.$$" 
+#     echo "Directory is ${cwd}."
+#     echo " "
+else
+    ${IVI_MV} ${output_file_name} ${target_file_name}
+    if (${status}) exit ${status}
+endif 
+
 
 if (! -e "${target_file_name}") then
     echo " "

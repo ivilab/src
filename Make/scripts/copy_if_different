@@ -23,8 +23,6 @@ if (-e $2) then
         # Ensure time stamp is later than any file built by the process that
         # called this script. 
         
-        # This idea, copied from locking code, does not make sense here,
-        # set x = $$ ; @ x %= 100 ; set sleep_time = "0.0${x}"
         set sleep_time = 0.01
 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script copy_if_different found a difference with args $1 and $2."

@@ -7,7 +7,7 @@ find . -follow -name '*.html' > .html_file_list
 if (! -z .html_file_list) then
     foreach file (*.html )
         set new_file = `echo $file | sed 's/make_doc\/*//' | sed "s/_mock_function//g"`
-        cat $file | sed "s/_mock_function//g" | sed "s/type_T/<type T>/g" | sed "s/-HEADER.c/.h/g" | ${MAKE_BIN_DIR}/c2man_out_html > ${HTML_MAN_DIR}/$new_file
+        cat $file | sed "s/_mock_function//g" | sed "s/type_T/<type T>/g" | sed "s/-HEADER.c/.h/g" | ${MAKE_BIN_DIR}/c2man_out_html > ${HTML_MAN_PATH}/$new_file
         /bin/rm $file
     end 
 endif 

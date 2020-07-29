@@ -135,13 +135,16 @@ endif
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Recurse dirs in ${cwd} are: " 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    ${recurse_dirs}" 
 
-if (! $?FORCE_SERIAL) then
-    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_parallel ${recurse_dirs}
-    if (${status}) exit ${status}
-else
-    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_serial ${recurse_dirs}
-    if (${status}) exit ${status}
-endif 
+# if (! $?FORCE_SERIAL) then
+#     ${MAKE_SCRIPT_PATH}build_sub_libs_needed_parallel ${recurse_dirs}
+#     if (${status}) exit ${status}
+# else
+#     ${MAKE_SCRIPT_PATH}build_sub_libs_needed_serial ${recurse_dirs}
+#     if (${status}) exit ${status}
+# endif 
+
+${MAKE_SCRIPT_PATH}build_sub_libs_needed_parallel ${recurse_dirs}
+# ${MAKE_SCRIPT_PATH}build_sub_libs_needed_serial ${recurse_dirs}
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed in ${cwd} with success."
 

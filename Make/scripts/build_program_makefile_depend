@@ -1,34 +1,39 @@
 #!/bin/tcsh -f
 
-set echo 
-
 ${MAKE_SCRIPT_PATH}stream_file_names -s -m > Makefile-program-targets
 if (${status}) exit ${status}
 # ${IVI_CP} Makefile-program-targets Makefile-program-targets-SAVE
 
-${IVI_CP} Makefile-program-targets Makefile-misc-targets
-if (${status}) exit ${status}
+# We no longer separate MISC_BIN, USER_BIN, WORK_BIN or MAKE_BIN (never did this
+# last one). We now just use PROGRAMS, which does the same thing as before.
+# Rather, the user asks for this via the make target, which then simply update
+# certain directories with copies of built programs.
 
-${IVI_CP} Makefile-program-targets Makefile-work-targets
-if (${status}) exit ${status}
+# ${IVI_CP} Makefile-program-targets Makefile-misc-targets
+# if (${status}) exit ${status}
 
-${IVI_CP} Makefile-program-targets Makefile-user-targets
-if (${status}) exit ${status}
+# ${IVI_CP} Makefile-program-targets Makefile-work-targets
+# if (${status}) exit ${status}
+
+# ${IVI_CP} Makefile-program-targets Makefile-user-targets
+# if (${status}) exit ${status}
 
 ${IVI_CP} Makefile-program-targets Makefile-program-targets-depend
 if (${status}) exit ${status}
 
-${IVI_RM} .Makefile-misc-targets.swp
-${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Misc.${VIM_SUFFIX} Makefile-misc-targets >& /dev/null
-if (${status}) exit ${status}
+# See comment above. 
 
-${IVI_RM} .Makefile-work-targets.swp
-${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Work.${VIM_SUFFIX} Makefile-work-targets >& /dev/null
-if (${status}) exit ${status}
+# ${IVI_RM} .Makefile-misc-targets.swp
+# ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Misc.${VIM_SUFFIX} Makefile-misc-targets >& /dev/null
+# if (${status}) exit ${status}
 
-${IVI_RM} .Makefile-user-targets.swp
-${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}User.${VIM_SUFFIX} Makefile-user-targets >& /dev/null
-if (${status}) exit ${status}
+# ${IVI_RM} .Makefile-work-targets.swp
+# ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Work.${VIM_SUFFIX} Makefile-work-targets >& /dev/null
+# if (${status}) exit ${status}
+
+# ${IVI_RM} .Makefile-user-targets.swp
+# ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}User.${VIM_SUFFIX} Makefile-user-targets >& /dev/null
+# if (${status}) exit ${status}
 
 ${IVI_RM} .Makefile-program-targets.swp
 ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Programs.${VIM_SUFFIX} Makefile-program-targets >& /dev/null
@@ -147,12 +152,15 @@ ${IVI_ECHO} "# Machine generated file to set make targets" >> Makefile-depend
 ${IVI_ECHO} "#" >> Makefile-depend
 ${IVI_ECHO} " " >> Makefile-depend
 
-${IVI_CAT} Makefile-misc-targets Makefile-work-targets Makefile-user-targets Makefile-program-targets Makefile-help-targets Makefile-writeup-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
+# See comment above. 
+# ${IVI_CAT} Makefile-misc-targets Makefile-work-targets Makefile-user-targets Makefile-program-targets Makefile-help-targets Makefile-writeup-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
+${IVI_CAT} Makefile-program-targets Makefile-help-targets Makefile-writeup-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
 if (${status}) exit ${status}
 
-${IVI_RM} Makefile-misc-targets
-${IVI_RM} Makefile-work-targets
-${IVI_RM} Makefile-user-targets
+# See comment above. 
+# ${IVI_RM} Makefile-misc-targets
+# ${IVI_RM} Makefile-work-targets
+# ${IVI_RM} Makefile-user-targets
 ${IVI_RM} Makefile-program-targets
 ${IVI_RM} Makefile-program-targets-depend
 ${IVI_RM} Makefile-help-targets

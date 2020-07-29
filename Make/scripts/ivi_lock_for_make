@@ -71,6 +71,9 @@ set target = "$2"
 set target_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str ${target}`
 if ($status) exit 1
 
+set cmd_str = `echo ${3} | sed 's#.*/##'`
+set target_label = "${target_label}_${cmd_str}"
+
 if (! $?IGNORE_BUILD_START_TIME) then
     if ($?BUILD_START_TIME_FILE) then
         if ((-e "${BUILD_START_TIME_FILE}") && (-e "${target}")) then
@@ -93,12 +96,12 @@ set time_stamp_file = "${IVI_LOCKFILE_PATH}${time_stamp_file}"
 ${IVI_CREATE} ${time_stamp_file}
 
 set requesting_pid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock for: ${target_label}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock for ${target_label} for ${requesting_pid}"
 
 ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${target_label} ${requesting_pid}
 if ($status) exit ${status}
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock for: ${target}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock for target ${target}"
 
 if (! -e "${target}") then 
     set already_built =  0
@@ -110,7 +113,7 @@ endif
 if ($already_built) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} was built while we waited for the lock."
 else 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} needs to be built."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} is not new enough for early exit."
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: $argv[3-$#] in $cwd."
 
     if ($?IVI_VERBOSE) then

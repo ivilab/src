@@ -26,6 +26,7 @@ endif
 
 set sub_libs_needed = ""
 
+set needed_recurse_dirs = ""
 set recurse_dir_strs = ""
 
 foreach recurse_dir ($*)
@@ -64,6 +65,7 @@ foreach recurse_dir ($*)
     endif 
 
     set recurse_dir_strs = "${recurse_dir_strs} ${recurse_dir_str}"
+    set needed_recurse_dirs = "${needed_recurse_dirs} ${recurse_dir}"
 end 
 
 @ num_procs = 0
@@ -83,16 +85,19 @@ foreach recurse_dir_str (${recurse_dir_strs})
         ${MAKE_SCRIPT_PATH}ivi_lock_for_make 30 Include_lines/file_list ${MAKE_SCRIPT_PATH}build_file_list_2
         if (${status}) exit ${status}
 
+        set need_to_build = 0
         if (! -e "Include_lines/sub_libs_needed") then
-            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed does not exit ----------"
-            set sub_libs_too_old = 1
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed does not exist (need to build)  ----------"
+            set need_to_build = 1
         else 
             set sub_libs_too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/include_lines.new`
+
+            if (${sub_libs_too_old}) then
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed is old (need to build) ----------"
+            endif 
         endif 
 
-        if (${sub_libs_too_old}) then
-            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed is too old ----------"
-            ${VERBOSE_ECHO} " "
+        if (${need_to_build}) then
             ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- Script build_sub_libs_needed recursing into ${recurse_dir_str} ----------"
             ${VERBOSE_ECHO} " "
 
@@ -128,7 +133,14 @@ end
 
 if ($exit_status) goto end_of_script
 
+set redundant_sub_libs = ""
+
+@ index = 1
+
 foreach recurse_dir_str (${recurse_dir_strs})
+    # No path elements. Same as original in $*. 
+    set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
+
     pushd ${recurse_dir_str} > /dev/null
         if (-e ${recurse_dir_str}/Include_lines/sub_libs_needed) then
             set inherited_sub_libs = `${IVI_CAT} ${recurse_dir_str}/Include_lines/sub_libs_needed`
@@ -165,24 +177,25 @@ foreach recurse_dir_str (${recurse_dir_strs})
                 exit 1
             endif 
         end
+    popd  > /dev/null
 
-        foreach test_item (${inherited_sub_libs} ${recurse_dir}) 
-            set found = 0
+    # We do it this way to make sure dependencies can be found first.
+    set redundant_sub_libs = "${redundant_sub_libs} ${inherited_sub_libs} ${recurse_dir}"
+end
 
-            foreach item (${sub_libs_needed}) 
-                if ("${item}" == "${test_item}") then
-                    set found = 1
-                    break
-                endif 
-            end
+foreach test_item (${redundant_sub_libs}) 
+    set found = 0
 
-            if (${found}) continue
+    foreach item (${sub_libs_needed}) 
+        if ("${item}" == "${test_item}") then
+            set found = 1
+            break
+        endif 
+    end
 
-            set sub_libs_needed = "${sub_libs_needed} ${test_item}"
-       end 
-   popd  > /dev/null
-   
-   ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}After recurse dir ${recurse_dir} inferred sub_libs_needed by ${cwd} are: ${sub_libs_needed}" 
+    if (${found}) continue
+
+    set sub_libs_needed = "${sub_libs_needed} ${test_item}"
 end 
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}After recursion inferred sub_libs_needed by ${cwd} are: ${sub_libs_needed}" 

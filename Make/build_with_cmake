@@ -208,29 +208,29 @@ pushd $build_dir > /dev/null
     ${IVI_MAKE} install 
     if ($status) exit 1 
 
-    rsync -a -u -v local_install/lib/ ${INSTALL_LOAD_DIR} 
+    rsync -a -u -v local_install/lib/ ${INSTALL_LOAD_PATH} 
     if ($status) exit 1 
 
     # There should some way to tell cmake to INSTALL_THIRD_PARTY stuff, but
     # Kobus has yet to find it a general solution. This shows a hack used for
     # OpenFace.
     #
-#     rsync -a -u -v lib/3rdParty/dlib/libdlib.a ${INSTALL_LOAD_DIR} 
+#     rsync -a -u -v lib/3rdParty/dlib/libdlib.a ${INSTALL_LOAD_PATH} 
 #     if ($status) exit 1 
 
-    rsync -a -u -v local_install/bin/ ${INSTALL_BIN_DIR} 
+    rsync -a -u -v local_install/bin/ ${INSTALL_BIN_PATH} 
     if ($status) exit 1 
 
-    rsync -a -u -v local_install/include/ ${INSTALL_INCLUDE_DIR} 
+    rsync -a -u -v local_install/include/ ${INSTALL_INCLUDE_PATH} 
     if ($status) exit 1 
 
     # Sometimes there are support files such as trained classifiers. Here we
     # show how it is done for OpenFace. 
     #
-#     rsync -a -u -v local_install/etc/ ${INSTALL_DATA_DIR} 
+#     rsync -a -u -v local_install/etc/ ${INSTALL_DATA_PATH} 
 #     if ($status) exit 1 
 # 
-#     rsync -a -u -v local_install/etc/ ${INSTALL_DATA_DIR} 
+#     rsync -a -u -v local_install/etc/ ${INSTALL_DATA_PATH} 
 #     if ($status) exit 1 
 
 popd > /dev/null
@@ -238,13 +238,13 @@ popd > /dev/null
 # Sometimes there is data for testing etc that is not built. We might want to
 # copy some of it. Here is how it is hacked for OpenFace. 
 
-# rsync -a -u -v videos ${INSTALL_DATA_DIR}/OpenFace
+# rsync -a -u -v videos ${INSTALL_DATA_PATH}/OpenFace
 # if ($status) exit 1 
 # 
-# rsync -a -u -v imgs ${INSTALL_DATA_DIR}/OpenFace
+# rsync -a -u -v imgs ${INSTALL_DATA_PATH}/OpenFace
 # if ($status) exit 1 
 # 
-# rsync -a -u -v image_sequence ${INSTALL_DATA_DIR}/OpenFace
+# rsync -a -u -v image_sequence ${INSTALL_DATA_PATH}/OpenFace
 # if ($status) exit 1 
 
 

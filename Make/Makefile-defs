@@ -15,6 +15,27 @@ depend_again : depend
 
 ###############################################################################
 
+IVI_BUILD_TOOLS = \
+    $(MAKE_SCRIPT_PATH)build_file_list \
+    $(MAKE_SCRIPT_PATH)build_file_list_2 \
+    $(MAKE_SCRIPT_PATH)build_include_lines \
+    $(MAKE_SCRIPT_PATH)build_include_lines_2 \
+    $(MAKE_SCRIPT_PATH)build_makefile_dirs \
+    $(MAKE_SCRIPT_PATH)build_makefile_libs_needed \
+    $(MAKE_SCRIPT_PATH)build_makefile_libs_needed_2 \
+    $(MAKE_SCRIPT_PATH)build_sub_libs_needed \
+    $(MAKE_SCRIPT_PATH)build_sub_libs_needed_parallel \
+    $(MAKE_SCRIPT_PATH)build_sub_libs_needed_serial \
+    $(MAKE_SCRIPT_PATH)get_local_include_dirs \
+    $(MAKE_SCRIPT_PATH)ivi_lock_create \
+    $(MAKE_SCRIPT_PATH)ivi_lock_for_make \
+    $(MAKE_SCRIPT_PATH)ivi_lock_remove \
+    $(MAKE_SCRIPT_PATH)stream_file_names \
+    $(MAKE_SCRIPT_PATH)test_older_than \
+    \
+
+###############################################################################
+
 # The "Compile status is" string is a unique string that must be kept in sync
 # with the regular expressions in scripts/boost_warning_filter.pl and in
 # init_compile.  It's part of a workaround for a variant form of tcsh.

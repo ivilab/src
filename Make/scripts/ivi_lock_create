@@ -93,6 +93,18 @@ if ("${check_time_arg}" != "") then
     exit 1 
 endif 
 
+# The factor depends on how much we sleep. 2 is for expected value of .5
+# seconds.
+#
+# @ lock_wait_iterations = 2 * ${max_time_to_wait}
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ called with args: $*."
+
+if ($?IVI_DONT_LOCK) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock_create is not doing anything"
+    exit 0
+endif
+
 # For set_lockfile_name we pretend the label (arg 2) is the command.
 set cmd_str = `echo ${2} | sed 's#.*/##'`
 set lock_label = "${cmd_str}"
@@ -107,25 +119,13 @@ set exit_status = 0
 
 set noclober
 
-# The factor depends on how much we sleep. 2 is for expected value of .5
-# seconds.
-#
-# @ lock_wait_iterations = 2 * ${max_time_to_wait}
-
-if ($?IVI_DONT_LOCK) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock_create is not doing anything"
-    exit 0
-endif
-
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ called with args: $*."
-
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
 if (${status}) exit ${status} 
 
 onintr bail
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ running lock_create ${lock_label} for ${requesting_pid}."
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ running lock_create ${lock_label} in ${cwd}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    on behalf of process ${requesting_pid} using lockfile '${lock_file}'"
 
 if ("${IVI_LOCK_PROGS_METHOD}" == "lockfile-progs") then
     echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
@@ -179,7 +179,7 @@ else
                 if (${status}) then
                     echo "Someone might have snuck in before me (${requesting_pid}). Sleeping."
                 else
-                    echo "Requesting process ${apparent_lock_owner} snuck in before me (${requesting_pid}). Sleeping."
+                    echo "Process ${apparent_lock_owner} snuck in before me (${requesting_pid}). Sleeping."
                 endif 
 
                 set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
@@ -246,16 +246,24 @@ else
                     echo "It waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
                     set end_time = `date +%H:%M:%S`
                     echo "Specifically it waited from ${start_time} to ${end_time}." 
-                    echo "Information about the process holding the lock:"
+                    echo "Information about the process (${lock_proc}) holding the lock:"
                     ps -l ${lock_proc} 
+                    echo "Information about the process (${requesting_pid}) requesting the lock:"
+                    ps -l ${requesting_pid} 
                     echo "Sleeping for 10 seconds for debugging" 
                     sleep 10
+
+                    if ($?EXIT_ON_LOCK_TIMEOUT) then
+                        echo "Exiting because EXIT_ON_LOCK_TIMEOUT is set." 
+                        exit 1 
+                    endif 
+
                     echo "Ignoring the lock."
                     echo ${requesting_pid} >! ${lock_file}
                     set got_it = 1
                     break
                 else  
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ waiting for ${lock_file} held by process ${lock_proc} on behalf of process ${requesting_pid} ."
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ waiting for ${lock_file} held on behalf of process ${lock_proc}."
 
                     # Add some fractional seconds to reduce the chances of everyone
                     # wanting to start at the same time.

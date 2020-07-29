@@ -13,9 +13,7 @@ ${MAKE_SCRIPT_PATH}stream_file_names "${lib_component_path}" -s > ${lib_componen
 if (${status}) exit ${status}
 
 ${IVI_RM} ${lib_component_path}.Makefile-obj-targets.swp
-${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-SAVE
-if (${status}) exit ${status}
-
+# ${IVI_CP} ${lib_component_path}Makefile-obj-targets ${lib_component_path}Makefile-obj-targets-SAVE
 ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} ${lib_component_path}Makefile-obj-targets >& /dev/null
 if (${status}) exit ${status}
 

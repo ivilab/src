@@ -77,14 +77,19 @@ else
 endif 
 
 if (! -e Include_lines/file_list.new) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 is updating ${cwd}/Include_lines/file_list.new because it does not exist." 
     set must_update = 1
 else if (! -e Include_lines/file_list) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 is updating ${cwd}/Include_lines/file_list.new because ${cwd}/file_list does not exist." 
     set must_update = 1
 else if (! -e Include_lines/header_file_list.new) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 is updating ${cwd}/Include_lines/file_list.new because ${cwd}/header_file_list.new does not exist." 
     set must_update = 1
 else if (! -e Include_lines/header_file_list) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 is updating ${cwd}/Include_lines/file_list.new because ${cwd}/header_file_list does not exist." 
     set must_update = 1
 else if (! -e Include_lines/full_file_list) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 is updating ${cwd}/Include_lines/file_list.new because ${cwd}/full_file_list does not exist." 
     set must_update = 1
 else 
     # Look for an early exit. If the files that are here now are the same as the
@@ -108,11 +113,12 @@ else
             ${IVI_TOUCH} Include_lines/header_file_list.new
 
             goto cleanup
+        else 
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_file_list_2 is updating ${cwd}/Include_lines/file_list.new because file list changed." 
+            set must_update = 1
         endif 
     endif 
 endif 
-
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_file_list_2 is updating Include_lines/file_list.new in $cwd because the file list has changed." 
 
 ${MAKE_SCRIPT_PATH}stream_file_names -h -s -skip_incl | sort -u > Include_lines/file_list.new 
 if (${status}) then

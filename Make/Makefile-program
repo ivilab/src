@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25676 2020-07-24 17:47:13Z kobus $
+# $Id: Makefile-program 25679 2020-07-29 00:36:35Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -185,15 +185,11 @@ Include_lines/file_list :
 # Include_lines/file_list.new as a proxy for Include_lines/file_list so that we
 # can hide the dependency on the directory time stamp to reduce save build time. 
 
-# Hidden dependencies of tools on tools. 
+# Dependency on tools that build the target, including hidden ones. We do not
+# make the hidden ones depend on the non-hidden ones as we do not know how to
+# build any of them.  
 #
-$(MAKE_SCRIPT_PATH)build_file_list : \
-    $(MAKE_SCRIPT_PATH)build_file_list_2
-
-# Dependency on tools that build the target. 
-#
-Include_lines/file_list.new: \
-    $(MAKE_SCRIPT_PATH)build_file_list
+$(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
 
 # Rule to build Include_lines/file_list.new. Note that there is no need to
 # depend on the directory Include_lines because if that does not exist, the
@@ -285,18 +281,11 @@ Include_lines/new/% : % $(MAKE_SCRIPT_PATH)update_include_line_file
 #	$(MAKE_SCRIPT_PATH)update_include_line_file '' $*
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)update_include_line_file '' $*
 
-# Hidden dependencies of tools on tools for Include_lines/include_lines.new. 
+# Dependency on tools that build the target, including hidden ones. We do not
+# make the hidden ones depend on the non-hidden ones as we do not know how to
+# build any of them.  
 #
-$(MAKE_SCRIPT_PATH)build_include_lines : \
-    $(MAKE_SCRIPT_PATH)build_include_lines_2
- 
-# Dependency on tools that build the target Include_lines/include_lines.new.  
-#
-Include_lines/include_lines.new : \
-    $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_makefile_dirs \
-    $(MAKE_SCRIPT_PATH)get_local_include_dirs \
-    $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
+$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
 
 # The processes for building the individual include line files will have removed
 # Include_lines/include_lines if we need to continue updating. This will trigger
@@ -341,14 +330,11 @@ include_lines.new: \
 # build_include_lines calls build_makefile_dirs and build_sub_libs_needed,
 # hence the extra lines. 
 
-# Tools for the target. 
+# Dependency on tools that build the target, including hidden ones. We do not
+# make the hidden ones depend on the non-hidden ones as we do not know how to
+# build any of them.  
 #
-Include_lines/sub_libs_needed : \
-    $(MAKE_SCRIPT_PATH)build_file_list \
-    $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_makefile_dirs \
-    $(MAKE_SCRIPT_PATH)get_local_include_dirs \
-    $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
+Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
 
 # The script build_include_lines updates Include_lines/sub_libs_needed only if
 # needed.  
@@ -471,18 +457,18 @@ Makefile-depend : \
 # built before it is used.
 #
 Makefile-depend : Include_lines/file_list Include_lines/include_lines $(TEST_SUB_DIRS)
-	@$(ECHO_UNLESS_QUIET)  " "
-	@$(ECHO_UNLESS_QUIET)  "================================================================================"
+	@$(ECHO_IF_VERBOSE)  " "
+	@$(ECHO_IF_VERBOSE)  "================================================================================"
 # Commented out to prevent 'word too long' errors on some systems
 # -- Kyle  Jan 15, 2011
-	@$(IVI_ECHO)  "Building Makefile-depend because of $?" 
-# 	@$(ECHO_UNLESS_QUIET)  "Building Makefile-depend" 
-	@$(ECHO_UNLESS_QUIET)  " "
+	@$(ECHO_IF_VERBOSE)  "Building Makefile-depend because of $?" 
+# 	@$(ECHO_IF_VERBOSE)  "Building Makefile-depend" 
+	@$(ECHO_IF_VERBOSE)  " "
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_program_makefile_depend
-	@$(ECHO_UNLESS_QUIET)  " "
-	@$(ECHO_UNLESS_QUIET)  "                         Makefile-depend is built" 
-	@$(ECHO_UNLESS_QUIET)  "================================================================================"
-	@$(ECHO_UNLESS_QUIET)  " "
+	@$(ECHO_IF_VERBOSE)  " "
+	@$(ECHO_IF_VERBOSE)  "                         Makefile-depend is built" 
+	@$(ECHO_IF_VERBOSE)  "================================================================================"
+	@$(ECHO_IF_VERBOSE)  " "
 
 include Makefile-depend
 
@@ -499,9 +485,7 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 # Dependencies on the tools needed to build it. 
 #
-Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : \
-      $(MAKE_PATH)init_compile \
-      $(MAKE_SCRIPT_PATH)build_makefile_libs_needed
+Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(MAKE_PATH)init_compile $(IVI_BUILD_TOOLS)
 
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
@@ -588,41 +572,41 @@ $(PCH_DIR)%.h.gch : %.h
 
 $(OBJ_DIR)%.o : %.c 
 	@$(IVI_ECHO)
-	@$(IVI_CC) --version |& head -1 
-	$(IVI_CC) $< -c -o $@ \
+	@$(IVI_CC) --version |& head -1  $(SUPRESS_IF_QUIET)
+	( $(IVI_CC) $< -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
 $(CXX_OBJ_DIR)%.o : %.C
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
+        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
 $(CXX_OBJ_DIR)%.o : %.cpp
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
+        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -630,28 +614,28 @@ $(CXX_OBJ_DIR)%.o : %.cpp
 
 $(CXX_OBJ_DIR)%.o : %.cxx
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
+        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
 $(CXX_OBJ_DIR)%.o : %.cc
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
+        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -667,7 +651,7 @@ $(CXX_OBJ_DIR)%.o : %.cc
 # easiest. 
 #
 $(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
-	$(IVI_CC)  --version |& head -1 
+	$(IVI_CC)  --version |& head -1  $(SUPRESS_IF_QUIET)
 	$(IVI_CC) version.c -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
@@ -851,7 +835,7 @@ $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
 #
 $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_ARCHIVE) $(LD_OBJ_DIR)%.o 
 	@$(IVI_ECHO)
-	@$(IVI_LD)  --version |& head -1 
+	@$(IVI_LD)  --version |& head -1  $(SUPRESS_IF_QUIET)
 	$(IVI_LD) $@.o $(VERSION_OBS) $(OBS_ARCHIVE) \
             $(HACK_BEFORE_LOAD_FLAGS) $(LOAD_FLAGS) -L$(LD_OBJ_DIR) $(LIB_LINK_STRINGS) \
             $(LOAD_DIRS) \
@@ -893,29 +877,48 @@ $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_A
 program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
 
 ################################################################################
-#                       User target
+#                       User bin target
 # 
-$(USER_BIN_DIR)% : $(LD_OBJ_DIR)%
-	$(MAKE_SCRIPT_PATH)update_bin $< $@
+# bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(USER_PROGRAMS)
 
-bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(USER_PROGRAMS)
+.PHONY : bin
+bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
+
+$(USER_BIN_PATH)% : $(LD_OBJ_DIR)%
+	$(MAKE_SCRIPT_PATH)update_bin $< $@
 
 ################################################################################
 #                       Misc bin target
 # 
-$(MISC_BIN_DIR)% : $(LD_OBJ_DIR)%
+# misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MISC_PROGRAMS)
+
+.PHONY : misc_bin
+misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
+
+$(MISC_BIN_PATH)% : $(LD_OBJ_DIR)%
 	$(MAKE_SCRIPT_PATH)update_bin $< $@
 	$(IVI_PERMIT_EXECUTION) $@
-
-misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MISC_PROGRAMS)
 
 ################################################################################
-#                       Install target
+#                       Make bin target
 # 
-$(INSTALL_BIN_DIR)% : $(LD_OBJ_DIR)%
+# make_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MAKE_PROGRAMS)
+
+.PHONY : misc_bin
+make_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
+
+$(MAKE_BIN_PATH)% : $(LD_OBJ_DIR)%
 	$(MAKE_SCRIPT_PATH)update_bin $< $@
 	$(IVI_PERMIT_EXECUTION) $@
 
+################################################################################
+#                       Install bin target
+# 
+$(INSTALL_BIN_PATH)% : $(LD_OBJ_DIR)%
+	$(MAKE_SCRIPT_PATH)update_bin $< $@
+	$(IVI_PERMIT_EXECUTION) $@
+
+.PHONY : install
 install : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(INSTALL_PROGRAMS)
 
 ################################################################################
@@ -985,41 +988,41 @@ $(MAKE_DOC_DIR)doc_dir_made :
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_MAKE_DOC_DIR)" "$(MAKE_DOC)" .
 	$(IVI_TOUCH) $@
 
-$(PROGRAM_CAT_DIR) :
-	$(IVI_MKDIR) $(PROGRAM_CAT_DIR)
+$(PROGRAM_CAT_PATH) :
+	$(IVI_MKDIR) $(PROGRAM_CAT_PATH)
 
 # Do not merge with the next line due to '$<'
-$(MAKE_DOC_DIR)%.w.1 : $(MAKE_PATH)Makefile Makefile-depend $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR) $(MAKE_BIN_DIR)writeup_to_man 
+$(MAKE_DOC_DIR)%.w.1 : $(MAKE_PATH)Makefile Makefile-depend $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH) $(MAKE_BIN_PATH)writeup_to_man 
 
 $(MAKE_DOC_DIR)%.w.1 : %.w
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(MAKE_BIN_DIR)writeup_to_man $< > $@
-	$(IVI_CP) $@ $(PROGRAM_CAT_DIR)$*.1
+	$(MAKE_BIN_PATH)writeup_to_man $< > $@
+	$(IVI_CP) $@ $(PROGRAM_CAT_PATH)$*.1
 
 # Do not merge with the next line due to '$<'
-$(MAKE_DOC_DIR)%.help.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_DIR)help_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR)
+$(MAKE_DOC_DIR)%.help.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_PATH)help_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH)
 
 $(MAKE_DOC_DIR)%.help.1 : %.help
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(MAKE_BIN_DIR)help_to_man $< > $@
-	$(IVI_CP) $@ $(PROGRAM_CAT_DIR)$*.1
+	$(MAKE_BIN_PATH)help_to_man $< > $@
+	$(IVI_CP) $@ $(PROGRAM_CAT_PATH)$*.1
 
 # Do not merge with the next line due to '$<'
-$(MAKE_DOC_DIR)%.shell.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_DIR)writeup_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR)
+$(MAKE_DOC_DIR)%.shell.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_PATH)writeup_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH)
 
 $(MAKE_DOC_DIR)%.shell.1 : %
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(MAKE_BIN_DIR)writeup_to_man $< > $@
-	$(IVI_CP) $@  $(PROGRAM_CAT_DIR)$*.1
+	$(MAKE_BIN_PATH)writeup_to_man $< > $@
+	$(IVI_CP) $@  $(PROGRAM_CAT_PATH)$*.1
 
 # Additional dependencies of doc_program.made may be in Makefile-depend. 
-$(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_DIR) $(MAN_FROM_HELP_FILES) $(MAN_FROM_WRITEUP_FILES)
+$(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH) $(MAN_FROM_HELP_FILES) $(MAN_FROM_WRITEUP_FILES)
 	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
 	$(IVI_TOUCH) $@
 
 misc_doc_program : $(MAKE_DOC_DIR)doc_program.made
-	rsync -rl -u $(DOC_DIR)doxygen/ $(MISC_DOC_DIR)doxygen 
-	rsync -rl -u $(DOC_DIR)man/ $(MISC_DOC_DIR)man 
+	rsync -rl -u $(DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 
+	rsync -rl -u $(DOC_PATH)man/ $(MISC_DOC_PATH)man 
 
 ################################################################################
 #                   Protoize

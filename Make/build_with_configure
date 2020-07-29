@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 
-# $Id: build_with_configure 25594 2020-06-29 19:20:15Z kobus $
+# $Id: build_with_configure 25679 2020-07-29 00:36:35Z kobus $
 #
 # This is the vision lab build script hacked for shared code that has non-broken
 # fairly standard "configure" scripts. 
@@ -152,8 +152,8 @@ endif
 ##############################################################################
 
 # Many configures use these. 
-setenv LDFLAGS "-L${INSTALL_LOAD_DIR}" 
-setenv CFLAGS  "-I${INSTALL_INCLUDE_DIR}"
+setenv LDFLAGS "-L${INSTALL_LOAD_PATH}" 
+setenv CFLAGS  "-I${INSTALL_INCLUDE_PATH}"
 
 make distclean
 
@@ -166,19 +166,19 @@ make distclean
 #     --includedir is sometimes call --incdir 
 #
 #     Sometines you will want to use 
-#          --datarootdir=${INSTALL_DATA_DIR}
+#          --datarootdir=${INSTALL_DATA_PATH}
 #     but this is often not used and typically causes an error exit.  We have
-#     not yet established final value for INSTALL_DATA_DIR, and if you need it,
+#     not yet established final value for INSTALL_DATA_PATH, and if you need it,
 #     please bring it to the attention of the sw mail list.
 #
 #     It is possible (no current examples) that the trailing slashes in our variables ending in
 #     "_DIR" might break something. You could try something like:
-#           setenv INSTALL_PREFIX_DIR  `echo ${INSTALL_PREFIX_DIR} | sed 's#\([^/]\)/*$#\1#'`
-#           setenv INSTALL_BIN_DIR  `echo ${INSTALL_BIN_DIR} | sed 's#\([^/]\)/*$#\1#'`
-#           setevn INSTALL_LOAD_DIR  `echo ${INSTALL_LOAD_DIR} | sed 's#\([^/]\)/*$#\1#'`
-#           setenv INSTALL_INCLUDE_DIR  `echo ${INSTALL_INCLUDE_DIR} | sed 's#\([^/]\)/*$#\1#'`
+#           setenv INSTALL_PREFIX_PATH  `echo ${INSTALL_PREFIX_PATH} | sed 's#\([^/]\)/*$#\1#'`
+#           setenv INSTALL_BIN_PATH  `echo ${INSTALL_BIN_PATH} | sed 's#\([^/]\)/*$#\1#'`
+#           setevn INSTALL_LOAD_PATH  `echo ${INSTALL_LOAD_PATH} | sed 's#\([^/]\)/*$#\1#'`
+#           setenv INSTALL_INCLUDE_PATH  `echo ${INSTALL_INCLUDE_PATH} | sed 's#\([^/]\)/*$#\1#'`
 
-./configure --prefix=${INSTALL_PREFIX_DIR} --libdir=${INSTALL_LOAD_DIR} --includedir=${INSTALL_INCLUDE_DIR} --bindir=${INSTALL_BIN_DIR} --enable-shared=no --enable-static=yes
+./configure --prefix=${INSTALL_PREFIX_PATH} --libdir=${INSTALL_LOAD_PATH} --includedir=${INSTALL_INCLUDE_PATH} --bindir=${INSTALL_BIN_PATH} --enable-shared=no --enable-static=yes
 
 make clean
 make 

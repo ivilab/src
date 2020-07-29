@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25676 2020-07-24 17:47:13Z kobus $
+# $Id: init_compile 25679 2020-07-29 00:36:35Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -62,13 +62,7 @@ endif
 # We are slowly purging the use of the "_DIR" forms. Eventually we should be
 # able to do with the "_PATH" forms exclusively.
 #
-setenv IVI_LIB_DIR ${IVI_SRC_PATH}/lib/
-setenv MAKE_DIR ${IVI_SRC_PATH}/Make/
-# setenv MAKE_SCRIPT_DIR ${MAKE_DIR}/scripts/
-# setenv MAKE_BIN_DIR ${MAKE_DIR}/bin/${MACHINE}/
-# setenv MAKE_UTIL_DIR ${MAKE_DIR}/util/
-# setenv MAKE_EDIT_DIR ${MAKE_DIR}/vim/
-
+# Now set in init_scripts. 
 # setenv MAKE_PATH ${IVI_SRC_PATH}Make/
 # setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
 setenv IVI_LIB_PATH ${IVI_SRC_PATH}lib/
@@ -107,19 +101,22 @@ endif
 pushd ${IVI_SRC_PATH} > /dev/null
    if ($?EXPORTED_SOURCE) then
        #
-       # Setting DOC_DIR to "doc" in the current directory breaks the build
+       # Setting DOC_PATH to "doc" in the current directory breaks the build
        # because the symbolic target "doc" becomes a real entity. We did this
        # originally to pattern what we do for non-export builds, until the above
        # problem surfaced. However, for export builds, putting the man pages in
        # to the "doc" sub-directory might be confusing anyway. So we now just
        # use IVI_SRC_PATH. 
        # 
-       ### setenv DOC_DIR "$cwd"/doc/
-       setenv DOC_DIR "${IVI_SRC_PATH}"
-   else if (! $?DOC_DIR) then
-       pushd ../  > /dev/null 
-          setenv DOC_DIR "$cwd"/doc/
-       popd > /dev/null 
+       ### setenv DOC_PATH "$cwd"/doc/
+       setenv DOC_PATH "${IVI_SRC_PATH}"
+   else if (! $?DOC_PATH) then
+       # We used to do the parent, but that seems like a bad idea. 
+       #
+       #  pushd ../  > /dev/null 
+       #     setenv DOC_PATH "$cwd"/doc/
+       #  popd > /dev/null 
+       setenv DOC_PATH "${IVI_SRC_PATH}"
    endif
 popd > /dev/null 
 
@@ -510,7 +507,7 @@ else
     ivi_setenv USER_DIR ${HOME}/
 endif
 
-ivi_setenv USER_BIN_DIR ${USER_DIR}/bin/${MACHINE}/ 
+ivi_setenv USER_BIN_PATH ${USER_DIR}/bin/${MACHINE}/ 
 ivi_setenv USER_LOAD_DIR ${USER_DIR}load/${MACHINE}/ 
 
 # Work on a "misc" dir. we only wnat one of these. We go through some choices,
@@ -518,18 +515,18 @@ ivi_setenv USER_LOAD_DIR ${USER_DIR}load/${MACHINE}/
 # we use ${HOME}/misc regardless of whether it works. 
 
 set first_choice = ""
-if ($?MISC_DIR) then
-    set first_choice = "$MISC_DIR"
+if ($?MISC_PATH) then
+    set first_choice = "${MISC_PATH}"
 endif
 
 # Root should not link code in non-root controlled dirs. 
 if ("${USER}" == "root") then
-    set misc_dirs = (${first_choice})
+    set misc_paths = (${first_choice})
 else
-    if ($?MOUNTED_MISC_DIR) then 
-        set misc_dirs = (${first_choice} ${MOUNTED_MISC_DIR} /misc/ ${HOME}/misc/ )
+    if ($?MOUNTED_MISC_PATH) then 
+        set misc_paths = (${first_choice} ${MOUNTED_MISC_PATH} /misc/ ${HOME}/misc/ )
     else 
-        set misc_dirs = (${first_choice} /misc/ /Volumes/misc/ ${HOME}/misc/ )
+        set misc_paths = (${first_choice} /misc/ /Volumes/misc/ ${HOME}/misc/ )
     endif
 
     set other_users = "kobus"
@@ -538,28 +535,28 @@ else
         if (! $status) then
             eval set other_user_home = "~${other_user}" >& /dev/null
             if (! $status) then
-                set misc_dirs = "${misc_dirs} ${other_user_home}/misc/"
+                set misc_paths = "${misc_paths} ${other_user_home}/misc/"
             endif
         endif
     end
 endif
 
-# We prefer a MISC_DIR with a load sub dir, but if we don't find one, then we
+# We prefer a MISC_PATH with a load sub dir, but if we don't find one, then we
 # use the first one that exists. 
 #
 set found = 0
-foreach misc_dir (${misc_dirs})
-    if (-d ${misc_dir}/load) then
-        ivi_setenv MISC_DIR ${misc_dir}
+foreach misc_path (${misc_paths})
+    if (-d ${misc_path}/load) then
+        ivi_setenv MISC_PATH ${misc_path}
         set found = 1
         break
     endif
 end
 
 if (! ${found}) then
-    foreach misc_dir (${misc_dirs})
-        if (-d ${misc_dir}) then
-            ivi_setenv MISC_DIR ${misc_dir}
+    foreach misc_path (${misc_paths})
+        if (-d ${misc_path}) then
+            ivi_setenv MISC_PATH ${misc_path}
             set found = 1
             break
         endif
@@ -567,58 +564,58 @@ if (! ${found}) then
 endif
 
 if (! ${found}) then
-    ivi_setenv MISC_DIR ${HOME}/misc/
+    ivi_setenv MISC_PATH ${HOME}/misc/
 endif
 
 set misc_search_dir = ""
-if (-d "${MISC_DIR}") then
-    set misc_search_dir = "${MISC_DIR}"
+if (-d "${MISC_PATH}") then
+    set misc_search_dir = "${MISC_PATH}"
 endif
 
-ivi_setenv MISC_BIN_DIR ${MISC_DIR}/bin/${MACHINE}/ 
-ivi_setenv MISC_LOAD_DIR ${MISC_DIR}load/${MACHINE}/ 
-ivi_setenv MISC_INCLUDE_DIR ${MISC_DIR}include/
-ivi_setenv MISC_DOC_DIR ${MISC_DIR}doc/ 
+ivi_setenv MISC_BIN_PATH ${MISC_PATH}/bin/${MACHINE}/ 
+ivi_setenv MISC_LOAD_PATH ${MISC_PATH}load/${MACHINE}/ 
+ivi_setenv MISC_INCLUDE_PATH ${MISC_PATH}include/
+ivi_setenv MISC_DOC_PATH ${MISC_PATH}doc/ 
 
 # ##############################################################################
 #
 # Dirs for installation of libraries shared among computers. This sets the
 # default values. If any of them are already set, then we do not touch them. 
 
-if (! $?INSTALL_PREFIX_DIR) then
-    ivi_setenv INSTALL_PREFIX_DIR "${MISC_DIR}"
+if (! $?INSTALL_PREFIX_PATH) then
+    ivi_setenv INSTALL_PREFIX_PATH "${MISC_PATH}"
 endif
 
-if (! $?INSTALL_LOAD_DIR) then
-    ivi_setenv INSTALL_LOAD_DIR "${MISC_DIR}load/${MACHINE}/"
+if (! $?INSTALL_LOAD_PATH) then
+    ivi_setenv INSTALL_LOAD_PATH "${MISC_PATH}load/${MACHINE}/"
 endif
 
 if (! $?INSTALL_LOAD_AFT_DIR) then
-    ivi_setenv INSTALL_LOAD_AFT_DIR "${MISC_DIR}load_after/${MACHINE}/"
+    ivi_setenv INSTALL_LOAD_AFT_DIR "${MISC_PATH}load_after/${MACHINE}/"
 endif
 
-if (! $?INSTALL_INCLUDE_DIR) then
-    ivi_setenv INSTALL_INCLUDE_DIR  "${MISC_DIR}include/"
+if (! $?INSTALL_INCLUDE_PATH) then
+    ivi_setenv INSTALL_INCLUDE_PATH  "${MISC_PATH}include/"
 endif
 
-if (! $?INSTALL_BIN_DIR) then
-    ivi_setenv INSTALL_BIN_DIR "${MISC_BIN_DIR}"
+if (! $?INSTALL_BIN_PATH) then
+    ivi_setenv INSTALL_BIN_PATH "${MISC_BIN_PATH}"
 endif
 
-if (! $?INSTALL_DATA_DIR) then
-    ivi_setenv INSTALL_DATA_DIR "${MISC_DIR}share/"
+if (! $?INSTALL_DATA_PATH) then
+    ivi_setenv INSTALL_DATA_PATH "${MISC_PATH}share/"
 endif
 
-if (! $?INSTALL_DOC_DIR) then
-    ivi_setenv INSTALL_DOC_DIR "${MISC_DIR}doc/"
+if (! $?INSTALL_DOC_PATH) then
+    ivi_setenv INSTALL_DOC_PATH "${MISC_PATH}doc/"
 endif
 
-if (! $?INSTALL_INFO_DIR) then
-    ivi_setenv INSTALL_INFO_DIR "${MISC_DIR}info/"
+if (! $?INSTALL_INFO_PATH) then
+    ivi_setenv INSTALL_INFO_PATH "${MISC_PATH}info/"
 endif
 
-if (! $?INSTALL_MAN_DIR) then
-    ivi_setenv INSTALL_MAN_DIR "${MISC_DIR}man/"
+if (! $?INSTALL_MAN_PATH) then
+    ivi_setenv INSTALL_MAN_PATH "${MISC_PATH}man/"
 endif
 
 ################################################################################
@@ -662,28 +659,22 @@ set filter_non_devel = " grep -v \.so\."
 
 ################################################################################
 
-# These names are misleading. They are OBSOLETE and will be removed soon.
-# ivi_setenv IVI_DIR              "/"
-# ivi_setenv IVI_PARENT_DIR       "../"
-# ivi_setenv IVI_CUR_DIR          "./"
-#
-# New names for the above. 
 ivi_setenv IVI_DIR_STR          "/"
 ivi_setenv IVI_PARENT_DIR_STR   "../"
 ivi_setenv IVI_CUR_DIR_STR      "./"
 #
 
-ivi_setenv HTML_MAN_DIR "${DOC_DIR}man/html/"
-ivi_setenv WIKI_MAN_DIR "${DOC_DIR}man/wiki/"
-ivi_setenv MAN_DIR "${DOC_DIR}man/man3/"
-ivi_setenv CAT_DIR "${DOC_DIR}man/cat3/"
+ivi_setenv HTML_MAN_PATH "${DOC_PATH}man/html/"
+ivi_setenv WIKI_MAN_PATH "${DOC_PATH}man/wiki/"
+ivi_setenv MAN3_MAN_PATH "${DOC_PATH}man/man3/"
+ivi_setenv CAT_PATH "${DOC_PATH}man/cat3/"
 
-if ($?PROGRAM_MAN_DIR == 0) then 
-    ivi_setenv PROGRAM_MAN_DIR "${DOC_DIR}man/man1/"
+if ($?PROGRAM_MAN_PATH == 0) then 
+    ivi_setenv PROGRAM_MAN_PATH "${DOC_PATH}man/man1/"
 endif 
 
-if ($?PROGRAM_CAT_DIR == 0) then 
-    ivi_setenv PROGRAM_CAT_DIR "${DOC_DIR}man/cat1/"
+if ($?PROGRAM_CAT_PATH == 0) then 
+    ivi_setenv PROGRAM_CAT_PATH "${DOC_PATH}man/cat1/"
 endif 
 
 # This should NOT be null. 
@@ -1021,13 +1012,12 @@ ivi_setenv IVI_MAKE_NOP         "${IVI_MAKE_NO_OP}"
 # ECHO suppressing (no relevant commands at this point, just this comment.)
 #
 # Both known versions of make respect the "@" echo suppress, but only gmake does
-# this after variable substitution and so controlling whether we do it or now
-# via environment variables is potentially not viable. 
-#
-# Currently we are assuming that all makes respect "@", which occurs in the
-# Makefiles as is.  However, we may have to back off on this a some point if we
-# run into version of make that does not respect "@".
-#
+# this after variable substitution and so robustly controlling this may not be
+# vaiable. But for gmake at least we can supress more output from make with
+#   setenv ECHO_MAKE_CMD "@"
+# as $(ECHO_MAKE_CMD) is in front of some commands deemed not to be too
+# interesting.
+
 ivi_setenv ECHO_IF_VERBOSE  "${MAKE_SCRIPT_PATH}echo_if_verbose" 
 ivi_setenv ECHO_UNLESS_QUIET  "${MAKE_SCRIPT_PATH}echo_unless_quiet" 
 
@@ -3245,10 +3235,10 @@ foreach try_load_dir ($try_load_dirs)
     endif
 end 
 
-set try_misc_dirs = "${misc_search_dir}"
+set try_misc_paths = "${misc_search_dir}"
 
-foreach try_misc_dir (${try_misc_dirs})
-    set try_load_dir = "${try_misc_dir}link/${MACHINE}"
+foreach try_misc_path (${try_misc_paths})
+    set try_load_dir = "${try_misc_path}link/${MACHINE}"
     if (-e ${try_load_dir}) then
         if ("${os_str}" != "") then
             if (-e "${try_load_dir}/${os_str}") then
@@ -3269,8 +3259,8 @@ foreach try_misc_dir (${try_misc_dirs})
     endif
 end
 
-foreach try_misc_dir (${try_misc_dirs})
-    set try_load_dir = "${try_misc_dir}load/${MACHINE}"
+foreach try_misc_path (${try_misc_paths})
+    set try_load_dir = "${try_misc_path}load/${MACHINE}"
     if (-e ${try_load_dir}) then
         if ("${os_str}" != "") then
             if (-e "${try_load_dir}/${os_str}") then
@@ -3751,29 +3741,29 @@ if (${use_ld_library_path}) then
         echo ""
     endif
 
-    if (-d "${MISC_LOAD_DIR}") then
+    if (-d "${MISC_LOAD_PATH}") then
         # Hack time. Since we do not control HPC computers, we need to put loads
         # before the very first ones which will be LD_LIBRARY_PATH ones. We
         # cannot simply put them before, because they should then be in
-        # LD_LIBRARY_PATH. So, we slip MISC_LOAD_DIR into LD_LIBRARY_PATH. 
+        # LD_LIBRARY_PATH. So, we slip MISC_LOAD_PATH into LD_LIBRARY_PATH. 
 
         if ("${LD_LIBRARY_PATH}" == "") then 
-            setenv LD_LIBRARY_PATH "${MISC_LOAD_DIR}"
+            setenv LD_LIBRARY_PATH "${MISC_LOAD_PATH}"
         else 
-            setenv LD_LIBRARY_PATH "${MISC_LOAD_DIR}:${LD_LIBRARY_PATH}"
+            setenv LD_LIBRARY_PATH "${MISC_LOAD_PATH}:${LD_LIBRARY_PATH}"
         endif
 
-        if (-d "${MISC_LOAD_DIR}${IVI_CC}") then
-            setenv LD_LIBRARY_PATH "${MISC_LOAD_DIR}${IVI_CC}:${LD_LIBRARY_PATH}"
+        if (-d "${MISC_LOAD_PATH}${IVI_CC}") then
+            setenv LD_LIBRARY_PATH "${MISC_LOAD_PATH}${IVI_CC}:${LD_LIBRARY_PATH}"
         endif
 
-        if (-d "${MISC_LOAD_DIR}${IVI_CXX}") then
-            setenv LD_LIBRARY_PATH "${MISC_LOAD_DIR}${IVI_CXX}:${LD_LIBRARY_PATH}"
+        if (-d "${MISC_LOAD_PATH}${IVI_CXX}") then
+            setenv LD_LIBRARY_PATH "${MISC_LOAD_PATH}${IVI_CXX}:${LD_LIBRARY_PATH}"
         endif
 
 #         if ("${IVI_GPU_DIR}" != "") then
-#             if (-d "${MISC_LOAD_DIR}${}") then
-#                 setenv LD_LIBRARY_PATH "${MISC_LOAD_DIR}${IVI_GPU_DIR}:${LD_LIBRARY_PATH}"
+#             if (-d "${MISC_LOAD_PATH}${}") then
+#                 setenv LD_LIBRARY_PATH "${MISC_LOAD_PATH}${IVI_GPU_DIR}:${LD_LIBRARY_PATH}"
 #             endif
 #         endif
     endif
@@ -3806,7 +3796,7 @@ if (${use_ld_library_path}) then
                         if (-d "${try_load_dir_base}include") then
                             if ($?INCLUDE) then
                                 # We need to add directories afterwards here so
-                                # that MISC_INCLUDE_DIR remains first. 
+                                # that MISC_INCLUDE_PATH remains first. 
                                 #  
                                 if ("${INCLUDE}" != "") then
                                     setenv INCLUDE "${INCLUDE}:${try_load_dir_base}/include" 
@@ -3848,30 +3838,30 @@ set inc_dirs = "${before_inc_dirs} ${default_opt_inc_dirs} ${extra_opt_inc_dirs}
 set inc_path_inc_dirs = ""
 
 if (${use_include_path}) then 
-    if (-d "${MISC_INCLUDE_DIR}") then
+    if (-d "${MISC_INCLUDE_PATH}") then
         #
         # Hack time. Since we do not control HPC computers, we need to put
         # includes before the very first ones which will be INCLUDE ones. We
         # cannot simply put them before, because they should then be in INCLUDE
-        # which could influcence something. So, we slip MISC_INCLUDE_DIR into
+        # which could influcence something. So, we slip MISC_INCLUDE_PATH into
         # the very begining of INCLUDE. 
         #
         if ($?INCLUDE) then
             if ("${INCLUDE}" != "") then
-                setenv INCLUDE "${MISC_INCLUDE_DIR}:${INCLUDE}" 
+                setenv INCLUDE "${MISC_INCLUDE_PATH}:${INCLUDE}" 
             else
-                setenv INCLUDE "${MISC_INCLUDE_DIR}" 
+                setenv INCLUDE "${MISC_INCLUDE_PATH}" 
             endif
         else
-            setenv INCLUDE "${MISC_INCLUDE_DIR}" 
+            setenv INCLUDE "${MISC_INCLUDE_PATH}" 
         endif
 
-        if (-d "${MISC_INCLUDE_DIR}${IVI_CC}") then
-            setenv INCLUDE "${MISC_INCLUDE_DIR}${IVI_CC}:${INCLUDE}" 
+        if (-d "${MISC_INCLUDE_PATH}${IVI_CC}") then
+            setenv INCLUDE "${MISC_INCLUDE_PATH}${IVI_CC}:${INCLUDE}" 
         endif
 
-        if (-d "${MISC_INCLUDE_DIR}${IVI_CXX}") then
-            setenv INCLUDE "${MISC_INCLUDE_DIR}${IVI_CXX}:${INCLUDE}" 
+        if (-d "${MISC_INCLUDE_PATH}${IVI_CXX}") then
+            setenv INCLUDE "${MISC_INCLUDE_PATH}${IVI_CXX}:${INCLUDE}" 
         endif
     endif
 

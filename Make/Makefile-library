@@ -126,15 +126,12 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list :
 # stamp, which should happen only if there is a difference. We basically use
 # Include_lines/file_list.new as a proxy for Include_lines/file_list so that we
 # can hide the dependency on the directory time stamp to reduce save build time. 
-# Hidden dependencies of tools on tools. 
 
-$(MAKE_SCRIPT_PATH)build_file_list : \
-    $(MAKE_SCRIPT_PATH)build_file_list_2
-
-# Dependency on tools that build the target. 
+# Dependency on tools that build the target, including hidden ones. We do not
+# make the hidden ones depend on the non-hidden ones as we do not know how to
+# build any of them.  
 #
-$(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: \
-    $(MAKE_SCRIPT_PATH)build_file_list
+$(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
 
 # Rule to build Include_lines/file_list.new. Note that there is no need to
 # depend on the directory Include_lines because if that does not exist, the
@@ -232,20 +229,12 @@ $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines : $(LIB_COMPON
 	$(MAKE_SCRIPT_PATH)stream_file_names -s -h -skip_incl -no_path $(LIB_COMPONENT_SRC_DIR) | sed 's/\(.*\)/$$(LIB_COMPONENT_SRC_DIR)Include_lines\/include_lines.new : $$(LIB_COMPONENT_SRC_DIR)Include_lines\/new\/\1/' > $@
 
 include $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines
-	
 
-# Hidden dependencies of tools on tools for Include_lines/include_lines.new. 
+# Dependency on tools that build the target, including hidden ones. We do not
+# make the hidden ones depend on the non-hidden ones as we do not know how to
+# build any of them.
 #
-$(MAKE_SCRIPT_PATH)build_include_lines : \
-    $(MAKE_SCRIPT_PATH)build_include_lines_2
-
-# Dependency on tools that build the target Include_lines/include_lines.new.  
-#
-$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : \
-    $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_makefile_dirs \
-    $(MAKE_SCRIPT_PATH)get_local_include_dirs \
-    $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
+$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
 
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_NEW_INCLUDE_LINE_FILES)
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list 
@@ -288,16 +277,13 @@ include_lines.new : \
 # Handle the case the dependency Include_lines/sub_libs_needed does not exist
 # and we are working on something that depends on it (e.g., Makefile-depend).
 # Since this file is further maintained only as a side effect, we do not have it
-# depend on anything other than the tools needed to build it. The script
-# build_include_lines calls build_makefile_dirs and build_sub_libs_needed,
-# hence the extra lines. 
+# depend on anything other than the tools needed to build it. 
 #
-$(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : \
-   $(MAKE_SCRIPT_PATH)build_file_list \
-   $(MAKE_SCRIPT_PATH)build_include_lines \
-   $(MAKE_SCRIPT_PATH)build_makefile_dirs \
-   $(MAKE_SCRIPT_PATH)get_local_include_dirs \
-   $(MAKE_SCRIPT_PATH)build_sub_libs_needed
+# Dependency on tools that build the target, including hidden ones. We do not
+# make the hidden ones depend on the non-hidden ones as we do not know how to
+# build any of them.  
+#
+Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
 
 # Because the target is not gaurenteed to be updated, but has dependencies on
 # tools, we could get out of date in this case. Hence we rely on
@@ -411,16 +397,16 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
 #
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 # $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
-	@$(IVI_ECHO)  " "
-	@$(IVI_ECHO)  "================================================================================"
-	@$(IVI_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend because of $?" 
-	@$(IVI_ECHO)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend" 
-	@$(IVI_ECHO)  " " 
+	@$(ECHO_IF_VERBOSE)  " "
+	@$(ECHO_IF_VERBOSE)  "================================================================================"
+	@$(ECHO_IF_VERBOSE)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend because of $?" 
+	@$(ECHO_IF_VERBOSE)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend" 
+	@$(ECHO_IF_VERBOSE)  " " 
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_library_makefile_depend $(LIB_COMPONENT_PREFIX) LIB_COMPONENT $(LIB_COMPONENT_REAL_SRC_DIR)
-	@$(IVI_ECHO)  " "
-	@$(IVI_ECHO)  "        $(LIB_COMPONENT_SRC_DIR)Makefile-depend is built" 
-	@$(IVI_ECHO)  "================================================================================"
-	@$(IVI_ECHO)  " "
+	@$(ECHO_IF_VERBOSE)  " "
+	@$(ECHO_IF_VERBOSE)  "        $(LIB_COMPONENT_SRC_DIR)Makefile-depend is built" 
+	@$(ECHO_IF_VERBOSE)  "================================================================================"
+	@$(ECHO_IF_VERBOSE)  " "
    
 include $(LIB_COMPONENT_SRC_DIR)Makefile-depend
 
@@ -441,12 +427,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed-
 
 # Dependencies on the tools needed to build it. 
 #
-$(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : \
-      $(MAKE_PATH)init_compile \
-      $(MAKE_SCRIPT_PATH)build_makefile_libs_needed
-
-$(MAKE_SCRIPT_PATH)build_makefile_libs_needed : \
-      $(MAKE_SCRIPT_PATH)build_makefile_libs_needed_2
+$(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(MAKE_PATH)init_compile $(IVI_BUILD_TOOLS)
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
@@ -553,69 +534,69 @@ $(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)$(IVI_DIR_STR)%.h.gc
 $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.c 
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CC)  --version |& head -1 
+	@$(IVI_CC)  --version |& head -1 $(SUPRESS_IF_QUIET) 
 	( $(IVI_CC) $< -c -o $@ \
         $(LIB_COMPONENT_CC_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_CC_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(LIB_COMPONENT_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE) ; $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] ) \
+        $(WITH_LIBS_HAVE) ; $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cpp 
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1 $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] ) \
+        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cxx
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1 $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] ) \
+        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.C
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1 $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ]) \
+        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET)) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cc
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1 
+	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] ) \
+        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
         |& $(IVI_CPP_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -829,12 +810,12 @@ COMPILE_INFO = \
 # too much trickery, but redoing it differently (using doxygen?) would be a lot
 # of work.
 #
-$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.c.made : $(LIB_COMPONENT_SRC_DIR)Makefile-library $(MAKE_BIN_DIR)c2man $(MAKE_BIN_DIR)include_def $(MAKE_BIN_DIR)c2man_in
+$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.c.made : $(LIB_COMPONENT_SRC_DIR)Makefile-library $(MAKE_BIN_PATH)c2man $(MAKE_BIN_PATH)include_def $(MAKE_BIN_PATH)c2man_in
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
 	$(MAKE_SCRIPT_PATH)assert_non_null_arg $(MAKE_DOC_DIR) 
 	$(IVI_SED) < $(LIB_COMPONENT_SRC_DIR)$*.c '/Hide from c2man/d' | $(IVI_SED) 's/^.* End of includes for c2man .*/static int make_doc_cut = 0;/' >  $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.c
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.c | $(MAKE_BIN_DIR)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp.c
+	$(MAKE_BIN_PATH)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.c | $(MAKE_BIN_PATH)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp.c
 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp.c \
         -D$(UC_MACHINE) -D$(UC_OS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
@@ -842,20 +823,20 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
 	$(MAKE_SCRIPT_PATH)ivi_cat_before "make_doc_cut" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_split.c | $(C2MAN_CPP_CMD_2) > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man.h
 	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man.c
 	$(MAKE_SCRIPT_PATH)ivi_cat_after -a "make_doc_cut" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_split.c | $(IVI_SED) '/^#/d' >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man.c
-	$(IVI_MKDIR) $(MAN_DIR)
-	$(MAKE_BIN_DIR)c2man \
+	$(IVI_MKDIR) $(MAN3_MAN_PATH)
+	$(MAKE_BIN_PATH)c2man \
          $(C2MAN_FLAGS) \
          $(COMPILE_INFO) \
          $(LIB_COMPONENT_NEED_HAVE) \
          $(BASE_INCLUDES) \
          -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
-         -o$(MAN_DIR) \
+         -o$(MAN3_MAN_PATH) \
          $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man.c
 # 	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in
 #
 # HTML
 # 
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.c | $(MAKE_BIN_DIR)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_html.c
+	$(MAKE_BIN_PATH)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.c | $(MAKE_BIN_PATH)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_html.c
 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_html.c \
         -D$(UC_MACHINE) -D$(UC_OS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
@@ -863,14 +844,14 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
 	$(MAKE_SCRIPT_PATH)ivi_cat_before "make_doc_cut" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_split_html.c | $(C2MAN_CPP_CMD_2) > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_html.h
 	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_html.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_html.c
 	$(MAKE_SCRIPT_PATH)ivi_cat_after -a "make_doc_cut" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_split_html.c | $(IVI_SED) '/^#/d'  >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_html.c
-	$(IVI_MKDIR) $(HTML_MAN_DIR)
-	$(MAKE_BIN_DIR)c2man -Th \
+	$(IVI_MKDIR) $(HTML_MAN_PATH)
+	$(MAKE_BIN_PATH)c2man -Th \
          -Th $(C2MAN_FLAGS) \
          $(COMPILE_INFO) \
          $(LIB_COMPONENT_NEED_HAVE) \
          $(BASE_INCLUDES) \
          -i\"$(LIB_COMPONENT_PREFIX)/$*.h\" \
-         -o$(HTML_MAN_DIR) \
+         -o$(HTML_MAN_PATH) \
          $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_html.c
 # 	$(IVI_MV) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.c.c2man_in_html
 	$(IVI_TOUCH) $@
@@ -879,12 +860,12 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
 # properly through a variety of tricks. There is probably too much trickery, but
 # redoing it differently (using doxygen?) would be a lot of work.
 #
-$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.h.made : $(MAKE_BIN_DIR)c2man $(MAKE_BIN_DIR)include_def  $(MAKE_BIN_DIR)c2man_in	$(MAKE_SCRIPT_PATH)fix_header_man_pages $(MAKE_SCRIPT_PATH)fix_header_html_pages
+$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.h.made : $(MAKE_BIN_PATH)c2man $(MAKE_BIN_PATH)include_def  $(MAKE_BIN_PATH)c2man_in	$(MAKE_SCRIPT_PATH)fix_header_man_pages $(MAKE_SCRIPT_PATH)fix_header_html_pages
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h  
 	$(MAKE_SCRIPT_PATH)assert_non_null_arg $(MAKE_DOC_DIR) 
 	$(IVI_SED) < $(LIB_COMPONENT_SRC_DIR)$*.h '/Hide from c2man/d' | $(IVI_SED) 's/^.* End of includes for c2man .*/static int make_doc_cut = 0;/' >  $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.h
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.h | $(MAKE_BIN_DIR)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_HEADER.c
+	$(MAKE_BIN_PATH)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.h | $(MAKE_BIN_PATH)c2man_in -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_HEADER.c
 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_HEADER.c \
         -D$(UC_MACHINE) -D$(UC_OS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
@@ -893,7 +874,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h
 	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_HEADER.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_HEADER.c
 	$(MAKE_SCRIPT_PATH)ivi_cat_after -a "make_doc_cut" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_split_HEADER.c | $(IVI_SED) '/^#/d' >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_HEADER.c
 	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
-	$(MAKE_BIN_DIR)c2man \
+	$(MAKE_BIN_PATH)c2man \
         $(C2MAN_FLAGS) \
         $(COMPILE_INFO) \
         $(LIB_COMPONENT_NEED_HAVE) \
@@ -904,7 +885,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h
 #
 # HTML
 # 
-	$(MAKE_BIN_DIR)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.h | $(MAKE_BIN_DIR)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_html_HEADER.c
+	$(MAKE_BIN_PATH)include_def __C2MAN__ < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_c2man_in.h | $(MAKE_BIN_PATH)c2man_in -h -i $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h.index > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_html_HEADER.c
 	$(C2MAN_CPP_CMD) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_pp_html_HEADER.c \
         -D$(UC_MACHINE) -D$(UC_OS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES) > \
@@ -913,7 +894,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h
 	$(IVI_ECHO) '#include "$(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_html_HEADER.h"' > $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_html_HEADER.c
 	$(MAKE_SCRIPT_PATH)ivi_cat_after -a "make_doc_cut" < $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_split_html_HEADER.c | $(IVI_SED) '/^#/d' >> $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*_html_HEADER.c
 	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)$*.h
-	$(MAKE_BIN_DIR)c2man -Th \
+	$(MAKE_BIN_PATH)c2man -Th \
         $(C2MAN_FLAGS) \
         $(COMPILE_INFO) \
         $(LIB_COMPONENT_NEED_HAVE) \
@@ -947,8 +928,8 @@ doxygen_$(LIB_COMPONENT_PREFIX) :
 	cd $(IVI_SRC_PATH)IVI_cpp; make doxygen
 
 misc_doc_$(LIB_COMPONENT_PREFIX) : doc_$(LIB_COMPONENT_PREFIX) doxygen_$(LIB_COMPONENT_PREFIX) 
-	rsync -rl -u $(DOC_DIR)doxygen/ $(MISC_DOC_DIR)doxygen 
-	rsync -rl -u $(DOC_DIR)man/ $(MISC_DOC_DIR)man 
+	rsync -rl -u $(DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 
+	rsync -rl -u $(DOC_PATH)man/ $(MISC_DOC_PATH)man 
 
 ################################################################################
 #                               Clean

@@ -44,7 +44,7 @@ set build_dir_path = "${cwd}"
 
 if ($?IVI_VERBOSE) then
     set ppid = `ps -p $$ -o ppid=`
-    if (${status}) exit ${status}
+    if (${status}) exit 1
 
     echo " "
     echo "IVB: ${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_dirs_2 in directory ${build_dir_path}."
@@ -56,7 +56,6 @@ set local_include_dirs = `${MAKE_SCRIPT_PATH}get_local_include_dirs | sed "${par
 
 if (${status}) then
     ${P_STDERR} "Script get_local_include_dirs failed in script build_makefile_dirs_2."
-    ${IVI_RM} "${lock_file}"
     exit 1 
 endif
 
@@ -110,10 +109,6 @@ if (-e Makefile-include) then
 
     if (-d ${real_ivi_lib_dir}) then
         pushd ${real_ivi_lib_dir} > /dev/null
-            if (${status}) then 
-                exit 1 
-                ${IVI_RM} "${lock_file}"
-            endif 
             set real_ivi_lib_path = "${cwd}"
         popd > /dev/null
 
@@ -176,7 +171,6 @@ if ((-e "ivi.h") || (-e "IVI.h") || (-e "ivi_all_c.h") || (-e "ivi_cpp.h") || (-
 else 
     set test_main = `${MAKE_SCRIPT_PATH}stream_file_names -m`
     if (${status}) then
-        ${IVI_RM} "${lock_file}"
         ${P_STDERR} "Script stream_file_names failed with option -m in script build_makefile_dirs_2."
         exit 1
     endif 
@@ -196,7 +190,6 @@ if (! -e Include_lines/sub_libs_needed) then
         echo "${VERBOSE_INDENT}Leaving script build_makefile_dirs_2 early due to no sub_libs_needed."
     endif
 
-    ${IVI_RM} "${lock_file}"
     exit 0
 endif 
 
@@ -249,18 +242,10 @@ while ($count <= $lib_count)
         set real_dir = "lib/${dir}"
 
         pushd lib > /dev/null
-        if (${status}) then 
-            ${IVI_RM} "${lock_file}"
-            exit 1 
-        endif 
 
         set lib_dir_for_make = `echo ${cwd} | sed "${src_dir_sed_str}" | sed "${dir_str_sed_str}"`
 
         pushd ${dir} > /dev/null
-        if (${status}) then 
-            ${IVI_RM} "${lock_file}"
-            exit 1 
-        endif 
 
         set sub_dir_for_make = `echo ${cwd} | sed "${src_dir_sed_str}" | sed "${dir_str_sed_str}"`
 
@@ -287,27 +272,15 @@ while ($count <= $lib_count)
             set real_dir = "${parent_dir}lib/${dir}"
 
             if (-e ${real_dir}) then
-            if (-d ${real_dir}) then
-                pushd ${parent_dir}lib > /dev/null
-                if (${status}) then 
-                    ${IVI_RM} "${lock_file}"
-                    exit 1 
-                endif 
-
-                set lib_dir_for_make = `echo ${cwd} | sed "${src_dir_sed_str}" | sed "${dir_str_sed_str}"`
-
-                pushd ${dir} > /dev/null
-                if (${status}) then 
-                    ${IVI_RM} "${lock_file}"
-                    exit 1 
-                endif 
-
-                set sub_dir_for_make = `echo ${cwd} | sed "${src_dir_sed_str}" | sed "${dir_str_sed_str}"`
-                set found = 1
-
-                popd > /dev/null 
-                popd > /dev/null 
-            endif
+                if (-d ${real_dir}) then
+                    pushd ${parent_dir}lib > /dev/null
+                        set lib_dir_for_make = `echo ${cwd} | sed "${src_dir_sed_str}" | sed "${dir_str_sed_str}"`
+                        pushd ${dir} > /dev/null
+                            set sub_dir_for_make = `echo ${cwd} | sed "${src_dir_sed_str}" | sed "${dir_str_sed_str}"`
+                        set found = 1
+                        popd > /dev/null 
+                    popd > /dev/null 
+                endif
             endif 
 
             if (${found}) break
@@ -322,7 +295,6 @@ while ($count <= $lib_count)
             echo "PCH_${symbolic_dir} = ${lib_dir_for_make}"'$(IVI_DIR_STR)''$(PCH_DIR)'"${dir}"'$(IVI_DIR_STR)' >> ${output_file_name}
             echo "${uc_dir}_LIB_PARENT_DIR = ${lib_dir_for_make}" >> ${output_file_name}
         else 
-            ${IVI_RM} "${lock_file}"
             ${P_STDERR} "Library string ${dir} processed by build_makefile_dirs_2 is not in"
             ${P_STDERR} "either ${real_ivi_lib_dir} or ${build_dir_path}/lib or ${build_dir_path}/../../lib"
             exit 1

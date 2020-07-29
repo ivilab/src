@@ -69,6 +69,7 @@ set include_header = 0
 set dot_new = 0
 set c2man = 0
 set doxygen = 0
+set bootstrap = 0
 set test_only = 0
 set all = 0
 set c_lib_dir = 0
@@ -105,6 +106,8 @@ foreach arg ($*)
         set c2man = 1
     else if ("${arg}" == "-doxygen") then
         set doxygen = 1
+    else if ("${arg}" == "-bootstrap") then
+        set bootstrap = 1
     else if ("${arg}" == "-c_lib_dir") then
         set all = 1
         set c_lib_dir = 1
@@ -173,43 +176,47 @@ endif
 # For c2man/doxygen. Currently we are only interested in generic library code
 # (i.e., not program specfic) libraries. 
 #
-set is_generic_lib = `echo ${cwd} | sed "s#^${IVI_SRC_PATH}lib/##" | grep -c '^[^/][^/]*$'`
+set is_generic_lib = `echo ${cwd} | sed "s#^${IVI_SRC_PATH}lib/##" | ${IVI_GREP} -c '^[^/][^/]*$'`
 
-set cpp_lib_str = `echo ${cwd} | grep /lib/ | grep '_cpp$'`
+set cpp_lib_str = `echo ${cwd} | ${IVI_GREP} /lib/ | ${IVI_GREP} '_cpp$'`
 set cpp_file_count = `${IVI_LS} -1 | ${IVI_EGREP} -c '.*\.C$|.*\.cxx$|.*\.cpp$'`
 # set c_and_h_file_count = `${IVI_LS} -1 | ${IVI_EGREP} -c '.*\.[ch]$'`
 
 set noglob
 
 if (${skip_incl}) then
-    set prune_incl = "grep -v _incl\.h "
+    set prune_incl = "${IVI_GREP} -v _incl\.h "
 else
     set prune_incl = "cat"
 endif 
 
 if (${skip_export}) then
-    set prune_export = "grep -v ivi_export_ "
+    set prune_export = "${IVI_GREP} -v ivi_export_ "
 else
     set prune_export = "cat"
 endif 
 
 if (${skip_all}) then
-    set prune_all = "grep -v ivi_all_ "
+    set prune_all = "${IVI_GREP} -v ivi_all_ "
 else
     set prune_all = "cat"
 endif 
 
 set test_files = ""
 
+# We list all files in the directory, and then prune out what we do not want. 
+
 if (${all}) then
     set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export}`
+else if (${bootstrap}) then 
+    set test_files = `${IVI_LS} -1 ${file_arg} | ${IVI_GREP} 'bootstrap_[a-zA-Z0-9][a-zA-Z0-9_-]*$' `
 else if (${c2man}) then 
     if ((-e FORCE_C2MAN) ||((${is_generic_lib}) && (! -e FORCE_DOXYGEN) && (! -e SKIP_C2MAN) && ("${cpp_lib_str}" == "") && (${cpp_file_count} == 0))) then
-        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[ch]$' | grep -v "_gen.h" | grep -v "_gen_f.h" | grep -v "_incl.h"  | grep -v "_incl_f.h" `
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[ch]$' | ${IVI_GREP} -v "_gen.h" | ${IVI_GREP} -v "_gen_f.h" | ${IVI_GREP} -v "_incl.h"  | ${IVI_GREP} -v "_incl_f.h" `
     endif 
 else if (${doxygen}) then 
     if ((-e FORCE_DOXYGEN) || (-e Doxyfile) || ((${is_generic_lib}) && (! -e SKIP_DOXYGEN) && (! -e FORCE_C2MAN) && (("${cpp_lib_str}" != "") || (${cpp_file_count} > 0)))) then
-        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[chC]$|.*\.[chit]xx$|.*\.[chit]pp$' | grep -v "_gen.h" | grep -v "_gen_f.h" | grep -v "_incl.h"  | grep -v "_incl_f.h" `
+        set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[chC]$|.*\.[chit]xx$|.*\.[chit]pp$' | ${IVI_GREP} -v "_gen.h" | ${IVI_GREP} -v "_gen_f.h" | ${IVI_GREP} -v "_incl.h"  | ${IVI_GREP} -v "_incl_f.h" `
     endif 
 #
 # Filtering main forces source files only, even if header files is eroneously
@@ -271,12 +278,12 @@ foreach test_file (${test_files})
 
         # 
         # This is a bit slow and also can give error messages from cpp which are
-        # not relevant. Hence we check for main with grep, and if that succeeds,
+        # not relevant. Hence we check for main with ${IVI_GREP}, and if that succeeds,
         # we then use cpp to ensure that it is not in a comment. 
         #
 
         set test_main = ""
-        set main_count = `grep -c 'main[ 	]*(' ${test_file}`
+        set main_count = `${IVI_GREP} -c 'main[ 	]*(' ${test_file}`
 
         if (${main_count} > 0) then 
             # Using the current directory for intermediate results can be
@@ -364,7 +371,7 @@ foreach test_file (${test_files})
             ${IVI_RM} ${temp_dir}.test_file_${$}_s2.${file_suffix} 
             ${IVI_RM} ${temp_dir}.test_file_${$}_s2.${file_suffix}.err
 
-            # We grep for main to cut down on the size of ${temp_dir}.test_main_${$}.${file_suffix}. The
+            # We ${IVI_GREP} for main to cut down on the size of ${temp_dir}.test_main_${$}.${file_suffix}. The
             # "sed" command changes tabs to blanks. 
             #
             ${IVI_CAT} ${temp_dir}.test_file_${$}.${file_suffix} | ${IVI_GREP} 'main' | ${IVI_SED} 's/	/ /g'  > ${temp_dir}.test_main_${$}.${file_suffix}
@@ -394,7 +401,7 @@ foreach test_file (${test_files})
         if (-e ${dir}${test_file}/Makefile-include) then
             # If all_ivi is set, then SKIP_ALL_IVI is checked.  
             if ((! ${all_ivi}) || ((! -e ${dir}${test_file}/SKIP_ALL_IVI) && (! -e ${dir}${test_file}/SKIP_ALL_IVI.${OS}))) then
-                # set cpp_lib_str = `echo ${test_file} | grep '_cpp$'`
+                # set cpp_lib_str = `echo ${test_file} | ${IVI_GREP} '_cpp$'`
                 
                 set have_cpp = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c '.*\.cpp$|.*\.cxx$|.*\.C$'`
                 set have_c = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c  '.*\.c$'`
@@ -416,7 +423,7 @@ foreach test_file (${test_files})
     endif 
 
 #     if ((${skip_incl}) && ("${matched_file_name}" != "")) then
-#         set is_incl = `echo ${matched_file_name} | grep -c "_incl.h"`
+#         set is_incl = `echo ${matched_file_name} | ${IVI_GREP} -c "_incl.h"`
 # 
 #         if (${is_incl}) then
 #             set  matched_file_name = ""
@@ -452,11 +459,4 @@ foreach test_file (${test_files})
     endif 
 end
 
-# A false result is NULL, not 0. 
-#
-# # if (${test_only}) then
-# #     echo 0
-# #     exit
-# # endif 
 
-# echo +++ > /dev/stderr
