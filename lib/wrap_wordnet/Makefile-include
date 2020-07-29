@@ -36,14 +36,14 @@ WRAP_WORDNET_LIB_LD = -L$(WRAP_WORDNET_DIR)$(OBJ_DIR) -lIVIwrap_wordnet
 
 ################################################################################
 
-$(WRAP_WORDNET_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(WRAP_WORDNET_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/WRAP_WORDNET_LIB/g' < $< > $@
 
 include $(WRAP_WORDNET_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(WRAP_WORDNET_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(WRAP_WORDNET_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/WRAP_WORDNET_LIB/g' < $< > $@
 
 include $(WRAP_WORDNET_DIR)Makefile-library

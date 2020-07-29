@@ -36,14 +36,14 @@ I_CPP_LIB_LD = -L$(I_CPP_DIR)$(OBJ_DIR) -lIVIi_cpp
 
 ################################################################################
 
-$(I_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(I_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/I_CPP_LIB/g' < $< > $@
 
 include $(I_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(I_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(I_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/I_CPP_LIB/g' < $< > $@
 
 include $(I_CPP_DIR)Makefile-library

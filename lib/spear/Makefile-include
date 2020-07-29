@@ -36,14 +36,14 @@ SPEAR_LIB_LD = -L$(SPEAR_DIR)$(OBJ_DIR) -lIVIspear
 
 ################################################################################
 
-$(SPEAR_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(SPEAR_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/SPEAR_LIB/g' < $< > $@
 
 include $(SPEAR_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(SPEAR_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(SPEAR_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/SPEAR_LIB/g' < $< > $@
 
 include $(SPEAR_DIR)Makefile-library

@@ -36,14 +36,14 @@ QHULL_LIB_LD = -L$(QHULL_DIR)$(OBJ_DIR) -lIVI$(QHULL_LIB_PREFIX)
 
 ################################################################################
 
-$(QHULL_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(QHULL_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/QHULL_LIB/g' < $< > $@
 
 include $(QHULL_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(QHULL_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(QHULL_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/QHULL_LIB/g' < $< > $@
 
 include $(QHULL_DIR)Makefile-library

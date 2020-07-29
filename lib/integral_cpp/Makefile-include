@@ -36,14 +36,14 @@ INTEGRAL_CPP_LIB_LD = -L$(INTEGRAL_CPP_DIR)$(OBJ_DIR) -lIVIintegral_cpp
 
 ################################################################################
 
-$(INTEGRAL_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(INTEGRAL_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/INTEGRAL_CPP_LIB/g' < $< > $@
 
 include $(INTEGRAL_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(INTEGRAL_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(INTEGRAL_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/INTEGRAL_CPP_LIB/g' < $< > $@
 
 include $(INTEGRAL_CPP_DIR)Makefile-library

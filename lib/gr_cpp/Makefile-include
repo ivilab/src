@@ -36,14 +36,14 @@ GR_CPP_LIB_LD = -L$(GR_CPP_DIR)$(OBJ_DIR) -lIVIgr_cpp
 
 ################################################################################
 
-$(GR_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(GR_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/GR_CPP_LIB/g' < $< > $@
 
 include $(GR_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(GR_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(GR_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/GR_CPP_LIB/g' < $< > $@
 
 include $(GR_CPP_DIR)Makefile-library

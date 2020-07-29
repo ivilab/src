@@ -36,14 +36,14 @@ H_LIB_LD = -L$(H_DIR)$(OBJ_DIR) -lIVI$(H_LIB_PREFIX)
 
 ################################################################################
 
-$(H_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(H_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/H_LIB/g' < $< > $@
 
 include $(H_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(H_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(H_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/H_LIB/g' < $< > $@
 
 include $(H_DIR)Makefile-library

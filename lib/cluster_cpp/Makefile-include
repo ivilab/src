@@ -36,14 +36,14 @@ CLUSTER_CPP_LIB_LD = -L$(CLUSTER_CPP_DIR)$(OBJ_DIR) -lIVIcluster_cpp
 
 ################################################################################
 
-$(CLUSTER_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(CLUSTER_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/CLUSTER_CPP_LIB/g' < $< > $@
 
 include $(CLUSTER_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(CLUSTER_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(CLUSTER_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/CLUSTER_CPP_LIB/g' < $< > $@
 
 include $(CLUSTER_CPP_DIR)Makefile-library

@@ -36,14 +36,14 @@ SLIC_LIB_LD = -L$(SLIC_DIR)$(OBJ_DIR) -lIVIslic
 
 ################################################################################
 
-$(SLIC_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(SLIC_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/SLIC_LIB/g' < $< > $@
 
 include $(SLIC_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(SLIC_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(SLIC_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/SLIC_LIB/g' < $< > $@
 
 include $(SLIC_DIR)Makefile-library

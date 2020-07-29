@@ -36,14 +36,14 @@ WRAP_SLATEC_LIB_LD = -L$(WRAP_SLATEC_DIR)$(OBJ_DIR) -lIVI$(WRAP_SLATEC_LIB_PREFI
 
 ################################################################################
 
-$(WRAP_SLATEC_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(WRAP_SLATEC_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/WRAP_SLATEC_LIB/g' < $< > $@
 
 include $(WRAP_SLATEC_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(WRAP_SLATEC_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(WRAP_SLATEC_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/WRAP_SLATEC_LIB/g' < $< > $@
 
 include $(WRAP_SLATEC_DIR)Makefile-library

@@ -36,14 +36,14 @@ CAMERA_CPP_LIB_LD = -L$(CAMERA_CPP_DIR)$(OBJ_DIR) -lIVIcamera_cpp
 
 ################################################################################
 
-$(CAMERA_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(CAMERA_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/CAMERA_CPP_LIB/g' < $< > $@
 
 include $(CAMERA_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(CAMERA_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(CAMERA_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/CAMERA_CPP_LIB/g' < $< > $@
 
 include $(CAMERA_CPP_DIR)Makefile-library

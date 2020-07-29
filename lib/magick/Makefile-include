@@ -36,14 +36,14 @@ MAGICK_LIB_LD = -L$(MAGICK_DIR)$(OBJ_DIR) -lIVImagick
 
 ################################################################################
 
-$(MAGICK_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(MAGICK_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/MAGICK_LIB/g' < $< > $@
 
 include $(MAGICK_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(MAGICK_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(MAGICK_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/MAGICK_LIB/g' < $< > $@
 
 include $(MAGICK_DIR)Makefile-library

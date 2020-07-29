@@ -38,7 +38,7 @@ splint      : splint_program
 
 
 
-include $(MAKE_DIR)Makefile-program
+include $(MAKE_PATH)Makefile-program
 
 
 

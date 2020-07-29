@@ -36,14 +36,14 @@ I3_LIB_LD = -L$(I3_DIR)$(OBJ_DIR) -lIVI$(I3_LIB_PREFIX)
 
 ################################################################################
 
-$(I3_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(I3_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/I3_LIB/g' < $< > $@
 
 include $(I3_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(I3_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(I3_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/I3_LIB/g' < $< > $@
 
 include $(I3_DIR)Makefile-library

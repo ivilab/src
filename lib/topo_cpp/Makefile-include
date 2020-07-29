@@ -36,14 +36,14 @@ TOPO_CPP_LIB_LD = -L$(TOPO_CPP_DIR)$(OBJ_DIR) -lIVItopo_cpp
 
 ################################################################################
 
-$(TOPO_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(TOPO_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/TOPO_CPP_LIB/g' < $< > $@
 
 include $(TOPO_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(TOPO_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(TOPO_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/TOPO_CPP_LIB/g' < $< > $@
 
 include $(TOPO_CPP_DIR)Makefile-library

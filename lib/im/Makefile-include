@@ -36,14 +36,14 @@ IM_LIB_LD = -L$(IM_DIR)$(OBJ_DIR) -lIVI$(IM_LIB_PREFIX)
 
 ################################################################################
 
-$(IM_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(IM_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/IM_LIB/g' < $< > $@
 
 include $(IM_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(IM_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(IM_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/IM_LIB/g' < $< > $@
 
 include $(IM_DIR)Makefile-library

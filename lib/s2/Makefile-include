@@ -35,14 +35,14 @@ S2_LIB_LD = -L$(S2_DIR)$(OBJ_DIR) -lIVI$(S2_LIB_PREFIX)
 
 ################################################################################
 
-$(S2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(S2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/S2_LIB/g' < $< > $@
 
 include $(S2_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(S2_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(S2_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/S2_LIB/g' < $< > $@
 
 include $(S2_DIR)Makefile-library

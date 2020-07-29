@@ -36,14 +36,14 @@ COLLINS_LIB_LD = -L$(COLLINS_DIR)$(OBJ_DIR) -lIVIcollins
 
 ################################################################################
 
-$(COLLINS_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(COLLINS_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/COLLINS_LIB/g' < $< > $@
 
 include $(COLLINS_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(COLLINS_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(COLLINS_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/COLLINS_LIB/g' < $< > $@
 
 include $(COLLINS_DIR)Makefile-library

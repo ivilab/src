@@ -36,14 +36,14 @@ T3_LIB_LD = -L$(T3_DIR)$(OBJ_DIR) -lIVIt3
 
 ################################################################################
 
-$(T3_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(T3_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/T3_LIB/g' < $< > $@
 
 include $(T3_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(T3_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(T3_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/T3_LIB/g' < $< > $@
 
 include $(T3_DIR)Makefile-library

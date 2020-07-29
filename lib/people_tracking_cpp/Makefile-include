@@ -36,14 +36,14 @@ PEOPLE_TRACKING_CPP_LIB_LD = -L$(PEOPLE_TRACKING_CPP_DIR)$(OBJ_DIR) -lIVIpeople_
 
 ################################################################################
 
-$(PEOPLE_TRACKING_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(PEOPLE_TRACKING_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/PEOPLE_TRACKING_CPP_LIB/g' < $< > $@
 
 include $(PEOPLE_TRACKING_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(PEOPLE_TRACKING_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(PEOPLE_TRACKING_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/PEOPLE_TRACKING_CPP_LIB/g' < $< > $@
 
 include $(PEOPLE_TRACKING_CPP_DIR)Makefile-library

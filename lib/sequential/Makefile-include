@@ -36,14 +36,14 @@ SEQUENTIAL_LIB_LD = -L$(SEQUENTIAL_DIR)$(OBJ_DIR) -lIVIsequential
 
 ################################################################################
 
-$(SEQUENTIAL_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(SEQUENTIAL_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/SEQUENTIAL_LIB/g' < $< > $@
 
 include $(SEQUENTIAL_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(SEQUENTIAL_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(SEQUENTIAL_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/SEQUENTIAL_LIB/g' < $< > $@
 
 include $(SEQUENTIAL_DIR)Makefile-library

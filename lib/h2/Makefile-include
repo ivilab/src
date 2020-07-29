@@ -36,14 +36,14 @@ H2_LIB_LD = -L$(H2_DIR)$(OBJ_DIR) -lIVI$(H2_LIB_PREFIX)
 
 ################################################################################
 
-$(H2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(H2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/H2_LIB/g' < $< > $@
 
 include $(H2_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(H2_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(H2_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/H2_LIB/g' < $< > $@
 
 include $(H2_DIR)Makefile-library

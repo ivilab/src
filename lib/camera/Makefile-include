@@ -36,14 +36,14 @@ CAMERA_LIB_LD = -L$(CAMERA_DIR)$(OBJ_DIR) -lIVIcamera
 
 ################################################################################
 
-$(CAMERA_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(CAMERA_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/CAMERA_LIB/g' < $< > $@
 
 include $(CAMERA_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(CAMERA_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(CAMERA_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/CAMERA_LIB/g' < $< > $@
 
 include $(CAMERA_DIR)Makefile-library

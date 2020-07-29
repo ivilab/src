@@ -36,14 +36,14 @@ DIFF_CPP_LIB_LD = -L$(DIFF_CPP_DIR)$(OBJ_DIR) -lIVIdiff_cpp
 
 ################################################################################
 
-$(DIFF_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(DIFF_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/DIFF_CPP_LIB/g' < $< > $@
 
 include $(DIFF_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(DIFF_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(DIFF_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/DIFF_CPP_LIB/g' < $< > $@
 
 include $(DIFF_CPP_DIR)Makefile-library

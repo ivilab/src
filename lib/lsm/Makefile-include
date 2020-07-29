@@ -36,14 +36,14 @@ LSM_LIB_LD = -L$(LSM_DIR)$(OBJ_DIR) -lIVI$(LSM_LIB_PREFIX)
 
 ################################################################################
 
-$(LSM_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(LSM_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/LSM_LIB/g' < $< > $@
 
 include $(LSM_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(LSM_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(LSM_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/LSM_LIB/g' < $< > $@
 
 include $(LSM_DIR)Makefile-library

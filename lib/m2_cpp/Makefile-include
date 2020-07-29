@@ -36,14 +36,14 @@ M2_CPP_LIB_LD = -L$(M2_CPP_DIR)$(OBJ_DIR) -lIVIm2_cpp
 
 ################################################################################
 
-$(M2_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(M2_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/M2_CPP_LIB/g' < $< > $@
 
 include $(M2_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(M2_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(M2_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/M2_CPP_LIB/g' < $< > $@
 
 include $(M2_CPP_DIR)Makefile-library

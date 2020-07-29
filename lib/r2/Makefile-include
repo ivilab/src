@@ -36,14 +36,14 @@ R2_LIB_LD = -L$(R2_DIR)$(OBJ_DIR) -lIVIr2
 
 ################################################################################
 
-$(R2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(R2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/R2_LIB/g' < $< > $@
 
 include $(R2_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(R2_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(R2_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/R2_LIB/g' < $< > $@
 
 include $(R2_DIR)Makefile-library

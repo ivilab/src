@@ -36,14 +36,14 @@ I_GEOMETRIC_LIB_LD = -L$(I_GEOMETRIC_DIR)$(OBJ_DIR) -lIVIi_geometric
 
 ################################################################################
 
-$(I_GEOMETRIC_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(I_GEOMETRIC_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/I_GEOMETRIC_LIB/g' < $< > $@
 
 include $(I_GEOMETRIC_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(I_GEOMETRIC_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(I_GEOMETRIC_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/I_GEOMETRIC_LIB/g' < $< > $@
 
 include $(I_GEOMETRIC_DIR)Makefile-library

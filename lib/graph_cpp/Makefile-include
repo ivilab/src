@@ -36,14 +36,14 @@ GRAPH_CPP_LIB_LD = -L$(GRAPH_CPP_DIR)$(OBJ_DIR) -lIVIgraph_cpp
 
 ################################################################################
 
-$(GRAPH_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(GRAPH_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/GRAPH_CPP_LIB/g' < $< > $@
 
 include $(GRAPH_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(GRAPH_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(GRAPH_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/GRAPH_CPP_LIB/g' < $< > $@
 
 include $(GRAPH_CPP_DIR)Makefile-library

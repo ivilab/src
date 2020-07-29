@@ -36,14 +36,14 @@ ST_CPP_LIB_LD = -L$(ST_CPP_DIR)$(OBJ_DIR) -lIVIst_cpp
 
 ################################################################################
 
-$(ST_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(ST_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/ST_CPP_LIB/g' < $< > $@
 
 include $(ST_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(ST_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(ST_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/ST_CPP_LIB/g' < $< > $@
 
 include $(ST_CPP_DIR)Makefile-library

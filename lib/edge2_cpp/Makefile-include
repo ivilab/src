@@ -36,14 +36,14 @@ EDGE2_CPP_LIB_LD = -L$(EDGE2_CPP_DIR)$(OBJ_DIR) -lIVIedge2_cpp
 
 ################################################################################
 
-$(EDGE2_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(EDGE2_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/EDGE2_CPP_LIB/g' < $< > $@
 
 include $(EDGE2_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(EDGE2_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(EDGE2_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/EDGE2_CPP_LIB/g' < $< > $@
 
 include $(EDGE2_CPP_DIR)Makefile-library

@@ -36,14 +36,14 @@ I2_LIB_LD = -L$(I2_DIR)$(OBJ_DIR) -lIVI$(I2_LIB_PREFIX)
 
 ################################################################################
 
-$(I2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(I2_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/I2_LIB/g' < $< > $@
 
 include $(I2_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(I2_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(I2_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/I2_LIB/g' < $< > $@
 
 include $(I2_DIR)Makefile-library

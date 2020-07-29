@@ -36,14 +36,14 @@ SEMANTICS_LIB_LD = -L$(SEMANTICS_DIR)$(OBJ_DIR) -lIVIsemantics
 
 ################################################################################
 
-$(SEMANTICS_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(SEMANTICS_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/SEMANTICS_LIB/g' < $< > $@
 
 include $(SEMANTICS_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(SEMANTICS_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(SEMANTICS_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/SEMANTICS_LIB/g' < $< > $@
 
 include $(SEMANTICS_DIR)Makefile-library

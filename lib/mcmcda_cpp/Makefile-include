@@ -36,14 +36,14 @@ MCMCDA_CPP_LIB_LD = -L$(MCMCDA_CPP_DIR)$(OBJ_DIR) -lIVImcmcda_cpp
 
 ################################################################################
 
-$(MCMCDA_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(MCMCDA_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/MCMCDA_CPP_LIB/g' < $< > $@
 
 include $(MCMCDA_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(MCMCDA_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(MCMCDA_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/MCMCDA_CPP_LIB/g' < $< > $@
 
 include $(MCMCDA_CPP_DIR)Makefile-library

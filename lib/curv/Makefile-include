@@ -36,14 +36,14 @@ CURV_LIB_LD = -L$(CURV_DIR)$(OBJ_DIR) -lIVIcurv
 
 ################################################################################
 
-$(CURV_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(CURV_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/CURV_LIB/g' < $< > $@
 
 include $(CURV_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(CURV_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(CURV_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/CURV_LIB/g' < $< > $@
 
 include $(CURV_DIR)Makefile-library

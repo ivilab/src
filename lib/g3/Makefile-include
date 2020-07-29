@@ -36,14 +36,14 @@ G3_LIB_LD = -L$(G3_DIR)$(OBJ_DIR) -lIVI$(G3_LIB_PREFIX)
 
 ################################################################################
 
-$(G3_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(G3_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/G3_LIB/g' < $< > $@
 
 include $(G3_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(G3_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(G3_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/G3_LIB/g' < $< > $@
 
 include $(G3_DIR)Makefile-library

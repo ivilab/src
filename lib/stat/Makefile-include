@@ -36,14 +36,14 @@ STAT_LIB_LD = -L$(STAT_DIR)$(OBJ_DIR) -lIVI$(STAT_LIB_PREFIX)
 
 ################################################################################
 
-$(STAT_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(STAT_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/STAT_LIB/g' < $< > $@
 
 include $(STAT_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(STAT_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(STAT_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/STAT_LIB/g' < $< > $@
 
 include $(STAT_DIR)Makefile-library

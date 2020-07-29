@@ -36,14 +36,14 @@ PROB_CPP_LIB_LD = -L$(PROB_CPP_DIR)$(OBJ_DIR) -lIVIprob_cpp
 
 ################################################################################
 
-$(PROB_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(PROB_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/PROB_CPP_LIB/g' < $< > $@
 
 include $(PROB_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(PROB_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(PROB_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/PROB_CPP_LIB/g' < $< > $@
 
 include $(PROB_CPP_DIR)Makefile-library

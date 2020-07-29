@@ -36,14 +36,14 @@ VIDEO_CPP_LIB_LD = -L$(VIDEO_CPP_DIR)$(OBJ_DIR) -lIVIvideo_cpp
 
 ################################################################################
 
-$(VIDEO_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(VIDEO_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/VIDEO_CPP_LIB/g' < $< > $@
 
 include $(VIDEO_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(VIDEO_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(VIDEO_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/VIDEO_CPP_LIB/g' < $< > $@
 
 include $(VIDEO_CPP_DIR)Makefile-library

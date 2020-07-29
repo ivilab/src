@@ -36,14 +36,14 @@ GUI_CPP_LIB_LD = -L$(GUI_CPP_DIR)$(OBJ_DIR) -lIVIgui_cpp
 
 ################################################################################
 
-$(GUI_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(GUI_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/GUI_CPP_LIB/g' < $< > $@
 
 include $(GUI_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(GUI_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(GUI_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/GUI_CPP_LIB/g' < $< > $@
 
 include $(GUI_CPP_DIR)Makefile-library

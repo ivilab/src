@@ -36,14 +36,14 @@ S_LIB_LD = -L$(S_DIR)$(OBJ_DIR) -lIVIs
 
 ################################################################################
 
-$(S_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(S_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/S_LIB/g' < $< > $@
 
 include $(S_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(S_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(S_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/S_LIB/g' < $< > $@
 
 include $(S_DIR)Makefile-library

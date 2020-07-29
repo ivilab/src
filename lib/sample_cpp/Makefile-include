@@ -36,14 +36,14 @@ SAMPLE_CPP_LIB_LD = -L$(SAMPLE_CPP_DIR)$(OBJ_DIR) -lIVIsample_cpp
 
 ################################################################################
 
-$(SAMPLE_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(SAMPLE_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/SAMPLE_CPP_LIB/g' < $< > $@
 
 include $(SAMPLE_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(SAMPLE_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(SAMPLE_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/SAMPLE_CPP_LIB/g' < $< > $@
 
 include $(SAMPLE_CPP_DIR)Makefile-library

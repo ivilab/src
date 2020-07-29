@@ -36,14 +36,14 @@ GLUT_CPP_LIB_LD = -L$(GLUT_CPP_DIR)$(OBJ_DIR) -lIVIglut_cpp
 
 ################################################################################
 
-$(GLUT_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(GLUT_CPP_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/GLUT_CPP_LIB/g' < $< > $@
 
 include $(GLUT_CPP_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(GLUT_CPP_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(GLUT_CPP_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/GLUT_CPP_LIB/g' < $< > $@
 
 include $(GLUT_CPP_DIR)Makefile-library

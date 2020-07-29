@@ -36,14 +36,14 @@ V_LIB_LD = -L$(V_DIR)$(OBJ_DIR) -lIVI$(V_LIB_PREFIX)
 
 ################################################################################
 
-$(V_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_DIR)Makefile-library.$(MAKE_FLAVOR)
+$(V_DIR)Makefile-library.$(MAKE_FLAVOR) : $(MAKE_PATH)Makefile-library.$(MAKE_FLAVOR)
 	sed 's/LIB_COMPONENT/V_LIB/g' < $< > $@
 
 include $(V_DIR)Makefile-library.$(MAKE_FLAVOR)
 
 ################################################################################
 
-$(V_DIR)Makefile-library : $(MAKE_DIR)Makefile-library
+$(V_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/V_LIB/g' < $< > $@
 
 include $(V_DIR)Makefile-library
