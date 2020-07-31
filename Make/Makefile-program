@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25679 2020-07-29 00:36:35Z kobus $
+# $Id: Makefile-program 25683 2020-07-31 17:36:16Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -360,6 +360,7 @@ Include_lines/sub_libs_needed : Include_lines/include_lines
 # in that directory. The dummy target sub_libs_needed should not be used as a
 # dependency.
 #
+.PHONY : sub_libs_needed
 sub_libs_needed: Include_lines/sub_libs_needed
 
 ################################################################################
@@ -414,17 +415,16 @@ $(MAKE_EDIT_PATH)%.ex7:$(MAKE_EDIT_PATH)%.vim
 # The symbol VIM_SUFFIX used here is either "ex" or "ex7". 
 #
 Makefile-depend : \
+    $(MAKE_EDIT_PATH)Bin.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Header.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Help.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Misc.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Local_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)User.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Work.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
@@ -877,51 +877,58 @@ $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_A
 program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
 
 ################################################################################
-#                       User bin target
+#                       Bin target
+#
+# This handles bin, make_bin, misc_bin, and can be made to handle any similar
+# ones like install_bin, simply by tweaking build-2.
 # 
 # bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(USER_PROGRAMS)
 
 .PHONY : bin
-bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
+bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(BUILD_BIN_TARGETS)
 
-$(USER_BIN_PATH)% : $(LD_OBJ_DIR)%
-	$(MAKE_SCRIPT_PATH)update_bin $< $@
-
-################################################################################
-#                       Misc bin target
-# 
-# misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MISC_PROGRAMS)
-
-.PHONY : misc_bin
-misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
-
-$(MISC_BIN_PATH)% : $(LD_OBJ_DIR)%
+$(BUILD_BIN_PATH)% : $(LD_OBJ_DIR)%
+	@$(ECHO_IF_VERBOSE) "Bin process $$$$ is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) "BUILD_BIN_PATH: |${BUILD_BIN_PATH}|" 
+	@$(ECHO_IF_VERBOSE) "LD_OBJ_DIR: |${LD_OBJ_DIR}|" 
 	$(MAKE_SCRIPT_PATH)update_bin $< $@
 	$(IVI_PERMIT_EXECUTION) $@
 
-################################################################################
-#                       Make bin target
+# ################################################################################
+# #                       Misc bin target
+# # 
+# # misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MISC_PROGRAMS)
 # 
-# make_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MAKE_PROGRAMS)
-
-.PHONY : misc_bin
-make_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
-
-$(MAKE_BIN_PATH)% : $(LD_OBJ_DIR)%
-	$(MAKE_SCRIPT_PATH)update_bin $< $@
-	$(IVI_PERMIT_EXECUTION) $@
-
-################################################################################
-#                       Install bin target
+# .PHONY : misc_bin
+# misc_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
 # 
-$(INSTALL_BIN_PATH)% : $(LD_OBJ_DIR)%
-	$(MAKE_SCRIPT_PATH)update_bin $< $@
-	$(IVI_PERMIT_EXECUTION) $@
-
-.PHONY : install
-install : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(INSTALL_PROGRAMS)
-
-################################################################################
+# $(MISC_BIN_PATH)% : $(LD_OBJ_DIR)%
+# 	$(MAKE_SCRIPT_PATH)update_bin $< $@
+# 	$(IVI_PERMIT_EXECUTION) $@
+# 
+# ################################################################################
+# #                       Make bin target
+# # 
+# # make_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(MAKE_PROGRAMS)
+# 
+# .PHONY : misc_bin
+# make_bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(PROGRAMS)
+# 
+# $(MAKE_BIN_PATH)% : $(LD_OBJ_DIR)%
+# 	$(MAKE_SCRIPT_PATH)update_bin $< $@
+# 	$(IVI_PERMIT_EXECUTION) $@
+# 
+# ################################################################################
+# #                       Install bin target
+# # 
+# $(INSTALL_BIN_PATH)% : $(LD_OBJ_DIR)%
+# 	$(MAKE_SCRIPT_PATH)update_bin $< $@
+# 	$(IVI_PERMIT_EXECUTION) $@
+# 
+# .PHONY : install
+# install : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(INSTALL_PROGRAMS)
+# 
+# ################################################################################
 
 PROG_LIB_NAME = lib$(PROG_LIB_PREFIX)
 
@@ -1021,8 +1028,8 @@ $(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_D
 	$(IVI_TOUCH) $@
 
 misc_doc_program : $(MAKE_DOC_DIR)doc_program.made
-	rsync -rl -u $(DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 
-	rsync -rl -u $(DOC_PATH)man/ $(MISC_DOC_PATH)man 
+	rsync -rl -u $(IVI_DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 
+	rsync -rl -u $(IVI_DOC_PATH)man/ $(MISC_DOC_PATH)man 
 
 ################################################################################
 #                   Protoize

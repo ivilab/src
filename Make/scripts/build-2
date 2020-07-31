@@ -135,6 +135,13 @@ setenv CWD "${cwd}"
 
 ################################################################################
 
+if ("${USER}" == "kobus") then
+    setenv EXIT_ON_DEADLOCK
+    setenv EXIT_ON_LOCK_TIMEOUT
+endif 
+
+################################################################################
+
 if ($?IVI_VERBOSE) then
    set suppress_jobserver_msg = " cat "
 else if ( $?IVI_QUIET ) then
@@ -298,9 +305,10 @@ if ($?IVI_VERBOSE_2) then
     echo "LD_OBJ_DIR:             ${LD_OBJ_DIR}"
     echo "REAL_OBJ_DIR:           ${REAL_OBJ_DIR}"
     echo "LOAD_DIRS:              ${LOAD_DIRS}"
-    echo "DOC_PATH:               ${DOC_PATH}"
+    echo "IVI_DOC_PATH:           ${IVI_DOC_PATH}"
     echo "MAN3_MAN_PATH:          ${MAN3_MAN_PATH}"
     echo "HTML_MAN_PATH:          ${HTML_MAN_PATH}"
+    echo "CAT3_CAT_PATH:          ${CAT3_CAT_PATH}"
     echo "IVI_WARN_LEVEL:         ${IVI_WARN_LEVEL}"
     echo "IVI_CC_WARN_LEVEL:      ${IVI_CC_WARN_LEVEL}"
     echo "CC_IVI_WARNINGS:        ${CC_IVI_WARNINGS}"
@@ -357,7 +365,7 @@ if (! $?IVI_QUIET ) then
     set start_time = `date +%H:%M:%S`
 
     echo " "
-    echo "Build start for '${args}' at ${start_time}"
+    echo "Build start for '${args}' at ${start_time} in ${cwd}"
     echo " "
 endif 
 
@@ -461,27 +469,38 @@ while ($count <=  ${num_args})
         set need_depend = 1
         # Do nothing special. Common case that would fall through, but we skip
         # all the processing. 
+    else if ("${arg}" == "bin") then
+        set need_depend = 1
+        setenv BUILD_BIN_PATH "${USER_BIN_PATH}"
+    else if ("${arg}" == "misc_bin") then
+        set need_depend = 1
+        setenv BUILD_BIN_PATH "${MISC_BIN_PATH}"
+        set arg = "bin"
+    else if ("${arg}" == "make_bin") then
+        set need_depend = 1
+        setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"
+        set arg = "bin"
     else if ("${arg}" == "ivi_code") then
         # We do IVI and IVI_cpp first, which is completely optional, as this
         # manages the parallel build of the basic code more efficiently than
         # make_ivi, which would also build it, but checks the build of
         # additional code (.e.g., test code). 
         #
-#         pushd ${IVI_SRC_PATH}IVI > /dev/null
-#         make depend_very_clean
-#         make depend
-#         make clean 
-#         make 
-#         if ($status) exit 1 
-#         popd > /dev/null
-# 
-#         pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
-#         make depend_very_clean
-#         make depend
-#         make clean 
-#         make 
-#         if ($status) exit 1 
-#         popd > /dev/null
+        pushd ${IVI_SRC_PATH}IVI > /dev/null
+        make depend_very_clean
+        make depend
+        make clean 
+        make 
+        if ($status) exit 1 
+        popd > /dev/null
+
+        pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
+        make depend_very_clean
+        make depend
+        make clean 
+        make 
+        if ($status) exit 1 
+        popd > /dev/null
         
         ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs 
         if (${status}) exit 1
@@ -847,14 +866,14 @@ if (${need_depend_bootstrap}) then
         set sub_start_time = `date +%H:%M:%S`
 
         # Makefile-dirs is made as a side effect of the following.
-        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 30 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list
+        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list
         if (${status}) then
             set exit_status = 1
             ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
             goto end_of_script
         endif
 
-        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 30 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines
+        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines
         if (${status}) then
             set exit_status = 1
             ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
@@ -1094,6 +1113,9 @@ foreach arg (${build_adjusted_args})
             endif
         endif
     else if (("${arg}" == "doc") || ("${arg}" == "doc_program") || ("${arg}" == "make_bin_aux")) then
+        # This could be cleaned up now that we have gon to using BUILD_BIN_PATH
+        # instead of make_bin and friends.
+        #
         pushd ${MAKE_PATH} > /dev/null
             pushd util > /dev/null
                 pushd c2man-2.40-kobus > /dev/null
@@ -1106,7 +1128,7 @@ foreach arg (${build_adjusted_args})
                     # compiler and production mode. The setting of IVI_CC to empty asks
                     # init_compile to choose the compiler. 
                     #
-                    (setenv IVI_CC ""; setenv PRODUCTION 1; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                    (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} ) 
                     
                     if (${status}) then 
                         set exit_status = 1
@@ -1124,7 +1146,7 @@ foreach arg (${build_adjusted_args})
                 # compiler and production mode. The setting of IVI_CC to empty asks
                 # init_compile to choose the compiler. 
                 #
-                (setenv IVI_CC ""; setenv PRODUCTION 1; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} make_bin |& ${suppress_jobserver_msg} ) 
+                (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} ) 
                 
                 if (${status}) then 
                     set exit_status = 1
@@ -1147,8 +1169,8 @@ foreach arg (${build_adjusted_args})
                 goto end_of_script
             endif 
         endif 
-    else if (("${arg}" == "bin") || ("${arg}" == "misc_bin") || ("${arg}" == "make_bin") || ("${arg}" == "load") || ("${arg}" == "misc_load")) then
-        # init_compile ensurers PRODUCTION is either 0 or 1
+    else if (("${arg}" == "bin") || ("${arg}" == "load") || ("${arg}" == "misc_load")) then
+        # init_compile ensures PRODUCTION is either 0 or 1
         if (! $PRODUCTION) then
             set force_prod_bin = 1
             if ($?DONT_FORCE_PROD_BIN) then

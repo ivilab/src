@@ -106,19 +106,30 @@ endif
 
 set full_cmd = "$argv[2-$#]"
 set cmd_str = `echo ${2} | sed 's#.*/##'`
+set lock_label = "${cmd_str}"
 
 if ($# > 2) then
-    set first_arg = `echo ${3} | sed 's#//*$##' | sed 's#.*/##' `
+    if ("${3}" == "") then
+        set first_arg = "NULL"
+    else 
+        set first_arg = `echo ${3} | sed 's#//*$##' | sed 's#.*/##' `
 
-    if ("${first_arg}" == "") then
-        ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$2|"
-        exit 1
+        if ("${first_arg}" == "") then
+            ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$3|"
+            exit 1
+        endif 
     endif 
-else 
-    set first_arg = ""
+    
+    set lock_label = "${lock_label}_${first_arg}"
 endif 
 
-set exit_status = 0
+# Last path component.
+set dir_str = `echo ${cwd} | sed 's#.*/##'`
+set lock_label = "${lock_label}_${dir_str}"
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ called with args:"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    $*"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` "
 
 if ($?IVI_DONT_LOCK) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock is not locking: $*"
@@ -126,11 +137,13 @@ if ($?IVI_DONT_LOCK) then
     exit ${status}
 endif
 
-onintr bail
+set exit_status = 0
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ called with args:"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    $*"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` "
+onintr ivi_lock_bail
+
+# This bit of shared code sets "safe_to_lock" and requires "lock_label".
+source ${MAKE_SCRIPT_PATH}check_for_deadlock
+if (${status}) exit ${status} 
 
 if  ("${IVI_FLOCK_METHOD}" == "flock") then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using 'flock'"
@@ -138,8 +151,12 @@ if  ("${IVI_FLOCK_METHOD}" == "flock") then
     source ${MAKE_SCRIPT_PATH}set_lockfile_name
     if (${status}) exit ${status} 
 
-    flock -w ${max_time_to_wait} ${lock_file} ${full_cmd}
-    set exit_status = ${status}
+    if (${safe_to_lock}) then
+        flock -w ${max_time_to_wait} ${lock_file} ${full_cmd}
+        set exit_status = ${status}
+    else
+        ${full_cmd}
+    endif 
 
     if (! ${exit_status}) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using 'flock'"
@@ -149,34 +166,64 @@ else
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
 
-    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
 
     set requesting_pid = `ps -p $$ -o ppid=`
-    ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${cmd_str} ${requesting_pid}
-    if ($status) exit 1
-    ${full_cmd} 
-    set exit_status = $status 
-    ${MAKE_SCRIPT_PATH}ivi_lock_remove ${cmd_str} ${requesting_pid}
+
+    if (${safe_to_lock}) then
+        ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid}
+        if ($status) then 
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Call to ivi_lock_create from ivi_lock failed."
+            set exit_status = 1
+        endif 
+    else 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock skipping call to ivi_lock_create as it is not safe to lock."
+    endif  
+
+    if (! ${exit_status}) then
+        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ executing ${full_cmd}"
+        ${full_cmd} 
+        set exit_status = $status 
+        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Executing ${full_cmd} had exit status ${exit_status}."
+    endif 
+
+    if (${safe_to_lock}) then
+        ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_label} ${requesting_pid}
+    else 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock skipping call to ivi_lock_remove as it is not safe to lock."
+    endif  
 
     if (! ${exit_status}) then 
         ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using IVI locking method."
     endif 
         
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using IVI locking method."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing up up ivi_lock with IVI locking method."
 endif 
 
 cleanup: 
+
+# Restore 
+onintr
     
 exit ${exit_status}
 
 # We should not be here unless onintr
 
-bail:
+ivi_lock_bail:
 
-if (-e "${lock_file}") then 
-    ${P_STDERR} "Script ivi_lock process $$ removing lock file ${lock_file} because of interrupt."
-    ${P_STDERR} " "
-    ${IVI_RM} "${lock_file}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock got an interrupt."
+
+# If we are not locking or even if we are, then the lock_file variable might not
+# be set when we got interrupted.
+
+if (${safe_to_lock}) then
+    if (${?lock_file}) then 
+        if (-e "${lock_file}") then 
+            ${P_STDERR} "Script ivi_lock process $$ removing lock file ${lock_file} because of interrupt."
+            ${P_STDERR} " "
+            ${IVI_RM} "${lock_file}"
+        endif 
+    endif 
 endif 
 
 exit 1

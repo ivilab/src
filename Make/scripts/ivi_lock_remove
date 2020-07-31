@@ -42,24 +42,19 @@ else
     set requesting_pid = $2 
 endif 
 
-# For set_lockfile_name we pretend the label is the command.
-set cmd_str = `echo ${1} | sed 's#.*/##'`
-set lock_label = "${cmd_str}"
-set first_arg = ""
-
-set exit_status = 0
-
 if ($?IVI_DONT_LOCK) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock_remove is not doing anything"
     exit 0
 endif
 
-set dir_str = `echo ${cwd} | sed 's#.*/##'`
+set lock_label = "${1}"
 
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
 if (${status}) exit ${status} 
 
-onintr bail
+set exit_status = 0
+
+onintr ivi_lock_remove_bail
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ running ivi_lock_remove ${lock_label}"
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
@@ -103,17 +98,29 @@ else
 endif 
 
 cleanup: 
+
+# Restore 
+onintr
     
 exit ${exit_status}
 
 # We should not be here unless onintr
 
-bail:
+ivi_lock_remove_bail:
 
-if (-e "${lock_file}") then 
-    echo "Script ivi_lock_remove process $$ removing lock file ${lock_file} because of interrupt."
-    echo " "
-    ${IVI_RM} "${lock_file}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_remove got an interrupt."
+
+# If we are not locking or even if we are, then the lock_file variable might not
+# be set when we got interrupted.
+
+if (${safe_to_lock}) then
+    if (${?lock_file}) then 
+        if (-e "${lock_file}") then 
+            echo "Script ivi_lock_remove process $$ removing lock file ${lock_file} because of interrupt."
+            echo " "
+            ${IVI_RM} "${lock_file}"
+        endif 
+    endif 
 endif 
 
 exit 1

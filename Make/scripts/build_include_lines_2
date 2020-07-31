@@ -40,12 +40,12 @@
 # and dodge corresponding early exit. The dependency on this file is fine,
 # because we are now in it. 
 
-set force_build_sub_libs = 0
+setenv FORCE_BUILD_SUB_LIBS 0
 set dir_arg = ""
 
 foreach arg ($*)
    if ("${arg}" == "-f") then
-       set force_build_sub_libs = 1
+       setenv FORCE_BUILD_SUB_LIBS 1
    else 
         set dir_arg = "$arg"
    endif 
@@ -121,6 +121,7 @@ if (${update_include_lines}) then
 
     ${IVI_CP} Include_lines/include_lines.new Include_lines/include_lines
 
+    setenv SHADOW_BUILD_MAKEFILE_LIBS
     if ($?SHADOW_BUILD_MAKEFILE_LIBS) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 calling build_makefile_libs_needed in $cwd" 
         ${MAKE_SCRIPT_PATH}build_makefile_libs_needed 
@@ -211,23 +212,19 @@ endif
 set update_sub_libs_needed = 0
 
 if (${update_sub_list}) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}Include_lines/sub_lib_list." 
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}Include_lines/sub_lib_needed will also be updated." 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_lib_list." 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}/Include_lines/sub_lib_needed will also be updated." 
     ${IVI_CP} Include_lines/sub_lib_list.new Include_lines/sub_lib_list
+    set update_sub_libs_needed = 1
+else if (! -e Include_lines/sub_libs_needed) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}/Include_lines/sub_lib_needed will be updated as it does not exist." 
     set update_sub_libs_needed = 1
 else if (`${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_sub_libs_needed`) then
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Include_lines/sub_libs_needed in $cwd is older than build_sub_libs_needed so it will be updated."
     set update_sub_libs_needed = 1
-endif 
-
-if (! ${update_sub_libs_needed}) then
-    if (! -e Include_lines/sub_libs_needed) then 
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}Include_lines/sub_lib_needed will be updated as it does not exist." 
-        set update_sub_libs_needed = 1
-    else if (${force_build_sub_libs}) then 
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}Include_lines/sub_lib_needed will be updated as we are forcing doing so." 
-        set update_sub_libs_needed = 1
-   endif 
+else if (${FORCE_BUILD_SUB_LIBS}) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}/Include_lines/sub_lib_needed will be updated as we are forcing doing so." 
+    set update_sub_libs_needed = 1
 endif 
 
 if (! -e Makefile-dirs) then 

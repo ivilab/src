@@ -928,8 +928,8 @@ doxygen_$(LIB_COMPONENT_PREFIX) :
 	cd $(IVI_SRC_PATH)IVI_cpp; make doxygen
 
 misc_doc_$(LIB_COMPONENT_PREFIX) : doc_$(LIB_COMPONENT_PREFIX) doxygen_$(LIB_COMPONENT_PREFIX) 
-	rsync -rl -u $(DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 
-	rsync -rl -u $(DOC_PATH)man/ $(MISC_DOC_PATH)man 
+	rsync -rl -u $(IVI_DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 
+	rsync -rl -u $(IVI_DOC_PATH)man/ $(MISC_DOC_PATH)man 
 
 ################################################################################
 #                               Clean

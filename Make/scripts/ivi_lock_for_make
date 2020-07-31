@@ -41,6 +41,8 @@ if ($# < 3) then
     exit 1
 endif 
 
+onintr ivi_lock_for_make_bail
+
 set exit_status = 0
 
 set max_time_to_wait = "$1"
@@ -68,15 +70,11 @@ if ($status) then
 endif 
 
 set target = "$2"
-set target_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str ${target}`
-if ($status) exit 1
-
-set cmd_str = `echo ${3} | sed 's#.*/##'`
-set target_label = "${target_label}_${cmd_str}"
 
 if (! $?IGNORE_BUILD_START_TIME) then
     if ($?BUILD_START_TIME_FILE) then
         if ((-e "${BUILD_START_TIME_FILE}") && (-e "${target}")) then
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make comparing age of ${BUILD_START_TIME_FILE} to that of ${target}."
             set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${BUILD_START_TIME_FILE}" "${target}"`
             if ($status) exit ${status}
 
@@ -88,52 +86,131 @@ if (! $?IGNORE_BUILD_START_TIME) then
     endif 
 endif 
 
+set cmd_str = `echo ${3} | sed 's#.*/##'`
+set lock_label = "${cmd_str}"
+if ($# > 3) then
+    if ("${4}" == "") then
+        set first_arg = "NULL"
+    else 
+        set first_arg = `echo ${4} | sed 's#//*$##' | sed 's#.*/##' `
+
+        if ("${first_arg}" == "") then
+            ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$4|"
+            exit 1
+        endif 
+    endif 
+    
+    set lock_label = "${lock_label}_${first_arg}"
+endif 
+
 # Last path component.
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 
-set time_stamp_file = "${target_label}_${dir_str}_time_stamp.$$"
+set lock_label = "${lock_label}_${dir_str}"
+
+# This can be a pretty long string, leading to filenames that are too long.
+# set target_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str ${target}`
+
+# Use last path component instead
+set target_label = `echo ${target} | sed 's#.*/##'`
+if ($status) exit 1
+
+set target_label = "${dir_str}_${lock_label}"
+
+set time_stamp_file = "${dir_str}_${target_label}.$$"
 set time_stamp_file = "${IVI_LOCKFILE_PATH}${time_stamp_file}"
 ${IVI_CREATE} ${time_stamp_file}
 
+if (${status}) then
+    ${P_STDERR} "Creation of ${time_stamp_file} failed in ivi_lock_for_make. Doing without."
+    set time_stamp_file = DOES_NOT_EXIST
+endif 
+
 set requesting_pid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock for ${target_label} for ${requesting_pid}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_label} for ${requesting_pid}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}   working on building target ${target}."
 
-${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${target_label} ${requesting_pid}
-if ($status) exit ${status}
+# This bit of shared code sets "safe_to_lock" and requires "lock_label".
+source ${MAKE_SCRIPT_PATH}check_for_deadlock
+if (${status}) exit ${status} 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock for target ${target}"
+set already_built =  0
 
-if (! -e "${target}") then 
-    set already_built =  0
-else 
-    set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${time_stamp_file}" "${target}"`
-    if ($status) exit ${status}
+if (${safe_to_lock}) then
+    ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid}
+    if ($status) then 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make failed to get lock ${lock_label} for target ${target}"
+        exit 1
+    endif 
+
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock ${lock_label} for target ${target}"
+
+    if (-e "${target}") then 
+        # I ran into a problem that the time stamp file could not be created
+        # because its name was too long for mac os. I shortened the name, but I
+        # am keeping the check. 
+        #
+        if (-e "${time_stamp_file}") then 
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make comparing age of ${time_stamp_file} to that of ${target}."
+            set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${time_stamp_file}" "${target}"`
+            if ($status) exit ${status}
+            ${IVI_RM} "${time_stamp_file}"
+        endif 
+    endif 
 endif 
 
 if ($already_built) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} was built while we waited for the lock."
 else 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} is not new enough for early exit."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting we cannot do an early exit for ${target}."
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: $argv[3-$#] in $cwd."
 
     if ($?IVI_VERBOSE) then
         set start_time = `date +%H:%M:%S`
     endif 
 
-    $argv[3-$#] < /dev/null 
+    $argv[3-$#] 
     set exit_status = $status 
 
     if ($?IVI_VERBOSE) then
         set end_time = `date +%H:%M:%S`
         set program_name = "$argv[3]"
-        echo "IVB: ${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} in $cwd with status ${exit_status}"
+        echo "IVB: ${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} with time ${1} in $cwd with status ${exit_status}"
         echo "IVB: ${VERBOSE_INDENT}    Ivi_lock_for_make start time for ${program_name}: ${start_time}"
         echo "IVB: ${VERBOSE_INDENT}    Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
         echo "IVB: ${VERBOSE_INDENT} "
     endif 
 endif 
 
-${MAKE_SCRIPT_PATH}ivi_lock_remove ${target_label} ${requesting_pid}
+if (${safe_to_lock}) then
+    ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_label} ${requesting_pid}
+endif 
 
-exit $exit_status
+cleanup: 
+
+# Restore 
+onintr
+    
+exit ${exit_status}
+
+# We should not be here unless onintr
+
+ivi_lock_for_make_bail:
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_for make got an interrupt."
+
+# If we are not locking or even if we are, then the lock_file variable might not
+# be set when we got interrupted.
+
+if (${safe_to_lock}) then
+    if (${?lock_file}) then 
+        if (-e "${lock_file}") then 
+            ${P_STDERR} "Script ivi_lock_for_make process $$ removing lock file ${lock_file} because of interrupt."
+            ${P_STDERR} " "
+            ${IVI_RM} "${lock_file}"
+        endif 
+    endif 
+endif 
+
+exit 1
 

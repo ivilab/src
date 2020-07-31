@@ -2,6 +2,8 @@
 
 set num_args = ${#argv}
 
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script update_bin in directory $cwd with args: $* "
+
 if (${num_args} != 2) then
     ${P_STDERR} "Script update_bin needs exactly two arguments."
     ${P_STDERR} "A source path and a target path."

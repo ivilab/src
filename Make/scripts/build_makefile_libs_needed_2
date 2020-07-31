@@ -60,19 +60,6 @@ if (${status}) exit ${status}
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_libs_needed_2 in directory ${build_dir_path}."
 
-if (($?IVI_LOCK_TIME_STAMP) && (-e Makefile-libs-needed${VAR_CACHE_SUFFIX})) then
-    set can_skip = `${MAKE_SCRIPT_PATH}test_older_than ${IVI_LOCK_TIME_STAMP} Makefile-libs-needed${VAR_CACHE_SUFFIX}`
-
-    if (${can_skip}) then
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Skipping build_makefile_libs_needed_2 in `pwd` as Makefile-libs-needed${VAR_CACHE_SUFFIX} is new."
-        exit 0
-    endif 
-else 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ locked by ${ppid} reports Makefile-libs-needed${VAR_CACHE_SUFFIX} does not exist in script build_makefile_libs_needed_2 with directory ${build_dir_path}."
-endif 
-
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ locked by ${ppid} continuing with script build_makefile_libs_needed_2 with directory ${build_dir_path}."
-
 set target_file_name =  "Include_lines/Makefile-libs-needed/Makefile-libs-needed${VAR_CACHE_SUFFIX}"
 set output_file_name = Makefile-libs-needed.$$
 

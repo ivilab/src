@@ -10,5 +10,6 @@
 set ppid = `ps -p $$ -o ppid=`
 
 echo $base_plus_num_lines : $ppid >>! ${TEST_LOCK_RESULT_FILE}
+echo $base_plus_num_lines : $ppid
 
 

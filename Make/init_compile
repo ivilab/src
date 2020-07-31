@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25679 2020-07-29 00:36:35Z kobus $
+# $Id: init_compile 25683 2020-07-31 17:36:16Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -59,17 +59,6 @@ else if (! -d "${IVI_SRC_PATH}") then
    exit 1
 endif 
 
-# We are slowly purging the use of the "_DIR" forms. Eventually we should be
-# able to do with the "_PATH" forms exclusively.
-#
-# Now set in init_scripts. 
-# setenv MAKE_PATH ${IVI_SRC_PATH}Make/
-# setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
-setenv IVI_LIB_PATH ${IVI_SRC_PATH}lib/
-setenv MAKE_BIN_PATH ${MAKE_PATH}bin/${MACHINE}/
-setenv MAKE_UTIL_PATH ${MAKE_PATH}util/
-setenv MAKE_EDIT_PATH ${MAKE_PATH}vim/
-
 # Kobus. I have moved some stuff in this file to
 # ${IVI_SRC_PATH}/Make/init_scripts, as it is shared with a lot of scripts that
 # do not do anything about compiling, and sourcing this file to get that stuff
@@ -80,12 +69,12 @@ setenv MAKE_EDIT_PATH ${MAKE_PATH}vim/
 if ($?IVI_HAVE_INIT_SCRIPTS) then
     # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
     if ($?IVI_VERBOSE_2) then
-        echo "VB2: Script init_compile is not sourcing ${IVI_SRC_PATH}/Make/init_scripts because IVI_HAVE_INIT_SCRIPTS is set."
+        echo "VB2: Script init_compile is not sourcing ${IVI_SRC_PATH}Make/init_scripts because IVI_HAVE_INIT_SCRIPTS is set."
     endif 
 else 
     # Do not use VERBOSE_ECHO as we may not have it yet. 
     if ($?IVI_VERBOSE) then
-        echo "IVB: Script init_compile is sourcing ${IVI_SRC_PATH}/Make/init_scripts."
+        echo "IVB: Script init_compile is sourcing ${IVI_SRC_PATH}Make/init_scripts."
     endif 
 
     source ${IVI_SRC_PATH}/Make/init_scripts
@@ -98,25 +87,34 @@ else
     endif 
 endif 
 
+# These two are now set in init_scripts. 
+#     setenv MAKE_PATH ${IVI_SRC_PATH}Make/
+#     setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
+
+setenv IVI_LIB_PATH ${IVI_SRC_PATH}lib/
+setenv MAKE_BIN_PATH ${MAKE_PATH}bin/${MACHINE}/
+setenv MAKE_UTIL_PATH ${MAKE_PATH}util/
+setenv MAKE_EDIT_PATH ${MAKE_PATH}vim/
+
 pushd ${IVI_SRC_PATH} > /dev/null
    if ($?EXPORTED_SOURCE) then
        #
-       # Setting DOC_PATH to "doc" in the current directory breaks the build
+       # Setting IVI_DOC_PATH to "doc" in the current directory breaks the build
        # because the symbolic target "doc" becomes a real entity. We did this
        # originally to pattern what we do for non-export builds, until the above
        # problem surfaced. However, for export builds, putting the man pages in
        # to the "doc" sub-directory might be confusing anyway. So we now just
        # use IVI_SRC_PATH. 
        # 
-       ### setenv DOC_PATH "$cwd"/doc/
-       setenv DOC_PATH "${IVI_SRC_PATH}"
-   else if (! $?DOC_PATH) then
+       ### setenv IVI_DOC_PATH "$cwd"/doc/
+       setenv IVI_DOC_PATH "${IVI_SRC_PATH}"
+   else if (! $?IVI_DOC_PATH) then
        # We used to do the parent, but that seems like a bad idea. 
        #
        #  pushd ../  > /dev/null 
-       #     setenv DOC_PATH "$cwd"/doc/
+       #     setenv IVI_DOC_PATH "$cwd"/doc/
        #  popd > /dev/null 
-       setenv DOC_PATH "${IVI_SRC_PATH}"
+       setenv IVI_DOC_PATH "${IVI_SRC_PATH}"
    endif
 popd > /dev/null 
 
@@ -349,7 +347,7 @@ if ($do_cache ) then
             # dependencies added later. Perhaps two kinds of dependencies should
             # be considered.
             #
-            set init_dependencies = "${IVI_SRC_PATH}/Make/init_scripts ${IVI_SRC_PATH}/Make/init_machine ${IVI_SRC_PATH}/Make/init_compile ${IVI_SRC_PATH}/Make/init_ua_hpc"
+            set init_dependencies = "${MAKE_PATH}init_scripts ${MAKE_PATH}init_machine ${MAKE_PATH}init_compile ${MAKE_PATH}init_ua_hpc"
 
             # Build scripts, such as make_ivi, can touch this file to force
             # caches to rebuild ony once.
@@ -468,7 +466,8 @@ if ($do_cache ) then
     set varname_fname = "${USER_TEMP_PATH}ivi_varnames_$$"
     $IVI_CAT /dev/null >! "${varname_fname}"
 
-    ${ECHO} "Generating a new cache file which will update ${cache_fname}.shadow if needed."
+    # The build system has dependencies on the cache shadow file. 
+    ${ECHO} "Generating a new cache file which will also propogate to ${cache_fname}.shadow if needed."
 
     alias ivi_setenv 'setenv \!*; echo \!:1 >>! $varname_fname;'
 else
@@ -502,13 +501,13 @@ if ($?USER_WORK) then
 endif
 
 if ("${user_work}" != "") then
-    ivi_setenv USER_DIR ${user_work}/
+    ivi_setenv USER_PATH ${user_work}/
 else
-    ivi_setenv USER_DIR ${HOME}/
+    ivi_setenv USER_PATH ${HOME}/
 endif
 
-ivi_setenv USER_BIN_PATH ${USER_DIR}/bin/${MACHINE}/ 
-ivi_setenv USER_LOAD_DIR ${USER_DIR}load/${MACHINE}/ 
+ivi_setenv USER_BIN_PATH ${USER_PATH}/bin/${MACHINE}/ 
+ivi_setenv USER_LOAD_PATH ${USER_PATH}load/${MACHINE}/ 
 
 # Work on a "misc" dir. we only wnat one of these. We go through some choices,
 # first looking for one with a load, then one that exists. If neither succedes,
@@ -662,19 +661,18 @@ set filter_non_devel = " grep -v \.so\."
 ivi_setenv IVI_DIR_STR          "/"
 ivi_setenv IVI_PARENT_DIR_STR   "../"
 ivi_setenv IVI_CUR_DIR_STR      "./"
-#
 
-ivi_setenv HTML_MAN_PATH "${DOC_PATH}man/html/"
-ivi_setenv WIKI_MAN_PATH "${DOC_PATH}man/wiki/"
-ivi_setenv MAN3_MAN_PATH "${DOC_PATH}man/man3/"
-ivi_setenv CAT_PATH "${DOC_PATH}man/cat3/"
+ivi_setenv HTML_MAN_PATH "${IVI_DOC_PATH}man/html/"
+ivi_setenv WIKI_MAN_PATH "${IVI_DOC_PATH}man/wiki/"
+ivi_setenv MAN3_MAN_PATH "${IVI_DOC_PATH}man/man3/"
+ivi_setenv CAT3_CAT_PATH "${IVI_DOC_PATH}man/cat3/"
 
 if ($?PROGRAM_MAN_PATH == 0) then 
-    ivi_setenv PROGRAM_MAN_PATH "${DOC_PATH}man/man1/"
+    ivi_setenv PROGRAM_MAN_PATH "${IVI_DOC_PATH}man/man1/"
 endif 
 
 if ($?PROGRAM_CAT_PATH == 0) then 
-    ivi_setenv PROGRAM_CAT_PATH "${DOC_PATH}man/cat1/"
+    ivi_setenv PROGRAM_CAT_PATH "${IVI_DOC_PATH}man/cat1/"
 endif 
 
 # This should NOT be null. 
@@ -870,7 +868,7 @@ endif
 
 if ($?IVI_TACC_HPC) then
     if ( ! $?TACC_HPC_MODULES) then
-        source "${MAKE_PATH}/init_tacc_hpc"
+        source "${MAKE_PATH}init_tacc_hpc"
         setenv TACC_HPC_MODULES 1
     endif
 endif

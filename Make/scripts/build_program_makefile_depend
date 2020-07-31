@@ -4,10 +4,11 @@ ${MAKE_SCRIPT_PATH}stream_file_names -s -m > Makefile-program-targets
 if (${status}) exit ${status}
 # ${IVI_CP} Makefile-program-targets Makefile-program-targets-SAVE
 
+${IVI_CP} Makefile-program-targets Makefile-bin-targets
+if (${status}) exit ${status}
+
 # We no longer separate MISC_BIN, USER_BIN, WORK_BIN or MAKE_BIN (never did this
-# last one). We now just use PROGRAMS, which does the same thing as before.
-# Rather, the user asks for this via the make target, which then simply update
-# certain directories with copies of built programs.
+# last one). We now just use bin, and set the target directory in build-2. 
 
 # ${IVI_CP} Makefile-program-targets Makefile-misc-targets
 # if (${status}) exit ${status}
@@ -22,6 +23,10 @@ ${IVI_CP} Makefile-program-targets Makefile-program-targets-depend
 if (${status}) exit ${status}
 
 # See comment above. 
+
+${IVI_RM} .Makefile-bin-targets.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Bin.${VIM_SUFFIX} Makefile-bin-targets >& /dev/null
+if (${status}) exit ${status}
 
 # ${IVI_RM} .Makefile-misc-targets.swp
 # ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Misc.${VIM_SUFFIX} Makefile-misc-targets >& /dev/null
@@ -154,10 +159,11 @@ ${IVI_ECHO} " " >> Makefile-depend
 
 # See comment above. 
 # ${IVI_CAT} Makefile-misc-targets Makefile-work-targets Makefile-user-targets Makefile-program-targets Makefile-help-targets Makefile-writeup-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
-${IVI_CAT} Makefile-program-targets Makefile-help-targets Makefile-writeup-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
+${IVI_CAT} Makefile-program-targets Makefile-bin-targets Makefile-help-targets Makefile-writeup-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
 if (${status}) exit ${status}
 
 # See comment above. 
+${IVI_RM} Makefile-bin-targets
 # ${IVI_RM} Makefile-misc-targets
 # ${IVI_RM} Makefile-work-targets
 # ${IVI_RM} Makefile-user-targets

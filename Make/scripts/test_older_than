@@ -6,12 +6,12 @@
 # set echo
 
 if (! -e "${1}") then
-    ${P_STDERR} "First argument ($1) to script test_older_than does not exist."
+    ${P_STDERR} "First argument ($1) to script test_older_than does not exist. Exiting with error."
     exit 1
 endif 
 
 if (! -e "${2}") then
-    ${P_STDERR} "Second argument ($2) to script test_older_than does not exist."
+    ${P_STDERR} "Second argument ($2) to script test_older_than does not exist. Exiting with error."
     exit 1
 endif 
 

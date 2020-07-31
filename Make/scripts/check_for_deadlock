@@ -1,0 +1,35 @@
+
+# This bit of shared code sets "safe_to_lock" and requires "lock_label".
+#
+set safe_to_lock = 1 
+
+if ($?LOCK_LABEL_STACK) then
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Checking for ${lock_label} in LOCK_LABEL_STACK: ${LOCK_LABEL_STACK}"
+    foreach lock_in_stack ($LOCK_LABEL_STACK)
+        if ("${lock_label}" == "${lock_in_stack}") then
+             echo " "
+             echo "Script $0 detected deadlock risk. Skipping locking."
+             echo "This might mean you have an endless recursive call you do not want."
+
+             if ($?EXIT_ON_DEADLOCK) then
+                 echo "Exiting with error because EXIT_ON_DEADLOCK is set." 
+                 echo " "
+                 exit 1
+             else 
+                 echo "Options for debugging include setting DONT_LOCK, EXIT_ON_LOCK_TIMEOUT, and EXIT_ON_DEADLOCK."
+                 echo " "
+             endif 
+
+
+             set safe_to_lock = 0
+             break
+        endif
+    end
+else 
+    setenv LOCK_LABEL_STACK   ""
+endif
+
+if (${safe_to_lock}) then
+    setenv LOCK_LABEL_STACK "${lock_label} ${LOCK_LABEL_STACK}"
+endif 
+

@@ -71,6 +71,8 @@ if ($?IVI_SET_ECHO) then
     set echo
 endif 
 
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ called with args: $*."
+
 if ($# < 2) then
     ${P_STDERR} "Script ivi_lock_create needs at least two arguments."
     exit 1
@@ -81,7 +83,6 @@ else
 endif 
 
 set max_time_to_wait = "$1"
-
 if ("${max_time_to_wait}" == "") then
     ${P_STDERR} "Script ivi_lock_create received a null first argument."
     exit 1 
@@ -93,22 +94,11 @@ if ("${check_time_arg}" != "") then
     exit 1 
 endif 
 
-# The factor depends on how much we sleep. 2 is for expected value of .5
-# seconds.
-#
-# @ lock_wait_iterations = 2 * ${max_time_to_wait}
-
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ called with args: $*."
-
 if ($?IVI_DONT_LOCK) then
+    # If no lock, then we bail, but purposefully, after checking arguments.
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock_create is not doing anything"
     exit 0
 endif
-
-# For set_lockfile_name we pretend the label (arg 2) is the command.
-set cmd_str = `echo ${2} | sed 's#.*/##'`
-set lock_label = "${cmd_str}"
-set first_arg = ""
 
 # We work in units of 0.01s. 
 @ max_time_to_wait *= 100
@@ -122,19 +112,18 @@ set noclober
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
 if (${status}) exit ${status} 
 
-onintr bail
+onintr ivi_lock_create_bail
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create process $$ running lock_create ${lock_label} in ${cwd}"
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}    on behalf of process ${requesting_pid} using lockfile '${lock_file}'"
 
 if ("${IVI_LOCK_PROGS_METHOD}" == "lockfile-progs") then
-    echo "UNTESTED: Process $$ running ${cmd_str} in `pwd` using lockfile-progs"
+    echo "UNTESTED: Process $$ running lock_create ${lock_label} in `pwd` using lockfile-progs"
 
     # lockfile-create has its own timeout formula which defaults to 3 minutes.
     # We may need to wrap it in a loop. 
     echo "IGNORING timeout due to using lockfile-progs locking method."
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running lock_create ${lock_label} in `pwd` using lockfile-progs"
     lockfile-create --lock-name argument ${lock_file}
 
     if (! ${status}) then
@@ -243,7 +232,7 @@ else
                 # else if (${count} > ${lock_wait_iterations}) then
                 else if (${time_waited} > ${max_time_to_wait}) then
                     echo "Process $$ waited too long for ${lock_file} on behalf of process ${requesting_pid}. "
-                    echo "It waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
+                    echo "Process $$ waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
                     set end_time = `date +%H:%M:%S`
                     echo "Specifically it waited from ${start_time} to ${end_time}." 
                     echo "Information about the process (${lock_proc}) holding the lock:"
@@ -254,8 +243,9 @@ else
                     sleep 10
 
                     if ($?EXIT_ON_LOCK_TIMEOUT) then
-                        echo "Exiting because EXIT_ON_LOCK_TIMEOUT is set." 
-                        exit 1 
+                        echo "Process $$ waiting for ${lock_file} exiting with failure because EXIT_ON_LOCK_TIMEOUT is set." 
+                        set exit_status = 1
+                        goto cleanup
                     endif 
 
                     echo "Ignoring the lock."
@@ -315,16 +305,28 @@ endif
 
 cleanup: 
     
+# Restore 
+onintr
+    
 exit ${exit_status}
 
 # We should not be here unless onintr
 
-bail:
+ivi_lock_create_bail:
 
-if (-e "${lock_file}") then 
-    ${P_STDERR} "Script ivi_lock_create process $$ removing lock file ${lock_file} because of interrupt."
-    ${P_STDERR} " "
-    ${IVI_RM} "${lock_file}"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_create got an interrupt."
+
+# If we are not locking or even if we are, then the lock_file variable might not
+# be set when we got interrupted.
+
+if (${safe_to_lock}) then
+    if (${?lock_file}) then 
+        if (-e "${lock_file}") then 
+            ${P_STDERR} "Script ivi_lock_create process $$ removing lock file ${lock_file} because of interrupt."
+            ${P_STDERR} " "
+            ${IVI_RM} "${lock_file}"
+        endif 
+    endif 
 endif 
 
 exit 1

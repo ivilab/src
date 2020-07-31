@@ -11,12 +11,8 @@
 #     in the directory given by the first parameter, or the current directory if
 #     there are no parameters. 
 #
-#     This script implements file locking for build_makefile_libs_needed_2 which
-#     does the work. 
-#
-#     This script might be OBSOLETE as we generally call
-#     build_makefile_libs_needed_2 via ivi_lock_for_make directly in the
-#     Makefiles. 
+#     This script might be superflous as it used to setup locking for
+#     build_makefile_libs_needed_2, but now we do it outside.
 #
 # Author:
 #     Kobus Barnard

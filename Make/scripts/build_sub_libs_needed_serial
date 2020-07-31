@@ -76,6 +76,8 @@ foreach recurse_dir ($*)
         if (! -e "Include_lines/sub_libs_needed") then
             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed does not exit ----------"
             set sub_libs_too_old = 1
+        else if (${FORCE_BUILD_SUB_LIBS}) then
+            set sub_libs_too_old = 1
         else 
             set sub_libs_too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/include_lines.new`
         endif 

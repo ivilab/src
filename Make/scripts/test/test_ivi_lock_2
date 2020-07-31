@@ -21,6 +21,9 @@ else
    setenv LOCK_PROGRAM "${MAKE_SCRIPT_PATH}ivi_lock"
 endif 
 
+setenv EXIT_IF_DEADLOCK
+setenv EXIT_IF_LOCK_TIMEOUT
+
 setenv TEST_LOCK_RESULT_FILE "${0}.result"
 
 set test_lock_output_file = "${0}.output"
