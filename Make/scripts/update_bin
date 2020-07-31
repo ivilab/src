@@ -18,24 +18,19 @@ set target_path = "$2"
 # time stamp on load dirs as a gauge of whether the cache is out of date. Here
 # we remember time stamp of source_path. This is easier with a comparison file
 # because there is more comonality on this way over multiple systems. 
-#
 
 set target_dir = `echo ${target_path} | sed 's#\(.*\)/[^/]*#\1#'`
 # echo target_path: $target_path
 # echo target_dir: $target_dir
 
-if($?TMPDIR) then
-    set tmp = "$TMPDIR"
-else
-    set tmp = "/tmp"
-endif
+${IVI_MKDIR} "${USER_TEMP_PATH}"
+if (${status}) exit 1
+set clock_file = ${USER_TEMP_PATH}clock.$$
 
-set tmp = "$tmp/$USER"
-mkdir -p ${tmp}
-
-set clock_file = ${tmp}/clock.$$
-
-touch -r ${target_dir} ${clock_file} 
+${IVI_MKDIR} "${target_dir}" 
+if (${status}) exit 1
+${IVI_TOUCH} -r "${target_dir}" ${clock_file} 
+if (${status}) exit 1
 
 ###############################################################################
 
@@ -82,24 +77,26 @@ set target_name = `echo ${target_path} | sed 's#.*/\([^/]*\)$#\1#'`
 set target_path = ${target_dir}${target_name} 
 # echo target_path: ${target_path} 
 
-mkdir -p ${target_dir}
 if ${status} exit 1 
 
 if (-e ${target_path}) then
-    mkdir -p ${target_dir}${target_name}-HISTORY
+    ${IVI_MKDIR} ${target_dir}${target_name}-HISTORY
     if ${status} exit 1 
 
-    /bin/mv ${target_path} ${target_dir}${target_name}-HISTORY/${target_name}-${time_stamp}
+    ${IVI_MV} ${target_path} ${target_dir}${target_name}-HISTORY/${target_name}-${time_stamp}
     if ${status} exit 1 
 endif 
 
-/bin/cp ${source_path} ${target_path} 
+${IVI_CP} ${source_path} ${target_path} 
+if ${status} exit 1 
     
 ###############################################################################
 # Reset the time of the target path to what it was before we started. 
 #
-touch -r ${clock_file} ${target_dir} 
-/bin/rm -f ${clock_file}
+${IVI_TOUCH} -r ${clock_file} ${target_dir} 
+if ${status} exit 1 
+
+${IVI_RM} ${clock_file}
 
 ###############################################################################
 

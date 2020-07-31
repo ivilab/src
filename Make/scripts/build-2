@@ -140,6 +140,11 @@ if ("${USER}" == "kobus") then
     setenv EXIT_ON_LOCK_TIMEOUT
 endif 
 
+# BUILD_BIN_PATH cannot be null, otherwise, Makefile-program will use it to
+# create a rule for "./", which will be executed, and fail.
+#
+setenv BUILD_BIN_PATH NULL_BIN_PATH
+
 ################################################################################
 
 if ($?IVI_VERBOSE) then
