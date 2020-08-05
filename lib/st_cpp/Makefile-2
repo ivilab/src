@@ -1,17 +1,4 @@
 
-# Template for Makefile-2 for a library directory. Usually operated on by the
-# script kjb_add_makefiles. 
-#
-# The directory that we are in should have a different name than any IVI library
-# sub-dirs. 
-#
-# Replace 'st_cpp' with the directory name, and ST_CPP with the upper case
-# counterpart.  The string that replaces 'st_cpp' should not be a sub-dir of IVI
-# library. 
-#
-# Then, DELETE this comment block, because it is no longer a template! 
-#
-
 all          : all_st_cpp
 dir_made     : dir_made_st_cpp
 clean        : clean_st_cpp
@@ -36,8 +23,8 @@ include $(MAKE_PATH)Makefile-defs
 # Other updating is handled indirectly.
 #
 Makefile-dirs : 
-	$(MAKE_SCRIPT_PATH)build_file_list
-	$(MAKE_SCRIPT_PATH)build_include_lines
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f
 
 include Makefile-dirs
 

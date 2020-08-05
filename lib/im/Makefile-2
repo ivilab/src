@@ -23,8 +23,8 @@ include $(MAKE_PATH)Makefile-defs
 # Other updating is handled indirectly.
 #
 Makefile-dirs : 
-	$(MAKE_SCRIPT_PATH)build_file_list
-	$(MAKE_SCRIPT_PATH)build_include_lines
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f
 
 include Makefile-dirs
 
