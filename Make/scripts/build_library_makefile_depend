@@ -95,11 +95,11 @@ ${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
 #
 ${MAKE_SCRIPT_PATH}ivi_makedepend "${lib_component_path}" -c  -Y -w20000 \ ${MD_DEFINES} -DMAKE_DEPEND ${LIB_BASE_INCLUDES} >> ${lib_component_path}Makefile-depend
 if (${status}) exit ${status}
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-6
 
 ${MAKE_SCRIPT_PATH}ivi_makedepend "${lib_component_path}" -x  -Y -w20000 \ ${MD_DEFINES} -DMAKE_DEPEND ${LIB_BASE_INCLUDES} >> ${lib_component_path}Makefile-depend
 if (${status}) exit ${status}
-
-#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-6
+#${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-7
 #
 ${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
 ${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend

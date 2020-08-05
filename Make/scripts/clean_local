@@ -55,13 +55,13 @@ if (${file_count} > 0) then
     ${IVI_RM} *_incl.h* 
 endif 
 
-set file_count = `/bin/ls -1 | grep -c kjb_all_`
+set file_count = `/bin/ls -1 | grep -c '^kjb_all_'`
 
 if (${file_count} > 0) then
     ${IVI_RM} kjb_all_* 
 endif 
 
-set file_count = `/bin/ls -1 | grep -c ivi_all_`
+set file_count = `/bin/ls -1 | grep -c '^ivi_all_'`
 
 if (${file_count} > 0) then
     ${IVI_RM} ivi_all_* 

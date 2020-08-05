@@ -34,7 +34,8 @@ if ($?IVI_SET_ECHO) then
     set echo
 endif 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}In: $0 $*"
+${VERBOSE_ECHO} ""
+${VERBOSE_ECHO} "${VERBOSE_INDENT}In ivi_lock_for_make with args: $*"
 
 if ($# < 3) then
     ${P_STDERR} "Script ivi_lock_for_make needs at least three arguments."
@@ -79,7 +80,7 @@ if (! $?IGNORE_BUILD_START_TIME) then
             if ($status) exit ${status}
 
             if ($already_built) then
-                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} is newer than ${BUILD_START_TIME_FILE}."
+                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} is newer than ${BUILD_START_TIME_FILE} (early exit)."
                 exit 0
             endif 
         endif 
@@ -127,8 +128,7 @@ if (${status}) then
 endif 
 
 set requesting_pid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_label} for ${requesting_pid}"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}   working on building target ${target}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_label} for ${requesting_pid} working on target ${target}."
 
 # This bit of shared code sets "safe_to_lock" and requires "lock_label".
 source ${MAKE_SCRIPT_PATH}check_for_deadlock
@@ -160,9 +160,9 @@ if (${safe_to_lock}) then
 endif 
 
 if ($already_built) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} was built while we waited for the lock."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} was built while we waited for the lock (early exit)."
 else 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting we cannot do an early exit for ${target}."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} still needs to be built."
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: $argv[3-$#] in $cwd."
 
     if ($?IVI_VERBOSE) then
@@ -172,19 +172,21 @@ else
     $argv[3-$#] 
     set exit_status = $status 
 
-    if ($?IVI_VERBOSE) then
+    if ($?IVI_VERBOSE_2) then
         set end_time = `date +%H:%M:%S`
         set program_name = "$argv[3]"
-        echo "IVB: ${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} with time ${1} in $cwd with status ${exit_status}"
-        echo "IVB: ${VERBOSE_INDENT}    Ivi_lock_for_make start time for ${program_name}: ${start_time}"
-        echo "IVB: ${VERBOSE_INDENT}    Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
-        echo "IVB: ${VERBOSE_INDENT} "
+        echo "VB2: ${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} with time ${1} in $cwd with status ${exit_status}"
+        echo "VB2: ${VERBOSE_INDENT}Ivi_lock_for_make start time for ${program_name}: ${start_time}"
+        echo "VB2: ${VERBOSE_INDENT}Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
     endif 
 endif 
 
 if (${safe_to_lock}) then
     ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_label} ${requesting_pid}
 endif 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Done with call to ivi_lock_for_make with args: $*"
+${VERBOSE_ECHO} ""
 
 cleanup: 
 

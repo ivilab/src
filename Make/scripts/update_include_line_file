@@ -9,7 +9,7 @@
 #     This script is called by make to update files in Include_lines that track
 #     the include lines for the file provided as an argument.  If the process
 #     reveals a change from the previous state, then the makefile dependencies
-#     need to be rebuilt. To have ths happens, this script removes
+#     need to be rebuilt. To have ths happen, this script removes
 #     Include_lines/include_lines. It assumes that that the makefile will
 #     provide the needed call to build_include_lines to rebuild it and perform
 #     additional tasks if needed based on its new contents. Note that the script
@@ -19,8 +19,7 @@
 #     source file, ${file}, that track whether the include lines have changes
 #     for the source file. The shadow file Include_lines/new/${file} is updated
 #     whenever the source file changes. The change is propogated to the file
-#     Include_lines/${file} only if the include file list has changed from
-#     before. 
+#     Include_lines/${file} only if the include file list has changed.
 #
 #     The script first creates/overwrites the include line file for the provided
 #     file in Include_lines/new.  If this is different from the one in

@@ -90,21 +90,14 @@ if ($?IVI_BOOST_VERSION) then
         set boost_candidates = `echo ${IVI_BOOST_VERSION} | sed 's/:/ /g'`
 
         foreach boost_candidate (${boost_candidates}) 
-            if (! $?IVI_QUIET ) then
-                echo "Script build-2 is trying boost_candidate ${boost_candidate} by setting IVI_BOOST_VERSION to that and sourcing init_compile."
-            endif 
-
+            ${VERBOSE_ECHO} "Script build-2 is trying boost_candidate ${boost_candidate} by setting IVI_BOOST_VERSION to that and sourcing init_compile."
             setenv IVI_BOOST_VERSION "${boost_candidate}"
 
             source ${MAKE_PATH}init_compile
             if (${status}) then
-                if (! $?IVI_QUIET ) then
-                    echo "Script build-2 did not find boost_candidate ${boost_candidate}."
-                endif 
+                ${VERBOSE_ECHO} "Script build-2 did not find boost_candidate ${boost_candidate}."
             else
-                if (! $?IVI_QUIET ) then
-                    echo "Script build-2 accepting boost_candidate ${boost_candidate}."
-                endif 
+                ${ECHO_UNLESS_QUIET} "Script build-2 accepting boost_candidate ${boost_candidate}."
                 set found_workable_boost = 1
                 break
             endif 
@@ -138,12 +131,41 @@ setenv CWD "${cwd}"
 if ("${USER}" == "kobus") then
     setenv EXIT_ON_DEADLOCK
     setenv EXIT_ON_LOCK_TIMEOUT
+    setenv SKIP_DEPEND_RETRY
+    setenv FORCE_STOP
 endif 
 
 # BUILD_BIN_PATH cannot be null, otherwise, Makefile-program will use it to
 # create a rule for "./", which will be executed, and fail.
 #
 setenv BUILD_BIN_PATH NULL_BIN_PATH
+
+# Options to manipulate the parallel build of sub_libs_needed. Tweak for
+# performance, but should be somewhat a function of the machine. 
+
+# Expensive, so we only set when we are really interested. Set by default, if we
+# are asking for debug information.
+#
+if ($?IVI_DEBUG) then
+    setenv TRACK_PROCESS_COUNTS
+endif 
+
+# How deep do we recurse before we declare that we should not fork any more
+# building in the background? 
+#
+if (! $?SERIAL_RECURSION_LEVEL) then
+    setenv SERIAL_RECURSION_LEVEL 4
+endif 
+
+# How many processes do we put in the background at a time? The actual total
+# number of processes in the background can be a lot bigger due to recurssion
+# and parallelism. Any number greater than the number of IVI sub libs (about
+# 110) is effectively infinity.
+#
+if (! $?MAX_BACKGROUND_CHILDREN) then
+    @ max_background_children = 2 * ${NUM_CPU}
+    setenv MAX_BACKGROUND_CHILDREN ${max_background_children}
+endif 
 
 ################################################################################
 
@@ -188,6 +210,11 @@ setenv IVI_MAKE_SERIAL "${IVI_MAKE_SERIAL} ${make_extra_opts}"
 setenv IVI_MAKE_PAR    "${IVI_MAKE_PAR} ${make_extra_opts}"
 
 if ($?FORCE_SERIAL) then
+    # This could be set by the user to build only sub_libs_needed serially. But
+    # we also force it if we building everything serially.
+    #
+    setenv BUILD_SUB_LIBS_SERIAL
+
     if ($?IVI_VERBOSE) then
         echo "Forcing serial make due to env var FORCE_SERIAL being set"
     endif 
@@ -283,13 +310,13 @@ if ($?IVI_VERBOSE_2) then
     echo =================  variable values in build-2 =========================
     echo "" 
 
+    echo "SHORT_HOST:              ${SHORT_HOST}"
     echo "MACHINE:                ${MACHINE}"
     echo "OS:                     ${OS}"
+    echo "OS2:                    ${OS2}"
 
     if ($?UBUNTU_RELEASE) then
-       if ("${UBUNTU_RELEASE}" == "14.04") then
-            echo "UBUNTU_RELEASE:         ${UBUNTU_RELEASE}"
-       endif 
+        echo "UBUNTU_RELEASE:         ${UBUNTU_RELEASE}"
     endif 
 
     echo " "
@@ -327,9 +354,11 @@ if ($?IVI_VERBOSE_2) then
     echo "LOAD_DIRS:              ${LOAD_DIRS}"
     echo "IVI_ACTUAL_BOOST:       ${IVI_ACTUAL_BOOST}"
     echo "" 
-    echo "Default make command:   ${IVI_MAKE}" 
+    echo "Job client make:        ${IVI_MAKE_JOB_CLIENT}" 
     echo "Serial make command:    ${IVI_MAKE_SERIAL}" 
+    echo "Parallel make command:  ${IVI_MAKE_SERIAL}" 
     echo "Default make is parallel: ${is_parallel}" 
+    echo "Default make command:   ${IVI_MAKE}" 
     echo "" 
     echo =======================================================================
     echo "" 
@@ -476,7 +505,13 @@ while ($count <=  ${num_args})
         # all the processing. 
     else if ("${arg}" == "bin") then
         set need_depend = 1
-        setenv BUILD_BIN_PATH "${USER_BIN_PATH}"
+
+        # The default is USER_BIN_PATH, but the user can set BUILD_BIN_PATH to
+        # anything they want to over ride this default. 
+        #
+        if (! $?BUILD_BIN_PATH) then
+            setenv BUILD_BIN_PATH "${USER_BIN_PATH}"
+        endif 
     else if ("${arg}" == "misc_bin") then
         set need_depend = 1
         setenv BUILD_BIN_PATH "${MISC_BIN_PATH}"
@@ -491,73 +526,120 @@ while ($count <=  ${num_args})
         # make_ivi, which would also build it, but checks the build of
         # additional code (.e.g., test code). 
         #
-        pushd ${IVI_SRC_PATH}IVI > /dev/null
-        make depend_very_clean
-        make depend
-        make clean 
-        make 
-        if ($status) exit 1 
-        popd > /dev/null
 
-        pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
-        make depend_very_clean
-        make depend
-        make clean 
-        make 
-        if ($status) exit 1 
-        popd > /dev/null
+        # No DRY_RUN as this is temporary development.
+
+#         pushd ${IVI_SRC_PATH}IVI > /dev/null
+#             make depend_very_clean
+#             if ($status) exit 1 
+#             make depend
+#             if ($status) exit 1 
+#             make clean 
+#             if ($status) exit 1 
+#             make 
+#             if ($status) exit 1 
+#         popd > /dev/null
+# 
+#         pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
+#             make depend_very_clean
+#             if ($status) exit 1 
+#             make depend
+#             if ($status) exit 1 
+#             make clean 
+#             if ($status) exit 1 
+#             make 
+#             if ($status) exit 1 
+#         popd > /dev/null
         
-        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs 
-        if (${status}) exit 1
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi ivi ivi_cpp skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif 
 
         continue
     else if ("${arg}" == "ivi_doc") then
-        pushd ${MAKE_SCRIPT_PATH} > /dev/null
-        make doc 
-        if ($status) exit 1 
-        popd > /dev/null
+        # No DRY_RUN as this is temporary development.
 
-        # We need to get IVI and IVI_cpp to make C/C++ documentation because
-        # that is currently the only place where we build the index. The script
-        # make_ivi does not know about any more directories for documentation,
-        # so we do not need to use it. 
-        #
-        pushd ${IVI_SRC_PATH}IVI > /dev/null
-        make doc 
-        if ($status) exit 1 
-        popd > /dev/null
-        pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
-        make doc 
-        if ($status) exit 1 
-        popd > /dev/null
+#         pushd ${MAKE_SCRIPT_PATH} > /dev/null
+#             make doc 
+#             if ($status) exit 1 
+#         popd > /dev/null
+# 
+#         # We need to get IVI and IVI_cpp to make C/C++ documentation because
+#         # that is currently the only place where we build the index. The script
+#         # make_ivi does not know about any more directories for documentation,
+#         # so we do not need to use it. 
+#         #
+#         pushd ${IVI_SRC_PATH}IVI > /dev/null
+#             make doc 
+#             if ($status) exit 1 
+#         popd > /dev/null
+# 
+#         pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
+#             make doc 
+#             if ($status) exit 1 
+#         popd > /dev/null
+
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi doc skip_code skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
 
         continue
     else if ("${arg}" == "ivi_tags") then
-        # We do IVI and IVI_cpp first, which is completely optional, for speed.
-        pushd ${IVI_SRC_PATH}IVI > /dev/null
-        make tags 
-        if ($status) exit 1 
-        popd > /dev/null
-        pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
-        make tags 
-        if ($status) exit 1 
-        popd > /dev/null
+#         # We do IVI and IVI_cpp first, which is completely optional, for speed.
+#         pushd ${IVI_SRC_PATH}IVI > /dev/null
+#             make tags 
+#             if ($status) exit 1 
+#         popd > /dev/null
+# 
+#         pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
+#             make tags 
+#             if ($status) exit 1 
+#         popd > /dev/null
 
-        ${MAKE_SCRIPT_PATH}make_ivi tags skip_code skip_doc skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs 
-        if (${status}) exit 1
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi tags ivi ivi_cpp skip_code skip_doc skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
 
         continue
     else if ("${arg}" == "ivi_regress") then
-        ${MAKE_SCRIPT_PATH}make_ivi regress skip_doc skip_tags skip_depend skip_no_libs skip_prog_no_libs skip_prog_dirs 
-        if (${status}) exit 1
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi regress skip_doc skip_tags skip_depend skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
+        
         continue
     else if ("${arg}" == "ivi_depend") then
-        ${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs 
-        if (${status}) exit 1
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
 
         continue
     else if ("${arg}" == "confess") then
-        setenv IVI_VERBOSE 1
+        if (! $?IVI_VERBOSE) then
+            setenv IVI_VERBOSE 1
+            set reset_no_verbose = 1
+        else
+            set reset_no_verbose = 0
+        endif
         
         echo " "
         echo "Cleaning the cache because of target confess."
@@ -566,9 +648,20 @@ while ($count <=  ${num_args})
         source ${MAKE_SCRIPT_PATH}clean_cache
         source ${MAKE_PATH}init_compile
 
+        if (${reset_no_verbose}) then
+            unsetenv IVI_VERBOSE
+        endif 
+
         continue
     else if ( ("${arg}" == "clean_cache") || ("${arg}" == "cache_clean") ) then
-        source ${MAKE_SCRIPT_PATH}clean_cache
+        set make_cmd = "source ${MAKE_SCRIPT_PATH}clean_cache"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
+        
         continue
     else if (("${arg}" == "depend_dirs") || ("${arg}" == "depend_dir") || ("${arg}" == "depend_depend")) then
         echo "Argument ${arg} is obsolete. Proceeding as though it were 'depend'."
@@ -585,7 +678,13 @@ while ($count <=  ${num_args})
         echo "Build script is cleaning up object directories in the current directory and below."
         echo " "
 
-        source ${MAKE_SCRIPT_PATH}clean_obj
+        set make_cmd = "source ${MAKE_SCRIPT_PATH}clean_obj"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
 
         continue
     else if ("${arg}" == "depend_very_clean") then
@@ -593,15 +692,27 @@ while ($count <=  ${num_args})
         echo "Build script is cleaning up Makefiles in current dir, lib, and all IVI libs."
         echo " "
 
-        source ${MAKE_SCRIPT_PATH}clean_global
+        set make_cmd = "source ${MAKE_SCRIPT_PATH}clean_global"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
 
         continue
     else if ("${arg}" == "depend_clean") then
         echo " "
         echo "Build script is cleaning up Makefiles in current dir (only)."
         echo " "
-
-        source ${MAKE_SCRIPT_PATH}clean_local
+        
+        set make_cmd = "source ${MAKE_SCRIPT_PATH}clean_local"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
   
         continue
     else if (("${arg}" == "static") || ("${arg}" == "dynamic") || ("${arg}" == "shared")) then
@@ -851,8 +962,12 @@ if (${need_depend_bootstrap}) then
 
     foreach bootstrap_file (${bootstrap_files}) 
         if (-x "${bootstrap_file}") then
-            ${MAKE_SCRIPT_PATH}ivi_lock 5 ./${bootstrap_file}
-            if (${status}) exit 1
+            if ($?DRY_RUN) then
+                echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 5 ./${bootstrap_file}"
+            else
+                ${MAKE_SCRIPT_PATH}ivi_lock 5 ./${bootstrap_file}
+                if (${status}) exit 1
+            endif 
         endif 
     end
 
@@ -870,20 +985,29 @@ if (${need_depend_bootstrap}) then
         ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
         set sub_start_time = `date +%H:%M:%S`
 
-        # Makefile-dirs is made as a side effect of the following.
-        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list
-        if (${status}) then
-            set exit_status = 1
-            ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
-            goto end_of_script
-        endif
+        if ($?DRY_RUN) then
+            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list"
+        else
+            # Makefile-dirs is made as a side effect of the following.
+            ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list
+            if (${status}) then
+                set exit_status = 1
+                ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
+                goto end_of_script
+            endif
+        endif 
 
-        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines
-        if (${status}) then
-            set exit_status = 1
-            ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
-            goto end_of_script
-        endif
+        if ($?DRY_RUN) then
+            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines -f "
+        else
+            # We use '-f' because Makefile-dirs did not exist. 
+            ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines -f
+            if (${status}) then
+                set exit_status = 1
+                ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
+                goto end_of_script
+            endif
+        endif 
 
         set sub_end_time = `date +%H:%M:%S`
         ${VERBOSE_ECHO} "Script build-2 has finished building Makefile-dirs in advance of calling make."
@@ -905,26 +1029,85 @@ if (${need_depend_bootstrap}) then
         setenv SHADOW_BUILD_MAKEFILE_LIBS 1
 
         if (! -e Makefile-depend) then
-            ${IVI_TOUCH_1990} Makefile-depend
+            if ($?DRY_RUN) then
+                echo "DRY: ${IVI_TOUCH_1990} Makefile-depend"
+            else
+                ${IVI_TOUCH_1990} Makefile-depend
+                if (${status}) then
+                    set exit_status = 1
+                    ${P_STDERR} "Touching Makefile-depend in the past failed."
+                    goto end_of_script
+                endif
+            endif
         endif
 
         if (! -e Makefile-libs-needed) then
-            ${IVI_TOUCH_1990} Makefile-libs-needed
+            if ($?DRY_RUN) then
+                echo "DRY: ${IVI_TOUCH_1990} Makefile-libs-needed"
+            else
+                ${IVI_TOUCH_1990} Makefile-libs-needed
+                if (${status}) then
+                    set exit_status = 1
+                    ${P_STDERR} "Touching Makefile-libs-needed in the past failed."
+                    goto end_of_script
+                endif
+            endif
         endif
 
         if (-e Makefile-include) then
             if (! -e Makefile-library) then
-                ${IVI_TOUCH_1990} Makefile-library
+                if ($?DRY_RUN) then
+                    echo "DRY: ${IVI_TOUCH_1990} Makefile-library"
+                else
+                    ${IVI_TOUCH_1990} Makefile-library
+                    if (${status}) then
+                        set exit_status = 1
+                        ${P_STDERR} "Touching Makefile-library in the past failed."
+                        goto end_of_script
+                    endif
+                endif 
             endif 
 
             if (! -e Include_lines/Makefile-include-lines) then
-                ${IVI_MKDIR} Include_lines
-                ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines
+                if ($?DRY_RUN) then
+                    echo "DRY: ${IVI_MKDIR} Include_lines"
+                    echo "DRY: ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines"
+                else
+                    ${IVI_MKDIR} Include_lines
+                    if (${status}) then
+                        set exit_status = 1
+                        ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
+                        goto end_of_script
+                    endif
+
+                    ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines
+                    if (${status}) then
+                        set exit_status = 1
+                        ${P_STDERR} "Touching Include_lines/Makefile-include-lines in the past failed."
+                        goto end_of_script
+                    endif
+                endif 
             endif 
 
             if (! -e Include_lines/Makefile-depend-incl-dot-h) then
-                ${IVI_MKDIR} Include_lines
-                ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
+                if ($?DRY_RUN) then
+                    echo "DRY: ${IVI_MKDIR} Include_lines"
+                    echo "DRY: ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h"
+                else
+                    ${IVI_MKDIR} Include_lines
+                    if (${status}) then
+                        set exit_status = 1
+                        ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
+                        goto end_of_script
+                    endif
+
+                    ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
+                    if (${status}) then
+                        set exit_status = 1
+                        ${P_STDERR} "Touching Include_lines/Makefile-depend-incl-dot-h in the past failed."
+                        goto end_of_script
+                    endif
+                endif 
             endif
         endif 
     endif 
@@ -935,6 +1118,42 @@ endif
 # actually one of these, then we build all the ones up to that target. 
 #
 if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
+    set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
+
+    # We build 'Makefile' multiple times to force included Makefiles that do not
+    # exist to be
+    # built. While they often can be built automatically, some would require
+    # further restructuring of the code. Currently, for example, if you do a
+    # 'make depend_very_clean' in some directory, and change to another program
+    # direcotory (or IVI or IVI_cpp), then the build can be broken due to the
+    # library makefiles being removed, but Makefile-dirs still being what it
+    # should be.
+
+    # This could be rolled up into a loop, but the error messages would not be
+    # as informative.
+
+    ${ivi_depend_make} -f Makefile-2 Makefile 
+    if (${status}) then
+        ${P_STDERR} "Initial build of 'Makefile' failed, but that is OK, it might just mean that we are missing some makefiles."
+
+        ${ivi_depend_make} -f Makefile-2 Makefile 
+        if (${status}) then
+            ${P_STDERR} "Second build of 'Makefile' failed, but often it needs to be done three times. " 
+
+            ${ivi_depend_make} -f Makefile-2 Makefile
+            if (${status}) then
+                ${P_STDERR} "Third build of 'Makefile' failed. Trying one more time." 
+
+                ${ivi_depend_make} -f Makefile-2 Makefile
+                if (${status}) then
+                    ${P_STDERR} "Fourth build of 'Makefile' failed. Something is probably wrong with the makefiles. Giving up." 
+                    set exit_status = 1
+                    goto end_of_script
+                endif 
+            endif
+        endif
+    endif
+
     set build_adjusted_args = ""
     foreach arg (${adjusted_args}) 
         # set temp_depend_targets = "Include_lines/file_list.new Include_lines/include_lines.new Include_lines/sub_libs_needed depend"
@@ -970,7 +1189,7 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
         # echo depend_targets: $depend_targets
 
         set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
-
+        
         set try = 0
 
         while (${try} < 3) 
@@ -991,19 +1210,23 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
                         set sub_start_time = `date +%H:%M:%S`
                     endif 
 
-                    ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}
+                    if ($?DRY_RUN) then
+                        echo "DRY: ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}"
+                    else
+                        ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}
 
-                    if ($status) then 
-                        echo "Failed to make target ${depend_target} in ${cwd}"
-                        set error_found = 1
-                        break
-                    else if ($?IVI_VERBOSE) then
-                        set sub_end_time = `date +%H:%M:%S`
-                        echo " "
-                        echo "Script build-2 is successfully built depend target: ${depend_target} in directory ${cwd}."
-                        echo "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
-                        echo "    Start time for ${depend_target}: ${sub_start_time}"
-                        echo "    End   time for ${depend_target}: ${sub_end_time}"
+                        if ($status) then 
+                            echo "Failed to make target ${depend_target} in ${cwd}"
+                            set error_found = 1
+                            break
+                        else if ($?IVI_VERBOSE) then
+                            set sub_end_time = `date +%H:%M:%S`
+                            echo " "
+                            echo "Script build-2 successfully built depend target: ${depend_target} in directory ${cwd}."
+                            echo "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
+                            echo "    Start time for ${depend_target}: ${sub_start_time}"
+                            echo "    End   time for ${depend_target}: ${sub_end_time}"
+                        endif 
                     endif 
 
                     # If we need to do it again, then no point in building the
@@ -1059,7 +1282,7 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
                     # serial. 
                     #
                     ${MAKE_SCRIPT_PATH}build_file_list
-                    ${MAKE_SCRIPT_PATH}build_include_lines
+                    ${MAKE_SCRIPT_PATH}build_include_lines -f
                     ${IVI_TOUCH_1990} Makefile-depend
                     ${IVI_TOUCH_1990} Makefile-libs-needed
 
@@ -1108,14 +1331,19 @@ foreach arg (${build_adjusted_args})
             if ($?IVI_VERBOSE) then
                 echo " "
                 echo "Script build-2 is building dir_made in ${cwd} due to parallel make." 
-                echo ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made 
             endif 
-            ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg}
-            if (${status}) then 
-                set exit_status = 1
-                ${P_STDERR} "Failed to make target 'dir_made' in ${cwd}"
-                goto end_of_script
-            endif
+
+            if ($?DRY_RUN) then
+                echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made"
+            else
+                ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg}
+
+                if (${status}) then 
+                    set exit_status = 1
+                    ${P_STDERR} "Failed to make target 'dir_made' in ${cwd}"
+                    goto end_of_script
+                endif
+            endif 
         endif
     else if (("${arg}" == "doc") || ("${arg}" == "doc_program") || ("${arg}" == "make_bin_aux")) then
         # This could be cleaned up now that we have gon to using BUILD_BIN_PATH
@@ -1129,6 +1357,31 @@ foreach arg (${build_adjusted_args})
                         echo "Script build-2 is building utilities in ${cwd}." 
                     endif 
                      
+                    if ($?DRY_RUN) then
+                        echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg})"
+                    else
+                        # We only want to make the documentation tools using the default C
+                        # compiler and production mode. The setting of IVI_CC to empty asks
+                        # init_compile to choose the compiler. 
+                        #
+                        (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} ) 
+                        
+                        if (${status}) then 
+                            set exit_status = 1
+                            ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
+                            goto end_of_script
+                        endif 
+                    endif 
+                popd > /dev/null
+
+                if ($?IVI_VERBOSE) then
+                    echo " "
+                    echo "Script build-2 is building utilities in ${cwd}." 
+                endif 
+
+                if ($?DRY_RUN) then
+                    echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} )"
+                else
                     # We only want to make the documentation tools using the default C
                     # compiler and production mode. The setting of IVI_CC to empty asks
                     # init_compile to choose the compiler. 
@@ -1140,23 +1393,6 @@ foreach arg (${build_adjusted_args})
                         ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
                         goto end_of_script
                     endif 
-                popd > /dev/null
-
-                if ($?IVI_VERBOSE) then
-                    echo " "
-                    echo "Script build-2 is building utilities in ${cwd}." 
-                endif 
-
-                # We only want to make the documentation tools using the default C
-                # compiler and production mode. The setting of IVI_CC to empty asks
-                # init_compile to choose the compiler. 
-                #
-                (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} ) 
-                
-                if (${status}) then 
-                    set exit_status = 1
-                    ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
-                    goto end_of_script
                 endif 
             popd > /dev/null
         popd > /dev/null
@@ -1167,11 +1403,16 @@ foreach arg (${build_adjusted_args})
             if ($?IVI_VERBOSE) then
                 echo "Script build-2 is building doc_dir_made in ${cwd} due to parallel make." 
             endif 
-            ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}
-            if (${status}) then 
-                set exit_status = 1
-                ${P_STDERR} "Failed to make target doc_dir_made in ${cwd}"
-                goto end_of_script
+
+            if ($?DRY_RUN) then
+                echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}"
+            else
+                ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}
+                if (${status}) then 
+                    set exit_status = 1
+                    ${P_STDERR} "Failed to make target doc_dir_made in ${cwd}"
+                    goto end_of_script
+                endif 
             endif 
         endif 
     else if (("${arg}" == "bin") || ("${arg}" == "load") || ("${arg}" == "misc_load")) then
@@ -1189,8 +1430,15 @@ foreach arg (${build_adjusted_args})
                 ${VERBOSE_ECHO} "Script build-2 using production mode for ${arg}"
                 ${VERBOSE_ECHO} "To disable this default behaviour, use 'setenv DONT_FORCE_PROD_BIN 1'."
                 ${VERBOSE_ECHO} " "
-                setenv PRODUCTION 1
-                source ${MAKE_PATH}init_compile
+
+                if ($?DRY_RUN) then
+                    echo "DRY: setenv PRODUCTION 1"
+                    echo "DRY: source ${MAKE_PATH}init_compile"
+                else
+                    setenv PRODUCTION 1
+                    source ${MAKE_PATH}init_compile
+                endif 
+
                 ${VERBOSE_ECHO} " "
             endif 
         endif 
@@ -1278,14 +1526,18 @@ foreach arg (${build_adjusted_args})
                         echo "Script build-2 reports target [ ${prog} ] is up to date."
                     endif 
                 else 
-                    ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}
+                    if ($?DRY_RUN) then
+                        echo "DRY: ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}"
+                    else
+                        ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}
 
-                    if (${status}) then
-                        set exit_status = 1
-                        ${P_STDERR} " "
-                        ${P_STDERR} "Making of ${prog} failed."
-                        ${P_STDERR} " "
-                        goto end_of_script
+                        if (${status}) then
+                            set exit_status = 1
+                            ${P_STDERR} " "
+                            ${P_STDERR} "Making of ${prog} failed."
+                            ${P_STDERR} " "
+                            goto end_of_script
+                        endif 
                     endif 
                 endif 
             endif 
@@ -1341,27 +1593,37 @@ foreach arg (${build_adjusted_args})
         set sub_start_time = `date +%H:%M:%S`
     endif 
 
-    ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}
+    if ($?DRY_RUN) then
+        echo "DRY: ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} "
+    else
+        ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}
 
-    if (${status}) then 
-        set exit_status = 1
-        ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
-        goto end_of_script
-    else if ($?IVI_VERBOSE) then
-        set sub_end_time = `date +%H:%M:%S`
-        echo " "
-        echo "Script build-2 is successfully built target: ${arg} in directory ${cwd}."
-        echo "Make command was: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
-        echo "    Start time for ${arg}: ${sub_start_time}"
-        echo "    End   time for ${arg}: ${sub_end_time}"
+        if (${status}) then 
+            set exit_status = 1
+            ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
+            goto end_of_script
+        else if ($?IVI_VERBOSE) then
+            set sub_end_time = `date +%H:%M:%S`
+            echo " "
+            echo "Script build-2 successfully built target: ${arg} in directory ${cwd}."
+            echo "Make command was: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
+            echo "    Start time for ${arg}: ${sub_start_time}"
+            echo "    End   time for ${arg}: ${sub_end_time}"
+        endif 
     endif 
 
     if (${force_prod_bin}) then
         # Set it back to dev mode. We would only have set force_prod_bin if we
         # were in dev mode at the start of the loop. 
         ${VERBOSE_ECHO} "Script build-2 resetting development mode after processing ${arg}"
-        setenv PRODUCTION 0
-        source ${MAKE_PATH}init_compile
+
+        if ($?DRY_RUN) then
+            echo "DRY: setenv PRODUCTION 0"
+            echo "DRY: source ${MAKE_PATH}init_compile"
+        else
+            setenv PRODUCTION 0
+            source ${MAKE_PATH}init_compile
+        endif 
     endif 
 end
 
@@ -1372,6 +1634,7 @@ if ( ! $?IVI_QUIET ) then
         if (! $status) then 
             set have_changes = `svn status | grep -v -c '^?'`
             if ($have_changes) then
+                echo " "
                 echo "Pending SVN commits: " 
                 svn status | grep -v '^?' | sed 's/^/    /'
             endif 

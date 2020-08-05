@@ -12,13 +12,13 @@ if ("${num_args}" != "2") then
     exit 1
 endif 
 
-if (! -e $1) then
+if (! -e "$1") then
     ${P_STDERR} "First arg to copy_if_different (${1}) is not a file."
     exit 1
 endif 
 
-if (-e $2) then
-    diff -q $1 $2 >& /dev/null
+if (-e "$2") then
+    ${IVI_DIFF_TEST} $1 $2 >& /dev/null
     if (${status}) then 
         # Ensure time stamp is later than any file built by the process that
         # called this script. 
@@ -30,20 +30,16 @@ if (-e $2) then
 
         sleep ${sleep_time}
 
-        if ($?IVI_VERBOSE) then
-            echo "${VERBOSE_INDENT}Script copy_if_different is executing /bin/cp -f $1 $2."
-        endif
-
-        /bin/cp -f $1 $2
-    else if ($?IVI_VERBOSE_2) then
-        echo "${VERBOSE_INDENT}Skipping copying $1 to $2 because there is no difference."
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script copy_if_different is executing ${IVI_CP} $1 $2."
+        ${IVI_CP} "$1" "$2"
+        if (${status}) exit 1 
+    else 
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Skipping copying $1 to $2 because there is no difference."
     endif 
 else
-    if ($?IVI_VERBOSE) then
-        echo "${VERBOSE_INDENT}Script copy_if_different is copying $1 to $2 because $2 does not exist."
-    endif
-
-    /bin/cp -f $1 $2
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script copy_if_different is copying $1 to $2 because $2 does not exist."
+    ${IVI_CP} "$1" "$2"
+    if (${status}) exit 1 
 endif 
 
 

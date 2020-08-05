@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25683 2020-07-31 17:36:16Z kobus $
+# $Id: init_compile 25688 2020-08-05 23:22:17Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -678,6 +678,10 @@ endif
 # This should NOT be null. 
 ivi_setenv SHARED_DIR "shared/"
 
+# So far, only tested on macs"
+ivi_setenv IVI_TIMESTAMP "${MAKE_SCRIPT_PATH}get_readable_mod_time "
+
+
 ################################################################################
 
 if ((-d /usr/local/uaopt) || (-d /uaopt) || (-d /cm/local)) then
@@ -759,9 +763,15 @@ endif
 
 ################################################################################
 
+unalias make
+ivi_setenv IVI_MAKE_PROG `which make`
+if (${status}) then
+    ${P_STDERR} "No make program found. Using 'make', but likely things will break."
+    ivi_setenv IVI_MAKE_PROG "make"
+endif 
+
 if (${OS} == "linux_x86_64") then
-    # Assume make is gmake
-    ivi_setenv IVI_MAKE_PROG "make" 
+    # Assume make is gmake`
     ivi_setenv IVI_MAKE_OPTS "-r --no-print-directory" 
     ivi_setenv IVI_MAKE_OPTS_KEEP "-k"
     ivi_setenv IVI_MAKE_OPTS_SILENT "-s"
@@ -771,7 +781,6 @@ if (${OS} == "linux_x86_64") then
     ivi_setenv IVI_MAKE_OPTS_DEBUG "-d"
 else if (${OS} == "linux_386") then
     # Assume make is gmake
-    ivi_setenv IVI_MAKE_PROG "make" 
     ivi_setenv IVI_MAKE_OPTS "-r --no-print-directory" 
     ivi_setenv IVI_MAKE_OPTS_KEEP "-k"
     ivi_setenv IVI_MAKE_OPTS_STOP "-S"
@@ -781,7 +790,6 @@ else if (${OS} == "linux_386") then
     ivi_setenv IVI_MAKE_OPTS_DEBUG "-d"
 else if (${OS} == "mac_osx") then
     # Assume make is gmake
-    ivi_setenv IVI_MAKE_PROG "make" 
     ivi_setenv IVI_MAKE_OPTS "-r --no-print-directory" 
     ivi_setenv IVI_MAKE_OPTS_KEEP "-k"
     ivi_setenv IVI_MAKE_OPTS_STOP "-S"
@@ -791,7 +799,6 @@ else if (${OS} == "mac_osx") then
     ivi_setenv IVI_MAKE_OPTS_DEBUG "-d"
 else 
     # Just and/or guessing or leaving blank.
-    ivi_setenv IVI_MAKE_PROG "make" 
     ivi_setenv IVI_MAKE_OPTS "-r" 
     ivi_setenv IVI_MAKE_OPTS_KEEP "-k"
     ivi_setenv IVI_MAKE_OPTS_STOP "-S"
@@ -10532,10 +10539,10 @@ unalias ivi_setenv
 
 if ($?IVI_VERBOSE) then
     set end_time = `date +%H:%M:%S`
-    echo "Script init_compile finishing with status ${exit_status}"
-    echo "    Start time: ${start_time}"
-    echo "    End time:   ${end_time}"
-    echo " "
+    ${VERBOSE_ECHO} "Script init_compile finishing with status ${exit_status}"
+    ${VERBOSE_ECHO} "    Start time: ${start_time}"
+    ${VERBOSE_ECHO} "    End time:   ${end_time}"
+    ${VERBOSE_ECHO} " "
 endif 
 
 exit ${exit_status}

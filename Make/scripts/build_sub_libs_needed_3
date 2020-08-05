@@ -1,0 +1,60 @@
+#!/bin/tcsh -f
+
+##################################################################################
+#
+# This script exists simply because if we called ivi_lock_for_make directly,
+# then we would not capture its exit status and result. 
+
+if ($# != 3) then
+    ${P_STDERR} "Script build_sub_libs_needed_3 takes exactly 3 args. Called with $*"
+    exit 1
+endif 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_sub_libs_needed_3 in ${cwd} with args $*"
+
+set recurse_dir_str = "${1}"
+set status_file = "${2}"
+set output_file = "${3}"
+
+if (-e "${status_file}") then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed_3 exiting early due to existing ${status_file}."
+    exit 0
+endif
+
+set exit_status = 0
+# 560 is a unique approximation of 600 for easier grep. We redirect to a unique
+# output file so we can check that we do not have a locking issue. 
+#
+${MAKE_SCRIPT_PATH}ivi_lock_for_make 560 ${recurse_dir_str}/Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_sub_libs_needed_4 "${recurse_dir_str}" >& ${output_file}.$$
+if (${status}) set exit_status = 1
+
+if (-e "${status_file}") then
+    ${IVI_ECHO} " " >>& ${output_file}.$$
+    ${IVI_ECHO} "Possible LOCKING FAILURE" >>& ${output_file}.$$
+    ${IVI_ECHO} "Script build_sub_libs_needed_3 found a preexising ${status_file}." >>& ${output_file}.$$
+    ${IVI_ECHO} "This should be IMPOSSIBLE because run under ivi_lock." >>& ${output_file}.$$
+    ${IVI_ECHO} "Previous status was `${IVI_CAT} ${status_file}`." >>& ${output_file}.$$
+    ${IVI_ECHO} " " >>& ${output_file}.$$
+
+    if (-e ${output_file}) then
+        ${IVI_ECHO} "Previous output file moved to ${output_file}.previous.$$" >>& ${output_file}.$$
+        ${IVI_MV} "${output_file}" "${output_file}.previous.$$"
+        ${IVI_ECHO} " " >>& ${output_file}.$$
+    endif 
+endif
+
+${IVI_CAT} "${output_file}.$$"
+
+${IVI_MV} "${output_file}.$$" "${output_file}"
+if (${status}) set exit_status = 1
+
+${IVI_ECHO} ${exit_status} > ${status_file}
+if (${status}) then 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Writing ${status_file} FAILED."
+    set exit_status = 1
+endif 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed_3 with status ${exit_status} in ${cwd}."
+
+exit ${exit_status}
+

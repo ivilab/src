@@ -105,18 +105,25 @@ build : $(LIB_COMPONENT_SRC_DIR)build
 # Include_lines/file_list : \
 #     $(MAKE_SCRIPT_PATH)build_file_list
 
-# Because the target is not gaurenteed to be updated, but has dependencies on
+# Because the target is not guaranteed to be updated, but has dependencies on
 # tools, we could get out of date in this case. Hence we rely on build_file_list
 # to check the tools when they could have an effect. 
 #
 # Since we hide dependencies, we need to track that this has been executed for
 # ivi_lock_for_make, which we do via $@.made 
 #
+# Because the target does not depend on anything, we will only execute the rule
+# if it does not exist, in which case build_include_lines will create it. 
+#
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list :
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-#	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@.made $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 50 made $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
+# 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # ---------------------------------------------
 # Include_lines/file_list.new
@@ -138,10 +145,19 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
 # target does not either, and the script build_file_list will create
 # Include_lines. 
 # 
+# Because we depend on the directory we can be out of date due to vim swap
+# files, backup processes, IO redirection to capture build output, etc. So do
+# not be surprised if we need multiple builds for the rule not to trigger.
+# However, this is designed as a lightweight update, so it should not matter. 
+#
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new : $(LIB_COMPONENT_REAL_SRC_DIR) $(FORCE_WITH_SUN5)
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-#	$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 50 $@ $(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -199,7 +215,10 @@ file_list.new : \
 #     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
 #     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
 
-# Because the target is not gaurenteed to be updated, but has dependencies on
+# Because the target does not depend on anything, we will only execute the rule
+# if it does not exist, in which case build_include_lines will create it. 
+#
+# Because the target is not guaranteed to be updated, but has dependencies on
 # tools, we could get out of date in this case. Hence we rely on
 # build_include_lines to check the tools when they could have an effect. 
 #
@@ -208,21 +227,35 @@ file_list.new : \
 #
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : 
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : Include_lines/file_list.new
-$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
+$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : 
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@.made $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
+# 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # ---------------------------------------------
 # Include_lines/include_lines.new 
 
 # These rules need comments.
 #
+# It is possible this may hardly ever get used, now that we call
+# build_include_lines_2 from build_file_list_2 if things look different. 
+#
 $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/new/% : $(LIB_COMPONENT_REAL_SRC_DIR)% $(MAKE_SCRIPT_PATH)update_include_line_file
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 #	@$(MAKE_SCRIPT_PATH)update_include_line_file '$(LIB_COMPONENT_REAL_SRC_DIR)' $*
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ update_include_line_file '$(LIB_COMPONENT_REAL_SRC_DIR)' $*
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 '$(LIB_COMPONENT_REAL_SRC_DIR)' $*
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/file_list 
 	$(IVI_MKDIR) $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines
@@ -239,9 +272,14 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_NEW_INCLUDE_LINE_FILES)
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines 
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
 #	@$(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -283,9 +321,9 @@ include_lines.new : \
 # make the hidden ones depend on the non-hidden ones as we do not know how to
 # build any of them.  
 #
-Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
+$(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
 
-# Because the target is not gaurenteed to be updated, but has dependencies on
+# Because the target is not guaranteed to be updated, but has dependencies on
 # tools, we could get out of date in this case. Hence we rely on
 # build_include_lines to check the tools when they could have an effect. 
 #
@@ -293,11 +331,16 @@ Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
 # ivi_lock_for_make, which we do via $@.made 
 #
 $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
 #	$(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Convenient dummy target that provides a synonym for
 # Include_lines/sub_libs_needed.
@@ -326,8 +369,13 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state :
 # 	$(IVI_TOUCH) $@
 
 $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list 
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 5 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_incl_dot_h $(LIB_COMPONENT_SRC_DIR)
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Kobus: 20/07/22. Double fine. I am commenting out all references to
 # Makefile-depend-incl-dot-h in this file and in build_incl_dot_h. 
@@ -398,14 +446,13 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 # $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-depend-incl-dot-h $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-library.state $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE)  " "
-	@$(ECHO_IF_VERBOSE)  "================================================================================"
-	@$(ECHO_IF_VERBOSE)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend because of $?" 
-	@$(ECHO_IF_VERBOSE)  "Building $(LIB_COMPONENT_SRC_DIR)Makefile-depend" 
+	@$(ECHO_IF_VERBOSE)  "====================================================================================="
+	@$(ECHO_IF_VERBOSE)  "    Make is building $(LIB_COMPONENT_SRC_DIR)Makefile-depend because of $?" 
 	@$(ECHO_IF_VERBOSE)  " " 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_library_makefile_depend $(LIB_COMPONENT_PREFIX) LIB_COMPONENT $(LIB_COMPONENT_REAL_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_library_makefile_depend $(LIB_COMPONENT_PREFIX) LIB_COMPONENT $(LIB_COMPONENT_REAL_SRC_DIR)
 	@$(ECHO_IF_VERBOSE)  " "
-	@$(ECHO_IF_VERBOSE)  "        $(LIB_COMPONENT_SRC_DIR)Makefile-depend is built" 
-	@$(ECHO_IF_VERBOSE)  "================================================================================"
+	@$(ECHO_IF_VERBOSE)  "    $(LIB_COMPONENT_SRC_DIR)Makefile-depend is built" 
+	@$(ECHO_IF_VERBOSE)  "====================================================================================="
 	@$(ECHO_IF_VERBOSE)  " "
    
 include $(LIB_COMPONENT_SRC_DIR)Makefile-depend
@@ -430,10 +477,15 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed-
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(MAKE_PATH)init_compile $(IVI_BUILD_TOOLS)
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 # 	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 60 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)copy_if_different $@ $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 include $(LIB_COMPONENT_SRC_DIR)Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 	
@@ -467,14 +519,16 @@ dir_made_$(LIB_COMPONENT_PREFIX) : $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)cxx_dir
 # We use "c_dir_made" in the following because $(OBJ_DIR) may be a symbolic link.
 $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)c_dir_made :
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_OBJ_DIR)" "$(OBJ_DIR)" . "$(LIB_COMPONENT_SRC_DIR)"
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)
 	$(IVI_TOUCH) $@
 
 # We use "cxx_dir_made" in the following because $(CXX_OBJ_DIR) may be a symbolic link.
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)cxx_dir_made :
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_OBJ_DIR)" "$(CXX_OBJ_DIR)" . "$(LIB_COMPONENT_SRC_DIR)"
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)
 	$(IVI_TOUCH) $@
 
-# ################################################################################
+# #########################$(LIB_COMPONENT_SRC_DIR)#######################################################
 # #                      Library archive from the objects 
 # 
 # #
@@ -781,9 +835,11 @@ doc_$(LIB_COMPONENT_PREFIX) : depend_$(LIB_COMPONENT_PREFIX) $(LIB_COMPONENT_SRC
 #
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doc_dir_made :
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_MAKE_DOC_DIR)" "$(MAKE_DOC)" "." "$(LIB_COMPONENT_SRC_DIR)"
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)
 	$(IVI_TOUCH) $@
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)up_to_date: $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doc_dir_made $(LIB_COMPONENT_DOC_FILES)
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)
 	$(IVI_TOUCH) $@
  
 
@@ -912,6 +968,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h
 # out of date. 
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doxygen_up_to_date : $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)doc_dir_made $(LIB_COMPONENT_DOXYGEN_FILES)
+	$(IVI_MKDIR) $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)
 	$(IVI_TOUCH) $@
  
 # Note the master target is in IVI_cpp. Here we inform it about dependencies in
@@ -924,7 +981,7 @@ $(IVI_SRC_PATH)IVI_cpp/$(MAKE_DOC_DIR)doxygen_up_to_date : $(LIB_COMPONENT_SRC_D
 # target.
 #
 doxygen_$(LIB_COMPONENT_PREFIX) : 
-	@echo "Building doxygen in $(IVI_SRC_PATH)IVI_cpp."
+	@$(ECHO_UNLESS_QUIET) "Building doxygen in $(IVI_SRC_PATH)IVI_cpp."
 	cd $(IVI_SRC_PATH)IVI_cpp; make doxygen
 
 misc_doc_$(LIB_COMPONENT_PREFIX) : doc_$(LIB_COMPONENT_PREFIX) doxygen_$(LIB_COMPONENT_PREFIX) 

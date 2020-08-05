@@ -56,8 +56,8 @@ set exit_status = 0
 
 onintr ivi_lock_remove_bail
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ running ivi_lock_remove ${lock_label}"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` using lockfile '${lock_file}'"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ running ivi_lock_remove ${lock_label} in ${cwd}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ using lockfile '${lock_file}'"
 
 if ("${IVI_LOCK_PROGS_METHOD}" == "lockfile-progs") then
     ${VERBOSE_ECHO} "Process $$ running ivi_lock_remove ${lock_label} in `pwd` using lockfile-progs"

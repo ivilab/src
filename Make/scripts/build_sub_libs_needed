@@ -27,6 +27,10 @@
 # them if needed. Hence this script may be called recursively. Currently this is
 # via either by a call to build_include_lines_2 which will call this script,
 
+if ($?IVI_SET_ECHO) then
+    set echo
+endif 
+
 if ($?VERBOSE_INDENT) then
     setenv VERBOSE_INDENT "    ${VERBOSE_INDENT}"
 else 
@@ -132,19 +136,31 @@ else
     exit 1
 endif 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Recurse dirs in ${cwd} are: " 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    ${recurse_dirs}" 
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Recurse dirs in build_sub_libs_needed in ${cwd} are: ${recurse_dirs}" 
 
-if (! $?FORCE_SERIAL) then
-    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_parallel ${recurse_dirs}
-    if (${status}) exit ${status}
-else
-    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_serial ${recurse_dirs}
-    if (${status}) exit ${status}
+set build_sub_libs_status = 0
+
+if ($?BUILD_SUB_LIBS_SERIAL) then
+    set build_type = "serial"
+    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_2 ${recurse_dirs}
+    if (${status}) set build_sub_libs_status = 1
+else 
+    set build_type = "parallel"
+
+    # The sed removes most annoying job control output, specifically the ones
+    # that do not loose the new line due to parallel output intertwining. We do
+    # not use grep in pipes if can at all help it, as grep will have exit status
+    # 1 if no lines are selected. 
+    #
+    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_2 ${recurse_dirs} |& ${IVI_SED}  '/^\[[1-9]/d'
+    if (${status}) set build_sub_libs_status = 1
 endif 
 
-# ${MAKE_SCRIPT_PATH}build_sub_libs_needed_parallel ${recurse_dirs}
-# ${MAKE_SCRIPT_PATH}build_sub_libs_needed_serial ${recurse_dirs}
+if (${build_sub_libs_status}) then 
+    ${P_STDERR} "Script build_sub_libs_needed reporting build_sub_libs_needed_2 failed in ${cwd}."
+    ${P_STDERR} "Script build_sub_libs_needed_2 ${build_type} args were: ${recurse_dirs}."
+    exit 1
+endif
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed in ${cwd} with success."
 

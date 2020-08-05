@@ -29,7 +29,11 @@ ${IVI_MKDIR} output-regress/${program}/${obj_dir}
 set save_status = 0 
 
 if ("${input}" == "NULL") then
+   # If we reinstate this commented out version, use "sed", not grep, due to
+   # needing the status. 
+   #
    # ${obj_dir}${program} ${time_factor} < /dev/null |& grep -v '(ignore line for regression testing)' >& output/${program}/${obj_dir}${input}-${time_factor}-TEMP
+
    ${obj_dir}${program} ${time_factor} < /dev/null >& output/${program}/${obj_dir}${input}-${time_factor}-TEMP-raw
 
    if ($status) then
@@ -41,6 +45,9 @@ if ("${input}" == "NULL") then
    # real purpose. Adding in an abreviation for it also. `
    grep -v 'ignore line for regression testing' output/${program}/${obj_dir}${input}-${time_factor}-TEMP-raw |& grep -v 'IL4RT' >& output/${program}/${obj_dir}${input}-${time_factor}-TEMP
 else
+   # If we reinstate this commented out version, use "sed", not grep, due to
+   # needing the status. 
+   #
    # ${obj_dir}${program} ${time_factor} < input/${program}/${input}  |& grep -v '(ignore line for regression testing)' >& output/${program}/${obj_dir}${input}-${time_factor}-TEMP
    ${obj_dir}${program} ${time_factor} < input/${program}/${input} >& output/${program}/${obj_dir}${input}-${time_factor}-TEMP-raw
 

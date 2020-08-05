@@ -71,11 +71,12 @@ GENERATED =	$(OBJ_DIR)c2man example.inc ctype_ex.inc y.tab.c lex.yy.c y.output \
 #
 all: $(OBJ_DIR) $(OBJ_DIR)c2man c2man.1
 
-#
+make_bin : bin
+
 # Hack the directory making for now. We could improve this a bit by copying code
 # from Makefile-program.
 #
-bin: $(OBJ_DIR) $(MAKE_PATH)bin/$(MACHINE)/c2man
+bin : $(OBJ_DIR) $(MAKE_PATH)bin/$(MACHINE)/c2man
 
 $(MAKE_PATH)bin/$(MACHINE)/c2man: $(OBJ_DIR)c2man
 	$(IVI_MKDIR) $(MAKE_PATH)bin/$(MACHINE)

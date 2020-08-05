@@ -1,0 +1,351 @@
+#!/bin/tcsh -f
+
+##################################################################################
+#
+#
+
+if ($?IVI_SET_ECHO) then
+    set echo
+endif 
+
+if ($?FORCE_BUILD_SUB_LIBS) then
+    set force_str = " and FORCE_BUILD_SUB_LIBS"
+else
+    set force_str = ""
+endif 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering build_sub_libs_needed_2 with recurse level ${RECURSION_LEVEL}${force_str} in ${cwd}."
+
+set current_sub_lib = `echo ${cwd} | sed 's#.*/lib/\([^/]*\)$#\1#'`
+
+if ("${current_sub_lib}" == "${cwd}") then
+    set current_sub_lib = ""
+endif 
+
+if ((-d ${IVI_LIB_PATH}) && (-r ${IVI_LIB_PATH}) && (-x ${IVI_LIB_PATH})) then
+    pushd ${IVI_LIB_PATH} > /dev/null
+    # Insure no trailing slash.
+    set real_ivi_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
+    # Add a trailing slash. 
+    set real_ivi_lib_dir = "${real_ivi_lib_dir}/"
+    popd > /dev/null
+else
+    set real_ivi_lib_dir = ""
+endif 
+
+# echo build_sub_libs_needed: real_ivi_lib_dir: ${real_ivi_lib_dir} 
+
+set sub_libs_needed = ""
+
+set needed_recurse_dirs = ""
+set recurse_dir_strs = ""
+
+foreach recurse_dir ($*)
+    set test_places = "${real_ivi_lib_dir} lib/ ../lib/ ../../lib/ ../../../lib/ ../../../../lib/ ../../../../../lib/"
+
+    set recurse_dir_str = ""
+
+    foreach test_place (${test_places}) 
+        if (-d "${test_place}${recurse_dir}") then
+            # Retrospective summer 2020. Can we hope that the need for this is
+            # long gone? It is not clear what is wrong with links anyway.
+            # Perhaps someone wants to hack it this way?
+            #
+            # Expensive, but need to test for links due to legacy code. 
+            # We could copy the code for "is_link" to speed things up a bit.
+            # set is_link = `${MAKE_SCRIPT_PATH}is_link ${test_place}${recurse_dir}`
+
+            # if (! ${is_link} ) then
+               set recurse_dir_str = "${test_place}${recurse_dir}"
+               break
+            # endif 
+        endif 
+    end 
+
+    if ("${recurse_dir_str}" == "") then
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}build_sub_libs_needed_2 skipping ${recurse_dir} because it does not exist."
+        continue
+    endif 
+
+    pushd ${recurse_dir_str} > /dev/null
+        set recurse_dir_path = "${cwd}"
+    popd  > /dev/null
+
+    if ("${cwd}" == "${recurse_dir_path}") then 
+        continue
+    endif 
+
+    set recurse_dir_strs = "${recurse_dir_strs} ${recurse_dir_str}"
+    set needed_recurse_dirs = "${needed_recurse_dirs} ${recurse_dir}"
+end 
+
+@ num_procs = 0
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 processing ${needed_recurse_dirs} in ${cwd} ----------"
+
+set waited_on_dir_strs = ""
+
+foreach recurse_dir_str (${recurse_dir_strs})
+    ${VERBOSE_ECHO_2} " "
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 considering ${recurse_dir_str} ----------"
+    ${VERBOSE_ECHO_2} " "
+
+#     pushd ${recurse_dir_str} > /dev/null
+#         ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Include_lines/file_list ${MAKE_SCRIPT_PATH}build_file_list_2
+#         if (${status}) exit ${status}
+# 
+# #         if (! -e Include_lines/include_lines.new) then
+# #             echo "We expect ${cwd}/Include_lines/include_lines.new to exist!"
+# #         else if (! -e Include_lines/include_lines) then
+# #             echo "We expect ${cwd}/Include_lines/include_lines to exist!"
+# #         endif 
+# 
+#         set need_to_build = 0
+# 
+#         # These tests should mimic the ones below checked after trying to build. 
+# 
+#         if (! -e "Include_lines/sub_libs_needed") then
+#             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed does not exist (need to build)  ----------"
+#             set need_to_build = 1
+#         else if (! -e "Include_lines/include_lines") then
+#             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/include_lines does not exist (need to build)  ----------"
+#             set need_to_build = 1
+#         else  
+#             set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/include_lines`
+#             if (${too_old}) then
+#                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed is too old (need to build) ----------"
+#             endif 
+#         endif 
+# 
+#         if (! ${need_to_build}) then
+#             if ($?FORCE_BUILD_SUB_LIBS) then
+#                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed needs to be built as we are FORCING doing so ----------"
+#                 set need_to_build = 1
+#             endif 
+#         endif 
+# 
+#         if (${need_to_build}) then
+#             ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 building sub_libs_needed in ${recurse_dir_str} ----------"
+#             ${VERBOSE_ECHO} " "
+# 
+#             # This is the recursive call, as build_include_lines_2 calls
+#             # this script (build_sub_libs_needed).
+#             
+            set do_parallel = 0
+
+            if (! $?BUILD_SUB_LIBS_SERIAL) then
+                if (${RECURSION_LEVEL} <= ${SERIAL_RECURSION_LEVEL}) then
+                    set do_parallel = 1
+                else 
+                    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 using serial processing for recursion level ${RECURSION_LEVEL}."
+                endif 
+            endif 
+
+            if (${do_parallel}) then
+                # No path elements. Same as original in $*. 
+                set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
+                set status_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.status
+                set output_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.output
+                ${IVI_RM} "${status_file}"
+
+                # 610 is a unique approximation of 600 We use ivi_lock, not
+                # ivi_lock_for_make, because we want locking but not early exit,
+                # as early exit screws up the plan for getting the result back. 
+                ${MAKE_SCRIPT_PATH}ivi_lock 610 ${MAKE_SCRIPT_PATH}build_sub_libs_needed_3 "${recurse_dir_str}" "${status_file}" "${output_file}" &
+
+                @ num_procs ++
+                set waited_on_dir_strs = "${waited_on_dir_strs} ${recurse_dir_str}" 
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Running build_include_lines_3 ${recurse_dir_str} in the background in ${cwd}."
+                ${VERBOSE_ECHO} ""
+
+#                 # Usually FORCE_BUILD_SUB_LIBS is set, so the -f should have no
+#                 # effect. It is also not clear if using force is needed as our
+#                 # tests for updating should work. We had some issues that might
+#                 # be solved by our choice to always update the local
+#                 # sub_libs_needed timestamp. Under investigation.
+#                 # 
+#                 ${MAKE_SCRIPT_PATH}ivi_lock_for_make 300 Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_include_lines_2  &
+#                 # ${MAKE_SCRIPT_PATH}ivi_lock_for_make 300 Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_include_lines_2 -f &
+#                 @ num_procs ++
+#                 set waited_on_dir_strs = "${waited_on_dir_strs} ${recurse_dir_str}" 
+#                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Running build_include_lines_2 in the background in ${cwd}."
+#                 ${VERBOSE_ECHO} ""
+
+                  # We do not want to to torch the machine, but there is no good
+                  # rule of thumb for limiting the number of processes. But here
+                  # is a try at a heuristic. 
+                  #
+                  @ block_is_done = ${num_procs} % ${NUM_CPU}
+
+                if (${block_is_done} == 0) then
+                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing as we are up to ${num_procs} backgrounded processes."
+                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing `date +%H:%M:%S`."
+                     wait 
+                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 done waiting at `date +%H:%M:%S`."
+                endif 
+
+            else 
+                # 620 is a unique approximation of 600
+                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 620 ${recurse_dir_str}/Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_sub_libs_needed_4 "${recurse_dir_str}" 
+                if (${status}) exit ${status}
+            endif 
+#         else 
+#             ${VERBOSE_ECHO} " "
+#             ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- Directory ${recurse_dir_str} already visited recently (no recursion needed) ----------"
+#             ${VERBOSE_ECHO} " "
+#         endif 
+#     popd  > /dev/null
+end
+
+if (${num_procs} > 0) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- ${num_procs} processes to wait for in build_sub_libs_needed_2 in ${cwd}."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- Waiting on processing of dirs: ${waited_on_dir_strs} in ${cwd}."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Script build_sub_libs_needed_2 starting to wait at `date +%H:%M:%S`."
+    ${VERBOSE_ECHO} ""
+
+    if ($?IVI_VERBOSE_2) then
+        # This is expensive, so you need to ask for it.
+        if ($?TRACK_PROCESS_COUNTS) then
+            set num_all_proc = `ps -A | wc -l`
+            set num_user_proc = `ps -u ${USER} | grep -c '^ *[0-9]'`
+            set num_make_proc = `ps -u ${USER} | grep 'Make' | grep -c '^ *[0-9]'`
+            ${VERBOSE_ECHO_2} " "
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Total process count is ${num_all_proc}, user count is ${num_user_proc}, build count is ${num_make_proc} in ${cwd}." 
+            ${VERBOSE_ECHO_2} " "
+        endif
+    endif
+
+    wait 
+    ${VERBOSE_ECHO} ""
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is done waiting at  `date +%H:%M:%S` for ${num_procs} processes in ${cwd}."
+else
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 did not need additional processes in ${cwd}."
+endif 
+
+set exit_status = 0
+
+foreach recurse_dir_str (${waited_on_dir_strs})
+    # No path elements. Same as original in $*. 
+    set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
+    set status_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.status
+    set output_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.output
+    
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is checking on background build in ${recurse_dir}."
+
+    if (-e "${status_file}") then
+        set recursive_call_status = `${IVI_CAT} "${status_file}"`
+
+        if (${recursive_call_status}) then
+            # If we have a locking issue or some other bug, we might over write
+            # the evidence later on, so we stash it.
+
+            ${P_STDERR} "Recursive call to build_sub_libs_needed_3 FAILED based on ${status_file}."
+            ${P_STDERR} "Copying failed ${status_file} to ${status_file}.$$."
+            ${IVI_CP} ${status_file}  ${status_file}.$$
+            ${P_STDERR} "Copying failed ${output_file} to ${output_file}.$$."
+            ${IVI_CP} ${output_file}  ${output_file}.$$
+            ${IVI_CAT} "${output_file}" > /dev/stderr
+        endif
+    else 
+        ${P_STDERR} "File ${status_file} did not get created. Presumably the process died or was killed."
+        set recursive_call_status = 1
+    endif 
+
+    if (${recursive_call_status}) then
+        set exit_status = 1
+    endif 
+
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is done checking on background build in ${recurse_dir}."
+end 
+
+if ($exit_status) goto end_of_script
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 done with sub dirs of ${cwd} ----------"
+
+set redundant_sub_libs = ""
+
+foreach recurse_dir_str (${recurse_dir_strs})
+    # No path elements. Same as original in $*. 
+    set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
+
+    pushd ${recurse_dir_str} > /dev/null
+        if (-e ${recurse_dir_str}/Include_lines/sub_libs_needed) then
+            set inherited_sub_libs = `${IVI_CAT} ${recurse_dir_str}/Include_lines/sub_libs_needed`
+        else 
+            set inherited_sub_libs = ""
+            # Seems like an error.
+            ${P_STDERR} "Error: build_sub_libs_needed_2 expected ${recurse_dir_str}/Include_lines/sub_libs_needed to exist by now."
+            set exit_status = 1
+            goto end_of_script
+        endif 
+
+        # If we just built ${recurse_dir}/Include_lines/sub_libs_needed, then we
+        # should have spotted the problem, but if, for some reason we got fooled
+        # into believing that file to be correct when it is not (legacy?), then we
+        # need to check. It does not seem likely that we would not have caught it by
+        # now though, hence the warning.
+        #
+        foreach inherited_sub_lib (${inherited_sub_libs})
+            if ("${inherited_sub_lib}" == "${current_sub_lib}") then
+                ${P_STDERR} " "
+                ${P_STDERR} "Circular include spotted while building Include_lines/sub_libs_needed in ${cwd}."
+                ${P_STDERR} "We have read these dirs from ${recurse_dir_str}/Include_lines/sub_libs_needed: ${inherited_sub_libs}"
+                ${P_STDERR} "Directory ${current_sub_lib} needs ${recurse_dir}."
+                ${P_STDERR} "But directory ${recurse_dir} needs ${current_sub_lib}."
+                ${P_STDERR} " "
+
+                if (-e Include_lines) then
+                    ${P_STDERR} "Removing ${cwd}/Include_lines due to failure of build_include_lines_2."
+                    find Include_lines -delete
+                endif 
+
+                ${P_STDERR} " "
+
+                exit 1
+            endif 
+        end
+    popd  > /dev/null
+
+    # We do it this way to make sure dependencies can be found first.
+    set redundant_sub_libs = "${redundant_sub_libs} ${inherited_sub_libs} ${recurse_dir}"
+end
+
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}After recursion in ${cwd} redundant_sub_libs are: ${redundant_sub_libs}" 
+
+foreach test_item (${redundant_sub_libs}) 
+    set found = 0
+
+    foreach item (${sub_libs_needed}) 
+        if ("${item}" == "${test_item}") then
+            set found = 1
+            break
+        endif 
+    end
+
+    if (${found}) continue
+
+    set sub_libs_needed = "${sub_libs_needed} ${test_item}"
+end 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}After recursion inferred sub_libs_needed by ${cwd} are: ${sub_libs_needed}" 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Writing ${cwd}/Include_lines/sub_libs_needed.new"
+echo "${sub_libs_needed}" > Include_lines/sub_libs_needed.new 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_libs_needed as we are forcing doing so."
+${IVI_CP} Include_lines/sub_libs_needed.new Include_lines/sub_libs_needed
+
+# if (${FORCE_BUILD_SUB_LIBS}) then
+#     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_libs_needed as we are forcing doing so."
+#     ${IVI_CP} Include_lines/sub_libs_needed.new Include_lines/sub_libs_needed
+# else 
+#     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_libs_needed if it is different."
+#     ${MAKE_SCRIPT_PATH}copy_if_different Include_lines/sub_libs_needed.new Include_lines/sub_libs_needed
+# endif 
+
+end_of_script: 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed_2 with status ${exit_status} in ${cwd}."
+
+exit ${exit_status}
+

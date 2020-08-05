@@ -56,10 +56,6 @@ endif
 
 ###############################################################################
 
-setenv mkdir_cmd "mkdir -p"
-
-###############################################################################
-
 if ("${link_name}" == ".") then 
     if (-e "${working_dir}${sub_sub_dir}shadow_dir_made") then
         if ($?IVI_VERBOSE) then
@@ -89,23 +85,24 @@ endif
 if ("$shadow_dir" == "") then
     if ("$link_name" == ".") then 
         if ("$sub_sub_dir" != "") then 
-            ${mkdir_cmd} ${sub_sub_dir} >& /dev/null
+            ${IVI_MKDIR} ${sub_sub_dir} >& /dev/null
             if (${status}) then
                set top_dir =  `echo ${sub_sub_dir} | sed 's#/.*/##'`
-               /bin/rm -rf ${top_dir}
-               ${mkdir_cmd} ${sub_sub_dir}
+               ${IVI_RM} ${top_dir}
+               ${IVI_MKDIR} ${sub_sub_dir}
             endif
         endif
     else 
-        ${mkdir_cmd} ${link_name} >& /dev/null
+        ${IVI_MKDIR} ${link_name} >& /dev/null
         if (${status}) then
            set top_dir =  `echo ${link_name} | sed 's#/.*/##'`
-           /bin/rm -rf ${top_dir}
-           ${mkdir_cmd} ${link_name}
+           ${IVI_RM} ${top_dir}
+           ${IVI_MKDIR} ${link_name}
         endif
 
         if ("${sub_sub_dir}" != "") then 
-            ${mkdir_cmd} ${link_name}/${sub_sub_dir} 
+            ${IVI_MKDIR} ${link_name}/${sub_sub_dir} 
+            if (${status}) exit 1
         endif
     endif
 
@@ -145,11 +142,12 @@ endif
 if ("${is_in_src_tree}" == "") then
     if ("${link_name}" == ".") then 
         if ("${sub_sub_dir}" != "") then 
-            ${mkdir_cmd} ${sub_sub_dir} >& /dev/null
+            ${IVI_MKDIR} ${sub_sub_dir} >& /dev/null
             if (${status}) then
                set top_dir =  `echo ${sub_sub_dir} | sed 's#/.*/##'`
-               /bin/rm -rf ${top_dir}
-               ${mkdir_cmd} ${sub_sub_dir}
+               ${IVI_RM} ${top_dir}
+               ${IVI_MKDIR} ${sub_sub_dir}
+                if (${status}) exit 1
             endif
 
             if ($?IVI_VERBOSE) then
@@ -197,11 +195,12 @@ set dir_to_make = `echo $dir_to_make | sed 's#//*#/#g' | sed 's#/$##'`
 # echo "dir_to_make is $dir_to_make"
 
 
-${mkdir_cmd} ${dir_to_make} >& /dev/null
+${IVI_MKDIR} ${dir_to_make} >& /dev/null
 if (${status}) then
    set top_dir =  `echo ${dir_to_make} | sed 's#/.*/##'`
-   /bin/rm -rf ${top_dir}
-   ${mkdir_cmd} ${dir_to_make}
+   ${IVI_RM} ${top_dir}
+   ${IVI_MKDIR} ${dir_to_make}
+   if (${status}) exit 1
 endif
 
 

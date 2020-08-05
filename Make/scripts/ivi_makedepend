@@ -12,10 +12,13 @@ if (${num_args} < 2) then
     exit 1 
 endif 
 
+# All meta output must go to stderr, but using the symbol P_STDERR inserts the
+# prefix "PSE: " which can be confusing. So, we just go for the native version.
+#
 if ($?IVI_VERBOSE) then
-    ${P_STDERR} " "
-    ${P_STDERR} "${VERBOSE_INDENT}Script ivi_makedepend called with arguments: $1 $2"
-    ${P_STDERR} "${VERBOSE_INDENT}in directory `pwd`."
+    ${MAKE_SCRIPT_PATH}p_stderr "IVB: " " "
+    ${MAKE_SCRIPT_PATH}p_stderr "IVB: " "${VERBOSE_INDENT}Script ivi_makedepend called with arguments: $1 $2"
+    ${MAKE_SCRIPT_PATH}p_stderr "IVB: " "${VERBOSE_INDENT}in directory `pwd`."
 endif
 
 set dir = "$1"
@@ -57,37 +60,37 @@ if ("${files}" != "") then
     if (${status}) then
         ${P_STDERR} "Script ivi_makedepend cannot find 'makedepend'"
         ${P_STDERR} "Perhaps it is not installed on this system?"
-
         exit 1
     endif 
 
+    # All meta output must go to stderr, but using the symbol P_STDERR inserts
+    # the prefix "PSE: " which can be confusing. So, we just go for the native
+    # version.
+    #
     if ($?IVI_VERBOSE) then
-        ${P_STDERR} " "
-        ${P_STDERR} "${VERBOSE_INDENT}Script ivi_makedepend is executing: "
-        ${P_STDERR} "${VERBOSE_INDENT}    ${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files}"
-        ${P_STDERR} "${VERBOSE_INDENT}in directory `pwd`."
+        ${MAKE_SCRIPT_PATH}p_stderr "IVB: "
+        ${MAKE_SCRIPT_PATH}p_stderr "IVB: ${VERBOSE_INDENT}Script ivi_makedepend is executing: "
+        ${MAKE_SCRIPT_PATH}p_stderr "IVB: ${VERBOSE_INDENT}    ${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files}"
+        ${MAKE_SCRIPT_PATH}p_stderr "IVB: ${VERBOSE_INDENT}in directory `pwd`."
     endif
 
-    (${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files} > /dev/null) >& makedepend.err
-
-    # This does not work depending on circumstances. I don't know why.
-    # (${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files} > /dev/null ) |& grep -v 'cannot find include file' |& grep -v 'not in' >& makedepend.err
+    (${MAKEDEPEND} -f Makefile-depend-tmp-2 ${rest_of_args} ${files} > /dev/null) >& Include_lines/makedepend.err
 
     if ("${status}") then
-        ${P_STDERR} "Program makedepend failed in ivi_makedepend in `pwd`."
-        ${P_STDERR} "Any error output should be in makedepend.err"
+        ${P_STDERR} "Program makedepend failed in ivi_makedepend in ${cwd}."
+        ${P_STDERR} "Any error output should be in Include_lines/makedepend.err"
         ${P_STDERR} " "
         exit 1
     endif
 
     if ($?IVI_VERBOSE) then
-        ${P_STDERR} "${VERBOSE_INDENT}Done ivi_makedepend in `pwd`."
-        ${P_STDERR} " "
+        ${MAKE_SCRIPT_PATH}p_stderr "IVB: ${VERBOSE_INDENT}Done ivi_makedepend in ${cwd}."
+        ${MAKE_SCRIPT_PATH}p_stderr " "
     endif
 
     if ("${dir}" != "") then
         if ($?IVI_DEBUG) then
-            ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2-SAVE
+            ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2${suffix_str}-SAVE
             if ("${status}") exit 1
         endif 
         
@@ -99,7 +102,7 @@ if ("${files}" != "") then
     endif  
 
     if ($?IVI_DEBUG) then
-        ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2-SAVE-2
+        ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2${suffix_str}-SAVE-2
         if ("${status}") exit 1
     endif 
 
@@ -110,7 +113,7 @@ if ("${files}" != "") then
     if ("${status}") exit 1
 
     if ($?IVI_DEBUG) then
-        ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2-SAVE-3
+        ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2${suffix_str}-SAVE-3
         if ("${status}") exit 1
     endif 
 
@@ -121,7 +124,7 @@ if ("${files}" != "") then
     if ("${status}") exit 1
 
     if ($?IVI_DEBUG) then
-        ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2-SAVE-4
+        ${IVI_CP} Makefile-depend-tmp-2 Makefile-depend-tmp-2${suffix_str}-SAVE-4
         if ("${status}") exit 1
     endif 
 

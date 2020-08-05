@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25683 2020-07-31 17:36:16Z kobus $
+# $Id: Makefile-program 25688 2020-08-05 23:22:17Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -163,18 +163,26 @@ build : $(MAKE_PATH)build
 # Include_lines/file_list : \
 #     $(MAKE_SCRIPT_PATH)build_file_list
 
-# Because the target is not gaurenteed to be updated, but has dependencies on
+# Because the target is not guaranteed to be updated, but has dependencies on
 # tools, we could get out of date in this case. Hence we rely on build_file_list
 # to check the tools when they could have an effect. 
 #
 # Since we hide dependencies, we need to track that this has been executed for
 # ivi_lock_for_make, which we do via $@.made 
 
+# Because the target does not depend on anything, we will only execute the rule
+# if it does not exist, in which case build_include_lines will create it. 
+#
 Include_lines/file_list :
-	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)build_file_list
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@.made $(MAKE_SCRIPT_PATH)build_file_list
-	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
+#	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # ---------------------------------------------
 # Include_lines/file_list.new
@@ -196,10 +204,20 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
 # target does not either, and the script build_file_list will create
 # Include_lines. 
 # 
+# Because we depend on './' we can be out of date due to vim swap files, backup
+# processes, IO redirection to capture build output, etc. So do not be surprised
+# if we need multiple builds for the rule not to trigger. However, this is
+# designed as a lightweight update, so it should not matter. 
+#
 Include_lines/file_list.new : ./ $(FORCE_WITH_SUN5)
-	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list 
 #	$(MAKE_SCRIPT_PATH)build_file_list 
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -256,30 +274,33 @@ file_list.new: \
 #     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
 #     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
  
-# Because the target is not gaurenteed to be updated, but has dependencies on
-# tools, we could get out of date in this case. Hence we rely on
-# build_include_lines to check the tools when they could have an effect. 
+# Because the target does not depend on anything, we will only execute the rule
+# if it does not exist, in which case build_include_lines will create it. 
 #
-# Since we hide dependencies, we need to track that this has been executed for
-# ivi_lock_for_make, which we do via $@.made 
-
+# Because the target is not guaranteed to be updated by build_include_lines, we
+# need to do a touch to finish up the job of building the target.
+#
 # Include_lines/include_lines : 
 # Include_lines/include_lines : Include_lines/file_list.new
-Include_lines/include_lines : Include_lines/file_list
+# Include_lines/include_lines : Include_lines/file_list
+Include_lines/include_lines : 
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list 
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@.made $(MAKE_SCRIPT_PATH)build_include_lines
-	@$(IVI_TOUCH) $@.made
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines
+# 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
 
 # ---------------------------------------------
 # Include_lines/include_lines.new 
 
 # This rule needs a comment.
 #
+# It is possible this may hardly ever get used, now that we call
+# build_include_lines_2 from build_file_list_2 if things look different. 
+#
 Include_lines/new/% : % $(MAKE_SCRIPT_PATH)update_include_line_file
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)update_include_line_file '' $*
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)update_include_line_file '' $*
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)update_include_line_file '' $*
 
 # Dependency on tools that build the target, including hidden ones. We do not
 # make the hidden ones depend on the non-hidden ones as we do not know how to
@@ -295,7 +316,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
 Include_lines/include_lines.new : Include_lines/file_list $(NEW_INCLUDE_LINE_FILES)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_include_lines 
-	@$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines 
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
@@ -339,7 +360,7 @@ Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
 # The script build_include_lines updates Include_lines/sub_libs_needed only if
 # needed.  
 #
-# Because the target is not gaurenteed to be updated, but has dependencies on
+# Because the target is not guaranteed to be updated, but has dependencies on
 # tools, we could get out of date in this case. Hence we rely on
 # build_include_lines to check the tools also. 
 #
@@ -351,7 +372,7 @@ Include_lines/sub_libs_needed : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	$(MAKE_SCRIPT_PATH)build_file_list 
 #	$(MAKE_SCRIPT_PATH)build_include_lines -f 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f 
 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
 
 # Convenience dummy target used by the script build-2. Using the target directly
@@ -368,21 +389,17 @@ sub_libs_needed: Include_lines/sub_libs_needed
 # In case Makefile-dirs does not exist. 
 
 # Tools for the target. 
-Makefile-dirs: \
-    $(MAKE_SCRIPT_PATH)build_file_list \
-    $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_SCRIPT_PATH)build_makefile_dirs \
-    $(MAKE_SCRIPT_PATH)get_local_include_dirs \
-    $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
+Makefile-dirs: $(IVI_BUILD_TOOLS)
 
 # The script build_include_lines updates Include_lines/Makefile-dirs only if
 # needed. Because the target is not guaranteed to be updated, but has the
 # dependencies on various tools, and is depended upon, we need to touch $@. 
 #
 Makefile-dirs : Include_lines/sub_libs_needed 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_file_list 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 30 $@ $(MAKE_SCRIPT_PATH)build_include_lines
-	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
+	# $(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list 
+	# $(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_makefile_dirs
+# 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
 
 include Makefile-dirs
 
@@ -429,14 +446,7 @@ Makefile-depend : \
     $(MAKE_EDIT_PATH)Work.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
 
-Makefile-depend : \
-    $(MAKE_SCRIPT_PATH)build_program_makefile_depend \
-    $(MAKE_SCRIPT_PATH)ivi_makedepend \
-    $(MAKE_SCRIPT_PATH)stream_file_names \
-    $(MAKE_SCRIPT_PATH)stream_prog_lib_obs \
-    $(MAKE_SCRIPT_PATH)update_include_line_file \
-    $(MAKE_SCRIPT_PATH)build_include_lines \
-    $(MAKE_PATH)Makefile-program 
+Makefile-depend : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program 
 
 # -------------------------------------------
 #
@@ -458,16 +468,17 @@ Makefile-depend : \
 #
 Makefile-depend : Include_lines/file_list Include_lines/include_lines $(TEST_SUB_DIRS)
 	@$(ECHO_IF_VERBOSE)  " "
-	@$(ECHO_IF_VERBOSE)  "================================================================================"
+	@$(ECHO_IF_VERBOSE)  "====================================================================================="
+	@$(ECHO_IF_VERBOSE)  "    Make is building Makefile-depend" 
 # Commented out to prevent 'word too long' errors on some systems
 # -- Kyle  Jan 15, 2011
-	@$(ECHO_IF_VERBOSE)  "Building Makefile-depend because of $?" 
+	@$(ECHO_IF_VERBOSE)  "    Building Makefile-depend because of $?" 
 # 	@$(ECHO_IF_VERBOSE)  "Building Makefile-depend" 
 	@$(ECHO_IF_VERBOSE)  " "
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_program_makefile_depend
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_program_makefile_depend
 	@$(ECHO_IF_VERBOSE)  " "
-	@$(ECHO_IF_VERBOSE)  "                         Makefile-depend is built" 
-	@$(ECHO_IF_VERBOSE)  "================================================================================"
+	@$(ECHO_IF_VERBOSE)  "    Makefile-depend is built" 
+	@$(ECHO_IF_VERBOSE)  "====================================================================================="
 	@$(ECHO_IF_VERBOSE)  " "
 
 include Makefile-depend
@@ -490,7 +501,7 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(M
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 #	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 20 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 60 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
@@ -522,16 +533,19 @@ dir_made :  $(DIR_MADE_TARGETS) $(OBJ_DIR)c_dir_made $(CXX_OBJ_DIR)cxx_dir_made 
 # We use "c_dir_made" in the following because $(OBJ_DIR) may be a symbolic link.
 $(OBJ_DIR)c_dir_made : 
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_OBJ_DIR)" "$(OBJ_DIR)" .
+	$(IVI_MKDIR) $(OBJ_DIR)
 	$(IVI_TOUCH) $@ 
 
 # We use "cxx_dir_made" in the following because $(CXX_OBJ_DIR) may be a symbolic link.
 $(CXX_OBJ_DIR)cxx_dir_made : 
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_OBJ_DIR)" "$(CXX_OBJ_DIR)" .
+	$(IVI_MKDIR) $(CXX_OBJ_DIR)
 	$(IVI_TOUCH) $@ 
 
 # We use "ld_dir_made" in the following because $(LD_OBJ_DIR) may be a symbolic link.
 $(LD_OBJ_DIR)ld_dir_made : 
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_OBJ_DIR)" "$(LD_OBJ_DIR)" .
+	$(IVI_MKDIR) $(LD_OBJ_DIR)
 	$(IVI_TOUCH) $@ 
 
 ################################################################################
@@ -888,7 +902,7 @@ program : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile
 bin : $(DEPEND_TARGETS) Include_lines/sub_libs_needed Makefile-dirs Makefile-depend Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) $(BUILD_BIN_TARGETS)
 
 $(BUILD_BIN_PATH)% : $(LD_OBJ_DIR)%
-	@$(ECHO_IF_VERBOSE) "Bin process $$$$ is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) "Make for bin is building $@ because of $?" 
 	@$(ECHO_IF_VERBOSE) "BUILD_BIN_PATH: |${BUILD_BIN_PATH}|" 
 	@$(ECHO_IF_VERBOSE) "LD_OBJ_DIR: |${LD_OBJ_DIR}|" 
 	$(MAKE_SCRIPT_PATH)update_bin $< $@
@@ -945,8 +959,8 @@ shared: Makefile-depend $(PROG_LIB_SO)
 
 $(PROG_LIB_SO) : Include_lines/sub_libs_needed Include_lines/file_list $(LD_OBJ_DIR)ld_dir_made $(PROG_LIB_SHARED_OBS) $(SUB_LIB_SHARED_OBS)
 	$(IVI_RM) $@
-	@echo Building a shared library from lots of library files with the following command with files omitted. 
-	@echo $(IVI_LD) $(LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ 
+	@$(ECHO_UNLESS_QUIET) Building a shared library from lots of library files with the following command with files omitted. 
+	@$(ECHO_UNLESS_QUIET) $(IVI_LD) $(LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ 
 	@$(IVI_LD) $(LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ \
         $(PROG_LIB_SHARED_OBS) $(SUB_LIB_SHARED_OBS)
 	$(MAKE_SCRIPT_PATH)finish_executable $@ $(PROG_LIB_SO_NAME)
@@ -959,8 +973,8 @@ static: Makefile-depend $(PROG_LIB_ARCHIVE)
 
 $(PROG_LIB_ARCHIVE) : Include_lines/sub_libs_needed Include_lines/file_list $(LD_OBJ_DIR)ld_dir_made $(PROG_LIB_OBS) $(SUB_LIB_OBS)
 	$(IVI_RM) $@
-	@echo Building an archive library from lots of library files with the following command with files omitted. 
-	@echo $(IVI_AR) $@ 
+	@$(ECHO_UNLESS_QUIET) Building an archive library from lots of library files with the following command with files omitted. 
+	@$(ECHO_UNLESS_QUIET) $(IVI_AR) $@ 
 	@$(IVI_AR) $@ $(PROG_LIB_OBS) $(SUB_LIB_OBS) 
 	@$(IVI_RANLIB)  $@
 	$(MAKE_SCRIPT_PATH)finish_executable $@ $(PROG_LIB_ARCHIVE_NAME)
@@ -993,6 +1007,7 @@ doc_dir_made : $(DOC_DIR_MADE_TARGETS) $(MAKE_DOC_DIR)doc_dir_made
 #
 $(MAKE_DOC_DIR)doc_dir_made : 
 	$(MAKE_SCRIPT_PATH)make_src_shadow_dir "$(REAL_MAKE_DOC_DIR)" "$(MAKE_DOC)" .
+	$(IVI_MKDIR) $(MAKE_DOC_DIR)
 	$(IVI_TOUCH) $@
 
 $(PROGRAM_CAT_PATH) :
@@ -1002,30 +1017,50 @@ $(PROGRAM_CAT_PATH) :
 $(MAKE_DOC_DIR)%.w.1 : $(MAKE_PATH)Makefile Makefile-depend $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH) $(MAKE_BIN_PATH)writeup_to_man 
 
 $(MAKE_DOC_DIR)%.w.1 : %.w
-	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(MAKE_BIN_PATH)writeup_to_man $< > $@
 	$(IVI_CP) $@ $(PROGRAM_CAT_PATH)$*.1
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Do not merge with the next line due to '$<'
 $(MAKE_DOC_DIR)%.help.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_PATH)help_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH)
 
 $(MAKE_DOC_DIR)%.help.1 : %.help
-	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(MAKE_BIN_PATH)help_to_man $< > $@
 	$(IVI_CP) $@ $(PROGRAM_CAT_PATH)$*.1
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Do not merge with the next line due to '$<'
 $(MAKE_DOC_DIR)%.shell.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_PATH)writeup_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH)
 
 $(MAKE_DOC_DIR)%.shell.1 : %
-	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(MAKE_BIN_PATH)writeup_to_man $< > $@
 	$(IVI_CP) $@  $(PROGRAM_CAT_PATH)$*.1
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 # Additional dependencies of doc_program.made may be in Makefile-depend. 
 $(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH) $(MAN_FROM_HELP_FILES) $(MAN_FROM_WRITEUP_FILES)
-	@$(ECHO_IF_VERBOSE) "Process $$$$ is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(IVI_TOUCH) $@
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
 
 misc_doc_program : $(MAKE_DOC_DIR)doc_program.made
 	rsync -rl -u $(IVI_DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 

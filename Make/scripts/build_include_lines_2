@@ -33,22 +33,18 @@
 #
 ###############################################################################
 
-# We check the timestamps of any tools in this script. 
-#
-# Make knows which tools we depend on, and will call us if we are out of date
-# because of that. But then we need to know when to force parts of the rebuild
-# and dodge corresponding early exit. The dependency on this file is fine,
-# because we are now in it. 
+if ($?IVI_SET_ECHO) then
+    set echo
+endif 
 
-setenv FORCE_BUILD_SUB_LIBS 0
 set dir_arg = ""
 
 foreach arg ($*)
-   if ("${arg}" == "-f") then
-       setenv FORCE_BUILD_SUB_LIBS 1
-   else 
+    if ("${arg}" == "-f") then
+        setenv FORCE_BUILD_SUB_LIBS
+    else 
         set dir_arg = "$arg"
-   endif 
+    endif 
 end 
  
 set exit_status = 0
@@ -58,6 +54,14 @@ set exit_status = 0
 setenv LC_ALL "en_US.UTF-8"
 setenv LC_CTYPE "en_US.UTF-8"
    
+if ($?RECURSION_LEVEL) then
+    set recursion_level = ${RECURSION_LEVEL}
+    @ recursion_level++
+    setenv RECURSION_LEVEL ${recursion_level}
+else
+    setenv RECURSION_LEVEL 1
+endif 
+
 if ($?VERBOSE_INDENT) then
     setenv VERBOSE_INDENT "    ${VERBOSE_INDENT}"
 else 
@@ -68,25 +72,24 @@ if ("${dir_arg}" != "") then
     cd ${dir_arg} > /dev/null
 endif 
 
-${VERBOSE_ECHO} " "
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_include_lines_2 in directory $cwd with args: $*"
+if ($?IVI_VERBOSE) then
+    if ($?BUILD_LOCAL_INCLUDE_LINES) then
+        set scope = "local"
+    else 
+        set scope = "global"
+    endif 
+
+    ${VERBOSE_ECHO} " "
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering build_include_lines_2 with ${scope} scope in $cwd with args: $*"
+endif 
 
 set update_include_lines = 0
 
-pushd Include_lines > /dev/null
-    if (${status}) then 
-        ${P_STDERR} "Script build_include_lines_2 cannot push into Include_lines  in `pwd`."
-        set exit_status = 1 
-        goto cleanup
-    endif 
+${IVI_MKDIR} Include_lines
 
+pushd Include_lines > /dev/null
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating Include_lines/include_lines.new in directory $cwd. " 
 
-    # Three ways that should give the same result, although the first one
-    # gives an error message if there is no source code. 
-    #
-    # cat new/*.[cCh] new/*.[chit]pp new/*.[chit]xx | sort -u > include_lines.new
-    # find new \( -name '*.[cCh]' -o -name '*.[chit]pp' -o -name '*.[chit]xx' \) -exec ${IVI_CAT} {} \; | sort -u > include_lines.new
     ${MAKE_SCRIPT_PATH}stream_file_names -s -h -l |  sort -u >  include_lines.new
     if (${status}) then 
         set exit_status = 1 
@@ -121,10 +124,12 @@ if (${update_include_lines}) then
 
     ${IVI_CP} Include_lines/include_lines.new Include_lines/include_lines
 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Timestamp for ${cwd}/Include_lines/include_lines is now: `${IVI_TIMESTAMP} ${cwd}/Include_lines/include_lines`" 
+
     setenv SHADOW_BUILD_MAKEFILE_LIBS
     if ($?SHADOW_BUILD_MAKEFILE_LIBS) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 calling build_makefile_libs_needed in $cwd" 
-        ${MAKE_SCRIPT_PATH}build_makefile_libs_needed 
+        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 30 IGNORE_TARGET_ARGUMENT ${MAKE_SCRIPT_PATH}build_makefile_libs_needed 
     else 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is not calling build_makefile_libs_needed in $cwd" 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}     as gmake will build it nicely in parallel." 
@@ -209,21 +214,33 @@ if (${update_sub_list_new}) then
     endif 
 endif 
 
+if (${update_sub_list}) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_lib_list." 
+    ${IVI_CP} Include_lines/sub_lib_list.new Include_lines/sub_lib_list
+
+    if (${status}) then 
+        set exit_status = 1 
+        goto cleanup
+    endif 
+endif
+
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Timestamp for ${cwd}/Include_lines/sub_lib_list is: `${IVI_TIMESTAMP} ${cwd}/Include_lines/sub_lib_list`" 
+
+if ($?BUILD_LOCAL_INCLUDE_LINES) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 exiting after local updates due to BUILD_LOCAL_INCLUDE_LINES."
+    goto cleanup
+endif 
+
 set update_sub_libs_needed = 0
 
 if (${update_sub_list}) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_lib_list." 
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}/Include_lines/sub_lib_needed will also be updated." 
-    ${IVI_CP} Include_lines/sub_lib_list.new Include_lines/sub_lib_list
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_lib_needed due to Include_lines/sub_lib_list."
     set update_sub_libs_needed = 1
 else if (! -e Include_lines/sub_libs_needed) then 
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}/Include_lines/sub_lib_needed will be updated as it does not exist." 
     set update_sub_libs_needed = 1
-else if (`${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_sub_libs_needed`) then
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Include_lines/sub_libs_needed in $cwd is older than build_sub_libs_needed so it will be updated."
-    set update_sub_libs_needed = 1
-else if (${FORCE_BUILD_SUB_LIBS}) then 
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}/Include_lines/sub_lib_needed will be updated as we are forcing doing so." 
+else if ($?FORCE_BUILD_SUB_LIBS) then 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}${cwd}/Include_lines/sub_lib_needed will be updated as we are FORCING doing so." 
     set update_sub_libs_needed = 1
 endif 
 
@@ -243,19 +260,12 @@ if (${update_sub_libs_needed}) then
         goto cleanup
     endif 
 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Timestamp for ${cwd}/Include_lines/sub_libs_needed: `${IVI_TIMESTAMP} ${cwd}/Include_lines/sub_libs_needed`" 
+
     set update_makefile_dirs = 1
     
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Finished updating Include_lines/sub_libs_needed in directory $cwd. " 
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs."
-endif 
-
-if (! ${update_makefile_dirs}) then 
-    # One more possibility is that the build script has been modified. 
-    set update_makefile_dirs = `${MAKE_SCRIPT_PATH}test_older_than Makefile-dirs ${MAKE_SCRIPT_PATH}build_makefile_dirs`
-
-    if (${update_makefile_dirs}) then
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Makefile-dirs in $cwd is older than build_makefile_dirs so it will be updated."
-    endif 
 endif 
 
 if (${update_makefile_dirs}) then
@@ -275,9 +285,14 @@ endif
 
 cleanup:
 
-if ($exit_status) then
-    ${IVI_TOUCH} SUB_LIB_BUILD_FAILED
-endif 
+# ${IVI_ECHO} ${exit_status} > Include_lines/SUB_LIB_BUILD_STATUS
+# if (${status}) then 
+#     ${P_STDERR} "Script build_include_lines_2 unable to write ${cwd}/Include_lines/SUB_LIB_BUILD_STATUS"
+#     set exit_status = 1
+# else 
+#     ls Include_lines/SUB_LIB_BUILD_STATUS
+#     ls ${cwd}/Include_lines/SUB_LIB_BUILD_STATUS
+# endif 
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_include_lines_2 in directory $cwd with status ${exit_status}."
 

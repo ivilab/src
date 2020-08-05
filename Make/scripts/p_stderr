@@ -1,5 +1,25 @@
-#!/bin/bash
+#!/bin/bash -f
 
-echo "PSE: $*" 1>&2 
+##############################################################################
+#
+# Identification:
+#     Echos arguments to standard error
+#
+# Description:
+#     This script echos its arguments to standard error and so is like "echo"
+#     except the output is redirected to standard error instead of going to
+#     standard output. Its main use is in tcsh scripts as tcsh does not provide
+#     this facility. However, there are other ways to implement this, and this
+#     script is typically called via ${P_STDERR} which might be set to a
+#     different way to do the same thing in init_scripts. 
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+# Use bash's more sensible redirection to ensure echoed output goes to stderr.
+#
+echo "$*" 1>&2 
 
 

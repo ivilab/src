@@ -81,7 +81,7 @@ setenv BEEP ''
 # if (-e /dev/stderr) then
 #     setenv P_STDERR "echo > /dev/stderr"
 # else 
-    setenv P_STDERR "${MAKE_PATH}scripts/p_stderr"
+    setenv P_STDERR "${MAKE_PATH}scripts/p_stderr PSE: "
 # endif 
 
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
@@ -149,7 +149,7 @@ endif
 #
 
 # Essential.
-set needed_progs = "test cat cp mv rm mkdir file grep sed ls ln touch chmod gzip makedepend"
+set needed_progs = "test cat cp mv rm mkdir file grep sed ls ln touch chmod gzip makedepend date"
 
 # Desired (used often enough that a warning makes sense). The colon begins the
 # optional ones. 

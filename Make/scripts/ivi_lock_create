@@ -217,63 +217,76 @@ else
                 endif 
 
                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock file ${lock_file} exists."
-                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Checking on lock file process ${lock_proc}." 
 
-                ps ${lock_proc} >& /dev/null
-                set ps_status = "${status}" 
+                # Check up on the process holding the lock every so often. We
+                # used to do it every time through the loop, but we expected
+                # that this lead to spending too much time in the 'ps' caommand.
+                # However, it seems that the issue was from
+                # build_sub_libs_needed, but this is a good optimization anyway. 
+                
+                @ block_cycle = ${count} % 20
 
-                if (${ps_status}) then
-                    echo ${requesting_pid} >! ${lock_file}
+                if (${block_cycle} == 0) then
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ checking on lock file process ${lock_proc} on iteration ${count}." 
 
-                    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ resetting lock file ${lock_file} for process ${requesting_pid} as process ${lock_proc} does not exist."
+                    ps ${lock_proc} >& /dev/null
+                    set ps_status = "${status}" 
 
-                    set got_it = 1
-                    break
-                # else if (${count} > ${lock_wait_iterations}) then
-                else if (${time_waited} > ${max_time_to_wait}) then
-                    echo "Process $$ waited too long for ${lock_file} on behalf of process ${requesting_pid}. "
-                    echo "Process $$ waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
-                    set end_time = `date +%H:%M:%S`
-                    echo "Specifically it waited from ${start_time} to ${end_time}." 
-                    echo "Information about the process (${lock_proc}) holding the lock:"
-                    ps -l ${lock_proc} 
-                    echo "Information about the process (${requesting_pid}) requesting the lock:"
-                    ps -l ${requesting_pid} 
-                    echo "Sleeping for 10 seconds for debugging" 
-                    sleep 10
+                    if (${ps_status}) then
+                        echo ${requesting_pid} >! ${lock_file}
 
-                    if ($?EXIT_ON_LOCK_TIMEOUT) then
-                        echo "Process $$ waiting for ${lock_file} exiting with failure because EXIT_ON_LOCK_TIMEOUT is set." 
-                        set exit_status = 1
-                        goto cleanup
-                    endif 
+                        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ resetting lock file ${lock_file} for process ${requesting_pid} as process ${lock_proc} does not exist."
 
-                    echo "Ignoring the lock."
-                    echo ${requesting_pid} >! ${lock_file}
-                    set got_it = 1
-                    break
-                else  
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ waiting for ${lock_file} held on behalf of process ${lock_proc}."
+                        set got_it = 1
+                        break
+                    # else if (${count} > ${lock_wait_iterations}) then
+                    else if (${time_waited} > ${max_time_to_wait}) then
+                        echo "Process $$ waited too long for ${lock_file} on behalf of process ${requesting_pid}. "
+                        echo "Process $$ waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
+                        set end_time = `date +%H:%M:%S`
+                        echo "Specifically it waited from ${start_time} to ${end_time}." 
+                        echo "Information about the process (${lock_proc}) holding the lock:"
+                        ps -l ${lock_proc} 
+                        echo "Information about the process (${requesting_pid}) requesting the lock:"
+                        ps -l ${requesting_pid} 
 
-                    # Add some fractional seconds to reduce the chances of everyone
-                    # wanting to start at the same time.
-                    set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
+                        if ($?EXIT_ON_LOCK_TIMEOUT) then
+                            echo "Process $$ waiting for ${lock_file} exiting with failure because EXIT_ON_LOCK_TIMEOUT is set." 
+                            set exit_status = 1
+                            goto cleanup
+                        endif 
 
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ sleeping for ${sleep_time} seconds"
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ slept ${time_waited}/${max_time_to_wait} x .01 seconds."
-                    sleep ${sleep_time} >& /dev/null
-
-                    @ time_waited += $x
-
-                    if (${status}) then
-                        ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
-                        set exit_status = 1
-                        goto cleanup
-                    
+                        echo "Sleeping for 5 seconds for debugging" 
+                        sleep 5
+                        echo "Ignoring the lock."
+                        echo ${requesting_pid} >! ${lock_file}
+                        set got_it = 1
+                        break
                     endif
+                else
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ not checking up on lock file process ${lock_proc} on iteration ${count}." 
+                endif 
 
-                    @ count ++
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ waiting for ${lock_file} held on behalf of process ${lock_proc}."
+
+                # Add some fractional seconds to reduce the chances of everyone
+                # wanting to start at the same time.
+                set x = ${requesting_pid} ; @ x %= 100 ; set sleep_time = "0.${x}"
+
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ sleeping for ${sleep_time} seconds"
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ slept ${time_waited}/${max_time_to_wait} x .01 seconds."
+                sleep ${sleep_time} >& /dev/null
+
+                @ time_waited += $x
+
+                if (${status}) then
+                    ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
+                    set exit_status = 1
+                    goto cleanup
+                
                 endif
+
+                @ count ++
             end
 
             # If we got_it is still false, then the lock file was removed by the

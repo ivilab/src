@@ -50,8 +50,8 @@ if (-e "${link_name}") then
             ${IVI_RM} "${link_name}"
         endif 
     endif 
-else if ($?IVI_VERBOSE) then
-    echo "'${link_name}' does not exist in `pwd`"
+else 
+    ${VERBOSE_ECHO} "'${link_name}' does not exist in `pwd`"
 endif 
 
 ${VERBOSE_ECHO} "Executing ${IVI_LN} ${link_target} ${link_name} in `pwd`"
