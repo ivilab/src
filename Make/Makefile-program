@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25688 2020-08-05 23:22:17Z kobus $
+# $Id: Makefile-program 25692 2020-08-06 18:10:02Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -213,7 +213,7 @@ Include_lines/file_list.new : ./ $(FORCE_WITH_SUN5)
 	@$(ECHO_IF_VERBOSE) " "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
 #	$(MAKE_SCRIPT_PATH)build_file_list 
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
@@ -396,8 +396,8 @@ Makefile-dirs: $(IVI_BUILD_TOOLS)
 # dependencies on various tools, and is depended upon, we need to touch $@. 
 #
 Makefile-dirs : Include_lines/sub_libs_needed 
-	# $(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list 
-	# $(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f
+#	 $(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list 
+#	 $(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_makefile_dirs
 # 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
 
