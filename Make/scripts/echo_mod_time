@@ -1,0 +1,21 @@
+#!/bin/tcsh -f
+
+if ($?IVI_VERBOSE) then
+    if ($# > 0) then
+        set last_arg = $argv[$#]
+
+        set rest = " "
+
+        if ($# > 1) then
+            set penultimate = $#
+            @ penultimate --
+            set rest = ($argv[1-$penultimate])
+        endif 
+
+        set timestamp = `${IVI_TIMESTAMP} ${last_arg}`
+        if (${status}) exit 1
+
+        echo "IVI: ${rest} modification time for ${last_arg} is ${timestamp}"
+     endif 
+endif 
+
