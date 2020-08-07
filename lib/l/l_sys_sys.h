@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_sys.h 25653 2020-07-15 16:41:11Z kobus $ */
+/* $Id: l_sys_sys.h 25694 2020-08-07 20:15:09Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -73,15 +73,28 @@ namespace ivi_c {
 #    define __GNUC_VA_LIST
 
 #    ifdef MAC_OSX
+         /* If we use clang cpp, we cannot use fancy clang features. The
+          * following disables this. These should not really be neeede, as use
+          * '-U' with 'cpp', but just in case (and also to document). 
+          */
+         #ifdef __has_feature
+               #undef __has_feature
+         #endif 
 
-        typedef enum
-        {
-            false = 0,
-            true = 1
-        }
-        _Bool;
+         #ifdef __has_attribute 
+              #undef __has_attribute
+         #endif 
 
-        typedef _Bool bool;
+         #define _VA_LIST_T
+
+         typedef enum
+         {
+             false = 0,
+             true = 1
+         }
+         _Bool;
+
+         typedef _Bool bool;
 #    endif 
 #endif    /* __C2MAN__ */
 

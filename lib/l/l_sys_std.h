@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_std.h 25615 2020-07-09 19:12:05Z kobus $ */
+/* $Id: l_sys_std.h 25694 2020-08-07 20:15:09Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -179,6 +179,11 @@ typedef u_longlong_t ivi_uint64;
 
 #include <string.h>
 #include <math.h>
+
+#ifdef __C2MAN__
+#undef __BLOCKS__
+#endif 
+
 #include <stdlib.h>
 
 #ifdef  MS_OS
