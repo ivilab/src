@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25692 2020-08-06 18:10:02Z kobus $
+# $Id: Makefile-program 25693 2020-08-07 20:10:55Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -560,7 +560,7 @@ $(PCH_DIR)%.h.gch : %.h
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################
@@ -607,7 +607,7 @@ $(CXX_OBJ_DIR)%.o : %.C
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
@@ -621,7 +621,7 @@ $(CXX_OBJ_DIR)%.o : %.cpp
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # I fixed what looked like an obvious typo in the line below in r8486 - Andrew
@@ -636,7 +636,7 @@ $(CXX_OBJ_DIR)%.o : %.cxx
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
@@ -650,7 +650,7 @@ $(CXX_OBJ_DIR)%.o : %.cc
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # I am not sure if this is still used. Test it commented out.
@@ -709,7 +709,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cpp
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(M_LIB_NEED_HAVE) \
         $(WITH_LIBS_HAVE)\
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # Kobus. Seems redundant. Comment out and see what breaks. 
@@ -724,7 +724,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cxx
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(M_LIB_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
@@ -740,7 +740,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.C
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(M_LIB_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # Kobus. Seems redundant. Comment out and see what breaks. 
@@ -755,7 +755,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cc
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(M_LIB_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
-        |& $(IVI_CPP_MESSAGE_FILTER) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################

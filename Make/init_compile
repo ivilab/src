@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25688 2020-08-05 23:22:17Z kobus $
+# $Id: init_compile 25693 2020-08-07 20:10:55Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -1885,16 +1885,16 @@ endif
 #
 # To opt out (i.e., to show everything), set IVI_WARN_LEVEL to 4 or higher.
 
-ivi_setenv IVI_CPP_DEFAULT_MSG_FILTER "${MAKE_SCRIPT_PATH}boost_warn_filter.pl"
+ivi_setenv IVI_CXX_DEFAULT_MSG_FILTER "${MAKE_SCRIPT_PATH}boost_warn_filter.pl"
 
 # Set up the allpass filter, which lets all the Boost messages show up.
 if ("${IVI_AWK}" != "") then
-    ivi_setenv IVI_CPP_ALLPASS_MSG_FILTER \
+    ivi_setenv IVI_CXX_ALLPASS_MSG_FILTER \
             "${IVI_AWK} "'"{print}/Compile status is: [^0]/{exit 1}"'
 else
     # This system lacks basic cmds, so sabotage the output filter.
     ${P_STDERR} "Warning: system lacks awk(1), which we currently use for filtering boost warnings."
-    ivi_setenv IVI_CPP_ALLPASS_MSG_FILTER "false"
+    ivi_setenv IVI_CXX_ALLPASS_MSG_FILTER "false"
 endif
 
 # Do we have Perl?
@@ -1905,14 +1905,14 @@ ${ivi_perl_test} >& /dev/null
 
 if (${status}) then
     # Perl does not work, so change the default to no filter.
-    ivi_setenv IVI_CPP_DEFAULT_MSG_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
+    ivi_setenv IVI_CXX_DEFAULT_MSG_FILTER "${IVI_CXX_ALLPASS_MSG_FILTER}"
 else if (! ${ivi_cxx_is_gxx}) then
     # Filter cannot help, because it only understands g++ warning messages.
-    ivi_setenv IVI_CPP_DEFAULT_MSG_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
-else if (! -x ${IVI_CPP_DEFAULT_MSG_FILTER}) then
+    ivi_setenv IVI_CXX_DEFAULT_MSG_FILTER "${IVI_CXX_ALLPASS_MSG_FILTER}"
+else if (! -x ${IVI_CXX_DEFAULT_MSG_FILTER}) then
     # The filter program is missing!?  Weird.  Oh well, don't bother.
-    ${ECHO} "Warning: missing filter script ${IVI_CPP_DEFAULT_MSG_FILTER}"
-    ivi_setenv IVI_CPP_DEFAULT_MSG_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
+    ${ECHO} "Warning: missing filter script ${IVI_CXX_DEFAULT_MSG_FILTER}"
+    ivi_setenv IVI_CXX_DEFAULT_MSG_FILTER "${IVI_CXX_ALLPASS_MSG_FILTER}"
 endif
 
 # ---------------------------------------------------------------------
@@ -1942,17 +1942,28 @@ endif
 
 if ("${OS}" == "mac_osx") then 
     # 
-    # On some macs, cpp is really broken.  Even specifying include directories
-    # does not seem to work.  I am not sure what is going on. Anyway, if "gcc
-    # -E" works, it is much more robust. 
+    # At some point, cpp on the mac did not seem to respect nostdinc, and on
+    # some versions the standard includes need to have __STDC__ defined. So we
+    # have used: ivi_setenv IVI_CPP "cpp -D__STDC__" 
     #
+    # For Mac OS 14 (Mojave) /usr/bin/cpp wants the input file last, but even
+    # so, we get errors from the system include fileso until we did some
+    # additional hacking of l_sys_sys.h (making "__has_feature(x)" always return
+    # 0.  The ports version in /opt/local/bin seems OK, but do we want to rely
+    # on another install? So, we will try to maintain things so that 'clang -E'
+    # works in case that is all that is available.
+    
     if (("${IVI_CC}" == "gcc") || ("${IVI_CC}" == "g++"))  then
-        ivi_setenv IVI_CPP              "gcc -E" 
-    else
-        #
-        # cpp on the mac does not seem to respect nostdinc, and on some versions
-        # the standard includes need to have __STDC__ defined. 
-        #
+        ivi_setenv IVI_CPP  "gcc -E" 
+    else if ("${IVI_CC}" == "clang") then
+        ivi_setenv IVI_CPP  "clang -E -D__STDC__=1 -U__clang__" 
+    else if (-x "/opt/local/bin/cpp") then
+        ivi_setenv IVI_CPP  "/opt/local/bin/cpp" 
+    else if (-x "/usr/local/bin/cpp") then
+        ivi_setenv IVI_CPP  "/usr/local/bin/cpp" 
+    else 
+        # Hope for the best. 
+        # 
         ivi_setenv IVI_CPP              "cpp -D__STDC__" 
     endif
 else 
@@ -2569,22 +2580,36 @@ ivi_setenv MD_DEFINES "-D${UC_OS} -D${UC_MACHINE} ${MALLINFO_DEFINE} ${COMPILER_
 
 if ("${OS}" == "mac_osx") then
     # I still have not figured out why or where __BLOCK__ is getting defined, and
-    # thus why we need to undefine it. ALso, currently it does not seem needed.
+    # thus why we need to undefine it. Also, currently it does not seem needed.
     #
     # ivi_setenv C2MAN_MD_DEFINES "-U__BLOCKS__"
     ivi_setenv C2MAN_MD_DEFINES ""
+    ivi_setenv C2MAN_MD_DEFINES "-U__BLOCKS__"
 
-    # These are now handled in l_sys_sys.h. We had them here to gaurd against
+    # These are now handled in l_sys_sys.h. We had them here to guard against
     # bad include order, but this leads to other problems. For example, we need
     # some typdef's instead of #defines. 
     #
     # ivi_setenv C2MAN_CPP_CMD "cpp -std=c89 -C -D__C2MAN__ -D'__builtin_va_list=void*' -D'__asm(X)=' -D'__GNUC_VA_LIST'"
-    ivi_setenv C2MAN_CPP_CMD "cpp -std=c89 -C -D__C2MAN__"
-    ivi_setenv C2MAN_CPP_CMD_2 "cpp -std=c89 -E -D__C2MAN__"
+    ivi_setenv C2MAN_CPP_CMD "${IVI_CPP} -std=c89 -C -D__C2MAN__"
+    ivi_setenv C2MAN_CPP_CMD_2 "${IVI_CPP} -std=c89 -E -D__C2MAN__"
+    ivi_setenv C2MAN_CPP_CMD "${IVI_CPP} -std=c89 -C -D__C2MAN__ -U__has_feature -U__has_attribute"
+    ivi_setenv C2MAN_CPP_CMD_2 "${IVI_CPP} -std=c89 -E -D__C2MAN__ -U__has_feature -U__has_attribute"
 else
     ivi_setenv C2MAN_MD_DEFINES ""
-    ivi_setenv C2MAN_CPP_CMD "cpp -std=c89 -C -D__C2MAN__"
-    ivi_setenv C2MAN_CPP_CMD_2 "cpp -std=c89 -E -D__C2MAN__"
+    ivi_setenv C2MAN_CPP_CMD "${IVI_CPP} -std=c89 -C -D__C2MAN__"
+    ivi_setenv C2MAN_CPP_CMD_2 "${IVI_CPP} -std=c89 -E -D__C2MAN__"
+endif
+
+# If we do not have doxygen, we still set IVI_DOXYGEN to it so that we get a
+# reasonable error message when we use it in make. We ask init_scripts to set
+# IVI_DOXYGEN so that even if it is not in the user's PATH, we have a chance of
+# finding it.
+ 
+if ("${IVI_DOXYGEN}" == "") then
+    ivi_setenv IVI_DOXYGEN "doxygen"
+else
+    ivi_setenv IVI_DOXYGEN "${IVI_DOXYGEN}"
 endif
 
 ################################################################################
@@ -2709,32 +2734,32 @@ ivi_setenv F77_BASE_FLAGS "${F77_MISC_FLAGS} -DCOMPILING_F77_SOURCE ${F77_MD_FLA
 #     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_0}"
 #     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_0}"
 #     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_0}"
-#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+#     ivi_setenv IVI_CXX_MESSAGE_FILTER "${IVI_CXX_DEFAULT_MSG_FILTER}"
 # else if (${IVI_WARN_LEVEL} == 1) then
 #     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_1}"
 #     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_1}"
 #     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_1}"
-#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+#     ivi_setenv IVI_CXX_MESSAGE_FILTER "${IVI_CXX_DEFAULT_MSG_FILTER}"
 # else if (${IVI_WARN_LEVEL} == 2) then
 #     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_2}"
 #     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_2}"
 #     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_2}"
-#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+#     ivi_setenv IVI_CXX_MESSAGE_FILTER "${IVI_CXX_DEFAULT_MSG_FILTER}"
 # else if (${IVI_WARN_LEVEL} == 3) then
 #     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_3}"
 #     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_3}"
 #     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_3}"
-#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_DEFAULT_MSG_FILTER}"
+#     ivi_setenv IVI_CXX_MESSAGE_FILTER "${IVI_CXX_DEFAULT_MSG_FILTER}"
 # else if (${IVI_WARN_LEVEL} == 4) then
 #     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_4}"
 #     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_4}"
 #     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_4}"
-#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
+#     ivi_setenv IVI_CXX_MESSAGE_FILTER "${IVI_CXX_ALLPASS_MSG_FILTER}"
 # else if (${IVI_WARN_LEVEL} >= 5) then
 #     ivi_setenv CC_IVI_WARNINGS "${CC_IVI_WARN_5}"
 #     ivi_setenv CXX_IVI_WARNINGS "${CXX_IVI_WARN_5}"
 #     ivi_setenv F77_IVI_WARNINGS "${F77_IVI_WARN_5}"
-#     ivi_setenv IVI_CPP_MESSAGE_FILTER "${IVI_CPP_ALLPASS_MSG_FILTER}"
+#     ivi_setenv IVI_CXX_MESSAGE_FILTER "${IVI_CXX_ALLPASS_MSG_FILTER}"
 # endif
 
 ################################################################################

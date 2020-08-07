@@ -36,11 +36,34 @@ endif
 set error_found = 0
 
 # ##############################################################################
+
+# Bootstrap. We rely on "sed"
+
+unalias sed
+setenv IVI_SED `which sed`
+
+if (${status}) then
+    if (-x "/usr/bin/sed") then
+        setenv IVI_SED  "/usr/bin/sed"
+    else if (-x "/bin/sed") then
+        setenv IVI_SED  "/bin/sed"
+    else 
+        echo "Script init_scripts unable to find 'sed'."
+        echo "We checked at least /usr/bin/sed and /bin/sed."
+        echo "This needs to be fixed before we can do anything."
+        exit 1
+    endif 
+endif 
+
+# ##############################################################################
+
 #
 # The construction of a list of places to look for software should be consistent
-# with Kobus's login scripts. 
+# with Kobus's login scripts. The process below will look for what is needed in the
+# user's path, and then consult the list if not successful.
 
 set path_dirs = ""
+
 
 # For Ocelote, probably obsolete, needs checking. TODO
 set path_dirs = "${path_dirs} /cm/local/apps/gcc/current/bin /cm/shared/apps/pbspro/current/sbin  /cm/shared/apps/pbspro/current/bin /cm/shared/uabin"
@@ -61,7 +84,6 @@ set path_dirs = "${path_dirs} /misc/local/bin /misc/loca/sbin /misc/local/texbin
 set path_dirs = "${path_dirs} /usr/texbin /usr/contrib/bin /usr/contrib/bin/X11 /Developer/usr/bin"
 set path_dirs = "${path_dirs} /usr/bin /usr/sbin /usr/X11R6/bin /usr/X11/bin"
 set path_dirs = "${path_dirs} /bin /sbin"
-set path_dirs = "${path_dirs} ${HOME}/yyy"
 
 setenv IVI_PATH_DIRS ""
 foreach path_dir (${path_dirs}) 
@@ -69,6 +91,8 @@ foreach path_dir (${path_dirs})
         setenv IVI_PATH_DIRS "${IVI_PATH_DIRS} ${path_dir}"
     endif 
 end
+
+# echo IVI_PATH_DIRS: ${IVI_PATH_DIRS}
 
 # ##############################################################################
 
@@ -149,11 +173,11 @@ endif
 #
 
 # Essential.
-set needed_progs = "test cat cp mv rm mkdir file grep sed ls ln touch chmod gzip makedepend date"
+set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip makedepend date"
 
 # Desired (used often enough that a warning makes sense). The colon begins the
 # optional ones. 
-set needed_progs = "${needed_progs} : awk egrep stat tail"
+set needed_progs = "${needed_progs} : awk egrep stat tail doxygen"
 
 # Others that we want to test if they exist, but we do not expect them to always
 # be available. 
@@ -200,7 +224,7 @@ foreach needed_prog (${needed_progs})
         endif 
     endif
 
-    set uc_needed_prog = `echo ${needed_prog} | sed "y/abcdefghijklmnopqrstuvwxyz-/ABCDEFGHIJKLMNOPQRSTUVWXYZ_/"`
+    set uc_needed_prog = `echo ${needed_prog} | ${IVI_SED} "y/abcdefghijklmnopqrstuvwxyz-/ABCDEFGHIJKLMNOPQRSTUVWXYZ_/"`
     eval "setenv IVI_${uc_needed_prog}_PATH ${prog_path}"
 
     # This default gets overwritten below if we want to specify program options. 
@@ -340,5 +364,4 @@ endif
 if (${error_found}) exit 1 
 
 setenv IVI_HAVE_INIT_SCRIPTS 1 
-
 

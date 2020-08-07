@@ -219,12 +219,13 @@ else
                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock file ${lock_file} exists."
 
                 # Check up on the process holding the lock every so often. We
-                # used to do it every time through the loop, but we expected
-                # that this lead to spending too much time in the 'ps' caommand.
-                # However, it seems that the issue was from
-                # build_sub_libs_needed, but this is a good optimization anyway. 
+                # used to do it every time through the loop, but we then
+                # expected that this lead to spending too much time in the 'ps'
+                # caommand. However, it turned out that the issue was from
+                # build_sub_libs_needed, but it seems that this is a good
+                # optimization for some circumstances anyway. 
                 
-                @ block_cycle = ${count} % 20
+                @ block_cycle = ${count} % 10
 
                 if (${block_cycle} == 0) then
                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ checking on lock file process ${lock_proc} on iteration ${count}." 
