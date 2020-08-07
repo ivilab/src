@@ -138,7 +138,9 @@ endif
 # BUILD_BIN_PATH cannot be null, otherwise, Makefile-program will use it to
 # create a rule for "./", which will be executed, and fail.
 #
-setenv BUILD_BIN_PATH NULL_BIN_PATH
+if (! $?BUILD_BIN_PATH) then
+    setenv BUILD_BIN_PATH ${USER_BIN_PATH}
+endif
 
 # Options to manipulate the parallel build of sub_libs_needed. Tweak for
 # performance, but should be somewhat a function of the machine. 
