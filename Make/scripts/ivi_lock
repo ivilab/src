@@ -153,9 +153,16 @@ if  ("${IVI_FLOCK_METHOD}" == "flock") then
 
     if (${safe_to_lock}) then
         flock -w ${max_time_to_wait} ${lock_file} ${full_cmd}
-        set exit_status = ${status}
+        if (${status}) then
+            ${P_STDERR} "Command failed in ivi_lock in ${cwd}: flock -w ${max_time_to_wait} ${lock_file} ${full_cmd}"
+            set exit_status = 1
+        endif 
     else
         ${full_cmd}
+        if (${status}) then
+            ${P_STDERR} "Command failed in ivi_lock in ${cwd}: ${full_cmd}"
+            set exit_status = 1
+        endif 
     endif 
 
     if (! ${exit_status}) then
