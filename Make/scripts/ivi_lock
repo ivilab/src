@@ -155,11 +155,15 @@ if  ("${IVI_FLOCK_METHOD}" == "flock") then
         flock -E 22 -w ${max_time_to_wait} ${lock_file} ${full_cmd}
         set flock_status = ${status}
         if (${flock_status}) then
-            ${P_STDERR} "Command failed in ivi_lock in ${cwd}: flock -w ${max_time_to_wait} ${lock_file} ${full_cmd}"
+            ${P_STDERR} "Command failed in ivi_lock in ${cwd}: flock -E 22 -w ${max_time_to_wait} ${lock_file} ${full_cmd}"
             if (${flock_status} == 22) then
                 ${P_STDERR} "Flock failure likley due to time out which was set to ${max_time_to_wait}."
             endif 
 
+            set exit_status = 1
+        endif 
+        ${IVI_RM} ${lock_file}
+        if (${status}) then
             set exit_status = 1
         endif 
     else
