@@ -1,0 +1,9 @@
+#!/bin/tcsh -f
+
+@ count = 1
+
+while($count < 10000)
+    sleep .001
+    if ($status) exit 1
+    @ count += 1
+end
