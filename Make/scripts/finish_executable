@@ -74,7 +74,10 @@ endif
 
 pushd ${LD_OBJ_TOP_DIR} > /dev/null
     ${MAKE_SCRIPT_PATH}ivi_lock 5 ${MAKE_SCRIPT_PATH}make_link ${LD_OBJ_SUB_DIR} ${EXEC_LINK_NAME}
-    if (${status}) exit $status
+    if (${status}) then
+        ${P_STDERR} "Script make_link failed under lock in script finish_executable."
+        exit 1
+     endif 
 popd > /dev/null
 
 if (-e "${exec_name}") then
@@ -97,7 +100,11 @@ if (${link_to_top}) then
 
 
     ${IVI_LN} "${EXEC_LINK}/${exec_name}" .
-    if (${status}) exit $status
+    if (${status}) then
+        ${P_STDERR} "Link command failed in script finish_executable."
+        ${P_STDERR} "Full failed command: ${IVI_LN} ${EXEC_LINK}/${exec_name} . "
+        exit 1
+     endif 
 
     set is_dylib = `echo ${exec_name} | grep -c '\.dylib$'`
     set is_so = `echo ${exec_name} | grep -c '\.so$'`
@@ -117,11 +124,18 @@ if (${link_to_top}) then
             endif 
 
             ${IVI_RM} "${base_name}"
-            if (${status}) exit $status
+            if (${status}) then
+                ${P_STDERR} "Command ${IVI_RM} ${base_name} failed in script finish_executable."
+                exit 1
+             endif 
         endif 
 
         ${IVI_LN} "${exec_name}" "${base_name}"
-        if (${status}) exit $status
+        if (${status}) then
+            ${P_STDERR} "Link command failed in script finish_executable."
+            ${P_STDERR} "Full failed command: ${IVI_LN} ${exec_name} ${base_name}"
+            exit 1
+         endif 
     endif 
 endif 
 
