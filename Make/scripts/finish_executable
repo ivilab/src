@@ -66,7 +66,7 @@ else
 endif 
 
 pushd ${LD_OBJ_TOP_DIR} > /dev/null
-    ${MAKE_SCRIPT_PATH}ivi_lock 5 ${MAKE_SCRIPT_PATH}make_link ${LD_OBJ_SUB_DIR} ${EXEC_LINK_NAME}
+    ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}make_link ${LD_OBJ_SUB_DIR} ${EXEC_LINK_NAME}
     if (${status}) then
         ${P_STDERR} "Script make_link failed under lock in script finish_executable."
         exit 1

@@ -965,9 +965,9 @@ if (${need_depend_bootstrap}) then
     foreach bootstrap_file (${bootstrap_files}) 
         if (-x "${bootstrap_file}") then
             if ($?DRY_RUN) then
-                echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 5 ./${bootstrap_file}"
+                echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}"
             else
-                ${MAKE_SCRIPT_PATH}ivi_lock 5 ./${bootstrap_file}
+                ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}
                 if (${status}) exit 1
             endif 
         endif 
