@@ -342,7 +342,13 @@ endif
 
 if (! $?IVI_FLOCK_METHOD) then
     if  ("${IVI_FLOCK}" != "") then
-        setenv IVI_FLOCK_METHOD "flock" 
+        # Currently, flock is not reliable on Laplace. We are probably not using
+        # it correctly, or maybe it really wants to be run with bash. But until
+        # we are satisfied, we will default to "ivi". We can force flock for
+        # experimentation by setting IVI_FLOCK_METHOD outside this script. 
+        #
+        # setenv IVI_FLOCK_METHOD "flock" 
+        setenv IVI_FLOCK_METHOD "ivi" 
     else
         setenv IVI_FLOCK_METHOD "ivi"
     endif 
