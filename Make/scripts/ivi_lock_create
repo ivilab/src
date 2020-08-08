@@ -188,7 +188,7 @@ else
                 continue
             endif 
 
-            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ tentatively set lock file ${lock_file} for ${requesting_pid}."
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ has tentatively set lock file ${lock_file} for ${requesting_pid}."
             # ps -l $$
         else 
             set count = 0
@@ -198,11 +198,14 @@ else
                 #  I have not found a safe way to ignore error output. 
                 set lock_proc = `cat ${lock_file}`
 
-                # Happens! 
+                # Happens! But just grabbing the lock is not safe. Since we do
+                # not have an atomic command capability, nothing is really safe.
+                # But we can improve our odds by taking advantage of noclober,
+                # which we do by going back out to the outer loop.
+
                 if ($status) then 
-                    echo ${requesting_pid} >! ${lock_file}
-                    echo "Lock file ${lock_file} disappeared! Taking the lock."
-                    set got_it = 1
+                    # echo ${requesting_pid} >! ${lock_file}
+                    echo "Lock file ${lock_file} disappeared! Getting back in the queue."
                     break
                 endif 
 
