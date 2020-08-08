@@ -129,7 +129,7 @@ endif
     
 ###############################################################################
 
-end_of_script :
+end_of_script:
 
 # Reset the time of the target path to what it was before we started. 
 #
