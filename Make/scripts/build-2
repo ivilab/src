@@ -165,7 +165,7 @@ endif
 # 110) is effectively infinity.
 #
 if (! $?MAX_BACKGROUND_CHILDREN) then
-    @ max_background_children = 2 * ${NUM_CPU}
+    @ max_background_children = 5 * ${NUM_CPU}
     setenv MAX_BACKGROUND_CHILDREN ${max_background_children}
 endif 
 
@@ -1438,7 +1438,9 @@ foreach arg (${build_adjusted_args})
                     echo "DRY: source ${MAKE_PATH}init_compile"
                 else
                     setenv PRODUCTION 1
+                    set save_default_make = "${IVI_MAKE}"
                     source ${MAKE_PATH}init_compile
+                    setenv IVI_MAKE "${save_default_make}"
                 endif 
 
                 ${VERBOSE_ECHO} " "

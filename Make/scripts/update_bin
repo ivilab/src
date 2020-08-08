@@ -1,8 +1,8 @@
 #!/bin/tcsh -f 
 
-set num_args = ${#argv}
+${VERBOSE_ECHO} "In ${cwd} executing: update_bin $*"
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script update_bin in directory $cwd with args: $* "
+set num_args = ${#argv}
 
 if (${num_args} != 2) then
     ${P_STDERR} "Script update_bin needs exactly two arguments."
@@ -17,87 +17,130 @@ set target_path = "$2"
 # We don't want to change the time stamp of the bin dir to simplify using the
 # time stamp on load dirs as a gauge of whether the cache is out of date. Here
 # we remember time stamp of source_path. This is easier with a comparison file
-# because there is more comonality on this way over multiple systems. 
+# because there is more commonality on this way over multiple systems. 
 
-set target_dir = `echo ${target_path} | sed 's#\(.*\)/[^/]*#\1#'`
+set target_dir = `echo ${target_path} | ${IVI_SED} 's#\(.*\)/[^/]*#\1#'`
+if (${status}) then
+    ${P_STDERR} "Setting target dir failed in scripot update_bin"
+    exit 1 
+endif 
+
 # echo target_path: $target_path
 # echo target_dir: $target_dir
 
 ${IVI_MKDIR} "${USER_TEMP_PATH}"
-if (${status}) exit 1
+if (${status}) then
+    ${P_STDERR} "Command failed in scripot update_bin: ${IVI_MKDIR} ${USER_TEMP_PATH}"
+    exit 1 
+endif 
+
 set clock_file = ${USER_TEMP_PATH}clock.$$
 
 ${IVI_MKDIR} "${target_dir}" 
-if (${status}) exit 1
+if (${status}) then
+    ${P_STDERR} "Command failed in scripot update_bin: ${IVI_MKDIR} ${target_dir}"
+    exit 1 
+endif 
+
 ${IVI_TOUCH} -r "${target_dir}" ${clock_file} 
-if (${status}) exit 1
+if (${status}) then
+    ${P_STDERR} "Command failed in scripot update_bin: ${IVI_TOUCH} -r ${target_dir} ${clock_file}"
+    exit 1 
+endif 
 
 ###############################################################################
 
+set exit_status = 0
+
 set time_stamp = `date +%y-%m-%d-%H-%M`
+if (${status}) then
+    set exit_status = 1
+    goto end_of_script
+endif 
 
 if (! -f ${source_path}) then
     ${P_STDERR} "${source_path} is not a file."
-    exit 1
+    set exit_status = 1
+    goto end_of_script
 endif 
 
-set have_slash  = `echo ${source_path} | grep -c "/"`
+set have_slash  = `echo ${source_path} | ${IVI_GREP} -c "/"`
 
 if ("${have_slash}" == "0") then
     set source_dir = "./"
 else 
-    set source_dir = `echo ${source_path} | sed 's#\(.*\)/[^/]*$#\1/#' | sed 's#///*#/#g'`
+    set source_dir = `echo ${source_path} | ${IVI_SED} 's#\(.*\)/[^/]*$#\1/#' | ${IVI_SED} 's#///*#/#g'`
 endif 
 # echo source_dir: ${source_dir}
 
-set source_name = `echo ${source_path} | sed 's#.*/\([^/]*\)$#\1#'`
+set source_name = `echo ${source_path} | ${IVI_SED} 's#.*/\([^/]*\)$#\1#'`
 # echo source_name: ${source_name}
 
 set source_path = ${source_dir}${source_name} 
 # echo source_path: ${source_path} 
-
 
 if (-d ${target_path}) then 
    set target_path = ${target_path}/${source_name}
    # echo target_path: ${target_path}
 endif 
 
-set have_slash  = `echo ${target_path} | grep -c "/"`
+set have_slash  = `echo ${target_path} | ${IVI_GREP} -c "/"`
 
 if ("${have_slash}" == "0") then
     set target_dir = "./"
 else 
-    set target_dir = `echo ${target_path} | sed 's#\(.*\)/[^/]*$#\1/#' | sed 's#///*#/#g'`
+    set target_dir = `echo ${target_path} | ${IVI_SED} 's#\(.*\)/[^/]*$#\1/#' | ${IVI_SED} 's#///*#/#g'`
+    if (${status}) then
+        set exit_status = 1
+        goto end_of_script
+    endif 
 endif 
 # echo target_dir: ${target_dir}
 
-set target_name = `echo ${target_path} | sed 's#.*/\([^/]*\)$#\1#'`
+set target_name = `echo ${target_path} | ${IVI_SED} 's#.*/\([^/]*\)$#\1#'`
+if (${status}) then
+    set exit_status = 1
+    goto end_of_script
+endif 
 # echo target_name: ${target_name}
 
 set target_path = ${target_dir}${target_name} 
 # echo target_path: ${target_path} 
 
-if ${status} exit 1 
-
 if (-e ${target_path}) then
     ${IVI_MKDIR} ${target_dir}${target_name}-HISTORY
-    if ${status} exit 1 
+    if (${status}) then
+        set exit_status = 1
+        goto end_of_script
+    endif 
 
     ${IVI_MV} ${target_path} ${target_dir}${target_name}-HISTORY/${target_name}-${time_stamp}
-    if ${status} exit 1 
+    if (${status}) then
+        set exit_status = 1
+        goto end_of_script
+    endif 
 endif 
 
 ${IVI_CP} ${source_path} ${target_path} 
-if ${status} exit 1 
+if (${status}) then
+    set exit_status = 1
+    goto end_of_script
+endif 
     
 ###############################################################################
+
+end_of_script :
+
 # Reset the time of the target path to what it was before we started. 
 #
 ${IVI_TOUCH} -r ${clock_file} ${target_dir} 
-if ${status} exit 1 
+if (${status}) then
+   set exit_status = 1
+endif 
 
 ${IVI_RM} ${clock_file}
+if (${status}) then
+   set exit_status = 1
+endif 
 
-###############################################################################
-
-
+${VERBOSE_ECHO} "Leaving script update_bin in directory $cwd with status ${exit_status}."

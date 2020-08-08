@@ -1,5 +1,7 @@
 #!/bin/tcsh -f 
 
+${VERBOSE_ECHO} "Entering script finish_executable in directory ${cwd} with args: $*"
+
 if ($# != 2) then
     ${P_STDERR} "Script finish_executable needs two arguments."
     exit 1
@@ -9,7 +11,10 @@ set exec_path = "$1"
 set exec_name = "$2"
 
 ${IVI_PERMIT_EXECUTION} "${exec_path}" 
-if (${status}) exit $status
+if (${status}) then
+    ${P_STDERR} "Permitting execution failed in script finish_executable."
+    exit 1
+endif
 
 set link_to_top = 1
 
@@ -22,23 +27,17 @@ set link_to_top = 1
 # However, we check them here to be sure.
 # 
 if ($?KJB_ENVIRONMENT) then
-    if (${?KJB_VERBOSE_2}) then
-        echo "KJB_ENVIRONMENT is set to ->${KJB_ENVIRONMENT}<- in script finish_executable."
-    endif 
+    ${VERBOSE_ECHO_2} "KJB_ENVIRONMENT is set to ->${KJB_ENVIRONMENT}<- in script finish_executable."
 
     if (${KJB_ENVIRONMENT}) then 
         set link_to_top = 0
     endif 
 else 
-    if (${?KJB_VERBOSE_2}) then
-        echo "KJB_ENVIRONMENT is not set in script finish_executable."
-    endif 
+    ${VERBOSE_ECHO_2} "KJB_ENVIRONMENT is not set in script finish_executable."
 endif 
 
 if ($?DONT_LINK_EXECUTABLE) then
-    if (${?IVI_VERBOSE_2}) then
-        echo "DONT_LINK_EXECUTABLE is set to ->${DONT_LINK_EXECUTABLE}<- in script finish_executable."
-    endif 
+    ${VERBOSE_ECHO_2} "DONT_LINK_EXECUTABLE is set to ->${DONT_LINK_EXECUTABLE}<- in script finish_executable."
 
     # DONT_LINK_EXECUTABLE is a toggle, either it is set or not. But if we
     # forget that, and set it to 0, then we probably are trying to unset it.
@@ -47,18 +46,14 @@ if ($?DONT_LINK_EXECUTABLE) then
         set link_to_top = 0
     endif 
 else
-    if (${?IVI_VERBOSE_2}) then
-        echo "DONT_LINK_EXECUTABLE is not set in script finish_executable."
-    endif 
+    ${VERBOSE_ECHO_2} "DONT_LINK_EXECUTABLE is not set in script finish_executable."
 endif 
 
 # Currently, FORCE_LINK_EXECUTABLE is only used in this script. It is not clear
 # if this should override DONT_LINK_EXECUTABLE or the other way arround. 
 #
 if ($?FORCE_LINK_EXECUTABLE) then
-    if (${?IVI_VERBOSE_2}) then
-        echo "FORCE_LINK_EXECUTABLE is set to ->${FORCE_LINK_EXECUTABLE}<- in script finish_executable."
-    endif 
+    ${VERBOSE_ECHO_2} "FORCE_LINK_EXECUTABLE is set to ->${FORCE_LINK_EXECUTABLE}<- in script finish_executable."
 
     # FORCE_LINK_EXECUTABLE is a flag, either it is set or not. But if we
     # forget that, and set it to 0, then we probably are trying to unset it.
@@ -67,9 +62,7 @@ if ($?FORCE_LINK_EXECUTABLE) then
         set link_to_top = 1
     endif 
 else
-    if (${?IVI_VERBOSE_2}) then
-        echo "FORCE_LINK_EXECUTABLE is not set in script finish_executable."
-    endif 
+    ${VERBOSE_ECHO_2} "FORCE_LINK_EXECUTABLE is not set in script finish_executable."
 endif 
 
 pushd ${LD_OBJ_TOP_DIR} > /dev/null
@@ -82,10 +75,10 @@ popd > /dev/null
 
 if (-e "${exec_name}") then
     if (! -l "${exec_name}") then
-        ${P_STDERR} "Executable ${exec_name} exists and is not a link."
-        ${P_STDERR} "Forcing removal of ${exec_name} to reduce confusion due to apparantly being up to date."
+        ${WARN_ECHO} "Executable ${exec_name} exists and is not a link."
+        ${WARN_ECHO} "Forcing removal of ${exec_name} to reduce confusion due to apparantly being up to date."
     else if (! ${link_to_top}) then
-        echo "Removing link ${exec_name} as we are not linking executables."
+        ${WARN_ECHO} "Removing link ${exec_name} as we are not linking executables."
     endif 
 
     ${IVI_RM} "${exec_name}"
@@ -93,9 +86,9 @@ endif
 
 if (${link_to_top}) then
     if (! $?IVI_QUIET) then 
-        echo "Linking executable ${EXEC_LINK}/${exec_name} to ./${exec_name}."
-        echo "This can be disabled by 'unsetenv FORCE_LINK_EXECUTABLE; setenv DONT_LINK_EXECUTABLE 1'"
-        echo " "
+        ${WARN_ECHO} "Linking executable ${EXEC_LINK}/${exec_name} to ./${exec_name}."
+        ${WARN_ECHO} echo "This can be disabled by 'unsetenv FORCE_LINK_EXECUTABLE; setenv DONT_LINK_EXECUTABLE 1'"
+        ${WARN_ECHO} echo " "
     endif
 
 
@@ -119,26 +112,27 @@ if (${link_to_top}) then
         
         if (-e "${base_name}") then
             if (! -l "${base_name}") then
-                ${P_STDERR} "Executable ${base_name} exists and is not a link."
-                ${P_STDERR} "Forcing removal of ${base_name} to reduce confusion due to apparantly being up to date."
+                ${WARN_ECHO} "Executable ${base_name} exists and is not a link."
+                ${WARN_ECHO} "Forcing removal of ${base_name} to reduce confusion due to apparantly being up to date."
             endif 
 
             ${IVI_RM} "${base_name}"
             if (${status}) then
-                ${P_STDERR} "Command ${IVI_RM} ${base_name} failed in script finish_executable."
+                ${P_STDERR} "Command failed in script finish_executable: ${IVI_RM} ${base_name}"
                 exit 1
              endif 
         endif 
 
         ${IVI_LN} "${exec_name}" "${base_name}"
         if (${status}) then
-            ${P_STDERR} "Link command failed in script finish_executable."
-            ${P_STDERR} "Full failed command: ${IVI_LN} ${exec_name} ${base_name}"
+            ${P_STDERR} "Link command failed in script finish_executable: ${IVI_LN} ${exec_name} ${base_name}"
             exit 1
          endif 
     endif 
 endif 
 
+
+${VERBOSE_ECHO} "Leaving script finish_executable in directory ${cwd} with success."
 
 
 

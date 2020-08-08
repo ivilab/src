@@ -108,6 +108,8 @@ setenv BEEP ''
     setenv P_STDERR "${MAKE_PATH}scripts/p_stderr PSE: "
 # endif 
 
+setenv WARN_ECHO "${MAKE_PATH}scripts/p_stderr WRN: "
+
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
 # Kobus needs to sync this code with duplicated code in his .cshrc
 if ($?IVI_VERBOSE) then

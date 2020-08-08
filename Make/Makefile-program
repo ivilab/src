@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25693 2020-08-07 20:10:55Z kobus $
+# $Id: Makefile-program 25699 2020-08-08 18:49:10Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -844,9 +844,8 @@ $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
 #
 # Fancy bit. OBS_ARCHIVE is set to $(LD_OBJ_DIR)LOCAL.a exactly when there is a
 # object file in a program directory without a main(), which corresponds to OBS
-# being non-empty. If this is the case, then OBS_ARCHIVE, is build above. 
-#
-#
+# being non-empty. If this is the case, then OBS_ARCHIVE, is built above. 
+
 $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_ARCHIVE) $(LD_OBJ_DIR)%.o 
 	@$(IVI_ECHO)
 	@$(IVI_LD)  --version |& head -1  $(SUPRESS_IF_QUIET)
@@ -905,7 +904,7 @@ $(BUILD_BIN_PATH)% : $(LD_OBJ_DIR)%
 	@$(ECHO_IF_VERBOSE) "Make for bin is building $@ because of $?" 
 	@$(ECHO_IF_VERBOSE) "BUILD_BIN_PATH: |${BUILD_BIN_PATH}|" 
 	@$(ECHO_IF_VERBOSE) "LD_OBJ_DIR: |${LD_OBJ_DIR}|" 
-	$(MAKE_SCRIPT_PATH)update_bin $< $@
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)update_bin $< $@
 	$(IVI_PERMIT_EXECUTION) $@
 
 # ################################################################################

@@ -52,6 +52,28 @@ endif
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_file_list_2 in directory $cwd. "
 
+# If we are in a library directory, build the _incl.h file first, because, as a
+# header file, it will cause building of Makefiles a second time if we create
+# it too late in the process.
+
+if (-e "Makefile-include") then
+    set have_incl_dot_h = `${IVI_LS} | ${IVI_GREP} -c '_incl.h$'`
+    if (! ${have_incl_dot_h}) then
+        # Last path component.
+        set dir_str = `echo ${cwd} | sed 's#.*/##'`
+        set target = "${cwd}/${dir_str}_incl.h"
+
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 (in $cwd) executing: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 ${target} ${MAKE_SCRIPT_PATH}build_incl_dot_h"
+
+        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 ${target} ${MAKE_SCRIPT_PATH}build_incl_dot_h 
+        if (${status}) then
+            ${P_STDERR} "Call to build_incl_dot_h failed in script build_file_list_2 in ${cwd}."
+            set exit_status = 1
+            goto end_of_script
+        endif 
+    endif 
+endif 
+
 set must_update = 0
 
 if (-e Include_lines) then
@@ -119,7 +141,7 @@ if (! ${must_update}) then
                 ${IVI_TOUCH} Include_lines/file_list.new
                 ${IVI_TOUCH} Include_lines/header_file_list.new
 
-                goto cleanup
+                goto end_of_script
             else 
                 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_file_list_2 needs to update ${cwd}/Include_lines/file_list.new because file list changed." 
                 set must_update = 1
@@ -131,7 +153,7 @@ endif
 ${MAKE_SCRIPT_PATH}stream_file_names -h -s -skip_incl | sort -u > Include_lines/file_list.new 
 if (${status}) then
     set exit_status = 1
-    goto cleanup
+    goto end_of_script
 endif 
 
 # It does not really matter if the blocks are sorted together. We sort just to
@@ -140,7 +162,7 @@ endif
 ${MAKE_SCRIPT_PATH}stream_script_names | sed '/^build$/d' | sort -u >>  Include_lines/file_list.new
 if (${status}) then
     set exit_status = 1
-    goto cleanup
+    goto end_of_script
 endif 
 
 # TODO. I have lost track of why we do this (testing?) but it is clearly
@@ -184,7 +206,7 @@ ${VERBOSE_ECHO} "${VERBOSE_INDENT}Working on Include_lines/header_list.new in $c
 ${MAKE_SCRIPT_PATH}stream_file_names -h  -skip_incl |  sort -u > Include_lines/header_file_list.new 
 if (${status}) then
     set exit_status = 1
-    goto cleanup
+    goto end_of_script
 endif 
 
 if (-e Include_lines/header_file_list) then
@@ -264,7 +286,7 @@ if (${must_update}) then
             if (${status}) then
                 ${P_STDERR} "Making a list of include lines into ${new_inc_file}.tmp.$$ failed."
                 set exit_status = 1
-                goto cleanup
+                goto end_of_script
             endif 
 
             # This previous version assumes an overly restricted version of how
@@ -279,25 +301,25 @@ if (${must_update}) then
             if (${status}) then
                 ${P_STDERR} "Adding IVI_HAVE lines into  ${new_inc_file}.tmp.$$ failed."
                 set exit_status = 1
-                goto cleanup
+                goto end_of_script
             endif 
 
             sort -u ${new_inc_file}.tmp.$$ > ${new_inc_file}
             if (${status}) then
                 set exit_status = 1
-                goto cleanup
+                goto end_of_script
             endif 
 
             ${IVI_RM} ${new_inc_file}.tmp.$$
             if (${status}) then
                 set exit_status = 1
-                goto cleanup
+                goto end_of_script
             endif 
 
             ${IVI_CP} ${new_inc_file} ${inc_file}
             if (${status}) then
                 set exit_status = 1
-                goto cleanup
+                goto end_of_script
             endif 
 
             set actually_updated = 1
@@ -342,7 +364,7 @@ if (${must_update}) then
 
 endif 
 
-cleanup:
+end_of_script:
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_file_list_2 in directory $cwd with status ${exit_status}."
 

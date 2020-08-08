@@ -24,7 +24,7 @@
 ##############################################################################
 
 if ($# != 2) then
-    ${P_STDERR} "Script make_link needs two arguments."
+    ${P_STDERR} "Script make_link needs two arguments. Called with args: $*."
     exit 1
 endif 
 
@@ -35,9 +35,14 @@ set link_name = "$2"
 
 if (-e "${link_name}") then
     if (! -l "${link_name}") then
-        ${P_STDERR} "Proposed link ${link_name} exists and is not a link."
-        ${P_STDERR} "Forcing moving of ${link_name} to ${link_name}.$$ reduce confusion due to apparently being up to date."
+        ${WARN_ECHO} "Proposed link ${link_name} exists and is not a link."
+        ${WARN_ECHO} "Forcing moving of ${link_name} to ${link_name}.$$ reduce confusion due to apparently being up to date."
+
         ${IVI_MV} "${link_name}" "${link_name}.$$"
+        if (${status}) then
+            ${P_STDERR} "Script make_link command failed in ${cwd}: ${IVI_MV} ${link_name} ${link_name}.$$"
+            exit 1
+        endif 
     else 
         set link_to = `${MAKE_SCRIPT_PATH}get_link_target "${link_name}"`
         
@@ -47,14 +52,24 @@ if (-e "${link_name}") then
             exit 0
         else 
             ${VERBOSE_ECHO} "Removing link '${link_name}' in  `pwd`"
+
             ${IVI_RM} "${link_name}"
+            if (${status}) then
+                ${P_STDERR} "Script make_link command failed in ${cwd}: ${IVI_RM} ${link_name}"
+                exit 1
+            endif 
         endif 
     endif 
 else 
     ${VERBOSE_ECHO} "'${link_name}' does not exist in `pwd`"
 endif 
 
-${VERBOSE_ECHO} "Executing ${IVI_LN} ${link_target} ${link_name} in `pwd`"
+${VERBOSE_ECHO} "Script make_link executing in ${cwd}: ${IVI_LN} ${link_target} ${link_name}"
+
 ${IVI_LN} ${link_target} ${link_name}
+if (${status}) then
+    ${P_STDERR} "Script make_link command failed in ${cwd}: ${IVI_LN} ${link_target} ${link_name}"
+    exit 1
+endif 
 
 
