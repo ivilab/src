@@ -14,7 +14,7 @@ set id = "$2"
 if ("${IVI_FLOCK}" != "") then
     # Not all systems support -E, and perhaps not worth integrating. 
     # ${IVI_FLOCK} -E 22 -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
-    ${IVI_FLOCK} -E 22 -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
+    ${IVI_FLOCK} -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
     set flock_status = ${status}
     if (${flock_status}) then
 #         if (${flock_status} == 22) then
