@@ -1,11 +1,9 @@
 #!/bin/tcsh -f 
 
-if ($# != 2) then
-    ${P_STDERR} "Script atomic_echo_3 needs exactly two arguments. Called with: $*"
-    exit 1
-endif 
+set lock_file = "${ATOMIC_ECHO_ARG_1}"
+set id = "${ATOMIC_ECHO_ARG_2}"
 
-echo ${2} > ${1}
+echo ${id} > ${lock_file}
 
 
 

@@ -187,7 +187,6 @@ else
                 # optimization for some circumstances anyway. 
                
                 @ block_cycle = ${count} % 5
-                @ block_cycle = ${count} % 1
 
                 if (${block_cycle} == 0) then
                     #  I have not found a safe way to ignore error output. 

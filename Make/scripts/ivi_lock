@@ -153,6 +153,10 @@ if  ("${IVI_FLOCK_METHOD}" == "flock") then
 
     if (${safe_to_lock}) then
         # Not all systems support -E, and perhaps not worth integrating. 
+        # Not all systems support commands with arguments. CentOS does, and
+        # supports -E, Ubuntu 14 supports neither.
+        # It seems we need to wrap flock! 
+        #
         # flock -E 22 -w ${max_time_to_wait} ${lock_file} ${full_cmd}
         ${IVI_FLOCK} -w ${max_time_to_wait} ${lock_file} ${full_cmd}
         set flock_status = ${status}

@@ -11,10 +11,16 @@ endif
 set lock_file = "$1"
 set id = "$2"
 
+# Not all flocks support commands with arguments. Use setenv to pass them in,
+# even if we are not using flock so we can test.
+
+setenv ATOMIC_ECHO_ARG_1 "${lock_file}"
+setenv ATOMIC_ECHO_ARG_2 "${id}"
+
 if ("${IVI_FLOCK}" != "") then
     # Not all systems support -E, and perhaps not worth integrating. 
     # ${IVI_FLOCK} -E 22 -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
-    ${IVI_FLOCK} -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
+    ${IVI_FLOCK} -n ${lock_file} -c ${MAKE_SCRIPT_PATH}atomic_echo_3 
     set flock_status = ${status}
     if (${flock_status}) then
 #         if (${flock_status} == 22) then
@@ -28,7 +34,7 @@ if ("${IVI_FLOCK}" != "") then
     endif 
 else
     set noclobber
-    ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id} >& /dev/null
+    ${MAKE_SCRIPT_PATH}atomic_echo_3 >& /dev/null
     if (${status}) then
         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to overwrite lockfile with contents: `cat ${lock_file}`"
         exit 1
