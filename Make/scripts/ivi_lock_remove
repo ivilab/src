@@ -76,9 +76,18 @@ else
 
     if (-e "${lock_file}") then
         #  I have not found a safe way to ignore error output. 
-        set lock_proc = `cat ${lock_file}`
+        set lock_id = `cat ${lock_file}`
+        set cat_status = ${status}
 
-        if (${status}) then
+        if (! ${cat_status}) then 
+            set lock_proc = `echo ${lock_id} | ${IVI_SED} 's/^.*-//'`
+            if (${status}) then 
+                ${P_STDERR} "Script ivi_lock_remove sed command failed. This should never happen."
+                exit 1
+            endif 
+        endif 
+            
+        if (${cat_status}) then
             echo "Script ivi_lock_remove reports lock file ${lock_file} to be removed just got removed."
         else if (${lock_proc} != ${requesting_pid}) then 
             echo "Script ivi_lock_remove not removing lock file ${lock_file} for process ${requesting_pid} as it belongs to ${lock_proc}."
@@ -110,7 +119,7 @@ ivi_lock_remove_bail:
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_remove got an interrupt."
 
-# If we are not locking or even if we are, then the lock_file variable might not
+# If we are not locking otest_ivi_lock_2_r even if we are, then the lock_file variable might not
 # be set when we got interrupted.
 
 if (${safe_to_lock}) then

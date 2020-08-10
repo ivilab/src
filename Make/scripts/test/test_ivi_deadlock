@@ -1,0 +1,22 @@
+#!/bin/tcsh -f
+
+# We assume that we have sourced init_compile. 
+
+onintr bail
+
+# setenv EXIT_ON_DEADLOCK 
+setenv EXIT_ON_LOCK_TIMEOUT 
+
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+sleep 2
+
+${MAKE_SCRIPT_PATH}ivi_lock_for_make 5 FOO ${MAKE_SCRIPT_PATH}test/test_ivi_deadlock 
+# ${MAKE_SCRIPT_PATH}ivi_lock 5 ${MAKE_SCRIPT_PATH}test/test_ivi_deadlock 
+exit ${status}
+
+bail: 
+
+echo "Bailing in test_ivi_deadlock."
+
+exit 1 
+

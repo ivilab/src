@@ -1,0 +1,76 @@
+#!/bin/tcsh -f 
+
+##############################################################################
+#
+# Identification:
+#     Echos arguments to a file atomically
+#
+# Description:
+#     This script attempts to echo its second argument to the file given
+#     by the first argument so that only one of group of cooperating processes
+#     succeeds. If the file exists due to some other process, than this script
+#     will exit with status 1. We assume that we are writing a unique string to
+#     the file (e.g., a process id, which of course, is only unique for a single
+#     machine). 
+#
+#     Doing this reliable requires OS facilities. For systems where we have not
+#     figured out how to use such facilities reliably, we implemnt some hacks to
+#     achieve atomic writing which seem to work pretty well. But this script
+#     proably can fail. 
+#
+#     In more detail, this script uses helper file atomic_echo_2 which calls the
+#     helper atomic_echo_3 to do the echo, either using flock(1) if available,
+#     or with shell noclobber set if not. This script then gets off the CPU
+#     using sleep, and checks that what it thought it wrote is in fact in the
+#     file. This relies on the assumption that we write something unique to the
+#     file. 
+#
+# Deficiencies
+#     This script is likely not completely reliable on mac OS, and has not been
+#     tested enough on linux, where in theory it should be reliable. However,
+#     reading the unique id trick does seem pretty solid :-).
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
+if ($# != 2) then
+    ${P_STDERR} "Script atomic_echo needs exactly one argument."
+    exit 1
+endif 
+
+set lock_file = "$1"
+set id = "$2"
+
+${MAKE_SCRIPT_PATH}atomic_echo_2 ${lock_file} ${id}
+set atomic_echo_status =  ${status}
+
+if (${atomic_echo_status}) then
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} failed to write lock file held for `cat ${lock_file}`."
+    exit 1
+endif 
+
+# Get off the CPU
+sleep 0.01
+if (${status}) then
+    ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
+    exit 1
+endif
+
+# Read what we tried to write to check. 
+
+set existing_id = `cat ${lock_file}`
+if (${status}) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Someone might have snuck in before me (${id})."
+    exit 1
+endif
+
+if ("${existing_id}" != "${id}") then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Our non-atomic atomic writer failed --- handler for ${existing_id} snuck in before me (${id}). "
+    exit 1
+endif 
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Handler for ${id} SUCCESSFULLY set lock file contents to: `cat ${lock_file}`"
+
+

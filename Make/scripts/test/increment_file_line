@@ -3,7 +3,7 @@
 # We assume that we have sourced init_compile. 
 
 @ base = 10001
-@ num_lines = `cat test_ivi_lock_2.result | wc -l`
+@ num_lines = `cat ${TEST_LOCK_RESULT_FILE} | wc -l`
 
 @ base_plus_num_lines = $base + $num_lines
 

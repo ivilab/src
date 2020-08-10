@@ -1,0 +1,21 @@
+#!/bin/tcsh -f
+
+# We assume that we have sourced init_compile. 
+
+setenv EXIT_ON_DEADLOCK 
+setenv EXIT_ON_LOCK_TIMEOUT 
+
+${IVI_RM} ${IVI_LOCKFILE_PATH}FOO.lock 
+
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+
+./lock_and_die &
+
+sleep 2
+
+./lock_and_sleep &
+./lock_and_sleep &
+./lock_and_sleep &
+./lock_and_sleep &
+./lock_and_sleep &
+

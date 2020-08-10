@@ -1,0 +1,8 @@
+#!/bin/tcsh -f
+
+# We assume that we have sourced init_compile. 
+
+${MAKE_SCRIPT_PATH}ivi_lock_create 10 FOO
+sleep 2
+${MAKE_SCRIPT_PATH}ivi_lock_remove FOO
+

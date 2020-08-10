@@ -15,7 +15,7 @@ endif
 while ($iteration < $num_iterations)
     @ iteration += 1
     echo proc $$ doing iteration $iteration
-    ${LOCK_PROGRAM} 30 ./increment_file_line 
+    ${LOCK_PROGRAM} 60 ./increment_file_line 
 
     if (${status}) then 
         ${P_STDERR} "Command failed: ${LOCK_PROGRAM} 30 ./increment_file_line"

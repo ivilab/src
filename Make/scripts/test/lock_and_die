@@ -1,0 +1,10 @@
+#!/bin/tcsh -f
+
+# We assume that we have sourced init_compile. 
+
+# Notice that we are not calling ivi_lock_remove 
+${MAKE_SCRIPT_PATH}ivi_lock_create 10 FOO
+echo PID $$ is dying.
+exit 
+
+

@@ -1,0 +1,12 @@
+#!/bin/tcsh -f 
+
+if ($# != 2) then
+    ${P_STDERR} "Script atomic_echo_3 needs exactly two arguments. Called with: $*"
+    exit 1
+endif 
+
+echo ${2} > ${1}
+
+
+
+

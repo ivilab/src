@@ -1,0 +1,37 @@
+#!/bin/tcsh -f 
+
+# The name of this script is misleading. This does not (yet) implement an atomic
+# write, at least on some systems. It is a place holder for such a facility.
+
+if ($# != 2) then
+    ${P_STDERR} "Script atomic_echo_2 needs exactly two arguments. Called with: $*"
+    exit 1
+endif 
+
+set lock_file = "$1"
+set id = "$2"
+
+if ("${IVI_FLOCK}" != "") then
+    ${IVI_FLOCK} -E 22 -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
+    set flock_status = ${status}
+    if (${flock_status}) then
+        if (${flock_status} == 22) then
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to get lock via flock for file with contents: `cat ${lock_file}`"
+        else 
+            ${P_STDERR} "Flock failure NOT likely due to not being able to get the lock."
+        endif 
+
+        exit 1
+    endif 
+else
+    set noclobber
+    ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id} >& /dev/null
+    if (${status}) then
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to overwrite lockfile with contents: `cat ${lock_file}`"
+        exit 1
+    endif 
+endif 
+
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} TENTATIVELY set lock file contents to: `cat ${lock_file}`"
+
+
