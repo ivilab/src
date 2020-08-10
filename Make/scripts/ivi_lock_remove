@@ -82,8 +82,7 @@ else
         if (! ${cat_status}) then 
             set lock_proc = `echo ${lock_id} | ${IVI_SED} 's/^.*-//'`
             if (${status}) then 
-                ${P_STDERR} "Script ivi_lock_remove sed command failed. This should never happen."
-                exit 1
+                ${WRN_ECHO} "Script ivi_lock_remove sed command failed. This should never happen."
             endif 
         endif 
             
