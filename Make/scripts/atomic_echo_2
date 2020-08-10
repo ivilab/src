@@ -17,8 +17,8 @@ set id = "$2"
 setenv ATOMIC_ECHO_ARG_1 "${lock_file}"
 setenv ATOMIC_ECHO_ARG_2 "${id}"
 
-# Disable using flock.
-setenv IVI_FLOCK ""
+# Use this to disable using flock for testing.
+# setenv IVI_FLOCK ""
 
 if ("${IVI_FLOCK}" != "") then
     # Not all systems support -E, and perhaps not worth integrating. 
