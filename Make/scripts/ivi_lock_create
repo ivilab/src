@@ -201,7 +201,7 @@ else
                     else
                         set lock_proc = `echo ${lock_id} | ${IVI_SED} 's/^.*-//'`
                         if (${status}) then 
-                            ${WRN_ECHO} "Script ivi_lock_remove sed command failed. This should never happen."
+                            ${WARN_ECHO} "Script ivi_lock_remove sed command failed. This should never happen."
                         endif 
                     endif 
 
@@ -213,7 +213,7 @@ else
                     
                     if ("${lock_proc}" == "") then
                         echo ${requesting_pid} >! ${lock_file}
-                        ${WRN_ECHO} "Cannot read a process id from lock file. Assuming it needs to be removed."
+                        ${WARN_ECHO} "Cannot read a process id from lock file. Assuming it needs to be removed."
                         set remove_lock_file = 1
                     else
                         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} checking on lock file process ${lock_proc} on iteration ${count}." 
