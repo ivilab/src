@@ -60,8 +60,16 @@ if (${status}) exit ${status}
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_libs_needed_2 in directory ${build_dir_path}."
 
-set target_file_name =  "Include_lines/Makefile-libs-needed/Makefile-libs-needed${VAR_CACHE_SUFFIX}"
-set output_file_name = Makefile-libs-needed.$$
+set output_dir = "Include_lines/Makefile-libs-needed"
+${IVI_MKDIR) "${output_dir}"
+
+if (${status}) then
+    ${P_STDERR} "Script build_makefile_libs_needed_2 unable to make directory: ${cwd}/${output_dir}."
+    exit 1
+endif 
+
+set target_file_name = "${output_dir}/Makefile-libs-needed${VAR_CACHE_SUFFIX}"
+set output_file_name = "${output_dir}/Makefile-libs-needed.$$"
 
 set cur_time = `date`
 
@@ -426,6 +434,8 @@ ${IVI_MKDIR} Include_lines/Makefile-libs-needed
 if (-e "${target_file_name}") then
     ${VERBOSE_ECHO} "${cwd}/${target_file_name} already exists (not sure if this is indicative of an issue)."
     ${MAKE_SCRIPT_PATH}copy_if_different ${output_file_name} ${target_file_name}
+    ${IVI_RM} ${output_file_name} 
+
 #     echo " "
 #     echo "Moving ${target_file_name}, which must of been created by a different process, to ${target_file_name}-SAVE.$$."
 #     ${IVI_MV} "${target_file_name}" "${target_file_name}-SAVE.$$" 

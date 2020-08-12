@@ -13,10 +13,11 @@
 #     lockfile-create if it is available. The main justification for this script
 #     is that locking is not universally available. Most notably good locking
 #     facilities are not available in the mac OS. Hence, this script also
-#     implements a fall back method that is less than ideal, but usually works. 
+#     implements portable structure that also works most of the time without
+#     true OS support. 
 #
-#     The first argument to ivi_lock_create is the max number of seconds to wait. This
-#     is to be consistent with ivi_lock.
+#     The first argument to ivi_lock_create is the max number of seconds to
+#     wait. This is to be consistent with ivi_lock.
 #
 #     The second argument to ivi_lock_create is simply a label (often just the
 #     name of the script), which is combined with the current directory to
@@ -26,9 +27,6 @@
 #     The third (optional argument) is the PID of the script interested in the
 #     lock. It defaults to the PID of the process that called it (this script's
 #     parent process). 
-#
-#     If the environment variable IVI_LOCK_PROGS_METHOD is set, this script will
-#     use its value for the locking method. 
 #
 #     If the environment variable IVI_LOCKFILE_PATH is set, this script will use
 #     its value as a directory to create lockfiles in. Otherwise, this script
@@ -45,10 +43,22 @@
 #     the string ".lock" to $IVI_LOCKFILE_NAME, and use that for a lockfile in
 #     the lockfile directory.
 #
-#     Finally, if the environment variable IVI_DONT_LOCK is set, then this
-#     script essentially does nothing. The main purpose of this is to avoid
+#     If the timeout is exceeded, then we ignore the lock. However, if the
+#     environment variable EXIT_ON_TIMEOUT is set, we will exit with error
+#     status.
+#
+#     If the OS program "flock" is available, then we will use it for an atomic
+#     write to the lockfile. This can be disabled using FORCE_NO_FLOCK. We want
+#     to be able to disable it, because the use of flock in this script is not
+#     well tested. 
+#
+#     If the environment variable IVI_DONT_LOCK is set, then this script runs
+#     the argument without any locking. The main purpose of this is to avoid
 #     deadlock when we effectively call scripts recursively. Normally there is a
-#     better way to accomplish what you want to do.
+#     better way to accomplish what you want to do, but one instance where such
+#     a way is yet to be discovered is in repository synchronization where we
+#     want 'to' and 'from' processes to share locks, but also call each other.
+#
 #
 # Deficiencies
 #     The current implementation locks all runs of a command operating in a
@@ -116,7 +126,7 @@ onintr ivi_lock_create_bail
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create using lock file ${lock_file} for ${requesting_pid} in ${cwd}"
 
-if ("${IVI_LOCK_PROGS_METHOD}" == "lockfile-progs") then
+if (($?PREFER_LOCKFILE_PROGS) && ("${IVI_LOCKFILE_CREATE_PATH}" != "") && ("${IVI_LOCKFILE_REMOVE_PATH}" != "")) then
     echo "UNTESTED: Process $$ running lock_create ${lock_label} in `pwd` using lockfile-progs"
 
     # lockfile-create has its own timeout formula which defaults to 3 minutes.
@@ -165,6 +175,7 @@ else
         endif
 
         if (! -e "${lock_file}") then
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} noting that lockfile ${lock_file} does not exist."
             ${MAKE_SCRIPT_PATH}atomic_echo ${lock_file} "${id}" 
             set atomic_echo_status =  ${status}
 
@@ -176,6 +187,8 @@ else
                 set got_it = 1
             endif
         else 
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} noting that lockfile ${lock_file} exits."
+
             set count = 0
 
             while (-e "${lock_file}")
@@ -198,9 +211,14 @@ else
                         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock file ${lock_file} disappeared! Getting back in the queue."
                         continue
                     else
+                        set lock_host = `echo ${lock_id} | ${IVI_SED} 's/-.*//'`
+                        if (${status}) then 
+                            ${WARN_ECHO} "Script ivi_lock_create sed command to get host failed. This should never happen."
+                        endif 
+
                         set lock_proc = `echo ${lock_id} | ${IVI_SED} 's/^.*-//'`
                         if (${status}) then 
-                            ${WARN_ECHO} "Script ivi_lock_remove sed command failed. This should never happen."
+                            ${WARN_ECHO} "Script ivi_lock_create sed command to get pid failed. This should never happen."
                         endif 
                     endif 
 
@@ -214,7 +232,7 @@ else
                         echo ${requesting_pid} >! ${lock_file}
                         ${WARN_ECHO} "Cannot read a process id from lock file. Assuming it needs to be removed."
                         set remove_lock_file = 1
-                    else
+                    else if ("${lock_host}" == "${SHORT_HOST}") then
                         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} checking on lock file process ${lock_proc} on iteration ${count}." 
                         ps ${lock_proc} >& /dev/null
                         set ps_status = "${status}" 
@@ -223,58 +241,68 @@ else
                             ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} reports process ${lock_proc} holding ${lock_file} no longer exists."
                             set remove_lock_file = 1
                         endif 
+                    else 
+                        # No point ascking about a process on a different
+                        # machine. We will need to timeout.
+                        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} not checking up on ${id} as it is on a different host."
                     endif 
-
 
                     if (${remove_lock_file}) then
                         # OK it is stale, but danger, others might be trying to
                         # remove it too! So we do a mini lock for removing, but
                         # not by recursing into the ivi lock system! 
 
-                        set rm_lock_file = "${lock_file}-RM-${lock_proc}"
-                        
-                        ${MAKE_SCRIPT_PATH}atomic_echo ${rm_lock_file} "${id}" 
-                        set atomic_echo_status =  ${status}
+                        if ($?LIMIT_LOCK_CREATE_RECURSION) then
+                            ${WARN_ECHO} "Lock handler for ${requesting_pid} blocked a second recursive call into ivi_lock_create."
+                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} forcing remove of ${lock_file} instead of recursing again."
+                            set really_remove_lock_file = 1
+                        else
+                            setenv LIMIT_LOCK_CREATE_RECURSION
 
-                        if (${atomic_echo_status}) then
-                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} failed to get lock for removing a lock. No action taken."
-                        else 
-                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process ${requesting_pid} lock handler has got the lock file ${rm_lock_file} (contents `cat ${rm_lock_file}`)."
+                            set rm_lock_label = "${lock_label}-RM-${lock_proc}"
                             
-                            # Check the file still exists and still has stale
-                            # contents.
+                            ${MAKE_SCRIPT_PATH}ivi_lock_create 5 ${rm_lock_label}
+
+                            # We do not care about the status. Either we got the
+                            # lock, or we timed out.  Check the file still
+                            # exists and still has stale contents.
 
                             set really_remove_lock_file = 0
 
                             if (-e "${lock_file}") then
-                                set new_lock_proc = `cat ${lock_file} | ${IVI_SED} 's/^.*-//'`
+                                set new_lock_id = `cat ${lock_file}`
 
-                                if (! ${status}) then
-                                    # This covers both the case that the file is
-                                    # still empty, and it contains a dead
-                                    # process.
+                                if (! ${status}) then 
+                                    set new_lock_host = `echo ${new_lock_id} | ${IVI_SED} 's/-.*//'`
+                                    if (${status}) then 
+                                        ${WARN_ECHO} "Script ivi_lock_create sed command to get host failed. This should never happen."
+                                    else if ("${new_lock_host}" == "${lock_host}") then
+                                        set new_lock_proc = `echo ${new_lock_id} | ${IVI_SED} 's/^.*-//'`
 
-                                    if (${new_lock_proc} == ${lock_proc}) then
-                                        set really_remove_lock_file = 1
+                                        if (! ${status}) then
+                                            if (${new_lock_proc} == ${lock_proc}) then
+                                                set really_remove_lock_file = 1
+                                            endif
+                                        endif
                                     endif
                                 endif 
                             endif 
 
-                            if (${really_remove_lock_file}) then
-                                ${IVI_RM} "${lock_file}"
-                                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create removed lock file ${lock_file} as process ${lock_proc} does not exist."
-                            else
-                                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create not removing lock file ${lock_file} as it seems that someone else did it."
-                            endif 
-
-                            ${IVI_RM} "${rm_lock_file}"
-                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process ${requesting_pid} lock handler has relinquished the lock file ${rm_lock_file}."
-
-                            continue
+                            ${MAKE_SCRIPT_PATH}ivi_lock_remove ${rm_lock_label}
                         endif
+
+                        if (${really_remove_lock_file}) then
+                            ${IVI_RM} "${lock_file}"
+                            ${IVI_RM} "${lock_file}.flock"
+                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create has removed lock file ${lock_file} as process ${lock_proc} does not exist."
+                        else
+                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create not removing lock file ${lock_file} as it seems that someone else did it."
+                        endif 
+
+                        continue
                     else if (${time_waited} > ${max_time_to_wait}) then
-                        ${P_STDERR} "Process $$ waited too long for ${lock_file} on behalf of process ${requesting_pid}. "
-                        ${P_STDERR} "Process $$ waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
+                        ${P_STDERR} "Lock handler for ${requesting_pid} waited too long for ${lock_file}."
+                        ${P_STDERR} "It waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
                         set end_time = `date +%H:%M:%S`
                         ${P_STDERR} "Specifically it waited from ${start_time} to ${end_time}." 
                         ${P_STDERR} "Information about the process (${lock_proc}) holding the lock:"
@@ -283,17 +311,19 @@ else
                         ps -l ${requesting_pid} 
 
                         if ($?EXIT_ON_LOCK_TIMEOUT) then
-                            ${P_STDERR} "Process $$ waiting for ${lock_file} exiting with failure because EXIT_ON_LOCK_TIMEOUT is set." 
+                            ${P_STDERR} "Removing the lock."
+                            ${IVI_RM} "${lock_file}"
+                            ${IVI_RM} "${lock_file}.flock"
+                            ${P_STDERR} "Lock handler for ${requesting_pid} waiting for ${lock_file} exiting with failure because EXIT_ON_LOCK_TIMEOUT is set." 
                             set exit_status = 1
                             goto cleanup
+                        else 
+                            ${P_STDERR} "Lock handler for ${requesting_pid} grabbing the lock."
+                            ${IVI_RM} "${lock_file}.flock"
+                            echo ${requesting_pid} >! ${lock_file}
+                            set got_it = 1
+                            break
                         endif 
-
-                        ${P_STDERR} "Sleeping for 5 more seconds for debugging" 
-                        sleep 5
-                        ${P_STDERR} "Ignoring the lock."
-                        echo ${requesting_pid} >! ${lock_file}
-                        set got_it = 1
-                        break
                     endif
                 else
                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} not checking up on lock file process on iteration ${count}." 

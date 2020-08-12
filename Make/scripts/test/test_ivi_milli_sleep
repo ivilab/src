@@ -9,7 +9,7 @@ endif
 set exit_status = 0
 set output_file = test_ivi_milli_sleep.output
 
-${IVI_CREATE} "${output_file}"
+${IVI_RM} "${output_file}"
 if ($status) exit 1
 
 @ count=1 

@@ -12,17 +12,22 @@ endif
 
 @ iteration = 0
 
+${VERBOSE_ECHO} "Process $$ doing test_ivi_lock_2_helper."
+
 while ($iteration < $num_iterations)
     @ iteration += 1
-    echo proc $$ doing iteration $iteration
-    ${LOCK_PROGRAM} 200 ./increment_file_line 
+    ${VERBOSE_ECHO} "Process $$ doing iteration ${iteration} / ${num_iterations}"
+
+    ${LOCK_PROGRAM} 200 ./increment_file_line NULL $$
 
     if (${status}) then 
-        ${P_STDERR} "Command failed: ${LOCK_PROGRAM} 30 ./increment_file_line"
+        ${P_STDERR} "Command failed: ${LOCK_PROGRAM} 200 ./increment_file_line NULL $$"
         exit 1 
     endif 
 
-    echo proc $$ finished iteration $iteration
+    echo proc $$ finished iteration ${iteration}
 end 
+
+echo proc $$ done ${num_iterations} iterations.
 
 

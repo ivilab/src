@@ -2,14 +2,18 @@
 
 # We assume that we have sourced init_compile. 
 
+set requesting_pid = $2
+
 @ base = 10001
 @ num_lines = `cat ${TEST_LOCK_RESULT_FILE} | wc -l`
 
 @ base_plus_num_lines = $base + $num_lines
 
-set ppid = `ps -p $$ -o ppid=`
+# set ppid = `ps -p $$ -o ppid=`
 
-echo $base_plus_num_lines : $ppid >>! ${TEST_LOCK_RESULT_FILE}
-echo $base_plus_num_lines : $ppid
+echo "Process $$ incrementing file line under lock for ${requesting_pid}."
+echo $base_plus_num_lines : ${requesting_pid} >>! ${TEST_LOCK_RESULT_FILE}
+echo $base_plus_num_lines : ${requesting_pid}
+echo "Process $$ done incrementing file line under lock for ${requesting_pid}."
 
 

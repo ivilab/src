@@ -76,7 +76,7 @@ endif
 
 ${VERBOSE_ECHO} "Script ivi_guard_create is creating ${guard_file}"
 
-${IVI_CREATE} "${guard_file}"
+${IVI_TOUCH} "${guard_file}"
 if (${status}) exit status
 
 

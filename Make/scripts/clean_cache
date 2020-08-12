@@ -1,33 +1,43 @@
 #!/bin/tcsh -f
 
-# $Id: clean_cache 25496 2020-06-14 13:11:00Z kobus $
+# $Id: clean_cache 25718 2020-08-12 17:50:08Z kobus $
 
-# changed by AMP on 28 march 2011 --
-#
-# "'All'?  We ain't got no 'all,' we don't need no 'all'!
-# I don't have to show you any stinkin' 'all'!"
-#
-# The script now assumes "all" is always true, because the non-all branch
-# relies on the setting of VAR_CACHE_FNAME.  But VAR_CACHE_FNAME is stored in
-# the cache.  So if the cache were corrupt, specifically if VAR_CACHE_FNAME
-# were bad, then the cache would not be able to be cleaned!  Sort of like how
-# a cancer cell refuses to play by the rules and succumb to apoptosis,
-# the cache could be so bad that it refuses to allow itself to be cleaned!
-#
-# Actually we must do a little more to be sure we've solved the problem:
-# environment variable IVI_RM also is cached, yet it is the verb we use to
-# remove the cache.  So a small "paranoia" clause is added at the end to make
-# sure IVI_RM indeed removes the file; if not, we try one more time.
-#
-# Once this modification is more mature, my long expository comment here and
-# the deadwood below may be safely removed.
+# Synch some boostrapping with init_compile.
 
+if (! $?IVI_SRC_PATH) then 
+   bash -c 'echo "Script clean_cache assumes IVI_SRC_PATH is set." 1>&2'
+   exit 1
+else if (! -d "${IVI_SRC_PATH}") then 
+   bash -c 'echo "Script clean_cache assumes IVI_SRC_PATH constains a valid directory." 1>&2'
+   exit 1
+endif 
 
-#if ( $#argv > 0 && $1 == "all" ) then
-#    set all=1;
-#else
-#    set all=0;
-#endif
+if ($?IVI_HAVE_INIT_SCRIPTS) then
+    # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
+    if ($?IVI_VERBOSE_2) then
+        echo "VB2: Script clean_cache is not sourcing ${IVI_SRC_PATH}Make/init_scripts because IVI_HAVE_INIT_SCRIPTS is set."
+    endif 
+else 
+    # Do not use VERBOSE_ECHO as we may not have it yet. 
+    if ($?IVI_VERBOSE) then
+        echo "IVB: Script clean_cache is sourcing ${IVI_SRC_PATH}Make/init_scripts."
+    endif 
+
+    source ${IVI_SRC_PATH}/Make/init_scripts
+
+    if ($status) then
+        if ($?IVI_VERBOSE) then
+            echo "IVB: Script clean_cache is exiting due to init_scripts failure."
+        endif 
+        exit 1
+    endif 
+endif 
+
+${IVI_RM} "${IVI_LOCKFILE_PATH}"
+
+# Kobus: Summer 2020. Andrew Predoehl had some code here that dealt with the
+# issue that at some point IVI_RM (then KJB_RM) was stored in the cache. This is
+# no longer true, but leaving the code as is does no harm. 
 
 # sorry windows users
 set default_rm="rm -r -f"
@@ -38,82 +48,70 @@ else
     set rm="$IVI_RM"
 endif
 
-#if( ! $?VAR_CACHE_FNAME ) then
-#    echo "VAR_CACHE_FNAME not set."
-#    set all=1
-#endif
+set cache_dir = "${USER_TEMP_PATH}"
 
-#if( $all == 1 ) then
-    if( $?TMPDIR ) then
-        set cache_dir="$TMPDIR"
-    else
-        set cache_dir="/tmp"
-    endif
+if( ! -w $cache_dir) then
+    echo 'Error: writable cache directory not found. No caches were cleaned.'
+    exit
+endif
 
-    if( ! -w $cache_dir) then
-        echo 'Error: writable cache directory not found. No caches were cleaned.'
-        exit
-    endif
+set cache_dir="${cache_dir}/${USER}"
 
-    set cache_dir="${cache_dir}/${USER}"
+if (-d "${cache_dir}") then 
+    set cache_prefixes='kjb_env kjb_var ivi_env ivi_var'
+    set cache_lock_file = "${cache_dir}/cache_lock"
+    set found_files_to_delete = 0 
 
-    if (-d "${cache_dir}") then 
-        set cache_prefixes='kjb_env kjb_var ivi_env ivi_var'
-        set cache_lock_file = "${cache_dir}/cache_lock"
-        set found_files_to_delete = 0 
+    foreach cache_prefix (${cache_prefixes})
+        set noglob
+        set have_file_to_delete = `find -L "${cache_dir}" -name "${cache_prefix}*"  | grep -c "${cache_prefix}*" `
+        unset noglob
 
-        foreach cache_prefix (${cache_prefixes})
-            set noglob
-            set have_file_to_delete = `find -L "${cache_dir}" -name "${cache_prefix}*"  | grep -c "${cache_prefix}*" `
-            unset noglob
-
-            # The find could do the delete, but keep the following longer way
-            # for now.
-            #
-            if (${have_file_to_delete}) then
-                set found_files_to_delete = 1
-                echo "Deleting all files in ${cache_dir} with prefix ${cache_prefix}."
-
-                foreach cachefile (${cache_dir}/${cache_prefix}*)
-                    ${rm} ${cachefile}
-                    # Paranoia
-                    if (-e "${cachefile}") then
-                        echo "Removal command ${rm} did not work!  Trying ${default_rm}."
-                        ${default_rm} ${cachefile}
-                        if ( -e ${cachefile} ) then
-                            ${P_STDERR} "Panic: unable to remove cache file ${cachefile}."
-                            ${P_STDERR} "Please remove it manually."
-                            exit 1
-                        endif
-                    endif
-                end
-            endif 
-        end 
-
-        if (-e "${cache_lock_file}") then
+        # The find could do the delete, but keep the following longer way
+        # for now.
+        #
+        if (${have_file_to_delete}) then
             set found_files_to_delete = 1
-            echo "Deleting the cache lockfile."
+            echo "Deleting all files in ${cache_dir} with prefix ${cache_prefix}."
 
-            ${rm} ${cache_lock_file}
-            # Paranoia
-            if ( -e ${cache_lock_file} ) then
-                echo "Removal command ${rm} did not work!  Trying ${default_rm}."
-                ${default_rm} ${cache_lock_file}
-                if ( -e ${cache_lock_file} ) then
-                    ${P_STDERR} "Panic: unable to remove cache file ${cachefile}."
-                    ${P_STDERR} "Please remove it manually."
-                    exit 1
+            foreach cachefile (${cache_dir}/${cache_prefix}*)
+                ${rm} ${cachefile}
+                # Paranoia
+                if (-e "${cachefile}") then
+                    echo "Removal command ${rm} did not work!  Trying ${default_rm}."
+                    ${default_rm} ${cachefile}
+                    if ( -e ${cachefile} ) then
+                        ${P_STDERR} "Panic: unable to remove cache file ${cachefile}."
+                        ${P_STDERR} "Please remove it manually."
+                        exit 1
+                    endif
                 endif
-            endif
+            end
         endif 
+    end 
 
-        if (! ${found_files_to_delete}) then 
-           echo "No files in the cache to delete."  
-        endif 
+    if (-e "${cache_lock_file}") then
+        set found_files_to_delete = 1
+        echo "Deleting the cache lockfile."
+
+        ${rm} ${cache_lock_file}
+        # Paranoia
+        if ( -e ${cache_lock_file} ) then
+            echo "Removal command ${rm} did not work!  Trying ${default_rm}."
+            ${default_rm} ${cache_lock_file}
+            if ( -e ${cache_lock_file} ) then
+                ${P_STDERR} "Panic: unable to remove cache file ${cachefile}."
+                ${P_STDERR} "Please remove it manually."
+                exit 1
+            endif
+        endif
     endif 
 
-#else
-#    echo "Deleting cache file ${VAR_CACHE_FNAME}"
-#    ${rm} ${VAR_CACHE_FNAME}
-#endif
+    if (! ${found_files_to_delete}) then 
+       echo "No files in the cache to delete."  
+    endif 
+endif 
+
+# Do it again, in case some code above set any locks (it should not).
+${IVI_RM} "${IVI_LOCKFILE_PATH}"
 

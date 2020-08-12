@@ -30,21 +30,23 @@ set test_lock_output_file = "${0}.output"
 set test_lock_answer_file = "${0}.answer"
 set test_lock_check_file = "${0}.check"
 
-${IVI_CREATE} "${TEST_LOCK_RESULT_FILE}"
-${IVI_CREATE} "${test_lock_output_file}"
-${IVI_CREATE} "${test_lock_answer_file}"
+${IVI_CAT} /dev/null > "${TEST_LOCK_RESULT_FILE}"
+${IVI_CAT} /dev/null > "${test_lock_output_file}"
+${IVI_CAT} /dev/null > "${test_lock_answer_file}"
 
-@ proc_count = 0
+@ proc_count = 1
 
-while ($proc_count < $num_procs)
+while ($proc_count <= $num_procs)
+    echo proc_count: ${proc_count} / ${num_procs}
     ./test_ivi_lock_2_helper $num_iterations !>>& "${test_lock_output_file}" & 
     @ proc_count += 1
-    echo proc_count: $proc_count
 end 
+
+echo "Now waiting on ${num_procs} processes."
 
 wait 
 
-@ num_total_iterations = $proc_count * $num_iterations
+@ num_total_iterations = $num_procs * $num_iterations
 
 @ base = 10001
 @ iteration_count = 0

@@ -7,12 +7,12 @@
 #
 # Description:
 #     This is a simple script for locking. It trades limited capability for
-#     simplicity (see deficiencies below). Using it is a lot like using "flock",
-#     and in fact, it is implemented using flock if flock is available. The
-#     main justification for this script is that locking is not universally
-#     available. Most notably good locking facilities are not available in the
-#     mac OS. Hence, this script implements a fall back method that is less than
-#     ideal, but usually works. 
+#     simplicity (see deficiencies below). The main justification for this
+#     script is that locking is not universally available. Most notably good
+#     locking facilities are not available in the mac OS. To get portability, we
+#     implement a lock_create and a lock_remove, using locking facilities that
+#     are available depending on environment variables. This script wraps the
+#     command to be run inside the create remove pair.
 #
 #     The first argument to ivi_lock is the max number of seconds to wait. This
 #     has to be first because the command can have an arbitrary number of
@@ -38,23 +38,35 @@
 #     is taken as the precise lockfile, and the behaviour is similar to "flock",
 #     especially if flock is the underlying implementation.
 #
-#     If the environment variable IVI_FLOCK_METHOD is set, this script will
-#     use its value for the locking method. Current settings include "flock",
-#     and "ivi". If "ivi" then the locking is further modifiable (on systems
-#     where there is a choice) via IVI_LOCK_PROGS_METHOD. 
-#
 #     If the environment variable IVI_LOCKFILE_PATH is set, this script will use
 #     its value as a directory to create lockfiles in. Otherwise, this script
 #     will use ${TMPDIR}/${USER}/lockfiles/, creating it if needed.
 #
-#     Finally, if the environment variable IVI_DONT_LOCK is set, then this
-#     script runs the argument without any locking. The main purpose of this is
-#     to avoid deadlock when we effectively call scripts recursively. Normally
-#     there is a better way to accomplish what you want to do, but one instance
-#     where such a way is yet to be discovered is in repository synchronization
-#     where we want 'to' and 'from' processes to share locks, but also call each
-#     other.
+#     If the environment variable IVI_DONT_LOCK is set, then this script runs
+#     the argument without any locking. The main purpose of this is to avoid
+#     deadlock when we effectively call scripts recursively. Normally there is a
+#     better way to accomplish what you want to do, but one instance where such
+#     a way is yet to be discovered is in repository synchronization where we
+#     want 'to' and 'from' processes to share locks, but also call each other.
 #
+#     This script checks for possible deadlock and does not lock if it thinks
+#     this could happen. Further if the environment variable EXIT_ON_DEADLOCK is
+#     set, then we exit with error status in this situation (good for
+#     debugging).
+#
+#     Finally, this script relies on ivi_lock_create for handling timing out. If
+#     the timeout is exceeded, then we ignore the lock. However, if the
+#     environment variable EXIT_ON_TIMEOUT is set, we will exit with error
+#     status.
+#
+# See also
+#      The script ivi_lock_for_make combines locking with not executing the
+#      command if the target was build by the process we were waiting on, or if
+#      it is newer than a file touched in build-2. Scripts ivi_lock_create and
+#      ivi_lock_remove can be used in other ways, and their documentation
+#      provides additional information about the locking system, including
+#      environment variables that manipulate it.
+#  
 # Deficiencies
 #     The current implementation locks all runs of a command operating in a
 #     given sub-directory, irrespective of arguments or parent directory, which
@@ -69,6 +81,8 @@
 #     as the path is now relative to where you are running things, not the
 #     IVI_LOCKFILE_PATH (which might also confuse). This scenario seems
 #     unlikely.
+#
+#     See ivi_lock_create for more deficiencies related to reliable locking.
 #
 # Author:
 #     Kobus Barnard 
@@ -145,80 +159,38 @@ onintr ivi_lock_bail
 source ${MAKE_SCRIPT_PATH}check_for_deadlock
 if (${status}) exit ${status} 
 
-if  ("${IVI_FLOCK_METHOD}" == "flock") then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using 'flock'"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
 
-    source ${MAKE_SCRIPT_PATH}set_lockfile_name
-    if (${status}) exit ${status} 
+set requesting_pid = `ps -p $$ -o ppid=`
 
-    if (${safe_to_lock}) then
-        # Not all systems support -E, and perhaps not worth integrating. 
-        # Not all systems support commands with arguments. CentOS does, and
-        # supports -E, Ubuntu 14 supports neither.
-        # It seems we need to wrap flock! 
-        #
-        # flock -E 22 -w ${max_time_to_wait} ${lock_file} ${full_cmd}
-        ${IVI_FLOCK} -w ${max_time_to_wait} ${lock_file} ${full_cmd}
-        set flock_status = ${status}
-        if (${flock_status}) then
-            ${P_STDERR} "Command failed in ivi_lock in ${cwd}: flock -E 22 -w ${max_time_to_wait} ${lock_file} ${full_cmd}"
-#             if (${flock_status} == 22) then
-#                 ${P_STDERR} "Flock failure likley due to time out which was set to ${max_time_to_wait}."
-#             else 
-#                 ${P_STDERR} "Flock failure NOT likely due to time out which was set to ${max_time_to_wait}."
-#             endif 
-
-            set exit_status = 1
-        endif 
-    else
-        ${full_cmd}
-        if (${status}) then
-            ${P_STDERR} "Command failed in ivi_lock in ${cwd}: ${full_cmd}"
-            set exit_status = 1
-        endif 
+if (${safe_to_lock}) then
+    ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid}
+    if ($status) then 
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Call to ivi_lock_create from ivi_lock failed."
+        set exit_status = 1
     endif 
-
-    if (! ${exit_status}) then
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using 'flock'"
-    endif
 else 
-    # IVI locking method. Doing locking robustly in scripts is hard, but
-    # often (e.g., mac) we do not have a good solution. The following is better
-    # than nothing.
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock skipping call to ivi_lock_create as it is not safe to lock."
+endif  
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
-
-    set requesting_pid = `ps -p $$ -o ppid=`
-
-    if (${safe_to_lock}) then
-        ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid}
-        if ($status) then 
-            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Call to ivi_lock_create from ivi_lock failed."
-            set exit_status = 1
-        endif 
-    else 
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock skipping call to ivi_lock_create as it is not safe to lock."
-    endif  
-
-    if (! ${exit_status}) then
-        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ executing ${full_cmd}"
-        ${full_cmd} 
-        set exit_status = $status 
-        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Executing ${full_cmd} had exit status ${exit_status}."
-    endif 
-
-    if (${safe_to_lock}) then
-        ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_label} ${requesting_pid}
-    else 
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock skipping call to ivi_lock_remove as it is not safe to lock."
-    endif  
-
-    if (! ${exit_status}) then 
-        ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using IVI locking method."
-    endif 
-        
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing up up ivi_lock with IVI locking method."
+if (! ${exit_status}) then
+    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ executing ${full_cmd}"
+    ${full_cmd} 
+    set exit_status = $status 
+    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Executing ${full_cmd} had exit status ${exit_status}."
 endif 
+
+if (${safe_to_lock}) then
+    ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_label} ${requesting_pid}
+else 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock skipping call to ivi_lock_remove as it is not safe to lock."
+endif  
+
+if (! ${exit_status}) then 
+    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using IVI locking method."
+endif 
+    
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing up up ivi_lock with IVI locking method."
 
 cleanup: 
 

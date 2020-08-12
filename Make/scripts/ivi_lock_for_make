@@ -14,12 +14,12 @@
 #     assigned the same task as a first, gets the lock, it will redo the build a
 #     second time. This is wasteful and confusing. 
 #
-#     If there is only one instant of make running, and if all dependencies
-#     are exposed to make, and the makefiles are correct, then neither locking, nor ensuring only single
-#     execution of the task should be needed. However, the ivi build system has
-#     hidden targets, ans sometimes we run multiple instances of make either on
-#     purpose or by accident. Especially for hidden targets, we want to consider
-#     using this script. 
+#     If there is only one instant of make running, and if all dependencies are
+#     exposed to make, and the makefiles are correct, then neither locking, nor
+#     ensuring only single execution of the task should be needed. However, the
+#     ivi build system has hidden targets, and sometimes we run multiple
+#     instances of make either on purpose or by accident. Especially for hidden
+#     targets, we want to consider using this script. 
 #
 # Author:
 #     Kobus Barnard 
@@ -120,10 +120,10 @@ set target_label = "${dir_str}_${lock_label}"
 
 set time_stamp_file = "${dir_str}_${target_label}.$$"
 set time_stamp_file = "${IVI_LOCKFILE_PATH}${time_stamp_file}"
-${IVI_CREATE} ${time_stamp_file}
+${IVI_TOUCH} ${time_stamp_file}
 
 if (${status}) then
-    ${P_STDERR} "Creation of ${time_stamp_file} failed in ivi_lock_for_make. Doing without."
+    ${P_STDERR} "Touch of ${time_stamp_file} failed in ivi_lock_for_make. Doing without."
     set time_stamp_file = DOES_NOT_EXIST
 endif 
 

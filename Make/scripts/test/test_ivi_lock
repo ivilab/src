@@ -13,7 +13,7 @@ unsetenv IVI_LOCKFILE_NAME
 set wait_time = 2
 
 # Each instant of test_ivi_lock_2 will add its PID to this file.
-$IVI_CREATE test_ivi_lock.result
+${IVI_CAT} /dev/null > test_ivi_lock.result
 
 ${MAKE_SCRIPT_PATH}ivi_lock ${wait_time} ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 
 ${MAKE_SCRIPT_PATH}ivi_lock ${wait_time} ${MAKE_SCRIPT_PATH}test/test_ivi_lock_helper & 

@@ -59,8 +59,8 @@ onintr ivi_lock_remove_bail
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ running ivi_lock_remove ${lock_label} in ${cwd}."
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_remove process $$ using lockfile '${lock_file}'"
 
-if ("${IVI_LOCK_PROGS_METHOD}" == "lockfile-progs") then
-    ${VERBOSE_ECHO} "Process $$ running ivi_lock_remove ${lock_label} in `pwd` using lockfile-progs"
+if (($?PREFER_LOCKFILE_PROGS) && ("${IVI_LOCKFILE_CREATE_PATH}" != "") && ("${IVI_LOCKFILE_REMOVE_PATH}" != "")) then
+    ${VERBOSE_ECHO} "UNTESTED: Process $$ running ivi_lock_remove ${lock_label} in `pwd` using lockfile-progs"
 
     lockfile-remove --lock-name argument ${lock_file}
 
@@ -80,9 +80,14 @@ else
         set cat_status = ${status}
 
         if (! ${cat_status}) then 
+            set lock_host = `echo ${lock_id} | ${IVI_SED} 's/-.*//'`
+            if (${status}) then 
+                ${WARN_ECHO} "Script ivi_lock_remove sed command to get host failed. This should never happen."
+            endif 
+
             set lock_proc = `echo ${lock_id} | ${IVI_SED} 's/^.*-//'`
             if (${status}) then 
-                ${WARN_ECHO} "Script ivi_lock_remove sed command failed. This should never happen."
+                ${WARN_ECHO} "Script ivi_lock_remove sed command to get pid failed. This should never happen."
             endif 
         endif 
             

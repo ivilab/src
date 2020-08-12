@@ -3,8 +3,16 @@
 set lock_file = "${ATOMIC_ECHO_ARG_1}"
 set id = "${ATOMIC_ECHO_ARG_2}"
 
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Entering atomic_echo_3 with ATOMIC_ECHO_ARG_1=${ATOMIC_ECHO_ARG_1} and ATOMIC_ECHO_ARG_2=${ATOMIC_ECHO_ARG_2}"
+
+# if ($?NOCLOBBER) then
+#     set noclobber
+# endif 
+    set noclobber
+
 echo ${id} > ${lock_file}
 
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Leaving atomic_echo_3"
 
 
 

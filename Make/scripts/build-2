@@ -398,7 +398,7 @@ else
 endif 
 
 if (! $?IVI_QUIET ) then
-    set start_time = `date +%H:%M:%S`
+    set start_time = `${IVI_ECHO_TIME}`
 
     echo " "
     echo "Build start for '${args}' at ${start_time} in ${cwd}"
@@ -985,7 +985,7 @@ if (${need_depend_bootstrap}) then
         # non-existent files.
         #
         ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
-        set sub_start_time = `date +%H:%M:%S`
+        set sub_start_time = `${IVI_ECHO_TIME}`
 
         if ($?DRY_RUN) then
             echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list"
@@ -1011,7 +1011,7 @@ if (${need_depend_bootstrap}) then
             endif
         endif 
 
-        set sub_end_time = `date +%H:%M:%S`
+        set sub_end_time = `${IVI_ECHO_TIME}`
         ${VERBOSE_ECHO} "Script build-2 has finished building Makefile-dirs in advance of calling make."
         ${VERBOSE_ECHO} "Building Makefile-dirs started at: ${sub_start_time}"
         ${VERBOSE_ECHO} "Building Makefile-dirs ended at:   ${sub_end_time}"
@@ -1209,7 +1209,7 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
                         echo "Script build-2 is building depend target: ${depend_target} in directory ${cwd}."
                         echo "Make command is: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
                         echo " "
-                        set sub_start_time = `date +%H:%M:%S`
+                        set sub_start_time = `${IVI_ECHO_TIME}`
                     endif 
 
                     if ($?DRY_RUN) then
@@ -1222,7 +1222,7 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
                             set error_found = 1
                             break
                         else if ($?IVI_VERBOSE) then
-                            set sub_end_time = `date +%H:%M:%S`
+                            set sub_end_time = `${IVI_ECHO_TIME}`
                             echo " "
                             echo "Script build-2 successfully built depend target: ${depend_target} in directory ${cwd}."
                             echo "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
@@ -1594,7 +1594,7 @@ foreach arg (${build_adjusted_args})
         echo "Script build-2 is building target: ${arg} in directory ${cwd}."
         echo "Make command is: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
         echo " "
-        set sub_start_time = `date +%H:%M:%S`
+        set sub_start_time = `${IVI_ECHO_TIME}`
     endif 
 
     if ($?DRY_RUN) then
@@ -1607,7 +1607,7 @@ foreach arg (${build_adjusted_args})
             ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
             goto end_of_script
         else if ($?IVI_VERBOSE) then
-            set sub_end_time = `date +%H:%M:%S`
+            set sub_end_time = `${IVI_ECHO_TIME}`
             echo " "
             echo "Script build-2 successfully built target: ${arg} in directory ${cwd}."
             echo "Make command was: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
@@ -1655,7 +1655,7 @@ if (! $?IGNORE_BUILD_START_TIME) then
 endif 
 
 if ( ! $?IVI_QUIET ) then
-    set end_time = `date +%H:%M:%S`
+    set end_time = `${IVI_ECHO_TIME}`
     echo " "
     echo "Build for adjusted targets [ ${adjusted_args} ] started at ${start_time}"
     echo "Build for adjusted targets [ ${adjusted_args} ] completed  ${end_time} with status ${exit_status}"
