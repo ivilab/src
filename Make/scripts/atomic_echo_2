@@ -25,7 +25,7 @@ setenv ATOMIC_ECHO_ARG_2 "${id}"
 if ((! $?FORCE_NO_FLOCK) && ("${IVI_FLOCK}" != "")) then
     # Not all systems support -E, and perhaps not worth integrating. 
     # ${IVI_FLOCK} -E 22 -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} calling flack at `${IVI_ECHO_TIME}`"
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} calling flock at `${IVI_ECHO_TIME}`"
 
     # Add ".flock" to the lockfile name so that we can use "noclobber" and so we
     # do not need to fully understand the effect of removing the lockfile willy
