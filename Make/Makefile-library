@@ -199,42 +199,22 @@ file_list.new : \
 # building the target Include_lines/file_list.new. This process will also able
 # to create the file if needed. 
 #
-# First we handle the case the dependency Include_lines/include_lines does not
-# exist and we are working on something that depends on it (e.g.,
-# Makefile-depend).  We used to make file_list depend on tools, but using
-# include_lines.new accomplishes what is needed better because file_list is not
-# necessarily updated by its build, hence the commented out IVI_TOUCH.
-# 
-# $(MAKE_SCRIPT_PATH)build_include_lines : \
-#     $(MAKE_SCRIPT_PATH)build_include_lines_2
-# 
-# Include_lines/include_lines : \
-#     $(MAKE_SCRIPT_PATH)build_file_list \
-#     $(MAKE_SCRIPT_PATH)build_include_lines \
-#     $(MAKE_SCRIPT_PATH)build_makefile_dirs \
-#     $(MAKE_SCRIPT_PATH)get_local_include_dirs \
-#     $(MAKE_SCRIPT_PATH)build_sub_libs_needed 
-
 # Because the target does not depend on anything, we will only execute the rule
 # if it does not exist, in which case build_include_lines will create it. 
 #
-# Because the target is not guaranteed to be updated, but has dependencies on
-# tools, we could get out of date in this case. Hence we rely on
-# build_include_lines to check the tools when they could have an effect. 
-#
-# Since we hide dependencies, we need to track that this has been executed for
-# ivi_lock_for_make, which we do via $@.made 
-#
-# $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : 
-# $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : Include_lines/file_list.new
+# There are additional dependencies for sub_libs_needed in Makefile-dirs. 
+# The script build_include_lines updates Include_lines/sub_libs_needed only if
+# needed or if one of the arguments is '-f'. But '-f' is recursive, so we do not
+# want to use it if we do not have to. So, we touch the target. 
+
 $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : 
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list
 	@$(ECHO_IF_VERBOSE) " "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 # 	@$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-# 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
@@ -271,6 +251,9 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
 
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_NEW_INCLUDE_LINE_FILES)
 # $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list 
+
+# It is not clear if we still need include_lines.new
+
 $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list $(LIB_COMPONENT_REAL_SRC_DIR)Include_lines/Makefile-include-lines 
 	@$(ECHO_IF_VERBOSE) " "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
@@ -311,33 +294,23 @@ include_lines.new : \
 # result will need to be updated when Include_lines/sub_libs_needed becomes
 # available as this is used to build the real meat of Makefile-dirs.  
 
-
-# Handle the case the dependency Include_lines/sub_libs_needed does not exist
-# and we are working on something that depends on it (e.g., Makefile-depend).
-# Since this file is further maintained only as a side effect, we do not have it
-# depend on anything other than the tools needed to build it. 
-#
-# Dependency on tools that build the target, including hidden ones. We do not
-# make the hidden ones depend on the non-hidden ones as we do not know how to
-# build any of them.  
-#
 $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
 
-# Because the target is not guaranteed to be updated, but has dependencies on
-# tools, we could get out of date in this case. Hence we rely on
-# build_include_lines to check the tools when they could have an effect. 
+# Because the target is not guaranteed to be updated, we need to track that this
+# has been executed for ivi_lock_for_make, which we do via $@.made 
 #
-# Since we hide dependencies, we need to track that this has been executed for
-# ivi_lock_for_make, which we do via $@.made 
-#
+# There are additional dependencies for sub_libs_needed in Makefile-dirs. 
+# The script build_include_lines updates Include_lines/sub_libs_needed only if
+# needed or if one of the arguments is '-f'. But '-f' is recursive, so we do not
+# want to use it if we do not have to. So, we touch the target. 
+
 $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) " "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)build_file_list $(LIB_COMPONENT_SRC_DIR)
-#	$(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f $(LIB_COMPONENT_SRC_DIR)
-	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines $(LIB_COMPONENT_SRC_DIR)
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "

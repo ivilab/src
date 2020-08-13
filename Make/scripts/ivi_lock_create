@@ -81,7 +81,7 @@ if ($?IVI_SET_ECHO) then
     set echo
 endif 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create called with args: $*."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create in ${cwd}, called with args: $*."
 
 if ($# < 2) then
     ${P_STDERR} "Script ivi_lock_create needs at least two arguments."
@@ -110,8 +110,8 @@ if ($?IVI_DONT_LOCK) then
     exit 0
 endif
 
-# We work in units of .01s. 
-@ max_time_to_wait *= 100
+# We work in units of milli-seconds. 
+@ max_time_to_wait *= 1000
 
 set lock_label = "$2"
 
@@ -145,18 +145,21 @@ else
 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process ${requesting_pid} handler running lock_create ${lock_label} in ${cwd} using IVI locking system."
 
-    set start_time = `date +%H:%M:%S`
+    set start_time = `${IVI_ECHO_TIME}`
 
     set time_waited = 0
 
     set got_it = 0
 
     set zero = ""
-    @ x = $$ % 100; @ y = $x % 10;  @ z = $x / 10; @ w = 10 * $y + $z; @ w /= 3
-    if ($w < 10) set zero = "0" 
-    set sleep_time = "0.${zero}${w}"
+    set one = ""
+    @ x = $$ % 100; @ y = $x % 10;  @ z = $x / 10; @ w = 10 * $y + $z
+    # ; @ w /= 3
+    # Sleep at least 0.01 seconds.
+    if ($w < 10) set one = "1" 
+    set sleep_time = "0.0${one}${w}"
 
-    set id = "${requesting_pid}"
+    # set id = "${requesting_pid}"
     set id = "${SHORT_HOST}-${requesting_pid}"
 
     while (1) 
@@ -195,11 +198,11 @@ else
                 # Check up on the process holding the lock every so often. We
                 # used to do it every time through the loop, but we then
                 # expected that this lead to spending too much time in the 'ps'
-                # caommand. However, it turned out that the issue was from
+                # caommand. It turned out that the issue was from
                 # build_sub_libs_needed, but it seems that this is a good
                 # optimization for some circumstances anyway. 
                
-                @ block_cycle = ${count} % 5
+                @ block_cycle = ${count} % 10
 
                 if (${block_cycle} == 0) then
                     #  I have not found a safe way to ignore error output. 
@@ -252,6 +255,8 @@ else
                         # remove it too! So we do a mini lock for removing, but
                         # not by recursing into the ivi lock system! 
 
+                        set need_to_remove_rm_lock = 0
+
                         if ($?LIMIT_LOCK_CREATE_RECURSION) then
                             ${WARN_ECHO} "Lock handler for ${requesting_pid} blocked a second recursive call into ivi_lock_create."
                             ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} forcing remove of ${lock_file} instead of recursing again."
@@ -263,9 +268,15 @@ else
                             
                             ${MAKE_SCRIPT_PATH}ivi_lock_create 5 ${rm_lock_label}
 
-                            # We do not care about the status. Either we got the
-                            # lock, or we timed out.  Check the file still
-                            # exists and still has stale contents.
+                            if (! ${status}) then
+                                set need_to_remove_rm_lock = 1
+                            endif 
+
+                            # Other than being careful about clean up, we do not
+                            # really care about the status of acquiring the
+                            # lock. Either we got the lock, or we timed out.
+                            # Check the file still exists and still has stale
+                            # contents. If so, remove it.
 
                             set really_remove_lock_file = 0
 
@@ -288,7 +299,6 @@ else
                                 endif 
                             endif 
 
-                            ${MAKE_SCRIPT_PATH}ivi_lock_remove ${rm_lock_label}
                         endif
 
                         if (${really_remove_lock_file}) then
@@ -299,11 +309,15 @@ else
                             ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create not removing lock file ${lock_file} as it seems that someone else did it."
                         endif 
 
+                        if (${need_to_remove_rm_lock}) then
+                            ${MAKE_SCRIPT_PATH}ivi_lock_remove ${rm_lock_label}
+                        endif
+
                         continue
                     else if (${time_waited} > ${max_time_to_wait}) then
                         ${P_STDERR} "Lock handler for ${requesting_pid} waited too long for ${lock_file}."
-                        ${P_STDERR} "It waited for ${time_waited} X 0.01 seconds, exceeding the limit of ${max_time_to_wait} X 0.01 seconds."
-                        set end_time = `date +%H:%M:%S`
+                        ${P_STDERR} "It waited for ${time_waited} milliseconds, exceeding the limit of ${max_time_to_wait} milliseconds."
+                        set end_time = `${IVI_ECHO_TIME}`
                         ${P_STDERR} "Specifically it waited from ${start_time} to ${end_time}." 
                         ${P_STDERR} "Information about the process (${lock_proc}) holding the lock:"
                         ps -l ${lock_proc} 
@@ -340,7 +354,7 @@ else
                 endif
 
                 @ time_waited += ${w}
-                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} slept ${time_waited}/${max_time_to_wait} x 0.01 seconds."
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} slept ${time_waited}/${max_time_to_wait} milliseconds."
 
                 @ count ++
             end
@@ -349,10 +363,10 @@ else
         if (${got_it}) break
     end
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ set lock with label ${lock_label} for process ${requesting_pid} in `pwd`."
-    set end_time = `date +%H:%M:%S`
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ locking start time: ${start_time}."
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ locking   end time: ${end_time}."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ set lock with label ${lock_label} for process ${requesting_pid} in ${cwd}."
+    set end_time = `${IVI_ECHO_TIME}`
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ handling ${requesting_pid} lock_create start time: ${start_time}."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ handling ${requesting_pid} lock_create   end time: ${end_time}."
 endif 
 
 cleanup: 

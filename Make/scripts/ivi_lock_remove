@@ -107,7 +107,7 @@ else
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ reports lock file to remove (${lock_file}) does not exist."
     endif
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ivi_lock_remove ${lock_label} in `pwd` using IVI locking method."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ successfully ran ivi_lock_remove ${lock_label} in ${cwd} using IVI locking method."
 endif 
 
 cleanup: 

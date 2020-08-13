@@ -156,7 +156,7 @@ endif
 # building in the background? 
 #
 if (! $?SERIAL_RECURSION_LEVEL) then
-    setenv SERIAL_RECURSION_LEVEL 4
+    setenv SERIAL_RECURSION_LEVEL 2
 endif 
 
 # How many processes do we put in the background at a time? The actual total
@@ -945,16 +945,6 @@ ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
 set exit_status = 0
 set error_found = 0
 
-if (! $?IGNORE_BUILD_START_TIME) then
-    # We just got through init_scripts, so we assume USER_TEMP_PATH is set and
-    # the directory exists. 
-
-    setenv BUILD_START_TIME_FILE "${USER_TEMP_PATH}build_start_time_file.$$"
-    ${VERBOSE_ECHO} "Script build-2 is touching ${BUILD_START_TIME_FILE}"
-    ${IVI_TOUCH} "${BUILD_START_TIME_FILE}"
-    if (${status}) exit 1
-endif 
-
 if (${need_depend_bootstrap}) then
     ${VERBOSE_ECHO} "Script build-2 is bootstrapping make for efficiency and in case our make does not build included files."
 
@@ -1000,10 +990,9 @@ if (${need_depend_bootstrap}) then
         endif 
 
         if ($?DRY_RUN) then
-            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines -f "
+            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines"
         else
-            # We use '-f' because Makefile-dirs did not exist. 
-            ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines -f
+            ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines 
             if (${status}) then
                 set exit_status = 1
                 ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
@@ -1027,6 +1016,7 @@ if (${need_depend_bootstrap}) then
         ${VERBOSE_ECHO} "Due to non gmake make, or testing with FORCE_MAKEFILE_CREATION: "
         ${VERBOSE_ECHO} "    Script build-2 is asking build_include_lines to build Makefile-libs-needed as it goes."
         ${VERBOSE_ECHO} "    Script build-2 is ensuring the existance of certain Makefiles with old timestamps."
+
         # This is consulted in build_include_lines_2
         setenv SHADOW_BUILD_MAKEFILE_LIBS 1
 
@@ -1148,7 +1138,7 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
 
                 ${ivi_depend_make} -f Makefile-2 Makefile
                 if (${status}) then
-                    ${P_STDERR} "Fourth build of 'Makefile' failed. Something is probably wrong with the makefiles. Giving up." 
+                    ${P_STDERR} "Fourth build of 'Makefile' failed. Something is probably wrong with the buiild system. Giving up." 
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -1268,13 +1258,6 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
                 else if (${try} < 2) then
                     echo " "
                     echo "Forcing rebuild of some files, and trying again."
-                    
-                    if (${try} == 1) then
-                        echo "This time forcing serial make and ignoring build_start_time."
-                        set ivi_depend_make = "${IVI_MAKE_SERIAL} ${IVI_MAKE_OPTS_STOP}" 
-                        setenv IGNORE_BUILD_START_TIME  
-                    endif 
-
                     echo "Disable with: setenv SKIP_DEPEND_RETRY"
                     echo " "
 
@@ -1284,7 +1267,7 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
                     # serial. 
                     #
                     ${MAKE_SCRIPT_PATH}build_file_list
-                    ${MAKE_SCRIPT_PATH}build_include_lines -f
+                    ${MAKE_SCRIPT_PATH}build_include_lines
                     ${IVI_TOUCH_1990} Makefile-depend
                     ${IVI_TOUCH_1990} Makefile-libs-needed
 
@@ -1649,10 +1632,6 @@ if ( ! $?IVI_QUIET ) then
 endif 
 
 end_of_script: 
-
-if (! $?IGNORE_BUILD_START_TIME) then
-    ${IVI_RM} "${BUILD_START_TIME_FILE}"
-endif 
 
 if ( ! $?IVI_QUIET ) then
     set end_time = `${IVI_ECHO_TIME}`

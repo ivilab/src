@@ -278,7 +278,7 @@ endif
 
 set exit_status = 0
 
-set start_time = `date +%H:%M:%S`
+set start_time = `${IVI_ECHO_TIME}`
 
 set error_file = "`\pwd`/make_ivi.err"
 cat /dev/null > ${error_file}
@@ -4054,7 +4054,7 @@ endif
 
 end_of_script:
 
-set end_time = `date +%H:%M:%S`
+set end_time = `${IVI_ECHO_TIME}`
 
 echo "=============================================================================="
 echo ""

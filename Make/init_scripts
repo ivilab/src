@@ -2,8 +2,8 @@
 # It is easiest if this file does not emit any output unless there is a fatal
 # error. 
 #
-# This file cannot assume that IVI_SRC_PATH is set, as root does not use
-# IVI_SRC_PATH. But it does assume that we have MAKE_PATH.
+# Do not do anthing related top user choices in this file, as it typically gets sourced
+# only once per tcsh.
 #
 # This file contains overlap between what general scripts need and what
 # compiling needs. It is sourced from init_compile, and possibly from other
@@ -15,7 +15,18 @@
 # Usually we have MAKE_PATH but not always.
 #
 if (! $?MAKE_PATH) then
-    setenv MAKE_PATH ${IVI_SRC_PATH}Make/
+    if ($?IVI_SRC_PATH) then
+        setenv MAKE_PATH ${IVI_SRC_PATH}Make/
+    else if (-d "${HOME}/sbin/Make") then
+        # This for root set up Kobus's way. Root does not substribe to the svn
+        # version of things such as src and Make for security concerns.
+        setenv MAKE_PATH "${HOME}/sbin/Make" 
+    else 
+        echo "Script init_scripts unable to set MAKE_PATH."
+        echo "Likely it does not have a viable IVI_SRC_PATH"
+        echo "This needs to be fixed before we can do anything."
+        exit 1
+    endif
 endif 
 
 # Invariably we have IVI_HAVE_MACHINE, but if we do not, the we need to source
@@ -23,14 +34,14 @@ endif
 # that build sources before sourcing this file (init_scripts).
 # 
 if (! $?IVI_HAVE_MACHINE) then
-    source ${MAKE_PATH}init_machine
+    source "${MAKE_PATH}init_machine"
     if ($status) exit $status
 endif 
 
 # If we are "cold" then we do not have MAKE_SCRIPT_PATH. 
 #
 if ( ! $?MAKE_SCRIPT_PATH) then
-    setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
+    setenv MAKE_SCRIPT_PATH "${MAKE_PATH}scripts/"
 endif 
 
 set error_found = 0
@@ -183,7 +194,7 @@ set needed_progs = "${needed_progs} : awk egrep stat tail doxygen"
 
 # Others that we want to test if they exist, but we do not expect them to always
 # be available. 
-set needed_progs = "${needed_progs} : flock lockfile-create"
+set needed_progs = "${needed_progs} : flock lockfile-create lockfile-remove"
 
 set essential =  1
 set desired =  1
@@ -226,6 +237,7 @@ foreach needed_prog (${needed_progs})
         endif 
     endif
 
+    # Do we even need these now that the other form has the path?
     set uc_needed_prog = `echo ${needed_prog} | ${IVI_SED} "y/abcdefghijklmnopqrstuvwxyz-/ABCDEFGHIJKLMNOPQRSTUVWXYZ_/"`
     eval "setenv IVI_${uc_needed_prog}_PATH ${prog_path}"
 
@@ -250,8 +262,6 @@ else if (("${OS}" == "linux_x86_64") || ("${OS}" == "linux_386")) then
 else
     setenv IVI_CP               "${IVI_CP_PATH} -r -f"
 endif 
-
-setenv IVI_CREATE           "${IVI_CP_PATH} /dev/null"
 
 # Default
 # setenv IVI_MV               "${IVI_MV_PATH}"
@@ -284,6 +294,10 @@ setenv IVI_MKDIR            "${IVI_MKDIR_PATH} -p"
 #
 setenv IVI_COMPRESS             "${IVI_GZIP_PATH}"
 setenv IVI_COMPRESS_SUFFIX      "gz"
+
+# ---------------------------------------------------------------------
+
+setenv IVI_ECHO_TIME "${IVI_DATE} +%H:%M:%S"
 
 # ---------------------------------------------------------------------
 
@@ -336,35 +350,6 @@ if (! $?IVI_LOCKFILE_PATH) then
     else
         setenv IVI_LOCKFILE_PATH ${USER_TEMP_PATH}lockfiles/
     endif
-endif 
-
-# --------------------------------------------------------------------------------------------
-
-if (! $?IVI_FLOCK_METHOD) then
-    if  ("${IVI_FLOCK}" != "") then
-        # Currently, flock is not reliable on Laplace. We are probably not using
-        # it correctly, or maybe it really wants to be run with bash. But until
-        # we are satisfied, we will default to "ivi". We can force flock for
-        # experimentation by setting IVI_FLOCK_METHOD outside this script. 
-        #
-        # setenv IVI_FLOCK_METHOD "flock" 
-        setenv IVI_FLOCK_METHOD "ivi" 
-    else
-        setenv IVI_FLOCK_METHOD "ivi"
-    endif 
-endif 
-
-if (! $?IVI_LOCK_PROGS_METHOD) then
-    #
-    #   Disable until we can sort out wait time.
-    #
-    #   if  ("${IVI_LOCKFILE_CREATE}" != "") then
-    #       set locking_method = "lockfile-progs"
-    #   else
-
-        setenv IVI_LOCK_PROGS_METHOD "ivi"
-
-    #   endif 
 endif 
 
 # --------------------------------------------------------------------------------------------

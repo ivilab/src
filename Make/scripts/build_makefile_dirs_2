@@ -473,8 +473,8 @@ endif
 echo  " " >> ${output_file_name}
 
 while ($count > 0) 
-    echo 'Include_lines/sub_libs_needed : $('"${symbolic_dirs[$count]}"')'Include_lines/include_lines  >> ${output_file_name}
-    # echo 'Include_lines/sub_libs_needed : $('"${symbolic_dirs[$count]}"')'Include_lines/sub_libs_needed  >> ${output_file_name}
+    # echo 'Include_lines/sub_libs_needed : $('"${symbolic_dirs[$count]}"')'Include_lines/include_lines  >> ${output_file_name}
+    echo 'Include_lines/sub_libs_needed : $('"${symbolic_dirs[$count]}"')'Include_lines/sub_libs_needed  >> ${output_file_name}
     @ count --
 end 
 

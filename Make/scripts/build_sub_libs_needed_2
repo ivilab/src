@@ -134,7 +134,7 @@ foreach recurse_dir_str (${recurse_dir_strs})
             set do_parallel = 0
 
             if (! $?BUILD_SUB_LIBS_SERIAL) then
-                if (${RECURSION_LEVEL} <= ${SERIAL_RECURSION_LEVEL}) then
+                if (${RECURSION_LEVEL} < ${SERIAL_RECURSION_LEVEL}) then
                     set do_parallel = 1
                 else 
                     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 using serial processing for recursion level ${RECURSION_LEVEL}."
@@ -145,48 +145,41 @@ foreach recurse_dir_str (${recurse_dir_strs})
                 # No path elements. Same as original in $*. 
                 set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
                 set status_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.status
-                set output_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.output
                 ${IVI_RM} "${status_file}"
 
-                # 610 is a unique approximation of 600 We use ivi_lock, not
-                # ivi_lock_for_make, because we want locking but not early exit,
-                # as early exit screws up the plan for getting the result back. 
-                ${MAKE_SCRIPT_PATH}ivi_lock 610 ${MAKE_SCRIPT_PATH}build_sub_libs_needed_3 "${recurse_dir_str}" "${status_file}" "${output_file}" &
+                if ($?IVI_DEBUG) then
+                    set output_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.output
+
+                    # 910 is a unique approximation of 600 We use ivi_lock, not
+                    # ivi_lock_for_make, because we want locking but not early exit,
+                    # as early exit screws up the plan for getting the result back. 
+                    ${MAKE_SCRIPT_PATH}ivi_lock 910 ${MAKE_SCRIPT_PATH}build_sub_libs_needed_3 "${recurse_dir_str}" "${status_file}" "${output_file}" &
+                else
+                    ${MAKE_SCRIPT_PATH}ivi_lock 910 ${MAKE_SCRIPT_PATH}build_sub_libs_needed_3 "${recurse_dir_str}" "${status_file}" &
+                endif 
+
 
                 @ num_procs ++
                 set waited_on_dir_strs = "${waited_on_dir_strs} ${recurse_dir_str}" 
                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Running build_include_lines_3 ${recurse_dir_str} in the background in ${cwd}."
                 ${VERBOSE_ECHO} ""
 
-#                 # Usually FORCE_BUILD_SUB_LIBS is set, so the -f should have no
-#                 # effect. It is also not clear if using force is needed as our
-#                 # tests for updating should work. We had some issues that might
-#                 # be solved by our choice to always update the local
-#                 # sub_libs_needed timestamp. Under investigation.
-#                 # 
-#                 ${MAKE_SCRIPT_PATH}ivi_lock_for_make 300 Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_include_lines_2  &
-#                 # ${MAKE_SCRIPT_PATH}ivi_lock_for_make 300 Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_include_lines_2 -f &
-#                 @ num_procs ++
-#                 set waited_on_dir_strs = "${waited_on_dir_strs} ${recurse_dir_str}" 
-#                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Running build_include_lines_2 in the background in ${cwd}."
-#                 ${VERBOSE_ECHO} ""
-
-                  # We do not want to to torch the machine, but there is no good
-                  # rule of thumb for limiting the number of processes. But here
-                  # is a try at a heuristic. 
-                  #
-                  @ block_is_done = ${num_procs} % ${NUM_CPU}
+                # We do not want to to torch the machine, but there is no good
+                # rule of thumb for limiting the number of processes. But here
+                # is a try at a heuristic. 
+                #
+                @ block_is_done = ${num_procs} % ${MAX_BACKGROUND_CHILDREN}
 
                 if (${block_is_done} == 0) then
                      ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing as we are up to ${num_procs} backgrounded processes."
-                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing `date +%H:%M:%S`."
+                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing `${IVI_ECHO_TIME}`."
                      wait 
-                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 done waiting at `date +%H:%M:%S`."
+                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 done waiting at `${IVI_ECHO_TIME}`."
                 endif 
 
             else 
-                # 620 is a unique approximation of 600
-                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 620 ${recurse_dir_str}/Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_sub_libs_needed_4 "${recurse_dir_str}" 
+                # 920 is a unique approximation of 900
+                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 920 ${recurse_dir_str}/Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_sub_libs_needed_4 "${recurse_dir_str}" 
                 if (${status}) exit ${status}
             endif 
 #         else 
@@ -200,7 +193,7 @@ end
 if (${num_procs} > 0) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- ${num_procs} processes to wait for in build_sub_libs_needed_2 in ${cwd}."
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- Waiting on processing of dirs: ${waited_on_dir_strs} in ${cwd}."
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Script build_sub_libs_needed_2 starting to wait at `date +%H:%M:%S`."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Script build_sub_libs_needed_2 starting to wait at `${IVI_ECHO_TIME}`."
     ${VERBOSE_ECHO} ""
 
     if ($?IVI_VERBOSE_2) then
@@ -217,7 +210,7 @@ if (${num_procs} > 0) then
 
     wait 
     ${VERBOSE_ECHO} ""
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is done waiting at  `date +%H:%M:%S` for ${num_procs} processes in ${cwd}."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is done waiting at  `${IVI_ECHO_TIME}` for ${num_procs} processes in ${cwd}."
 else
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 did not need additional processes in ${cwd}."
 endif 
@@ -228,7 +221,11 @@ foreach recurse_dir_str (${waited_on_dir_strs})
     # No path elements. Same as original in $*. 
     set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
     set status_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.status
-    set output_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.output
+
+
+    if ($?IVI_DEBUG) then
+        set output_file = ${cwd}/Include_lines/build_sub_libs_needed_${recurse_dir}.output
+    endif 
     
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is checking on background build in ${recurse_dir}."
 
@@ -240,11 +237,14 @@ foreach recurse_dir_str (${waited_on_dir_strs})
             # the evidence later on, so we stash it.
 
             ${P_STDERR} "Recursive call to build_sub_libs_needed_3 FAILED based on ${status_file}."
-            ${P_STDERR} "Copying failed ${status_file} to ${status_file}.$$."
             ${IVI_CP} ${status_file}  ${status_file}.$$
-            ${P_STDERR} "Copying failed ${output_file} to ${output_file}.$$."
-            ${IVI_CP} ${output_file}  ${output_file}.$$
-            ${IVI_CAT} "${output_file}" > /dev/stderr
+            ${P_STDERR} "Copying failed ${status_file} to ${status_file}.$$."
+
+            if ($?IVI_DEBUG) then
+                ${IVI_CP} ${output_file}  ${output_file}.$$
+                ${P_STDERR} "Copying failed ${output_file} to ${output_file}.$$."
+                ${IVI_CAT} "${output_file}" > /dev/stderr
+            endif 
         endif
     else 
         ${P_STDERR} "File ${status_file} did not get created. Presumably the process died or was killed."
@@ -329,10 +329,13 @@ end
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}After recursion inferred sub_libs_needed by ${cwd} are: ${sub_libs_needed}" 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Writing ${cwd}/Include_lines/sub_libs_needed.new"
+# Perhaps we can do without "sub_libs_needed.new", as we treat sub_libs_needed
+# as a regular target?
+#
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 writing ${cwd}/Include_lines/sub_libs_needed.new"
 echo "${sub_libs_needed}" > Include_lines/sub_libs_needed.new 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating ${cwd}/Include_lines/sub_libs_needed as we are forcing doing so."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 actually updating ${cwd}/Include_lines/sub_libs_needed."
 ${IVI_CP} Include_lines/sub_libs_needed.new Include_lines/sub_libs_needed
 
 # if (${FORCE_BUILD_SUB_LIBS}) then

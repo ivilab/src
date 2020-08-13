@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25693 2020-08-07 20:10:55Z kobus $
+# $Id: init_compile 25720 2020-08-13 23:14:49Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -45,6 +45,8 @@ if ($?IVI_VERBOSE) then
     set start_time = `date +%H:%M:%S`
 endif 
 
+# We synch the following two bootstrapping  blocks with clean_cache, and
+# probably (should?) in some other places as wewll. 
 
 # Kobus. Unfortunately, for absolute robustness, we cannot cache the path to the
 # library and the tools because we might be operating on two or more valid
@@ -170,9 +172,9 @@ ${VERBOSE_ECHO}
 
 ################################################################################
 #  
-
-# ---------------------------------------------------------------------
-# Set up environment variable cache
+# -----------------------------------------------------------------------------------
+#
+# Set up environment variable cache. We start by sorting out the cache file suffixes.
 
 set cache_fname="";
 set do_cache = 1
@@ -313,7 +315,8 @@ endif
 setenv VAR_CACHE_SUFFIX "${suffix}"
 
 if ($do_cache) then
-    set cache_fname = "${USER_TEMP_PATH}ivi_env${suffix}"
+    # Sync the cache location, i.e., USER_TEMP_PATH, with clean_cache. 
+    set cache_fname = "${USER_TEMP_PATH}ivi_env${VAR_CACHE_SUFFIX}"
 
     # handle unwritable cache file
     if ( -e "${cache_fname}" && ! -w "${cache_fname}") then

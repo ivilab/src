@@ -119,23 +119,22 @@ if ("${check_time_arg}" != "") then
 endif 
 
 set full_cmd = "$argv[2-$#]"
-set cmd_str = `echo ${2} | sed 's#.*/##'`
-set lock_label = "${cmd_str}"
+set cmd_str = `echo ${2} | ${IVI_SED} 's#.*/##'`
 
-if ($# > 2) then
-    if ("${3}" == "") then
-        set first_arg = "NULL"
-    else 
-        set first_arg = `echo ${3} | sed 's#//*$##' | sed 's#.*/##' `
+set lock_label = ""
+foreach cmd_part (${full_cmd})
+    set cmd_part_no_path = `echo "${cmd_part}" | ${IVI_SED} 's#//*$##' | ${IVI_SED} 's#.*/##' `
 
-        if ("${first_arg}" == "") then
-            ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$3|"
-            exit 1
-        endif 
+    if ("${cmd_part_no_path}" == "") then
+        set cmd_part_no_path = "NULL"
     endif 
-    
-    set lock_label = "${lock_label}_${first_arg}"
-endif 
+
+    if ("${lock_label}" == "") then
+        set lock_label = "${cmd_part_no_path}"
+    else
+        set lock_label = "${lock_label}_${cmd_part_no_path}"
+    endif 
+end
 
 # Last path component.
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
@@ -153,11 +152,11 @@ endif
 
 set exit_status = 0
 
-onintr ivi_lock_bail
-
 # This bit of shared code sets "safe_to_lock" and requires "lock_label".
 source ${MAKE_SCRIPT_PATH}check_for_deadlock
 if (${status}) exit ${status} 
+
+onintr ivi_lock_bail
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
 
@@ -187,10 +186,10 @@ else
 endif  
 
 if (! ${exit_status}) then 
-    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in `pwd` using IVI locking method."
+    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in ${cwd}."
 endif 
     
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing up up ivi_lock with IVI locking method."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing up ivi_lock $* with status ${exit_status}."
 
 cleanup: 
 

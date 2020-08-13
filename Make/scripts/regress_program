@@ -19,7 +19,7 @@ if (${num_args} > 3) set obj_dir = "$4"
 
        
 set test_result = "passed"
-set start_time = `date +%H:%M:%S`
+set start_time = `${IVI_ECHO_TIME}`
 
 echo "Begin testing ${program} with time factor ${time_factor} and input  $input"
 
@@ -91,7 +91,7 @@ else
    ${IVI_CP} output/${program}/${obj_dir}${input}-${time_factor} output-regress/${program}/${obj_dir}${input}-${time_factor} 
 endif 
 
-set end_time = `date +%H:%M:%S`
+set end_time = `${IVI_ECHO_TIME}`
 
 echo " Done testing ${program} with time factor ${time_factor} and input  ${input} from ${start_time}  to ${end_time} : ${test_result}"
 

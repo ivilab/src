@@ -448,7 +448,7 @@ if (-e "TIMEOUT") then
     endif 
 endif 
 
-set start_time = `date +%H:%M:%S`
+set start_time = `${IVI_ECHO_TIME}`
 
 if ("${test_type}" == "check") then
     if (-e "run_succeeded") then
@@ -841,7 +841,7 @@ endif
 
 finish_up: 
 
-set end_time = `date +%H:%M:%S`
+set end_time = `${IVI_ECHO_TIME}`
 
 # if ("${valgrind_log_file}" != "") then 
 #   ${IVI_RM} valgrind_log_file

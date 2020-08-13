@@ -50,6 +50,7 @@ set exit_status = 0
             set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/include_lines`
             if (${too_old}) then
                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- ${cwd}/Include_lines/sub_libs_needed is too old (need to build) ----------"
+                set need_to_build = 1
             endif 
         endif 
 
@@ -73,8 +74,8 @@ set exit_status = 0
                 # be solved by our choice to always update the local
                 # sub_libs_needed timestamp. Under investigation.
                 
-                # 593 is a unique approximation of 600
-                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 593 Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_include_lines_2 -f
+                # 893 is a unique approximation of 900
+                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 893 Include_lines/sub_libs_needed ${MAKE_SCRIPT_PATH}build_include_lines_2
                 if (${status}) then
                     ${P_STDERR} "Script build_include_lines_2 reported error to build_sub_libs_needed_4 in ${cwd}."
                     set exit_status = 1

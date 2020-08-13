@@ -25,7 +25,7 @@ setenv ATOMIC_ECHO_ARG_2 "${id}"
 if ((! $?FORCE_NO_FLOCK) && ("${IVI_FLOCK}" != "")) then
     # Not all systems support -E, and perhaps not worth integrating. 
     # ${IVI_FLOCK} -E 22 -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} calling flack at `date +%H:%M:%S`"
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} calling flack at `${IVI_ECHO_TIME}`"
 
     # Add ".flock" to the lockfile name so that we can use "noclobber" and so we
     # do not need to fully understand the effect of removing the lockfile willy
@@ -33,7 +33,7 @@ if ((! $?FORCE_NO_FLOCK) && ("${IVI_FLOCK}" != "")) then
 
     ${IVI_FLOCK} -n ${lock_file}.flock -c ${MAKE_SCRIPT_PATH}atomic_echo_3 
     set flock_status = ${status}
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} back from flack at `date +%H:%M:%S`"
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} back from flack at `${IVI_ECHO_TIME}`"
     if (${flock_status}) then
 #         if (${flock_status} == 22) then
 #             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to get lock via flock for file with contents: `cat ${lock_file}`"
@@ -47,15 +47,14 @@ if ((! $?FORCE_NO_FLOCK) && ("${IVI_FLOCK}" != "")) then
 else
     # setenv NOCLOBBER
 
-    # For debugging, get the output.
-    # ${MAKE_SCRIPT_PATH}atomic_echo_3 
-
     # Don't try to filter output. Something like the followg does NOT work on
     # all systems. I am not sure why!
     #
     # ${MAKE_SCRIPT_PATH}atomic_echo_3 |& ${IVI_SED} '/\.lock: File exists/d'
-    #
-    ${MAKE_SCRIPT_PATH}atomic_echo_3  >& /dev/null
+    
+    # For debugging, get the output.
+    ${MAKE_SCRIPT_PATH}atomic_echo_3 
+    # ${MAKE_SCRIPT_PATH}atomic_echo_3  >& /dev/null
 
     if (${status}) then
         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to overwrite lockfile with contents: `cat ${lock_file}`"

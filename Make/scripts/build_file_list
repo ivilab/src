@@ -41,14 +41,14 @@ if (${status}) exit ${status}
 
 # We now lock outside.
 # if ($?IVI_VERBOSE) then
-#     set start_time = `date +%H:%M:%S`
+#     set start_time = `${IVI_ECHO_TIME}`
 # endif 
 # 
 # ${MAKE_SCRIPT_PATH}ivi_lock 30 ${MAKE_SCRIPT_PATH}build_file_list_2 $*
 # set exit_status = ${status}
 # 
 # if ($?IVI_VERBOSE) then
-#     set end_time = `date +%H:%M:%S`
+#     set end_time = `${IVI_ECHO_TIME}`
 #     echo "Script build_file_list_2 finished with status ${exit_status}"
 #     echo "    Start time: ${start_time}"
 #     echo "    End time:   ${end_time}"

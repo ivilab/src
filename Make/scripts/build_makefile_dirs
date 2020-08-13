@@ -58,14 +58,14 @@ if ("${build_dir}" != "") then
 endif 
 
 if ($?IVI_VERBOSE) then
-    set start_time = `date +%H:%M:%S`
+    set start_time = `${IVI_ECHO_TIME}`
 endif 
 
 ${MAKE_SCRIPT_PATH}ivi_lock 120 ${MAKE_SCRIPT_PATH}build_makefile_dirs_2 
 set exit_status = ${status}
 
 if ($?IVI_VERBOSE) then
-    set end_time = `date +%H:%M:%S`
+    set end_time = `${IVI_ECHO_TIME}`
     echo "IVB: ${VERBOSE_INDENT}Script build_makefile_dirs finished"
     echo "IVB: ${VERBOSE_INDENT}    Start time: ${start_time}"
     echo "IVB: ${VERBOSE_INDENT}    End time:   ${end_time}"

@@ -89,14 +89,14 @@ if (${status}) exit $status
 #
 #
 # if ($?IVI_VERBOSE) then
-#     set start_time = `date +%H:%M:%S`
+#     set start_time = `${IVI_ECHO_TIME}`
 # endif 
 # 
 # ${MAKE_SCRIPT_PATH}ivi_lock 30 ${MAKE_SCRIPT_PATH}build_include_lines_2 ${force_build_sub_libs_arg}
 # set exit_status = ${status}
 # 
 # if ($?IVI_VERBOSE) then
-#     set end_time = `date +%H:%M:%S`
+#     set end_time = `${IVI_ECHO_TIME}`
 #     echo "${VERBOSE_INDENT}Script build_include_lines_2 finished with status ${exit_status}"
 #     echo "${VERBOSE_INDENT}    Start time: ${start_time}"
 #     echo "${VERBOSE_INDENT}    End time:   ${end_time}"

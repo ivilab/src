@@ -42,8 +42,6 @@ if ($# < 3) then
     exit 1
 endif 
 
-onintr ivi_lock_for_make_bail
-
 set exit_status = 0
 
 set max_time_to_wait = "$1"
@@ -72,37 +70,23 @@ endif
 
 set target = "$2"
 
-if (! $?IGNORE_BUILD_START_TIME) then
-    if ($?BUILD_START_TIME_FILE) then
-        if ((-e "${BUILD_START_TIME_FILE}") && (-e "${target}")) then
-            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make comparing age of ${BUILD_START_TIME_FILE} to that of ${target}."
-            set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${BUILD_START_TIME_FILE}" "${target}"`
-            if ($status) exit ${status}
+set full_cmd = "$argv[3-$#]"
 
-            if ($already_built) then
-                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} is newer than ${BUILD_START_TIME_FILE} (early exit)."
-                exit 0
-            endif 
-        endif 
+set lock_label = ""
+foreach cmd_part (${full_cmd})
+    set cmd_part_no_path = `echo "${cmd_part}" | ${IVI_SED} 's#//*$##' | ${IVI_SED} 's#.*/##' `
+
+    if ("${cmd_part_no_path}" == "") then
+        set cmd_part_no_path = "NULL"
     endif 
-endif 
 
-set cmd_str = `echo ${3} | sed 's#.*/##'`
-set lock_label = "${cmd_str}"
-if ($# > 3) then
-    if ("${4}" == "") then
-        set first_arg = "NULL"
-    else 
-        set first_arg = `echo ${4} | sed 's#//*$##' | sed 's#.*/##' `
-
-        if ("${first_arg}" == "") then
-            ${P_STDERR} "Script ivi_lock unable to make non-empty string out of command arg: |$4|"
-            exit 1
-        endif 
+    if ("${lock_label}" == "") then
+        set lock_label = "${cmd_part_no_path}"
+    else
+        set lock_label = "${lock_label}_${cmd_part_no_path}"
     endif 
-    
-    set lock_label = "${lock_label}_${first_arg}"
-endif 
+end
+
 
 # Last path component.
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
@@ -128,22 +112,25 @@ if (${status}) then
 endif 
 
 set requesting_pid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_label} for ${requesting_pid} working on target ${target}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_label} for ${requesting_pid} working on target ${target} in ${cwd}."
 
 # This bit of shared code sets "safe_to_lock" and requires "lock_label".
 source ${MAKE_SCRIPT_PATH}check_for_deadlock
 if (${status}) exit ${status} 
 
+onintr ivi_lock_for_make_bail
+
 set already_built =  0
 
 if (${safe_to_lock}) then
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make calling ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid} in ${cwd}"
     ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid}
     if ($status) then 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make failed to get lock ${lock_label} for target ${target}"
         exit 1
     endif 
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock ${lock_label} for target ${target}"
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock ${lock_label} for target ${target} in ${cwd}"
 
     if (-e "${target}") then 
         # I ran into a problem that the time stamp file could not be created
@@ -151,29 +138,31 @@ if (${safe_to_lock}) then
         # am keeping the check. 
         #
         if (-e "${time_stamp_file}") then 
-            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make comparing age of ${time_stamp_file} to that of ${target}."
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make comparing age of ${time_stamp_file} to that of ${target} in ${cwd}."
             set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${time_stamp_file}" "${target}"`
             if ($status) exit ${status}
             ${IVI_RM} "${time_stamp_file}"
         endif 
     endif 
+else 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make not locking because of deadlock risk."
 endif 
 
 if ($already_built) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} was built while we waited for the lock (early exit)."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} ($cwd) was built while we waited for the lock (early exit)."
 else 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} still needs to be built."
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: $argv[3-$#] in $cwd."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} ($cwd) still needs to be built."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: ${full_cmd} in $cwd."
 
     if ($?IVI_VERBOSE) then
-        set start_time = `date +%H:%M:%S`
+        set start_time = `${IVI_ECHO_TIME}`
     endif 
 
-    $argv[3-$#] 
+    ${full_cmd}
     set exit_status = $status 
 
     if ($?IVI_VERBOSE_2) then
-        set end_time = `date +%H:%M:%S`
+        set end_time = `${IVI_ECHO_TIME}`
         set program_name = "$argv[3]"
         echo "VB2: ${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} with time ${1} in $cwd with status ${exit_status}"
         echo "VB2: ${VERBOSE_INDENT}Ivi_lock_for_make start time for ${program_name}: ${start_time}"
@@ -182,7 +171,11 @@ else
 endif 
 
 if (${safe_to_lock}) then
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make calling ivi_lock_remove ${lock_label} ${requesting_pid}"
     ${MAKE_SCRIPT_PATH}ivi_lock_remove ${lock_label} ${requesting_pid}
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make back from ivi_lock_remove ${lock_label} ${requesting_pid}"
+else 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make not removing lock because none was set due to deadlock risk."
 endif 
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Done with call to ivi_lock_for_make with args: $*"

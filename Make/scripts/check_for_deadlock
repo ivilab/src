@@ -20,7 +20,6 @@ if ($?LOCK_LABEL_STACK) then
                  echo " "
              endif 
 
-
              set safe_to_lock = 0
              break
         endif

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25699 2020-08-08 18:49:10Z kobus $
+# $Id: Makefile-program 25720 2020-08-13 23:14:49Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -344,36 +344,19 @@ include_lines.new: \
 # --------------------------------
 # Target sub_libs_needed
 #
-# Handle the case the dependency Include_lines/sub_libs_needed does not exist
-# and we are working on something that depends on it (e.g., Makefile-depend).
-# Since this file is further maintained only as a side effect, we do not have it
-# depend on anything other than the tools needed to build it. The script
-# build_include_lines calls build_makefile_dirs and build_sub_libs_needed,
-# hence the extra lines. 
-
-# Dependency on tools that build the target, including hidden ones. We do not
-# make the hidden ones depend on the non-hidden ones as we do not know how to
-# build any of them.  
-#
 Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
 
+# There are additional dependencies for sub_libs_needed in Makefile-dirs. 
 # The script build_include_lines updates Include_lines/sub_libs_needed only if
-# needed.  
-#
-# Because the target is not guaranteed to be updated, but has dependencies on
-# tools, we could get out of date in this case. Hence we rely on
-# build_include_lines to check the tools also. 
-#
-# Since we hide dependencies, we need to track that this has been executed for
-# ivi_lock_for_make, which we do via $@.made 
-#
-# Include_lines/sub_libs_needed : Include_lines/file_list.new 
+# needed or if one of the arguments is '-f'. But '-f' is recursive, so we do not
+# want to use it if we do not have to. So, we touch the target. 
+
 Include_lines/sub_libs_needed : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 # 	$(MAKE_SCRIPT_PATH)build_file_list 
 #	$(MAKE_SCRIPT_PATH)build_include_lines -f 
-	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@.made $(MAKE_SCRIPT_PATH)build_include_lines -f 
-	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines 
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@
 
 # Convenience dummy target used by the script build-2. Using the target directly
 # would require extra logic for the leading directory, especially in the case
