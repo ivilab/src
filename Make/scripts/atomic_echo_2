@@ -45,8 +45,6 @@ if ((! $?FORCE_NO_FLOCK) && ("${IVI_FLOCK}" != "")) then
         exit 1
     endif 
 else
-    # setenv NOCLOBBER
-
     # Don't try to filter output. Something like the followg does NOT work on
     # all systems. I am not sure why!
     #
