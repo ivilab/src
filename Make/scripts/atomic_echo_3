@@ -34,10 +34,8 @@ set -o noclobber
 
 if [[ $? -ne 0 ]]; then exit_status=1; fi
 
-echo 3 exit_status: $id $exit_status
 ${IVI_RM} "${flock_lock_file}"
 
-echo 4 exit_status: $id $exit_status
 echo "VB2: ${VERBOSE_INDENT}Leaving atomic_echo_3 with lock_file ${lock_file} and id=${id} with status=${exit_status}"
 
 exit ${exit_status}
