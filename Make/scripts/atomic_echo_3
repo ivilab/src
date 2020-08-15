@@ -9,11 +9,13 @@ echo "VB2: ${VERBOSE_INDENT}Entering atomic_echo_3 with lock_file ${lock_file} a
 
 flock_lock_file="${lock_file}.flock"
 
-export exit_status=0
+exit_status=0
 
 set -o noclobber
 
 (
+    exit_status=0
+
     if [[ $USE_IVI_FLOCK -eq 1 ]]; then 
         echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 using flock."
         ${IVI_FLOCK} -x -n 9 
@@ -29,21 +31,21 @@ set -o noclobber
         if [[ $? -ne 0 ]]; then
             echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 noclobber caught killing existing ${lock_file} by ${id}."
             exit_status=1; 
-            echo exit_status: $exit_status
+            echo 1 exit_status: $id $exit_status
         fi
     fi 
-            echo exit_status: $exit_status
+            echo 2 exit_status: $id $exit_status
+            exit ${exit_status}
 
 
 ) 9>${flock_lock_file}
-            echo exit_status: $exit_status
 
 if [[ $? -ne 0 ]]; then exit_status=1; fi
 
-            echo exit_status: $exit_status
+            echo 3 exit_status: $id $exit_status
 ${IVI_RM} "${flock_lock_file}"
 
-            echo exit_status: $exit_status
+            echo 4 exit_status: $id $exit_status
 echo "VB2: ${VERBOSE_INDENT}Leaving atomic_echo_3 with lock_file ${lock_file} and id=${id} with status=${exit_status}"
 
 exit ${exit_status}
