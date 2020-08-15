@@ -5,7 +5,7 @@
 lock_file="${1}"
 id="${2}"
 
-echo "VB2: ${VERBOSE_INDENT}Entering atomic_echo_3 with lock_file=${lock_file} and id=${id}"
+echo "VB2: ${VERBOSE_INDENT}Entering atomic_echo_3 with lock_file ${lock_file} and id ${id}"
 
 flock_lock_file="${lock_file}.flock"
 
@@ -15,10 +15,18 @@ set -o noclobber
 
 (
     if [[ $USE_IVI_FLOCK -eq 1 ]]; then 
-        ${IVI_FLOCK} -x -n 9 || exit 1
+        echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 using flock."
+        ${IVI_FLOCK} -x -n 9 
+
+        if  [[ $? -ne 0 ]]; then 
+            echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 flock unable to lock FD 9 for ${flock_lock_file}."
+            exit_status=1;
+        fi
     fi 
 
-    echo "${id}" 1> "${lock_file}"
+    if  [[ ${exit_status} -eq 0 ]]; then 
+        echo "${id}" 1> "${lock_file}"
+    fi 
 
     if [[ $? -ne 0 ]]; then exit_status=1; fi
 
