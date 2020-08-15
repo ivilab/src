@@ -341,16 +341,13 @@ endif
 
 # --------------------------------------------------------------------------------------------
 
-# Setting PREFER_LOCAL_LOCK may not have any effect unless you unset
-# IVI_HAVE_INIT_SCRIPTS first, as this file typically is only sourced onece. 
-#
-if (! $?IVI_LOCKFILE_PATH) then
-    if ((! $?PREFER_LOCAL_LOCK) && (-e /scratch)) then
-        setenv IVI_LOCKFILE_PATH /scratch/${USER}/lockfiles/
-    else
-        setenv IVI_LOCKFILE_PATH ${USER_TEMP_PATH}lockfiles/
-    endif
-endif 
+if (-e /scratch) then
+    setenv IVI_LOCKFILE_DEFAULT_PATH "/scratch/${USER}/lockfiles/"
+else
+    setenv IVI_LOCKFILE_DEFAULT_PATH "${USER_TEMP_PATH}lockfiles/"
+endif
+
+setenv IVI_LOCKFILE_LOCAL_PATH "${USER_TEMP_PATH}lockfiles/"
 
 # --------------------------------------------------------------------------------------------
 
