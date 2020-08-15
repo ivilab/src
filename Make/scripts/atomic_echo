@@ -49,7 +49,6 @@ set anyerror
 # ${MAKE_SCRIPT_PATH}atomic_echo_2 ${lock_file} ${id} < /dev/null |& ${IVI_SED} '/\.lock: File exists/d'
 
 ${MAKE_SCRIPT_PATH}atomic_echo_2 ${lock_file} ${id}
-
 set atomic_echo_status =  ${status}
 
 if (${atomic_echo_status}) then
@@ -59,37 +58,28 @@ else
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script atomic_echo checking on TENTATIVE lock for ${id} with contents `cat ${lock_file}`"
 endif 
 
-# We want to do this enough times that all processes can agree that the file
-# exists. The number of loops and the time to sleep are both fudge factors.
+# Get off the CPU
+sleep 0.001
+if (${status}) then
+    ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
+    exit 1
+endif
 
-# @ count = 2
-# 
-# while (${count} < 2) 
-    # Get off the CPU
-    sleep 0.001
-    if (${status}) then
-        ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
-        exit 1
-    endif
+# Read what we tried to write to check. 
 
-    # Read what we tried to write to check. 
+set existing_id = `cat ${lock_file}`
+if (${status}) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Our non-atomic atomic writer failed ---  ${lock_file} might not exist (${id})."
+    exit 1
+else if ("${existing_id}" == "") then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Our non-atomic atomic writer failed --- ${lock_file} exists but is empty (${id}). "
+    exit 1
+endif 
 
-    set existing_id = `cat ${lock_file}`
-    if (${status}) then
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Our non-atomic atomic writer failed ---  ${lock_file} might not exist (${id})."
-        exit 1
-    else if ("${existing_id}" == "") then
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Our non-atomic atomic writer failed --- ${lock_file} exists but is empty (${id}). "
-        exit 1
-    endif 
-
-    if ("${existing_id}" != "${id}") then
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Our non-atomic atomic writer failed --- handler for ${existing_id} snuck in before me (${id}). "
-        exit 1
-    endif 
-
-#     @ count ++
-# end
+if ("${existing_id}" != "${id}") then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Our non-atomic atomic writer failed --- handler for ${existing_id} snuck in before me (${id}). "
+    exit 1
+endif 
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Handler for ${id} SUCCESSFULLY set lock file contents to: `cat ${lock_file}`"
 
