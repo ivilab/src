@@ -1,18 +1,34 @@
-#!/bin/tcsh -f 
+#!/bin/bash 
 
-set lock_file = "${ATOMIC_ECHO_ARG_1}"
-set id = "${ATOMIC_ECHO_ARG_2}"
+# Use bash because of better control over fids.
 
-${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Entering atomic_echo_3 with ATOMIC_ECHO_ARG_1=${ATOMIC_ECHO_ARG_1} and ATOMIC_ECHO_ARG_2=${ATOMIC_ECHO_ARG_2}"
+lock_file="${1}"
+id="${2}"
 
-# if ($?NOCLOBBER) then
-#     set noclobber
-# endif 
-    set noclobber
+echo "VB2: ${VERBOSE_INDENT}Entering atomic_echo_3 with lock_file=${lock_file} and id=${id}"
 
-echo ${id} > ${lock_file}
+flock_lock_file="${lock_file}.flock"
 
-${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Leaving atomic_echo_3"
+exit_status=0
 
+set -o noclobber
 
+(
+    if [[ $USE_IVI_FLOCK -eq 1 ]]; then 
+        ${IVI_FLOCK} -x -n 9 || exit 1
+    fi 
+
+    echo "${id}" 1> "${lock_file}"
+
+    if [[ $? -ne 0 ]]; then exit_status=1; fi
+
+) 9>${flock_lock_file}
+
+if [[ $? -ne 0 ]]; then exit_status=1; fi
+
+${IVI_RM} "${flock_lock_file}"
+
+echo "VB2: ${VERBOSE_INDENT}Leaving atomic_echo_3 with lock_file ${lock_file} and id=${id} with status=${exit_status}"
+
+exit ${exit_status}
 

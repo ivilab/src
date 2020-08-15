@@ -55,6 +55,8 @@ set atomic_echo_status =  ${status}
 if (${atomic_echo_status}) then
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} failed to write lock file held for `cat ${lock_file}`."
     exit 1
+else 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script atomic_echo checking on TENTATIVE lock for ${id} with contents `cat ${lock_file}`"
 endif 
 
 # We want to do this enough times that all processes can agree that the file
@@ -64,7 +66,7 @@ endif
 # 
 # while (${count} < 2) 
     # Get off the CPU
-    sleep 0.02
+    sleep 0.001
     if (${status}) then
         ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
         exit 1

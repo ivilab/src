@@ -127,6 +127,12 @@ foreach cmd_part (${full_cmd})
 
     if ("${cmd_part_no_path}" == "") then
         set cmd_part_no_path = "NULL"
+    else 
+        set cmd_part_no_path = `echo ${cmd_part_no_path} | sed 's/^[1-9][0-9]*$//'`
+        if ("${cmd_part_no_path}" == "") then
+            set cmd_part_no_path = "NUMBER"
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Positive integer argument ${cmd_part} is ignored by ivi_lock as it is too likely to be spuriously unique."
+        endif 
     endif 
 
     if ("${lock_label}" == "") then
@@ -140,9 +146,7 @@ end
 set dir_str = `echo ${cwd} | sed 's#.*/##'`
 set lock_label = "${lock_label}_${dir_str}"
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ called with args:"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    $*"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    in `pwd` "
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ in ${cwd} with args $*."
 
 if ($?IVI_DONT_LOCK) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock is not locking: $*"

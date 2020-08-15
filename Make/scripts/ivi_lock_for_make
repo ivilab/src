@@ -78,6 +78,12 @@ foreach cmd_part (${full_cmd})
 
     if ("${cmd_part_no_path}" == "") then
         set cmd_part_no_path = "NULL"
+    else 
+        set cmd_part_no_path = `echo ${cmd_part_no_path} | sed 's/^[1-9][0-9]*$//'`
+        if ("${cmd_part_no_path}" == "") then
+            set cmd_part_no_path = "NUMBER"
+            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Positive integer argument ${cmd_part} is ignored by ivi_lock as it is too likely to be spuriously unique."
+        endif 
     endif 
 
     if ("${lock_label}" == "") then

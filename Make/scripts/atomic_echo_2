@@ -2,6 +2,9 @@
 
 # The name of this script is misleading. This does not (yet) implement an atomic
 # write, at least on some systems. It is a place holder for such a facility.
+#
+# This intermediate script allows some control on the output of blocking file
+# clobbering.
 
 if ($# != 2) then
     ${P_STDERR} "Script atomic_echo_2 needs exactly two arguments. Called with: $*"
@@ -13,51 +16,23 @@ ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Entering atomic_echo_2 $*"
 set lock_file = "$1"
 set id = "$2"
 
-# Not all flocks support commands with arguments. Use setenv to pass them in,
-# even if we are not using flock so we can test.
-
-setenv ATOMIC_ECHO_ARG_1 "${lock_file}"
-setenv ATOMIC_ECHO_ARG_2 "${id}"
-
-# Use this to disable using flock for testing.
-# setenv IVI_FLOCK ""
-
 if ((! $?FORCE_NO_FLOCK) && ("${IVI_FLOCK}" != "")) then
-    # Not all systems support -E, and perhaps not worth integrating. 
-    # ${IVI_FLOCK} -E 22 -n ${lock_file} ${MAKE_SCRIPT_PATH}atomic_echo_3 ${lock_file} ${id}
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} calling flock at `${IVI_ECHO_TIME}`"
+    # Must have a value, as we are setting up for bash.
+    setenv USE_IVI_FLOCK 1
+endif 
 
-    # Add ".flock" to the lockfile name so that we can use "noclobber" and so we
-    # do not need to fully understand the effect of removing the lockfile willy
-    # nilly. 
+# Don't try to filter output. Something like the followg does NOT work on
+# all systems. I am not sure why!
+#
+# ${MAKE_SCRIPT_PATH}atomic_echo_3 |& ${IVI_SED} '/\.lock: File exists/d'
 
-    ${IVI_FLOCK} -n ${lock_file}.flock -c ${MAKE_SCRIPT_PATH}atomic_echo_3 
-    set flock_status = ${status}
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} back from flack at `${IVI_ECHO_TIME}`"
-    if (${flock_status}) then
-#         if (${flock_status} == 22) then
-#             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to get lock via flock for file with contents: `cat ${lock_file}`"
-#         else 
-#             ${P_STDERR} "Flock failure NOT likely due to not being able to get the lock."
-#         endif 
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to get lock via flock for file with contents: `cat ${lock_file}`"
+# For debugging, get the output.
+${MAKE_SCRIPT_PATH}atomic_echo_3 "${lock_file}" "${id}"
+# ${MAKE_SCRIPT_PATH}atomic_echo_3 "${lock_file}" "${id}" >& /dev/null
 
-        exit 1
-    endif 
-else
-    # Don't try to filter output. Something like the followg does NOT work on
-    # all systems. I am not sure why!
-    #
-    # ${MAKE_SCRIPT_PATH}atomic_echo_3 |& ${IVI_SED} '/\.lock: File exists/d'
-    
-    # For debugging, get the output.
-    ${MAKE_SCRIPT_PATH}atomic_echo_3 
-    # ${MAKE_SCRIPT_PATH}atomic_echo_3  >& /dev/null
-
-    if (${status}) then
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to overwrite lockfile with contents: `cat ${lock_file}`"
-        exit 1
-    endif 
+if (${status}) then
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to overwrite lockfile with contents: `cat ${lock_file}`"
+    exit 1
 endif 
 
 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} TENTATIVELY set lock file contents to: `cat ${lock_file}`"
