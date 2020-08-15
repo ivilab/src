@@ -63,6 +63,7 @@ diff -q ${test_lock_answer_file} ${test_lock_check_file}
 if (${status}) then
     echo "Inspect with:"
     echo "    vimdiff ${test_lock_check_file} ${test_lock_answer_file}"
+    echo "    gvim ${test_lock_output_file}"
     exit 1
 endif 
 

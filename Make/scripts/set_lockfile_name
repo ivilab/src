@@ -1,6 +1,14 @@
 
 # Shared block of code between ivi_lock_create and ivi_lock
 
+if (! $?IVI_LOCKFILE_PATH) then
+    if ($?PREFER_LOCAL_PATH) then
+        setenv IVI_LOCKFILE_PATH "${IVI_LOCKFILE_LOCAL_PATH}"
+    endif 
+        setenv IVI_LOCKFILE_PATH "${IVI_LOCKFILE_DEFAULT_PATH}"
+    endif 
+endif 
+
 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Source script set_lockfile_name using lockfile directory ${IVI_LOCKFILE_PATH}"
 
 ${IVI_MKDIR} "${IVI_LOCKFILE_PATH}"
