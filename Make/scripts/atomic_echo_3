@@ -14,38 +14,30 @@ exit_status=0
 set -o noclobber
 
 (
-    exit_status=0
-
     if [[ $USE_IVI_FLOCK -eq 1 ]]; then 
         echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 using flock."
         ${IVI_FLOCK} -x -n 9 
 
         if  [[ $? -ne 0 ]]; then 
             echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 flock unable to lock FD 9 for ${flock_lock_file}."
-            exit_status=1;
+            exit 1
         fi
     fi 
 
-    if  [[ ${exit_status} -eq 0 ]]; then 
-        echo "${id}" 1> "${lock_file}"
-        if [[ $? -ne 0 ]]; then
-            echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 noclobber caught killing existing ${lock_file} by ${id}."
-            exit_status=1; 
-            echo 1 exit_status: $id $exit_status
-        fi
-    fi 
-            echo 2 exit_status: $id $exit_status
-            exit ${exit_status}
-
+    echo "${id}" 1> "${lock_file}"
+    if [[ $? -ne 0 ]]; then
+        echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 noclobber caught killing existing ${lock_file} by ${id}."
+        exit 1
+    fi
 
 ) 9>${flock_lock_file}
 
 if [[ $? -ne 0 ]]; then exit_status=1; fi
 
-            echo 3 exit_status: $id $exit_status
+echo 3 exit_status: $id $exit_status
 ${IVI_RM} "${flock_lock_file}"
 
-            echo 4 exit_status: $id $exit_status
+echo 4 exit_status: $id $exit_status
 echo "VB2: ${VERBOSE_INDENT}Leaving atomic_echo_3 with lock_file ${lock_file} and id=${id} with status=${exit_status}"
 
 exit ${exit_status}
