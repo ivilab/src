@@ -27,18 +27,23 @@ set -o noclobber
     if  [[ ${exit_status} -eq 0 ]]; then 
         echo "${id}" 1> "${lock_file}"
         if [[ $? -ne 0 ]]; then
-            echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 noclobber caught killing existing ${lock_file}."
+            echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 noclobber caught killing existing ${lock_file} by ${id}."
             exit_status=1; 
+            echo exit_status: $exit_status
         fi
     fi 
+            echo exit_status: $exit_status
 
 
 ) 9>${flock_lock_file}
+            echo exit_status: $exit_status
 
 if [[ $? -ne 0 ]]; then exit_status=1; fi
 
+            echo exit_status: $exit_status
 ${IVI_RM} "${flock_lock_file}"
 
+            echo exit_status: $exit_status
 echo "VB2: ${VERBOSE_INDENT}Leaving atomic_echo_3 with lock_file ${lock_file} and id=${id} with status=${exit_status}"
 
 exit ${exit_status}
