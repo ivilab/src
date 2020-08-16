@@ -46,6 +46,38 @@ echo "Now waiting on ${num_procs} processes."
 
 wait 
 
+set exit_status = 0
+
+sed < "${TEST_LOCK_RESULT_FILE}" 's/ .*$//' > "${test_lock_check_file}"
+
+set sequential_integers = `${IVI_CAT} ${test_lock_check_file}`
+
+@ first = 1
+@ error_count = 0
+
+foreach int (${sequential_integers}) 
+    if ($first == 1) then
+        @ first = 0
+        @ prev = $int
+    else 
+        @ cur = $int
+        @ diff = $cur - $prev
+
+        if (${diff} != 1) then 
+            @ error_count ++
+        endif 
+
+        @ prev = $cur
+    endif 
+end
+   
+if (${error_count} > 0) then
+    echo "${error_count} non unit increments found."
+    set exit_status = 1
+else 
+    echo "Sequential integers verified. This is the only valid test if there are two test processes running."
+endif 
+
 @ num_total_iterations = $num_procs * $num_iterations
 
 @ base = 10001
@@ -56,16 +88,17 @@ while ($iteration_count < $num_total_iterations)
     @ iteration_count += 1
 end 
 
-sed < "${TEST_LOCK_RESULT_FILE}" 's/ .*$//' > "${test_lock_check_file}"
-
 diff -q ${test_lock_answer_file} ${test_lock_check_file}
 
 if (${status}) then
     echo "Inspect with:"
     echo "    vimdiff ${test_lock_check_file} ${test_lock_answer_file}"
     echo "    gvim ${test_lock_output_file}"
-    exit 1
+    echo "Test can only be considered a failure if there was only one test program running."
+    set exit_status = 1
 endif 
+
+exit ${exit_status}
 
  
 

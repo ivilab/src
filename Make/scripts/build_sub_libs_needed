@@ -128,7 +128,6 @@ set sub_libs_hint_file = "sub_libs.hint"
 # use it, and eventually remove it from the current version of
 # build_sub_libs_needed and build_sub_libs_needed_2.
 
-setenv PRECOMPUTE_FILE_LISTS 
 
 if (-e "${sub_libs_hint_file}") then
     ${VERBOSE_ECHO} ""
@@ -137,6 +136,10 @@ if (-e "${sub_libs_hint_file}") then
     ${VERBOSE_ECHO} ""
 
     # Definitely for using hints, not so clear otherwise.
+    if (! $PRECOMPUTE_FILE_LISTS)
+        set unset_precompute_file_lists
+        setenv PRECOMPUTE_FILE_LISTS 
+    endif 
 
     set recurse_dirs = `${IVI_CAT} "${sub_libs_hint_file}"`
     if (${status}) exit 1
@@ -166,6 +169,7 @@ if (-e "${sub_libs_hint_file}") then
    
     if ($?unset_build_sub_libs_serial) unsetenv BUILD_SUB_LIBS_SERIAL
     if ($?unset_build_recurse_dirs_only) unsetenv BUILD_RECURSE_DIRS_ONLY
+    if ($?unset_precompute_file_lists) unsetenv PRECOMPUTE_FILE_LISTS
 
     ${VERBOSE_ECHO} ""
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed back from build_sub_libs_needed_2 precomputing based on sub_libs.hint.."
