@@ -156,7 +156,7 @@ endif
 # building in the background? 
 #
 if (! $?SERIAL_RECURSION_LEVEL) then
-    setenv SERIAL_RECURSION_LEVEL 2
+    setenv SERIAL_RECURSION_LEVEL 3
 endif 
 
 # How many processes do we put in the background at a time? The actual total
@@ -212,10 +212,11 @@ setenv IVI_MAKE_SERIAL "${IVI_MAKE_SERIAL} ${make_extra_opts}"
 setenv IVI_MAKE_PAR    "${IVI_MAKE_PAR} ${make_extra_opts}"
 
 if ($?FORCE_SERIAL) then
-    # This could be set by the user to build only sub_libs_needed serially. But
+    # These could be set by the user to build only sub_libs_needed serially. But
     # we also force it if we building everything serially.
     #
     setenv BUILD_SUB_LIBS_SERIAL
+    setenv BUILD_FILE_LISTS_SERIAL
 
     if ($?IVI_VERBOSE) then
         echo "Forcing serial make due to env var FORCE_SERIAL being set"

@@ -12,20 +12,20 @@
 # Here 'needed' goes beyond what can be found by recursively examining header
 # files, which is what the tool 'makedepend' does.  We want to know about
 # dependencies due to C files in library sub-dirs. Further we want the library
-# sub-directories to be ordered so that dependency is expected. In particular,
-# we order the sub-dirs so that all items have all their dependencies preceding
-# them. For various tasks the script build_makefile_dirs will use the list in
-# either forward or reverse order. Note that this assumes that the IVI library
-# has a tree structured dependency graph. If this is not the case, then circular
-# dependencies will be identified by this script. True circular dependencies
-# need to be corrected. 
+# sub-directories to be ordered so that all items have all their dependencies
+# preceding them. For various tasks the script build_makefile_dirs will use the
+# list in either forward or reverse order. Note that this assumes that the IVI
+# library has a tree structured dependency graph. If this is not the case, then
+# circular dependencies will be identified by this script. True circular
+# dependencies need to be corrected manually. 
 #
 # To proceed, we find all sub-libs needed by the code in the requested
 # directory. We then prepend that list with content of
 # Include_lines/sub_libs_needed in each directory in the list. This requires
 # ensuring that these Include_lines/sub_libs_needed are up to date, and building
 # them if needed. Hence this script may be called recursively. Currently this is
-# via either by a call to build_include_lines_2 which will call this script,
+# via either by a call to build_include_lines_2 which will call from our helper
+# script, build_sub_libs_needed_2.
 
 if ($?IVI_SET_ECHO) then
     set echo
@@ -54,8 +54,7 @@ endif
 
 if ("${build_dir}" != "") then
     set build_dir = `echo ${build_dir} | sed 's#//*#/#g' | sed 's#/$##'`
-    pushd ${build_dir} > /dev/null
-    # We are now in the build directory. (No popd). 
+    cd ${build_dir} 
 endif 
 
 # This might be OBSOLETE. 
@@ -79,15 +78,15 @@ endif
 
 #########################################################
 
-${VERBOSE_ECHO} " "
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Beginning recursive build of ${cwd}/Include_lines/sub_libs_needed"
+${VERBOSE_ECHO_2} " "
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Beginning recursive build of ${cwd}/Include_lines/sub_libs_needed"
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_sub_libs_needed with directory ${cwd}"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    build_dir: ${build_dir}"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    parent_sub_lib: ${parent_sub_lib}"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    current_sub_lib: ${current_sub_lib}"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}    TMP_SUB_DIRS_VISITED: ${TMP_SUB_DIRS_VISITED}"
-${VERBOSE_ECHO} " "
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_sub_libs_needed in directory ${cwd}"
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}    build_dir: ${build_dir}"
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}    parent_sub_lib: ${parent_sub_lib}"
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}    current_sub_lib: ${current_sub_lib}"
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}    TMP_SUB_DIRS_VISITED: ${TMP_SUB_DIRS_VISITED}"
+${VERBOSE_ECHO_2} " "
 
 #########################################################
 
@@ -121,45 +120,106 @@ endif
 
 setenv TMP_SUB_DIRS_VISITED "${TMP_SUB_DIRS_VISITED} ${current_sub_lib}"
 
-#########################################################
+################################################################################
 
-if (-e Include_lines/sub_lib_list) then
-    if ("${current_sub_lib}" != "") then
-        set skip_str = "\<${current_sub_lib}\>"
-        set recurse_dirs = `cat Include_lines/sub_lib_list | grep -v ${skip_str}`
-    else
-        set recurse_dirs = `cat Include_lines/sub_lib_list`
+set sub_libs_hint_file = "sub_libs.hint"
+
+# The hints idea is not panning out so well. So, for now, we perhaps should not
+# use it, and eventually remove it from the current version of
+# build_sub_libs_needed and build_sub_libs_needed_2.
+
+setenv PRECOMPUTE_FILE_LISTS 
+
+if (-e "${sub_libs_hint_file}") then
+    ${VERBOSE_ECHO} ""
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed calling build_sub_libs_needed_2 to precompute based on sub_libs.hint."
+    ${VERBOSE_ECHO} ""
+
+    # Definitely for using hints, not so clear otherwise.
+
+    set recurse_dirs = `${IVI_CAT} "${sub_libs_hint_file}"`
+    if (${status}) exit 1
+
+    # Originally we assumed that using hints would work best if we did it
+    # serially, but this is not so clear (and often none of this makes any real
+    # difference, anyway). 
+
+    if (! $?BUILD_SUB_LIBS_SERIAL) then
+        set unset_build_sub_libs_serial
+        setenv BUILD_SUB_LIBS_SERIAL
     endif 
-else 
-    ${P_STDERR} "Script build_sub_libs_needed requires Include_lines/sub_lib_list"
-    ${P_STDERR} "Error occurred in directory $cwd"
-    exit 1
+
+    # Hack the behavior using a global variable, but we silence propogating this
+    # recursivley in build_sub_libs_needed_2. Yes, this *is* a hack.
+
+    if (! $?BUILD_RECURSE_DIRS_ONLY) then
+        set unset_build_recurse_dirs_only
+        setenv BUILD_RECURSE_DIRS_ONLY
+    endif 
+
+    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_2 ${recurse_dirs} |& ${IVI_SED}  '/^\[[1-9]/d'
+    if (${status}) then
+        ${P_STDERR} "Script build_sub_libs_needed reporting build_sub_libs_needed_2 failed for sub_libs hint in ${cwd}."
+        exit 1
+    endif 
+   
+    if ($?unset_build_sub_libs_serial) unsetenv BUILD_SUB_LIBS_SERIAL
+    if ($?unset_build_recurse_dirs_only) unsetenv BUILD_RECURSE_DIRS_ONLY
+
+    ${VERBOSE_ECHO} ""
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed back from build_sub_libs_needed_2 precomputing based on sub_libs.hint.."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"
+    ${VERBOSE_ECHO} ""
 endif 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Recurse dirs in build_sub_libs_needed in ${cwd} are: ${recurse_dirs}" 
+################################################################################
 
-set build_sub_libs_status = 0
+if (! -e Include_lines/sub_lib_list) then
+    ${WARN_ECHO} "Script build_sub_libs_needed reporting unexpected missing ${cwd}/Include_lines/sub_lib_list."
+    ${WARN_ECHO} "Script build_sub_libs_needed calling build_file_list_2 which should build ${cwd}/Include_lines/sub_lib_list."
+    ${MAKE_SCRIPT_PATH}ivi_lock_for_make 120 Include_lines/file_list ${MAKE_SCRIPT_PATH}build_file_list_2
+    if (${status}) exit 1
+endif 
+
+if ("${current_sub_lib}" != "") then
+    set skip_str = "\<${current_sub_lib}\>"
+    set recurse_dirs = `cat Include_lines/sub_lib_list | grep -v ${skip_str}`
+else
+    set recurse_dirs = `cat Include_lines/sub_lib_list`
+endif 
 
 if ($?BUILD_SUB_LIBS_SERIAL) then
     set build_type = "serial"
-    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_2 ${recurse_dirs}
-    if (${status}) set build_sub_libs_status = 1
 else 
     set build_type = "parallel"
-
-    # The sed removes most annoying job control output, specifically the ones
-    # that do not loose the new line due to parallel output intertwining. We do
-    # not use grep in pipes if can at all help it, as grep will have exit status
-    # 1 if no lines are selected. 
-    #
-    ${MAKE_SCRIPT_PATH}build_sub_libs_needed_2 ${recurse_dirs} |& ${IVI_SED}  '/^\[[1-9]/d'
-    if (${status}) set build_sub_libs_status = 1
 endif 
+
+${VERBOSE_ECHO} ""
+${VERBOSE_ECHO} "${VERBOSE_INDENT}vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed calling build_sub_libs_needed_2 for building sub_libs_needed ${build_type}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Recurse dirs in build_sub_libs_needed in ${cwd} are: ${recurse_dirs}" 
+${VERBOSE_ECHO} ""
+
+set build_sub_libs_status = 0
+
+# The sed removes most annoying job control output, specifically the ones
+# that do not loose the new line due to parallel output intertwining. We do
+# not use grep in pipes if we plan to use the exit status, as grep will have exit status
+# 1 if no lines are selected. 
+#
+${MAKE_SCRIPT_PATH}build_sub_libs_needed_2 ${recurse_dirs} |& ${IVI_SED}  '/^\[[1-9]/d'
+if (${status}) set build_sub_libs_status = 1
 
 if (${build_sub_libs_status}) then 
     ${P_STDERR} "Script build_sub_libs_needed reporting build_sub_libs_needed_2 failed in ${cwd}."
     ${P_STDERR} "Script build_sub_libs_needed_2 ${build_type} args were: ${recurse_dirs}."
     exit 1
+else 
+    ${VERBOSE_ECHO} ""
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed back from build_sub_libs_needed_2 building sub_libs_needed ${build_type}."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+    ${VERBOSE_ECHO} ""
 endif
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed in ${cwd} with success."

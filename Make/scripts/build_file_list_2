@@ -243,18 +243,12 @@ endif
 /bin/ls -1 > Include_lines/full_file_list
 
 if (${must_update}) then
-    # Often misleading. The reasons are already provided. 
-    #
-    # ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_file_list_2 found that source files in ${cwd} have been either created, destroyed, or renamed." 
-    # ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_file_list_2 is updating source shadow include line file in ${cwd}/Include_lines. "
-
     set actually_updated = 0 
 
-    # set include_line_files = `${IVI_LS} -1 -d Include_lines/*.[hcC] Include_lines/*.[chit]pp Include_lines/*.cxx |& grep -v 'No match'`
     set include_line_files = `${MAKE_SCRIPT_PATH}stream_file_names Include_lines -s -h -skip_incl`
 
     # Check for deletes and moves (part 1).
-    #
+    
     foreach inc_file (${include_line_files}) 
         set source_file = `echo ${inc_file} | sed 's#Include_lines/##'`
 
@@ -271,7 +265,7 @@ if (${must_update}) then
     set source_files = `${MAKE_SCRIPT_PATH}stream_file_names -s -h` 
 
     # Check for adds and moves (part 2).
-    #
+    
     foreach source_file (${source_files}) 
         set inc_file = Include_lines/${source_file}
         set new_inc_file = Include_lines/new/${source_file}
@@ -346,7 +340,7 @@ if (${must_update}) then
 
     # More finesse than the above. 
 
-    if (${actually_updated}) then
+    if ((${actually_updated}) || (! -e Include_lines/include_lines) || (! -e Include_lines/sub_lib_list)) then
         ${VERBOSE_ECHO} " "
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_file_list_2 sees that include_lines needs updating in directory ${cwd}."
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Asking build_include_lines_2 for a local build of include_lines in ${cwd}."

@@ -62,12 +62,6 @@ if ("${check_time_arg}" != "") then
     exit 1 
 endif 
 
-${IVI_MKDIR} "${IVI_LOCKFILE_PATH}"
-if ($status) then
-    $P_STDERR "Unable to make directory ${IVI_LOCKFILE_PATH}"
-    exit 1
-endif 
-
 set target = "$2"
 
 set full_cmd = "$argv[3-$#]"
@@ -107,6 +101,10 @@ set target_label = `echo ${target} | sed 's#.*/##'`
 if ($status) exit 1
 
 set target_label = "${dir_str}_${lock_label}"
+
+set only_set_lockfile_directory
+source ${MAKE_SCRIPT_PATH}set_lockfile_name
+if (${status}) exit ${status} 
 
 set time_stamp_file = "${dir_str}_${target_label}.$$"
 set time_stamp_file = "${IVI_LOCKFILE_PATH}${time_stamp_file}"

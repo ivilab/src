@@ -27,6 +27,7 @@ if (-e "${status_file}") then
 endif
 
 set exit_status = 0
+
 # 860 is a unique approximation of 900 for easier grep. We redirect to a unique
 # output file so we can check that we do not have a locking issue. 
 #
@@ -42,13 +43,13 @@ if (-e "${status_file}") then
     ${P_STDERR} " "
     ${P_STDERR} "Possible LOCKING FAILURE" 
     ${P_STDERR} "Script build_sub_libs_needed_3 found a preexising ${status_file}."
-    ${P_STDERR} "This should be IMPOSSIBLE because run under ivi_lock." 
+    ${P_STDERR} "This should be IMPOSSIBLE because we run under ivi_lock." 
     ${P_STDERR} "Previous status was `${IVI_CAT} ${status_file}`." 
     ${P_STDERR} " " 
 
     if ("${output_file}" != "") then
         if (-e "${output_file}") then
-            ${P_STDERR} "Previous debuggin output file moved to ${output_file}.previous.$$" 
+            ${P_STDERR} "Previous debugging output file moved to ${output_file}.previous.$$" 
             ${IVI_MV} "${output_file}" "${output_file}.previous.$$"
             ${P_STDERR} " " 
         endif 
@@ -69,6 +70,10 @@ if (${status}) then
 endif 
 
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed_3 with status ${exit_status} in ${cwd}."
+
+if (${exit_status}) then
+    ${P_STDERR} "Parallle build of sub_libs_needed by build_sub_libs_needed_3 FAILED in ${cwd}."
+endif 
 
 exit ${exit_status}
 

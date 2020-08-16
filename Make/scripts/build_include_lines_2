@@ -124,7 +124,8 @@ set update_sub_list_new = 0
 if (${update_include_lines}) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 updating ${cwd}/Include_lines/include_lines. " 
 
-    ${IVI_CP} Include_lines/include_lines.new Include_lines/include_lines
+    # ${IVI_CP} Include_lines/include_lines.new Include_lines/include_lines
+    ${MAKE_SCRIPT_PATH}copy_if_different Include_lines/include_lines.new Include_lines/include_lines
 
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Timestamp for ${cwd}/Include_lines/include_lines is now: `${IVI_TIMESTAMP} ${cwd}/Include_lines/include_lines`" 
 
@@ -273,7 +274,7 @@ endif
 if (${update_makefile_dirs}) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is running build_makefile_dirs in $cwd."
 
-    # Not sure of any effect? Dubugging?
+    # Not sure of any effect? Debugging?
     setenv CALLING_INDIRECT
 
     ${MAKE_SCRIPT_PATH}ivi_lock_for_make 10 Makefile-dirs ${MAKE_SCRIPT_PATH}build_makefile_dirs
