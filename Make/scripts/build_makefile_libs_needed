@@ -40,9 +40,7 @@ endif
 
 ##########################################################
 
-set ppid = `ps -p $$ -o ppid=`
-if (${status}) exit ${status}
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_libs_needed in directory ${cwd}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_makefile_libs_needed in directory ${cwd}."
 
 set build_dir = ""
 
@@ -60,5 +58,5 @@ endif
 ${MAKE_SCRIPT_PATH}build_makefile_libs_needed_2 $* 
 set exit_status = ${status}
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ with parent ${ppid} leaving script build_makefile_libs_needed in directory $cwd with status ${exit_status}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_makefile_libs_needed in directory $cwd with status ${exit_status}."
 

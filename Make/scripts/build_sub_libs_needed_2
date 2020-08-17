@@ -33,7 +33,7 @@ endif
 
 if ((-d ${IVI_LIB_PATH}) && (-r ${IVI_LIB_PATH}) && (-x ${IVI_LIB_PATH})) then
     pushd ${IVI_LIB_PATH} > /dev/null
-    # Insure no trailing slash.
+    # Ensure no trailing slash.
     set real_ivi_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
     # Add a trailing slash. 
     set real_ivi_lib_dir = "${real_ivi_lib_dir}/"
@@ -140,8 +140,9 @@ if ($?PRECOMPUTE_FILE_LISTS) then
                     # is a try at a heuristic. 
                     #
                     @ block_is_done = ${num_procs} % ${MAX_BACKGROUND_CHILDREN}
+                    @ max_remainder = ${MAX_BACKGROUND_CHILDREN} - 1
                     
-                    if (${block_is_done} == 0) then
+                    if (${block_is_done} == ${max_remainder}) then
                          ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing as we are up to ${num_procs} backgrounded processes."
                          ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing `${IVI_ECHO_TIME}`."
                          wait 
@@ -248,12 +249,12 @@ foreach recurse_dir_str (${recurse_dir_strs})
         ${VERBOSE_ECHO} ""
 
         # We do not want to to torch the machine, but there is no good
-        # rule of thumb for limiting the number of processes. But here
-        # is a try at a heuristic. 
-        #
+        # rule of thumb for limiting the number of processes.  
+        
         @ block_is_done = ${num_procs} % ${MAX_BACKGROUND_CHILDREN}
-
-        if (${block_is_done} == 0) then
+        @ max_remainder = ${MAX_BACKGROUND_CHILDREN} - 1
+        
+        if (${block_is_done} == ${max_remainder}) then
              ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing as we are up to ${num_procs} backgrounded processes."
              ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing `${IVI_ECHO_TIME}`."
              wait 

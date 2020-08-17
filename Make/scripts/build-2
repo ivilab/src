@@ -165,7 +165,7 @@ endif
 # 110) is effectively infinity.
 #
 if (! $?MAX_BACKGROUND_CHILDREN) then
-    @ max_background_children = 2 * ${NUM_CPU}
+    @ max_background_children = ${NUM_CPU}
     setenv MAX_BACKGROUND_CHILDREN ${max_background_children}
 endif 
 
@@ -989,6 +989,22 @@ if (${need_depend_bootstrap}) then
                 goto end_of_script
             endif
         endif 
+
+        ${VERBOSE_ECHO} "Script build-2 is precomputing file lists."
+
+        if ($?DRY_RUN) then
+            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists"
+        else
+            # No lock because we lock what we need within this script. 
+            # ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists
+            ${MAKE_SCRIPT_PATH}precompute_file_lists
+            if (${status}) then
+                ${WARN_ECHO} "Precomputing file lists failed."
+                exit 1
+            endif
+        endif 
+
+        ${VERBOSE_ECHO} "Script build-2 is building include lines."
 
         if ($?DRY_RUN) then
             echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines"

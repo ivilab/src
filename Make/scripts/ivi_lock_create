@@ -204,7 +204,9 @@ else
                
                 @ block_cycle = ${count} % 10
 
-                if (${block_cycle} == 0) then
+                if (${block_cycle} == 9) then
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} CHECKING up on lock file process on iteration ${count}." 
+
                     #  I have not found a safe way to ignore error output. 
                     set lock_id = `cat ${lock_file}`
                     set cat_status = ${status}

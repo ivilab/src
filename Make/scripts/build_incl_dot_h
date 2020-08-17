@@ -41,10 +41,7 @@ else
     set build_dir = `pwd`
 endif 
 
-if ($?IVI_VERBOSE) then
-    echo " "
-    echo "${VERBOSE_INDENT}Entering script build_incl_dot_h for directory ${build_dir}. "
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_incl_dot_h for directory ${build_dir}. "
 
 set build_dir = `echo ${build_dir} | sed 's#/*$##'`
 set dir = `echo ${build_dir} | sed "s/.*\/\(.*\)/\1/"`
@@ -118,9 +115,6 @@ set incl_file = "${dir}_incl.h"
 # endif 
 
 
-if ($?IVI_VERBOSE) then
-    echo "${VERBOSE_INDENT}Leaving script build_incl_dot_h  for directory ${build_dir}. "
-    echo " "
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_incl_dot_h for directory ${build_dir}. "
 
 

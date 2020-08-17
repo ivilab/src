@@ -354,8 +354,9 @@ if (${must_update}) then
         setenv BUILD_LOCAL_INCLUDE_LINES
         ${MAKE_SCRIPT_PATH}build_include_lines_2 
         if (${status}) set exit_status=1
+    else
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 not updating include_lines in ${cwd} as no reason found."
     endif 
-
 endif 
 
 end_of_script:

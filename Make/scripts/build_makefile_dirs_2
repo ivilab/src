@@ -42,13 +42,7 @@ set real_ivi_lib_dir = `echo ${IVI_LIB_PATH} | sed 's/\/*$//'`
 
 set build_dir_path = "${cwd}"
 
-if ($?IVI_VERBOSE) then
-    set ppid = `ps -p $$ -o ppid=`
-    if (${status}) exit 1
-
-    echo " "
-    echo "IVB: ${VERBOSE_INDENT}Process $$ with parent ${ppid} entering script build_makefile_dirs_2 in directory ${build_dir_path}."
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_makefile_dirs_2 in directory ${build_dir_path}."
 
 ##########################################################
 
@@ -662,11 +656,8 @@ endif
 ${IVI_MV} ${output_file_name} Makefile-dirs
 if (${status}) set exit_status = ${status} 
 
-if ($?IVI_VERBOSE) then
-    echo "IVB: ${VERBOSE_INDENT}Makefile-dirs installed in ${cwd} by process $$."
-    echo "IVB: ${VERBOSE_INDENT}Process $$ with parent ${ppid} leaving script build_makefile_dirs_2 in ${build_dir_path} with status ${exit_status}."
-    echo "IVB: "
-endif
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Makefile-dirs installed in ${cwd}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_makefile_dirs_2 in ${build_dir_path} with status ${exit_status}."
 
 exit ${exit_status}
 
