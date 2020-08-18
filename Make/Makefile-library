@@ -382,6 +382,7 @@ $(MAKE_EDIT_PATH)%.ex7: $(MAKE_EDIT_PATH)%.vim
 	$(MAKE_EDIT_PATH)strip_ex7_files $< $@
 
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
+    $(MAKE_EDIT_PATH)Bin.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Header.$(VIM_SUFFIX) \
@@ -391,9 +392,7 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
     $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)User.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Work.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
 
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \

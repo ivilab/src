@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25720 2020-08-13 23:14:49Z kobus $
+# $Id: Makefile-program 25742 2020-08-18 20:14:47Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -426,7 +426,6 @@ Makefile-depend : \
     $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Work.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
 
 Makefile-depend : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program 
