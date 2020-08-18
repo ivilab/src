@@ -151,15 +151,16 @@ else
 
     set got_it = 0
 
-    set zero = ""
-    set min_hundredths = ""
-    @ x = $$ % 100; @ y = $x % 10;  @ z = $x / 10; @ w = 10 * $y + $z; @ w *= 3
-    # ; @ w /= 3
-    # Sleep at least 0.03 seconds.
-    if ($w < 10) set min_hundredths = "3" 
-    if ($w < 100) set zero = "0"
+    # Reverses last two digits of $$
+    @ x = $$ % 100; @ y = $x % 10;  @ z = $x / 10; @ w = 10 * $y + $z
+    # Sleep at least 0.05 seconds.
+    @ w += 50
 
-    set t = "${zero}${min_hundredths}${w}"
+    # w is now beween 51 and 151. 
+
+    set zero = ""
+    if ($w < 100) set zero = "0"
+    set t = "${zero}${w}"
     set sleep_time = "0.${t}"
 
     # set id = "${requesting_pid}"
@@ -172,7 +173,7 @@ else
 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${id} sleeping for ${sleep_time} seconds"
         sleep ${sleep_time}
-        @ time_waited += ${t}
+        @ time_waited += ${w}
 
         if (${status}) then
             ${P_STDERR} "Fractional sleep failed in ivi_lock_create." 
@@ -205,7 +206,7 @@ else
                 # build_sub_libs_needed, but it seems that this is a good
                 # optimization for some circumstances anyway. 
                
-                @ block_cycle = ${count} % 10
+                @ block_cycle = ${count} % 20
 
                 if (${block_cycle} == 9) then
                     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} CHECKING up on lock file process on iteration ${count}." 
@@ -375,7 +376,7 @@ else
                     goto cleanup
                 endif
 
-                @ time_waited += ${t}
+                @ time_waited += ${w}
                 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} slept ${time_waited}/${max_time_to_wait} milliseconds."
 
                 @ count ++

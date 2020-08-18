@@ -122,10 +122,11 @@ setenv TMP_SUB_DIRS_VISITED "${TMP_SUB_DIRS_VISITED} ${current_sub_lib}"
 
 ################################################################################
 
-# This is marginal at best. So we opt in. We cannot simply do this based on the
-# hint file, since the script precompute_file_lists also needs to consult it. 
+# This is marginal at best, so we provide the opt out. We cannot simply do this
+# based on the hint file, since the script precompute_file_lists also needs to
+# consult it. 
 
-if ($?PRECOMPUTE_SUBLIBS) then
+if (! $?SKIP_PRECOMPUTE_SUB_LIBS) then
     set sub_libs_hint_file = "sub_libs.hint"
 
     if (-e "${sub_libs_hint_file}") then
