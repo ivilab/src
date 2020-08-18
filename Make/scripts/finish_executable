@@ -86,9 +86,8 @@ endif
 
 if (${link_to_top}) then
     if (! $?IVI_QUIET) then 
-        ${WARN_ECHO} "Linking executable ${EXEC_LINK}/${exec_name} to ./${exec_name}."
-        ${WARN_ECHO} echo "This can be disabled by 'unsetenv FORCE_LINK_EXECUTABLE; setenv DONT_LINK_EXECUTABLE 1'"
-        ${WARN_ECHO} echo " "
+        echo "Linking executable ${EXEC_LINK}/${exec_name} to ./${exec_name}."
+        echo "This can be disabled by 'unsetenv FORCE_LINK_EXECUTABLE; setenv DONT_LINK_EXECUTABLE 1'"
     endif
 
 

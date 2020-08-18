@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25742 2020-08-18 20:14:47Z kobus $
+# $Id: Makefile-program 25743 2020-08-18 23:14:54Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -402,6 +402,8 @@ LIB_LINK_STRINGS = $(IVI_LIB_LINK_STR)
 #
 # Prerequisites for Makefile-depend. 
 
+# The symbol VIM_SUFFIX used below is either "ex" or "ex7". 
+
 $(MAKE_EDIT_PATH)%.ex: $(MAKE_EDIT_PATH)strip_ex_files
 
 $(MAKE_EDIT_PATH)%.ex: $(MAKE_EDIT_PATH)%.vim
@@ -412,17 +414,18 @@ $(MAKE_EDIT_PATH)%.ex7: $(MAKE_EDIT_PATH)strip_ex7_files
 $(MAKE_EDIT_PATH)%.ex7:$(MAKE_EDIT_PATH)%.vim
 	$(MAKE_EDIT_PATH)strip_ex7_files $< $@
 
-# The symbol VIM_SUFFIX used here is either "ex" or "ex7". 
-#
+#  This list is the same as in Makefile-library, although not all are needed for
+#  Mkefile-depend for both Makefile-library and Makefile-programs
+
 Makefile-depend : \
     $(MAKE_EDIT_PATH)Bin.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Header.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Help.$(VIM_SUFFIX) \
+    $(MAKE_EDIT_PATH)Local_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Local_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) \

@@ -367,10 +367,8 @@ $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)buil
 
 ################################################################################
 
-# Dependency on all the tools for Makefile-depend. 
-
 # The symbol VIM_SUFFIX used below is either "ex" or "ex7". 
-#
+
 $(MAKE_EDIT_PATH)%.ex: $(MAKE_EDIT_PATH)strip_ex_files
 
 $(MAKE_EDIT_PATH)%.ex: $(MAKE_EDIT_PATH)%.vim
@@ -381,13 +379,16 @@ $(MAKE_EDIT_PATH)%.ex7: $(MAKE_EDIT_PATH)strip_ex7_files
 $(MAKE_EDIT_PATH)%.ex7: $(MAKE_EDIT_PATH)%.vim
 	$(MAKE_EDIT_PATH)strip_ex7_files $< $@
 
+#  This list is the same as in Makefile-library, although not all are needed for
+#  Mkefile-depend for both Makefile-library and Makefile-programs
+
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
     $(MAKE_EDIT_PATH)Bin.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Header.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Help.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Misc.$(VIM_SUFFIX) \
+    $(MAKE_EDIT_PATH)Local_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) \
@@ -395,11 +396,10 @@ $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
     $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
 
+$(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(IVI_BUILD_TOOLS) 
+
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
     $(MAKE_PATH)Makefile-library \
-    $(MAKE_SCRIPT_PATH)stream_file_names \
-    $(MAKE_SCRIPT_PATH)ivi_makedepend \
-    $(MAKE_SCRIPT_PATH)build_library_makefile_depend \
     $(LIB_COMPONENT_SRC_DIR)Makefile-library \
     $(LIB_COMPONENT_SRC_DIR)Makefile-library.$(MAKE_FLAVOR) 
 
