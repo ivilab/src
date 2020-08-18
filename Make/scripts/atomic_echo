@@ -13,10 +13,10 @@
 #     the file (e.g., a process id, which of course, is only unique for a single
 #     machine). 
 #
-#     Doing this reliable requires OS facilities. For systems where we have not
-#     figured out how to use such facilities reliably, we implement some hacks to
-#     achieve atomic writing which seem to work pretty well. But this script
-#     probably can fail. 
+#     Doing this reliably requires OS facilities. For systems where we have not
+#     figured out how to use such facilities to an advantage, we implement some
+#     hacks to achieve atomic writing which seem to work pretty well. But this
+#     script probably can fail. 
 #
 #     In more detail, this script uses helper file atomic_echo_2 which calls the
 #     helper atomic_echo_3 to do the echo, either using flock(1) if available,
@@ -28,7 +28,7 @@
 # Deficiencies
 #     This script is likely not completely reliable on mac OS, and has not been
 #     tested enough on linux, where in theory it should be reliable. However,
-#     reading the unique id trick does seem pretty solid :-).
+#     using noclobber and reading the unique id trick does seem pretty solid.
 #
 # Author:
 #     Kobus Barnard 
@@ -81,7 +81,7 @@ if ("${existing_id}" != "${id}") then
     exit 1
 endif 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Handler for ${id} SUCCESSFULLY set lock file contents to: `cat ${lock_file}`"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Handler for ${id} SUCCESSFULLY set lock file ${lock_file} contents to: `cat ${lock_file}`"
 
 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Leaving atomic_echo $*"
 

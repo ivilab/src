@@ -162,7 +162,8 @@ endif
 # How many processes do we put in the background at a time? The actual total
 # number of processes in the background can be a lot bigger due to recurssion
 # and parallelism. Any number greater than the number of IVI sub libs (about
-# 110) is effectively infinity.
+# 110) is effectively infinity. On my summer 2020 mac, anything greater than
+# NUM_CPU gets into diminishing returns. 
 #
 if (! $?MAX_BACKGROUND_CHILDREN) then
     @ max_background_children = ${NUM_CPU}
@@ -309,62 +310,62 @@ endif
 ################################################################################
 
 if ($?IVI_VERBOSE_2) then
-    echo "" 
-    echo =================  variable values in build-2 =========================
-    echo "" 
+    ${VERBOSE_ECHO_2} "" 
+    ${VERBOSE_ECHO_2} =================  variable values in build-2 =========================
+    ${VERBOSE_ECHO_2} "" 
 
-    echo "SHORT_HOST:              ${SHORT_HOST}"
-    echo "MACHINE:                ${MACHINE}"
-    echo "OS:                     ${OS}"
-    echo "OS2:                    ${OS2}"
+    ${VERBOSE_ECHO_2} "SHORT_HOST:              ${SHORT_HOST}"
+    ${VERBOSE_ECHO_2} "MACHINE:                ${MACHINE}"
+    ${VERBOSE_ECHO_2} "OS:                     ${OS}"
+    ${VERBOSE_ECHO_2} "OS2:                    ${OS2}"
 
     if ($?UBUNTU_RELEASE) then
-        echo "UBUNTU_RELEASE:         ${UBUNTU_RELEASE}"
+        ${VERBOSE_ECHO_2} "UBUNTU_RELEASE:         ${UBUNTU_RELEASE}"
     endif 
 
-    echo " "
-    echo "SHELL_FOR_MAKE:         ${SHELL_FOR_MAKE}"
-    echo "CWD:                    ${CWD}"
-    echo "IVI_SRC_PATH:           ${IVI_SRC_PATH}"
-    echo "IVI_LIB_PATH:           ${IVI_LIB_PATH}"
-    echo "MAKE_PATH:              ${MAKE_PATH}"
-    echo "MAKE_SCRIPT_PATH:       ${MAKE_SCRIPT_PATH}"
-    echo "MAKE_FLAVOR:            ${MAKE_FLAVOR}"
-    echo "IVI_DIFF_TEST:          ${IVI_DIFF_TEST}"
-    echo "IVI_STAT_FLAVOR:        ${IVI_STAT_FLAVOR}"
-    echo "VIM_FOR_MAKE:           ${VIM_FOR_MAKE}"
-    echo "VIM_SUFFIX:             ${VIM_SUFFIX}"
-    echo "PRODUCTION:             ${PRODUCTION}"
-    echo "OBJ_DIR:                ${OBJ_DIR}"
-    echo "CXX_OBJ_DIR:            ${CXX_OBJ_DIR}"
-    echo "LD_OBJ_DIR:             ${LD_OBJ_DIR}"
-    echo "REAL_OBJ_DIR:           ${REAL_OBJ_DIR}"
-    echo "LOAD_DIRS:              ${LOAD_DIRS}"
-    echo "IVI_DOC_PATH:           ${IVI_DOC_PATH}"
-    echo "MAN3_MAN_PATH:          ${MAN3_MAN_PATH}"
-    echo "HTML_MAN_PATH:          ${HTML_MAN_PATH}"
-    echo "CAT3_CAT_PATH:          ${CAT3_CAT_PATH}"
-    echo "IVI_WARN_LEVEL:         ${IVI_WARN_LEVEL}"
-    echo "IVI_CC_WARN_LEVEL:      ${IVI_CC_WARN_LEVEL}"
-    echo "CC_IVI_WARNINGS:        ${CC_IVI_WARNINGS}"
-    echo "CXX_IVI_WARNINGS:       ${CXX_IVI_WARNINGS}"
-    echo "IVI_CXX_MESSAGE_FILTER: ${IVI_CXX_MESSAGE_FILTER}"
-    echo "ECHO_IF_VERBOSE;        ${ECHO_IF_VERBOSE}" 
-    echo "" 
-    echo "ALL_BASE_INCLUDES:      ${ALL_BASE_INCLUDES}"
-    echo "LIB_BASE_INCLUDES:      ${LIB_BASE_INCLUDES}"
-    echo "DEFAULT_OPT_INCLUDES:   ${DEFAULT_OPT_INCLUDES}"
-    echo "LOAD_DIRS:              ${LOAD_DIRS}"
-    echo "IVI_ACTUAL_BOOST:       ${IVI_ACTUAL_BOOST}"
-    echo "" 
-    echo "Job client make:        ${IVI_MAKE_JOB_CLIENT}" 
-    echo "Serial make command:    ${IVI_MAKE_SERIAL}" 
-    echo "Parallel make command:  ${IVI_MAKE_SERIAL}" 
-    echo "Default make is parallel: ${is_parallel}" 
-    echo "Default make command:   ${IVI_MAKE}" 
-    echo "" 
-    echo =======================================================================
-    echo "" 
+    ${VERBOSE_ECHO_2} " "
+    ${VERBOSE_ECHO_2} "SHELL_FOR_MAKE:         ${SHELL_FOR_MAKE}"
+    ${VERBOSE_ECHO_2} "CWD:                    ${CWD}"
+    ${VERBOSE_ECHO_2} "IVI_SRC_PATH:           ${IVI_SRC_PATH}"
+    ${VERBOSE_ECHO_2} "IVI_LIB_PATH:           ${IVI_LIB_PATH}"
+    ${VERBOSE_ECHO_2} "MAKE_PATH:              ${MAKE_PATH}"
+    ${VERBOSE_ECHO_2} "MAKE_SCRIPT_PATH:       ${MAKE_SCRIPT_PATH}"
+    ${VERBOSE_ECHO_2} "MAKE_FLAVOR:            ${MAKE_FLAVOR}"
+    ${VERBOSE_ECHO_2} "IVI_DIFF_TEST:          ${IVI_DIFF_TEST}"
+    ${VERBOSE_ECHO_2} "IVI_STAT_FLAVOR:        ${IVI_STAT_FLAVOR}"
+    ${VERBOSE_ECHO_2} "VIM_FOR_MAKE:           ${VIM_FOR_MAKE}"
+    ${VERBOSE_ECHO_2} "VIM_SUFFIX:             ${VIM_SUFFIX}"
+    ${VERBOSE_ECHO_2} "PRODUCTION:             ${PRODUCTION}"
+    ${VERBOSE_ECHO_2} "OBJ_DIR:                ${OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "CXX_OBJ_DIR:            ${CXX_OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "LD_OBJ_DIR:             ${LD_OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "REAL_OBJ_DIR:           ${REAL_OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "LOAD_DIRS:              ${LOAD_DIRS}"
+    ${VERBOSE_ECHO_2} "IVI_DOC_PATH:           ${IVI_DOC_PATH}"
+    ${VERBOSE_ECHO_2} "MAN3_MAN_PATH:          ${MAN3_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "HTML_MAN_PATH:          ${HTML_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "CAT3_CAT_PATH:          ${CAT3_CAT_PATH}"
+    ${VERBOSE_ECHO_2} "IVI_WARN_LEVEL:         ${IVI_WARN_LEVEL}"
+    ${VERBOSE_ECHO_2} "IVI_CC_WARN_LEVEL:      ${IVI_CC_WARN_LEVEL}"
+    ${VERBOSE_ECHO_2} "CC_IVI_WARNINGS:        ${CC_IVI_WARNINGS}"
+    ${VERBOSE_ECHO_2} "CXX_IVI_WARNINGS:       ${CXX_IVI_WARNINGS}"
+    ${VERBOSE_ECHO_2} "IVI_CXX_MESSAGE_FILTER: ${IVI_CXX_MESSAGE_FILTER}"
+    ${VERBOSE_ECHO_2} "ECHO_IF_VERBOSE;        ${ECHO_IF_VERBOSE}" 
+    ${VERBOSE_ECHO_2} "" 
+    ${VERBOSE_ECHO_2} "ALL_BASE_INCLUDES:      ${ALL_BASE_INCLUDES}"
+    ${VERBOSE_ECHO_2} "LIB_BASE_INCLUDES:      ${LIB_BASE_INCLUDES}"
+    ${VERBOSE_ECHO_2} "DEFAULT_OPT_INCLUDES:   ${DEFAULT_OPT_INCLUDES}"
+    ${VERBOSE_ECHO_2} "LOAD_DIRS:              ${LOAD_DIRS}"
+    ${VERBOSE_ECHO_2} "IVI_ACTUAL_BOOST:       ${IVI_ACTUAL_BOOST}"
+    ${VERBOSE_ECHO_2} "" 
+    ${VERBOSE_ECHO_2} "Job client make:        ${IVI_MAKE_JOB_CLIENT}" 
+    ${VERBOSE_ECHO_2} "Serial make command:    ${IVI_MAKE_SERIAL}" 
+    ${VERBOSE_ECHO_2} "Parallel make command:  ${IVI_MAKE_SERIAL}" 
+    ${VERBOSE_ECHO_2} "Default make is parallel: ${is_parallel}" 
+    ${VERBOSE_ECHO_2} "Default make command:   ${IVI_MAKE}" 
+    ${VERBOSE_ECHO_2} "" 
+    ${VERBOSE_ECHO_2} ==================================================================================
+    ${VERBOSE_ECHO_2} "" 
 endif 
 
 ################################################################################
@@ -947,7 +948,10 @@ set exit_status = 0
 set error_found = 0
 
 if (${need_depend_bootstrap}) then
+    ${VERBOSE_ECHO} 
+    ${VERBOSE_ECHO} ==================================================================================
     ${VERBOSE_ECHO} "Script build-2 is bootstrapping make for efficiency and in case our make does not build included files."
+    ${VERBOSE_ECHO} 
 
     set bootstrap_files = `${MAKE_SCRIPT_PATH}stream_file_names -bootstrap`
 
@@ -974,8 +978,13 @@ if (${need_depend_bootstrap}) then
         # that also.  Hence if Makefile-dirs does not exist, we need to build it
         # here, especially for versions of make that break when we include
         # non-existent files.
-        #
+        
+        ${VERBOSE_ECHO} ""
+        ${VERBOSE_ECHO} ==================================================================================
         ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
+        ${VERBOSE_ECHO} "First, it will call build_file_list."
+        ${VERBOSE_ECHO} ""
+
         set sub_start_time = `${IVI_ECHO_TIME}`
 
         if ($?DRY_RUN) then
@@ -990,20 +999,32 @@ if (${need_depend_bootstrap}) then
             endif
         endif 
 
+        ${VERBOSE_ECHO} ""
+        ${VERBOSE_ECHO} ==================================================================================
         ${VERBOSE_ECHO} "Script build-2 is precomputing file lists."
+        ${VERBOSE_ECHO} ""
 
         if ($?DRY_RUN) then
             echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists"
         else
             # No lock because we lock what we need within this script. 
             # ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists
-            ${MAKE_SCRIPT_PATH}precompute_file_lists
+            #
+            # The sed removes most annoying job control output, specifically the
+            # ones that do not loose the new line due to parallel output
+            # intertwining. We do not use grep in pipes if we plan to use the
+            # exit status, as grep will have exit status 1 if no lines are
+            # selected. 
+            #
+            ${MAKE_SCRIPT_PATH}precompute_file_lists |& ${IVI_SED} '/^\[[1-9]/d'
             if (${status}) then
                 ${WARN_ECHO} "Precomputing file lists failed."
                 exit 1
             endif
         endif 
 
+        ${VERBOSE_ECHO} ""
+        ${VERBOSE_ECHO} ==================================================================================
         ${VERBOSE_ECHO} "Script build-2 is building include lines."
 
         if ($?DRY_RUN) then
@@ -1141,6 +1162,11 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
     # This could be rolled up into a loop, but the error messages would not be
     # as informative.
 
+    ${VERBOSE_ECHO} ""
+    ${VERBOSE_ECHO} ==================================================================================
+    ${VERBOSE_ECHO} "Script build-2 is building Makefile, possibly multiple times if there are errors."
+    ${VERBOSE_ECHO} ""
+
     ${ivi_depend_make} -f Makefile-2 Makefile 
     if (${status}) then
         ${P_STDERR} "Initial build of 'Makefile' failed, but that is OK, it might just mean that we are missing some makefiles."
@@ -1212,10 +1238,11 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
 
                 foreach depend_target (${depend_targets})
                     if ($?IVI_VERBOSE) then
-                        echo " "
-                        echo "Script build-2 is building depend target: ${depend_target} in directory ${cwd}."
-                        echo "Make command is: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
-                        echo " "
+                        ${VERBOSE_ECHO} " "
+                        ${VERBOSE_ECHO} ==================================================================================
+                        ${VERBOSE_ECHO} "Script build-2 is building depend target: ${depend_target} in directory ${cwd}."
+                        ${VERBOSE_ECHO} "Make command is: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
+                        ${VERBOSE_ECHO} " "
                         set sub_start_time = `${IVI_ECHO_TIME}`
                     endif 
 
@@ -1230,11 +1257,11 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
                             break
                         else if ($?IVI_VERBOSE) then
                             set sub_end_time = `${IVI_ECHO_TIME}`
-                            echo " "
-                            echo "Script build-2 successfully built depend target: ${depend_target} in directory ${cwd}."
-                            echo "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
-                            echo "    Start time for ${depend_target}: ${sub_start_time}"
-                            echo "    End   time for ${depend_target}: ${sub_end_time}"
+                            ${VERBOSE_ECHO} " "
+                            ${VERBOSE_ECHO} "Script build-2 successfully built depend target: ${depend_target} in directory ${cwd}."
+                            ${VERBOSE_ECHO} "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
+                            ${VERBOSE_ECHO} "    Start time for ${depend_target}: ${sub_start_time}"
+                            ${VERBOSE_ECHO} "    End   time for ${depend_target}: ${sub_end_time}"
                         endif 
                     endif 
 
@@ -1590,10 +1617,11 @@ foreach arg (${build_adjusted_args})
     endif 
 
     if ($?IVI_VERBOSE) then
-        echo " "
-        echo "Script build-2 is building target: ${arg} in directory ${cwd}."
-        echo "Make command is: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
-        echo " "
+        ${VERBOSE_ECHO} " "
+        ${VERBOSE_ECHO} ==================================================================================
+        ${VERBOSE_ECHO} "Script build-2 is building target: ${arg} in directory ${cwd}."
+        ${VERBOSE_ECHO} "Make command is: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
+        ${VERBOSE_ECHO} " "
         set sub_start_time = `${IVI_ECHO_TIME}`
     endif 
 
@@ -1653,8 +1681,8 @@ end_of_script:
 if ( ! $?IVI_QUIET ) then
     set end_time = `${IVI_ECHO_TIME}`
     echo " "
-    echo "Build for adjusted targets [ ${adjusted_args} ] started at ${start_time}"
-    echo "Build for adjusted targets [ ${adjusted_args} ] completed  ${end_time} with status ${exit_status}"
+    echo "Build for adjusted targets [ ${adjusted_args} ] completed at ${end_time} with status ${exit_status}"
+    echo "Build for adjusted targets [ ${adjusted_args} ] started at   ${start_time}"
     echo " "
 
 endif 

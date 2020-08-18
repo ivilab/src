@@ -2,7 +2,6 @@
 
 ##################################################################################
 #
-#
 
 if ($?IVI_SET_ECHO) then
     set echo
@@ -92,121 +91,9 @@ ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 processing ${n
 
 set exit_status = 0
 
-if ($?PRECOMPUTE_FILE_LISTS) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is precomputing file lists."
-
-    set waited_on_dir_strs = ""
-    @ num_procs = 0
-
-    foreach recurse_dir_str (${recurse_dir_strs})
-        ${VERBOSE_ECHO_2} " "
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Precomputing file lists considering ${recurse_dir_str} ----------"
-        ${VERBOSE_ECHO_2} " "
-
-        set do_serial = $?BUILD_FILE_LISTS_SERIAL
-
-        if (! ${do_serial}) then
-            #
-            # No path elements. Same as original in $*. 
-            set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
-            set status_file = ${cwd}/Include_lines/precompute_lists_${recurse_dir}.status
-            ${IVI_RM} "${status_file}"
-
-            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Parallel precomputing of file lists entering ${recurse_dir_str} ----------"
-
-            pushd ${recurse_dir_str} > /dev/null
-                set too_old = 1
-                if ((-e "Include_lines/include_lines") && (-e "Include_lines/include_lines.new") && (-e "Include_lines/file_list")) then
-                    set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/include_lines.new Include_lines/file_list`
-
-                    if (${too_old}) then
-                        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- In ${cwd}/Include_lines, include_lines.new is older than file_list (need to build)  ----------"
-                    endif 
-                else 
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- In ${cwd}/Include_lines, one of include_lines, include_lines.new, or file_list does not exist (need to build)  ----------"
-                endif
-
-                if (${too_old}) then
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Script build_sub_libs_needed_2 calling build_file_list_2 to build ${cwd}/Include_lines/include_lines ----------"
-                    (${MAKE_SCRIPT_PATH}ivi_lock_for_make 120 Include_lines/include_lines ${MAKE_SCRIPT_PATH}build_file_list_2; echo ${status} > ${status_file}) &
-
-                    @ num_procs ++
-                    set waited_on_dir_strs = "${waited_on_dir_strs} ${recurse_dir_str}" 
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Running build_file_list_2 ${recurse_dir_str} in the background in ${cwd}."
-                    ${VERBOSE_ECHO} ""
-
-                    # We do not want to to torch the machine, but there is no good
-                    # rule of thumb for limiting the number of processes. But here
-                    # is a try at a heuristic. 
-                    #
-                    @ block_is_done = ${num_procs} % ${MAX_BACKGROUND_CHILDREN}
-                    @ max_remainder = ${MAX_BACKGROUND_CHILDREN} - 1
-                    
-                    if (${block_is_done} == ${max_remainder}) then
-                         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing as we are up to ${num_procs} backgrounded processes."
-                         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing `${IVI_ECHO_TIME}`."
-                         wait 
-                         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 done waiting at `${IVI_ECHO_TIME}`."
-                    endif 
-                else
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Script build_sub_libs_needed_2 able to SKIP calling build_file_list_2 to build ${cwd}/Include_lines/include_lines ----------"
-                endif 
-            popd > /dev/null
-        else 
-            ${MAKE_SCRIPT_PATH}ivi_lock_for_make 120 Include_lines/include_lines ${MAKE_SCRIPT_PATH}build_file_list_2 ${recurse_dir_str} 
-            if (${status}) exit ${status}
-        endif 
-    end
-
-    if (${num_procs} > 0) then
-        ${VERBOSE_ECHO}   "${VERBOSE_INDENT}------- ${num_procs} precomputing processes to wait for in build_sub_libs_needed_2 in ${cwd}."
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Waiting on processing of dirs: ${waited_on_dir_strs} in ${cwd}."
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Script build_sub_libs_needed_2 starting to wait at `${IVI_ECHO_TIME}`."
-        ${VERBOSE_ECHO} ""
-        wait 
-        ${VERBOSE_ECHO} ""
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is done waiting at  `${IVI_ECHO_TIME}` for ${num_procs} processes in ${cwd}."
-    else
-        ${VERBOSE_ECHO_2}   "${VERBOSE_INDENT}------- build_sub_libs_needed_2 did not need additional processes in ${cwd}."
-    endif 
-
-    foreach recurse_dir_str (${waited_on_dir_strs})
-        # No path elements. Same as original in $*. 
-        set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
-        set status_file = ${cwd}/Include_lines/precompute_lists_${recurse_dir}.status
-
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is checking on background build in ${recurse_dir}."
-
-        if (-e "${status_file}") then
-            set precompute_status = `${IVI_CAT} "${status_file}"`
-
-            if (${precompute_status}) then
-                # If we have a locking issue or some other bug, we might over write
-                # the evidence later on, so we stash it.
-
-                ${P_STDERR} "Call to build_file_list_2 in ${recurse_dir_str} FAILED based on ${status_file}."
-                ${IVI_CP} ${status_file}  ${status_file}.$$
-                ${P_STDERR} "Copying failed ${status_file} to ${status_file}.$$."
-            endif
-        else 
-            ${P_STDERR} "File ${status_file} did not get created. Presumably the process died or was killed."
-            set precompute_status = 1
-        endif 
-
-        if (${precompute_status}) then
-            set exit_status = 1
-        endif 
-
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is done checking on precomputing file lists in the background in ${recurse_dir}."
-    end 
-
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is done precomputing file lists in the background."
-else 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 is NOT precomputing file lists."
-endif 
-
 set waited_on_dir_strs = ""
 @ num_procs = 0
+@ num_waited_on_procs = 0
 
 foreach recurse_dir_str (${recurse_dir_strs})
     ${VERBOSE_ECHO_2} " "
@@ -242,8 +129,8 @@ foreach recurse_dir_str (${recurse_dir_strs})
             ${MAKE_SCRIPT_PATH}ivi_lock 910 ${MAKE_SCRIPT_PATH}build_sub_libs_needed_3 "${recurse_dir_str}" "${status_file}" &
         endif 
 
-
         @ num_procs ++
+        @ num_waited_on_procs ++
         set waited_on_dir_strs = "${waited_on_dir_strs} ${recurse_dir_str}" 
         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Running build_include_lines_3 ${recurse_dir_str} in the background in ${cwd}."
         ${VERBOSE_ECHO} ""
@@ -251,14 +138,27 @@ foreach recurse_dir_str (${recurse_dir_strs})
         # We do not want to to torch the machine, but there is no good
         # rule of thumb for limiting the number of processes.  
         
-        @ block_is_done = ${num_procs} % ${MAX_BACKGROUND_CHILDREN}
+        @ block_is_done = ${num_waited_on_procs} % ${MAX_BACKGROUND_CHILDREN}
         @ max_remainder = ${MAX_BACKGROUND_CHILDREN} - 1
         
         if (${block_is_done} == ${max_remainder}) then
-             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing as we are up to ${num_procs} backgrounded processes."
-             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing `${IVI_ECHO_TIME}`."
-             wait 
-             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 done waiting at `${IVI_ECHO_TIME}`."
+            # This is expensive, so you need to ask for it.
+            if ($?TRACK_PROCESS_COUNTS) then
+                if ($?IVI_VERBOSE_2) then
+                    set num_all_proc = `ps -A | wc -l`
+                    set num_user_proc = `ps -u ${USER} | grep -c '^ *[0-9]'`
+                    set num_make_proc = `ps -u ${USER} | grep 'Make' | grep -c '^ *[0-9]'`
+                    ${VERBOSE_ECHO_2} " "
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Total process count is ${num_all_proc}, user count is ${num_user_proc}, build count is ${num_make_proc} in ${cwd}." 
+                    ${VERBOSE_ECHO_2} " "
+                endif
+            endif
+
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing as we are up to ${num_procs} backgrounded processes."
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 pausing at `${IVI_ECHO_TIME}`."
+            wait 
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_sub_libs_needed_2 done waiting at `${IVI_ECHO_TIME}`."
+            @ num_waited_on_procs = 0
         endif 
 
     else 
@@ -268,15 +168,15 @@ foreach recurse_dir_str (${recurse_dir_strs})
     endif 
 end
 
-if (${num_procs} > 0) then
+if (${num_waited_on_procs} > 0) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- ${num_procs} processes to wait for in build_sub_libs_needed_2 in ${cwd}."
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}------- Waiting on processing of dirs: ${waited_on_dir_strs} in ${cwd}."
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- Script build_sub_libs_needed_2 starting to wait at `${IVI_ECHO_TIME}`."
     ${VERBOSE_ECHO} ""
 
-    if ($?IVI_VERBOSE_2) then
-        # This is expensive, so you need to ask for it.
-        if ($?TRACK_PROCESS_COUNTS) then
+    # This is expensive, so you need to ask for it.
+    if ($?TRACK_PROCESS_COUNTS) then
+        if ($?IVI_VERBOSE_2) then
             set num_all_proc = `ps -A | wc -l`
             set num_user_proc = `ps -u ${USER} | grep -c '^ *[0-9]'`
             set num_make_proc = `ps -u ${USER} | grep 'Make' | grep -c '^ *[0-9]'`

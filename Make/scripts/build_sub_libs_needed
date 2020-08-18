@@ -122,6 +122,58 @@ setenv TMP_SUB_DIRS_VISITED "${TMP_SUB_DIRS_VISITED} ${current_sub_lib}"
 
 ################################################################################
 
+# This is marginal at best. So we opt in. We cannot simply do this based on the
+# hint file, since the script precompute_file_lists also needs to consult it. 
+
+if ($?PRECOMPUTE_SUBLIBS) then
+    set sub_libs_hint_file = "sub_libs.hint"
+
+    if (-e "${sub_libs_hint_file}") then
+        ${VERBOSE_ECHO} ""
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed calling build_sub_libs_needed_2 to precompute based on sub_libs.hint."
+        ${VERBOSE_ECHO} ""
+
+        set start_time = `${IVI_ECHO_TIME}`
+
+        set recurse_dirs = `${IVI_CAT} "${sub_libs_hint_file}"`
+        if (${status}) exit 1
+
+        # Hack the behavior using a global variable, but we silence propogating this
+        # recursivley in build_sub_libs_needed_2. Yes, this *is* a hack.
+
+        if (! $?BUILD_RECURSE_DIRS_ONLY) then
+            set unset_build_recurse_dirs_only
+            setenv BUILD_RECURSE_DIRS_ONLY
+        endif 
+
+        # The sed removes most annoying job control output, specifically the
+        # ones that do not loose the new line due to parallel output
+        # intertwining. We do not use grep in pipes if we plan to use the exit
+        # status, as grep will have exit status 1 if no lines are selected. 
+        #
+        ${MAKE_SCRIPT_PATH}build_sub_libs_needed_2 ${recurse_dirs} |& ${IVI_SED} '/^\[[1-9]/d'
+        if (${status}) then
+            ${P_STDERR} "Script build_sub_libs_needed reporting build_sub_libs_needed_2 failed for sub_libs hint in ${cwd}."
+            exit 1
+        endif 
+       
+        if ($?unset_build_sub_libs_serial) unsetenv BUILD_SUB_LIBS_SERIAL
+        if ($?unset_build_recurse_dirs_only) unsetenv BUILD_RECURSE_DIRS_ONLY
+        if ($?unset_precompute_file_lists) unsetenv PRECOMPUTE_FILE_LISTS
+
+        set end_time = `${IVI_ECHO_TIME}`
+
+        ${VERBOSE_ECHO} ""
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed done precomputing based on sub_libs.hint."
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Precomputing based on sub_libs.hint took from ${start_time} to ${end_time}."
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"
+        ${VERBOSE_ECHO} ""
+    endif 
+endif 
+
+################################################################################
+
 if (! -e Include_lines/sub_lib_list) then
     ${WARN_ECHO} "Script build_sub_libs_needed reporting unexpected missing ${cwd}/Include_lines/sub_lib_list."
     ${WARN_ECHO} "Script build_sub_libs_needed calling build_file_list_2 which should build ${cwd}/Include_lines/sub_lib_list."

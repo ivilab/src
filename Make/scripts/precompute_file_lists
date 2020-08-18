@@ -1,0 +1,198 @@
+#!/bin/tcsh -f 
+
+set sub_libs_hint_file = "sub_libs.hint"
+
+# This optimization is likely not helpful if we do not have the hint file. 
+# set sub_libs_list_file = "Include_lines/sub_lib_list"
+
+if ($?SKIP_PRECOMPUTE_FILE_LISTS) then
+    ${VERBOSE_ECHO} "Script precompute_file_lists is NOT precomputing file lists in ${cwd} due to SKIP_PRECOMPUTE_FILE_LISTS."
+    exit 0
+else if (-e "${sub_libs_hint_file}") then
+    set recurse_dirs = `${IVI_CAT} "${sub_libs_hint_file}"`
+    if (${status}) exit 1
+# else if (-e "${sub_libs_list_file}") then 
+#     set recurse_dirs = `${IVI_CAT} "${sub_libs_list_file}"`
+#     if (${status}) exit 1
+else
+    ${VERBOSE_ECHO} "Script precompute_file_lists is NOT precomputing file lists in ${cwd} due to no hint file."
+    exit 0
+endif
+
+set start_time = `${IVI_ECHO_TIME}`
+
+${VERBOSE_ECHO} "Script precompute_file_lists is precomputing file lists in ${cwd}."
+
+if ((-d ${IVI_LIB_PATH}) && (-r ${IVI_LIB_PATH}) && (-x ${IVI_LIB_PATH})) then
+    pushd ${IVI_LIB_PATH} > /dev/null
+    # Ensure no trailing slash.
+    set real_ivi_lib_dir = `echo ${cwd} | sed 's/\/*$//'`
+    # Add a trailing slash. 
+    set real_ivi_lib_dir = "${real_ivi_lib_dir}/"
+    popd > /dev/null
+else
+    set real_ivi_lib_dir = ""
+endif 
+
+set recurse_dir_strs = ""
+
+${VERBOSE_ECHO} "Script precompute_file_lists is precomputing file lists for ${recurse_dirs}."
+
+foreach recurse_dir (${recurse_dirs}) 
+    set test_places = "${real_ivi_lib_dir} lib/ ../lib/ ../../lib/ ../../../lib/ ../../../../lib/ ../../../../../lib/"
+
+    set recurse_dir_str = ""
+
+    foreach test_place (${test_places}) 
+        if (-d "${test_place}${recurse_dir}") then
+            # Retrospective summer 2020. Can we hope that the need for this is
+            # long gone? It is not clear what is wrong with links anyway.
+            # Perhaps someone wants to hack it this way?
+            #
+            # Expensive, but need to test for links due to legacy code. 
+            # We could copy the code for "is_link" to speed things up a bit.
+            # set is_link = `${MAKE_SCRIPT_PATH}is_link ${test_place}${recurse_dir}`
+
+            # if (! ${is_link} ) then
+               set recurse_dir_str = "${test_place}${recurse_dir}"
+               break
+            # endif 
+        endif 
+    end 
+
+    if ("${recurse_dir_str}" == "") then
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script precompute_file_lists skipping ${recurse_dir} because it does not exist."
+        continue
+    endif 
+
+    pushd ${recurse_dir_str} > /dev/null
+        set recurse_dir_path = "${cwd}"
+    popd  > /dev/null
+
+    if ("${cwd}" == "${recurse_dir_path}") then 
+        continue
+    endif 
+
+    set recurse_dir_strs = "${recurse_dir_strs} ${recurse_dir_str}"
+end 
+
+${VERBOSE_ECHO} "Script precompute_file_lists is precomputing file lists in ${recurse_dir_strs}."
+
+set waited_on_dir_strs = ""
+@ num_procs = 0
+@ num_procs_to_wait_for = 0
+
+foreach recurse_dir_str (${recurse_dir_strs})
+    ${VERBOSE_ECHO_2} " "
+    ${VERBOSE_ECHO_2} "Script precompute_file_lists considering ${recurse_dir_str}"
+    ${VERBOSE_ECHO_2} " "
+
+    set do_serial = $?BUILD_FILE_LISTS_SERIAL
+
+    if (! ${do_serial}) then
+        #
+        # No path elements. Same as original in $*. 
+        set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
+        set status_file = ${cwd}/Include_lines/precompute_lists_${recurse_dir}.status
+        ${IVI_RM} "${status_file}"
+
+        ${VERBOSE_ECHO_2} "Script precompute_file_lists entering ${recurse_dir_str}"
+
+        pushd ${recurse_dir_str} > /dev/null
+            set too_old = 1
+            if ((-e "Include_lines/include_lines") && (-e "Include_lines/include_lines.new") && (-e "Include_lines/file_list")) then
+                set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/include_lines.new Include_lines/file_list`
+
+                if (${too_old}) then
+                    ${VERBOSE_ECHO_2} "In ${cwd}/Include_lines, include_lines.new is older than file_list (need to build)  ----------"
+                endif 
+            else 
+                ${VERBOSE_ECHO_2} "In ${cwd}/Include_lines, one of include_lines, include_lines.new, or file_list does not exist (need to build)  ----------"
+            endif
+
+            if (${too_old}) then
+                ${VERBOSE_ECHO_2} "Script precompute_file_lists calling build_file_list_2 to build ${cwd}/Include_lines/include_lines ----------"
+
+                # In theory, no need to lock unless we have simultaneous
+                # builds going on, but that is possible.
+                
+                (${MAKE_SCRIPT_PATH}ivi_lock_for_make 120 Include_lines/include_lines ${MAKE_SCRIPT_PATH}build_file_list_2; echo ${status} > ${status_file}) &
+
+                @ num_procs_to_wait_for ++
+                @ num_procs ++
+                set waited_on_dir_strs = "${waited_on_dir_strs} ${recurse_dir_str}" 
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Running build_file_list_2 ${recurse_dir_str} in the background in ${cwd}."
+                ${VERBOSE_ECHO} ""
+
+                # We do not want to to torch the machine, but there is no good
+                # rule of thumb for limiting the number of processes. But here
+                # is a try at a heuristic. 
+                #
+                @ block_is_done = ${num_procs_to_wait_for} % ${MAX_BACKGROUND_CHILDREN}
+                @ max_remainder = ${MAX_BACKGROUND_CHILDREN} - 1
+                
+                if (${block_is_done} == ${max_remainder}) then
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script precompute_file_lists pausing as we are up to ${num_procs_to_wait_for} backgrounded processes."
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script precompute_file_lists pausing at `${IVI_ECHO_TIME}`."
+                    wait 
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script precompute_file_lists done waiting at `${IVI_ECHO_TIME}`."
+                    @ num_procs_to_wait_for = 0
+                endif 
+            else
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script precompute_file_lists able to SKIP calling build_file_list_2 to build ${cwd}/Include_lines/include_lines"
+            endif 
+        popd > /dev/null
+    else 
+        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 120 Include_lines/include_lines ${MAKE_SCRIPT_PATH}build_file_list_2 ${recurse_dir_str} 
+        if (${status}) exit ${status}
+    endif 
+end
+
+# Technically, num_procs should be the 
+if (${num_procs_to_wait_for} > 0) then
+    ${VERBOSE_ECHO}   "Script precompute_file_lists waiting for no more than ${num_procs} build_sub_libs_needed_2 processes in ${cwd}."
+    ${VERBOSE_ECHO_2} "Script precompute_file_lists Script build_sub_libs_needed_2 starting to wait at `${IVI_ECHO_TIME}`."
+    ${VERBOSE_ECHO} ""
+    wait 
+    ${VERBOSE_ECHO} ""
+    ${VERBOSE_ECHO_2} "Script precompute_file_lists is done waiting at  `${IVI_ECHO_TIME}` for ${num_procs} processes in ${cwd}."
+endif 
+
+foreach recurse_dir_str (${waited_on_dir_strs})
+    # No path elements. Same as original in $*. 
+    set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
+    set status_file = ${cwd}/Include_lines/precompute_lists_${recurse_dir}.status
+
+    ${VERBOSE_ECHO_2} "Script precompute_file_lists is checking on background build in ${recurse_dir}."
+
+    if (-e "${status_file}") then
+        set precompute_status = `${IVI_CAT} "${status_file}"`
+
+        if (${precompute_status}) then
+            # If we have a locking issue or some other bug, we might over write
+            # the evidence later on, so we stash it.
+
+            ${P_STDERR} "Call to build_file_list_2 in ${recurse_dir_str} FAILED based on ${status_file}."
+            ${IVI_CP} ${status_file}  ${status_file}.$$
+            ${P_STDERR} "Copying failed ${status_file} to ${status_file}.$$."
+        endif
+    else 
+        ${P_STDERR} "File ${status_file} did not get created. Presumably the process died or was killed."
+        set precompute_status = 1
+    endif 
+
+    if (${precompute_status}) then
+        set exit_status = 1
+    endif 
+
+    ${VERBOSE_ECHO_2} "Script precompute_file_lists is done checking on precomputing file lists in the background in ${recurse_dir}."
+end 
+
+set end_time = `${IVI_ECHO_TIME}`
+
+${VERBOSE_ECHO} ""
+${VERBOSE_ECHO} "Script precompute_file_lists is done precomputing file lists in the background."
+${VERBOSE_ECHO} "Script precompute_file_lists took from ${start_time} to ${end_time}."
+${VERBOSE_ECHO} ""
+
+
