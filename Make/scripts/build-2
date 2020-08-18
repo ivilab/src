@@ -167,6 +167,10 @@ endif
 #
 if (! $?MAX_BACKGROUND_CHILDREN) then
     @ max_background_children = ${NUM_CPU}
+    
+    # Going over 24 starts to incur a lot of overhead on Laplace.
+    if (${max_background_children} > 24) @ max_background_children = 24
+
     setenv MAX_BACKGROUND_CHILDREN ${max_background_children}
 endif 
 
