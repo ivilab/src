@@ -136,7 +136,7 @@ setenv VERBOSE_INDENT ""
 # For single lines of verbose echoes. For blocks of text, use an "if" as usual. 
 # Kobus needs to sync this code with duplicated code in his .cshrc
 if ($?IVI_VERBOSE_2) then
-    setenv VERBOSE_ECHO_2 "echo VBV2: "
+    setenv VERBOSE_ECHO_2 "echo VB2: "
 else if ($?tcsh) then
     setenv VERBOSE_ECHO_2 ": "
 else 

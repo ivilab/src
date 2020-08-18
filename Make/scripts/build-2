@@ -661,8 +661,18 @@ while ($count <=  ${num_args})
         endif 
 
         continue
-    else if ( ("${arg}" == "clean_cache") || ("${arg}" == "cache_clean") ) then
+    else if ( ("${arg}" == "cache_clean") || ("${arg}" == "clean_cache") || ("${arg}" == "init_clean") ) then
         set make_cmd = "source ${MAKE_SCRIPT_PATH}clean_cache"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
+        
+        continue
+    else if (("${arg}" == "locks_clean") || ("${arg}" == "clean_locks")) then
+        set make_cmd = "source ${MAKE_SCRIPT_PATH}clean_locks"
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
         else

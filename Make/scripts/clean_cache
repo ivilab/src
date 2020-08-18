@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 
-# $Id: clean_cache 25738 2020-08-18 17:16:10Z kobus $
+# $Id: clean_cache 25744 2020-08-18 23:51:09Z kobus $
 
 # Synch some boostrapping with init_compile.
 
@@ -33,11 +33,6 @@ else
     endif 
 endif 
 
-set only_set_lockfile_directory
-source ${MAKE_SCRIPT_PATH}set_lockfile_name
-if (${status}) exit ${status} 
-${IVI_RM} "${IVI_LOCKFILE_PATH}"
-
 # Kobus: Summer 2020. Andrew Predoehl had some code here that dealt with the
 # issue that at some point IVI_RM (then KJB_RM) was stored in the cache. This is
 # no longer true, but leaving the code as is does no harm. 
@@ -62,7 +57,6 @@ set cache_dir="${cache_dir}/${USER}"
 
 if (-d "${cache_dir}") then 
     set cache_prefixes='kjb_env kjb_var ivi_env ivi_var'
-    set cache_lock_file = "${cache_dir}/cache_lock"
     set found_files_to_delete = 0 
 
     foreach cache_prefix (${cache_prefixes})
@@ -93,28 +87,9 @@ if (-d "${cache_dir}") then
         endif 
     end 
 
-    if (-e "${cache_lock_file}") then
-        set found_files_to_delete = 1
-        echo "Deleting the cache lockfile."
-
-        ${rm} ${cache_lock_file}
-        # Paranoia
-        if ( -e ${cache_lock_file} ) then
-            echo "Removal command ${rm} did not work!  Trying ${default_rm}."
-            ${default_rm} ${cache_lock_file}
-            if ( -e ${cache_lock_file} ) then
-                ${P_STDERR} "Panic: unable to remove cache file ${cachefile}."
-                ${P_STDERR} "Please remove it manually."
-                exit 1
-            endif
-        endif
-    endif 
-
     if (! ${found_files_to_delete}) then 
        echo "No files in the cache to delete."  
     endif 
 endif 
 
-# Do it again, in case some code above set any locks (it should not).
-${IVI_RM} "${IVI_LOCKFILE_PATH}"
 

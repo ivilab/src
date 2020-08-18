@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25720 2020-08-13 23:14:49Z kobus $
+# $Id: init_compile 25744 2020-08-18 23:51:09Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -109,14 +109,14 @@ pushd ${IVI_SRC_PATH} > /dev/null
        # use IVI_SRC_PATH. 
        # 
        ### setenv IVI_DOC_PATH "$cwd"/doc/
-       setenv IVI_DOC_PATH "${IVI_SRC_PATH}"
+       setenv IVI_DOC_PATH "${IVI_SRC_PATH}doc"
    else if (! $?IVI_DOC_PATH) then
        # We used to do the parent, but that seems like a bad idea. 
        #
        #  pushd ../  > /dev/null 
        #     setenv IVI_DOC_PATH "$cwd"/doc/
        #  popd > /dev/null 
-       setenv IVI_DOC_PATH "${IVI_SRC_PATH}"
+       setenv IVI_DOC_PATH "${IVI_SRC_PATH}doc"
    endif
 popd > /dev/null 
 
