@@ -61,7 +61,7 @@
 # you add one, you need to add a .PHONY line above. We break them into groups
 # merely for readability.
 #
-all dir_made code doc tags doc_dir_made lint proto bin make_bin misc_bin :
+all code doc tags doc_dir_made lint proto bin make_bin misc_bin :
 	$(ECHO_MAKE_CMD)./build $@
 
 dir_made file_list include_lines sub_libs_needed depend depend_again :

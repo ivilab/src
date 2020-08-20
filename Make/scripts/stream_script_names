@@ -1,24 +1,48 @@
 #!/bin/tcsh -f
 
-if ($?TMPDIR) then
-    set tmp_dir = "$TMPDIR"
-else
-    set tmp_dir = "/tmp"
-endif
+# We assume init_scripts has been sourced. 
 
-${IVI_MKDIR} ${tmp_dir}/${USER}
+set documented_only = 0 
 
-set temp_file = ${tmp_dir}/${USER}/script_file_list.$$
+if ($# > 0) then
+    if ("$1" == "-d") then
+        set documented_only = 1
+    endif
+endif 
 
-${IVI_LS} | grep -v '\<build\>' | grep -v .org  > ${temp_file}
+${IVI_MKDIR} ${USER_TEMP_PATH}
+if (${status}) exit 1
 
-# Slight bug here. Our text file formats use the magic string '#!'. If this
-# happens to be in the first row, then file thinks that they are scripts. For
-# now, we remove any line with equal signs. Further, we probably should add a
-# blank line before any output of this magic string. 
+set temp_file = ${USER_TEMP_PATH}script_file_list.$$
+set temp_file_2 = ${USER_TEMP_PATH}script_file_list_2.$$
+
+${IVI_LS} | ${IVI_GREP} -v '\<build\>' | ${IVI_GREP} -v .org   | ${IVI_GREP} -v '\.[A-Z_]'  > "${temp_file}"
+
+# Slight bug here. Some of our text file data formats use the magic string '#!'.
+# If this happens to be in the first row, then file thinks that they are
+# scripts. Since those data formats typically have '=' in the line, for now, we
+# remove any line with equal signs. 
 #
-${IVI_FILE} -f ${temp_file} | sed -n '/ script/p' | sed -n '/ executable/p' | sed '/=/d' | sed 's/^\([^:]*\):.*/\1/'
+${IVI_FILE} -f ${temp_file} | ${IVI_SED} -n '/ script/p' | ${IVI_SED} -n '/ executable/p' | ${IVI_SED} '/=/d' | ${IVI_SED} 's/^\([^:]*\):.*/\1/' > "${temp_file_2}"
+if (${status}) exit 1
+
+if (${documented_only}) then
+    set scripts = `${IVI_CAT} "${temp_file_2}"`
+    foreach script (${scripts})
+        # We could have more checks, or more sophisticated ones, but for now,
+        # ask our users to use this exact line in the scripts.
+        #
+        set found_documentation = `${IVI_GREP} -c '# Identification:' "${script}"`
+
+        if (${found_documentation}) then
+            echo "${script}"
+        endif
+    end
+else
+    ${IVI_CAT} "${temp_file_2}"
+endif 
 
 ${IVI_RM} ${temp_file}
+${IVI_RM} ${temp_file_2}
 
 

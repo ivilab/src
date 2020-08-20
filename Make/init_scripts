@@ -20,7 +20,7 @@ if (! $?MAKE_PATH) then
     else if (-d "${HOME}/sbin/Make") then
         # This for root set up Kobus's way. Root does not substribe to the svn
         # version of things such as src and Make for security concerns.
-        setenv MAKE_PATH "${HOME}/sbin/Make" 
+        setenv MAKE_PATH "${HOME}/sbin/Make/" 
     else 
         echo "Script init_scripts unable to set MAKE_PATH."
         echo "Likely it does not have a viable IVI_SRC_PATH"
@@ -68,13 +68,29 @@ endif
 
 # ##############################################################################
 
-#
+if (! $?HOST) then
+    setenv HOST unknown
+endif
+
+if (! $?SHORT_HOST) then
+    set first_name = `echo ${HOST} | ${IVI_SED} 's/\..*//'`
+
+    if ($first_name != "") then
+        setenv SHORT_HOST ${first_name}
+    else
+        setenv SHORT_HOST "${HOST}"
+    endif
+endif 
+
+# ##############################################################################
+
 # The construction of a list of places to look for software should be consistent
-# with Kobus's login scripts. The process below will look for what is needed in the
-# user's path, and then consult the list if not successful.
+# with Kobus's login scripts. We need to be able to establish a consistent path.
+# We used to look in the user's path first, but this will lead to, for example,
+# the wrong ctags being preferred on a native mac system, even if the right
+# version is available. 
 
 set path_dirs = ""
-
 
 # For Ocelote, probably obsolete, needs checking. TODO
 set path_dirs = "${path_dirs} /cm/local/apps/gcc/current/bin /cm/shared/apps/pbspro/current/sbin  /cm/shared/apps/pbspro/current/bin /cm/shared/uabin"
@@ -96,14 +112,31 @@ set path_dirs = "${path_dirs} /usr/texbin /usr/contrib/bin /usr/contrib/bin/X11 
 set path_dirs = "${path_dirs} /usr/bin /usr/sbin /usr/X11R6/bin /usr/X11/bin"
 set path_dirs = "${path_dirs} /bin /sbin"
 
+
+# if ($?PATH) then
+#     # We are not too worried about duplicates. Most of the time we will find our
+#     # path in the first few entries. 
+#     #
+#     set path_dirs = "${path_dirs} `echo ${PATH} | ${IVI_SED} 's/:/ /'`"
+# endif
+
 setenv IVI_PATH_DIRS ""
+set temp_path = ""
 foreach path_dir (${path_dirs}) 
     if (-d "${path_dir}") then
         setenv IVI_PATH_DIRS "${IVI_PATH_DIRS} ${path_dir}"
+
+        if ("${path}" == "") then
+            set temp_path = "${path_dir}"
+        else
+            set temp_path = "${temp_path}:${path_dir}"
+        endif 
     endif 
 end
 
 # echo IVI_PATH_DIRS: ${IVI_PATH_DIRS}
+setenv PATH "${temp_path}"
+setenv BASE_PATH "${PATH}"
 
 # ##############################################################################
 
@@ -190,7 +223,7 @@ set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip mak
 
 # Desired (used often enough that a warning makes sense). The colon begins the
 # optional ones. 
-set needed_progs = "${needed_progs} : awk egrep stat tail doxygen"
+set needed_progs = "${needed_progs} : awk egrep stat tail doxygen ctags"
 
 # Others that we want to test if they exist, but we do not expect them to always
 # be available. 
@@ -211,28 +244,30 @@ foreach needed_prog (${needed_progs})
     endif 
 
     set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
+
     if (${status}) then
-        set found = 0
-        foreach path_dir (${IVI_PATH_DIRS})
-            if (-x "${path_dir}/${needed_prog}") then
-                setenv PATH "${PATH}:${path_dir}"
 
-                if ($?BASE_PATH) then 
-                    setenv BASE_PATH "${BASE_PATH}:${path_dir}"
-                endif 
-
-                set found =  1
-                break
-            endif 
-        end 
-
-        if (${found}) then 
-            set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
-        else if (${essential}) then
-            ${P_STDERR} "Script init_scripts cannot find essential program ${needed_prog}."
+#         set found = 0
+#         foreach path_dir (${IVI_PATH_DIRS})
+#             if (-x "${path_dir}/${needed_prog}") then
+#                 setenv PATH "${PATH}:${path_dir}"
+# 
+#                 if ($?BASE_PATH) then 
+#                     setenv BASE_PATH "${BASE_PATH}:${path_dir}"
+#                 endif 
+# 
+#                 set found =  1
+#                 break
+#             endif 
+#         end 
+# 
+#         if (${found}) then 
+#             set prog_path = `unalias "${needed_prog}"; ${IVI_WHICH} "${needed_prog}"`
+        if (${essential}) then
+            ${P_STDERR} "Script init_scripts cannot find essential program ${needed_prog} in IVI locations."
             set error_found = 1
         else if (${desired}) then
-            ${P_STDERR} "Warning: Script init_scripts cannot find non-essential program ${needed_prog}."
+            ${P_STDERR} "Warning: Script init_scripts cannot find non-essential program ${needed_prog} in IVI locations."
             ${P_STDERR} "    Some things you might do will break."
         endif 
     endif

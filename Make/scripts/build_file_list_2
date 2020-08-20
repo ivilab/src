@@ -81,12 +81,32 @@ if (-e Include_lines) then
         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 needs to update ${cwd}/Include_lines/file_list.new as Include_lines was not a directory." 
         ${IVI_RM} Include_lines
         ${IVI_MKDIR} Include_lines
+        if (${status}) exit 1
         set must_update = 1
     endif 
 else 
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_file_list_2 needs to update ${cwd}/Include_lines/file_list.new as Include_lines did not exist." 
     ${IVI_MKDIR} Include_lines
     set must_update = 1
+endif 
+
+# If we are not in a library, we check for script/program documentation.
+
+if (! -e "Makefile-include") then
+    ${IVI_LS} | ${IVI_GREP} '\.w$' > Include_lines/writeup_files.new
+    # Ignore status! 
+    ${MAKE_SCRIPT_PATH}copy_if_different Include_lines/writeup_files.new Include_lines/writeup_files
+    if (${status}) exit 1
+
+    ${IVI_LS} | ${IVI_GREP} '\.help$' > Include_lines/help_files.new
+    # Ignore status! 
+    ${MAKE_SCRIPT_PATH}copy_if_different Include_lines/help_files.new Include_lines/help_files
+    if (${status}) exit 1
+
+    ${MAKE_SCRIPT_PATH}stream_script_names -d > Include_lines/script_files.new
+    if (${status}) exit 1
+    ${MAKE_SCRIPT_PATH}copy_if_different Include_lines/script_files.new Include_lines/script_files
+    if (${status}) exit 1
 endif 
 
 if (-e Include_lines/new) then

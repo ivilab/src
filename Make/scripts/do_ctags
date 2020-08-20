@@ -24,10 +24,7 @@ else if ("${num_args}" == 1) then
     endif 
 endif 
 
-
-
 (${IVI_LS} -1 *.[ch] |& grep -v "No match" > tag_files) >& /dev/null
-
 
 if (-e Include_lines/sub_libs_needed) then
     set sub_libs_needed = `/bin/cat Include_lines/sub_libs_needed`
@@ -57,7 +54,7 @@ else
     # ctags --sort=yes -a -L tag_files -o tags
     # ctags -a -L tag_files -o tags
     # Testing new ctags c++ support (probably these new flags won't work with GNU ctags, either)
-    ctags -a -L tag_files --c++-kinds=+p --fields=+iaS --extra=+q -o tags
+    ${IVI_CTAGS} -a -L tag_files --c++-kinds=+p --fields=+iaS --extra=+q -o tags
     if (${status}) then
         echo "ctags failed in script do_ctags."
         echo "Possibly ctags on this machine is an old flavor that we don't care about."

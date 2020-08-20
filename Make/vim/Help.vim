@@ -11,8 +11,8 @@
 :" blank line."
 :g/fake_out_glob/d
 :
-:" Change *.help ==> *.help.1, which forms input to produce *.1"
-:%s/\.\<help\>/&.1/ge
+:" Change *.help ==> *.1, which forms input to produce *.1"
+:%s/\.\<help\>/.1/ge
 :
 :" Shift. "
 :%s/^/        /e
@@ -25,8 +25,8 @@
 :" Get rid of comments from makedepend "
 :%s/^#.*//ge
 :
-:" Add in MAKE_DOC_DIR"
-:%s/[A-Za-z0-9_\-]/$(MAKE_DOC_DIR)&/e
+:" Add in PROGRAM_CAT_PATH"
+:%s/[A-Za-z0-9_\-]/$(PROGRAM_CAT_PATH)&/e
 :
 :" Trim all blanks (should be done, but just in case). "
 :%s/ *$//ge
@@ -35,7 +35,7 @@
 :" Get rid of slash on last item, and add two blank lines. 
 :$s/ *\\ *//e
 :"
-:1s/.*/MAN_FROM_HELP_FILES = \\/e
+:1s/.*/CAT_FROM_HELP_FILES = \\/e
 :
 :"Add a blank line at the end.
 :$s/.*/&/e

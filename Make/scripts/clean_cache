@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 
-# $Id: clean_cache 25744 2020-08-18 23:51:09Z kobus $
+# $Id: clean_cache 25745 2020-08-20 00:00:47Z kobus $
 
 # Synch some boostrapping with init_compile.
 
@@ -52,8 +52,6 @@ if( ! -w $cache_dir) then
     echo 'Error: writable cache directory not found. No caches were cleaned.'
     exit
 endif
-
-set cache_dir="${cache_dir}/${USER}"
 
 if (-d "${cache_dir}") then 
     set cache_prefixes='kjb_env kjb_var ivi_env ivi_var'

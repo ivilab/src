@@ -367,7 +367,7 @@ $(LIB_COMPONENT_SRC_DIR)$(LIB_COMPONENT_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)buil
 
 ################################################################################
 
-# The symbol VIM_SUFFIX used below is either "ex" or "ex7". 
+# The symbol VIM_SUFFIX used below is either "ex" or "ex7".
 
 $(MAKE_EDIT_PATH)%.ex: $(MAKE_EDIT_PATH)strip_ex_files
 
@@ -379,22 +379,13 @@ $(MAKE_EDIT_PATH)%.ex7: $(MAKE_EDIT_PATH)strip_ex7_files
 $(MAKE_EDIT_PATH)%.ex7: $(MAKE_EDIT_PATH)%.vim
 	$(MAKE_EDIT_PATH)strip_ex7_files $< $@
 
-#  This list is the same as in Makefile-library, although not all are needed for
-#  Mkefile-depend for both Makefile-library and Makefile-programs
+#  This list should have all the edit scripts used in
+#  build_program_library_depend.
 
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : \
-    $(MAKE_EDIT_PATH)Bin.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Dirs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Header.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Help.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Local_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Programs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) \
-    $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
 
 $(LIB_COMPONENT_SRC_DIR)Makefile-depend : $(IVI_BUILD_TOOLS) 
 
@@ -830,7 +821,6 @@ COMPILE_INFO = \
   -C" -I/usr/local/include/IVI" \
   -C"$(MAN_PAGE_LOAD_DIRS)" \
   -C"-lIVI $(LIBS)" 
-
 
 
 # Getting the very old c2man program to document code that uses changing and

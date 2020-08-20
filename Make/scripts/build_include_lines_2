@@ -269,6 +269,12 @@ if (${update_sub_libs_needed}) then
     
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Finished updating Include_lines/sub_libs_needed in directory $cwd. " 
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs."
+else 
+    # It seems sub_libs_needed does not need updating, but the timestamp could
+    # be too old if the process building it previously died.
+
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Touching ${cwd}/Include_lines/sub_libs_needed." 
+    ${IVI_TOUCH} "Include_lines/sub_libs_needed"
 endif 
 
 if (${update_makefile_dirs}) then
@@ -284,6 +290,12 @@ if (${update_makefile_dirs}) then
         set exit_status = 1 
         goto cleanup
     endif 
+else 
+    # It seems that Makefile-dirs does not need updating, but the timestamp could
+    # be too old if the process building it previously died.
+
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Touching ${cwd}/Makefile-dirs." 
+    ${IVI_TOUCH} "Makefile-dirs"
 endif 
 
 cleanup:

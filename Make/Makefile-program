@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25743 2020-08-18 23:14:54Z kobus $
+# $Id: Makefile-program 25745 2020-08-20 00:00:47Z kobus $
 #
  
 include $(MAKE_PATH)Makefile-defs
@@ -177,9 +177,7 @@ Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) " "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
-#	$(MAKE_SCRIPT_PATH)build_file_list
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
-#	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@.made
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
@@ -402,6 +400,15 @@ LIB_LINK_STRINGS = $(IVI_LIB_LINK_STR)
 #
 # Prerequisites for Makefile-depend. 
 
+Include_lines/script_files Include_lines/writeup_files Include_lines/help_files:  
+	@$(ECHO_IF_VERBOSE) " "
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) " "
+
 # The symbol VIM_SUFFIX used below is either "ex" or "ex7". 
 
 $(MAKE_EDIT_PATH)%.ex: $(MAKE_EDIT_PATH)strip_ex_files
@@ -414,8 +421,8 @@ $(MAKE_EDIT_PATH)%.ex7: $(MAKE_EDIT_PATH)strip_ex7_files
 $(MAKE_EDIT_PATH)%.ex7:$(MAKE_EDIT_PATH)%.vim
 	$(MAKE_EDIT_PATH)strip_ex7_files $< $@
 
-#  This list is the same as in Makefile-library, although not all are needed for
-#  Mkefile-depend for both Makefile-library and Makefile-programs
+#  This list should have all the edit scripts used in
+#  build_program_makefile_depend.
 
 Makefile-depend : \
     $(MAKE_EDIT_PATH)Bin.$(VIM_SUFFIX) \
@@ -428,10 +435,11 @@ Makefile-depend : \
     $(MAKE_EDIT_PATH)Obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs_depend.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Programs.$(VIM_SUFFIX) \
+    $(MAKE_EDIT_PATH)Script.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Version_obs.$(VIM_SUFFIX) \
     $(MAKE_EDIT_PATH)Writeup.$(VIM_SUFFIX)
 
-Makefile-depend : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program 
+Makefile-depend : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program Include_lines/script_files  Include_lines/writeup_files Include_lines/help_files
 
 # -------------------------------------------
 #
@@ -976,6 +984,7 @@ tags: Include_lines/sub_libs_needed $(PROGRAM_FILES)
 #                       Man pages
 #
 
+# Target "doc" depends on doc_program via Makeile-2 in program directories.
 .PHONY : doc_program
 doc_program : $(MAKE_DOC_DIR)doc_program.made
 
@@ -994,8 +1003,17 @@ $(MAKE_DOC_DIR)doc_dir_made :
 	$(IVI_MKDIR) $(MAKE_DOC_DIR)
 	$(IVI_TOUCH) $@
 
+# The following is a bit messy because we have three different ways to create a
+# cat page, and we want to be able to build PROGRAM_CAT_PATH versions if
+# PROGRAM_CAT_PATH changes. 
+
 $(PROGRAM_CAT_PATH) :
 	$(IVI_MKDIR) $(PROGRAM_CAT_PATH)
+
+# The needed targets are in the CAT_FROM_* variables defined in
+# Makefile-depend, as is their dependencies on a choice of .shell, .w, or ,help.
+$(PROGRAM_CAT_PATH)%.1 : $(MAKE_DOC_DIR)%.1
+	$(IVI_CP) $<  $@
 
 # Do not merge with the next line due to '$<'
 $(MAKE_DOC_DIR)%.w.1 : $(MAKE_PATH)Makefile Makefile-depend $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH) $(MAKE_BIN_PATH)writeup_to_man 
@@ -1005,10 +1023,12 @@ $(MAKE_DOC_DIR)%.w.1 : %.w
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(MAKE_BIN_PATH)writeup_to_man $< > $@
-	$(IVI_CP) $@ $(PROGRAM_CAT_PATH)$*.1
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
+
+$(PROGRAM_CAT_PATH)%.1 : $(MAKE_DOC_DIR)%.help.1
+	$(IVI_CP) $<  $@
 
 # Do not merge with the next line due to '$<'
 $(MAKE_DOC_DIR)%.help.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_PATH)help_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH)
@@ -1018,10 +1038,12 @@ $(MAKE_DOC_DIR)%.help.1 : %.help
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(MAKE_BIN_PATH)help_to_man $< > $@
-	$(IVI_CP) $@ $(PROGRAM_CAT_PATH)$*.1
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
+
+$(PROGRAM_CAT_PATH)%.1 : $(MAKE_DOC_DIR)%.shell.1
+	$(IVI_CP) $<  $@
 
 # Do not merge with the next line due to '$<'
 $(MAKE_DOC_DIR)%.shell.1 : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_BIN_PATH)writeup_to_man $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH)
@@ -1031,13 +1053,12 @@ $(MAKE_DOC_DIR)%.shell.1 : %
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(MAKE_BIN_PATH)writeup_to_man $< > $@
-	$(IVI_CP) $@  $(PROGRAM_CAT_PATH)$*.1
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
 
-# Additional dependencies of doc_program.made may be in Makefile-depend. 
-$(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH) $(MAN_FROM_HELP_FILES) $(MAN_FROM_WRITEUP_FILES)
+# The three variables CAT_FROM_* are defined in Makefile-depend. 
+$(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_DOC_DIR)doc_dir_made $(PROGRAM_CAT_PATH) $(CAT_FROM_SCRIPT_FILES) $(CAT_FROM_HELP_FILES) $(CAT_FROM_WRITEUP_FILES)
 	@$(ECHO_IF_VERBOSE) " "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
@@ -1046,6 +1067,7 @@ $(MAKE_DOC_DIR)doc_program.made : $(MAKE_PATH)Makefile Makefile-depend  $(MAKE_D
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
 
+.PHONY : misc_doc_program
 misc_doc_program : $(MAKE_DOC_DIR)doc_program.made
 	rsync -rl -u $(IVI_DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 
 	rsync -rl -u $(IVI_DOC_PATH)man/ $(MISC_DOC_PATH)man 

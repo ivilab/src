@@ -345,10 +345,14 @@ if ($?IVI_VERBOSE_2) then
     ${VERBOSE_ECHO_2} "LD_OBJ_DIR:             ${LD_OBJ_DIR}"
     ${VERBOSE_ECHO_2} "REAL_OBJ_DIR:           ${REAL_OBJ_DIR}"
     ${VERBOSE_ECHO_2} "LOAD_DIRS:              ${LOAD_DIRS}"
+    ${VERBOSE_ECHO_2} "" 
     ${VERBOSE_ECHO_2} "IVI_DOC_PATH:           ${IVI_DOC_PATH}"
     ${VERBOSE_ECHO_2} "MAN3_MAN_PATH:          ${MAN3_MAN_PATH}"
     ${VERBOSE_ECHO_2} "HTML_MAN_PATH:          ${HTML_MAN_PATH}"
-    ${VERBOSE_ECHO_2} "CAT3_CAT_PATH:          ${CAT3_CAT_PATH}"
+    ${VERBOSE_ECHO_2} "CAT3_MAN_PATH:          ${CAT3_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "PROGRAM_MAN_PATH:       ${PROGRAM_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "PROGRAM_CAT_PATH:       ${PROGRAM_CAT_PATH}"
+    ${VERBOSE_ECHO_2} "" 
     ${VERBOSE_ECHO_2} "IVI_WARN_LEVEL:         ${IVI_WARN_LEVEL}"
     ${VERBOSE_ECHO_2} "IVI_CC_WARN_LEVEL:      ${IVI_CC_WARN_LEVEL}"
     ${VERBOSE_ECHO_2} "CC_IVI_WARNINGS:        ${CC_IVI_WARNINGS}"
@@ -1164,21 +1168,43 @@ endif
 if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
     set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
 
+    # If we are in a library directory, we need to upate Makefile-library
+    # becasause it is included before it is updated (in gmake).  
+
+    if (-e "Makefile-include") then
+        if (-e "Makefile-library") then
+            set library_makefile_too_old = `${MAKE_SCRIPT_PATH}test_older_than Makefile-library ${MAKE_PATH}Makefile-library`
+
+            if (${library_makefile_too_old}) then
+                ${VERBOSE_ECHO} ""
+                ${VERBOSE_ECHO} "Script build-2 is updating ${cwd}/Makefile-library"
+
+                ${IVI_SED} 's/LIB_COMPONENT/L_LIB/g' < ${MAKE_PATH}Makefile-library > Makefile-library
+
+                if (${status}) then
+                    ${P_STDERR} "Update of  ${cwd}/Makefile-library in build-2 failed." 
+                    set exit_status = 1
+                    goto end_of_script
+                endif
+            endif
+        endif
+    endif
+
     # We build 'Makefile' multiple times to force included Makefiles that do not
-    # exist to be
-    # built. While they often can be built automatically, some would require
-    # further restructuring of the code. Currently, for example, if you do a
-    # 'make depend_very_clean' in some directory, and change to another program
-    # direcotory (or IVI or IVI_cpp), then the build can be broken due to the
-    # library makefiles being removed, but Makefile-dirs still being what it
-    # should be.
+    # exist to be built. While they often can be built automatically, some would
+    # require further restructuring of the code. Currently, for example, if you
+    # do a 'make depend_very_clean' in some directory, and change to another
+    # program direcotory (or IVI or IVI_cpp), then the build can be broken due
+    # to the library makefiles being removed, but Makefile-dirs still being what
+    # it should be.
 
     # This could be rolled up into a loop, but the error messages would not be
     # as informative.
 
     ${VERBOSE_ECHO} ""
     ${VERBOSE_ECHO} ==================================================================================
-    ${VERBOSE_ECHO} "Script build-2 is building Makefile, possibly multiple times if there are errors."
+    ${VERBOSE_ECHO} "Script build-2 is using Makefile-2 to build Makefile, which forces building of"
+    ${VERBOSE_ECHO} "included Makefiles (in gmake). We do this possibly multiple times if there are errors."
     ${VERBOSE_ECHO} ""
 
     ${ivi_depend_make} -f Makefile-2 Makefile 
@@ -1195,7 +1221,7 @@ if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
 
                 ${ivi_depend_make} -f Makefile-2 Makefile
                 if (${status}) then
-                    ${P_STDERR} "Fourth build of 'Makefile' failed. Something is probably wrong with the buiild system. Giving up." 
+                    ${P_STDERR} "Fourth build of 'Makefile' failed. Something might be wrong with the buiild system or need to build depend." 
                     set exit_status = 1
                     goto end_of_script
                 endif 
