@@ -1,7 +1,5 @@
 #!/bin/tcsh -f
 
-# set echo
-
 ##################################################################################
 #
 # Build script 
@@ -33,6 +31,8 @@
 # "bootstrapping" the build.  
 
 ##################################################################################
+
+# set echo
 
 # This next part is shared by all files in Make whose names begin with "build",
 # AND scripts ivi_add_makefiles, create_library, and create_program. Updates

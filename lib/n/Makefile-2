@@ -26,7 +26,7 @@ include $(MAKE_PATH)Makefile-defs
 #
 Makefile-dirs : 
 	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
-	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines -f
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 900 $@ $(MAKE_SCRIPT_PATH)build_include_lines
 
 include Makefile-dirs
 
