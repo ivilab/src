@@ -5,10 +5,14 @@
 # This file sets up environment options for all IVI builds. It can be overridden by
 # BUILD_ENV* files in program (like) directories, but it is too difficult and
 # hazardous for library code, so options for the library need to be in BUILD_ENV*
-# files in $MAKE_PATH (e.g., possibly thus file). 
+# files in $MAKE_PATH (e.g., possibly this file). 
 
-# I am suggesting we force boost 1_69 or better.
+# Generally, we only use this file as a stop gap. For example, we might force
+# the version of boost until we fix the code so that it works with reasonably
+# young boosts. Currently, reasonably young means at least 1_69. 
 
-setenv IVI_BOOST_VERSION "1_71:1_70:1_69"
+# Example forcing boost to be between 1_69  and 1_71. 
+
+# setenv IVI_BOOST_VERSION "1_71:1_70:1_69"
 
 
