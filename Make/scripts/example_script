@@ -1,0 +1,83 @@
+#!/bin/tcsh -f
+
+##############################################################################
+#
+# Identification:
+#     An example IVLAB script
+#
+# Description:
+#     This script is a template to help keep documentation consistent so that
+#     automated documentation is easier. Currently, we simply look for the
+#     string "# Identification:", and if we do not find it, we assume the
+#     script is not documented. 
+#
+#     Script documentation is supplied by a block of commented text between the
+#     first line and the code (ignoring any blank lines). It is likely easiest
+#     to simply use this template and edit the text to be appropriate for your
+#     script. 
+#
+#     This script is a "tcsh" script with the "-f" flag for fast startup. Most
+#     IVILAB scripts are like this, but using the "-f" means that we
+#     invariably assume that the script "init_scripts" has been sourced at some
+#     point. This is arranged in the build system (for example). 
+#
+#     While this example is for "tcsh -f", there are also bash and even sh
+#     scripts in the IVILAB code base. The documentation conventions are the
+#     same for all scripts, so you can use this template for a different
+#     scripting language by changing the "tcsh -f".
+#
+# Documentation_format:
+#     Single word tags, such as "Identification" and "Description" in this
+#     example, become headings in the man pages. There should be a colon
+#     immediately after the tag. If you want more than one word, use
+#     underscores, such as the "Documentation_format" tag in this example. Other
+#     than the leading "Identification", we do not expect any headings in
+#     particular, but some of ones here, such as Description, Examples,
+#     Defficiencies, and Author are typical. 
+#
+#     In the spirit of unix man pages, the first entry (here Identification)
+#     attempts to identify the function of the script in a short phrase. 
+#
+#     If you want more control over the formatting before and after the contents
+#     of a line of text, you can use "|" to ask the formatter to leave the
+#     formatting alone. Otherwise, text is formatted into justified blocks indented as
+#     suggested by the first line of sequence of lines ended with a blank line. 
+#
+#  |                            This is "preformatted" text
+#
+#           This is indented extra.
+#           Notice, again, that they are combined into
+#           left justified text
+#           indented according to the input indentation. 
+#           If the input indentation changes,
+#           we start a 
+#           new block.
+#                 These lines are indented even more.
+#                 Notice, again, that they are combined 
+#                 into left justified text indented according to the 
+#                 input indentation.
+#
+#     Finally, minimal support for emphasizing text is available by starting and
+#     ending text to be emphasized with +plus signs+. Whether the emphasized
+#     text gets +underlined+, +highlighted+, or processed in some +other+ way,
+#     depends on factors outside the documenation building scripts. We do not
+#     make that much use of this facility. 
+#
+# Examples:
+#     Examples are always good. 
+# 
+# Defficiencies:
+#     Confess! 
+#     
+#     We could expand this script to illustrates some of the IVILAB script
+#     idioms and conventions, such as one for providing verbose or debug output. 
+#
+# Author:
+#     Kobus Barnard 
+#
+# |    Don't forget to say who wrote it so we can hunt you down if the script
+#     breaks. 
+#
+#
+##############################################################################
+
