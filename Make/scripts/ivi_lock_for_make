@@ -101,7 +101,7 @@ set only_set_lockfile_directory
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
 if (${status}) exit ${status} 
 
-set time_stamp_file = "target_time_stamp_${target_label}.$$"
+set time_stamp_file = "target_time_stamp_${target_label}_${SHORT_HOST}.$$"
 set time_stamp_file = "${IVI_LOCKFILE_PATH}${time_stamp_file}"
 ${IVI_TOUCH} ${time_stamp_file}
 

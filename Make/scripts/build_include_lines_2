@@ -132,7 +132,8 @@ if (${update_include_lines}) then
     setenv SHADOW_BUILD_MAKEFILE_LIBS
     if ($?SHADOW_BUILD_MAKEFILE_LIBS) then
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 calling build_makefile_libs_needed in $cwd" 
-        ${MAKE_SCRIPT_PATH}ivi_lock_for_make 30 IGNORE_TARGET_ARGUMENT ${MAKE_SCRIPT_PATH}build_makefile_libs_needed 
+        # Don't use ivi_lock_for_make unless we can point to the target. 
+        ${MAKE_SCRIPT_PATH}ivi_lock 30 ${MAKE_SCRIPT_PATH}build_makefile_libs_needed 
     else 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is not calling build_makefile_libs_needed in $cwd" 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}     as gmake will build it nicely in parallel." 

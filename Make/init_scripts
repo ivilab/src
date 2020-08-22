@@ -203,12 +203,12 @@ set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip mak
 # Desired (used often enough that a warning makes sense). If these are not
 # found, the path is set to the program name for better error messages. The
 # colon begins the optional ones. 
-set needed_progs = "${needed_progs} : awk egrep stat tail doxygen ctags tools"
+set needed_progs = "${needed_progs} : awk egrep stat tail doxygen ctags"
 
 # Others that we want to test if they exist, but we do not expect them to always
 # be available.  If these are not found, the path is set to the empty string so
 # we can test if we found it.
-set needed_progs = "${needed_progs} : flock lockfile-create lockfile-remove gvim"
+set needed_progs = "${needed_progs} : flock lockfile-create lockfile-remove"
 
 set essential =  1
 set desired =  1
