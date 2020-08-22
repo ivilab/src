@@ -31,7 +31,7 @@
 #     This script was derived from ivi_lock_create, hence there are the
 #     following fancy features that might never get used.
 #
-#     If the environment variable IVI_GUARDFILE_DIR is set, this script will use
+#     If the environment variable IVI_GUARDFILE_PATH is set, this script will use
 #     its value as a directory to create guardfiles in. Otherwise, this script
 #     will use ${TMPDIR}/${USER}/guardfiles/, creating it if needed.
 #
