@@ -5,7 +5,7 @@
 lock_file="${1}"
 id="${2}"
 
-echo "VB2: ${VERBOSE_INDENT}Entering atomic_echo_3 with lock_file ${lock_file} and id ${id}"
+echo "DBG: ${VERBOSE_INDENT}Entering atomic_echo_3 with lock_file ${lock_file} and id ${id}"
 
 flock_lock_file="${lock_file}.flock"
 
@@ -15,18 +15,18 @@ set -o noclobber
 
 (
     if [[ $USE_IVI_FLOCK -eq 1 ]]; then 
-        echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 using flock."
+        echo "DBG: ${VERBOSE_INDENT}Script atomic_echo_3 using flock."
         ${IVI_FLOCK} -x -n 9 
 
         if  [[ $? -ne 0 ]]; then 
-            echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 flock unable to lock FD 9 for ${flock_lock_file}."
+            echo "DBG: ${VERBOSE_INDENT}Script atomic_echo_3 flock unable to lock FD 9 for ${flock_lock_file}."
             exit 1
         fi
     fi 
 
     echo "${id}" 1> "${lock_file}"
     if [[ $? -ne 0 ]]; then
-        echo "VB2: ${VERBOSE_INDENT}Script atomic_echo_3 noclobber caught killing existing ${lock_file} by ${id}."
+        echo "DBG: ${VERBOSE_INDENT}Script atomic_echo_3 noclobber caught killing existing ${lock_file} by ${id}."
         exit 1
     fi
 
@@ -36,7 +36,7 @@ if [[ $? -ne 0 ]]; then exit_status=1; fi
 
 ${IVI_RM} "${flock_lock_file}"
 
-echo "VB2: ${VERBOSE_INDENT}Leaving atomic_echo_3 with lock_file ${lock_file} and id=${id} with status=${exit_status}"
+echo "DBG: ${VERBOSE_INDENT}Leaving atomic_echo_3 with lock_file ${lock_file} and id=${id} with status=${exit_status}"
 
 exit ${exit_status}
 

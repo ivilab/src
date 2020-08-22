@@ -1,4 +1,4 @@
 #
-setenv IVI_BOOST_VERSION "1_71:1_70:1_69"
+setenv IVI_BOOST_VERSION "1_69"
 
 
