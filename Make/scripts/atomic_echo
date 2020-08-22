@@ -45,7 +45,7 @@ set id = "$2"
 
 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Entering atomic_echo $*"
 
-set anyerror
+# set anyerror
 # ${MAKE_SCRIPT_PATH}atomic_echo_2 ${lock_file} ${id} < /dev/null |& ${IVI_SED} '/\.lock: File exists/d'
 
 ${MAKE_SCRIPT_PATH}atomic_echo_2 ${lock_file} ${id}

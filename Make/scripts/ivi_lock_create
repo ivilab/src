@@ -408,13 +408,11 @@ ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_create got an interr
 # If we are not locking or even if we are, then the lock_file variable might not
 # be set when we got interrupted.
 
-if (${safe_to_lock}) then
-    if (${?lock_file}) then 
-        if (-e "${lock_file}") then 
-            ${P_STDERR} "Script ivi_lock_create process $$ removing lock file ${lock_file} because of interrupt."
-            ${P_STDERR} " "
-            ${IVI_RM} "${lock_file}"
-        endif 
+if (${?lock_file}) then 
+    if (-e "${lock_file}") then 
+        ${P_STDERR} "Script ivi_lock_create process $$ removing lock file ${lock_file} because of interrupt."
+        ${P_STDERR} " "
+        ${IVI_RM} "${lock_file}"
     endif 
 endif 
 

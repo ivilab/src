@@ -119,6 +119,15 @@ if ("${check_time_arg}" != "") then
 endif 
 
 set full_cmd = "$argv[2-$#]"
+
+if ($?IVI_DONT_LOCK) then
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock is not locking: $*"
+    ${full_cmd} 
+    exit ${status}
+endif
+
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ in ${cwd} with args $*."
+
 set cmd_str = `echo ${2} | ${IVI_SED} 's#.*/##'`
 
 set lock_label = ""
@@ -142,23 +151,16 @@ foreach cmd_part (${full_cmd})
     endif 
 end
 
-# Last path component.
-set dir_str = `echo ${cwd} | sed 's#.*/##'`
+set dir_str = `echo ${cwd} | ${IVI_SED} "s#${HOME}/##" | ${IVI_SED} 's#^/##g' | ${IVI_SED} 's#/#_#g'`
 set lock_label = "${lock_label}_${dir_str}"
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock process $$ in ${cwd} with args $*."
-
-if ($?IVI_DONT_LOCK) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}IVI_DONT_LOCK is set, so ivi_lock is not locking: $*"
-    ${full_cmd} 
-    exit ${status}
-endif
-
-set exit_status = 0
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock setting lock_label to ${lock_label}."
 
 # This bit of shared code sets "safe_to_lock" and requires "lock_label".
 source ${MAKE_SCRIPT_PATH}check_for_deadlock
 if (${status}) exit ${status} 
+
+set exit_status = 0
 
 onintr ivi_lock_bail
 
@@ -197,9 +199,6 @@ ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing up ivi_lock $* with statu
 
 cleanup: 
 
-# Restore 
-onintr
-    
 exit ${exit_status}
 
 # We should not be here unless onintr

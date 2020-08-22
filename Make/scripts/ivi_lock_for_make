@@ -44,8 +44,6 @@ endif
 
 set exit_status = 0
 
-set max_time_to_wait = "$1"
-
 # Don't really need to error check as ivi_lock_create does it, but this might
 # help get to the source faster.
 #
@@ -87,11 +85,10 @@ foreach cmd_part (${full_cmd})
     endif 
 end
 
-
-# Last path component.
-set dir_str = `echo ${cwd} | sed 's#.*/##'`
-
+set dir_str = `echo ${cwd} | ${IVI_SED} "s#${HOME}/##" | ${IVI_SED} 's#^/##g' | ${IVI_SED} 's#/#_#g'`
 set lock_label = "${lock_label}_${dir_str}"
+
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock_label to ${lock_label}."
 
 # This can be a pretty long string, leading to filenames that are too long.
 # set target_label = `${MAKE_SCRIPT_PATH}label_arg_to_file_str ${target}`
@@ -100,13 +97,11 @@ set lock_label = "${lock_label}_${dir_str}"
 set target_label = `echo ${target} | sed 's#.*/##'`
 if ($status) exit 1
 
-set target_label = "${dir_str}_${lock_label}"
-
 set only_set_lockfile_directory
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
 if (${status}) exit ${status} 
 
-set time_stamp_file = "${dir_str}_${target_label}.$$"
+set time_stamp_file = "target_time_stamp_${target_label}.$$"
 set time_stamp_file = "${IVI_LOCKFILE_PATH}${time_stamp_file}"
 ${IVI_TOUCH} ${time_stamp_file}
 
@@ -120,7 +115,10 @@ ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_l
 
 # This bit of shared code sets "safe_to_lock" and requires "lock_label".
 source ${MAKE_SCRIPT_PATH}check_for_deadlock
-if (${status}) exit ${status} 
+if (${status}) then 
+    set exit_status = 1
+    goto cleanup
+endif 
 
 onintr ivi_lock_for_make_bail
 
@@ -131,7 +129,8 @@ if (${safe_to_lock}) then
     ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid}
     if ($status) then 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make failed to get lock ${lock_label} for target ${target}"
-        exit 1
+        set exit_status = 1
+        goto cleanup
     endif 
 
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock ${lock_label} for target ${target} in ${cwd}"
@@ -144,8 +143,11 @@ if (${safe_to_lock}) then
         if (-e "${time_stamp_file}") then 
             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make comparing age of ${time_stamp_file} to that of ${target} in ${cwd}."
             set already_built = `${IVI_SRC_PATH}Make/scripts/test_older_than "${time_stamp_file}" "${target}"`
-            if ($status) exit ${status}
-            ${IVI_RM} "${time_stamp_file}"
+
+            if (${status}) then 
+                set exit_status = 1
+                goto cleanup
+            endif 
         endif 
     endif 
 else 
@@ -186,30 +188,28 @@ ${VERBOSE_ECHO} "${VERBOSE_INDENT}Done with call to ivi_lock_for_make with args:
 ${VERBOSE_ECHO} ""
 
 cleanup: 
-
-# Restore 
-onintr
-    
-exit ${exit_status}
+    ${IVI_RM} "${time_stamp_file}"
+    exit ${exit_status}
 
 # We should not be here unless onintr
 
 ivi_lock_for_make_bail:
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_for make got an interrupt."
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_for make got an interrupt."
+    # If we are not locking or even if we are, then the lock_file variable might not
+    # be set when we got interrupted.
 
-# If we are not locking or even if we are, then the lock_file variable might not
-# be set when we got interrupted.
-
-if (${safe_to_lock}) then
-    if (${?lock_file}) then 
-        if (-e "${lock_file}") then 
-            ${P_STDERR} "Script ivi_lock_for_make process $$ removing lock file ${lock_file} because of interrupt."
-            ${P_STDERR} " "
-            ${IVI_RM} "${lock_file}"
+    if (${safe_to_lock}) then
+        if (${?lock_file}) then 
+            if (-e "${lock_file}") then 
+                ${P_STDERR} "Script ivi_lock_for_make process $$ removing lock file ${lock_file} because of interrupt."
+                ${P_STDERR} " "
+                ${IVI_RM} "${lock_file}"
+            endif 
         endif 
     endif 
-endif 
 
-exit 1
+    ${IVI_RM} "${time_stamp_file}"
+
+    exit 1
 

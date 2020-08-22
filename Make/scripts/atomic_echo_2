@@ -27,8 +27,8 @@ endif
 # ${MAKE_SCRIPT_PATH}atomic_echo_3 |& ${IVI_SED} '/\.lock: File exists/d'
 
 # For debugging, get the output.
-# ${MAKE_SCRIPT_PATH}atomic_echo_3 "${lock_file}" "${id}"
-${MAKE_SCRIPT_PATH}atomic_echo_3 "${lock_file}" "${id}" >& /dev/null
+${MAKE_SCRIPT_PATH}atomic_echo_3 "${lock_file}" "${id}"
+# ${MAKE_SCRIPT_PATH}atomic_echo_3 "${lock_file}" "${id}" >& /dev/null
 
 if (${status}) then
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} unable to overwrite lockfile with contents: `cat ${lock_file}`"
