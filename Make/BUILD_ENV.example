@@ -24,8 +24,10 @@
 #     BUILD_ENV.${USER}                 (if USER is set --- it usually is!) 
 #     BUILD_ENV.${OS}
 #     BUILD_ENV.${OS}.${USER}
+#     BUILD_ENV.${SHORT_HOST}
+#     BUILD_ENV.${SHORT_HOST}.${USER}
 #     BUILD_ENV.${MACHINE}              ($MACHINE is usually $OS_$CPU)
-#     BUILD_ENV.${MACHINE.${USER}}      (if USER is set)
+#     BUILD_ENV.${MACHINE}.${USER}}      (if USER is set)
 #     BUILD_ENV.${OS2}                  (if OS2 is not null)
 #     BUILD_ENV.${OS2}.${USER}          (if OS2 is not null, and USER is set)
 #     BUILD_ENV.${OS2}_${CPU}           (if OS2 is not null)

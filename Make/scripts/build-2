@@ -44,7 +44,7 @@ endif
 # oriented ones), we first source ones in Make, then then current directory,
 # which thus can over-ride. 
 
-set shared_build_env_files = "BUILD_ENV BUILD_ENV.${OS} BUILD_ENV.${MACHINE} BUILD_ENV BUILD_ENV.${OS}"
+set shared_build_env_files = "BUILD_ENV BUILD_ENV.${OS} BUILD_ENV.${MACHINE} BUILD_ENV.${SHORT_HOST} BUILD_ENV.${OS}"
 
 if ("${OS2}" != "") then 
     set shared_build_env_files = "${shared_build_env_files} BUILD_ENV.${OS}${OS2} BUILD_ENV.${OS}${OS2}_${CPU}"
