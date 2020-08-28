@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25745 2020-08-20 00:00:47Z kobus $
+# $Id: init_compile 25760 2020-08-28 17:11:39Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -93,8 +93,8 @@ endif
 #     setenv MAKE_PATH ${IVI_SRC_PATH}Make/
 #     setenv MAKE_SCRIPT_PATH ${MAKE_PATH}scripts/
 
-setenv IVI_LIB_PATH ${IVI_SRC_PATH}lib/
-setenv MAKE_BIN_PATH ${MAKE_PATH}bin/${MACHINE}/
+setenv IVI_LIB_PATH   ${IVI_SRC_PATH}lib/
+setenv MAKE_BIN_PATH  ${MAKE_PATH}bin/${MACHINE}/
 setenv MAKE_UTIL_PATH ${MAKE_PATH}util/
 setenv MAKE_EDIT_PATH ${MAKE_PATH}vim/
 
@@ -110,7 +110,18 @@ pushd ${IVI_SRC_PATH} > /dev/null
        # 
        ### setenv IVI_DOC_PATH "$cwd"/doc/
        setenv IVI_DOC_PATH "${IVI_SRC_PATH}doc/"
-   else if (! $?IVI_DOC_PATH) then
+   else if ($?IVI_DOC_PATH) then
+       set doc_path_no_slash = `echo ${IVI_DOC_PATH} | sed 's#//*$##'`
+       
+       if ("${doc_path_no_slash}" == "") then
+           ${P_STDERR} "Ignoring empty (or /) IVI_DOC_PATH."
+           unsetenv IVI_DOC_PATH
+       else 
+           setenv IVI_DOC_PATH "${doc_path_no_slash}/"
+       endif 
+   endif 
+
+   if (! $?IVI_DOC_PATH) then
        # We used to do the parent, but that seems like a bad idea. 
        #
        #  pushd ../  > /dev/null 

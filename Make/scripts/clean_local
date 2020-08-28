@@ -11,7 +11,7 @@ pushd ${MAKE_PATH} > /dev/null
 popd > /dev/null
 
 if ("${cwd}" == "${make_dir_cwd}") then
-    echo "Script clean_local is refusing to clean ${MAKE_PATH}" 
+    echo "Script clean_local is refusing to clean ${MAKE_PATH} as this is were we keep original Makefiles." 
     exit
 endif 
 

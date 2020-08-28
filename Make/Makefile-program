@@ -1,17 +1,17 @@
 #
-# $Id: Makefile-program 25745 2020-08-20 00:00:47Z kobus $
+# $Id: Makefile-program 25760 2020-08-28 17:11:39Z kobus $
 #
- 
+
 include $(MAKE_PATH)Makefile-defs
 
 #
 # External libraries that the program might use if available on this computer.
 #
 # Note that when this line is processed, none of the symbols are defined. We
-# rely on late binding of them as a result of other included Makefiles. 
+# rely on late binding of them as a result of other included Makefiles.
 #
 # Best to keep the order so such that anything that has dependencies comes
-# before its dependences. 
+# before its dependences.
 #
 LIBS = \
        $(NEED_LIB_XXX) \
@@ -86,12 +86,12 @@ include $(MAKE_PATH)Makefile-program.$(MAKE_FLAVOR)
 #     INCLUDE_LINE_FILES (used?)  [ Include_lines/*.[chC] Include_lines/*.[chit]pp Include_lines/*.[chit]xx ]
 #     NEW_INCLUDE_LINE_FILES      [ Include_lines/new/*.[chC] Include_lines/new/*.[chit]pp Include_lines/new/*.[chit]xx ]
 #
-# A note about file pattern expansion. 
+# A note about file pattern expansion.
 #     File pattern expansion is make flavor dependent, and also can lead to
 #     annoying failures when the pattern does not match, but what you want is
 #     simply a null result. We only need to rely on make pattern expansion for
 #     rules. Pattern use could probably be purged from commands using scripts
-#     instead. 
+#     instead.
 
 ################################################################################
 #         Synchronizing Makefile and build with src/Make 
@@ -113,14 +113,14 @@ Makefile : $(MAKE_PATH)Makefile
 	@$(ECHO_UNLESS_QUIET) " "
 	@$(ECHO_UNLESS_QUIET) "Updating 'Makefile' from $(MAKE_PATH)."
 	@$(ECHO_UNLESS_QUIET) "This will affect future compiles, but not necessarily this one."
-	$(IVI_CP) $(MAKE_PATH)Makefile $@ 
+	$(IVI_CP) $(MAKE_PATH)Makefile $@
 	@$(ECHO_UNLESS_QUIET) " "
 
 Makefile-2 : $(MAKE_PATH)Makefile-2
 	@$(ECHO_UNLESS_QUIET) " "
 	@$(ECHO_UNLESS_QUIET) "Updating 'Makefile-2' from $(MAKE_PATH)."
 	@$(ECHO_UNLESS_QUIET) "This will affect future compiles, but not necessarily this one."
-	$(IVI_CP) $(MAKE_PATH)Makefile-2 $@ 
+	$(IVI_CP) $(MAKE_PATH)Makefile-2 $@
 	@$(ECHO_UNLESS_QUIET) " "
 
 # This won't happen very often because build updates itself, but it is possible.
@@ -129,7 +129,7 @@ build : $(MAKE_PATH)build
 	@$(ECHO_UNLESS_QUIET) " "
 	@$(ECHO_UNLESS_QUIET) "Updating 'build' from $(MAKE_PATH)."
 	@$(ECHO_UNLESS_QUIET) "This will affect future compiles, but not necessarily this one."
-	$(IVI_CP) $(MAKE_PATH)build $@ 
+	$(IVI_CP) $(MAKE_PATH)build $@
 	@$(ECHO_UNLESS_QUIET) " "
 
 ################################################################################
@@ -176,9 +176,9 @@ build : $(MAKE_PATH)build
 Include_lines/file_list :
 	@$(ECHO_IF_VERBOSE) " "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
-	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?"
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
-	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ "
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
 
@@ -189,11 +189,11 @@ Include_lines/file_list :
 # compared with the copy in Include_lines/file_list, without updating its time
 # stamp, which should happen only if there is a difference. We basically use
 # Include_lines/file_list.new as a proxy for Include_lines/file_list so that we
-# can hide the dependency on the directory time stamp to reduce save build time. 
+# can hide the dependency on the directory time stamp to reduce save build time.
 
 # Dependency on tools that build the target, including hidden ones. We do not
 # make the hidden ones depend on the non-hidden ones as we do not know how to
-# build any of them.  
+# build any of them.
 #
 $(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
 
@@ -212,7 +212,7 @@ Include_lines/file_list.new : ./ $(FORCE_WITH_SUN5)
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_file_list
-#	$(MAKE_SCRIPT_PATH)build_file_list 
+#	$(MAKE_SCRIPT_PATH)build_file_list
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 	@$(ECHO_IF_VERBOSE) " "
