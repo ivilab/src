@@ -269,7 +269,7 @@ else
                         # No point asking about a process on a different
                         # machine. We will need to timeout.
                         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} not checking up on ${id} as it is on a different host."
-                        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Our id is ${is} but theirs is ${lock_id}."
+                        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Our id is ${id} but theirs is ${lock_id}."
                         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}We are ${SHORT_HOST} but they are ${lock_host}."
                     endif 
 
