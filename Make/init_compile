@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25765 2020-09-05 23:43:28Z kobus $
+# $Id: init_compile 25766 2020-09-05 23:53:07Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -5376,7 +5376,7 @@ if ($?IVI_VERBOSE) then
     if (${NO_LIBS}) then
         echo "Script init_compile skipped LIB_OPENSSL due to NO_LIBS"
    else if (${IVI_SUPPRESS_OPENSSL}) then
-       echo "Script init_compile skipped LIB_OPENCL due to IVI_SUPPRESS_OPENCL"
+       echo "Script init_compile skipped LIB_OPENSSL due to IVI_SUPPRESS_OPENSSL"
     else if ("${IVI_HAVE_OPENSSL}" != "") then
         echo "Script init_compile found OPENSSL"
         echo "    OPENSSL  |  LIB_OPENSSL: ${LIB_OPENSSL}"
