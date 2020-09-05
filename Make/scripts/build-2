@@ -1593,7 +1593,10 @@ while (${try_count} <= 3)
             else
                 ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
                 set make_status = ${status}
-                ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
+
+                if (${make_status}) then
+                    ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
+                endif 
            endif 
         endif 
 

@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25760 2020-08-28 17:11:39Z kobus $
+# $Id: init_compile 25765 2020-09-05 23:43:28Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -1582,8 +1582,8 @@ if ($?IVI_SUPPRESS_OPENCL == 0) then
     ivi_setenv IVI_SUPPRESS_OPENCL 0
 endif
 
-if ($?IVI_SUPPRESS_CXX11 == 0) then
-    ivi_setenv IVI_SUPPRESS_CXX11 0
+if ($?IVI_SUPPRESS_OPENSSL == 0) then
+    ivi_setenv IVI_SUPPRESS_OPENSSL 0
 endif
 
 # Not currently used. 
@@ -5331,7 +5331,7 @@ set optional_libs = "${optional_libs} OPENSSL:openssl/.*\.h"
 set openssl_inc_dir = ""
 set openssl_load_dir = ""
 
-if (! ${NO_LIBS}) then
+if (! ${NO_LIBS} && ! ${IVI_SUPPRESS_OPENSSL}) then
     foreach load_dir (${load_dirs}) 
         set have_lib = `/bin/ls -1 ${load_dir} | grep ^libssl\\. | ${filter_non_devel}`
         # AMP:  libssl.so used to be enough, but OpenSSL must recently have
@@ -5375,6 +5375,8 @@ if ($?IVI_VERBOSE) then
     echo ""
     if (${NO_LIBS}) then
         echo "Script init_compile skipped LIB_OPENSSL due to NO_LIBS"
+   else if (${IVI_SUPPRESS_OPENSSL}) then
+       echo "Script init_compile skipped LIB_OPENCL due to IVI_SUPPRESS_OPENCL"
     else if ("${IVI_HAVE_OPENSSL}" != "") then
         echo "Script init_compile found OPENSSL"
         echo "    OPENSSL  |  LIB_OPENSSL: ${LIB_OPENSSL}"
@@ -9179,7 +9181,6 @@ set optional_libs = "${optional_libs} ERGO:ergo/.*\.h"
 set ergo_inc_dir = ""
 
 if (! ${NO_LIBS}) then
-
     foreach inc_dir (${inc_dirs}) 
         if (-e ${inc_dir}/ergo/mh.h) then
             set ergo_inc_dir = "${inc_dir}" 
