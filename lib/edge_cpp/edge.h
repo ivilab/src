@@ -1,4 +1,4 @@
-/* $Id: edge.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: edge.h 25764 2020-09-05 23:08:20Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -28,6 +28,7 @@
 
 #ifdef IVI_HAVE_BST_SERIAL
 #include <boost/serialization/list.hpp>
+#include <boost/serialization/split_member.hpp>
 //#include <boost/archive/text_oarchive.hpp>
 //#include <boost/archive/text_iarchive.hpp>
 #endif

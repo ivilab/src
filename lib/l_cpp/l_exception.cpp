@@ -1,5 +1,5 @@
 
-/* $Id: l_exception.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: l_exception.cpp 25764 2020-09-05 23:08:20Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -28,7 +28,6 @@
 
 #include <vector>
 #include <algorithm>
-
 
 namespace ivi
 {
