@@ -6,6 +6,9 @@
 #     Creates a semaphore that blocks cooperating processes from proceeding 
 #     until removed (using ivi_lock_remove).
 #
+# Synopsis:
+#     ivi_lock_create {max_time} {label} [pid]
+#
 # Description:
 #     This is a simple script for locking blocks of script code that is not
 #     conveniently expressed as a command (otherwise use ivi_lock). It works
@@ -230,7 +233,7 @@ else
                         # problem so we use a blank host as a wild card.
 
                         if ("${lock_host}" == "${lock_id}") then
-                            ${WARN_ECHO} "Script ivi_lock_create read lock_id that had no host."
+                            ${WARN_ECHO} "Script ivi_lock_create read lock_id from ${lock_file} that had no host."
                             set lock_host = ""
                         endif 
 

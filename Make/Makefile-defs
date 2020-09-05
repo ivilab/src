@@ -39,7 +39,7 @@ IVI_BUILD_TOOLS = \
 # The "Compile status is" string is a unique string that must be kept in sync
 # with the regular expressions in scripts/boost_warning_filter.pl and in
 # init_compile.  It's part of a workaround for a variant form of tcsh.
-COMPILE_STATUS_STR = "Compile status is: $$status"
+COMPILE_STATUS_STR = "Compile status is: $${compile_status}"
 # COMPILE_STATUS_IS = $(IVI_ECHO) "Compile status is: $$status"
 
 ###############################################################################

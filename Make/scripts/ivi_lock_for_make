@@ -6,8 +6,7 @@
 #     A script to lock and build a target only once
 #
 # Usage:
-#     ivi_lock_for_make [ max time ] [ target ] [ command ] [ command arguments ]
-#
+#     ivi_lock_for_make {max_time} {target} {command} [command arguments]
 #
 # Description:
 #     Locking serializes execution, but once a second process, having been
@@ -20,6 +19,10 @@
 #     ivi build system has hidden targets, and sometimes we run multiple
 #     instances of make either on purpose or by accident. Especially for hidden
 #     targets, we want to consider using this script. 
+#
+#     The second argument is only used for early exit. If it will never exist,
+#     then it has no effect, but in this case, using ivi_lock might make more
+#     sense. 
 #
 # Author:
 #     Kobus Barnard 

@@ -8,20 +8,20 @@ onintr bail
 setenv EXIT_ON_LOCK_TIMEOUT 
 
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-sleep 2
 
-${MAKE_SCRIPT_PATH}ivi_lock_create 10 FOO 
+${MAKE_SCRIPT_PATH}ivi_lock_create 2 FOO 
 if (${status}) exit 1
 
-set time_out = 30
+set time_out = 10
 
 set start_time = `date +%H:%M:%S`
 ${MAKE_SCRIPT_PATH}ivi_lock_create ${time_out} FOO 
 set exit_status=${status}
 set end_time = `date +%H:%M:%S`
 
+echo "Script ivi_lock_create exited with status ${exit_status}"
 echo "Test_ivi_lock_timeout started at ${start_time}"
-echo "Test_ivi_lock_timeout completed  ${end_time} with status ${exit_status}"
+echo "Test_ivi_lock_timeout completed  ${end_time}"
 echo "That should be about ${time_out} seconds."
 
 ${MAKE_SCRIPT_PATH}ivi_lock_remove FOO 

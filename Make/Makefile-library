@@ -12,7 +12,6 @@
 #     for variable expansion needs to be specified, and that is complicated and
 #     also depends on the flavor of make. 
 
-
 # The following make flavor dependent defines, already set by the time we are in
 # this file, are expanded versions of the patterns noted. 
 #
@@ -526,7 +525,8 @@ $(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)$(IVI_DIR_STR)%.h.gc
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -551,69 +551,74 @@ $(LIB_COMPONENT_PARENT_DIR)$(PCH_DIR)$(LIB_COMPONENT_PREFIX)$(IVI_DIR_STR)%.h.gc
 $(LIB_COMPONENT_SRC_DIR)$(OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.c 
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CC)  --version |& head -1 $(SUPRESS_IF_QUIET) 
+	@$(IVI_CC)  --version |& head -1 $(SUPPRESS_IF_QUIET) 
 	( $(IVI_CC) $< -c -o $@ \
         $(LIB_COMPONENT_CC_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_CC_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(LIB_COMPONENT_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE) ; $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
+        $(WITH_LIBS_HAVE) ; \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cpp 
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1 $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1 $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cxx
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1 $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1 $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.C
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1 $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1 $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET)) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 $(LIB_COMPONENT_SRC_DIR)$(CXX_OBJ_DIR)%.o : $(LIB_COMPONENT_SRC_DIR)%.cc
 	@$(IVI_ECHO)
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(LIB_COMPONENT_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)   [ for $@  ] $(SUPRESS_IF_QUIET) ) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 

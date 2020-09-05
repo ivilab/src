@@ -198,7 +198,7 @@ endif
 
 
 # Essential.
-set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip makedepend date"
+set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip makedepend date tee"
 
 # Desired (used often enough that a warning makes sense). If these are not
 # found, the path is set to the program name for better error messages. The

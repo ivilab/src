@@ -5,6 +5,9 @@
 # Identification:
 #     Removes the semaphore that blocks cooperating processes from proceeding 
 #
+# Synopsis:
+#     ivi_lock_create {label} [pid]
+#
 # Description:
 #     This is the script of a pair for locking blocks of script code that is not
 #     conveniently expressed as a command (otherwise use ivi_lock). It works
@@ -18,7 +21,7 @@
 #     call to lockfile-create (excluding its first argument). 
 #
 #     I might have called this script ivi_lock_destroy, but since it is similar
-#     to lockfile-remove, I have gone with ivi_lock_remove. 
+#     to the standard command lockfile-remove, I went with ivi_lock_remove. 
 #
 # Author:
 #     Kobus Barnard 

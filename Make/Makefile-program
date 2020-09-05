@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25760 2020-08-28 17:11:39Z kobus $
+# $Id: Makefile-program 25763 2020-09-05 22:40:11Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -577,73 +577,88 @@ $(PCH_DIR)%.h.gch : %.h
 # $(OBJ_DIR)%.o : $(OBJ_DIR)c_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed.$(VAR_CACHE_SUFFIX)
 # $(CXX_OBJ_DIR)%.o : $(CXX_OBJ_DIR)cxx_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 
+# $(OBJ_DIR)%.o : %.c 
+# 	@$(IVI_ECHO)
+# 	@$(IVI_CC) --version |& head -1  $(SUPPRESS_IF_QUIET)
+# 	( $(IVI_CC) $< -c -o $@ \
+#         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
+#         $(PROGRAM_CC_WARNING_FLAGS) \
+#         $(PROGRAMMER_FLAGS) \
+#         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+#         $(NEED_HAVE) \
+#         $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET) ) \
+#         $(NULL_TO_MAKE_BLANK_LINE)
+
+
 $(OBJ_DIR)%.o : %.c 
 	@$(IVI_ECHO)
-	@$(IVI_CC) --version |& head -1  $(SUPRESS_IF_QUIET)
+	@$(IVI_CC) --version |& head -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CC) $< -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
 $(CXX_OBJ_DIR)%.o : %.C
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
 $(CXX_OBJ_DIR)%.o : %.cpp
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
-        |& $(IVI_CXX_MESSAGE_FILTER) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # I fixed what looked like an obvious typo in the line below in r8486 - Andrew
 
 $(CXX_OBJ_DIR)%.o : %.cxx
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
-        |& $(IVI_CXX_MESSAGE_FILTER) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
 $(CXX_OBJ_DIR)%.o : %.cc
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE);  $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPRESS_IF_QUIET) ) \
-        |& $(IVI_CXX_MESSAGE_FILTER) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 # I am not sure if this is still used. Test it commented out.
@@ -658,7 +673,7 @@ $(CXX_OBJ_DIR)%.o : %.cc
 # easiest. 
 #
 $(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
-	$(IVI_CC)  --version |& head -1  $(SUPRESS_IF_QUIET)
+	$(IVI_CC)  --version |& head -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_CC) version.c -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
@@ -687,7 +702,7 @@ $(OBJ_DIR)$(SHARED_DIR)%.o : %.c
         $(PROGRAM_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(M_LIB_NEED_HAVE) \
+        $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -700,7 +715,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cpp
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(M_LIB_NEED_HAVE) \
+        $(NEED_HAVE) \
         $(WITH_LIBS_HAVE)\
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -715,7 +730,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cxx
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(M_LIB_NEED_HAVE) \
+        $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -731,7 +746,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.C
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(M_LIB_NEED_HAVE) \
+        $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -746,7 +761,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cc
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(M_LIB_NEED_HAVE) \
+        $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -833,7 +848,7 @@ $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
 # make the following rule robust (there probably is a better way).
 #
 # The linker (IVI_LD) is usually preset to the C compiler, but can get changed
-# (in Makefile-libs-neded) to the C++ compiler if there is any C++ code involved. 
+# (in Makefile-libs-needed) to the C++ compiler if there is any C++ code involved. 
 #
 # Fancy bit. OBS_ARCHIVE is set to $(LD_OBJ_DIR)LOCAL.a exactly when there is a
 # object file in a program directory without a main(), which corresponds to OBS
@@ -841,7 +856,7 @@ $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
 
 $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_ARCHIVE) $(LD_OBJ_DIR)%.o 
 	@$(IVI_ECHO)
-	@$(IVI_LD)  --version |& head -1  $(SUPRESS_IF_QUIET)
+	@$(IVI_LD)  --version |& head -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_LD) $@.o $(VERSION_OBS) $(OBS_ARCHIVE) \
             $(HACK_BEFORE_LOAD_FLAGS) $(LOAD_FLAGS) -L$(LD_OBJ_DIR) $(LIB_LINK_STRINGS) \
             $(LOAD_DIRS) \

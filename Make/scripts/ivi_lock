@@ -5,6 +5,9 @@
 # Identification:
 #     A script to execute commands so that only one instance is run at a time. 
 #
+# Synopsis:
+#     ivi_lock {max_time} {cmd} [args]
+#
 # Description:
 #     This is a simple script for locking. It trades limited capability for
 #     simplicity (see deficiencies below). The main justification for this
@@ -18,10 +21,11 @@
 #     has to be first because the command can have an arbitrary number of
 #     arguments.
 #
-#     The second argument to ivi_lock is the command to be executed including its
-#     arguments. This script supports two forms of simple locking. One is based
-#     on the command, and the other is based on a resource labeled by the value
-#     of the environment variable IVI_LOCKFILE_NAME. 
+#     The second argument to ivi_lock is the command to be executed including
+#     its arguments. This script supports simple locking through a lockfile
+#     whose name is derived in one of two ways.  One is based on the command and
+#     last element of the current path, and the other is based on a resource
+#     labeled by the value of the environment variable IVI_LOCKFILE_NAME. 
 #
 #     For command based locking (simplest), this script constructs a lock name
 #     based on the command and a piece of the current directory.  This makes
@@ -30,13 +34,14 @@
 #     actions needing protection are not described as modifying an obvious
 #     resource (e.g., updating an SVN repo).
 #
-#     However, command based locking does not support multiple scripts that
-#     share a resource that needs to be protected. For this scenario, the set of
-#     scripts can set a specific named lock via the environment variable
-#     IVI_LOCKFILE_NAME. Usually this is an informative string (no slashes
-#     are allowed). However, if IVI_LOCKFILE_NAME holds a path, then that path
-#     is taken as the precise lockfile, and the behaviour is similar to "flock",
-#     especially if flock is the underlying implementation.
+#     However, command based locking does not support multiple copies of the
+#     same script running in the same directory that share a resource that needs
+#     to be protected. For this scenario, the set of scripts can set a specific
+#     named lock via the environment variable IVI_LOCKFILE_NAME. Usually this is
+#     an informative string (no slashes are allowed). However, if
+#     IVI_LOCKFILE_NAME holds a path, then that path is taken as the precise
+#     lockfile, and the behaviour is similar to "flock", especially if flock is
+#     the underlying implementation.
 #
 #     If the environment variable IVI_LOCKFILE_PATH is set, this script will use
 #     its value as a directory to create lockfiles in. Otherwise, this script

@@ -113,9 +113,10 @@ if ($?IVI_BOOST_VERSION) then
     endif
 endif 
             
-# Despite the name, this is the default execution path. We would only have boost
-# at this point if we looked for it due to IVI_BOOST_VERSION.
-#
+# We would only have boost at this point if we looked for it due to
+# IVI_BOOST_VERSION. So, typically, found_workable_boost is false and we go into
+# the "if" block.
+
 if (! ${found_workable_boost}) then
     source ${MAKE_PATH}init_compile
     if (${status}) then
@@ -127,13 +128,6 @@ endif
 setenv CWD "${cwd}"
 
 ################################################################################
-
-if ("${USER}" == "kobus") then
-    setenv EXIT_ON_DEADLOCK
-    setenv EXIT_ON_LOCK_TIMEOUT
-    setenv SKIP_DEPEND_RETRY
-    setenv FORCE_STOP
-endif 
 
 # BUILD_BIN_PATH cannot be null, otherwise, Makefile-program will use it to
 # create a rule for "./", which will be executed, and fail.
@@ -201,24 +195,22 @@ if ($?IVI_MAKE_DEBUG) then
 endif 
 
 if ($?FORCE_STOP) then
-    if ($?IVI_VERBOSE) then
-        echo "Forcing stopping after an error due to env var FORCE_STOP being set"
-    endif 
-
+    ${VERBOSE_ECHO} "Forcing stopping after an error due to env var FORCE_STOP being set"
     set make_extra_opts = "${make_extra_opts} ${IVI_MAKE_OPTS_STOP}"
 endif 
 
 if ($?IVI_QUIET) then
     set make_extra_opts = "${make_extra_opts} ${IVI_MAKE_OPTS_SILENT}"
-    setenv SUPRESS_IF_QUIET '>& /dev/null'
+    setenv SUPPRESS_IF_QUIET '>& /dev/null'
 endif 
 
 setenv IVI_MAKE_SERIAL "${IVI_MAKE_SERIAL} ${make_extra_opts}"
 setenv IVI_MAKE_PAR    "${IVI_MAKE_PAR} ${make_extra_opts}"
 
 if ($?FORCE_SERIAL) then
-    # These could be set by the user to build only sub_libs_needed serially. But
-    # we also force it if we building everything serially.
+    # The following two env vars could be set by the user to build only
+    # sub_libs_needed serially. But we also force it if we building everything
+    # serially.
     #
     setenv BUILD_SUB_LIBS_SERIAL
     setenv BUILD_FILE_LISTS_SERIAL
@@ -962,718 +954,664 @@ endif
 
 ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
 
-set exit_status = 0
-set error_found = 0
 
-if (${need_depend_bootstrap}) then
-    ${VERBOSE_ECHO} 
-    ${VERBOSE_ECHO} ==================================================================================
-    ${VERBOSE_ECHO} "Script build-2 is bootstrapping make for efficiency and in case our make does not build included files."
-    ${VERBOSE_ECHO} 
+set try_count = 1
+while (${try_count} <= 3)
+    set makefiles_are_ok = 1
 
-    set bootstrap_files = `${MAKE_SCRIPT_PATH}stream_file_names -bootstrap`
-
-    ${VERBOSE_ECHO} "Script build-2 bootstrap files: ${bootstrap_files}"
-
-    foreach bootstrap_file (${bootstrap_files}) 
-        if (-x "${bootstrap_file}") then
-            if ($?DRY_RUN) then
-                echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}"
-            else
-                ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}
-                if (${status}) exit 1
-            endif 
-        endif 
-    end
-
-    if (! -e Makefile-dirs) then
-        # This is not needed with gmake, but it is the same thing that gmake
-        # would do first so it is OK to keep. 
-        #
-        # We cannot have an empty Makefile-dirs if we are in a library
-        # directory. We need the first part which can be built without
-        # Include_lines/sub_libs_needed, although the implementation below builds
-        # that also.  Hence if Makefile-dirs does not exist, we need to build it
-        # here, especially for versions of make that break when we include
-        # non-existent files.
-        
-        ${VERBOSE_ECHO} ""
+    if (${need_depend_bootstrap}) then
+        ${VERBOSE_ECHO} 
         ${VERBOSE_ECHO} ==================================================================================
-        ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
-        ${VERBOSE_ECHO} "First, it will call build_file_list."
-        ${VERBOSE_ECHO} ""
+        ${VERBOSE_ECHO} "Script build-2 is bootstrapping make for efficiency and in case our version of make"
+        ${VERBOSE_ECHO} "does not build included files."
+        ${VERBOSE_ECHO} 
 
-        set sub_start_time = `${IVI_ECHO_TIME}`
+        set bootstrap_files = `${MAKE_SCRIPT_PATH}stream_file_names -bootstrap`
 
-        if ($?DRY_RUN) then
-            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list"
-        else
-            # Makefile-dirs is made as a side effect of the following.
-            ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list
-            if (${status}) then
-                set exit_status = 1
-                ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
-                goto end_of_script
-            endif
-        endif 
+        ${VERBOSE_ECHO} "Script build-2 bootstrap files: ${bootstrap_files}"
 
-        ${VERBOSE_ECHO} ""
-        ${VERBOSE_ECHO} ==================================================================================
-        ${VERBOSE_ECHO} "Script build-2 is precomputing file lists."
-        ${VERBOSE_ECHO} ""
-
-        if ($?DRY_RUN) then
-            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists"
-        else
-            # No lock because we lock what we need within this script. 
-            # ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists
-            #
-            # The sed removes most annoying job control output, specifically the
-            # ones that do not loose the new line due to parallel output
-            # intertwining. We do not use grep in pipes if we plan to use the
-            # exit status, as grep will have exit status 1 if no lines are
-            # selected. 
-            #
-            ${MAKE_SCRIPT_PATH}precompute_file_lists |& ${IVI_SED} '/^\[[1-9]/d'
-            if (${status}) then
-                ${WARN_ECHO} "Precomputing file lists failed."
-                exit 1
-            endif
-        endif 
-
-        ${VERBOSE_ECHO} ""
-        ${VERBOSE_ECHO} ==================================================================================
-        ${VERBOSE_ECHO} "Script build-2 is building include lines."
-
-        if ($?DRY_RUN) then
-            echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines"
-        else
-            ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines 
-            if (${status}) then
-                set exit_status = 1
-                ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
-                goto end_of_script
-            endif
-        endif 
-
-        set sub_end_time = `${IVI_ECHO_TIME}`
-        ${VERBOSE_ECHO} "Script build-2 has finished building Makefile-dirs in advance of calling make."
-        ${VERBOSE_ECHO} "Building Makefile-dirs started at: ${sub_start_time}"
-        ${VERBOSE_ECHO} "Building Makefile-dirs ended at:   ${sub_end_time}"
-    endif
-
-    # Some flavors of make will die if files that are included don't exist.
-    # Others like gmake are happy to try to build them for you if it can find a
-    # rule after reading in the whole works. If this is the behaviour, it is
-    # better for us so we only do this if we are not using gmake, or testing
-    # with FORCE_MAKEFILE_CREATION. 
-    #
-    if (("${MAKE_FLAVOR}" != "gmake") || ($?FORCE_MAKEFILE_CREATION)) then
-        ${VERBOSE_ECHO} "Due to non gmake make, or testing with FORCE_MAKEFILE_CREATION: "
-        ${VERBOSE_ECHO} "    Script build-2 is asking build_include_lines to build Makefile-libs-needed as it goes."
-        ${VERBOSE_ECHO} "    Script build-2 is ensuring the existance of certain Makefiles with old timestamps."
-
-        # This is consulted in build_include_lines_2
-        setenv SHADOW_BUILD_MAKEFILE_LIBS 1
-
-        if (! -e Makefile-depend) then
-            if ($?DRY_RUN) then
-                echo "DRY: ${IVI_TOUCH_1990} Makefile-depend"
-            else
-                ${IVI_TOUCH_1990} Makefile-depend
-                if (${status}) then
-                    set exit_status = 1
-                    ${P_STDERR} "Touching Makefile-depend in the past failed."
-                    goto end_of_script
-                endif
-            endif
-        endif
-
-        if (! -e Makefile-libs-needed) then
-            if ($?DRY_RUN) then
-                echo "DRY: ${IVI_TOUCH_1990} Makefile-libs-needed"
-            else
-                ${IVI_TOUCH_1990} Makefile-libs-needed
-                if (${status}) then
-                    set exit_status = 1
-                    ${P_STDERR} "Touching Makefile-libs-needed in the past failed."
-                    goto end_of_script
-                endif
-            endif
-        endif
-
-        if (-e Makefile-include) then
-            if (! -e Makefile-library) then
+        foreach bootstrap_file (${bootstrap_files}) 
+            if (-x "${bootstrap_file}") then
                 if ($?DRY_RUN) then
-                    echo "DRY: ${IVI_TOUCH_1990} Makefile-library"
+                    echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}"
                 else
-                    ${IVI_TOUCH_1990} Makefile-library
-                    if (${status}) then
+                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}
+                    if (${status}) then 
                         set exit_status = 1
-                        ${P_STDERR} "Touching Makefile-library in the past failed."
-                        goto end_of_script
-                    endif
+                        ${P_STDERR} "Running of ${bootstrap_file} in ${cwd} failed."
+                        break
+                    endif 
                 endif 
-            endif 
-
-            if (! -e Include_lines/Makefile-include-lines) then
-                if ($?DRY_RUN) then
-                    echo "DRY: ${IVI_MKDIR} Include_lines"
-                    echo "DRY: ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines"
-                else
-                    ${IVI_MKDIR} Include_lines
-                    if (${status}) then
-                        set exit_status = 1
-                        ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
-                        goto end_of_script
-                    endif
-
-                    ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines
-                    if (${status}) then
-                        set exit_status = 1
-                        ${P_STDERR} "Touching Include_lines/Makefile-include-lines in the past failed."
-                        goto end_of_script
-                    endif
-                endif 
-            endif 
-
-            if (! -e Include_lines/Makefile-depend-incl-dot-h) then
-                if ($?DRY_RUN) then
-                    echo "DRY: ${IVI_MKDIR} Include_lines"
-                    echo "DRY: ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h"
-                else
-                    ${IVI_MKDIR} Include_lines
-                    if (${status}) then
-                        set exit_status = 1
-                        ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
-                        goto end_of_script
-                    endif
-
-                    ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
-                    if (${status}) then
-                        set exit_status = 1
-                        ${P_STDERR} "Touching Include_lines/Makefile-depend-incl-dot-h in the past failed."
-                        goto end_of_script
-                    endif
-                endif 
-            endif
-        endif 
-    endif 
-endif 
-
-# If need_depend is set to true (usually the case) we build each of the depend
-# targets listed in temp_depend_targets below. But if the target specified is
-# actually one of these, then we build all the ones up to that target. 
-#
-if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
-    set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
-
-    # If we are in a library directory, we need to upate Makefile-library
-    # becasause it is included before it is updated (in gmake).  
-
-    if (-e "Makefile-include") then
-        if (-e "Makefile-library") then
-            set library_makefile_too_old = `${MAKE_SCRIPT_PATH}test_older_than Makefile-library ${MAKE_PATH}Makefile-library`
-
-            if (${library_makefile_too_old}) then
-                ${VERBOSE_ECHO} ""
-                ${VERBOSE_ECHO} "Script build-2 is updating ${cwd}/Makefile-library"
-
-                ${IVI_SED} 's/LIB_COMPONENT/L_LIB/g' < ${MAKE_PATH}Makefile-library > Makefile-library
-
-                if (${status}) then
-                    ${P_STDERR} "Update of  ${cwd}/Makefile-library in build-2 failed." 
-                    set exit_status = 1
-                    goto end_of_script
-                endif
-            endif
-        endif
-    endif
-
-    # We build 'Makefile' multiple times to force included Makefiles that do not
-    # exist to be built. While they often can be built automatically, some would
-    # require further restructuring of the code. Currently, for example, if you
-    # do a 'make depend_very_clean' in some directory, and change to another
-    # program direcotory (or IVI or IVI_cpp), then the build can be broken due
-    # to the library makefiles being removed, but Makefile-dirs still being what
-    # it should be.
-
-    # This could be rolled up into a loop, but the error messages would not be
-    # as informative.
-
-    ${VERBOSE_ECHO} ""
-    ${VERBOSE_ECHO} ==================================================================================
-    ${VERBOSE_ECHO} "Script build-2 is using Makefile-2 to build Makefile, which forces building of"
-    ${VERBOSE_ECHO} "included Makefiles (in gmake). We do this possibly multiple times if there are errors."
-    ${VERBOSE_ECHO} ""
-
-    ${ivi_depend_make} -f Makefile-2 Makefile 
-    if (${status}) then
-        ${P_STDERR} "Initial build of 'Makefile' failed, but that is OK, it might just mean that we are missing some makefiles."
-
-        ${ivi_depend_make} -f Makefile-2 Makefile 
-        if (${status}) then
-            ${P_STDERR} "Second build of 'Makefile' failed, but often it needs to be done three times. " 
-
-            ${ivi_depend_make} -f Makefile-2 Makefile
-            if (${status}) then
-                ${P_STDERR} "Third build of 'Makefile' failed. Trying one more time." 
-
-                ${ivi_depend_make} -f Makefile-2 Makefile
-                if (${status}) then
-                    ${P_STDERR} "Fourth build of 'Makefile' failed. Something might be wrong with the buiild system or need to build depend." 
-                    set exit_status = 1
-                    goto end_of_script
-                endif 
-            endif
-        endif
-    endif
-
-    set build_adjusted_args = ""
-    foreach arg (${adjusted_args}) 
-        # set temp_depend_targets = "Include_lines/file_list.new Include_lines/include_lines.new Include_lines/sub_libs_needed depend"
-        # set temp_depend_targets = "file_list.new include_lines.new sub_libs_needed depend"
-        #
-        # The target "depend_again" is a self-documenting way to do "depend" a
-        # second time. We duplicate the target "depend" because in a few cases,
-        # the first build of Makefile-depend creates dependencies for itself via
-        # the variable DEPEND_DEPENDENCIES.
-        #
-        set temp_depend_targets = "file_list.new include_lines.new depend depend_again"
-
-        # If we ask for one of the targets listed above, we interpret that as
-        # building only the depends, and only up to the target asked for. 
-        #
-        set depend_targets = ""
-
-        set is_depend_target = 0 
-
-        foreach temp_depend_target (${temp_depend_targets})
-            set depend_targets = "${depend_targets} ${temp_depend_target}"
-
-            if ("${arg}" == "${temp_depend_target}") then
-                set is_depend_target = 1
-                break
             endif 
         end
 
-        if (! ${is_depend_target}) then
-            set build_adjusted_args = "${build_adjusted_args} ${arg}"
-        endif 
+        if (${exit_status}) break
 
-        # echo depend_targets: $depend_targets
+        if (! -e Makefile-dirs) then
+            # This is not needed with gmake, but it is the same thing that gmake
+            # would do first so it is OK to keep. 
+            #
+            # We cannot have an empty Makefile-dirs if we are in a library
+            # directory. We need the first part which can be built without
+            # Include_lines/sub_libs_needed, although the implementation below builds
+            # that also.  Hence if Makefile-dirs does not exist, we need to build it
+            # here, especially for versions of make that break when we include
+            # non-existent files.
+            
+            ${VERBOSE_ECHO} ""
+            ${VERBOSE_ECHO} ==================================================================================
+            ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
+            ${VERBOSE_ECHO} "First, it will call build_file_list."
+            ${VERBOSE_ECHO} ""
 
-        set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
-        
-        set try = 0
+            set sub_start_time = `${IVI_ECHO_TIME}`
 
-        while (${try} < 3) 
-            set iteration = 0
-            set error_found = 0
-
-            while (1) 
-                set do_it_again = 0
-
-                @ iteration += 1
-
-                foreach depend_target (${depend_targets})
-                    if ($?IVI_VERBOSE) then
-                        ${VERBOSE_ECHO} " "
-                        ${VERBOSE_ECHO} ==================================================================================
-                        ${VERBOSE_ECHO} "Script build-2 is building depend target: ${depend_target} in directory ${cwd}."
-                        ${VERBOSE_ECHO} "Make command is: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
-                        ${VERBOSE_ECHO} " "
-                        set sub_start_time = `${IVI_ECHO_TIME}`
-                    endif 
-
-                    if ($?DRY_RUN) then
-                        echo "DRY: ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}"
-                    else
-                        ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}
-
-                        if ($status) then 
-                            echo "Failed to make target ${depend_target} in ${cwd}"
-                            set error_found = 1
-                            break
-                        else if ($?IVI_VERBOSE) then
-                            set sub_end_time = `${IVI_ECHO_TIME}`
-                            ${VERBOSE_ECHO} " "
-                            ${VERBOSE_ECHO} "Script build-2 successfully built depend target: ${depend_target} in directory ${cwd}."
-                            ${VERBOSE_ECHO} "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
-                            ${VERBOSE_ECHO} "    Start time for ${depend_target}: ${sub_start_time}"
-                            ${VERBOSE_ECHO} "    End   time for ${depend_target}: ${sub_end_time}"
-                        endif 
-                    endif 
-
-                    # If we need to do it again, then no point in building the
-                    # rest. Start from scratch.
-                    #
-                    if (${do_it_again}) then
-                        break
-                    endif 
-                end 
-
-                if (${error_found}) then 
+            if ($?DRY_RUN) then
+                echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list"
+            else
+                # Makefile-dirs is made as a side effect of the following.
+                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list
+                if (${status}) then
+                    set exit_status = 1
+                    ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
                     break
-                else if (${do_it_again}) then
-                    if (${iteration} > 3) then
-                        ${P_STDERR} "Too many iterations in making depend. This is likely a bug."
+                endif
+            endif 
+
+            ${VERBOSE_ECHO} ""
+            ${VERBOSE_ECHO} ==================================================================================
+            ${VERBOSE_ECHO} "Script build-2 is precomputing file lists."
+            ${VERBOSE_ECHO} ""
+
+            if ($?DRY_RUN) then
+                echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists"
+            else
+                # No lock because we lock what we need within this script. 
+                # ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists
+                #
+                # The sed removes most annoying job control output, specifically the
+                # ones that do not loose the new line due to parallel output
+                # intertwining. We do not use grep in pipes if we plan to use the
+                # exit status, as grep will have exit status 1 if no lines are
+                # selected. 
+                #
+                ${MAKE_SCRIPT_PATH}precompute_file_lists |& ${IVI_SED} '/^\[[1-9]/d'
+                if (${status}) then
+                    ${WARN_ECHO} "Precomputing file lists failed."
+                endif
+            endif 
+
+            ${VERBOSE_ECHO} ""
+            ${VERBOSE_ECHO} ==================================================================================
+            ${VERBOSE_ECHO} "Script build-2 is building include lines."
+
+            if ($?DRY_RUN) then
+                echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines"
+            else
+                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines 
+                if (${status}) then
+                    set exit_status = 1
+                    ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
+                    break
+                endif
+            endif 
+
+            set sub_end_time = `${IVI_ECHO_TIME}`
+            ${VERBOSE_ECHO} "Script build-2 has finished building Makefile-dirs in advance of calling make."
+            ${VERBOSE_ECHO} "Building Makefile-dirs started at: ${sub_start_time}"
+            ${VERBOSE_ECHO} "Building Makefile-dirs ended at:   ${sub_end_time}"
+        endif
+
+        # Some flavors of make will die if files that are included don't exist.
+        # Others like gmake are happy to try to build them for you if it can find a
+        # rule after reading in the whole works. If this is the behaviour, it is
+        # better for us so we only do this if we are not using gmake, or testing
+        # with FORCE_MAKEFILE_CREATION. 
+        #
+        if (("${MAKE_FLAVOR}" != "gmake") || ($?FORCE_MAKEFILE_CREATION)) then
+            ${VERBOSE_ECHO} "Due to non gmake make, or testing with FORCE_MAKEFILE_CREATION: "
+            ${VERBOSE_ECHO} "    Script build-2 is asking build_include_lines to build Makefile-libs-needed as it goes."
+            ${VERBOSE_ECHO} "    Script build-2 is ensuring the existance of certain Makefiles with old timestamps."
+
+            # This is consulted in build_include_lines_2
+            setenv SHADOW_BUILD_MAKEFILE_LIBS 1
+
+            if (! -e Makefile-depend) then
+                if ($?DRY_RUN) then
+                    echo "DRY: ${IVI_TOUCH_1990} Makefile-depend"
+                else
+                    ${IVI_TOUCH_1990} Makefile-depend
+                    if (${status}) then
                         set exit_status = 1
-                        goto end_of_script
-                    else 
-                        echo "#############################################################"
-                        echo "Re-building depends because Makefile-dirs got updated."
-                        echo "#############################################################"
-                        continue
+                        ${P_STDERR} "Touching Makefile-depend in the past failed."
+                        break 
+                    endif
+                endif
+            endif
+
+            if (! -e Makefile-libs-needed) then
+                if ($?DRY_RUN) then
+                    echo "DRY: ${IVI_TOUCH_1990} Makefile-libs-needed"
+                else
+                    ${IVI_TOUCH_1990} Makefile-libs-needed
+                    if (${status}) then
+                        set exit_status = 1
+                        ${P_STDERR} "Touching Makefile-libs-needed in the past failed."
+                        break 
+                    endif
+                endif
+            endif
+
+            if (-e Makefile-include) then
+                if (! -e Makefile-library) then
+                    if ($?DRY_RUN) then
+                        echo "DRY: ${IVI_TOUCH_1990} Makefile-library"
+                    else
+                        ${IVI_TOUCH_1990} Makefile-library
+                        if (${status}) then
+                            set exit_status = 1
+                            ${P_STDERR} "Touching Makefile-library in the past failed."
+                            break 
+                        endif
                     endif 
-                else 
+                endif 
+
+                if (! -e Include_lines/Makefile-include-lines) then
+                    if ($?DRY_RUN) then
+                        echo "DRY: ${IVI_MKDIR} Include_lines"
+                        echo "DRY: ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines"
+                    else
+                        ${IVI_MKDIR} Include_lines
+                        if (${status}) then
+                            set exit_status = 1
+                            ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
+                            break 
+                        endif
+
+                        ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines
+                        if (${status}) then
+                            set exit_status = 1
+                            ${P_STDERR} "Touching Include_lines/Makefile-include-lines in the past failed."
+                            break 
+                        endif
+                    endif 
+                endif 
+
+                if (! -e Include_lines/Makefile-depend-incl-dot-h) then
+                    if ($?DRY_RUN) then
+                        echo "DRY: ${IVI_MKDIR} Include_lines"
+                        echo "DRY: ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h"
+                    else
+                        ${IVI_MKDIR} Include_lines
+                        if (${status}) then
+                            set exit_status = 1
+                            ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
+                            break 
+                        endif
+
+                        ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
+                        if (${status}) then
+                            set exit_status = 1
+                            ${P_STDERR} "Touching Include_lines/Makefile-depend-incl-dot-h in the past failed."
+                            break 
+                        endif
+                    endif 
+                endif
+            endif 
+        endif 
+    endif 
+
+    # If need_depend is set to true (usually the case) we build each of the depend
+    # targets listed in temp_depend_targets below. But if the target specified is
+    # actually one of these, then we build all the ones up to that target. 
+    #
+    if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
+        set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
+
+        # If we are in a library directory, we need to upate Makefile-library
+        # because it is included before it is updated (in gmake).  
+
+        if (-e "Makefile-include") then
+            if (-e "Makefile-library") then
+                set library_makefile_too_old = `${MAKE_SCRIPT_PATH}test_older_than Makefile-library ${MAKE_PATH}Makefile-library`
+
+                if (${library_makefile_too_old}) then
+                    ${VERBOSE_ECHO} ""
+                    ${VERBOSE_ECHO} "Script build-2 is updating ${cwd}/Makefile-library"
+
+                    ${IVI_SED} 's/LIB_COMPONENT/L_LIB/g' < ${MAKE_PATH}Makefile-library > Makefile-library
+
+                    if (${status}) then
+                        ${P_STDERR} "Update of  ${cwd}/Makefile-library in build-2 failed." 
+                        set makefiles_are_ok = 0
+                        goto next_try
+                    endif
+                endif
+            endif
+        endif
+
+        # We build 'Makefile' multiple times to force included Makefiles that do not
+        # exist to be built. While they often can be built automatically, some would
+        # require further restructuring of the code. Currently, for example, if you
+        # do a 'make depend_very_clean' in some directory, and change to another
+        # program directory (or IVI or IVI_cpp), then the build can be broken due
+        # to the library makefiles being removed, but Makefile-dirs still being what
+        # it should be.
+
+        # This could be rolled up into a loop, but the error messages would not be
+        # as informative.
+
+        ${VERBOSE_ECHO} ""
+        ${VERBOSE_ECHO} ==================================================================================
+        ${VERBOSE_ECHO} "Script build-2 is using Makefile-2 to build Makefile, which forces the building"
+        ${VERBOSE_ECHO} "of included Makefiles (in gmake). We do this multiple times if there are errors."
+        ${VERBOSE_ECHO} ""
+
+        ${ivi_depend_make} -f Makefile-2 Makefile 
+        if (${status}) then
+            ${P_STDERR} "Initial build of 'Makefile' failed, but that is OK, it might just mean that we are missing some makefiles."
+
+            ${ivi_depend_make} -f Makefile-2 Makefile 
+            if (${status}) then
+                ${P_STDERR} "Second build of 'Makefile' failed, but often it needs to be done three times. " 
+
+                ${ivi_depend_make} -f Makefile-2 Makefile
+                if (${status}) then
+                    ${P_STDERR} "Third build of 'Makefile' failed. Trying one more time." 
+
+                    ${ivi_depend_make} -f Makefile-2 Makefile
+                    if (${status}) then
+                        ${P_STDERR} "Fourth build of 'Makefile' failed. Cleaning up makefiles." 
+                        set makefiles_are_ok = 0
+                        goto next_try
+                    endif 
+                endif
+            endif
+        endif
+
+        set non_depend_adjusted_args = ""
+        foreach arg (${adjusted_args}) 
+            # set temp_depend_targets = "Include_lines/file_list.new Include_lines/include_lines.new Include_lines/sub_libs_needed depend"
+            # set temp_depend_targets = "file_list.new include_lines.new sub_libs_needed depend"
+            #
+            # The target "depend_again" is a self-documenting way to do "depend" a
+            # second time. We duplicate the target "depend" because in a few cases,
+            # the first build of Makefile-depend creates dependencies for itself via
+            # the variable DEPEND_DEPENDENCIES.
+            #
+            set temp_depend_targets = "file_list.new include_lines.new depend depend_again"
+
+            # If we ask for one of the targets listed above, we interpret that as
+            # building only the depends, and only up to the target asked for. 
+            #
+            set depend_targets = ""
+
+            set is_depend_target = 0 
+
+            foreach temp_depend_target (${temp_depend_targets})
+                set depend_targets = "${depend_targets} ${temp_depend_target}"
+
+                if ("${arg}" == "${temp_depend_target}") then
+                    set is_depend_target = 1
                     break
                 endif 
             end
 
-            if (${error_found}) then
-                if ($?SKIP_DEPEND_RETRY) then
-                    ${P_STDERR} " "
-                    ${P_STDERR} "Skipping retry of building makefiles, as SKIP_DEPEND_RETRY is set."
-                    ${P_STDERR} "Perhaps a 'make depend_clean' is needed, and/or cache cleaning."
-                    ${P_STDERR} " "
-                    set exit_status = 1
-                    goto end_of_script
-                else if (${try} < 2) then
-                    echo " "
-                    echo "Forcing rebuild of some files, and trying again."
-                    echo "Disable with: setenv SKIP_DEPEND_RETRY"
-                    echo " "
-
-                    source ${MAKE_SCRIPT_PATH}clean_global
-
-                    # No locking as it could be the problem and we are now
-                    # serial. 
-                    #
-                    ${MAKE_SCRIPT_PATH}build_file_list
-                    ${MAKE_SCRIPT_PATH}build_include_lines
-                    ${IVI_TOUCH_1990} Makefile-depend
-                    ${IVI_TOUCH_1990} Makefile-libs-needed
-
-                    if (! -e Makefile-library) then
-                        ${IVI_TOUCH_1990} Makefile-library
-                        ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
-                    endif 
-                else 
-                    ${P_STDERR} " "
-                    ${P_STDERR} "Unable to build makefiles."
-                    ${P_STDERR} " "
-                    set exit_status = 1
-                    goto end_of_script
-                endif 
-            else 
-                break
+            if (! ${is_depend_target}) then
+                set non_depend_adjusted_args = "${non_depend_adjusted_args} ${arg}"
             endif 
 
-            @ try += 1 
+            # echo depend_targets: $depend_targets
+
+            set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
         end
-    end
-else 
-    set build_adjusted_args = "${adjusted_args}" 
-endif 
-
-if ("${build_adjusted_args}" != "") then 
-    if ($?IVI_VERBOSE) then
-        echo "Script build-2 args continuing with build_adjusted_targets: ${build_adjusted_args}"
-    endif
-else if ($?IVI_VERBOSE) then
-        echo "Script build-2 is done processing targets."
-        set exit_status = ${error_found} 
-        goto end_of_script
-    endif 
-endif
-
-foreach arg (${build_adjusted_args}) 
-    set force_prod_bin = 0
-    set makefile_to_use = "Makefile-2"
-
-    if (("${arg}" == "all") || ("${arg}" == "code")) then
-        # We should revisit building "dir_made", but certainly we only need it
-        # if we are building IVI code, so we need to able to skip doing it. 
-        #
-        if ((${is_parallel}) && (! $?IVI_SKIP_DIR_MADE)) then
+            
+        foreach depend_target (${depend_targets})
             if ($?IVI_VERBOSE) then
-                echo " "
-                echo "Script build-2 is building dir_made in ${cwd} due to parallel make." 
+                ${VERBOSE_ECHO} " "
+                ${VERBOSE_ECHO} ==================================================================================
+                ${VERBOSE_ECHO} "Script build-2 is building depend target: ${depend_target} in directory ${cwd}."
+                ${VERBOSE_ECHO} "Make command is: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
+                ${VERBOSE_ECHO} " "
+                set sub_start_time = `${IVI_ECHO_TIME}`
             endif 
 
             if ($?DRY_RUN) then
-                echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made"
+                echo "DRY: ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}"
             else
-                ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg}
+                ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}
 
-                if (${status}) then 
-                    set exit_status = 1
-                    ${P_STDERR} "Failed to make target 'dir_made' in ${cwd}"
-                    goto end_of_script
-                endif
+                if ($status) then 
+                    ${P_STDERR} "Failed to make target ${depend_target} in ${cwd}."
+                    set makefiles_are_ok = 0
+                    break
+                else if ($?IVI_VERBOSE) then
+                    set sub_end_time = `${IVI_ECHO_TIME}`
+                    ${VERBOSE_ECHO} " "
+                    ${VERBOSE_ECHO} "Script build-2 successfully built depend target: ${depend_target} in directory ${cwd}."
+                    ${VERBOSE_ECHO} "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
+                    ${VERBOSE_ECHO} "    Start time for ${depend_target}: ${sub_start_time}"
+                    ${VERBOSE_ECHO} "    End   time for ${depend_target}: ${sub_end_time}"
+                endif 
             endif 
-        endif
-    else if (("${arg}" == "doc") || ("${arg}" == "doc_program") || ("${arg}" == "make_bin_aux")) then
-        # This could be cleaned up now that we have gon to using BUILD_BIN_PATH
-        # instead of make_bin and friends.
-        #
-        pushd ${MAKE_PATH} > /dev/null
-            pushd util > /dev/null
-                pushd c2man-2.40-kobus > /dev/null
-                    if ($?IVI_VERBOSE) then
-                        echo " "
-                        echo "Script build-2 is building utilities in ${cwd}." 
-                    endif 
-                     
-                    if ($?DRY_RUN) then
-                        echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg})"
-                    else
-                        # We only want to make the documentation tools using the default C
-                        # compiler and production mode. The setting of IVI_CC to empty asks
-                        # init_compile to choose the compiler. 
-                        #
-                        (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} ) 
-                        
-                        if (${status}) then 
-                            set exit_status = 1
-                            ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
-                            goto end_of_script
+        end
+
+        if (! ${makefiles_are_ok}) goto next_try
+    else 
+        set non_depend_adjusted_args = "${adjusted_args}" 
+    endif 
+
+    if ("${non_depend_adjusted_args}" != "") then 
+        ${VERBOSE_ECHO} "Script build-2 args continuing with non_depend_adjusted_targets: ${non_depend_adjusted_args}"
+    else 
+        ${VERBOSE_ECHO} "Script build-2 is done processing targets."
+        break
+    endif
+
+    set make_result_temp_file = ${USER_TEMP_PATH}make.res.$$
+
+    foreach arg (${non_depend_adjusted_args}) 
+        set make_status = 0
+        set force_prod_bin = 0
+        set makefile_to_use = "Makefile-2"
+        ${IVI_RM} ${make_result_temp_file}
+
+        if (("${arg}" == "all") || ("${arg}" == "code")) then
+            # We should revisit building "dir_made", but certainly we only need it
+            # if we are building IVI code, so we need to able to skip doing it. 
+            #
+            if ((${is_parallel}) && (! $?IVI_SKIP_DIR_MADE)) then
+                ${VERBOSE_ECHO} " "
+                ${VERBOSE_ECHO} "Script build-2 is building dir_made in ${cwd} due to parallel make." 
+
+                if ($?DRY_RUN) then
+                    echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made"
+                else
+                    ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                    set make_status = ${status}
+
+                    if (${make_status}) then 
+                        ${P_STDERR} "Failed to make target 'dir_made' in ${cwd}"
+                    endif
+                endif 
+            endif
+        else if (("${arg}" == "doc") || ("${arg}" == "doc_program") || ("${arg}" == "make_bin_aux")) then
+            # This could be cleaned up now that we have gone to using BUILD_BIN_PATH
+            # instead of make_bin and friends.
+            #
+            pushd ${MAKE_PATH} > /dev/null
+                pushd util > /dev/null
+                    pushd c2man-2.40-kobus > /dev/null
+                        if ($?IVI_VERBOSE) then
+                            echo " "
+                            echo "Script build-2 is building utilities in ${cwd}." 
+                        endif 
+                         
+                        if ($?DRY_RUN) then
+                            echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg})"
+                        else
+                            # We only want to make the documentation tools using the default C
+                            # compiler and production mode. The setting of IVI_CC to empty asks
+                            # init_compile to choose the compiler. 
+                            #
+                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}) 
+                            set make_status = ${status}
+
+                            if (${make_status}) then 
+                                ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
+                            endif 
+                        endif 
+                    popd > /dev/null
+
+                    if (! ${make_status}) then
+                        ${VERBOSE_ECHO} " "
+                        ${VERBOSE_ECHO} "Script build-2 is building utilities in ${cwd}." 
+
+                        if ($?DRY_RUN) then
+                            echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} )"
+                        else
+                            # We only want to make the documentation tools using the default C
+                            # compiler and production mode. The setting of IVI_CC to empty asks
+                            # init_compile to choose the compiler. 
+                            #
+                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} ) 
+                            set make_status = ${status}
+
+                            if (${make_status}) then 
+                                ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
+                            endif 
                         endif 
                     endif 
                 popd > /dev/null
+            popd > /dev/null
 
+            if ("${arg}" == "make_bin_aux") continue
+
+            if (${is_parallel}) then
                 if ($?IVI_VERBOSE) then
-                    echo " "
-                    echo "Script build-2 is building utilities in ${cwd}." 
+                    echo "Script build-2 is building doc_dir_made in ${cwd} due to parallel make." 
                 endif 
 
                 if ($?DRY_RUN) then
-                    echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} )"
+                    echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}"
                 else
-                    # We only want to make the documentation tools using the default C
-                    # compiler and production mode. The setting of IVI_CC to empty asks
-                    # init_compile to choose the compiler. 
-                    #
-                    (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} ) 
-                    
-                    if (${status}) then 
-                        set exit_status = 1
-                        ${P_STDERR} "Failed to make target 'make_bin' in ${cwd}"
-                        goto end_of_script
+                    ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                    set make_status = ${status}
+
+                    if (${make_status}) then 
+                        ${P_STDERR} "Failed to make target doc_dir_made in ${cwd}"
                     endif 
                 endif 
-            popd > /dev/null
-        popd > /dev/null
-
-        if ("${arg}" == "make_bin_aux") continue
-
-        if (${is_parallel}) then
-            if ($?IVI_VERBOSE) then
-                echo "Script build-2 is building doc_dir_made in ${cwd} due to parallel make." 
             endif 
-
-            if ($?DRY_RUN) then
-                echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}"
-            else
-                ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}
-                if (${status}) then 
-                    set exit_status = 1
-                    ${P_STDERR} "Failed to make target doc_dir_made in ${cwd}"
-                    goto end_of_script
-                endif 
-            endif 
-        endif 
-    else if (("${arg}" == "bin") || ("${arg}" == "load") || ("${arg}" == "misc_load")) then
-        # init_compile ensures PRODUCTION is either 0 or 1
-        if (! $PRODUCTION) then
-            set force_prod_bin = 1
-            if ($?DONT_FORCE_PROD_BIN) then
-                if ($DONT_FORCE_PROD_BIN) then
-                    set force_prod_bin = 0
-                endif 
-            endif 
-
-            if (${force_prod_bin}) then
-                ${VERBOSE_ECHO} " "
-                ${VERBOSE_ECHO} "Script build-2 using production mode for ${arg}"
-                ${VERBOSE_ECHO} "To disable this default behaviour, use 'setenv DONT_FORCE_PROD_BIN 1'."
-                ${VERBOSE_ECHO} " "
-
-                if ($?DRY_RUN) then
-                    echo "DRY: setenv PRODUCTION 1"
-                    echo "DRY: source ${MAKE_PATH}init_compile"
-                else
-                    setenv PRODUCTION 1
-                    set save_default_make = "${IVI_MAKE}"
-                    source ${MAKE_PATH}init_compile
-                    setenv IVI_MAKE "${save_default_make}"
+        else if (("${arg}" == "bin") || ("${arg}" == "load") || ("${arg}" == "misc_load")) then
+            # init_compile ensures PRODUCTION is either 0 or 1
+            if (! $PRODUCTION) then
+                set force_prod_bin = 1
+                if ($?DONT_FORCE_PROD_BIN) then
+                    if ($DONT_FORCE_PROD_BIN) then
+                        set force_prod_bin = 0
+                    endif 
                 endif 
 
-                ${VERBOSE_ECHO} " "
+                if (${force_prod_bin}) then
+                    ${VERBOSE_ECHO} " "
+                    ${VERBOSE_ECHO} "Script build-2 using production mode for ${arg}"
+                    ${VERBOSE_ECHO} "To disable this default behaviour, use 'setenv DONT_FORCE_PROD_BIN 1'."
+                    ${VERBOSE_ECHO} " "
+
+                    if ($?DRY_RUN) then
+                        echo "DRY: setenv PRODUCTION 1"
+                        echo "DRY: source ${MAKE_PATH}init_compile"
+                    else
+                        setenv PRODUCTION 1
+                        set save_default_make = "${IVI_MAKE}"
+                        source ${MAKE_PATH}init_compile
+                        set make_status = ${status}
+                        setenv IVI_MAKE "${save_default_make}"
+                    endif 
+
+                    ${VERBOSE_ECHO} " "
+                endif 
             endif 
-        endif 
-    else 
-        # If we are testing a particular program (not necessarily all that is in
-        # a directory) then arg will have been switched to the more specific
-        # target as arranged above. 
-        #
-        set prog = ""
-        if (("${arg}" == "test") || ("${arg}" == "regress")) then
-            set test_arg = 1
-            set prog = "all"
-        else if ( ("${arg}" == "check")  || ("${arg}" == "test_svn") )  then
-            set test_arg = 1
-        else if (("${arg}" == "test_clean") || ("${arg}" == "test_very_clean") || ("${arg}" == "regress_clean")  || ("${arg}" == "test_invalid") )  then
-            set test_arg = 1
         else 
-            set test_arg = `echo ${arg} | grep -c '/output_checked$'`
-            if (${test_arg}) then
-                set prog =  `echo ${arg} | sed 's#test_runs//*\([^/]*\).*#\1#'`
-                set prog = "${LD_OBJ_DIR}${prog}"
+            # If we are testing a particular program (not necessarily all that is in
+            # a directory) then arg will have been switched to the more specific
+            # target as arranged above. 
+            #
+            set prog = ""
+            if (("${arg}" == "test") || ("${arg}" == "regress")) then
+                set test_arg = 1
+                set prog = "all"
+            else if ( ("${arg}" == "check")  || ("${arg}" == "test_svn") )  then
+                set test_arg = 1
+            else if (("${arg}" == "test_clean") || ("${arg}" == "test_very_clean") || ("${arg}" == "regress_clean")  || ("${arg}" == "test_invalid") )  then
+                set test_arg = 1
             else 
-                set test_arg = `echo ${arg} | grep -c '/regression_test_passed$'`
-
+                set test_arg = `echo ${arg} | grep -c '/output_checked$'`
                 if (${test_arg}) then
                     set prog =  `echo ${arg} | sed 's#test_runs//*\([^/]*\).*#\1#'`
                     set prog = "${LD_OBJ_DIR}${prog}"
                 else 
-                    set test_arg = `echo ${arg} | grep -c '/svn_phony$'`
+                    set test_arg = `echo ${arg} | grep -c '/regression_test_passed$'`
+
+                    if (${test_arg}) then
+                        set prog =  `echo ${arg} | sed 's#test_runs//*\([^/]*\).*#\1#'`
+                        set prog = "${LD_OBJ_DIR}${prog}"
+                    else 
+                        set test_arg = `echo ${arg} | grep -c '/svn_phony$'`
+                    endif 
                 endif 
             endif 
-        endif 
 
-        if (! ${test_arg}) then
-            foreach test_target_suffix (${test_target_suffixes})
-                set test_arg = `echo ${arg} | grep -c "\.${test_target_suffix}${dollar}"`
-                if (${test_arg}) then 
-                    ${VERBOSE_ECHO} "Target $arg matches test target suffix '$test_target_suffix'"
-                    break
-                endif
-            end
-        endif 
+            if (! ${test_arg}) then
+                foreach test_target_suffix (${test_target_suffixes})
+                    set test_arg = `echo ${arg} | grep -c "\.${test_target_suffix}${dollar}"`
+                    if (${test_arg}) then 
+                        ${VERBOSE_ECHO} "Target $arg matches test target suffix '$test_target_suffix'"
+                        break
+                    endif
+                end
+            endif 
 
-        if (${test_arg}) then
-#           # All this stuff from before should not be necessary. Kill it
-#           eventually. Claim made 12/13/2019.
-#
-#             if (! -e "Makefile-test-depend") then
-#                 set make_tmp_dir = "${TMPDIR}/${USER}/Makefile-test-depend/make"
-#                 ${IVI_MKDIR} "${make_tmp_dir}"
-#                 if (${status}) then
-#                     ${P_STDERR} "Unable to make directory ${make_tmp_dir}"
-#                     exit 1
-#                 endif 
-#                 ${MAKE_SCRIPT_PATH}build_test_depend > ${make_tmp_dir}/Makefile-test-depend
-#                 if (${status}) then
-#                     ${P_STDERR} "Unable to build Makefile-test-depend."
-#                     exit 1
-#                 else 
-#                     ${IVI_CP} ${make_tmp_dir}/Makefile-test-depend .
-#                     if (${status}) then
-#                         ${P_STDERR} "Unable to copy ${make_tmp_dir}/Makefile-test-depend to `pwd`."
-#                         exit 1
-#                     endif 
-#                 endif 
-#             endif 
+            if (${test_arg}) then
+    #           # All this stuff from before should not be necessary. Kill it
+    #           eventually. Claim made 12/13/2019.
+    #
+    #             if (! -e "Makefile-test-depend") then
+    #                 set make_tmp_dir = "${TMPDIR}/${USER}/Makefile-test-depend/make"
+    #                 ${IVI_MKDIR} "${make_tmp_dir}"
+    #                 if (${status}) then
+    #                     ${P_STDERR} "Unable to make directory ${make_tmp_dir}"
+    #                     exit 1
+    #                 endif 
+    #                 ${MAKE_SCRIPT_PATH}build_test_depend > ${make_tmp_dir}/Makefile-test-depend
+    #                 if (${status}) then
+    #                     ${P_STDERR} "Unable to build Makefile-test-depend."
+    #                     exit 1
+    #                 else 
+    #                     ${IVI_CP} ${make_tmp_dir}/Makefile-test-depend .
+    #                     if (${status}) then
+    #                         ${P_STDERR} "Unable to copy ${make_tmp_dir}/Makefile-test-depend to `pwd`."
+    #                         exit 1
+    #                     endif 
+    #                 endif 
+    #             endif 
 
-            if ("${prog}" != "") then
-                if ($?IVI_VERBOSE) then
-                    echo " "
-                    echo "Script build-2 is checking whether target ${prog} is up to date, using: "
-                    echo "    ${IVI_MAKE} -q ${prog} -f Makefile-2  "
-                endif 
-
-                # Not all makes necessarily have '-q', but then, they might have '-n'
-                # whose output we can grep. Currently, we only use gmake. The
-                # consequence of not being able to check in advance if things are up
-                # to date is to simply do extra processing, so if the script breaks
-                # here, and the version of make cannot be made to confess, then
-                # skipping this part is fine.
-
-                ${IVI_MAKE} -q ${prog} -f Makefile-2 |& ${suppress_jobserver_msg}
-                if (! ${status}) then
-                    if ( ! $?IVI_QUIET ) then
-                        echo "Script build-2 reports target [ ${prog} ] is up to date."
+                if ("${prog}" != "") then
+                    if ($?IVI_VERBOSE) then
+                        echo " "
+                        echo "Script build-2 is checking whether target ${prog} is up to date, using: "
+                        echo "    ${IVI_MAKE} -q ${prog} -f Makefile-2  "
                     endif 
-                else 
-                    if ($?DRY_RUN) then
-                        echo "DRY: ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}"
-                    else
-                        ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}
 
-                        if (${status}) then
-                            set exit_status = 1
-                            ${P_STDERR} " "
-                            ${P_STDERR} "Making of ${prog} failed."
-                            ${P_STDERR} " "
-                            goto end_of_script
+                    # Not all makes necessarily have '-q', but then, they might have '-n'
+                    # whose output we can grep. Currently, we only use gmake. The
+                    # consequence of not being able to check in advance if things are up
+                    # to date is to simply do extra processing, so if the script breaks
+                    # here, and the version of make cannot be made to confess, then
+                    # skipping this part is fine.
+
+                    ${IVI_MAKE} -q ${prog} -f Makefile-2 |& ${suppress_jobserver_msg}
+                    if (! ${status}) then
+                        if ( ! $?IVI_QUIET ) then
+                            echo "Script build-2 reports target [ ${prog} ] is up to date."
+                        endif 
+                    else 
+                        if ($?DRY_RUN) then
+                            echo "DRY: ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}"
+                        else
+                            ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                            set make_status = ${status}
+
+                            if (${make_status}) then 
+                                ${P_STDERR} " "
+                                ${P_STDERR} "Build of ${prog} failed."
+                                ${P_STDERR} " "
+                            endif 
                         endif 
                     endif 
                 endif 
+
+                set makefile_to_use = "${MAKE_PATH}Makefile-test"
+
+    #           # All this stuff from before should not be necessary. Kill it
+    #           eventually. Claim made 12/13/2019.
+    #
+    #             # We may need to build Makefile-test-depend twice.
+    #             foreach target ( Makefile-test-depend  Makefile-test-depend)
+    #                 if ($?IVI_VERBOSE) then
+    #                     echo " "
+    #                     echo "Script build-2 is checking whether target ${target} is up to date."
+    #                 endif 
+    # 
+    #                 # Not all makes necessarily have '-q', but then, they might have '-n'
+    #                 # whose output we can grep. Currently, we only use gmake. The
+    #                 # consequence of this failing is simply to run make for real.
+    # 
+    #                 ${IVI_MAKE} -q ${target} -f ${makefile_to_use} |& ${suppress_jobserver_msg}
+    #                 if (! ${status}) then
+    #                     if ( ! $?IVI_QUIET ) then
+    #                         echo "Script build-2 reports target [ ${target} ] is up to date."
+    #                     endif 
+    #                 else 
+    #                     set make_command = "${IVI_MAKE} ${target} -f ${makefile_to_use}"
+    # 
+    #                     if ($?IVI_VERBOSE) then
+    #                         echo " "
+    #                         echo "Script build-2 is building target: ${target} in directory ${cwd}."
+    #                         echo "Make command is: ${make_command}"
+    #                         echo " "
+    #                     endif 
+    # 
+    #                     ${make_command} |& ${suppress_jobserver_msg}
+    # 
+    #                     if ($status) then
+    #                         ${P_STDERR} "Failed to make target(s) ${target} in ${cwd}"
+    #                         exit 1
+    #                     endif 
+    #                 endif 
+    #             end
+
+            endif 
+        endif 
+
+        # This completes preparatory building for a our target "arg". If it has
+        # been success so far, build "arg".
+
+        if (! ${make_status}) then
+            if ($?IVI_VERBOSE) then
+                ${VERBOSE_ECHO} " "
+                ${VERBOSE_ECHO} ==================================================================================
+                ${VERBOSE_ECHO} "Script build-2 is building target: ${arg} in directory ${cwd}."
+                ${VERBOSE_ECHO} "Make command is: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
+                ${VERBOSE_ECHO} " "
+                set sub_start_time = `${IVI_ECHO_TIME}`
             endif 
 
-            set makefile_to_use = "${MAKE_PATH}Makefile-test"
-
-#           # All this stuff from before should not be necessary. Kill it
-#           eventually. Claim made 12/13/2019.
-#
-#             # We may need to build Makefile-test-depend twice.
-#             foreach target ( Makefile-test-depend  Makefile-test-depend)
-#                 if ($?IVI_VERBOSE) then
-#                     echo " "
-#                     echo "Script build-2 is checking whether target ${target} is up to date."
-#                 endif 
-# 
-#                 # Not all makes necessarily have '-q', but then, they might have '-n'
-#                 # whose output we can grep. Currently, we only use gmake. The
-#                 # consequence of this failing is simply to run make for real.
-# 
-#                 ${IVI_MAKE} -q ${target} -f ${makefile_to_use} |& ${suppress_jobserver_msg}
-#                 if (! ${status}) then
-#                     if ( ! $?IVI_QUIET ) then
-#                         echo "Script build-2 reports target [ ${target} ] is up to date."
-#                     endif 
-#                 else 
-#                     set make_command = "${IVI_MAKE} ${target} -f ${makefile_to_use}"
-# 
-#                     if ($?IVI_VERBOSE) then
-#                         echo " "
-#                         echo "Script build-2 is building target: ${target} in directory ${cwd}."
-#                         echo "Make command is: ${make_command}"
-#                         echo " "
-#                     endif 
-# 
-#                     ${make_command} |& ${suppress_jobserver_msg}
-# 
-#                     if ($status) then
-#                         ${P_STDERR} "Failed to make target(s) ${target} in ${cwd}"
-#                         exit 1
-#                     endif 
-#                 endif 
-#             end
-
+            if ($?DRY_RUN) then
+                echo "DRY: ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}"
+            else
+                ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                set make_status = ${status}
+                ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
+           endif 
         endif 
-    endif 
 
-    if ($?IVI_VERBOSE) then
-        ${VERBOSE_ECHO} " "
-        ${VERBOSE_ECHO} ==================================================================================
-        ${VERBOSE_ECHO} "Script build-2 is building target: ${arg} in directory ${cwd}."
-        ${VERBOSE_ECHO} "Make command is: ${IVI_MAKE} -f ${makefile_to_use} ${arg}"
-        ${VERBOSE_ECHO} " "
-        set sub_start_time = `${IVI_ECHO_TIME}`
-    endif 
+        if (${make_status}) then
+            if (-e "${make_result_temp_file}") then
+                set build_issue = `${IVI_GREP} -c 'No rule to make target' < "${make_result_temp_file}"`
 
-    if ($?DRY_RUN) then
-        echo "DRY: ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} "
-    else
-        ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}
+                if (${build_issue}) then
+                    ${P_STDERR} "This appears to be a makefile issue."
+                    set makefiles_are_ok = 0
+                else 
+                    set exit_status = 1
+                endif 
+            else 
+                set exit_status = 1
+            endif 
 
-        if (${status}) then 
-            set exit_status = 1
-            ${P_STDERR} "Failed to make target(s) ${arg} in ${cwd}."
-            goto end_of_script
+            break
         else if ($?IVI_VERBOSE) then
             set sub_end_time = `${IVI_ECHO_TIME}`
             echo " "
@@ -1682,41 +1620,82 @@ foreach arg (${build_adjusted_args})
             echo "    Start time for ${arg}: ${sub_start_time}"
             echo "    End   time for ${arg}: ${sub_end_time}"
         endif 
-    endif 
 
-    if (${force_prod_bin}) then
-        # Set it back to dev mode. We would only have set force_prod_bin if we
-        # were in dev mode at the start of the loop. 
-        ${VERBOSE_ECHO} "Script build-2 resetting development mode after processing ${arg}"
+        if (${force_prod_bin}) then
+            # Set it back to dev mode. We would only have set force_prod_bin if we
+            # were in dev mode at the start of the loop. 
+            ${VERBOSE_ECHO} "Script build-2 resetting development mode after processing ${arg}"
 
-        if ($?DRY_RUN) then
-            echo "DRY: setenv PRODUCTION 0"
-            echo "DRY: source ${MAKE_PATH}init_compile"
-        else
-            setenv PRODUCTION 0
-            source ${MAKE_PATH}init_compile
-        endif 
-    endif 
-end
-
-if ( ! $?IVI_QUIET ) then
-    if ( ! $?SKIP_SVN_MESSAGES ) then
-        $VERBOSE_ECHO "Checking for pending SVN commits."
-        svn info >& /dev/null
-        if (! $status) then 
-            set have_changes = `svn status | grep -v -c '^?'`
-            if ($have_changes) then
-                echo " "
-                echo "Pending SVN commits: " 
-                svn status | grep -v '^?' | sed 's/^/    /'
+            if ($?DRY_RUN) then
+                echo "DRY: setenv PRODUCTION 0"
+                echo "DRY: source ${MAKE_PATH}init_compile"
+            else
+                setenv PRODUCTION 0
+                source ${MAKE_PATH}init_compile
+                set exit_status = ${status}
             endif 
         endif 
+    end
 
-        $VERBOSE_ECHO "Done checking for pending SVN commits."
+    if (${makefiles_are_ok}) break
+
+    next_try:
+
+    ${P_STDERR} " "
+    ${P_STDERR} "There is an issues with at least one makefile or build script."
+
+    if ($?SKIP_DEPEND_RETRY) then
+        ${P_STDERR} "Skipping retry of building makefiles, as SKIP_DEPEND_RETRY is set."
+        ${P_STDERR} "Perhaps a 'make depend_clean' is needed, and/or cache cleaning."
+        ${P_STDERR} " "
+        set exit_status = 1
+        break
+    else if (${try_count} == 3) then
+        ${P_STDERR} "Second (serial) retry at building makefiles failed. Giving up."
+        set exit_status = 1
+        break
+    else 
+        if (${try_count} == 1) then
+            ${WARN_ECHO} "Forcing rebuild of some files, and trying again."
+            ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
+        else
+            ${WARN_ECHO} "Forcing rebuild of some files, and trying again without locking and building serially."
+            setenv BUILD_SUB_LIBS_SERIAL
+            setenv BUILD_FILE_LISTS_SERIAL
+            setenv IVI_MAKE "${IVI_MAKE_SERIAL}"
+            setenv DONT_LOCK
+        endif 
+
+        source ${MAKE_SCRIPT_PATH}clean_cache
+        source ${MAKE_SCRIPT_PATH}clean_locks
+        source ${MAKE_SCRIPT_PATH}clean_global
+    endif 
+
+    @ try_count ++
+end
+
+if (! ${exit_status}) then
+    if ( ! $?IVI_QUIET ) then
+        if ( ! $?SKIP_SVN_MESSAGES ) then
+            $VERBOSE_ECHO "Checking for pending SVN commits."
+            svn info >& /dev/null
+            if (! $status) then 
+                set have_changes = `svn status | grep -v -c '^?'`
+                if ($have_changes) then
+                    echo " "
+                    echo "Pending SVN commits: " 
+                    svn status | grep -v '^?' | sed 's/^/    /'
+                endif 
+            endif 
+
+            $VERBOSE_ECHO "Done checking for pending SVN commits."
+        endif 
     endif 
 endif 
 
 end_of_script: 
+
+${IVI_RM} ${make_result_temp_file}
 
 if ( ! $?IVI_QUIET ) then
     set end_time = `${IVI_ECHO_TIME}`
