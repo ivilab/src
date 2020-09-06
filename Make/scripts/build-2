@@ -954,6 +954,7 @@ endif
 
 ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
 
+set make_result_temp_file = "${USER_TEMP_PATH}make.res.$$"
 
 set try_count = 1
 while (${try_count} <= 3)
@@ -1307,8 +1308,6 @@ while (${try_count} <= 3)
         ${VERBOSE_ECHO} "Script build-2 is done processing targets."
         break
     endif
-
-    set make_result_temp_file = ${USER_TEMP_PATH}make.res.$$
 
     foreach arg (${non_depend_adjusted_args}) 
         set make_status = 0
