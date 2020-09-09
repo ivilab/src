@@ -1,5 +1,6 @@
 #!/bin/tcsh -f
 
+##############################################################################
 #
 # Identification
 #     A script to create a new ivi library component
@@ -24,6 +25,7 @@
 #     component directory:
 #          create_program test program_group_template
 #
+##############################################################################
 
 set echo
 
@@ -204,7 +206,6 @@ popd > /dev/null
 
 ##############################################################################
 
-
 if ($?IVI_VERBOSE) then
     echo "Script $0 is sourcing ${IVI_SRC_PATH}Make/init_compile"
 endif 
@@ -227,7 +228,6 @@ echo "   MAKE_SCRIPT_PATH: ${MAKE_SCRIPT_PATH}"
 echo " "
 
 ##############################################################################
-#############################################################################
 
 if (-e "${target_name}") then
     ${P_STDERR} "${target_name} already exists. Giving up."

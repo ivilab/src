@@ -1,5 +1,6 @@
 #!/bin/tcsh -f
 
+##############################################################################
 #
 # Identification
 #     A script to create a new program with ivi makefiles
@@ -37,6 +38,7 @@
 #     fourth is a fancier program that has more example code, and shows how we
 #     also can integrate a "version" source file. 
 #     
+##############################################################################
 
 
 # set echo 
