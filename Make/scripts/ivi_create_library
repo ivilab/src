@@ -10,7 +10,7 @@
 #      This script must be run in the directory "lib". 
 #
 # Description
-#     LIKELY OBSELETE, or at least needs revision!!! 
+#     LIKELY OBSOLETE, or at least needs revision!!! 
 #
 #     This script creates a new ivi library component with a few template files
 #     and associated makefiles. It assumes that "Make" and "lib" are up to date.
@@ -114,7 +114,7 @@ endif
 
 # This next part is shared by all files in Make whose names begin with "build",
 # AND scripts ivi_add_makefiles, create_library, and create_program. Updates
-# should be propogated. 
+# should be propagated. 
 
 if ($?FORCE_IVI_SRC_DIR) then 
     if (-e "${FORCE_IVI_SRC_DIR}/Make/init_compile") then 
