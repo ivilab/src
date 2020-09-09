@@ -1,0 +1,154 @@
+#!/bin/tcsh -f
+
+##################################################################################
+#
+# Build script 
+# ============
+#
+# This file is generally called by "make". It can also be called directly. The
+# main purpose is to normalize the make environment, and to implement some
+# functionality that is difficult to do efficiently, or robustly, or portably
+# using make. 
+#
+# This file should be a copy of: 
+#     ${IVI_SRC_PATH}/Make/scripts/build 
+#
+# The chief functionality implemented here is to determine the value of
+# IVI_SRC_PATH, followed by sourcing ${IVI_SRC_PATH}Make/scripts/build-2. 
+#
+# This is a copy of ${IVI_SRC_PATH}/Make/scripts/build so that source directories can
+# be moved up and down in the src directory tree without additional manual
+# operations. If we instead were to link to ${IVI_SRC_PATH}/Make/scripts/build, then
+# changing the depth in the tree would require repairing the link by hand.  
+#
+# The build environment can be manipulated temporarily by setting environment
+# variables or slightly more permanently using the files with names starting
+# with BUILD_ENV as documented in the example for it in src/Make. The use of
+# BUILD_ENV is generally meant to be a stop gap measure while portability
+# issues are worked out, but there is also some facility for personalizing
+# preferences. This facility is implemented in build-2, as this file, which is
+# duplicated as described above, should be kept to the minimum needed for
+# "bootstrapping" the build.  
+
+##################################################################################
+
+# set echo
+
+# This next part is shared by all files in Make whose names begin with "build",
+# AND scripts ivi_add_makefiles, create_library, and create_program. Updates
+# should be propogated. 
+
+if ($?FORCE_IVI_SRC_DIR) then 
+    if (-e "${FORCE_IVI_SRC_DIR}/Make/init_compile") then 
+        setenv IVI_SRC_PATH "${FORCE_IVI_SRC_DIR}"
+    else 
+        bash -c 'echo "Env var FORCE_IVI_SRC_DIR is set to ${FORCE_IVI_SRC_DIR}, but ${FORCE_IVI_SRC_DIR}/Make/init_compile does not exist." >&2'
+        exit 1 
+    endif 
+else  
+    # Use env var for IVI_DIRS for better error reporting via bash sub-shell.
+    if ($?FORCE_IVI_DIR) then
+        setenv IVI_DIRS "${FORCE_IVI_DIR}"
+    else
+        setenv IVI_DIRS ". kjb KJB ivi IVI src"
+    endif 
+
+    # Find out where we are in the source tree. In particular, we want to find a
+    # directory that has one of the directories in IVI_DIRS as a subdir, which
+    # itself has Make as a sub-dir and Make/init_compile as a file in that. 
+
+    # We want to use pure "cd", and so if cd has been aliase'd we want to save that
+    # fact and unalias cd. 
+    #
+    set cd_alias = `alias cd`
+    if ("${cd_alias}" != "") then
+       unalias cd
+    endif 
+
+    # We want to block going above the user's home directory because it might cause
+    # a mount request that we don't want. If we are not below their home, then it is
+    # fine to ga to the root. 
+    #
+    pushd ${HOME} >& /dev/null
+    set home_pwd = `pwd`
+    popd >& /dev/null
+
+    set found = 0
+    set ivi_top = ""
+
+    pushd `pwd` > /dev/null
+
+    while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
+        foreach ivi_dir (${IVI_DIRS}) 
+            if ("${ivi_dir}" == ".") then
+                set ivi_dir = ""
+            else
+                set ivi_dir = "${ivi_dir}/"
+            endif 
+
+            if (-e "${ivi_dir}Make/init_compile") then
+                set found = 1
+                break
+            endif 
+        end
+
+        if (${found}) break
+
+        set ivi_top = "../${ivi_top}"
+        cd ..
+    end
+
+    popd > /dev/null
+
+    # Restore cd alias.
+    if ("${cd_alias}" != "") then
+       alias cd "$cd_alias"
+    endif 
+
+    if (${found}) then
+        if ("${ivi_dir}" == "") then
+            set ivi_dir = "./"
+        endif 
+
+        setenv IVI_SRC_PATH "${ivi_top}${ivi_dir}"
+    else 
+        # We cannot use P_STDERR here because we might not have defined it yet.
+        bash -c 'echo " " >&2'
+        bash -c 'echo "This directory is not below a directory with IVI installed." >&2'
+        bash -c 'echo "Valid directories for IVI in this context: ${IVI_DIRS}." >&2'
+        bash -c 'echo "To experiment with a temporary fix, try setting FORCE_IVI_SRC_DIR." >&2'
+        bash -c 'echo "For a more permanent fix, edit $0 or contact Kobus." >&2'
+        exit 1
+    endif 
+endif 
+
+pushd ${IVI_SRC_PATH} > /dev/null
+    setenv IVI_SRC_PATH "${cwd}/"
+popd > /dev/null
+
+###############################################################################
+
+if (! $?MAKE_PATH) then
+    setenv MAKE_PATH ${IVI_SRC_PATH}Make/
+endif 
+
+if ( ! $?IVI_HAVE_INIT_SCRIPTS) then
+    source ${MAKE_PATH}init_scripts
+    if ($status) exit 1 
+endif 
+
+###############################################################################
+
+# Check that this file ($0) is up to date compared to the reference one.
+set need_to_replace_myself = `${MAKE_SCRIPT_PATH}test_older_than "$0" "${MAKE_PATH}build"`
+if (${status}) exit 1 
+     
+if (${need_to_replace_myself}) then
+    echo "Script $0 is attempting to rebuild itself and re-execute."
+    exec ${MAKE_SCRIPT_PATH}ivi_self_update "$0" "${MAKE_PATH}build" $0 $argv[1-$#]
+endif 
+
+# echo IVI_SRC_PATH: $IVI_SRC_PATH       
+
+source ${MAKE_SCRIPT_PATH}build-2
+
