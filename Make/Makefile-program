@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25774 2020-09-10 01:05:16Z kobus $
+# $Id: Makefile-program 25775 2020-09-10 23:34:34Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -578,7 +578,7 @@ $(PCH_DIR)%.h.gch : %.h
 
 # $(OBJ_DIR)%.o : %.c 
 # 	@$(IVI_ECHO)
-# 	@$(IVI_CC) --version |& head -1  $(SUPPRESS_IF_QUIET)
+# 	@$(IVI_CC) --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 # 	( $(IVI_CC) $< -c -o $@ \
 #         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
 #         $(PROGRAM_CC_WARNING_FLAGS) \
@@ -591,7 +591,7 @@ $(PCH_DIR)%.h.gch : %.h
 
 $(OBJ_DIR)%.o : %.c 
 	@$(IVI_ECHO)
-	@$(IVI_CC) --version |& head -1  $(SUPPRESS_IF_QUIET)
+	@$(IVI_CC) --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CC) $< -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
@@ -605,7 +605,7 @@ $(OBJ_DIR)%.o : %.c
 
 $(CXX_OBJ_DIR)%.o : %.C
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
@@ -620,7 +620,7 @@ $(CXX_OBJ_DIR)%.o : %.C
 
 $(CXX_OBJ_DIR)%.o : %.cpp
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
@@ -635,7 +635,7 @@ $(CXX_OBJ_DIR)%.o : %.cpp
 
 $(CXX_OBJ_DIR)%.o : %.cxx
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
@@ -649,7 +649,7 @@ $(CXX_OBJ_DIR)%.o : %.cxx
 
 $(CXX_OBJ_DIR)%.o : %.cc
 	@$(IVI_ECHO)
-	@$(IVI_CXX)  --version |& head -1  $(SUPPRESS_IF_QUIET)
+	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
@@ -672,7 +672,7 @@ $(CXX_OBJ_DIR)%.o : %.cc
 # easiest. 
 #
 $(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
-	$(IVI_CC)  --version |& head -1  $(SUPPRESS_IF_QUIET)
+	$(IVI_CC)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_CC) version.c -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
@@ -855,7 +855,7 @@ $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
 
 $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_ARCHIVE) $(LD_OBJ_DIR)%.o 
 	@$(IVI_ECHO)
-	@$(IVI_LD)  --version |& head -1  $(SUPPRESS_IF_QUIET)
+	@$(IVI_LD)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_LD) $@.o $(VERSION_OBS) $(OBS_ARCHIVE) \
             $(HACK_BEFORE_LOAD_FLAGS) $(LOAD_FLAGS) -L$(LD_OBJ_DIR) $(LIB_LINK_STRINGS) \
             $(LOAD_DIRS) \

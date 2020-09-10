@@ -956,6 +956,15 @@ ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
 
 set make_result_temp_file = "${USER_TEMP_PATH}make.res.$$"
 
+# Needs to be set even though we do not actually use it unless LOG_MAKE is set.
+setenv MAKE_LOG_PATH "${cwd}/make_log/$$/"
+
+if ($?LOG_MAKE) then
+    ${IVI_MKDIR} ${MAKE_LOG_PATH}
+else 
+    set make_log_file = '/dev/null'
+endif 
+
 set try_count = 1
 while (${try_count} <= 4)
     set makefiles_are_ok = 1
@@ -976,7 +985,8 @@ while (${try_count} <= 4)
                 if ($?DRY_RUN) then
                     echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}"
                 else
-                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}
+                    if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}${bootstrap_file}_${try_count}.res"
+                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file} |& ${IVI_TEE} ${make_log_file}
                     if (${status}) then 
                         set exit_status = 1
                         ${P_STDERR} "Running of ${bootstrap_file} in ${cwd} failed."
@@ -1011,7 +1021,8 @@ while (${try_count} <= 4)
                 echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list"
             else
                 # Makefile-dirs is made as a side effect of the following.
-                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list
+                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}build_file_list_${try_count}.res"
+                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
                     set exit_status = 1
                     ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
@@ -1036,7 +1047,8 @@ while (${try_count} <= 4)
                 # exit status, as grep will have exit status 1 if no lines are
                 # selected. 
                 #
-                ${MAKE_SCRIPT_PATH}precompute_file_lists |& ${IVI_SED} '/^\[[1-9]/d'
+                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}precompute_file_lists_${try_count}.res"
+                ${MAKE_SCRIPT_PATH}precompute_file_lists |& ${IVI_SED} '/^\[[1-9]/d' |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
                     ${WARN_ECHO} "Precomputing file lists failed."
                 endif
@@ -1049,7 +1061,8 @@ while (${try_count} <= 4)
             if ($?DRY_RUN) then
                 echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines"
             else
-                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines 
+                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}build_include_lines_${try_count}.res"
+                ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
                     set exit_status = 1
                     ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
@@ -1183,7 +1196,7 @@ while (${try_count} <= 4)
                     ${IVI_SED} 's/LIB_COMPONENT/L_LIB/g' < ${MAKE_PATH}Makefile-library > Makefile-library
 
                     if (${status}) then
-                        ${P_STDERR} "Update of  ${cwd}/Makefile-library in build-2 failed." 
+                        ${P_STDERR} "Update of ${cwd}/Makefile-library in build-2 failed." 
                         set makefiles_are_ok = 0
                         goto next_try
                     endif
@@ -1208,19 +1221,23 @@ while (${try_count} <= 4)
         ${VERBOSE_ECHO} "of included Makefiles (in gmake). We do this multiple times if there are errors."
         ${VERBOSE_ECHO} ""
 
-        ${ivi_depend_make} -f Makefile-2 Makefile 
+        if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_1.res"
+        ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
         if (${status}) then
             ${P_STDERR} "Initial build of 'Makefile' failed, but that is OK, it might just mean that we are missing some makefiles."
 
-            ${ivi_depend_make} -f Makefile-2 Makefile 
+            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_2.res"
+            ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
             if (${status}) then
                 ${P_STDERR} "Second build of 'Makefile' failed, but often it needs to be done three times. " 
 
-                ${ivi_depend_make} -f Makefile-2 Makefile
+                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_3.res"
+                ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
                     ${P_STDERR} "Third build of 'Makefile' failed. Trying one more time." 
 
-                    ${ivi_depend_make} -f Makefile-2 Makefile
+                    if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_4.res"
+                    ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
                     if (${status}) then
                         ${P_STDERR} "Fourth build of 'Makefile' failed. Cleaning up makefiles." 
                         set makefiles_are_ok = 0
@@ -1280,7 +1297,8 @@ while (${try_count} <= 4)
             if ($?DRY_RUN) then
                 echo "DRY: ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}"
             else
-                ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg}
+                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_${depend_target}_${try_count}.res"
+                ${ivi_depend_make} -f Makefile-2 ${depend_target} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_log_file}
 
                 if ($status) then 
                     ${P_STDERR} "Failed to make target ${depend_target} in ${cwd}."
@@ -1326,7 +1344,8 @@ while (${try_count} <= 4)
                 if ($?DRY_RUN) then
                     echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made"
                 else
-                    ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                    if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_dir_made_${try_count}.res"
+                    ${IVI_MAKE_SERIAL} -f Makefile-2 dir_made |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}
                     set make_status = ${status}
 
                     if (${make_status}) then 
@@ -1353,7 +1372,8 @@ while (${try_count} <= 4)
                             # compiler and production mode. The setting of IVI_CC to empty asks
                             # init_compile to choose the compiler. 
                             #
-                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}) 
+                            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_c2man_bin_${try_count}.res"
+                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}) 
                             set make_status = ${status}
 
                             if (${make_status}) then 
@@ -1373,7 +1393,8 @@ while (${try_count} <= 4)
                             # compiler and production mode. The setting of IVI_CC to empty asks
                             # init_compile to choose the compiler. 
                             #
-                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} ) 
+                            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_util_bin_${try_count}.res"
+                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file} ) 
                             set make_status = ${status}
 
                             if (${make_status}) then 
@@ -1394,7 +1415,8 @@ while (${try_count} <= 4)
                 if ($?DRY_RUN) then
                     echo "DRY: ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg}"
                 else
-                    ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                    if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_doc_dir_made_${try_count}.res"
+                    ${IVI_MAKE_SERIAL} -f Makefile-2 doc_dir_made |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}
                     set make_status = ${status}
 
                     if (${make_status}) then 
@@ -1519,7 +1541,8 @@ while (${try_count} <= 4)
                         if ($?DRY_RUN) then
                             echo "DRY: ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}"
                         else
-                            ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_prog_${try_count}.res"
+                            ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}
                             set make_status = ${status}
 
                             if (${make_status}) then 
@@ -1590,7 +1613,8 @@ while (${try_count} <= 4)
             if ($?DRY_RUN) then
                 echo "DRY: ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}"
             else
-                ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file}
+                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_arg_${try_count}.res"
+                ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}
                 set make_status = ${status}
 
                 if (${make_status}) then
@@ -1658,13 +1682,13 @@ while (${try_count} <= 4)
         break
     else 
         if (${try_count} == 1) then
-            ${WARN_ECHO} "Trying to build a second time without changing anything."
+            ${WARN_ECHO} "Trying to build a second time with minimal changes."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
         if (${try_count} == 2) then
-            ${WARN_ECHO} "Forcing rebuild of some files, and trying again."
+            ${WARN_ECHO} "Forcing rebuild of build files, and trying again."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
         else
-            ${WARN_ECHO} "Forcing rebuild of some files, and trying again without locking and building serially."
+            ${WARN_ECHO} "Forcing rebuild of build files, and trying yet again without locking and building serially."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
             setenv BUILD_SUB_LIBS_SERIAL
             setenv BUILD_FILE_LISTS_SERIAL

@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25766 2020-09-05 23:53:07Z kobus $
+# $Id: init_compile 25775 2020-09-10 23:34:34Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -9163,61 +9163,64 @@ endif
 
 # ----------------------- ergo sampling library ---------------------
 
-set ivi_have_ergo = ""
-set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_ERGO"
-set lib_ergo = ""
-ivi_setenv OPTIONS_ERGO ""
-ivi_setenv CC_FLAGS_ERGO ""
+# Moving this to lib. 
+#
+# set ivi_have_ergo = ""
+# set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_ERGO"
+# set lib_ergo = ""
+# ivi_setenv OPTIONS_ERGO ""
+# ivi_setenv CC_FLAGS_ERGO ""
 # 
-# Set up a signature for the library and corresponding include string (after
-# the colon) that can be grep'd as an indication that the library is used.
-#
-# Multiple signatures should be used if more that one include indicates that
-# this library may be needed, or the name of the include file changes with
-# various systems. See OPENGL for an example. 
-#
-set optional_libs = "${optional_libs} ERGO:ergo/.*\.h"
-
-set ergo_inc_dir = ""
-
-if (! ${NO_LIBS}) then
-    foreach inc_dir (${inc_dirs}) 
-        if (-e ${inc_dir}/ergo/mh.h) then
-            set ergo_inc_dir = "${inc_dir}" 
-            break
-        endif
-    end
-
-
-    if ("${ergo_inc_dir}" != "") then
-        set ivi_have_ergo = "-DIVI_HAVE_ERGO"
-        set lib_ergo = ""
-
-        set needed_inc_dirs = "${needed_inc_dirs} ${ergo_inc_dir}"
-        # Kobus. Hacking the hack. 
-        # # hack -- don't need a load dir, but must have one anyway
-        # set needed_load_dirs = "${needed_load_dirs} ./" 
-        set needed_load_dirs = "${needed_load_dirs} DUMMY" 
-        set needed_for_libs = "${needed_for_libs} ERGO"
-
-        set ivi_have = "${ivi_have} ${ivi_have_ergo}"
-    endif
-endif
-
-ivi_setenv IVI_HAVE_ERGO "${ivi_have_ergo}"
-ivi_setenv LIB_ERGO "${lib_ergo}"
-
-if ($?IVI_VERBOSE) then
-    echo ""
-    if (${NO_LIBS}) then
-        echo "Script init_compile skipped LIB_ERGO due to NO_LIBS"
-    else if ("${IVI_HAVE_ERGO}" != "") then
-        echo "Script init_compile found ERGO"
-        echo "    include: ${ergo_inc_dir}"
-    else
-        echo "Script init_compile did NOT find ERGO"
-    endif
-endif
+# # 
+# # Set up a signature for the library and corresponding include string (after
+# # the colon) that can be grep'd as an indication that the library is used.
+# #
+# # Multiple signatures should be used if more that one include indicates that
+# # this library may be needed, or the name of the include file changes with
+# # various systems. See OPENGL for an example. 
+# #
+# set optional_libs = "${optional_libs} ERGO:ergo/.*\.h"
+# 
+# set ergo_inc_dir = ""
+# 
+# if (! ${NO_LIBS}) then
+#     foreach inc_dir (${inc_dirs}) 
+#         if (-e ${inc_dir}/ergo/mh.h) then
+#             set ergo_inc_dir = "${inc_dir}" 
+#             break
+#         endif
+#     end
+# 
+# 
+#     if ("${ergo_inc_dir}" != "") then
+#         set ivi_have_ergo = "-DIVI_HAVE_ERGO"
+#         set lib_ergo = ""
+# 
+#         set needed_inc_dirs = "${needed_inc_dirs} ${ergo_inc_dir}"
+#         # Kobus. Hacking the hack. 
+#         # # hack -- don't need a load dir, but must have one anyway
+#         # set needed_load_dirs = "${needed_load_dirs} ./" 
+#         set needed_load_dirs = "${needed_load_dirs} DUMMY" 
+#         set needed_for_libs = "${needed_for_libs} ERGO"
+# 
+#         set ivi_have = "${ivi_have} ${ivi_have_ergo}"
+#     endif
+# endif
+# 
+# ivi_setenv IVI_HAVE_ERGO "${ivi_have_ergo}"
+# ivi_setenv LIB_ERGO "${lib_ergo}"
+# 
+# if ($?IVI_VERBOSE) then
+#     echo ""
+#     if (${NO_LIBS}) then
+#         echo "Script init_compile skipped LIB_ERGO due to NO_LIBS"
+#     else if ("${IVI_HAVE_ERGO}" != "") then
+#         echo "Script init_compile found ERGO"
+#         echo "    include: ${ergo_inc_dir}"
+#     else
+#         echo "Script init_compile did NOT find ERGO"
+#     endif
+# endif
 
 # -----------------------------------------------------------------------------
 # SUNDIALS_CVODE -- Sundials ODE solver library
