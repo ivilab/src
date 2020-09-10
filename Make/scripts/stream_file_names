@@ -52,7 +52,7 @@
 #
 ##############################################################################
 
-# set echo 
+if ($?IVI_SET_ECHO) set echo 
 
 # echo ---- > /dev/stderr
 # echo $* > /dev/stderr
@@ -403,9 +403,18 @@ foreach test_file (${test_files})
             if ((! ${all_ivi}) || ((! -e ${dir}${test_file}/SKIP_ALL_IVI) && (! -e ${dir}${test_file}/SKIP_ALL_IVI.${OS}))) then
                 # set cpp_lib_str = `echo ${test_file} | ${IVI_GREP} '_cpp$'`
                 
-                set have_cpp = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c '.*\.cpp$|.*\.cxx$|.*\.C$'`
+                set have_cpp = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c '.*\.cpp$|.*\.cxx$|.*\.C$|.*\.hpp$'`
                 set have_c = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c  '.*\.c$'`
-                
+
+                if ((! ${have_c} && ! ${have_cpp})) then
+                    set have_h = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c  '.*\.h$'`
+
+                    # Only header files. Let's assume C++ header only library. (Use case is "ergo") 
+                    if (${have_h}) then
+                        set have_cpp = 1
+                    endif 
+                endif 
+
 #                 if (("${cpp_lib_str}" != "") && (${cxx_lib_dir})) then 
 #                     set matched_file_name = "${dir}${test_file}"
 #                 else if (("${cpp_lib_str}" == "") && (${c_lib_dir})) then

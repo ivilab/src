@@ -72,7 +72,7 @@ endif
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Leaving script build_sub_libs_needed_3 with status ${exit_status} in ${cwd}."
 
 if (${exit_status}) then
-    ${P_STDERR} "Parallle build of sub_libs_needed by build_sub_libs_needed_3 FAILED in ${cwd}."
+    ${P_STDERR} "Parallel build of sub_libs_needed by build_sub_libs_needed_3 FAILED in ${cwd}."
 endif 
 
 exit ${exit_status}

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25763 2020-09-05 22:40:11Z kobus $
+# $Id: Makefile-program 25774 2020-09-10 01:05:16Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -195,7 +195,7 @@ Include_lines/file_list :
 # make the hidden ones depend on the non-hidden ones as we do not know how to
 # build any of them.
 #
-$(LIB_COMPONENT_SRC_DIR)Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
+Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
 
 # Rule to build Include_lines/file_list.new. Note that there is no need to
 # depend on the directory Include_lines because if that does not exist, the
@@ -304,7 +304,7 @@ Include_lines/new/% : % $(MAKE_SCRIPT_PATH)update_include_line_file
 # make the hidden ones depend on the non-hidden ones as we do not know how to
 # build any of them.  
 #
-$(LIB_COMPONENT_SRC_DIR)Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
+Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
 
 # The processes for building the individual include line files will have removed
 # Include_lines/include_lines if we need to continue updating. This will trigger
@@ -493,7 +493,6 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(M
 
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-#	$(MAKE_SCRIPT_PATH)build_makefile_libs_needed '$(LIB_COMPONENT_SRC_DIR)'
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 60 $@ $(MAKE_SCRIPT_PATH)build_makefile_libs_needed
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)copy_if_different $@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 

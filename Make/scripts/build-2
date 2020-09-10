@@ -957,7 +957,7 @@ ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
 set make_result_temp_file = "${USER_TEMP_PATH}make.res.$$"
 
 set try_count = 1
-while (${try_count} <= 3)
+while (${try_count} <= 4)
     set makefiles_are_ok = 1
 
     if (${need_depend_bootstrap}) then
@@ -1652,16 +1652,20 @@ while (${try_count} <= 3)
         ${P_STDERR} " "
         set exit_status = 1
         break
-    else if (${try_count} == 3) then
-        ${P_STDERR} "Second (serial) retry at building makefiles failed. Giving up."
+    else if (${try_count} == 4) then
+        ${P_STDERR} "Fourth (fresh and serial) try at building makefiles failed. Giving up."
         set exit_status = 1
         break
     else 
         if (${try_count} == 1) then
+            ${WARN_ECHO} "Trying to build a second time without changing anything."
+            ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
+        if (${try_count} == 2) then
             ${WARN_ECHO} "Forcing rebuild of some files, and trying again."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
         else
             ${WARN_ECHO} "Forcing rebuild of some files, and trying again without locking and building serially."
+            ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
             setenv BUILD_SUB_LIBS_SERIAL
             setenv BUILD_FILE_LISTS_SERIAL
             setenv IVI_MAKE "${IVI_MAKE_SERIAL}"
@@ -1670,7 +1674,10 @@ while (${try_count} <= 3)
 
         source ${MAKE_SCRIPT_PATH}clean_cache
         source ${MAKE_SCRIPT_PATH}clean_locks
-        source ${MAKE_SCRIPT_PATH}clean_global
+
+        if (${try_count} >= 2) then
+            source ${MAKE_SCRIPT_PATH}clean_global
+        endif 
     endif 
 
     @ try_count ++
