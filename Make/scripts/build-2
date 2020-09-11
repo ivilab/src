@@ -1681,7 +1681,7 @@ while (${try_count} <= 4)
         if (${try_count} == 1) then
             ${WARN_ECHO} "Trying to build a second time with minimal changes."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
-        if (${try_count} == 2) then
+        else if (${try_count} == 2) then
             ${WARN_ECHO} "Forcing rebuild of build files, and trying again."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
         else
