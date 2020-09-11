@@ -18,10 +18,7 @@
 if ($?IVI_SET_ECHO) set echo 
 
 if ($?IVI_HAVE_MACHINE) then
-    # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
-    if ($?IVI_VERBOSE_2) then
-        echo "Script build-2 is not sourcing ${MAKE_PATH}init_machine because IVI_HAVE_MACHINE is set."
-    endif 
+    ${VERBOSE_ECHO_2} "Script build-2 is not sourcing ${MAKE_PATH}init_machine because IVI_HAVE_MACHINE is set."
 else 
     ${VERBOSE_ECHO} "Script build-2 is sourcing ${MAKE_PATH}init_machine."
 

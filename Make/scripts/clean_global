@@ -4,6 +4,8 @@
 # variables that are using in build-2, such as 'count'.
 #
 
+${VERBOSE_ECHO_2} "Entering script clean_global"
+
 source ${MAKE_SCRIPT_PATH}clean_local
 
 foreach dir (${IVI_LIB_PATH}*) 
@@ -37,3 +39,5 @@ foreach lib_to_clean (${libs_to_clean})
         popd > /dev/null
     endif 
 end
+
+${VERBOSE_ECHO_2} "Leaving script clean_global"

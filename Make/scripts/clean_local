@@ -3,8 +3,7 @@
 # However, because it is sourced, we need to be careful about setting any
 # variables that are using in build-2, such as 'count'.
 
-# Recursive rm is with force is hanging on some systems (spotted on Ubuntu
-# running under parallels and sharing Mac file system).
+${VERBOSE_ECHO_2} "Entering script clean_local in ${cwd}"
 
 pushd ${MAKE_PATH} > /dev/null
     set make_dir_cwd = "${cwd}"
@@ -27,7 +26,7 @@ endif
     set delete_list = `/bin/ls -1 | grep Makefile. | grep -v 'Makefile-2$' | grep -v 'Makefile-include$'`
 
     if ("${delete_list}" != "") then
-        ${VERBOSE_ECHO} "Clean local is removing: ${delete_list} in ${cwd}."
+        ${VERBOSE_ECHO_2} "Clean local is removing: ${delete_list} in ${cwd}."
         ${IVI_RM} ${delete_list}
     endif 
 # else 
@@ -67,6 +66,7 @@ if (${file_count} > 0) then
     ${IVI_RM} ivi_all_* 
 endif 
 
+${VERBOSE_ECHO_2} "Leaving script clean_local in ${cwd}"
 
 
 
