@@ -90,7 +90,7 @@ set update_include_lines = 0
 ${IVI_MKDIR} Include_lines
 
 pushd Include_lines > /dev/null
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Updating Include_lines/include_lines.new in directory $cwd. " 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is updating Include_lines/include_lines.new in directory $cwd. " 
 
     ${MAKE_SCRIPT_PATH}stream_file_names -s -h -l |  sort -u >  include_lines.new
     if (${status}) then 
@@ -107,7 +107,7 @@ pushd Include_lines > /dev/null
             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 not updating ${cwd}/Include_lines/include_lines because no relevant changes." 
         endif
     else 
-        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 is must update ${cwd}/Include_lines/include_lines because it does not exist." 
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 must update ${cwd}/Include_lines/include_lines because it does not exist." 
         set update_include_lines = 1
     endif 
 popd > /dev/null
@@ -122,7 +122,7 @@ set update_sub_list_new = 0
 # Include_lines/include_lines must exist by now. 
 # if ((${update_include_lines}) || (! -e Include_lines/include_lines)) then
 if (${update_include_lines}) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 updating ${cwd}/Include_lines/include_lines. " 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 updating ${cwd}/Include_lines/include_lines." 
 
     # ${IVI_CP} Include_lines/include_lines.new Include_lines/include_lines
     ${MAKE_SCRIPT_PATH}copy_if_different Include_lines/include_lines.new Include_lines/include_lines
@@ -255,8 +255,8 @@ else
 endif 
 
 if (${update_sub_libs_needed}) then
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 calling build_sub_libs_needed to update ${cwd}/Include_lines/sub_libs_needed. " 
-    ${MAKE_SCRIPT_PATH}build_sub_libs_needed 
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is calling build_sub_libs_needed to update ${cwd}/Include_lines/sub_libs_needed. " 
+    ${MAKE_SCRIPT_PATH}build_sub_libs_needed
 
     if (${status}) then 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Call to build_sub_libs_needed from build_include_lines_2 in $cwd failed."
@@ -264,12 +264,13 @@ if (${update_sub_libs_needed}) then
         goto cleanup
     endif 
 
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Timestamp for ${cwd}/Include_lines/sub_libs_needed: `${IVI_TIMESTAMP} ${cwd}/Include_lines/sub_libs_needed`" 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 reports timestamp for ${cwd}/Include_lines/include_lines: `${IVI_TIMESTAMP} ${cwd}/Include_lines/include_lines`" 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 reports timestamp for ${cwd}/Include_lines/sub_libs_needed: `${IVI_TIMESTAMP} ${cwd}/Include_lines/sub_libs_needed`" 
 
     set update_makefile_dirs = 1
     
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Finished updating Include_lines/sub_libs_needed in directory $cwd. " 
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 finished updating Include_lines/sub_libs_needed in directory ${cwd}. " 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs in ${cwd}."
 else 
     # It seems sub_libs_needed does not need updating, but the timestamp could
     # be too old if the process building it previously died.

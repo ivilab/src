@@ -954,7 +954,7 @@ ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
 set make_result_temp_file = "${USER_TEMP_PATH}make.res.$$"
 
 # Needs to be set even though we do not actually use it unless LOG_MAKE is set.
-setenv MAKE_LOG_PATH "${cwd}/make_log/$$/"
+setenv MAKE_LOG_PATH "${cwd}/make_log/`${IVI_ECHO_DATE}`/`${IVI_ECHO_TIME}`/"
 
 if ($?LOG_MAKE) then
     ${IVI_MKDIR} ${MAKE_LOG_PATH}
@@ -1610,7 +1610,7 @@ while (${try_count} <= 4)
             if ($?DRY_RUN) then
                 echo "DRY: ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}"
             else
-                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_arg_${try_count}.res"
+                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_${arg}_${try_count}.res"
                 ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}
                 set make_status = ${status}
 

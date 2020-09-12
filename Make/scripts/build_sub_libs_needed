@@ -196,8 +196,8 @@ else
 endif 
 
 ${VERBOSE_ECHO} ""
-${VERBOSE_ECHO} "${VERBOSE_INDENT}vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed calling build_sub_libs_needed_2 for building sub_libs_needed ${build_type}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed calling build_sub_libs_needed_2 in ${cwd} for building sub_libs_needed ${build_type}."
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Recurse dirs in build_sub_libs_needed in ${cwd} are: ${recurse_dirs}" 
 ${VERBOSE_ECHO} ""
 
@@ -217,8 +217,8 @@ if (${build_sub_libs_status}) then
     exit 1
 else 
     ${VERBOSE_ECHO} ""
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_sub_libs_needed back from build_sub_libs_needed_2 building sub_libs_needed ${build_type}."
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Back in build_sub_libs_needed back after call to build_sub_libs_needed_2 in ${cwd}."
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
     ${VERBOSE_ECHO} ""
 endif
 

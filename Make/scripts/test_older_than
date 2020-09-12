@@ -27,7 +27,7 @@ else if (${system_test_status} > 2) then
    set have_stat = 0
 
    if ("${IVI_STAT_FLAVOR}" == "bsd") then
-       eval set `stat -s "$1"`h) Inc
+       eval set `stat -s "$1"`
        set mod_time_1 = ${st_mtime}
        eval set `stat -s "$2"`
        set mod_time_2 = ${st_mtime}
@@ -40,9 +40,9 @@ else if (${system_test_status} > 2) then
 
    if (${have_stat}) then
        if (${mod_time_1} <= ${mod_time_2}) then
-           set older_than = "0"
-       else 
            set older_than = "1"
+       else 
+           set older_than = "0"
        endif 
    else 
        ${P_STDERR} "Script test_older_than failed."

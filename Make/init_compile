@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25775 2020-09-10 23:34:34Z kobus $
+# $Id: init_compile 25781 2020-09-12 23:18:03Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -68,16 +68,33 @@ endif
 # essential and there is no reasonable recovery. Init_scripts calls init_machine
 # if needed. 
 
+set need_init_scripts = 1
+
 if ($?IVI_HAVE_INIT_SCRIPTS) then
-    # Do not use VERBOSE_ECHO_2 as we may not have it yet. 
-    if ($?IVI_VERBOSE_2) then
-        echo "VB2: Script init_compile is not sourcing ${IVI_SRC_PATH}Make/init_scripts because IVI_HAVE_INIT_SCRIPTS is set."
+    # If we are here, then we are likely using some of Kobus's environment. We
+    # can assume the basics in IVI_HAVE_INIT_SCRIPTS, but it might have been
+    # updated, and to ease testing efforts, we want to be up to date.
+
+    if ($?INTR_START_TIME_FILE) then
+        set init_scripts_is_new = `${MAKE_SCRIPT_PATH}test_older_than "${INTR_START_TIME_FILE}" "${IVI_SRC_PATH}Make/init_scripts"`
+
+        if (${init_scripts_is_new}) then
+            ${VERBOSE_ECHO} "Sourcing init_scripts as it is newer than this interactive shell."
+        else
+            ${VERBOSE_ECHO_2} "Script init_compile is not sourcing init_scripts because it has already been sourced and it has not been updated."
+            set need_init_scripts = 0
+        endif
+    else     
+        ${VERBOSE_ECHO} "Script init_compile is sourcing init_scripts because we do not know if it has been updated."
     endif 
-else 
-    # Do not use VERBOSE_ECHO as we may not have it yet. 
+endif 
+
+if (${need_init_scripts}) then
+    # Do not use VERBOSE_ECHO as we may not have it yet as we may not have
+    # sourced init_scripts. 
     if ($?IVI_VERBOSE) then
         echo "IVB: Script init_compile is sourcing ${IVI_SRC_PATH}Make/init_scripts."
-    endif 
+    endif
 
     source ${IVI_SRC_PATH}/Make/init_scripts
 
@@ -1204,6 +1221,7 @@ set user_paths = `echo $PATH | sed 's/:/ /g'`
 #
 # --------------------------------------------------------------------------
 
+# Mac has proprietry secrets and object  incabo
 if ("${OS}" == "mac_osx") then
     set cc_choices = "icc clang gcc cc"
 else 

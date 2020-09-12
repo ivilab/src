@@ -96,16 +96,20 @@ pushd ${recurse_dir_str} > /dev/null
     # These tests should mimic the ones above leading to the attempt to build. 
 
     if (! -e "Include_lines/sub_libs_needed") then
-        ${P_STDERR} "${VERBOSE_INDENT}------- After recursion ${cwd}/Include_lines/sub_libs_needed still does not exist ----------"
+        ${P_STDERR} "After recursion ${cwd}/Include_lines/sub_libs_needed still does not exist"
     else
         set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/include_lines`
         if (${status}) then
+            ${P_STDERR} "In ${cwd} test_older_than failed."
+            ${P_STDERR} "Likely either Include_lines/sub_libs_needed or Include_lines/include_lines does not exist."
             set exit_status = 1
             goto end_of_script
         endif 
 
         if (${too_old}) then
-            ${P_STDERR} "${VERBOSE_INDENT}------- After recursion ${cwd}/Include_lines/sub_libs_needed is too old ----------"
+            ${P_STDERR} "After recursion ${cwd}/Include_lines/sub_libs_needed is still too old"
+            ${P_STDERR} "Script build_sub_libs_needed_4 reports timestamp for ${cwd}/Include_lines/include_lines: `${IVI_TIMESTAMP} ${cwd}/Include_lines/include_lines`" 
+            ${P_STDERR} "Script build_sub_libs_needed_4 reports timestamp for ${cwd}/Include_lines/sub_libs_needed: `${IVI_TIMESTAMP} ${cwd}/Include_lines/sub_libs_needed`" 
         else 
             ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- After recursion ${cwd}/Include_lines/sub_libs_needed is OK ----------"
             set recurse_success = 1

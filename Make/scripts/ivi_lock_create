@@ -351,9 +351,6 @@ else
                         ps -l ${requesting_pid} 
 
                         if ($?EXIT_ON_LOCK_TIMEOUT) then
-                            ${P_STDERR} "Removing the lock."
-                            ${IVI_RM} "${lock_file}"
-                            ${IVI_RM} "${lock_file}.flock"
                             ${P_STDERR} "Lock handler for ${requesting_pid} waiting for ${lock_file} exiting with failure because EXIT_ON_LOCK_TIMEOUT is set." 
                             set exit_status = 1
                             goto cleanup
@@ -396,9 +393,6 @@ else
 endif 
 
 cleanup: 
-    
-# Restore 
-onintr
     
 exit ${exit_status}
 
