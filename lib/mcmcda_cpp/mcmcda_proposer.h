@@ -48,24 +48,7 @@
 #include <boost/bimap/set_of.hpp>
 #include <boost/bimap/multiset_of.hpp>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
-#else
-// if we don't have libergo installed, this still compiles
-namespace ergo {
-
-struct mh_proposal_result
-{
-    double fwd;
-    double rev;
-    std::string name;
-
-    mh_proposal_result(double fp, double rp, const std::string& nm = "") :
-        fwd(fp), rev(rp), name(nm) {}
-};
-
-}
-#endif
 
 namespace ivi {
 namespace mcmcda {

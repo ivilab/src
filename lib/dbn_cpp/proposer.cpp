@@ -31,12 +31,8 @@
 
 #include <boost/format.hpp>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/mh.h>
-#else
-#error "You need libergo to use this program."
-#endif
 
 using namespace ivi;
 using namespace ivi::ties;

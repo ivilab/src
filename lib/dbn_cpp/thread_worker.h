@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: thread_worker.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: thread_worker.h 25782 2020-09-12 23:19:18Z kobus $ */
 
 #ifndef IVI_TIES_THREAD_WORKER_H
 #define IVI_TIES_THREAD_WORKER_H
@@ -39,12 +39,8 @@
 #include "dbn_cpp/sample_lss.h"
 #include "dbn_cpp/time_util.h"
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/record.h>
-#else 
-#error "ergo library is not available"
-#endif
 
 #include <boost/exception_ptr.hpp>
 #include <boost/progress.hpp>

@@ -34,9 +34,7 @@
 #include <boost/bind.hpp>
 #include <boost/bind/placeholders.hpp>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
-#endif /* IVI_HAVE_ERGO */
 
 namespace bph = boost::placeholders;
 namespace ivi {
@@ -230,10 +228,8 @@ private:
 template<class Mean, class Covariance>
 class Cp_proposer
 {
-#ifdef IVI_HAVE_ERGO
 public:
     typedef ergo::mh_proposal_result result_type;
-#endif
 
 private:
     typedef Predictive_nl<Mean, Covariance> Pred;
@@ -285,11 +281,9 @@ public:
     /** @brief  Get current control piont index. */
     size_t current_control() const { return cur_c_; }
 
-#ifdef IVI_HAVE_ERGO
 public:
     /** @brief  Propose a new model. */
     ergo::mh_proposal_result operator()(const Vector& m, Vector& m_p) const;
-#endif
 
 private:
     /** @brief  Utility function to generate uniformly spaced controls. */
@@ -429,7 +423,6 @@ void Cp_proposer<M, C>::set_covariance_function(const C& cf)
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef IVI_HAVE_ERGO
 template<class M, class C>
 ergo::mh_proposal_result Cp_proposer<M, C>::operator()
 (
@@ -474,7 +467,6 @@ ergo::mh_proposal_result Cp_proposer<M, C>::operator()
 
     return ergo::mh_proposal_result(0.0, 0.0, sst.str());
 }
-#endif /* IVI_HAVE_ERGO */
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
@@ -507,17 +499,12 @@ public:
             num_ctrl_pts,
             post.mean_function(),
             post.covariance_function()),
-#ifdef IVI_HAVE_ERGO
         step_(
             boost::bind(&Self::log_posterior, this, bph::_1),
             boost::bind(propose_, bph::_1, bph::_2)),
-#endif
         num_burn_its_(num_burn_its),
         burned_in_(false)
     {
-#ifndef IVI_HAVE_ERGO
-        IVI_THROW_2(ivi::Missing_dependency, "ergo");
-#endif
     }
 
     /** @brief  Create a sampler from another sampler. */
@@ -526,17 +513,12 @@ public:
         outputs_(sampler.outputs_),
         log_target_(sampler.log_target_),
         propose_(sampler.propose_),
-#ifdef IVI_HAVE_ERGO
         step_(
             boost::bind(&Self::log_posterior, this, bph::_1),
             boost::bind(propose_, bph::_1, bph::_2)),
-#endif
         num_burn_its_(sampler.num_burn_its_),
         burned_in_(sampler.burned_in_)
     {
-#ifndef IVI_HAVE_ERGO
-        IVI_THROW_2(ivi::Missing_dependency, "ergo");
-#endif
     }
 
     /** @brief  Create a sampler from another sampler. */
@@ -551,13 +533,9 @@ public:
         num_burn_its_ = sampler.num_burn_its_;
         burned_in_ = sampler.burned_in_;
 
-#ifdef IVI_HAVE_ERGO
         step_ = ergo::mh_step<Vector>(
                     boost::bind(&Self::log_posterior, this, bph::_1),
                     boost::bind(propose_, bph::_1, bph::_2));
-#else
-        IVI_THROW_2(ivi::Missing_dependency, "ergo");
-#endif
 
         return *this;
     }
@@ -569,11 +547,7 @@ public:
     /** @brief  Generate a sample from the posterior distribution. */
     void sample() const
     {
-#ifdef IVI_HAVE_ERGO
         step_(outputs_, log_target_);
-#else
-        IVI_THROW_2(ivi::Missing_dependency, "ergo");
-#endif
     }
 
     /** @brief  Get current sample. */
@@ -589,9 +563,7 @@ private:
     mutable Vector outputs_;
     mutable double log_target_;
     Cp_proposer<Mean, Covariance> propose_;
-#ifdef IVI_HAVE_ERGO
     ergo::mh_step<Vector> step_;
-#endif
     size_t num_burn_its_;
     mutable bool burned_in_;
 };
@@ -601,7 +573,6 @@ private:
 template<class M, class C, class L>
 void Cp_sampler<M, C, L>::burn_in() const
 {
-#ifdef IVI_HAVE_ERGO
     if(burned_in_) return;
 
     for(size_t i = 0; i < num_burn_its_; i++)
@@ -610,9 +581,6 @@ void Cp_sampler<M, C, L>::burn_in() const
     }
 
     burned_in_ = true;
-#else
-    IVI_THROW_2(ivi::Missing_dependency, "ergo");
-#endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */

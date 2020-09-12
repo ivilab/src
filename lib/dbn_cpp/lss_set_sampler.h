@@ -18,17 +18,13 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set_sampler.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: lss_set_sampler.h 25782 2020-09-12 23:19:18Z kobus $ */
 
 #ifndef IVI_TIES_LSS_SAMPLER_H
 #define IVI_TIES_LSS_SAMPLER_H
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/record.h>
-#else 
-#error "ergo library is not available"
-#endif
 
 #include "dbn_cpp/lss_set.h"
 #include "dbn_cpp/posterior.h"

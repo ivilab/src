@@ -27,12 +27,8 @@
 #include <m_cpp/m_vector.h>
 #include <g_cpp/g_line.h>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #include <ergo/record.h>
-#else
-#error "Need ERGO library"
-#endif
 
 #include <boost/lexical_cast.hpp>
 #include <boost/exception/diagnostic_information.hpp>

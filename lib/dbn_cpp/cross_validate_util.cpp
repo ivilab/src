@@ -18,11 +18,8 @@
 |
 * =========================================================================== */
 
-/* $Id: cross_validate_util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: cross_validate_util.cpp 25782 2020-09-12 23:19:18Z kobus $ */
 
-#ifndef IVI_HAVE_ERGO
-#error "You need libergo to use this program"
-#endif
 #include <libgen.h>
 #include <l_cpp/l_filesystem.h>
 

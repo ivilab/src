@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: thread_worker.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: thread_worker.cpp 25782 2020-09-12 23:19:18Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
@@ -26,12 +26,8 @@
 #include <string>
 #include <vector>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/record.h>
-#else 
-#error "ergo library is not available"
-#endif
 
 #include "dbn_cpp/linear_state_space.h"
 #include "dbn_cpp/thread_worker.h"

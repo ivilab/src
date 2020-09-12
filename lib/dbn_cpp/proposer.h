@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: proposer.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: proposer.h 25782 2020-09-12 23:19:18Z kobus $ */
 
 #ifndef IVI_TIES_PROPOSER_H
 #define IVI_TIES_PROPOSER_H
@@ -30,10 +30,8 @@
 #include "cluster_cpp/cluster_gaussian_mixtures.h"
 #include "cluster_cpp/cluster_gaussian_mixtures_gibbs.h"
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #include <ergo/record.h>
-#endif
 
 namespace ivi {
 namespace ties {

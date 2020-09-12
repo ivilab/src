@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: util.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: util.h 25782 2020-09-12 23:19:18Z kobus $ */
 
 #ifndef TIES_UTIL_H
 #define TIES_UTIL_H
@@ -671,7 +671,6 @@ inline bool valid_frequency(const Linear_state_space& lss)
  * @brief  Adapts the hmc step size based on the acceptance probability 
  *         and rate. 
  */
-#ifdef IVI_HAVE_ERGO
 template <typename Model, typename rng_t, bool ACCEPT_STEP, bool REVERSIBLE>
 void adapt_hmc_step_size
 (
@@ -777,7 +776,6 @@ void adapt_hmc_step_size
         }
     }
 }
-#endif 
 
 /** @brief  Uses samples to compute the covariance matrix. */
 template <typename Model, typename Adapter>

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_integral_optimization.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: pt_integral_optimization.cpp 25782 2020-09-12 23:19:18Z kobus $ */
 
 #include "people_tracking_cpp/pt_integral_optimization.h"
 #include "people_tracking_cpp/pt_scene.h"
@@ -46,10 +46,8 @@
 #include <boost/bind.hpp>
 #include <boost/optional.hpp>
 
-#ifdef IVI_HAVE_ERGO
 #include "ergo/mh.h"
 #include "ergo/record.h"
-#endif
 
 using namespace ivi;
 using namespace ivi::pt;
@@ -57,8 +55,6 @@ using namespace ivi::mcmcda;
 
 double Optimize_likelihood::operator()(const Scene& scene) const
 {
-#ifdef IVI_HAVE_ERGO
-
     //// MAXIMIZE likelihood
     // open files and create iterators
     std::ofstream log_fs;
@@ -124,8 +120,5 @@ double Optimize_likelihood::operator()(const Scene& scene) const
     posterior.use_dim_prior() = udp;
 
     return dl;
-#else
-    IVI_THROW_2(Missing_dependency, "libergo");
-#endif
 }
 

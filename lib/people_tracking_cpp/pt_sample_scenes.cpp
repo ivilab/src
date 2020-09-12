@@ -38,9 +38,7 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
-#endif
 
 using namespace ivi;
 using namespace ivi::pt;
@@ -129,7 +127,6 @@ bool ivi::pt::all_new_targets(const Scene& scene)
 //
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef IVI_HAVE_ERGO
 ergo::mh_proposal_result Propose_person_size::operator()
 (
     const Scene& in,
@@ -211,11 +208,9 @@ ergo::mh_proposal_result Propose_person_size::operator()
     // symmetric proposal, so fwd and rev probs don't matter
     return ergo::mh_proposal_result(0.0, 0.0, prop_name);
 }
-#endif
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
 
-#ifdef IVI_HAVE_ERGO
 ergo::mh_proposal_result Propose_point_location::operator()
 (
     const Scene& in,
@@ -243,11 +238,8 @@ ergo::mh_proposal_result Propose_point_location::operator()
     return ergo::mh_proposal_result(0.0, 0.0, 
                             boost::lexical_cast<std::string>(k));
 }
-#endif
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
-
-#ifdef IVI_HAVE_ERGO
 
 Sample_scenes::Hmc_step Sample_scenes::make_hmc_traj_step
 (
@@ -287,11 +279,7 @@ Sample_scenes::Hmc_step Sample_scenes::make_hmc_traj_step
     return traj_step;
 }
 
-#endif
-
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
-
-#ifdef IVI_HAVE_ERGO
 
 //Sample_scenes::Mh_step Sample_scenes::make_mh_traj_step() const
 //{
@@ -303,11 +291,8 @@ Sample_scenes::Hmc_step Sample_scenes::make_hmc_traj_step
 //    return traj_step;
 //}
 //
-#endif
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
-
-#ifdef IVI_HAVE_ERGO
 
 Sample_scenes::Mh_step Sample_scenes::make_mh_size_step(bool infer_head) const
 {
@@ -318,11 +303,8 @@ Sample_scenes::Mh_step Sample_scenes::make_mh_size_step(bool infer_head) const
 
     return size_step;
 }
-#endif
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
-
-#ifdef IVI_HAVE_ERGO
 
 Sample_scenes::Mh_step Sample_scenes::make_mh_pos_step() const
 {
@@ -333,6 +315,4 @@ Sample_scenes::Mh_step Sample_scenes::make_mh_pos_step() const
 
     return size_step;
 }
-
-#endif
 

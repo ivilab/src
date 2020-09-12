@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: hmc.cpp 25597 2020-06-30 23:31:45Z kobus $ */
+/* $Id: hmc.cpp 25782 2020-09-12 23:19:18Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_association.h>
@@ -46,9 +46,6 @@
 #include <iostream>
 #include <boost/optional.hpp>
 #include <boost/foreach.hpp>
-
-#ifdef IVI_HAVE_ERGO
-
 #include <ergo/record.h>
 
 using namespace std;
@@ -179,7 +176,4 @@ int main(int argc, char** argv)
     return EXIT_SUCCESS;
 }
 
-#else
-int main() { std::cout << "Cannot run. Need libergo.\n"; return EXIT_FAILURE; }
-#endif
 

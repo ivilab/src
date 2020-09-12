@@ -54,8 +54,6 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 #include <boost/lexical_cast.hpp>
-
-#ifdef IVI_HAVE_ERGO
 #include <ergo/record.h>
 
 using namespace std;
@@ -964,6 +962,3 @@ void update_posterior(const Scene& scene, size_t frame)
     pst = posterior(scene);
 }
 
-#else
-int main() { std::cout << "Cannot run. Need libergo.\n"; return EXIT_FAILURE; }
-#endif

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_integral_optimization.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: pt_integral_optimization.h 25782 2020-09-12 23:19:18Z kobus $ */
 
 #ifndef PT_INTEGRAL_OPTIMIZATION_H
 #define PT_INTEGRAL_OPTIMIZATION_H
@@ -36,11 +36,9 @@
 #include <boost/optional.hpp>
 #include <boost/ref.hpp>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/mh.h>
 #include <ergo/record.h>
-#endif
 
 namespace ivi {
 namespace pt {

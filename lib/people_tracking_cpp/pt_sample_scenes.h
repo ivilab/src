@@ -41,11 +41,9 @@
 #include <boost/foreach.hpp>
 #include <boost/optional.hpp>
 
-#ifdef IVI_HAVE_ERGO
 #include <ergo/hmc.h>
 #include <ergo/mh.h>
 #include <ergo/record.h>
-#endif
 
 namespace ivi {
 namespace pt {
@@ -73,10 +71,8 @@ bool all_new_targets(const Scene& scene);
 //    Propose_trajectory(size_t num_cpts) :
 //        nctrls_(num_cpts), cur_prop_(0), cur_gp_(0) {}
 //
-//#ifdef IVI_HAVE_ERGO
 //    /** @brief  Propose scene. */
 //    ergo::mh_proposal_result operator()(const Scene& in, Scene& out);
-//#endif
 //
 //private:
 //    void update_proposers(const Scene& sc);
@@ -183,9 +179,7 @@ public:
           m_infer_head(infer_head)
     {}
 
-#ifdef IVI_HAVE_ERGO
     ergo::mh_proposal_result operator()(const Scene& in, Scene& out);
-#endif
 
 private:
     Normal_distribution N_height;
@@ -207,9 +201,7 @@ public:
     Propose_point_location (double sdv_x, double sdv_y, double sdv_z) :
         N_x(0.0, sdv_x), N_y(0.0, sdv_y), N_z(0.0, sdv_z) {}
 
-#ifdef IVI_HAVE_ERGO
     ergo::mh_proposal_result operator()(const Scene& in, Scene& out);
-#endif
 
 private:
     Normal_distribution N_x;
@@ -313,7 +305,6 @@ public:
     /** @brief  Sample from the full likelihood. */
     void operator()(const Scene& initial_scene) const
     {
-#ifdef IVI_HAVE_ERGO
         using boost::make_optional;
         this->operator()(
             initial_scene,
@@ -321,13 +312,9 @@ public:
             make_optional(false, Write_scene_iterator("")),
             make_optional(false, Write_scene_iterator("")),
             make_optional(false, std::vector<Scene_info>::iterator()));
-#else
-    IVI_THROW_2(Missing_dependency, "libergo");
-#endif
     }
 
 private:
-#ifdef IVI_HAVE_ERGO
     /** @brief  Helper function that creates an HMC trajectory step. */
     Hmc_step make_hmc_traj_step
     (
@@ -358,7 +345,6 @@ private:
         SRecIter sfirst,
         SRecIter slast
     ) const;
-#endif
 
 private:
     const Scene_posterior* posterior_p_;
@@ -393,7 +379,6 @@ void Sample_scenes::operator()
     boost::optional<InfoIterator> info_out
 ) const
 {
-#ifdef IVI_HAVE_ERGO
     typedef std::vector<Hmc_step::record_t> Hmc_rec_vector;
     typedef std::vector<Mh_step::record_t> Mh_rec_vector;
 
@@ -481,14 +466,9 @@ void Sample_scenes::operator()
         swap(btarget.face_trajectory(), itarget.face_trajectory());
     }
 
-#else
-    IVI_THROW_2(Missing_dependency, "libergo");
-#endif
 }
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
-
-#ifdef IVI_HAVE_ERGO
 
 template<class TrajStep, class TRecIter, class SRecIter>
 void Sample_scenes::run_steps
@@ -555,8 +535,6 @@ void Sample_scenes::run_steps
         }
     }
 }
-
-#endif
 
 }} // namespace ivi::pt
 
