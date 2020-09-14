@@ -12,36 +12,110 @@
 #     but this might change. Alternatively, we might write a script
 #     "update_ivi_all". 
 #
-#     This script must be run in in a directory in your source directory.
-#     Typically, that is $HOME/src, but it need not be, especially if you feel
-#     the need to have multiple versions. 
+#     This script begins by finding the top of the src dir to update. If first
+#     consults the environment variable FORCE_IVI_SRC_DIR. If that is not set,
+#     it then checks if it is being run in $HOME. Since the IVILAB software
+#     system (IVISS) assumes a src directory that is not $HOME, it assumes that
+#     it should be updating the src directory that holds this script (typically,
+#     that is $HOME/src), if it looks OK. On the other hand, if the script is
+#     not being run in $HOME, it will check if the current directory is part of
+#     an IVISS src directory. If so, it will use that. Otherwise it will assume
+#     it is in a new (planned) src directory. 
+#
+#     Note that typically you get this script by getting the src/Make directory,
+#     which you also update by this script. So there is an initial
+#     boot-strapping process needed. One way to do this is to manually create
+#     the src directory, change to that, and then do a: 
+#     |    svn co svn++ssh://vision.cs.arizona.edu/home/svn/src/Make/trunk Make
+#     followed by 
+#     |    Make/scripts/update_ivi_core
+#     An alternative is to get a copy of update_ivi_core, say in your home
+#     directory, and do:
+#     |    export FORCE_IVI_SRC_DIR=[src_dir_to_create]
+#     |    ./update_ivi_core
+#     From this point on, there is no need to set FORCE_IVI_SRC_DIR. If you are
+#     in that directory, then you should be able to update using:
+#     |    Make/scripts/update_ivi_core
+#     Even more convenient, and generally recommended, is to have
+#     ${IVI_SRC_PATH}Make/scripts in your PATH.     
 #
 #     If you have already checked out "Make" into your source directory, and you
 #     are in that directory, then this script can be run as:
 #     |    Make/scripts/update_ivi_core
-#     Alternatively, and probably ideally, some instance of "Make/scripts" is in
-#     your path. 
+#     Alternatively, and probably ideally, some instance of "Make/scripts" would
+#     be in your path. 
 #
 # Author:
 #     Kobus Barnard 
 #
 ##############################################################################
 
-# This next part is shared by all files in Make whose names begin with "build",
-# AND scripts ivi_add_makefiles, create_library, create_program, and
-# update_ivi_core. Updates should be propogated. 
+# This next part has some code in common with files in Make whose names begin
+# with "build" AND scripts ivi_add_makefiles, create_library, and
+# create_program. Updates may need to be propogated. 
 
 # We want to use a pure "cd".
 unalias cd
     
+pushd ${HOME} >& /dev/null
+    set home_pwd = `pwd`
+popd >& /dev/null
+
+setenv THIS_PROGRAM "$0" 
+# echo THIS_PROGRAM: $THIS_PROGRAM
+
+# source ${this_program_src_dir}/Make/init_scripts
+# if (${status}) exit 1 
+
 if ($?FORCE_IVI_SRC_DIR) then 
-    if (-e "${FORCE_IVI_SRC_DIR}/Make/init_compile") then 
-        setenv IVI_SRC_PATH "${FORCE_IVI_SRC_DIR}"
-    else 
-        bash -c 'echo "Env var FORCE_IVI_SRC_DIR is set to ${FORCE_IVI_SRC_DIR}, but ${FORCE_IVI_SRC_DIR}/Make/init_compile does not exist." >&2'
-        exit 1 
+    if (! -e "${FORCE_IVI_SRC_DIR}") then 
+        ${IVI_MKDIR} "${FORCE_IVI_SRC_DIR}"
+        if (${status}) exit 1 
     endif 
-else  
+
+    pushd "${FORCE_IVI_SRC_DIR}" > /dev/null
+        setenv IVI_SRC_PATH "${cwd}/"
+    popd > /dev/null
+else if ("${home_pwd}" == "${cwd}") then
+    echo 'Trying to set IVI_SRC_PATH to the src directory holding this script due to being called from $HOME.'
+
+    set this_program_src_dir = `echo ${THIS_PROGRAM} | sed 's#Make/scripts/update_ivi_core##'`
+    # echo this_program_src_dir: $this_program_src_dir
+
+    set ok_update_ivi_core = 1
+
+    if ("${this_program_src_dir}" == "${THIS_PROGRAM}") then 
+        set ok_update_ivi_core = 0
+    else
+        if ("${this_program_src_dir}" == "") then
+            set this_program_src_dir = "${cwd}"
+        else 
+            pushd ${this_program_src_dir} >& /dev/null
+                set this_program_src_dir = `pwd`
+            popd >& /dev/null
+        endif 
+
+        if ("${this_program_src_dir}" == "${home_pwd}") then
+            set ok_update_ivi_core = 0
+        endif 
+    endif 
+
+    # echo this_program_src_dir: $this_program_src_dir
+
+    if (! ${ok_update_ivi_core}) then
+        # We cannot use P_STDERR here because we might not have defined it yet.
+        # bash -c 'echo " " >&2'
+        # bash -c 'echo "Since update_ivi_core was called from home, we are trying to update its src directory." >&2' 
+        bash -c 'echo "The called instance of update_ivi_core is not installed under an IVI src directory." >&2' 
+        bash -c 'echo "Specifically, we expect that the executed update_ivi_core (${THIS_PROGRAM})" >&2'
+        bash -c 'echo "to be in [ SOME_DIR ]/Make/scripts/ where SOME_DIR is not your home directory." >&2'
+        bash -c 'echo "Override by setting FORCE_IVI_SRC_DIR." >&2'
+        bash -c 'echo " " >&2'
+        exit 1
+    endif 
+
+    setenv IVI_SRC_PATH "${this_program_src_dir}/"
+else 
     # Use env var for IVI_DIRS for better error reporting via bash sub-shell.
     if ($?FORCE_IVI_DIR) then
         setenv IVI_DIRS "${FORCE_IVI_DIR}"
@@ -53,19 +127,15 @@ else
     # directory that has one of the directories in IVI_DIRS as a subdir, which
     # itself has Make as a sub-dir and Make/init_compile as a file in that. 
 
-    # We want to block going above the user's home directory because it might cause
-    # a mount request that we don't want. If we are not below their home, then it is
-    # fine to ga to the root. 
-    #
-    pushd ${HOME} >& /dev/null
-    set home_pwd = `pwd`
-    popd >& /dev/null
-
     set found = 0
     set ivi_top = ""
 
     pushd `pwd` > /dev/null
 
+    # We want to block going above the user's home directory because it might cause
+    # a mount request that we don't want. If we are not below their home, then it is
+    # fine to ga to the root. 
+    #
     while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
         foreach ivi_dir (${IVI_DIRS}) 
             if ("${ivi_dir}" == ".") then
@@ -84,8 +154,10 @@ else
 
         set ivi_top = "../${ivi_top}"
         cd ..
+        pwd
     end
 
+    echo ivi_dir: $ivi_dir
     popd > /dev/null
 
     if (${found}) then
@@ -93,30 +165,51 @@ else
             set ivi_dir = "./"
         endif 
 
-        setenv IVI_SRC_PATH "${ivi_top}${ivi_dir}"
+        pushd "${ivi_top}${ivi_dir}" > /dev/null
+            setenv IVI_SRC_PATH "${cwd}/"
+        popd > /dev/null
     else 
-        setenv THIS_PROGRAM "$0" 
+        echo "This directory is not below a directory with IVI installed."
+        echo "Assuming that we are supposed to create a new src directory here (${cwd})."
 
-        # We cannot use P_STDERR here because we might not have defined it yet.
-        bash -c 'echo " " >&2'
-        bash -c 'echo "This directory is not below a directory with IVI installed." >&2'
-        bash -c 'echo "Valid directories for IVI in this context: ${IVI_DIRS}." >&2'
-        bash -c 'echo "To experiment with a temporary fix, try setting FORCE_IVI_SRC_DIR." >&2'
-        bash -c 'echo "For a more permanent fix, edit this program: " >&2'
-        bash -c 'echo "    ${THIS_PROGRAM} " >&2'
-        bash -c 'echo "or contact Kobus." >&2'
-        bash -c 'echo " " >&2'
-
-        exit 1
+        setenv IVI_SRC_PATH "${cwd}/"
     endif 
 endif 
 
+echo IVI_SRC_PATH: $IVI_SRC_PATH
 cd ${IVI_SRC_PATH} 
+pwd
 
-svn co svn+ssh://vision/home/svn/src/Make/trunk Make
-svn co svn+ssh://vision/home/svn/src/lib/trunk lib
-svn co svn+ssh://vision/home/svn/src/include_before/trunk include_before
-svn co svn+ssh://vision/home/svn/src/include_after/trunk include_after
-svn co svn+ssh://vision/home/svn/src/IVI/trunk IVI
-svn co svn+ssh://vision/home/svn/src/IVI_cpp/trunk IVI_cpp
-svn co svn+ssh://vision/home/svn/src/examples/trunk examples
+set core_sub_dirs = "Make lib include_before include_after IVI IVI_cpp examples"
+
+set error_found = 0 
+
+foreach core_sub_dir (${core_sub_dirs}) 
+    if (-d "${core_sub_dir}") then
+        pushd "${core_sub_dir}" > /dev/null
+            svn status >& /dev/null
+            if (${status}) then
+                bash -c 'echo "Directory ${cwd} already exists but is not under svn control ." >&2' 
+                bash -c 'echo " " >&2'
+                set error_found = 1
+            else 
+                svn up
+                if (${status}) set error_found = 1
+            endif 
+        popd  > /dev/null
+    else
+        svn co svn+ssh://vision.cs.arizona.edu/home/svn/src/${core_sub_dir}/trunk ${core_sub_dir}
+        if (${status}) set error_found = 1
+    endif 
+end 
+                 
+exit ${error_found}
+
+# svn co svn+ssh://vision/home/svn/src/Make/trunk Make
+# svn co svn+ssh://vision/home/svn/src/lib/trunk lib
+# svn co svn+ssh://vision/home/svn/src/include_before/trunk include_before
+# svn co svn+ssh://vision/home/svn/src/include_after/trunk include_after
+# svn co svn+ssh://vision/home/svn/src/IVI/trunk IVI
+# svn co svn+ssh://vision/home/svn/src/IVI_cpp/trunk IVI_cpp
+# svn co svn+ssh://vision/home/svn/src/examples/trunk examples
+
