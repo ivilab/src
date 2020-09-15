@@ -1679,7 +1679,7 @@ while (${try_count} <= 4)
         break
     else 
         if (${try_count} == 1) then
-            ${WARN_ECHO} "Trying to build a second time with minimal changes."
+            ${WARN_ECHO} "Trying to build a second time with rebuild of local makefiles."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
         else if (${try_count} == 2) then
             ${WARN_ECHO} "Forcing rebuild of build files, and trying again."
@@ -1696,7 +1696,9 @@ while (${try_count} <= 4)
         source ${MAKE_SCRIPT_PATH}clean_cache
         source ${MAKE_SCRIPT_PATH}clean_locks
 
-        if (${try_count} >= 2) then
+        if (${try_count} == 1) then
+            source ${MAKE_SCRIPT_PATH}clean_local
+        else
             source ${MAKE_SCRIPT_PATH}clean_global
         endif 
     endif 

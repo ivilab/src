@@ -157,7 +157,6 @@ else
         pwd
     end
 
-    echo ivi_dir: $ivi_dir
     popd > /dev/null
 
     if (${found}) then
