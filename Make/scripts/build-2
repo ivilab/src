@@ -1188,12 +1188,12 @@ while (${try_count} <= 4)
 
                 if (${library_makefile_too_old}) then
                     ${VERBOSE_ECHO} ""
-                    ${VERBOSE_ECHO} "Script build-2 is updating ${cwd}/Makefile-library"
+                    ${VERBOSE_ECHO} "Script build-2 is removing ${cwd}/Makefile-library to force rebuild before include."
 
-                    ${IVI_SED} 's/LIB_COMPONENT/L_LIB/g' < ${MAKE_PATH}Makefile-library > Makefile-library
+                    ${IVI_RM} Makefile-library
 
                     if (${status}) then
-                        ${P_STDERR} "Update of ${cwd}/Makefile-library in build-2 failed." 
+                        ${P_STDERR} "Removal of ${cwd}/Makefile-library in build-2 failed." 
                         set makefiles_are_ok = 0
                         goto next_try
                     endif
