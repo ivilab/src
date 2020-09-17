@@ -17,9 +17,10 @@
 |     Jinyan Guan
 |
 * =========================================================================== */
-#include <prob_cpp/prob_distribution.h>
-#include <prob_cpp/prob_sample.h>
-#include <prob_cpp/prob_pdf.h>
+
+#include "prob_cpp/prob_distribution.h"
+#include "prob_cpp/prob_sample.h"
+#include "prob_cpp/prob_pdf.h"
 
 #include "dbn_cpp/util.h"
 #include "dbn_cpp/lss_set.h"
@@ -31,8 +32,8 @@
 
 #include <boost/format.hpp>
 
-#include <ergo/hmc.h>
-#include <ergo/mh.h>
+#include "ergo_cpp/hmc.h"
+#include "ergo_cpp/mh.h"
 
 using namespace ivi;
 using namespace ivi::ties;

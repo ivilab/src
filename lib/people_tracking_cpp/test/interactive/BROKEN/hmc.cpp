@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: hmc.cpp 25782 2020-09-12 23:19:18Z kobus $ */
+/* $Id: hmc.cpp 25789 2020-09-17 16:36:02Z kobus $ */
 
 #include <people_tracking_cpp/pt_scene.h>
 #include <people_tracking_cpp/pt_association.h>
@@ -46,7 +46,7 @@
 #include <iostream>
 #include <boost/optional.hpp>
 #include <boost/foreach.hpp>
-#include <ergo/record.h>
+#include <ergo_cpp/record.h>
 
 using namespace std;
 using namespace ivi;

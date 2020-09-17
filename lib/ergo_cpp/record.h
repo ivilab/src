@@ -1,5 +1,5 @@
-#ifndef ERGO_RECORD_H
-#define ERGO_RECORD_H
+#ifndef ERGO_CPP_RECORD_H
+#define ERGO_CPP_RECORD_H
 
 #include <map>
 #include <string>
@@ -504,5 +504,5 @@ make_proposed_recorder(OutputIterator it)
 
 } // namespace ergo
 
-#endif // ERGO_RECORD_H
+#endif // ERGO_CPP_RECORD_H
 

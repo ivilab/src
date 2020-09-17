@@ -18,7 +18,8 @@
 |
 * =========================================================================== */
 
-/* $Id: util.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: util.cpp 25789 2020-09-17 16:36:02Z kobus $ */
+
 #include <l_cpp/l_exception.h>
 #include <l/l_sys_debug.h>
 #include <l/l_sys_def.h>
@@ -34,8 +35,8 @@
 #include <algorithm>
 #include <iterator>
 
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include "ergo_cpp/mh.h"
+#include "ergo_cpp/record.h"
 
 #include "dbn_cpp/util.h"
 #include "dbn_cpp/drift_sampler.h"

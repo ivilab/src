@@ -18,27 +18,27 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_integral_optimization.h 25782 2020-09-12 23:19:18Z kobus $ */
+/* $Id: pt_integral_optimization.h 25789 2020-09-17 16:36:02Z kobus $ */
 
 #ifndef PT_INTEGRAL_OPTIMIZATION_H
 #define PT_INTEGRAL_OPTIMIZATION_H
 
-#include <people_tracking_cpp/pt_scene.h>
-#include <people_tracking_cpp/pt_target.h>
-#include <people_tracking_cpp/pt_association.h>
-#include <people_tracking_cpp/pt_scene_adapter.h>
-#include <people_tracking_cpp/pt_sample_scenes.h>
-#include <people_tracking_cpp/pt_scene_posterior.h>
-#include <people_tracking_cpp/pt_scene_diff.h>
+#include "people_tracking_cpp/pt_scene.h"
+#include "people_tracking_cpp/pt_target.h"
+#include "people_tracking_cpp/pt_association.h"
+#include "people_tracking_cpp/pt_scene_adapter.h"
+#include "people_tracking_cpp/pt_sample_scenes.h"
+#include "people_tracking_cpp/pt_scene_posterior.h"
+#include "people_tracking_cpp/pt_scene_diff.h"
 #include <string>
 #include <vector>
 #include <boost/foreach.hpp>
 #include <boost/optional.hpp>
 #include <boost/ref.hpp>
 
-#include <ergo/hmc.h>
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include "ergo_cpp/hmc.h"
+#include "ergo/mh.h"
+#include "ergo/record.h"
 
 namespace ivi {
 namespace pt {

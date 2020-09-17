@@ -23,27 +23,27 @@
 #ifndef PT_SAMPLE_SCENES_H
 #define PT_SAMPLE_SCENES_H
 
-#include <people_tracking_cpp/pt_scene.h>
-#include <people_tracking_cpp/pt_scene_info.h>
-#include <people_tracking_cpp/pt_target.h>
-#include <people_tracking_cpp/pt_association.h>
-#include <people_tracking_cpp/pt_scene_adapter.h>
-#include <people_tracking_cpp/pt_scene_posterior.h>
-#include <people_tracking_cpp/pt_recorder.h>
-#include <prob_cpp/prob_distribution.h>
-#include <gp_cpp/gp_posterior.h>
-#include <gp_cpp/gp_mean.h>
-#include <gp_cpp/gp_covariance.h>
-#include <l_cpp/l_exception.h>
+#include "people_tracking_cpp/pt_scene.h"
+#include "people_tracking_cpp/pt_scene_info.h"
+#include "people_tracking_cpp/pt_target.h"
+#include "people_tracking_cpp/pt_association.h"
+#include "people_tracking_cpp/pt_scene_adapter.h"
+#include "people_tracking_cpp/pt_scene_posterior.h"
+#include "people_tracking_cpp/pt_recorder.h"
+#include "prob_cpp/prob_distribution.h"
+#include "gp_cpp/gp_posterior.h"
+#include "gp_cpp/gp_mean.h"
+#include "gp_cpp/gp_covariance.h"
+#include "l_cpp/l_exception.h"
 #include <vector>
 #include <algorithm>
 #include <string>
 #include <boost/foreach.hpp>
 #include <boost/optional.hpp>
 
-#include <ergo/hmc.h>
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include "ergo_cpp/hmc.h"
+#include "ergo/mh.h"
+#include "ergo/record.h"
 
 namespace ivi {
 namespace pt {

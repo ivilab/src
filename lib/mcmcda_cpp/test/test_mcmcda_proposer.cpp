@@ -16,17 +16,17 @@
    |  Author:  Ernesto Brau
  * =========================================================================== */
 
-#include <mcmcda_cpp/mcmcda_data.h>
-#include <mcmcda_cpp/mcmcda_association.h>
-#include <mcmcda_cpp/mcmcda_proposer.h>
-#include <m_cpp/m_vector.h>
-#include <prob_cpp/prob_distribution.h>
-#include <prob_cpp/prob_sample.h>
-#include <l_cpp/l_test.h>
+#include "mcmcda_cpp/mcmcda_data.h"
+#include "mcmcda_cpp/mcmcda_association.h"
+#include "mcmcda_cpp/mcmcda_proposer.h"
+#include "m_cpp/m_vector.h"
+#include "prob_cpp/prob_distribution.h"
+#include "prob_cpp/prob_sample.h"
+#include "l_cpp/l_test.h"
 #include <vector>
 #include <set>
-#include <ergo/mh.h>
-#include <ergo/rand.h>
+#include "ergo_cpp/mh.h"
+#include "ergo_cpp/rand.h"
 
 using namespace ivi;
 using namespace ivi::mcmcda;

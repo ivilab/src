@@ -1,9 +1,9 @@
-#ifndef ERGO_MH_H
-#define ERGO_MH_H
+#ifndef ERGO_CPP_MH_H
+#define ERGO_CPP_MH_H
 
-#include <ergo/rand.h>
-#include <ergo/record.h>
-#include <ergo/util.h>
+#include "ergo_cpp/rand.h"
+#include "ergo_cpp/record.h"
+#include "ergo_cpp/util.h"
 #include <cmath>
 #include <vector>
 #include <algorithm>
@@ -351,5 +351,5 @@ mh_detail_recorder<OutputIterator> make_mh_detail_recorder(OutputIterator it)
 
 } // namespace ergo
 
-#endif //ERGO_MH_H
+#endif //ERGO_CPP_MH_H
 

@@ -1,7 +1,7 @@
-#ifndef ERGO_RAND_H
-#define ERGO_RAND_H
+#ifndef ERGO_CPP_RAND_H
+#define ERGO_CPP_RAND_H
 
-#include <ergo/def.h>
+#include "ergo_cpp/def.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/version.hpp>
 
@@ -177,5 +177,5 @@ private:
 
 } //namespace ergo
 
-#endif //ERGO_RAND_H
+#endif //ERGO_CPP_RAND_H
 

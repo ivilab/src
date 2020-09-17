@@ -1,5 +1,5 @@
-#ifndef ERGO_DEF_H
-#define ERGO_DEF_H
+#ifndef ERGO_CPP_DEF_H
+#define ERGO_CPP_DEF_H
 
 #if __cplusplus > 199711L
 #define HAVE_CXX11 1
@@ -22,5 +22,5 @@ namespace ergo
 }
 #endif
 
-#endif // ERGO_DEF_H
+#endif // ERGO_CPP_DEF_H
 

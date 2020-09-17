@@ -1,5 +1,5 @@
-#ifndef ERGO_MATH_H
-#define ERGO_MATH_H
+#ifndef ERGO_CPP_MATH_H
+#define ERGO_CPP_MATH_H
 
 #include <vector>
 #include <cmath>
@@ -31,5 +31,5 @@ double magnitude(const std::vector<double>& v)
 
 } // namespace ergo
 
-#endif //ERGO_MATH_H
+#endif //ERGO_CPP_MATH_H
 

@@ -18,20 +18,20 @@
 |
 * =========================================================================== */
 
-/* $Id: proposer.h 25782 2020-09-12 23:19:18Z kobus $ */
+/* $Id: proposer.h 25789 2020-09-17 16:36:02Z kobus $ */
 
 #ifndef IVI_TIES_PROPOSER_H
 #define IVI_TIES_PROPOSER_H
 
-#include <prob_cpp/prob_distribution.h>
+#include "prob_cpp/prob_distribution.h"
 #include "dbn_cpp/lss_set.h"
 #include "dbn_cpp/prior.h"
 #include "dbn_cpp/posterior.h"
 #include "cluster_cpp/cluster_gaussian_mixtures.h"
 #include "cluster_cpp/cluster_gaussian_mixtures_gibbs.h"
 
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include "ergo_cpp/mh.h"
+#include "ergo_cpp/record.h"
 
 namespace ivi {
 namespace ties {

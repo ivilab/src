@@ -18,23 +18,23 @@
 |
 * =========================================================================== */
 
-/* $Id: drift_sampler.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: drift_sampler.h 25789 2020-09-17 16:36:02Z kobus $ */
 
 #ifndef IVI_TIES_DRIFT_SAMPLER_H
 #define IVI_TIES_DRIFT_SAMPLER_H
 
-#include <l/l_sys_debug.h>
-#include <l/l_sys_def.h>
-#include <n/n_cholesky.h>
-#include <l_cpp/l_exception.h>
-#include <gp_cpp/gp_base.h>
-#include <gp_cpp/gp_prior.h>
-#include <gp_cpp/gp_sample.h>
-#include <gp_cpp/gp_predictive.h>
-#include <gp_cpp/gp_posterior.h>
+#include "l/l_sys_debug.h"
+#include "l/l_sys_def.h"
+#include "n/n_cholesky.h"
+#include "l_cpp/l_exception.h"
+#include "gp_cpp/gp_base.h"
+#include "gp_cpp/gp_prior.h"
+#include "gp_cpp/gp_sample.h"
+#include "gp_cpp/gp_predictive.h"
+#include "gp_cpp/gp_posterior.h"
 
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include "ergo_cpp/mh.h"
+#include "ergo_cpp/record.h"
 
 #include <string>
 #include <iterator>

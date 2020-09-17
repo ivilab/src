@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: thread_worker.h 25782 2020-09-12 23:19:18Z kobus $ */
+/* $Id: thread_worker.h 25789 2020-09-17 16:36:02Z kobus $ */
 
 #ifndef IVI_TIES_THREAD_WORKER_H
 #define IVI_TIES_THREAD_WORKER_H
@@ -39,8 +39,8 @@
 #include "dbn_cpp/sample_lss.h"
 #include "dbn_cpp/time_util.h"
 
-#include <ergo/hmc.h>
-#include <ergo/record.h>
+#include "ergo_cpp/hmc.h"
+#include "ergo_cpp/record.h"
 
 #include <boost/exception_ptr.hpp>
 #include <boost/progress.hpp>

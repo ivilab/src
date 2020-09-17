@@ -1,5 +1,5 @@
-#ifndef ERGO_EXCEPTION_H
-#define ERGO_EXCEPTION_H
+#ifndef ERGO_CPP_EXCEPTION_H
+#define ERGO_CPP_EXCEPTION_H
 
 #include <stdexcept>
 #include <sstream>
@@ -66,5 +66,5 @@ private:
 
 } // namespace ergo
 
-#endif //ERGO_EXCEPTION_H
+#endif //ERGO_CPP_EXCEPTION_H
 

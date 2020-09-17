@@ -38,7 +38,7 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <ergo/mh.h>
+#include "ergo_cpp/mh.h"
 
 using namespace ivi;
 using namespace ivi::pt;

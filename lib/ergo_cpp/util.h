@@ -1,8 +1,8 @@
-#ifndef ERGO_UTIL_H
-#define ERGO_UTIL_H
+#ifndef ERGO_CPP_UTIL_H
+#define ERGO_CPP_UTIL_H
 
 #include <cstddef>
-#include <ergo/def.h>
+#include "ergo_cpp/def.h"
 #include <boost/ref.hpp>
 
 /**
@@ -104,5 +104,5 @@ private:
 
 } // namespace ergo
 
-#endif //ERGO_UTIL_H
+#endif //ERGO_CPP_UTIL_H
 

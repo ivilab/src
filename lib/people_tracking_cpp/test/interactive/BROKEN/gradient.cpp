@@ -54,7 +54,7 @@
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 #include <boost/lexical_cast.hpp>
-#include <ergo/record.h>
+#include <ergo_cpp/record.h>
 
 using namespace std;
 using namespace ivi;

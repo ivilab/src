@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: util.h 25782 2020-09-12 23:19:18Z kobus $ */
+/* $Id: util.h 25789 2020-09-17 16:36:02Z kobus $ */
 
 #ifndef TIES_UTIL_H
 #define TIES_UTIL_H
@@ -38,8 +38,8 @@
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/adapter.h"
 
-#include "ergo/hmc.h"
-#include "ergo/mh.h"
+#include "ergo_cpp/hmc.h"
+#include "ergo_cpp/mh.h"
 
 #include "dbn_cpp/base_line_models.h"
 

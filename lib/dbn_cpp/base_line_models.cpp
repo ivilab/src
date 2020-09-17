@@ -20,15 +20,15 @@
 
 /* $Id */
 
-#include <prob_cpp/prob_distribution.h>
-#include <prob_cpp/prob_sample.h>
-#include <l_cpp/l_exception.h>
-#include <gp_cpp/gp_mean.h>
-#include <m_cpp/m_vector.h>
-#include <g_cpp/g_line.h>
+#include "prob_cpp/prob_distribution.h"
+#include "prob_cpp/prob_sample.h"
+#include "l_cpp/l_exception.h"
+#include "gp_cpp/gp_mean.h"
+#include "m_cpp/m_vector.h"
+#include "g_cpp/g_line.h"
 
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include "ergo_cpp/mh.h"
+#include "ergo_cpp/record.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/exception/diagnostic_information.hpp>

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: pt_integral_optimization.cpp 25782 2020-09-12 23:19:18Z kobus $ */
+/* $Id: pt_integral_optimization.cpp 25789 2020-09-17 16:36:02Z kobus $ */
 
 #include "people_tracking_cpp/pt_integral_optimization.h"
 #include "people_tracking_cpp/pt_scene.h"
@@ -46,8 +46,8 @@
 #include <boost/bind.hpp>
 #include <boost/optional.hpp>
 
-#include "ergo/mh.h"
-#include "ergo/record.h"
+#include "ergo_cpp/mh.h"
+#include "ergo_cpp/record.h"
 
 using namespace ivi;
 using namespace ivi::pt;

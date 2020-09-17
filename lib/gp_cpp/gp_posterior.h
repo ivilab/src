@@ -21,12 +21,12 @@
 #ifndef GP_POSTERIOR_H_INCLUDED
 #define GP_POSTERIOR_H_INCLUDED
 
-#include <m_cpp/m_vector.h>
-#include <l_cpp/l_exception.h>
-#include <l_cpp/l_algorithm.h>
-#include <gp_cpp/gp_base.h>
-#include <gp_cpp/gp_prior.h>
-#include <gp_cpp/gp_predictive.h>
+#include "m_cpp/m_vector.h"
+#include "l_cpp/l_exception.h"
+#include "l_cpp/l_algorithm.h"
+#include "gp_cpp/gp_base.h"
+#include "gp_cpp/gp_prior.h"
+#include "gp_cpp/gp_predictive.h"
 #include <algorithm>
 #include <iterator>
 #include <vector>
@@ -34,7 +34,7 @@
 #include <boost/bind.hpp>
 #include <boost/bind/placeholders.hpp>
 
-#include <ergo/mh.h>
+#include "ergo_cpp/mh.h"
 
 namespace bph = boost::placeholders;
 namespace ivi {

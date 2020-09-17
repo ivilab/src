@@ -1,11 +1,11 @@
-#ifndef ERGO_HMC_H
-#define ERGO_HMC_H
+#ifndef ERGO_CPP_HMC_H
+#define ERGO_CPP_HMC_H
 
-#include <ergo/util.h>
-#include <ergo/exception.h>
-#include <ergo/rand.h>
-#include <ergo/record.h>
-#include <ergo/def.h>
+#include "ergo_cpp/util.h"
+#include "ergo_cpp/exception.h"
+#include "ergo_cpp/rand.h"
+#include "ergo_cpp/record.h"
+#include "ergo_cpp/def.h"
 #include <vector>
 #include <algorithm>
 #include <numeric>
@@ -933,5 +933,5 @@ hmc_detail_recorder<OutputIterator> make_hmc_detail_recorder(OutputIterator it)
 
 } // namespace ergo
 
-#endif // ERGO_HMC_H
+#endif // ERGO_CPP_HMC_H
 

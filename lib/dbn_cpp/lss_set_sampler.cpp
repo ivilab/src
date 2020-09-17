@@ -18,13 +18,13 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set_sampler.cpp 25782 2020-09-12 23:19:18Z kobus $ */
+/* $Id: lss_set_sampler.cpp 25789 2020-09-17 16:36:02Z kobus $ */
 
 #include <l/l_sys_time.h>
 #include <opt_cpp/opt_pgpe.h>
 
-#include <ergo/hmc.h>
-#include <ergo/record.h>
+#include "ergo_cpp/hmc.h"
+#include "ergo_cpp/record.h"
 
 #include "dbn_cpp/lss_set.h"
 #include "dbn_cpp/lss_set_sampler.h"
