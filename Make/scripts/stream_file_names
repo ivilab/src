@@ -178,8 +178,8 @@ endif
 #
 set is_generic_lib = `echo ${cwd} | sed "s#^${IVI_SRC_PATH}lib/##" | ${IVI_GREP} -c '^[^/][^/]*$'`
 
-set cpp_lib_str = `echo ${cwd} | ${IVI_GREP} /lib/ | ${IVI_GREP} '_cpp$'`
-set cpp_file_count = `${IVI_LS} -1 | ${IVI_EGREP} -c '.*\.C$|.*\.cxx$|.*\.cpp$'`
+set cpp_lib_str = `echo ${cwd} | ${IVI_GREP} /lib/ | ${IVI_GREP} '_[ch]pp$'`
+set cpp_file_count = `${IVI_LS} -1 | ${IVI_EGREP} -c '.*\.C$|.*\.cxx$|.*\.cpp$|.*\.hpp$'`
 # set c_and_h_file_count = `${IVI_LS} -1 | ${IVI_EGREP} -c '.*\.[ch]$'`
 
 set noglob
@@ -211,7 +211,7 @@ if (${all}) then
 else if (${bootstrap}) then 
     set test_files = `${IVI_LS} -1 ${file_arg} | ${IVI_GREP} 'bootstrap_[a-zA-Z0-9][a-zA-Z0-9_-]*$' `
 else if (${c2man}) then 
-    if ((-e FORCE_C2MAN) ||((${is_generic_lib}) && (! -e FORCE_DOXYGEN) && (! -e SKIP_C2MAN) && ("${cpp_lib_str}" == "") && (${cpp_file_count} == 0))) then
+    if ((-e FORCE_C2MAN) || ((${is_generic_lib}) && (! -e Doxyfile) && (! -e FORCE_DOXYGEN) && (! -e SKIP_C2MAN) && ("${cpp_lib_str}" == "") && (${cpp_file_count} == 0))) then
         set test_files = `${IVI_LS} -1 ${file_arg} | ${prune_incl} | ${prune_all} | ${prune_export} | ${IVI_EGREP} '.*\.[ch]$' | ${IVI_GREP} -v "_gen.h" | ${IVI_GREP} -v "_gen_f.h" | ${IVI_GREP} -v "_incl.h"  | ${IVI_GREP} -v "_incl_f.h" `
     endif 
 else if (${doxygen}) then 
@@ -409,7 +409,8 @@ foreach test_file (${test_files})
                 if ((! ${have_c} && ! ${have_cpp})) then
                     set have_h = `/bin/ls ${dir}${test_file} | ${IVI_EGREP} -c  '.*\.h$'`
 
-                    # Only header files. Let's assume C++ header only library. (Use case is "ergo") 
+                    # Only header files. Let's assume C++ header only library.
+                    # (Use case is "ergo" beore changing it to ergo_cpp) 
                     if (${have_h}) then
                         set have_cpp = 1
                     endif 
