@@ -17,6 +17,8 @@
 
 if ($?IVI_SET_ECHO) set echo 
 
+${VERBOSE_ECHO} "Entering script build-2 in ${cwd}."
+
 if ($?IVI_HAVE_MACHINE) then
     ${VERBOSE_ECHO_2} "Script build-2 is not sourcing ${MAKE_PATH}init_machine because IVI_HAVE_MACHINE is set."
 else 
@@ -949,7 +951,7 @@ if ((! ${need_depend_bootstrap}) && ("${adjusted_args}" == "")) then
     exit
 endif 
 
-${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}'."
+${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}' in ${cwd}."
 
 set make_result_temp_file = "${USER_TEMP_PATH}make.res.$$"
 
@@ -970,9 +972,9 @@ while (${try_count} <= 4)
     if (${need_depend_bootstrap}) then
         ${VERBOSE_ECHO} 
         ${VERBOSE_ECHO} ==================================================================================
-        ${VERBOSE_ECHO} "Script build-2 is bootstrapping make for efficiency and in case our version of make"
-        ${VERBOSE_ECHO} "does not build included files."
-        ${VERBOSE_ECHO} 
+        ${VERBOSE_ECHO} "Script build-2 is bootstrapping make in ${cwd}" 
+        ${VERBOSE_ECHO} "for efficiency and in case our version of make does not build included files."
+        ${VERBOSE_ECHO} ""
 
         set bootstrap_files = `${MAKE_SCRIPT_PATH}stream_file_names -bootstrap`
 
@@ -1010,8 +1012,8 @@ while (${try_count} <= 4)
             
             ${VERBOSE_ECHO} ""
             ${VERBOSE_ECHO} ==================================================================================
-            ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs indirectly using scripts build_file_list and build_include_lines."
-            ${VERBOSE_ECHO} "First, it will call build_file_list."
+            ${VERBOSE_ECHO} "Script build-2 is building Makefile-dirs in ${cwd}"
+            ${VERBOSE_ECHO} "indirectly using scripts build_file_list and build_include_lines."
             ${VERBOSE_ECHO} ""
 
             set sub_start_time = `${IVI_ECHO_TIME}`
@@ -1031,7 +1033,7 @@ while (${try_count} <= 4)
 
             ${VERBOSE_ECHO} ""
             ${VERBOSE_ECHO} ==================================================================================
-            ${VERBOSE_ECHO} "Script build-2 is precomputing file lists."
+            ${VERBOSE_ECHO} "Script build-2 is precomputing file lists in ${cwd}."
             ${VERBOSE_ECHO} ""
 
             if ($?DRY_RUN) then
@@ -1055,7 +1057,7 @@ while (${try_count} <= 4)
 
             ${VERBOSE_ECHO} ""
             ${VERBOSE_ECHO} ==================================================================================
-            ${VERBOSE_ECHO} "Script build-2 is building include lines."
+            ${VERBOSE_ECHO} "Script build-2 is building include lines in ${cwd}."
 
             if ($?DRY_RUN) then
                 echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines"
@@ -1224,29 +1226,30 @@ while (${try_count} <= 4)
 
         ${VERBOSE_ECHO} ""
         ${VERBOSE_ECHO} ==================================================================================
-        ${VERBOSE_ECHO} "Script build-2 is using Makefile-2 to build Makefile, which forces the building"
-        ${VERBOSE_ECHO} "of included Makefiles (in gmake). We do this multiple times if there are errors."
+        ${VERBOSE_ECHO} "Script build-2 is using Makefile-2 to build Makefile in ${cwd}."
+        ${VERBOSE_ECHO} "This forces the building of included Makefiles (in gmake). "
+        ${VERBOSE_ECHO} "We do this multiple times if there are errors."
         ${VERBOSE_ECHO} ""
 
         if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_1.res"
         ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
         if (${status}) then
-            ${P_STDERR} "Initial build of 'Makefile' failed, but that is OK, it might just mean that we are missing some makefiles."
+            ${P_STDERR} "Initial build of 'Makefile' failed in ${cwd}, but that is OK, it might just mean that we are missing some makefiles."
 
             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_2.res"
             ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
             if (${status}) then
-                ${P_STDERR} "Second build of 'Makefile' failed, but often it needs to be done three times. " 
+                ${P_STDERR} "Second build of 'Makefile' failed in ${cwd}, but often it needs to be done three times. " 
 
                 if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_3.res"
                 ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
-                    ${P_STDERR} "Third build of 'Makefile' failed. Trying one more time." 
+                    ${P_STDERR} "Third build of 'Makefile' failed in ${cwd}. Trying one more time." 
 
                     if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_4.res"
                     ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
                     if (${status}) then
-                        ${P_STDERR} "Fourth build of 'Makefile' failed. Cleaning up makefiles." 
+                        ${P_STDERR} "Fourth build of 'Makefile' failed in ${cwd}. Cleaning up makefiles." 
                         set makefiles_are_ok = 0
                         goto next_try
                     endif 
@@ -1314,7 +1317,7 @@ while (${try_count} <= 4)
                 else if ($?IVI_VERBOSE) then
                     set sub_end_time = `${IVI_ECHO_TIME}`
                     ${VERBOSE_ECHO} " "
-                    ${VERBOSE_ECHO} "Script build-2 successfully built depend target: ${depend_target} in directory ${cwd}."
+                    ${VERBOSE_ECHO} "Script build-2 successfully built depend target: ${depend_target} in ${cwd}."
                     ${VERBOSE_ECHO} "Make command was: ${ivi_depend_make} -f Makefile-2 ${depend_target} "
                     ${VERBOSE_ECHO} "    Start time for ${depend_target}: ${sub_start_time}"
                     ${VERBOSE_ECHO} "    End   time for ${depend_target}: ${sub_end_time}"
@@ -1605,7 +1608,7 @@ while (${try_count} <= 4)
         endif 
 
         # This completes preparatory building for a our target "arg". If it has
-        # been success so far, build "arg".
+        # been successful so far, build "arg".
 
         if (! ${make_status}) then
             if ($?IVI_VERBOSE) then

@@ -15,7 +15,7 @@ if ("${cwd}" == "${make_dir_cwd}") then
 endif 
 
 if (-e Include_lines) then
-    echo "Script clean_local is deleting Include_lines" 
+    ${VERBOSE_ECHO_2} "Script clean_local is deleting Include_lines" 
 
     # I cannot remember why we do not just use RM. 
     #
