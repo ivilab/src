@@ -101,7 +101,7 @@ endif
 echo src_dist_dir is ${src_dist_dir}
 echo ""
 
-set dir = `pwd`
+set dir = "${cwd}"
 set dir = `echo $dir | sed 's/\/*$//'`
 set dir = `echo $dir | sed 's/.*\///'`
 
@@ -143,15 +143,15 @@ else
     # fine to ga to the root. 
     #
     pushd ${HOME} >& /dev/null
-    set home_pwd = `pwd`
+    set home_path = "${cwd}"
     popd >& /dev/null
 
     set found = 0
     set ivi_top = ""
 
-    pushd `pwd` > /dev/null
+    pushd "${cwd}" > /dev/null
 
-    while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
+    while (("${cwd}" != "/") && ("${cwd}" != "${home_path}")) 
         foreach ivi_dir (${IVI_DIRS}) 
             if ("${ivi_dir}" == ".") then
                 set ivi_dir = ""

@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25781 2020-09-12 23:18:03Z kobus $
+# $Id: init_compile 25791 2020-09-18 18:19:33Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -1221,10 +1221,16 @@ set user_paths = `echo $PATH | sed 's/:/ /g'`
 #
 # --------------------------------------------------------------------------
 
-# Mac has proprietry secrets and object  incabo
 if ("${OS}" == "mac_osx") then
-    set cc_choices = "icc clang gcc cc"
+    # Mac has proprietry secrets and library files not necessarily compatable with
+    # other compilers. So, we make clang the first priority. All others are not so
+    # good, and it is not clear what we should do (insist on clang?).
+    #
+    set cc_choices = "clang cc gcc icc"
 else 
+    # For unix, if the user has gone to the trouble of installing icc, then we
+    # assume that they want to try that.
+    #
     set cc_choices = "icc gcc cc"
 endif
 
@@ -1250,8 +1256,8 @@ end
 if ("${ivi_cc}" == "") then
     ${ECHO} "No C compiler among (${cc_choices}) in PATH."
     ${ECHO} "PATH is set to: ${PATH}" 
-    ${ECHO} "Setting IVI_CC to cc to reduce confusion."
-    set ivi_cc = "cc"
+    ${ECHO} "Setting IVI_CC to cc_not_found to reduce confusion."
+    set ivi_cc = "cc_not_found"
 else if ($?IVI_CC != 0) then
     if (("${ivi_cc}" != "${IVI_CC}") && ("${IVI_CC}" != "")) then
         ${P_STDERR} "Requested C compiler ${IVI_CC} not found in PATH."
@@ -1265,8 +1271,15 @@ ivi_setenv IVI_CC ${ivi_cc}
 # -------------------------------------------------------------------------
 
 if ("${OS}" == "mac_osx") then
-    set c_plus_plus_choices = "icpc clang++ g++ c++ CC"
+    # Mac has proprietry secrets and library files not necessarily compatable with
+    # other compilers. So, we make clang the first priority. All others are not so
+    # good, and it is not clear what we should do (insist on clang?).
+    #
+    set c_plus_plus_choices = "clang++ g++ c++ CC icpc"
 else 
+    # For unix, if the user has gone to the trouble of installing icc, then we
+    # assume that they want to try that.
+    #
     set c_plus_plus_choices = "icpc g++ c++ CC"
 endif
 

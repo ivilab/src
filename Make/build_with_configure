@@ -1,6 +1,6 @@
 #!/bin/tcsh -f
 
-# $Id: build_with_configure 25783 2020-09-12 23:55:45Z kobus $
+# $Id: build_with_configure 25791 2020-09-18 18:19:33Z kobus $
 #
 # This is the vision lab build script hacked for shared code that has non-broken
 # fairly standard "configure" scripts. 
@@ -56,15 +56,15 @@ else
     # fine to ga to the root. 
     #
     pushd ${HOME} >& /dev/null
-    set home_pwd = `pwd`
+        set home_path = "${cwd}"
     popd >& /dev/null
 
     set found = 0
     set ivi_top = ""
 
-    pushd `pwd` > /dev/null
+    pushd "${cwd}" > /dev/null
 
-    while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
+    while (("${cwd}" != "/") && ("${cwd}" != "${home_path}")) 
         foreach ivi_dir (${IVI_DIRS}) 
             if ("${ivi_dir}" == ".") then
                 set ivi_dir = ""

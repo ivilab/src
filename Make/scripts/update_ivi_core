@@ -58,7 +58,7 @@
 unalias cd
     
 pushd ${HOME} >& /dev/null
-    set home_pwd = `pwd`
+    set home_path = "${cwd}"
 popd >& /dev/null
 
 setenv THIS_PROGRAM "$0" 
@@ -76,7 +76,7 @@ if ($?FORCE_IVI_SRC_DIR) then
     pushd "${FORCE_IVI_SRC_DIR}" > /dev/null
         setenv IVI_SRC_PATH "${cwd}/"
     popd > /dev/null
-else if ("${home_pwd}" == "${cwd}") then
+else if ("${home_path}" == "${cwd}") then
     echo 'Trying to set IVI_SRC_PATH to the src directory holding this script due to being called from $HOME.'
 
     set this_program_src_dir = `echo ${THIS_PROGRAM} | sed 's#Make/scripts/update_ivi_core##'`
@@ -91,11 +91,11 @@ else if ("${home_pwd}" == "${cwd}") then
             set this_program_src_dir = "${cwd}"
         else 
             pushd ${this_program_src_dir} >& /dev/null
-                set this_program_src_dir = `pwd`
+                set this_program_src_dir = "${cwd}"
             popd >& /dev/null
         endif 
 
-        if ("${this_program_src_dir}" == "${home_pwd}") then
+        if ("${this_program_src_dir}" == "${home_path}") then
             set ok_update_ivi_core = 0
         endif 
     endif 
@@ -130,13 +130,13 @@ else
     set found = 0
     set ivi_top = ""
 
-    pushd `pwd` > /dev/null
+    pushd "${cwd}" > /dev/null
 
     # We want to block going above the user's home directory because it might cause
     # a mount request that we don't want. If we are not below their home, then it is
     # fine to ga to the root. 
     #
-    while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
+    while (("${cwd}" != "/") && ("${cwd}" != "${home_path}")) 
         foreach ivi_dir (${IVI_DIRS}) 
             if ("${ivi_dir}" == ".") then
                 set ivi_dir = ""
@@ -154,7 +154,6 @@ else
 
         set ivi_top = "../${ivi_top}"
         cd ..
-        pwd
     end
 
     popd > /dev/null
@@ -177,7 +176,6 @@ endif
 
 echo IVI_SRC_PATH: $IVI_SRC_PATH
 cd ${IVI_SRC_PATH} 
-pwd
 
 set core_sub_dirs = "Make lib include_before include_after IVI IVI_cpp examples"
 
