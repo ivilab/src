@@ -962,6 +962,7 @@ else
     set make_log_file = '/dev/null'
 endif 
 
+set exit_status = 0
 set try_count = 1
 while (${try_count} <= 4)
     set makefiles_are_ok = 1
@@ -993,6 +994,7 @@ while (${try_count} <= 4)
             endif 
         end
 
+        # If a bootstrap file run fails, it is not likley that retry will help. 
         if (${exit_status}) break
 
         if (! -e Makefile-dirs) then
@@ -1021,9 +1023,9 @@ while (${try_count} <= 4)
                 if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}build_file_list_${try_count}.res"
                 ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_file_list |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
-                    set exit_status = 1
                     ${P_STDERR} "Building initial Makefile-dirs with script build_file_list failed."
-                    break
+                    set makefiles_are_ok = 0
+                    goto next_try
                 endif
             endif 
 
@@ -1061,9 +1063,9 @@ while (${try_count} <= 4)
                 if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}build_include_lines_${try_count}.res"
                 ${MAKE_SCRIPT_PATH}ivi_lock_for_make 60 Makefile-dirs ${MAKE_SCRIPT_PATH}build_include_lines |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
-                    set exit_status = 1
                     ${P_STDERR} "Building initial Makefile-dirs with script build_include_lines failed."
-                    break
+                    set makefiles_are_ok = 0
+                    goto next_try
                 endif
             endif 
 
@@ -1093,6 +1095,7 @@ while (${try_count} <= 4)
                 else
                     ${IVI_TOUCH_1990} Makefile-depend
                     if (${status}) then
+                        # If this fails, retrying likely will not help. 
                         set exit_status = 1
                         ${P_STDERR} "Touching Makefile-depend in the past failed."
                         break 
@@ -1106,6 +1109,7 @@ while (${try_count} <= 4)
                 else
                     ${IVI_TOUCH_1990} Makefile-libs-needed
                     if (${status}) then
+                        # If this fails, retrying likely will not help. 
                         set exit_status = 1
                         ${P_STDERR} "Touching Makefile-libs-needed in the past failed."
                         break 
@@ -1120,6 +1124,7 @@ while (${try_count} <= 4)
                     else
                         ${IVI_TOUCH_1990} Makefile-library
                         if (${status}) then
+                            # If this fails, retrying likely will not help. 
                             set exit_status = 1
                             ${P_STDERR} "Touching Makefile-library in the past failed."
                             break 
@@ -1134,6 +1139,7 @@ while (${try_count} <= 4)
                     else
                         ${IVI_MKDIR} Include_lines
                         if (${status}) then
+                            # If this fails, retrying likely will not help. 
                             set exit_status = 1
                             ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
                             break 
@@ -1141,6 +1147,7 @@ while (${try_count} <= 4)
 
                         ${IVI_TOUCH_1990} Include_lines/Makefile-include-lines
                         if (${status}) then
+                            # If this fails, retrying likely will not help. 
                             set exit_status = 1
                             ${P_STDERR} "Touching Include_lines/Makefile-include-lines in the past failed."
                             break 
@@ -1155,6 +1162,7 @@ while (${try_count} <= 4)
                     else
                         ${IVI_MKDIR} Include_lines
                         if (${status}) then
+                            # If this fails, retrying likely will not help. 
                             set exit_status = 1
                             ${P_STDERR} "${IVI_MKDIR} Include_lines failed."
                             break 
@@ -1162,6 +1170,7 @@ while (${try_count} <= 4)
 
                         ${IVI_TOUCH_1990} Makefile-depend-incl-dot-h
                         if (${status}) then
+                            # If this fails, retrying likely will not help. 
                             set exit_status = 1
                             ${P_STDERR} "Touching Include_lines/Makefile-depend-incl-dot-h in the past failed."
                             break 
@@ -1193,9 +1202,10 @@ while (${try_count} <= 4)
                     ${IVI_RM} Makefile-library
 
                     if (${status}) then
+                        # If this fails, retrying likely will not help. 
+                        set exit_status = 1
                         ${P_STDERR} "Removal of ${cwd}/Makefile-library in build-2 failed." 
-                        set makefiles_are_ok = 0
-                        goto next_try
+                        break 
                     endif
                 endif
             endif
@@ -1660,6 +1670,7 @@ while (${try_count} <= 4)
         endif 
     end
 
+    # We only try multiple times to build makefiles, not code. 
     if (${makefiles_are_ok}) break
 
     next_try:
