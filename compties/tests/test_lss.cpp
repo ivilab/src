@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: test_lss.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: test_lss.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <l_cpp/l_test.h>
 
@@ -31,8 +31,8 @@
 #include "dbn_cpp/coupled_oscillator.h"
 #include "dbn_cpp/util.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)
@@ -42,7 +42,7 @@ int main(int argc, const char** argv)
     {
         out_fp = argv[1];
     }
-    ETX(kjb_c::kjb_mkdir(out_fp.c_str()));
+    ETX(ivi_c::ivi_mkdir(out_fp.c_str()));
 
     Double_v times(60);
     for(size_t i = 0; i < times.size(); i++)

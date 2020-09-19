@@ -31,15 +31,15 @@
 #include "dbn_cpp/real_data_parser.h"
 #include "dbn_cpp/util.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     // Get experiment options 
@@ -59,8 +59,8 @@ int main(int argc, const char** argv)
     }
 
     // set random seed 
-    kjb_c::kjb_seed_rand(exp.rand_seed, exp.rand_seed);
-    kjb_c::kjb_seed_rand_2(exp.rand_seed);
+    ivi_c::ivi_seed_rand(exp.rand_seed, exp.rand_seed);
+    ivi_c::ivi_seed_rand_2(exp.rand_seed);
     ergo::global_rng<boost::mt19937>().seed(exp.rand_seed);
     srand(exp.rand_seed);
     std::string outdir_base = exp.out_dp;
@@ -156,7 +156,7 @@ int main(int argc, const char** argv)
                 if(all_data.back().observables.find(obs_name) 
                         == all_data.back().observables.end())
                 {
-                    KJB_THROW_3(Illegal_argument,
+                    IVI_THROW_3(Illegal_argument,
                             "the observable %s is not provided in the data file.",
                             (obs_name.c_str()));
                 }
@@ -165,7 +165,7 @@ int main(int argc, const char** argv)
     }
 
     // hack to make Condor respect the output
-    ETX(kjb_c::kjb_mkdir(outdir_base.c_str()));
+    ETX(ivi_c::ivi_mkdir(outdir_base.c_str()));
     std::ofstream touch((outdir_base + DIR_STR + "invocation.txt").c_str());
     touch << "Program invocation:\n" << argv[0] << ' ' << ' '
           << outdir_base << '\n';

@@ -23,7 +23,7 @@
 #include "dbn_cpp/experiment.h"
 #include "dbn_cpp/options.h"
 
-using namespace kjb::ties;
+using namespace ivi::ties;
 
 int main(int argc, const char** argv)
 {

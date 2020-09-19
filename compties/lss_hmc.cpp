@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_hmc.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: lss_hmc.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <l/l_sys_debug.h>
 #include <l_cpp/l_exception.h>
@@ -32,7 +32,7 @@
 
 #include <iostream>
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -50,8 +50,8 @@
 #include "dbn_cpp/sample_lss.h"
 
 using namespace ergo;
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -82,20 +82,20 @@ void process_options(int argc, const char** argv);
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
     {
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         // process options
         process_options(argc, argv);
 
         // random seed
         seed_sampling_rand(rand_seed);
-        kjb_c::kjb_seed_rand_2(rand_seed);
+        ivi_c::ivi_seed_rand_2(rand_seed);
         srand(rand_seed);
         ergo::global_rng<boost::mt19937>().seed(rand_seed);
 
@@ -182,7 +182,7 @@ int main(int argc, const char** argv)
             // means
             const std::vector<Vector>& preds = cur_lss.get_predictors();
             size_t num_params = group_params.pred_coefs.size();
-            KJB(ASSERT(group_params.pred_coefs.size() == preds.size()));
+            IVI(ASSERT(group_params.pred_coefs.size() == preds.size()));
             for(size_t i = 0; i < num_params; i++)
             {
                 double val = dot(preds[i], group_params.pred_coefs[i]);
@@ -252,7 +252,7 @@ int main(int argc, const char** argv)
         std::cout << "creating output directory\n";
         boost::format out_fmt(out_dp + "/%04d");
         out_dp = (out_fmt % data.dyid).str();
-        ETX(kjb_c::kjb_mkdir(out_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(out_dp.c_str()));
         string log_fname = out_dp + "/sample_log.txt";
         string bst_fname = out_dp + "/ll.txt";
 
@@ -260,11 +260,11 @@ int main(int argc, const char** argv)
         ofstream bst_fs(bst_fname.c_str(), std::ofstream::app);
         if(log_fs.fail())
         {
-            KJB_THROW_3(IO_error, "Can't open file %s", (log_fname.c_str()));
+            IVI_THROW_3(IO_error, "Can't open file %s", (log_fname.c_str()));
         }
         if(log_fs.fail())
         {
-            KJB_THROW_3(IO_error, "Can't open file %s", (bst_fname.c_str()));
+            IVI_THROW_3(IO_error, "Can't open file %s", (bst_fname.c_str()));
         }
         // recorders
         step.add_recorder(make_best_sample_recorder(&best_lss).replace());
@@ -282,11 +282,11 @@ int main(int argc, const char** argv)
 
         if(write_samples)
         {
-            ETX(kjb_c::kjb_mkdir(samples_dir.c_str()));
+            ETX(ivi_c::ivi_mkdir(samples_dir.c_str()));
         }
         if(write_proposals)
         {
-            ETX(kjb_c::kjb_mkdir(proposals_dir.c_str()));
+            ETX(ivi_c::ivi_mkdir(proposals_dir.c_str()));
             step.store_proposed(true);
         }
 
@@ -353,7 +353,7 @@ int main(int argc, const char** argv)
                                                          out_dp);
         lss_all.write(string(out_dp + "/all_states"));
         best_lss.write(out_dp);
-        long st = kjb_c::get_real_time();
+        long st = ivi_c::get_real_time();
 
         // compute the error 
         std::vector<Vector> obs_errors;
@@ -366,9 +366,9 @@ int main(int argc, const char** argv)
         std::cout << "Exectution time fitting: " << st / 1000.0 << "s" << std::endl;
 
         // Compute the predictive distribution
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         string sample_dp(out_dp + "/pred_samples");
-        ETX(kjb_c::kjb_mkdir(sample_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(sample_dp.c_str()));
         string sample_target_fp(sample_dp + "/ll.txt");
         string sample_log_fp(sample_dp + "/sample_log.txt");
         size_t num_samples = 500;
@@ -405,7 +405,7 @@ int main(int argc, const char** argv)
         }
         ofs << endl;
 
-        st = kjb_c::get_real_time();
+        st = ivi_c::get_real_time();
         std::cout << "Execution time of predicting samples: " << st / 1000.0 << "s" << std::endl;
     }
     catch(Option_exception& e)
@@ -553,7 +553,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const po::error& err)
     {
-        throw kjb::Exception(err.what());
+        throw ivi::Exception(err.what());
     }    
     catch(const exception& ex)
     {

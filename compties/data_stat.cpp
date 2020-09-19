@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: data_stat.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: data_stat.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <l/l_sys_io.h>
 #include <l_cpp/l_exception.h>
@@ -39,8 +39,8 @@
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/util.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)

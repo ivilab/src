@@ -13,8 +13,8 @@
 #include "dbn_cpp/util.h"
 #include "dbn_cpp/linear_state_space.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)
@@ -40,7 +40,7 @@ int main(int argc, const char** argv)
         for(size_t i = min_id; i <= max_id ; i++)
         {
             string fname = (data_fmt % i).str();
-            if(kjb_c::is_file(fname.c_str()))
+            if(ivi_c::is_file(fname.c_str()))
             {
                 data.push_back(parse_data(fname));
             }
@@ -49,7 +49,7 @@ int main(int argc, const char** argv)
         ofstream out_ofs(out_file.c_str());
         if(out_ofs.fail())
         {
-            KJB_THROW_3(IO_error, "Can't open file %s", (out_file.c_str()));
+            IVI_THROW_3(IO_error, "Can't open file %s", (out_file.c_str()));
         }
 
         for(size_t d = 0; d < data.size(); d++)
@@ -73,7 +73,7 @@ int main(int argc, const char** argv)
                 boost::format param_fp_fmt(exp_dir + "/%04d/%02d-%02d/com_params.txt");
                 string param_fp = (param_fp_fmt % dyid % start % end).str();
 
-                if(!kjb_c::is_file(param_fp.c_str())) continue;
+                if(!ivi_c::is_file(param_fp.c_str())) continue;
 
                 Linear_state_space lss;
                 lss.read(param_fp);

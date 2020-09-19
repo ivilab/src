@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: synthetic_lss.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: synthetic_lss.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <p/p_plot.h>
@@ -31,7 +31,7 @@
 #include <ostream>
 
 #include <boost/lexical_cast.hpp>
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -47,8 +47,8 @@
 #include "dbn_cpp/experiment.h"
 #include "dbn_cpp/util.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 size_t num_lss;
@@ -65,9 +65,9 @@ void process_options(int argc, const char** argv);
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     try
     {
@@ -85,8 +85,8 @@ int main(int argc, const char** argv)
         string data_dp(out_dir + "/data/");
         string lss_dp(out_dir + "/lss/");
 
-        ETX(kjb_c::kjb_mkdir(data_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(lss_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(data_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(lss_dp.c_str()));
 
 
         // BMI distributions 
@@ -191,7 +191,7 @@ int main(int argc, const char** argv)
             {
                 string vis_dp = (boost::format(out_dir + "/plots/%04d/") 
                                     % (data.dyid)).str();
-                ETX(kjb_c::kjb_mkdir(vis_dp.c_str()));
+                ETX(ivi_c::ivi_mkdir(vis_dp.c_str()));
                 plot_data_and_model(data, lss, vis_dp, false);
             }
         }
@@ -286,7 +286,7 @@ void process_options(int argc, const char** argv)
                       << "For questions or complaints please contact "
                       << "jguan1@email.arizona.edu.\n" << std::endl;
 
-            //kjb_c::kjb_cleanup();
+            //ivi_c::ivi_cleanup();
             exit(EXIT_SUCCESS);
         }
 
@@ -302,7 +302,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const bpo::error& err)
     {
-        KJB_THROW_2(Exception, err.what());
+        IVI_THROW_2(Exception, err.what());
     }    
     catch(const std::exception& ex)
     {

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: cross_validate.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: cross_validate.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <cstdlib>
 #include "dbn_cpp/cross_validate_util.h"
@@ -26,7 +26,7 @@
 #include "dbn_cpp/options.h"
 #include "dbn_cpp/time_util.h"
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #include <ergo/record.h>
 #else
@@ -36,17 +36,17 @@
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/real_data_parser.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     try
     {
@@ -67,8 +67,8 @@ int main(int argc, const char** argv)
 
 
         // set random seed 
-        kjb_c::kjb_seed_rand(exp.rand_seed, exp.rand_seed);
-        kjb_c::kjb_seed_rand_2(exp.rand_seed);
+        ivi_c::ivi_seed_rand(exp.rand_seed, exp.rand_seed);
+        ivi_c::ivi_seed_rand_2(exp.rand_seed);
         ergo::global_rng<boost::mt19937>().seed(exp.rand_seed);
         srand(exp.rand_seed);
 
@@ -89,7 +89,7 @@ int main(int argc, const char** argv)
             string outdir_base = exp.out_dp;
             string data_dir = exp.out_dp + "../data/";
             // hack to make Condor respect the output
-            ETX(kjb_c::kjb_mkdir(outdir_base.c_str()));
+            ETX(ivi_c::ivi_mkdir(outdir_base.c_str()));
             ofstream touch((outdir_base + "/invocation.txt").c_str());
             touch << "Program invocation:\n" << argv[0] << ' ' << ' '
                   << outdir_base << '\n';

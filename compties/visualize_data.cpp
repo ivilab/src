@@ -32,8 +32,8 @@
 #include "dbn_cpp/coupled_oscillator.h"
 #include "dbn_cpp/util.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)

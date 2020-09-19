@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: test_lss_gradient.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: test_lss_gradient.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
@@ -31,7 +31,7 @@
 
 #include <iostream>
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -50,8 +50,8 @@
 #define VERBOSE 0
 
 using namespace ergo;
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 double grad_step_size;
@@ -74,9 +74,9 @@ void process_options(int argc, const char** argv);
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
@@ -85,8 +85,8 @@ int main(int argc, const char** argv)
         process_options(argc, argv);
         cout << " random-seed: " << rand_seed << endl;
         seed_sampling_rand(rand_seed);
-        kjb_c::kjb_seed_rand(rand_seed, rand_seed);
-        kjb_c::kjb_seed_rand_2(rand_seed);
+        ivi_c::ivi_seed_rand(rand_seed, rand_seed);
+        ivi_c::ivi_seed_rand_2(rand_seed);
         ergo::global_rng<boost::mt19937>().seed(rand_seed);
 
         // Read in data
@@ -175,10 +175,10 @@ int main(int argc, const char** argv)
         const double epsilon = 1e-4;
         for(size_t i = 0; i < N; i++)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             cur_lss.changed_index() = 0;
             vector<double> g_mt = gradient_mt(cur_lss);
-            t += kjb_c::get_real_time();  
+            t += ivi_c::get_real_time();  
 
             Vector G2(g_mt.begin(), g_mt.end());
             double diff = vector_distance(G1, G2);
@@ -194,10 +194,10 @@ int main(int argc, const char** argv)
         t = 0; 
         for(size_t i = 0; i < N; i++)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             cur_lss.changed_index() = 0;
             vector<double> g1 = gradient(cur_lss);
-            t += kjb_c::get_real_time();  
+            t += ivi_c::get_real_time();  
         }
         double psgt = t / 1000.0;
         cout << "Average Time for serial gradient: " << psgt/N << endl;
@@ -313,7 +313,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const po::error& err)
     {
-        throw kjb::Exception(err.what());
+        throw ivi::Exception(err.what());
     }    
     catch(const exception& ex)
     {

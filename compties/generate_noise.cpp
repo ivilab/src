@@ -48,8 +48,8 @@
 #define DAMP_2 4
 #define COUP_2 5
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 string in_dir;
@@ -80,14 +80,14 @@ void generate_moderators
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    //kjb_c::kjb_init();
-    //kjb_c::kjb_l_set("heap-checking", "off");
-    //kjb_c::kjb_l_set("initialization-checking", "off");
+    //ivi_c::ivi_init();
+    //ivi_c::ivi_l_set("heap-checking", "off");
+    //ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
     {
-        kjb_c::kjb_seed_rand_2_with_tod();
+        ivi_c::ivi_seed_rand_2_with_tod();
         process_options(argc, argv);
 
         std::string lss_set_dp(argv[1]);
@@ -186,7 +186,7 @@ int main(int argc, const char** argv)
         lss_set.write(out_dir + "/lss/");
         // write out the data 
         string data_dir(out_dir + "/data/");
-        ETX(kjb_c::kjb_mkdir(data_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(data_dir.c_str()));
         cout << "writing out data: " << endl;
         const vector<Linear_state_space>& lss_vec = lss_set.lss_vec();
         if(use_group)
@@ -212,7 +212,7 @@ int main(int argc, const char** argv)
                     vis_dp = (boost::format(out_dir + "/plots/%d/%04d/")
                                     % gindex % all_data[i].dyid).str();
                 }
-                ETX(kjb_c::kjb_mkdir(vis_dp.c_str()));
+                ETX(ivi_c::ivi_mkdir(vis_dp.c_str()));
                 plot_data_and_model(all_data[i], lss_vec[i], vis_dp, false);
                 std::cout << "finish visualize " << vis_dp << std::endl;
             }
@@ -377,7 +377,7 @@ void process_options(int argc, const char** argv)
                       << "For questions or complaints please contact "
                       << "jguan1@email.arizona.edu.\n" << endl;
 
-            //kjb_c::kjb_cleanup();
+            //ivi_c::ivi_cleanup();
             exit(EXIT_SUCCESS);
         }
         if(vm.count("num-groups"))
@@ -397,7 +397,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const bpo::error& err)
     {
-        KJB_THROW_2(Exception, err.what());
+        IVI_THROW_2(Exception, err.what());
     }    
     catch(const exception& ex)
     {

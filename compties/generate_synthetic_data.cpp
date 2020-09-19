@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: generate_synthetic_data.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: generate_synthetic_data.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <p/p_plot.h>
@@ -48,8 +48,8 @@
 #define DAMP_2 4
 #define COUP_2 5
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 string out_dir;
@@ -257,14 +257,14 @@ std::vector<Matrix> get_coef_covariances
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    //kjb_c::kjb_init();
-    //kjb_c::kjb_l_set("heap-checking", "off");
-    //kjb_c::kjb_l_set("initialization-checking", "off");
+    //ivi_c::ivi_init();
+    //ivi_c::ivi_l_set("heap-checking", "off");
+    //ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
     {
-        kjb_c::kjb_seed_rand_2_with_tod();
+        ivi_c::ivi_seed_rand_2_with_tod();
         process_options(argc, argv);
 
         // the output dirs
@@ -373,7 +373,7 @@ int main(int argc, const char** argv)
                 for(size_t j = 0; j < init_dists.size(); j++)
                 {
                     double init_state = sample(init_dists[j]);
-                    KJB(ASSERT(j < init_states[i].size()));
+                    IVI(ASSERT(j < init_states[i].size()));
                     init_states[i][j] = init_state; 
                 }
 
@@ -407,7 +407,7 @@ int main(int argc, const char** argv)
                                 + boost::lexical_cast<std::string>(g);
                 group_map.insert(Group_map_entry(g, group_str));
             }
-            kjb_c::kjb_mkdir(data_dir.c_str());
+            ivi_c::ivi_mkdir(data_dir.c_str());
             write_group(group_map, data_dir);
         }
         Lss_set lss_set(ids,
@@ -499,7 +499,7 @@ int main(int argc, const char** argv)
         while(counts < max_counts && resample) 
         {
             std::cout << "counts: " << counts << std::endl;
-            kjb_c::kjb_seed_rand_2_with_tod();
+            ivi_c::ivi_seed_rand_2_with_tod();
             long ltime = time(NULL);
             int stime = (unsigned) ltime /2;  
             srand(stime);
@@ -671,7 +671,7 @@ int main(int argc, const char** argv)
         // write out the lss_set
         lss_set.write(lss_dir);
         // write out the data 
-        ETX(kjb_c::kjb_mkdir(data_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(data_dir.c_str()));
         cout << "writing out data: " << endl;
         const vector<Linear_state_space>& lss_vec = lss_set.lss_vec();
         if(use_group)
@@ -696,7 +696,7 @@ int main(int argc, const char** argv)
                     vis_dp = (boost::format(out_dir + "/plots/%d/%04d/")
                                     % gindex % all_data[i].dyid).str();
                 }
-                ETX(kjb_c::kjb_mkdir(vis_dp.c_str()));
+                ETX(ivi_c::ivi_mkdir(vis_dp.c_str()));
                 plot_data_and_model(all_data[i], lss_vec[i], vis_dp, false);
                 std::cout << "finish visualize " << vis_dp << std::endl;
             }
@@ -874,7 +874,7 @@ void process_options(int argc, const char** argv)
                       << "For questions or complaints please contact "
                       << "jguan1@email.arizona.edu.\n" << endl;
 
-            //kjb_c::kjb_cleanup();
+            //ivi_c::ivi_cleanup();
             exit(EXIT_SUCCESS);
         }
         if(vm.count("num-groups"))
@@ -894,7 +894,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const bpo::error& err)
     {
-        KJB_THROW_2(Exception, err.what());
+        IVI_THROW_2(Exception, err.what());
     }    
     catch(const exception& ex)
     {

@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: parse_bmi_data.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: parse_bmi_data.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include "l/l_sys_io.h"
 #include <l_cpp/l_exception.h>
@@ -41,8 +41,8 @@
 #include "dbn_cpp/data.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 
 
@@ -72,7 +72,7 @@ int main(int argc, const char** argv)
     for(size_t i = min_id; i <= max_id; i++)
     {
         string fname = (data_fmt % i).str();
-        if(kjb_c::is_file(fname.c_str()))
+        if(ivi_c::is_file(fname.c_str()))
         {
             Data data = parse_data(fname);
             // clear out the dial values
@@ -123,7 +123,7 @@ int main(int argc, const char** argv)
     }
    
     boost::format out_fmt(output_dir + "/%04d.txt");
-    ETX(kjb_c::kjb_mkdir(output_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(output_dir.c_str()));
     map<size_t, Data>::const_iterator it = info.begin();
     for(; it != info.end(); it++)
     {

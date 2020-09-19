@@ -18,8 +18,8 @@
 #include "dbn_cpp/linear_state_space.h"
 #include "dbn_cpp/base_line_models.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)

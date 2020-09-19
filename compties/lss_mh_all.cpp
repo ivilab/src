@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_mh_all.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: lss_mh_all.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -49,17 +49,17 @@
 #include "dbn_cpp/base_line_models.h"
 
 using namespace ergo;
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 /** @brief  Main, baby! */
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
@@ -68,7 +68,7 @@ int main(int argc, const char** argv)
 
         // random seed
         seed_sampling_rand(exp.rand_seed);
-        kjb_c::kjb_seed_rand_2(exp.rand_seed);
+        ivi_c::ivi_seed_rand_2(exp.rand_seed);
         srand(exp.rand_seed);
         ergo::global_rng<boost::mt19937>().seed(exp.rand_seed);
 

@@ -18,17 +18,17 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set_posterior.h 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: lss_set_posterior.h 25797 2020-09-19 21:14:43Z kobus $ */
 
-#ifndef KJB_TIES_LSS_SET_POSTERIOR_H
-#define KJB_TIES_LSS_SET_POSTERIOR_H
+#ifndef IVI_TIES_LSS_SET_POSTERIOR_H
+#define IVI_TIES_LSS_SET_POSTERIOR_H
 
 #include "dbn_cpp/lss_set.h"
 #include "dbn_cpp/prior.h"
 #include "dbn_cpp/likelihood.h"
 #include <vector>
 
-namespace kjb {
+namespace ivi {
 namespace ties {
 
 /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
@@ -76,7 +76,7 @@ private:
 */
 
 
-}} // namespace kjb::ties
+}} // namespace ivi::ties
 
-#endif // KJB_TIES_LSS_SET_POSTERIOR_H
+#endif // IVI_TIES_LSS_SET_POSTERIOR_H
 

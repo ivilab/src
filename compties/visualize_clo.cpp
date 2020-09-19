@@ -34,13 +34,13 @@
 #include <boost/lexical_cast.hpp>
 #include "dbn_cpp/linear_state_space.h"
 
-#ifndef KJB_HAVE_GLUT
+#ifndef IVI_HAVE_GLUT
 #error "visualize_clo  program requires glut library"
 #endif 
 
-using namespace kjb;
+using namespace ivi;
 using namespace std;
-using namespace kjb::ties;
+using namespace ivi::ties;
 
 // declarations
 //// glut functions

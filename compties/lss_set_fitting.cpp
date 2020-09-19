@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set_fitting.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: lss_set_fitting.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/linear_state_space.h"
@@ -32,28 +32,28 @@
 #include <boost/random.hpp>
 #include <boost/thread.hpp>
 
-#ifndef KJB_HAVE_ERGO
+#ifndef IVI_HAVE_ERGO
 #error "You need libergo to use this program"
 #endif
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     Ties_experiment exp = experiment_from_cl_options(argc, argv);
     exp.run.iter_log_fname = exp.out_dp + "/log.txt";
 
     // set random seed 
     seed_sampling_rand(exp.rand_seed);
-    kjb_c::kjb_seed_rand(exp.rand_seed, exp.rand_seed);
-    kjb_c::kjb_seed_rand_2(exp.rand_seed);
+    ivi_c::ivi_seed_rand(exp.rand_seed, exp.rand_seed);
+    ivi_c::ivi_seed_rand_2(exp.rand_seed);
     ergo::global_rng<boost::mt19937>().seed(exp.rand_seed);
 
     cout << " Initilizing ...\n";
@@ -101,7 +101,7 @@ int main(int argc, const char** argv)
     const std::vector<Data>& data = lss_set_sampler.data();
 
     string char_out_dir(exp.out_dp + "/characteristic_models/");
-    ETX(kjb_c::kjb_mkdir(char_out_dir.c_str()));
+    ETX(ivi_c::ivi_mkdir(char_out_dir.c_str()));
 
     // get the moderator reprsentative
     vector<vector<pair<double, double> > > mods 
@@ -137,7 +137,7 @@ int main(int argc, const char** argv)
     for(size_t i = 0; i < mods.size(); i++)
     {
         string sub_dir = (sub_fmt % i).str();
-        ETX(kjb_c::kjb_mkdir(sub_dir.c_str()));
+        ETX(ivi_c::ivi_mkdir(sub_dir.c_str()));
         string info_fp = sub_dir + "/moderator_info.txt";
         ofstream info_ofs(info_fp.c_str());
         IFTD(info_ofs.is_open(), IO_error, "can't open file %s", 
@@ -289,7 +289,7 @@ int main(int argc, const char** argv)
     ///////////////////////////////////////////////////////////////////
 
     // record the testing errors for each couple 
-    kjb_c::init_real_time();
+    ivi_c::init_real_time();
     string test_fp("err_couples.txt");
     const std::vector<Linear_state_space>& lss_set = best_lss_set.lss_vec();
     size_t num_lss = lss_set.size();
@@ -392,7 +392,7 @@ int main(int argc, const char** argv)
         obs_sample_errors[i] = stat.first;
     }
    
-    long st = kjb_c::get_real_time();
+    long st = ivi_c::get_real_time();
     std::cout << "Reporting error takes: " << st / (1000.0) << " s.\n";
 
     std::cout << "Plot each model and data \n";

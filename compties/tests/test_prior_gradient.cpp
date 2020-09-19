@@ -16,7 +16,7 @@
    |  Author: Jinyan Guan 
  * =========================================================================== */
 
-/* $Id: test_prior_gradient.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: test_prior_gradient.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <l/l_sys_time.h>
 #include <l_cpp/l_test.h>
@@ -39,8 +39,8 @@
 #define VERBOSE 0
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 Data_options data_opt;
 Lss_options lss_opt;
@@ -63,9 +63,9 @@ void reset(Lss_set& lss_set)
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     try
     {
@@ -199,9 +199,9 @@ int main(int argc, const char** argv)
         std::cout << "=========== SERIAL  =======================\n";
         for(size_t i = 0; i < N; i++)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             vector<double> g1 = grad(lss_set);
-            t += kjb_c::get_real_time();  
+            t += ivi_c::get_real_time();  
 
             Vector G1(g1.begin(), g1.end());
             double diff = vector_distance(G1, G);
@@ -218,9 +218,9 @@ int main(int argc, const char** argv)
         t = 0;
         for(size_t i = 0; i < N; i++)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             vector<double> g_mt = grad_mt(lss_set);
-            t += kjb_c::get_real_time();  
+            t += ivi_c::get_real_time();  
 
             Vector G_mt(g_mt.begin(), g_mt.end());
             double diff = vector_distance(G, G_mt);
@@ -346,7 +346,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const po::error& err)
     {
-        throw kjb::Exception(err.what());
+        throw ivi::Exception(err.what());
     }    
     catch(const exception& ex)
     {

@@ -28,7 +28,7 @@
 #include <vector>
 #include <utility>
 #include <boost/lexical_cast.hpp>
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -36,8 +36,8 @@
 
 #include "dbn_cpp/linear_state_space.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 double freq_mean;
@@ -75,17 +75,17 @@ int main(int argc, const char** argv)
         string plot_out_dp(out_dp + "/plot/");
         boost::format lss_out_fmt(lss_out_dp + "/%04d/");
         boost::format plot_out_fmt(plot_out_dp + "/%04d.ps");
-        ETX(kjb_c::kjb_mkdir(lss_out_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(plot_out_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(lss_out_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(plot_out_dp.c_str()));
 
         double init_mass = -0.02;
         double last_coupling = 0.02;
         double step = (last_coupling - init_mass)/num_samples;
         for(size_t i = 0; i < num_samples; i++)
         {
-            int id = kjb_c::plot_open();
-            kjb_c::set_colour_plot();
-            kjb_c::plot_set_range(id, times.front(), times.back(), -5.0, 5.0);
+            int id = ivi_c::plot_open();
+            ivi_c::set_colour_plot();
+            ivi_c::plot_set_range(id, times.front(), times.back(), -5.0, 5.0);
 
             Double_v com_params(6, 0.0);
             // frequency
@@ -120,17 +120,17 @@ int main(int argc, const char** argv)
             string legend_name = "women " + boost::lexical_cast<string>(com_params[0]) + " "  
                                           + boost::lexical_cast<string>(com_params[1]) + " "
                                           + boost::lexical_cast<string>(com_params[2]);
-            kjb_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
+            ivi_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
                               w_y_values.get_c_vector(), legend_name.c_str());
             legend_name = "men " + boost::lexical_cast<string>(com_params[3]) + " "  
                                  + boost::lexical_cast<string>(com_params[4]) + " "
                                  + boost::lexical_cast<string>(com_params[5]);
-            kjb_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
+            ivi_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
                               m_y_values.get_c_vector(), legend_name.c_str());
             std::string out_fp = (lss_out_fmt % i).str();
             lss.write(out_fp);
             string figure_name = (plot_out_fmt % i).str();
-            kjb_c::save_plot(id, figure_name.c_str());
+            ivi_c::save_plot(id, figure_name.c_str());
         }
     }
     catch(Option_exception& e)
@@ -232,7 +232,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const po::error& err)
     {
-        throw kjb::Exception(err.what());
+        throw ivi::Exception(err.what());
     }    
     catch(const exception& ex)
     {

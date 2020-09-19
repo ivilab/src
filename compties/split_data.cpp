@@ -18,9 +18,9 @@
 |
 * =========================================================================== */
 
-/* $Id: split_data.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: split_data.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
-#ifndef KJB_HAVE_ERGO
+#ifndef IVI_HAVE_ERGO
 #error "You need libergo to use this program"
 #endif
 
@@ -38,17 +38,17 @@
 #include <algorithm>
 
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     if(argc < 3)
     {
@@ -61,10 +61,10 @@ int main(int argc, const char** argv)
     int seed = 0;
     if(argc >= 4)
         seed = atoi(argv[3]);
-    ETX(kjb_c::kjb_mkdir(out_dp.c_str()));
+    ETX(ivi_c::ivi_mkdir(out_dp.c_str()));
     //seed_sampling_rand(seed);
-    kjb_c::kjb_seed_rand(seed, seed);
-    kjb_c::kjb_seed_rand_2(seed);
+    ivi_c::ivi_seed_rand(seed, seed);
+    ivi_c::ivi_seed_rand_2(seed);
     srand(seed);
 
     vector<size_t> ids = parse_list(list_fp);

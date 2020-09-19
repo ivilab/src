@@ -18,9 +18,9 @@
 |
 * =========================================================================== */
 
-/* $Id: run_fold.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: run_fold.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
-#ifndef KJB_HAVE_ERGO
+#ifndef IVI_HAVE_ERGO
 #error "You need libergo to use this program"
 #endif
 
@@ -44,16 +44,16 @@
 #include <boost/random.hpp>
 #include <boost/thread.hpp>
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     try
     {
@@ -73,8 +73,8 @@ int main(int argc, const char** argv)
         }
 
         // set random seed 
-        kjb_c::kjb_seed_rand(exp.rand_seed, exp.rand_seed);
-        kjb_c::kjb_seed_rand_2(exp.rand_seed);
+        ivi_c::ivi_seed_rand(exp.rand_seed, exp.rand_seed);
+        ivi_c::ivi_seed_rand_2(exp.rand_seed);
         ergo::global_rng<boost::mt19937>().seed(exp.rand_seed);
         srand(exp.rand_seed);
       

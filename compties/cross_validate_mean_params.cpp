@@ -20,7 +20,7 @@
 
 /* $Id: cross_validate_evaluate.cpp 20194 2015-12-19 21:51:31Z predoehl $ */
 
-#ifndef KJB_HAVE_ERGO
+#ifndef IVI_HAVE_ERGO
 #error "You need libergo to use this program"
 #endif
 
@@ -42,16 +42,16 @@
 #include <boost/bind.hpp>
 
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     Ties_experiment exp = experiment_from_cl_options(argc, argv);
 
@@ -77,7 +77,7 @@ int main(int argc, const char** argv)
     size_t K = fold_dirs.size();
 
     std::string err_dp = exp.out_dp + "/errors/";
-    ETX(kjb_c::kjb_mkdir(err_dp.c_str()));
+    ETX(ivi_c::ivi_mkdir(err_dp.c_str()));
 
     // for all the observables 
     const std::vector<std::string>& obs_names = exp.likelihood.obs_names;

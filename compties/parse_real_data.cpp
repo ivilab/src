@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: parse_real_data.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: parse_real_data.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include "l/l_sys_io.h"
 #include "l/l_init.h"
@@ -36,7 +36,7 @@
 #include <ostream>
 #include <iomanip>
 
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #include <boost/foreach.hpp>
 #else
@@ -49,8 +49,8 @@
 #include "dbn_cpp/util.h"
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 vector<string> moderators;
 vector<string> observables;
@@ -77,9 +77,9 @@ void process_options(int argc, const char* argv[]);
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
 
     try
@@ -332,7 +332,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const po::error& err)
     {
-        throw kjb::Exception(err.what());
+        throw ivi::Exception(err.what());
     }    
     catch(const exception& ex)
     {

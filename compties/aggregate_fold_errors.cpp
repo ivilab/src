@@ -34,16 +34,16 @@
 #include <boost/thread.hpp>
 
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     Ties_experiment exp = experiment_from_cl_options(argc, argv);
 
@@ -75,7 +75,7 @@ int main(int argc, const char** argv)
     }
 
     std::string err_dp = exp.out_dp + "/errors/";
-    ETX(kjb_c::kjb_mkdir(err_dp.c_str()));
+    ETX(ivi_c::ivi_mkdir(err_dp.c_str()));
     // for all the observables 
     const std::vector<std::string>& obs_names = exp.likelihood.obs_names;
     size_t num_obs = obs_names.size();

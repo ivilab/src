@@ -28,7 +28,7 @@
 #include <vector>
 #include <utility>
 #include <boost/lexical_cast.hpp>
-#ifdef KJB_HAVE_BST_POPTIONS
+#ifdef IVI_HAVE_BST_POPTIONS
 #include <boost/program_options.hpp>
 #else
 #error "Need boost program options"
@@ -37,8 +37,8 @@
 #include "dbn_cpp/linear_state_space.h"
 #include "dbn_cpp/util.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 double freq_mean;
@@ -105,19 +105,19 @@ int main(int argc, const char** argv)
         string plot_out_dp(out_dp + "/plot/");
         boost::format lss_out_fmt(lss_out_dp + "/%04d/");
         boost::format plot_out_fmt(plot_out_dp + "/%04d.ps");
-        ETX(kjb_c::kjb_mkdir(lss_out_dp.c_str()));
-        ETX(kjb_c::kjb_mkdir(plot_out_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(lss_out_dp.c_str()));
+        ETX(ivi_c::ivi_mkdir(plot_out_dp.c_str()));
 
         double init_mass = -0.02;
         double last_coupling = 0.02;
         double step = (last_coupling - init_mass)/sample_length;
         sample_length = sample_length > times.size() ? times.size() : sample_length;
-        int id = kjb_c::plot_open();
-        kjb_c::set_colour_plot();
-        kjb_c::plot_set_range(id, times.front(), times.back(), -5.0, 5.0);
+        int id = ivi_c::plot_open();
+        ivi_c::set_colour_plot();
+        ivi_c::plot_set_range(id, times.front(), times.back(), -5.0, 5.0);
         for(size_t i = 1; i <= 20; i+=2)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             long time = 0;
             for(size_t t = 0; t < i; t++)
             {
@@ -128,7 +128,7 @@ int main(int argc, const char** argv)
                         std::ostream_iterator<size_t>(cout, " "));
                 std::cout << "\n";
                 State_vec_vec values = lss.get_states(sampled_indices);
-                time += kjb_c::get_real_time();
+                time += ivi_c::get_real_time();
                 // Plot 
                 // create y vectors
                 Vector w_y_values((int)values.size(), 0.0);
@@ -140,14 +140,14 @@ int main(int argc, const char** argv)
                 }
                 Double_v sampled_times = lss.get_time_values(sampled_indices);
                 string legend_name = "";
-                kjb_c::plot_points(id, Vector(sampled_times.begin(), sampled_times.end()).get_c_vector(), 
+                ivi_c::plot_points(id, Vector(sampled_times.begin(), sampled_times.end()).get_c_vector(), 
                                   w_y_values.get_c_vector(), legend_name.c_str());
                 legend_name = ""; 
-                kjb_c::plot_points(id, Vector(sampled_times.begin(), sampled_times.end()).get_c_vector(), 
+                ivi_c::plot_points(id, Vector(sampled_times.begin(), sampled_times.end()).get_c_vector(), 
                                   m_y_values.get_c_vector(), legend_name.c_str());
             }
             string figure_name = (plot_out_fmt % i).str();
-            kjb_c::save_plot(id, figure_name.c_str());
+            ivi_c::save_plot(id, figure_name.c_str());
         }
     }
     catch(Option_exception& e)
@@ -249,7 +249,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const po::error& err)
     {
-        throw kjb::Exception(err.what());
+        throw ivi::Exception(err.what());
     }    
     catch(const exception& ex)
     {

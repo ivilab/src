@@ -32,8 +32,8 @@
 #include "dbn_cpp/util.h"
 #include "dbn_cpp/adapter.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 void test_true(const State_vec_vec& states_1, const State_vec_vec& states_2)
@@ -55,7 +55,7 @@ State_type get_init_state(size_t num_osc)
     State_type state(2 * num_osc);
     for(size_t i = 0; i < state.size(); i++)
     {
-        state[i] = kjb_c::kjb_rand();
+        state[i] = ivi_c::ivi_rand();
     }
     return state;
 }
@@ -67,7 +67,7 @@ int main(int argc, const char** argv)
     {
         out_fp = argv[1];
     }
-    ETX(kjb_c::kjb_mkdir(out_fp.c_str()));
+    ETX(ivi_c::ivi_mkdir(out_fp.c_str()));
 
     Double_v times(400);
     vector<size_t> time_indices(times.size());

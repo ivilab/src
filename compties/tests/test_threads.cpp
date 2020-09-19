@@ -40,8 +40,8 @@
 #define VERBOSE 0
 
 using namespace std;
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 
 Data_options data_opt;
 Lss_options lss_opt;
@@ -66,9 +66,9 @@ void reset(Lss_set& lss_set)
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     try
     {
@@ -203,10 +203,10 @@ int main(int argc, const char** argv)
         double ll = 0.0;
         for(size_t i = 0; i < N; i++)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             Lss_set_posterior posterior(shared_prior, obs_prior, posteriors); 
             ll = posterior(lss_set);
-            st += kjb_c::get_real_time();
+            st += ivi_c::get_real_time();
             reset(lss_set);
         }
         cout << " SERIAL POSTERIOR: " << st * fac << endl;
@@ -217,9 +217,9 @@ int main(int argc, const char** argv)
                                               posteriors, j);
             for(size_t i = 0; i < N; i++)
             {
-                kjb_c::init_real_time();
+                ivi_c::init_real_time();
                 double ll_mt = posterior_mt(lss_set);
-                pt += kjb_c::get_real_time();
+                pt += ivi_c::get_real_time();
                 TEST_TRUE(fabs(ll - ll_mt) < FLT_EPSILON);
                 if(VERBOSE)
                 {
@@ -265,17 +265,17 @@ int main(int argc, const char** argv)
                                    sample_poly_terms);
         // SERIAL VERSION
         boost::exception_ptr ep;
-        kjb_c::init_real_time();
+        ivi_c::init_real_time();
         run_threads(person_thrd, 1, num_lss, ep);
-        st = kjb_c::get_real_time();
+        st = ivi_c::get_real_time();
         std::cout << "SERIAL VERSION: " << st / 1000.0 << std::endl;
 
         // THREADED VERSION
         for(size_t j = 2; j < 22; j++)
         {
-            kjb_c::init_real_time();
+            ivi_c::init_real_time();
             run_threads(person_thrd, j, num_lss, ep);
-            st = kjb_c::get_real_time();
+            st = ivi_c::get_real_time();
             std::cout << "THRADED VERSION: [ " <<  j << " ]:" << st / 1000.0 << std::endl;
         }
 
@@ -389,7 +389,7 @@ void process_options(int argc, const char** argv)
     }
     catch(const po::error& err)
     {
-        throw kjb::Exception(err.what());
+        throw ivi::Exception(err.what());
     }    
     catch(const exception& ex)
     {

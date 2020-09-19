@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: test_lss_2.cpp 22561 2019-06-09 00:05:52Z kobus $ */
+/* $Id: test_lss_2.cpp 25797 2020-09-19 21:14:43Z kobus $ */
 
 #include <m_cpp/m_vector.h>
 #include <p/p_plot.h>
@@ -29,8 +29,8 @@
 
 #include "dbn_cpp/linear_state_space.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 int main(int argc, const char** argv)
@@ -46,7 +46,7 @@ int main(int argc, const char** argv)
     cur_values(0, 0) = 0.5; cur_values(0, 1) = 0.5; 
     cur_values(0, 2) = 0.0; cur_values(0, 3) = 0.0;
 
-    kjb_c::set_max_num_plots(6);
+    ivi_c::set_max_num_plots(6);
     const double starting_time = 0.0;
     const double ending_time = 100.0;
     Double_v times;
@@ -60,9 +60,9 @@ int main(int argc, const char** argv)
 
     for(size_t i = 0; i < cur_values.get_num_rows(); i++)
     {
-        int id = kjb_c::plot_open();
-        kjb_c::set_colour_plot();
-        kjb_c::plot_set_range(id, starting_time, ending_time, -1.5, 1.5);
+        int id = ivi_c::plot_open();
+        ivi_c::set_colour_plot();
+        ivi_c::plot_set_range(id, starting_time, ending_time, -1.5, 1.5);
         for(size_t j = 0; j < 1; j++)
         {
             if(j == 0)
@@ -128,7 +128,7 @@ int main(int argc, const char** argv)
                 {
                     for(size_t j = 0; j < lss.polynomial_coefs()[i].size(); j++)
                     {
-                        lss.set_polynomial_coefs(i, j, kjb_c::kjb_rand());
+                        lss.set_polynomial_coefs(i, j, ivi_c::ivi_rand());
                     }
                 }
             }
@@ -144,15 +144,15 @@ int main(int argc, const char** argv)
                 m_y_values[k] = values[k][0][1];
             }
             string legend_name = "type" + boost::lexical_cast<string>(j) + " women";
-            kjb_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
+            ivi_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
                               w_y_values.get_c_vector(), legend_name.c_str());
             legend_name = "type" + boost::lexical_cast<string>(j) + " man";
-            kjb_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
+            ivi_c::plot_curve(id, Vector(times.begin(), times.end()).get_c_vector(), 
                               m_y_values.get_c_vector(), legend_name.c_str());
             lss.write("outputs/test_2/");
         }
         string figure_name = "outputs/Figure_" + boost::lexical_cast<string>(i+1) + ".ps";
-        kjb_c::save_plot(id, figure_name.c_str());
+        ivi_c::save_plot(id, figure_name.c_str());
     }
 
     return EXIT_SUCCESS;

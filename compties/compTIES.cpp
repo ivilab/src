@@ -22,7 +22,7 @@
 
 #include <cstdlib>
 
-#ifdef KJB_HAVE_ERGO
+#ifdef IVI_HAVE_ERGO
 #include <ergo/mh.h>
 #include <ergo/record.h>
 #else
@@ -38,8 +38,8 @@
 #include "dbn_cpp/real_data_parser.h"
 #include "dbn_cpp/lss_set_sampler.h"
 
-using namespace kjb;
-using namespace kjb::ties;
+using namespace ivi;
+using namespace ivi::ties;
 using namespace std;
 
 struct timespec begin_time; 
@@ -60,9 +60,9 @@ void report_time()
 int main(int argc, const char** argv)
 {
 #ifdef TEST
-    kjb_c::kjb_init();
-    kjb_c::kjb_l_set("heap-checking", "off");
-    kjb_c::kjb_l_set("initialization-checking", "off");
+    ivi_c::ivi_init();
+    ivi_c::ivi_l_set("heap-checking", "off");
+    ivi_c::ivi_l_set("initialization-checking", "off");
 #endif
     try
     {
@@ -74,8 +74,8 @@ int main(int argc, const char** argv)
         Ties_experiment exp = experiment_from_cl_options(argc, argv);
 
         // set random seed 
-        kjb_c::kjb_seed_rand(exp.rand_seed, exp.rand_seed);
-        kjb_c::kjb_seed_rand_2(exp.rand_seed);
+        ivi_c::ivi_seed_rand(exp.rand_seed, exp.rand_seed);
+        ivi_c::ivi_seed_rand_2(exp.rand_seed);
         ergo::global_rng<boost::mt19937>().seed(exp.rand_seed);
         srand(exp.rand_seed);
 
@@ -96,7 +96,7 @@ int main(int argc, const char** argv)
 
         std::cout << "data directory: " << exp.data.data_dp << std::endl;
         // Check the data directory
-        if(!kjb_c::is_directory(exp.data.data_dp.c_str()))
+        if(!ivi_c::is_directory(exp.data.data_dp.c_str()))
         {
             std::cerr << "No \"data\" directory inside the experiment directory: \n"
                       << exp.out_dp << "\n"
@@ -106,7 +106,7 @@ int main(int argc, const char** argv)
         }
 
         if(!exp.run_average_model && !exp.run_line_model && !exp.fit_all_data &&
-                !kjb_c::is_directory(exp.fold_info_dp.c_str()))
+                !ivi_c::is_directory(exp.fold_info_dp.c_str()))
         {
             std::cerr << "\"folds\" directory " << exp.fold_info_dp << " does not exit."
                       << "Exit the program ...\n";
@@ -171,7 +171,7 @@ int main(int argc, const char** argv)
                 for(size_t g = 0; g < exp.cluster.num_groups; g++)
                 {
                     std::string fp = data_groups[g] + "/" + list_fp;
-                    if(!kjb_c::is_file(fp.c_str()))
+                    if(!ivi_c::is_file(fp.c_str()))
                     {
                         std::cerr << "Data directory " << data_groups[g] 
                                   << " does not have a ids.txt file\n";
@@ -186,7 +186,7 @@ int main(int argc, const char** argv)
                 exp.data.id_list_fp.clear();
                 exp.data.id_list_fp.push_back(
                             std::string(exp.data.data_dp + "/ids.txt"));
-                if(!kjb_c::is_file(exp.data.id_list_fp[0].c_str()))
+                if(!ivi_c::is_file(exp.data.id_list_fp[0].c_str()))
                 {
                     std::cerr << "Data directory " << exp.data.id_list_fp[0] 
                               << " does not have ids.txt file \n";
@@ -200,7 +200,7 @@ int main(int argc, const char** argv)
 
             std::cout << "setting training percent to 1.0\n";
             exp.likelihood.training_percent = 1.0;
-            ETX(kjb_c::kjb_mkdir(exp.out_dp.c_str()));
+            ETX(ivi_c::ivi_mkdir(exp.out_dp.c_str()));
             Lss_set_sampler lss_set_sampler(exp);
             Lss_set best_lss_set = 
                     lss_set_sampler.train_model(exp.train_num_iterations);
