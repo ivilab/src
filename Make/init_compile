@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25791 2020-09-18 18:19:33Z kobus $
+# $Id: init_compile 25804 2020-09-19 22:05:01Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -73,17 +73,21 @@ set need_init_scripts = 1
 if ($?IVI_HAVE_INIT_SCRIPTS) then
     # If we are here, then we are likely using some of Kobus's environment. We
     # can assume the basics in IVI_HAVE_INIT_SCRIPTS, but it might have been
-    # updated, and to ease testing efforts, we want to be up to date.
+    #updated, and to ease testing efforts, we want to be up to date.
 
-    if ($?INTR_START_TIME_FILE) then
-        set init_scripts_is_new = `${MAKE_SCRIPT_PATH}test_older_than "${INTR_START_TIME_FILE}" "${IVI_SRC_PATH}Make/init_scripts"`
+    if ($?SHELL_START_TIME_FILE) then
+        if (-r "${SHELL_START_TIME_FILE}") then
+            set init_scripts_is_new = `${MAKE_SCRIPT_PATH}test_older_than "${SHELL_START_TIME_FILE}" "${IVI_SRC_PATH}Make/init_scripts"`
 
-        if (${init_scripts_is_new}) then
-            ${VERBOSE_ECHO} "Sourcing init_scripts as it is newer than this interactive shell."
-        else
-            ${VERBOSE_ECHO_2} "Script init_compile is not sourcing init_scripts because it has already been sourced and it has not been updated."
-            set need_init_scripts = 0
-        endif
+            if (${init_scripts_is_new}) then
+                ${VERBOSE_ECHO} "Sourcing init_scripts as it is newer than this interactive shell."
+            else
+                ${VERBOSE_ECHO_2} "Script init_compile is not sourcing init_scripts because it has already been sourced and it has not been updated."
+                set need_init_scripts = 0
+            endif
+        else 
+            ${VERBOSE_ECHO} "Script init_compile is sourcing init_scripts because we do not know if it has been updated."
+        endif 
     else     
         ${VERBOSE_ECHO} "Script init_compile is sourcing init_scripts because we do not know if it has been updated."
     endif 

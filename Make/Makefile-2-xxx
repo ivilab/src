@@ -1,15 +1,19 @@
 
 # Template for Makefile-2 for a library directory. Usually operated on by the
-# script ivi_add_makefiles. 
+# script ivi_add_makefiles or the build system. 
 #
-# The directory that we are in should have a different name than any IVI library
-# sub-dirs. 
+# If we are not in the main IVI library directory, then the directory that we
+# are in should have a different name than any IVI library sub-dirs. 
 #
-# Replace 'xxx' with the directory name, and XXX with the upper case
-# counterpart.  The string that replaces 'xxx' should not already be a sub-dir
-# of IVI library. 
+# Replace 'xxx' with the directory name, and XXX with the upper case counterpart
+# (not currently used).  The string that replaces 'xxx' should not already be a
+# sub-dir of IVI library. 
 #
-# Then, DELETE this comment block, because it is no longer a template! 
+# Then, DELETE_THIS_COMMENT_BLOCK, because it is no longer a template! 
+
+# Changes to the automatically built Makefile-2 in library directories will be
+# overwritten by the build processis. Hence, tweaks to Makefile-2 MUST BE USED
+# ONLY FOR TRANSITION. 
 
 all          : all_xxx
 dir_made     : dir_made_xxx
@@ -23,13 +27,21 @@ lint         : lint_xxx
 proto        : proto_xxx
 shared       : shared_xxx
 
-#
 # We include $(MAKE_PATH)Makefile-defs once per compile, so this include belongs
-# in Makefefile-2. Note that we rely on late binding of make variables, as
+# in Makefile-2. Note that we rely on late binding of make variables, as
 # the proper definition of symbols in $(MAKE_PATH)Makefile-defs require values in
 # Makefile-libs-needed$(VAR_CACHE_SUFFIX), which is included later. 
 #
 include $(MAKE_PATH)Makefile-defs
+
+################################################################################
+
+# We will usually need this rule for includes in Makefile-dirs 
+
+%/Makefile-include : $(MAKE_PATH)Makefile-include-xxx
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 60 $@ $(MAKE_SCRIPT_PATH)build_makefile_include $*
+
+################################################################################
 
 # This is for the case that Makefile-dirs does not exist.
 # Other updating is handled indirectly.
@@ -40,8 +52,10 @@ Makefile-dirs : $(MAKE_SCRIPT_PATH)build_makefile_dirs
 
 include Makefile-dirs
 
-include Makefile-include
+Makefile-include : $(MAKE_PATH)Makefile-include-xxx
+	$(MAKE_SCRIPT_PATH)ivi_lock_for_make 120 $@ $(MAKE_SCRIPT_PATH)build_makefile_include
 
+include Makefile-include
 
 init_clean:
 	$(MAKE_SCRIPT_PATH)clean_cache

@@ -13,9 +13,9 @@
 #     This script requires assumes that "init_scripts" has been sourced (or
 #     P_STDERR, IVI_TAIL, and IVI_AWK have been set by some other means). 
 #
-#     We implement this functionality with "awk", but wrapping this in a script
-#     means we can do something else if we run across a system where this does
-#     not work.
+#     We implement this functionality with "awk", but wrapping this capability
+#     in a script means we can do something else if we run across a system where
+#     this does not work.
 #
 # Notes:
 #     We could implement the ivi_cat_before/ivi_cat_after functionality with
@@ -26,8 +26,6 @@
 #     Kobus Barnard 
 #
 ##############################################################################
-
-# set echo
 
 set skip_first_line = 0
 

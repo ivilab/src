@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25775 2020-09-10 23:34:34Z kobus $
+# $Id: Makefile-program 25804 2020-09-19 22:05:01Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -364,6 +364,13 @@ Include_lines/sub_libs_needed : Include_lines/include_lines
 #
 .PHONY : sub_libs_needed
 sub_libs_needed: Include_lines/sub_libs_needed
+
+################################################################################
+
+# We will usually need this rule for includes in Makefile-dirs 
+
+%/Makefile-include : $(MAKE_PATH)Makefile-include-xxx
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)ivi_lock_for_make 60 $@ $(MAKE_SCRIPT_PATH)build_makefile_include $*
 
 ################################################################################
 

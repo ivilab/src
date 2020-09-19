@@ -1,0 +1,32 @@
+#!/bin/tcsh -f
+
+###############################################################################
+#
+# Identification:
+#     A script to build library Makefile-2 in the current directory
+#
+# Description:
+#     This script build library Makefile-2 in the current directory which is
+#     assumed to be  library directory by editing the template Makefile-2-xxx in
+#     the main "Make" directory.
+#
+# Author:
+#     Kobus Barnard
+#
+###############################################################################
+
+
+set build_dir_name = `echo ${cwd} | sed 's#.*/##'`
+
+set lc_build_dir_name = `echo $build_dir_name | sed "s/-/__/"`
+
+# Currently not needed. 
+# set uc_build_dir_name = `echo $lc_build_dir_name | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
+# Pipe element if we need to replace XXX also:  | ${IVI_SED} "s/XXX/${uc_build_dir_name}/g"
+
+${IVI_CAT} ${MAKE_PATH}Makefile-2-xxx | ${IVI_SED} "s/_xxx/_${lc_build_dir_name}/g" | ${MAKE_SCRIPT_PATH}ivi_cat_after -a 'DELETE_THIS_COMMENT_BLOCK' > Makefile-2
+
+
+
+
+

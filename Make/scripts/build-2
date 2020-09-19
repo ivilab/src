@@ -953,9 +953,17 @@ endif
 
 ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}' in ${cwd}."
 
+set is_sub_lib_dir = `echo $cwd | grep -c '\/lib\/[^\/]*$'`
+
+if (${is_sub_lib_dir}) then
+    ${VERBOSE_ECHO_2} "Script build-2 is noting that ${cwd} is a library sub-directory."
+else 
+    ${VERBOSE_ECHO_2} "Script build-2 is noting that ${cwd} is NOT a library sub-directory."
+endif 
+
 set make_result_temp_file = "${USER_TEMP_PATH}make.res.$$"
 
-# Needs to be set even though we do not actually use it unless LOG_MAKE is set.
+# MAKE_LOG_PATH needs to be set even though we do not actually use it unless LOG_MAKE is set.
 setenv MAKE_LOG_PATH "${cwd}/make_log/`${IVI_ECHO_DATE}`/`${IVI_ECHO_TIME}`/"
 
 if ($?LOG_MAKE) then
@@ -976,28 +984,113 @@ while (${try_count} <= 4)
         ${VERBOSE_ECHO} "for efficiency and in case our version of make does not build included files."
         ${VERBOSE_ECHO} ""
 
-        set bootstrap_files = `${MAKE_SCRIPT_PATH}stream_file_names -bootstrap`
+        set build_makefile_2 = 0
 
-        ${VERBOSE_ECHO} "Script build-2 bootstrap files: ${bootstrap_files}"
+        if (${is_sub_lib_dir}) then
+            if (-r Makefile-2) then
+                set makefile_2_is_old = `${MAKE_SCRIPT_PATH}test_older_than Makefile-2 ${MAKE_PATH}Makefile-2-xxx`
+                if (${makefile_2_is_old}) then 
+                    ${VERBOSE_ECHO_2} "Rebuilding ${cwd}/Makefile-2 because it is older than ${MAKE_PATH}Makefile-2-xxx"
+                    set build_makefile_2 = 1
+                endif 
+            else 
+                ${VERBOSE_ECHO_2} "Rebuilding ${cwd}/Makefile-2 because it does not exist."
+                set build_makefile_2 = 1
+            endif 
 
-        foreach bootstrap_file (${bootstrap_files}) 
-            if (-x "${bootstrap_file}") then
-                if ($?DRY_RUN) then
-                    echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}"
-                else
-                    if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}${bootstrap_file}_${try_count}.res"
-                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file} |& ${IVI_TEE} ${make_log_file}
-                    if (${status}) then 
-                        set exit_status = 1
-                        ${P_STDERR} "Running of ${bootstrap_file} in ${cwd} failed."
-                        break
-                    endif 
+            if (${build_makefile_2}) then
+                ${MAKE_SCRIPT_PATH}build_library_makefile_2 
+
+                if (${status}) then
+                    set exit_status = 1
+                    ${P_STDERR} "Building Makefile-2 in ${cwd} failed."
+                    # If this fails, it is not likely that retry will help. 
+                    break
+                else 
+                    ${VERBOSE_ECHO_2} "Script build-2 successfully rebuilt ${cwd}/Makefile-2."
                 endif 
             endif 
-        end
+        else 
+            if (-r Makefile-2) then
+                set makefile_2_is_old = `${MAKE_SCRIPT_PATH}test_older_than Makefile-2 ${MAKE_PATH}Makefile-2`
+                if (${makefile_2_is_old}) then
+                    ${VERBOSE_ECHO_2} "Rebuilding ${cwd}/Makefile-2 because it is older than ${MAKE_PATH}Makefile-2"
+                    set build_makefile_2 = 1
+                endif 
+            else 
+                set build_makefile_2 = 1
+                ${VERBOSE_ECHO_2} "Rebuilding ${cwd}/Makefile-2 because it does not exist."
+            endif 
 
-        # If a bootstrap file run fails, it is not likley that retry will help. 
-        if (${exit_status}) break
+            if (${build_makefile_2}) then
+                ${IVI_CP} ${MAKE_PATH}Makefile-2 Makefile-2
+
+                if (${status}) then
+                    set exit_status = 1
+                    ${P_STDERR} "Building Makefile-2 in ${cwd} failed."
+                    # If this fails, it is not likely that retry will help. 
+                    break
+                else 
+                    ${VERBOSE_ECHO_2} "Script build-2 successfully rebuilt ${cwd}/Makefile-2."
+                endif 
+            endif 
+        endif 
+
+        if (${is_sub_lib_dir}) then
+            set build_makefile_include = 0
+
+            if (-r Makefile-include) then
+                set makefile_include_is_old = `${MAKE_SCRIPT_PATH}test_older_than Makefile-include ${MAKE_PATH}Makefile-include-xxx`
+                if (${makefile_include_is_old}) then 
+                    ${VERBOSE_ECHO_2} "Rebuilding ${cwd}/Makefile-include because it is older than ${MAKE_PATH}Makefile-include-xxx"
+                    set build_makefile_include = 1
+                endif 
+            else 
+                ${VERBOSE_ECHO_2} "Rebuilding ${cwd}/Makefile-include because it does not exist."
+                set build_makefile_include = 1
+            endif 
+
+            if (${build_makefile_include}) then
+                ${MAKE_SCRIPT_PATH}build_makefile_include 
+
+                if (${status}) then
+                    set exit_status = 1
+                    ${P_STDERR} "Building Makefile-include in ${cwd} failed."
+                    # If this fails, it is not likely that retry will help. 
+                    break
+                else 
+                    ${VERBOSE_ECHO_2} "Script build-2 successfully rebuilt ${cwd}/Makefile-include."
+                endif 
+            endif 
+        endif 
+
+        set bootstrap_files = `${MAKE_SCRIPT_PATH}stream_file_names -bootstrap`
+
+        if ("${bootstrap_files}" != "") then
+            ${VERBOSE_ECHO} ""
+            ${VERBOSE_ECHO} ==================================================================================
+            ${VERBOSE_ECHO} "Script build-2 is executing bootstrap files: ${bootstrap_files} in ${cwd}"
+            ${VERBOSE_ECHO} ""
+
+            foreach bootstrap_file (${bootstrap_files}) 
+                if (-x "${bootstrap_file}") then
+                    if ($?DRY_RUN) then
+                        echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file}"
+                    else
+                        if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}${bootstrap_file}_${try_count}.res"
+                        ${MAKE_SCRIPT_PATH}ivi_lock 30 ./${bootstrap_file} |& ${IVI_TEE} ${make_log_file}
+                        if (${status}) then 
+                            set exit_status = 1
+                            ${P_STDERR} "Running of ${bootstrap_file} in ${cwd} failed."
+                            break
+                        endif 
+                    endif 
+                endif 
+            end
+
+            # If a bootstrap file run fails, it is not likely that retry will help. 
+            if (${exit_status}) break
+        endif 
 
         if (! -e Makefile-dirs) then
             # This is not needed with gmake, but it is the same thing that gmake
@@ -1039,7 +1132,8 @@ while (${try_count} <= 4)
             if ($?DRY_RUN) then
                 echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists"
             else
-                # No lock because we lock what we need within this script. 
+                # No lock because we lock what we need within the
+                # precompute_file_lists script. 
                 # ${MAKE_SCRIPT_PATH}ivi_lock 300 ${MAKE_SCRIPT_PATH}precompute_file_lists
                 #
                 # The sed removes most annoying job control output, specifically the
@@ -1047,7 +1141,7 @@ while (${try_count} <= 4)
                 # intertwining. We do not use grep in pipes if we plan to use the
                 # exit status, as grep will have exit status 1 if no lines are
                 # selected. 
-                #
+                
                 if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}precompute_file_lists_${try_count}.res"
                 ${MAKE_SCRIPT_PATH}precompute_file_lists |& ${IVI_SED} '/^\[[1-9]/d' |& ${IVI_TEE} ${make_log_file}
                 if (${status}) then
@@ -1082,7 +1176,7 @@ while (${try_count} <= 4)
         # rule after reading in the whole works. If this is the behaviour, it is
         # better for us so we only do this if we are not using gmake, or testing
         # with FORCE_MAKEFILE_CREATION. 
-        #
+        
         if (("${MAKE_FLAVOR}" != "gmake") || ($?FORCE_MAKEFILE_CREATION)) then
             ${VERBOSE_ECHO} "Due to non gmake make, or testing with FORCE_MAKEFILE_CREATION: "
             ${VERBOSE_ECHO} "    Script build-2 is asking build_include_lines to build Makefile-libs-needed as it goes."
@@ -1190,7 +1284,7 @@ while (${try_count} <= 4)
     if (( ! $?IVI_SKIP_DEPEND) && (${need_depend}) ) then
         set ivi_depend_make = "${IVI_MAKE} ${IVI_MAKE_OPTS_STOP}"
 
-        # If we are in a library directory, we need to upate Makefile-library
+        # If we are in a library directory, we need to update Makefile-library
         # because it is included before it is updated (in gmake).  
 
         if (-e "Makefile-include") then

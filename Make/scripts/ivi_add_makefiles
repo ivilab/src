@@ -199,10 +199,9 @@ endif
 ##############################################################################
 
 if (${use_heuristic}) then
-    #
+    
     # We want program Makefiles unless the parent directory is "lib".  The
     # following is mostly to explain the choice to the user. 
-    #
 
     set prefer_lib = 0
     set prefer_prog = 0
@@ -310,7 +309,7 @@ if ((! $force) && (-e Makefile-2) && (${svn_dir})) then
     ${P_STDERR} "Hence, this script is exiting. What next?"
     ${P_STDERR} " "
     ${P_STDERR} "Plan A"
-    echo "    Perhaps the existing makefiles are fine. To check, try 'make'". > /dev/stderr
+    ${P_STDERR} "    Perhaps the existing makefiles are fine. To check, try 'make'".
     ${P_STDERR} "    If that fails, remove them, do 'svn update', and the try 'make' again."
     ${P_STDERR} " "
     ${P_STDERR} "Plan B"
@@ -370,25 +369,31 @@ end
 
 ##############################################################################
 
-/bin/cp -f ${MAKE_PATH}build .
-/bin/cp -f ${MAKE_PATH}Makefile .
+${IVI_CP} ${MAKE_PATH}build .
+${IVI_CP} ${MAKE_PATH}Makefile .
 
 if (${prefer_lib}) then
-    /bin/cp -f ${MAKE_PATH}Makefile-2-xxx Makefile-2
-    /bin/cp -f ${MAKE_PATH}Makefile-include-xxx Makefile-include
+    ${MAKE_SCRIPT_PATH}build_makefile_include
+    if (${status}) exit 1 
 
-    set lc_build_dir_name = `echo $build_dir_name | sed "s/-/__/"`
-    set uc_build_dir_name = `echo $lc_build_dir_name | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
+    ${MAKE_SCRIPT_PATH}build_library_makefile_2
+    if (${status}) exit 1 
 
-    /bin/rm -f .Makefile-2.swp
-    /bin/rm -f .Makefile-include.swp
-
-    ${VIM_FOR_MAKE} -e -s -c :%s/xxx/${lc_build_dir_name}/g -c :wq Makefile-2  < /dev/null >& /dev/null
-    ${VIM_FOR_MAKE} -e -s -c :%s/xxx/${lc_build_dir_name}/g -c :wq Makefile-include  < /dev/null >& /dev/null
-    ${VIM_FOR_MAKE} -e -s -c :%s/XXX/${uc_build_dir_name}/g -c :wq Makefile-2  < /dev/null >& /dev/null
-    ${VIM_FOR_MAKE} -e -s -c :%s/XXX/${uc_build_dir_name}/g -c :wq Makefile-include  < /dev/null >& /dev/null
+#     ${IVI_CP} ${MAKE_PATH}Makefile-2-xxx Makefile-2
+#     ${IVI_CP} ${MAKE_PATH}Makefile-include-xxx Makefile-include
+# 
+#     set lc_build_dir_name = `echo $build_dir_name | sed "s/-/__/"`
+#     set uc_build_dir_name = `echo $lc_build_dir_name | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
+# 
+#     /bin/rm -f .Makefile-2.swp
+#     /bin/rm -f .Makefile-include.swp
+# 
+#     ${VIM_FOR_MAKE} -e -s -c :%s/xxx/${lc_build_dir_name}/g -c :wq Makefile-2  < /dev/null >& /dev/null
+#     ${VIM_FOR_MAKE} -e -s -c :%s/xxx/${lc_build_dir_name}/g -c :wq Makefile-include  < /dev/null >& /dev/null
+#     ${VIM_FOR_MAKE} -e -s -c :%s/XXX/${uc_build_dir_name}/g -c :wq Makefile-2  < /dev/null >& /dev/null
+#     ${VIM_FOR_MAKE} -e -s -c :%s/XXX/${uc_build_dir_name}/g -c :wq Makefile-include  < /dev/null >& /dev/null
 else 
-    /bin/cp -f ${MAKE_PATH}Makefile-2 Makefile-2
+    ${IVI_CP} ${MAKE_PATH}Makefile-2 Makefile-2
 endif 
 
 ##############################################################################

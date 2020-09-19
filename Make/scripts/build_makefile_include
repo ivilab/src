@@ -1,0 +1,35 @@
+#!/bin/tcsh -f
+
+###############################################################################
+#
+# Identification:
+#     A script to build library Makefile_include in the current directory
+#
+# Description:
+#     This script builds Makefile_include in the current directory which is
+#     assumed to be a library directory by editing the template
+#     Makefile-include-xxx in the main "Make" directory.
+#     
+# Author:
+#     Kobus Barnard
+#
+###############################################################################
+
+if ($# == 1) then
+    cd ${1}
+else if ($# == 1) then
+    ${P_STDERR} "Script build_makefile_include needs either zero or one argument."
+    exit 1
+endif 
+
+${VERBOSE_ECHO_2} "Script build_makefile_include building Makefile-include in ${cwd}" 
+
+set build_dir_name = `echo ${cwd} | sed 's#.*/##'`
+
+set lc_build_dir_name = `echo ${build_dir_name} | sed "s/-/__/"`
+set uc_build_dir_name = `echo ${lc_build_dir_name} | sed "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"`
+
+${IVI_CAT} ${MAKE_PATH}Makefile-include-xxx | ${IVI_SED} "s/xxx/${lc_build_dir_name}/g" | ${IVI_SED} "s/XXX/${uc_build_dir_name}/g" > Makefile-include
+
+
+

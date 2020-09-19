@@ -9,7 +9,8 @@
 # DONT_OPTIMIZE_CC_FLAGS. 
 #     
 # In developing IVI library code for the U.A. vision lab, this kind of hacking
-# MUST BE USED ONLY FOR TRANSITION. 
+# MUST BE USED ONLY FOR TRANSITION. In fact, changes here are likely to be
+# overwritten by the build process in future build system releases. 
 #
 ################################################################################
 
@@ -43,25 +44,5 @@ $(XXX_DIR)Makefile-library : $(MAKE_PATH)Makefile-library
 	sed 's/LIB_COMPONENT/XXX_LIB/g' < $< > $@
 
 include $(XXX_DIR)Makefile-library
-
-################################################################################
-
-# Since 19/01/02 we do this in Makefile-library. Delete eventually. 
-
-### # What if Include_lines/header_file_list does not exist?
-### $(XXX_DIR)Include_lines/header_file_list : 
-### 	$(IVI_MKDIR) $(XXX_DIR)Include_lines
-### 	$(IVI_RM) $@.new
-### 	$(IVI_TOUCH) $@
-### 
-### $(XXX_DIR)$(XXX_LIB_PREFIX)_incl.h : $(MAKE_SCRIPT_PATH)build_incl_dot_h $(XXX_DIR)Include_lines/header_file_list 
-### 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-### 	$(MAKE_SCRIPT_PATH)build_incl_dot_h $(XXX_DIR)
-
-################################################################################
-
-# Custom compile lines go here. Unfortunately, patterns cannot be used. However,
-# if you want to change the compile for the entire directory, you can probably
-# do what you want by changing the flags above (e.g., CC_FLAGS). 
 
 
