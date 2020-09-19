@@ -42,8 +42,8 @@
 #include <boost/optional.hpp>
 
 #include "ergo_cpp/hmc.h"
-#include "ergo/mh.h"
-#include "ergo/record.h"
+#include "ergo_cpp/mh.h"
+#include "ergo_cpp/record.h"
 
 namespace ivi {
 namespace pt {
