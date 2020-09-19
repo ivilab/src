@@ -397,8 +397,13 @@ foreach test_file (${test_files})
             ${IVI_RM} ${temp_dir}.test_main_${$}.${file_suffix} 
         endif 
     else if ((${c_lib_dir}) || (${cxx_lib_dir})) then
-        # If we are here, test_file is a test directory. 
-        if (-e ${dir}${test_file}/Makefile-include) then
+        if (-d "${dir}${test_file}") then
+            set is_sub_lib_dir = `echo "${dir}${test_file}" | grep -c '\/lib\/[^\/]*$'`
+        else 
+            set is_sub_lib_dir = 0
+        endif 
+
+        if (${is_sub_lib_dir}) then
             # If all_ivi is set, then SKIP_ALL_IVI is checked.  
             if ((! ${all_ivi}) || ((! -e ${dir}${test_file}/SKIP_ALL_IVI) && (! -e ${dir}${test_file}/SKIP_ALL_IVI.${OS}))) then
                 # set cpp_lib_str = `echo ${test_file} | ${IVI_GREP} '_cpp$'`

@@ -44,33 +44,27 @@ endif
 
 ###############################################################################
 
-if ($?IVI_VERBOSE) then
-    echo "--------------------------------------------------------------------"
-    echo "In make_src_shadow_dir."
-    echo "    shadow_dir: ${shadow_dir}" 
-    echo "    sub_sub_dir: ${sub_sub_dir}" 
-    echo "    link_name: ${link_name}" 
-    echo "    working_dir: ${working_dir}" 
-    echo " "
-endif 
+${VERBOSE_ECHO} "--------------------------------------------------------------------"
+${VERBOSE_ECHO} "In make_src_shadow_dir."
+${VERBOSE_ECHO} "    shadow_dir: ${shadow_dir}" 
+${VERBOSE_ECHO} "    sub_sub_dir: ${sub_sub_dir}" 
+${VERBOSE_ECHO} "    link_name: ${link_name}" 
+${VERBOSE_ECHO} "    working_dir: ${working_dir}" 
+${VERBOSE_ECHO} " "
 
 ###############################################################################
 
 if ("${link_name}" == ".") then 
     if (-e "${working_dir}${sub_sub_dir}shadow_dir_made") then
-        if ($?IVI_VERBOSE) then
-            echo "    Quick exit from make_src_shadow_dir based on: ${working_dir}${sub_sub_dir}shadow_dir_made"
-            echo "--------------------------------------------------------------------"
-        endif 
+        ${VERBOSE_ECHO} "    Quick exit from make_src_shadow_dir based on: ${working_dir}${sub_sub_dir}shadow_dir_made"
+        ${VERBOSE_ECHO} "--------------------------------------------------------------------"
 
         exit
     endif 
 else 
     if (-e "${working_dir}${link_name}/shadow_dir_made") then
-        if ($?IVI_VERBOSE) then
-            echo "    Quick exit from make_src_shadow_dir based on: ${working_dir}${link_name}/shadow_dir_made"
-            echo "--------------------------------------------------------------------"
-        endif 
+        ${VERBOSE_ECHO} "    Quick exit from make_src_shadow_dir based on: ${working_dir}${link_name}/shadow_dir_made"
+        ${VERBOSE_ECHO} "--------------------------------------------------------------------"
 
         exit
     endif 
@@ -106,9 +100,7 @@ if ("$shadow_dir" == "") then
         endif
     endif
 
-    if ($?IVI_VERBOSE) then
-        echo "--------------------------------------------------------------------"
-    endif 
+    ${VERBOSE_ECHO} "--------------------------------------------------------------------"
 
     exit 
 endif 
@@ -135,9 +127,7 @@ set is_in_src_tree = `echo $cur_dir | grep "$IVI_SRC_PATH"`
 #     exit 1
 # endif 
 
-if ($?IVI_VERBOSE) then
-    echo "    is_in_src_tree : ${is_in_src_tree}"
-endif 
+${VERBOSE_ECHO} "    is_in_src_tree : ${is_in_src_tree}"
 
 if ("${is_in_src_tree}" == "") then
     if ("${link_name}" == ".") then 
@@ -150,10 +140,8 @@ if ("${is_in_src_tree}" == "") then
                 if (${status}) exit 1
             endif
 
-            if ($?IVI_VERBOSE) then
-                echo "    Possble dead code candidate being executed."
-                echo "        touch ${sub_sub_dir}/shadow_dir_made"
-            endif 
+            ${VERBOSE_ECHO} "    Possble dead code candidate being executed."
+            ${VERBOSE_ECHO} "        touch ${sub_sub_dir}/shadow_dir_made"
 
             touch ${sub_sub_dir}/shadow_dir_made
         endif
@@ -164,9 +152,7 @@ if ("${is_in_src_tree}" == "") then
         exit 1
     endif
 
-    if ($?IVI_VERBOSE) then
-        echo "--------------------------------------------------------------------"
-    endif 
+    ${VERBOSE_ECHO} "--------------------------------------------------------------------"
 
     exit 
 endif 
@@ -218,12 +204,13 @@ endif
 if (-e "${real_link_name}") then
     test -L "${real_link_name}"
     if (${status}) then
-        echo ---------------------------------------------------------------------------------
+        ${WARN_ECHO} ---------------------------------------------------------------------------------
         set date_stamp = `date +%y-%m-%d-%H-%M`
-        /bin/mv ${real_link_name} ${real_link_name}-${date_stamp}
-        echo ${real_link_name} moved to ${real_link_name}-${date_stamp}
-        echo "(So that ${real_link_name} become a link, since we have a shadow directory)"
-        echo ---------------------------------------------------------------------------------
+        ${WARN_ECHO} "Moving real_link_name: %${real_link_name}% to %${real_link_name}-${date_stamp}%"
+        ${WARN_ECHO} "So that ${real_link_name} can become a link, since we have a shadow directory."
+        ${IVI_MV} ${real_link_name} ${real_link_name}-${date_stamp}
+        if (${status}) exit 1 
+        ${WARN_ECHO} ---------------------------------------------------------------------------------
     endif 
 endif 
 
@@ -235,11 +222,12 @@ if ( ! ${status}) then
     test -L "${real_link_name}"
 
     if ( ! ${status}) then
-        echo ---------------------------------------------------------------------------------
+        ${WARN_ECHO} ---------------------------------------------------------------------------------
         set date_stamp = `date +%y-%m-%d-%H-%M`
-        /bin/mv ${real_link_name} ${real_link_name}-${date_stamp}
-        echo ${real_link_name} moved to ${real_link_name}-${date_stamp}
-        echo "(Because removing it outright failed!)"
+        ${WARN_ECHO} "Moving real_link_name: %${real_link_name}% to %${real_link_name}-${date_stamp}%"
+        ${WARN_ECHO} "Because removing it outright failed!"
+        ${IVI_MV} ${real_link_name} ${real_link_name}-${date_stamp}
+        if (${status}) exit 1 
         echo ---------------------------------------------------------------------------------
     endif 
 endif 
@@ -247,16 +235,12 @@ endif
 # echo "real_link_name is $real_link_name"
 # echo "link_target_path is $link_target_path"
 
-if ($?IVI_VERBOSE) then
-    echo ""
-    echo "    /bin/ln -s -f ${link_target_path} ${real_link_name}"
-endif 
+${VERBOSE_ECHO} "Script make_src_shadow_dir executing (in ${cwd}):"
+${VERBOSE_ECHO} "    /bin/ln -s -f ${link_target_path} ${real_link_name}"
 
 /bin/ln -s -f ${link_target_path} ${real_link_name} 
 
-touch ${dir_to_make}/shadow_dir_made
+${IVI_TOUCH} ${dir_to_make}/shadow_dir_made
 
-if ($?IVI_VERBOSE) then
-    echo "--------------------------------------------------------------------"
-endif 
+${VERBOSE_ECHO} "--------------------------------------------------------------------"
 
