@@ -953,12 +953,28 @@ endif
 
 ${VERBOSE_ECHO} "Script build-2 adjusted args is '${adjusted_args}' in ${cwd}."
 
-set is_sub_lib_dir = `echo $cwd | grep -c '\/lib\/[^\/]*$'`
+# We need to find out which of three cases for base makefiles. Either we are a
+# program directory, an archive directory, or a librry sub directory. These are
+# heuristic tests that likley need to be expanded or made more general and/or
+# conceptual. We do not have a variable for program directory, as it is the
+# default. 
+
+set is_sub_lib_dir = `echo $cwd | ${IVI_GREP} -c '\/lib\/[^\/]*$'`
 
 if (${is_sub_lib_dir}) then
-    ${VERBOSE_ECHO_2} "Script build-2 is noting that ${cwd} is a library sub-directory."
+    ${VERBOSE_ECHO_2} "Script build-2 determined that ${cwd} is a library sub-directory."
+    set is_archive_dir = 0
 else 
-    ${VERBOSE_ECHO_2} "Script build-2 is noting that ${cwd} is NOT a library sub-directory."
+    # Two special cases. 
+    set is_archive_dir = `echo $cwd | ${IVI_EGREP} -c '\/IVI$|\/IVI_cpp$'`
+    if (${is_archive_dir}) then
+        ${VERBOSE_ECHO_2} "Script build-2 determined that ${cwd} is an archive directory."
+    else 
+        # We could check that there is a main program via stream_file_name, but
+        # there is not real danger of proceeding without any main program. Once
+        # can even imagine the program is about to be written
+        ${VERBOSE_ECHO_2} "Script build-2 is guessing that ${cwd} is a program directory."
+    endif 
 endif 
 
 set make_result_temp_file = "${USER_TEMP_PATH}make.res.$$"
@@ -1010,7 +1026,7 @@ while (${try_count} <= 4)
                     ${VERBOSE_ECHO_2} "Script build-2 successfully rebuilt ${cwd}/Makefile-2."
                 endif 
             endif 
-        else 
+        else if (! ${is_archive_dir}) then
             if (-r Makefile-2) then
                 set makefile_2_is_old = `${MAKE_SCRIPT_PATH}test_older_than Makefile-2 ${MAKE_PATH}Makefile-2`
                 if (${makefile_2_is_old}) then
