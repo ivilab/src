@@ -302,9 +302,9 @@ endif
 svn info >& /dev/null
 if (! $status) set svn_dir = 1
 
-if ((! $force) && (-e Makefile-2) && (${svn_dir})) then
+if ((! $force) && (-e Makefile) && (-e build) && (${svn_dir})) then
     ${P_STDERR} " "
-    ${P_STDERR} "This directory is under svn control and already has 'Makefile-2'."
+    ${P_STDERR} "This directory is under svn control and already has 'Makefile' and 'build'."
     ${P_STDERR} "This script replaces all makefiles, but does not commit them."
     ${P_STDERR} "Hence, this script is exiting. What next?"
     ${P_STDERR} " "
@@ -362,7 +362,7 @@ foreach old_makefile (${old_makefiles})
             echo "Making sure that any existing old copy of ${old_makefile} is removed from the SVN repository."
             svn update ${old_makefile}
             svn --force rm ${old_makefile}
-            svn commit -m ' ' ${old_makefile} 
+            svn commit -m 'Removing old makefiles' ${old_makefile} 
         endif 
     endif 
 end 
@@ -409,7 +409,8 @@ if (${status}) exit 1
 # correctly.  But it is better to be able to commit at this point. 
 #
 if (${svn_dir}) then
-    set makefiles = "build Makefile Makefile-2 Makefile-include"  
+    set makefiles = "build Makefile"  
+    # set makefiles = "build Makefile Makefile-2 Makefile-include"  
 
     foreach makefile (${makefiles})
         if (-e "${makefile}") then

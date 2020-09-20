@@ -76,12 +76,24 @@ popd >& /dev/null
 
 set base_include_dirs = ""
 
+pushd "${build_dir}" > /dev/null
+    set is_sub_lib_dir = `echo $cwd | grep -c '\/lib\/[^\/]*$'`
+popd > /dev/null
+
+if (${is_sub_lib_dir}) then
+    ${VERBOSE_ECHO_2} "Script get_local_include_dirs is noting that ${build_dir} is a library sub-directory."
+    if (! -e "${build_dir}/Makefile-include") then
+        ${MAKE_SCRIPT_PATH}build_makefile_include "${build_dir}"
+        if (${status}) exit 1 
+    endif 
+endif 
+
 if (-e ${build_dir}/Makefile-include) then
     if ((! ${in_ivi_lib_dir}) && (! ${in_ivi_lib_sub_dir})) then
         if (-e ../../lib) then
-        if (-d ../../lib) then
-            set base_include_dirs = "${base_include_dirs} ${INCLUDE_FLAG}../../lib/"
-        endif 
+            if (-d ../../lib) then
+                set base_include_dirs = "${base_include_dirs} ${INCLUDE_FLAG}../../lib/"
+            endif 
         endif 
     endif 
 else if (! ${in_ivi_lib_dir}) then
@@ -89,7 +101,7 @@ else if (! ${in_ivi_lib_dir}) then
 
     if (-e lib) then
         if (-d lib) then
-            touch lib/fake_out_glob
+            ${IVI_TOUCH} lib/fake_out_glob
 
             foreach lib_sub_dir (lib/*)
                 set is_link = `${MAKE_SCRIPT_PATH}is_link ${lib_sub_dir}`
@@ -97,14 +109,12 @@ else if (! ${in_ivi_lib_dir}) then
                 if (${is_link}) continue
                 
                 if (-d "${lib_sub_dir}") then
-                    if (-e "${lib_sub_dir}/Makefile-include") then
-                        set base_include_dirs = "${base_include_dirs} ${INCLUDE_FLAG}lib/"
-                        break
-                    endif
+                    set base_include_dirs = "${base_include_dirs} ${INCLUDE_FLAG}lib/"
+                    break
                 endif
-           end
+            end
 
-           /bin/rm lib/fake_out_glob
+           ${IVI_RM} lib/fake_out_glob
         endif 
     endif 
 

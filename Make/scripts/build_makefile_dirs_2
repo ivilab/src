@@ -90,7 +90,10 @@ echo  " " >> ${output_file_name}
 
 set cwd_for_make = `echo ${cwd} | sed "${src_dir_sed_str}" | sed "${dir_str_sed_str}"`
 
-if (-e Makefile-include) then
+set is_sub_lib_dir = `echo $cwd | grep -c '\/lib\/[^\/]*$'`
+
+if (${is_sub_lib_dir}) then
+    ${VERBOSE_ECHO_2} "Script build_makefile_dirs_2 is noting that ${cwd} is a library sub-directory."
     # We assume that we are a sub-dir of a directory "lib", and that we are not
     # beeing too fancy with links. Perhaps we should CHECK! 
     #
@@ -170,8 +173,8 @@ else
     endif 
 
     if ("${test_main}" != "") then
-        if (-e Makefile-include) then
-            echo "Warning: Found both a main module and Makefile-include in directory ${build_dir_path}"
+        if (${is_sub_lib_dir}) then
+            ${WARN_ECHO} "Found a main module in library sub directory ${build_dir_path}"
         endif 
     endif 
 endif 
@@ -349,115 +352,114 @@ echo " " >> ${output_file_name}
 # Trying a simpler one, as if we were to build libraries in a lib dir we would
 # have additional work to do to get the sub modules anyway. 
 #
-if (! -e Makefile-include) then
-# if (("${test_main}" != "") || (${in_ivi_dir})) then
-if (${lib_count} > 0) then
-    #
-    # We either use a local libs of OBS, or a big list of OBS, or patterns that
-    # are expanded to them. The local lib version has the smallest list size. 
-    #
-    # TODO (FIXME): 
-    #     Even if we use the local sub libs for the archive, we still use the
-    #     big list of OBS for SHARED. 
-    #
-    set use_local_sub_libs = 1
-    set use_sub_lib_list = 1
+if (! ${is_sub_lib_dir}) then
+    if (${lib_count} > 0) then
+        #
+        # We either use a local libs of OBS, or a big list of OBS, or patterns that
+        # are expanded to them. The local lib version has the smallest list size. 
+        #
+        # TODO (FIXME): 
+        #     Even if we use the local sub libs for the archive, we still use the
+        #     big list of OBS for SHARED. 
+        #
+        set use_local_sub_libs = 1
+        set use_sub_lib_list = 1
 
-    if (${use_local_sub_libs}) then 
-        @ count = 1
+        if (${use_local_sub_libs}) then 
+            @ count = 1
 
-        while ($count <= $lib_count) 
-            if ($count == 1) then
-                echo 'SUB_LIB_OBS = \' >> ${output_file_name}
-            endif 
+            while ($count <= $lib_count) 
+                if ($count == 1) then
+                    echo 'SUB_LIB_OBS = \' >> ${output_file_name}
+                endif 
 
-            set uc_dir = $uc_dirs[$count]
-            echo "               "'$'"(${uc_dir}_LIB_LOCAL_OBS) \" >> ${output_file_name}
-             
-            @ count ++
-        end 
+                set uc_dir = $uc_dirs[$count]
+                echo "               "'$'"(${uc_dir}_LIB_LOCAL_OBS) \" >> ${output_file_name}
+                 
+                @ count ++
+            end 
 
-        echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
-        echo  " " >> ${output_file_name}
-
-
-        @ count = 1
-
-        while ($count <= $lib_count) 
-            if ($count == 1) then
-                echo 'SUB_LIB_SHARED_OBS = \' >> ${output_file_name}
-            endif 
-
-            set uc_dir = $uc_dirs[$count]
-            echo "               "'$'"(${uc_dir}_LIB_SHARED_OBS) \" >> ${output_file_name}
-             
-            @ count ++
-        end 
-
-        echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
-        echo  " " >> ${output_file_name}
-    else if (${use_sub_lib_list}) then 
-        @ count = 1
-
-        while ($count <= $lib_count) 
-            if ($count == 1) then
-                echo 'SUB_LIB_OBS = \' >> ${output_file_name}
-            endif 
-
-            set uc_dir = $uc_dirs[$count]
-            echo "               "'$'"(${uc_dir}_LIB_OBS) \" >> ${output_file_name}
-             
-            @ count ++
-        end 
-
-        echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
-        echo  " " >> ${output_file_name}
+            echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
+            echo  " " >> ${output_file_name}
 
 
-        @ count = 1
+            @ count = 1
 
-        while ($count <= $lib_count) 
-            if ($count == 1) then
-                echo 'SUB_LIB_SHARED_OBS = \' >> ${output_file_name}
-            endif 
+            while ($count <= $lib_count) 
+                if ($count == 1) then
+                    echo 'SUB_LIB_SHARED_OBS = \' >> ${output_file_name}
+                endif 
 
-            set uc_dir = $uc_dirs[$count]
-            echo "               "'$'"(${uc_dir}_LIB_SHARED_OBS) \" >> ${output_file_name}
-             
-            @ count ++
-        end 
+                set uc_dir = $uc_dirs[$count]
+                echo "               "'$'"(${uc_dir}_LIB_SHARED_OBS) \" >> ${output_file_name}
+                 
+                @ count ++
+            end 
 
-        echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
-        echo  " " >> ${output_file_name}
-    else 
-        @ count = 1
+            echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
+            echo  " " >> ${output_file_name}
+        else if (${use_sub_lib_list}) then 
+            @ count = 1
 
-        while ($count <= $lib_count) 
-            if ($count == 1) then
-                echo 'SUB_LIB_OBS = \' >> ${output_file_name}
-            endif 
+            while ($count <= $lib_count) 
+                if ($count == 1) then
+                    echo 'SUB_LIB_OBS = \' >> ${output_file_name}
+                endif 
 
-            set symbolic_dir = $symbolic_dirs[$count]
+                set uc_dir = $uc_dirs[$count]
+                echo "               "'$'"(${uc_dir}_LIB_OBS) \" >> ${output_file_name}
+                 
+                @ count ++
+            end 
 
-            set have_c = `${MAKE_SCRIPT_PATH}stream_file_names -c $real_dirs[$count] | grep -c "."`
+            echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
+            echo  " " >> ${output_file_name}
 
-            set have_cxx = `${MAKE_SCRIPT_PATH}stream_file_names -x $real_dirs[$count] | grep -c "."`
 
-            if ("${have_cxx}" != "0") then
-                echo "               "'$'"($symbolic_dir)"'$(CXX_OBJ_DIR)*.o \' >> ${output_file_name}
-            endif 
-             
-            if ("${have_c}" != "0") then
-                echo "               "'$'"($symbolic_dir)"'$(OBJ_DIR)*.o \' >> ${output_file_name}
-            endif 
-             
-            @ count ++
-        end 
+            @ count = 1
 
-        echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
-        echo  " " >> ${output_file_name}
+            while ($count <= $lib_count) 
+                if ($count == 1) then
+                    echo 'SUB_LIB_SHARED_OBS = \' >> ${output_file_name}
+                endif 
+
+                set uc_dir = $uc_dirs[$count]
+                echo "               "'$'"(${uc_dir}_LIB_SHARED_OBS) \" >> ${output_file_name}
+                 
+                @ count ++
+            end 
+
+            echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
+            echo  " " >> ${output_file_name}
+        else 
+            @ count = 1
+
+            while ($count <= $lib_count) 
+                if ($count == 1) then
+                    echo 'SUB_LIB_OBS = \' >> ${output_file_name}
+                endif 
+
+                set symbolic_dir = $symbolic_dirs[$count]
+
+                set have_c = `${MAKE_SCRIPT_PATH}stream_file_names -c $real_dirs[$count] | grep -c "."`
+
+                set have_cxx = `${MAKE_SCRIPT_PATH}stream_file_names -x $real_dirs[$count] | grep -c "."`
+
+                if ("${have_cxx}" != "0") then
+                    echo "               "'$'"($symbolic_dir)"'$(CXX_OBJ_DIR)*.o \' >> ${output_file_name}
+                endif 
+                 
+                if ("${have_c}" != "0") then
+                    echo "               "'$'"($symbolic_dir)"'$(OBJ_DIR)*.o \' >> ${output_file_name}
+                endif 
+                 
+                @ count ++
+            end 
+
+            echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
+            echo  " " >> ${output_file_name}
+        endif 
     endif 
-endif 
 endif 
 
 ###############################################################################

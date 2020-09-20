@@ -56,7 +56,10 @@ ${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering script build_file_list_2 in directory
 # header file, it will cause building of Makefiles a second time if we create
 # it too late in the process.
 
-if (-e "Makefile-include") then
+set is_sub_lib_dir = `echo $cwd | grep -c '\/lib\/[^\/]*$'`
+
+if (${is_sub_lib_dir}) then
+    ${VERBOSE_ECHO_2} "Script build_file_list_2 is noting that ${cwd} is a library sub-directory."
     set have_incl_dot_h = `${IVI_LS} | ${IVI_GREP} -c '_incl.h$'`
     if (! ${have_incl_dot_h}) then
         # Last path component.
@@ -92,7 +95,7 @@ endif
 
 # If we are not in a library, we check for script/program documentation.
 
-if (! -e "Makefile-include") then
+if (! ${is_sub_lib_dir}) then
     ${IVI_LS} | ${IVI_GREP} '\.w$' > Include_lines/writeup_files.new
     # Ignore status! 
     ${MAKE_SCRIPT_PATH}copy_if_different Include_lines/writeup_files.new Include_lines/writeup_files
