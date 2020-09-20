@@ -695,8 +695,8 @@ unset noglob
 
 set collected_prog_dirs = ""
 
-set prog_build_files = "build Makefile Makefile-2 Makefile-dirs Makefile-libs-needed Makefile-depend Include_lines"
-set lib_build_files = "build Makefile Makefile-2 Makefile-include"
+set prog_build_files = "build Makefile"
+set lib_build_files = "build Makefile"
 
 ###############################################################################
 
@@ -704,13 +704,9 @@ echo " "
 echo "===================================================================="
 echo " "
 echo "Script make_ivi"
-echo " "
 echo "    Run on ${HOST} (${MACHINE})"
-echo " "
 echo "    Start time is ${time_stamp}"
-echo " "
 echo "    Options are: $*"
-echo " "
 echo "    Program dirs:"
 
 foreach prog_dir (${prog_dirs})
@@ -806,8 +802,6 @@ echo " "
 echo "===================================================================="
 echo " "
 echo " "
-
-# goto we_got_here
 
 ###############################################################################
 
@@ -1165,16 +1159,6 @@ foreach sub_lib_dir (*)
         continue
     endif
 
-    if (! -e "${sub_lib_dir}/Makefile-2") then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because no Makefile-2."
-        continue
-    endif
-
-    if (! -e "${sub_lib_dir}/Makefile-include") then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because no Makefile-include."
-        continue
-    endif
-
     if (! -e "${sub_lib_dir}/build") then
         echo "Make_ivi: Skipping ${sub_lib_dir} because no 'build'."
         continue
@@ -1233,7 +1217,7 @@ foreach sub_lib_dir (*)
         goto end_of_script
     endif 
 
-    if ((! $skip_depend) && (! $skip_depend_lib) && (-e Makefile-2)) then
+    if ((! $skip_depend) && (! $skip_depend_lib) && (-x build) && (-r Makefile)) then
         setenv PRODUCTION 1
         ${IVI_MAKE} depend_clean 
         ${IVI_MAKE} depend 
@@ -1434,8 +1418,8 @@ foreach sub_lib_dir (*)
             # 
             set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
 
-            if (("${have_code}" == "1") && (-e Makefile-2)) then
-                if ((! $skip_depend) && (! $skip_depend_lib_sub) && (-e Makefile-2)) then
+            if (("${have_code}" == "1")  && (-x build) && (-r Makefile)) then
+                if ((! $skip_depend) && (! $skip_depend_lib_sub) && (-x build) && (-r Makefile) ) then
                     #
                     # We need this in case we are doing NO_LIBS also. In this case, the
                     # values of the libraries will be wrong on the second time through the
@@ -1573,7 +1557,7 @@ foreach sub_lib_dir (*)
                     foreach build_file (${prog_build_files}) 
                         if (-e "${build_file}") then
                             echo lib/${sub_lib_dir}/${sub_sub_dir}/${build_file} >> ${src_dist_file_dir}/${tar_list_file}
-                        else if ("${build_file}" != "Makefile-include") then
+                        else 
                             echo "Make_ivi: Warning: Missing file lib/${sub_lib_dir}/${sub_sub_dir}/${build_file}."
                         endif 
                     end 
@@ -1593,9 +1577,7 @@ foreach sub_lib_dir (*)
                     # 
                     set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
 
-                    if (("${have_code}" == "") || (-e Makefile-2)) then
-                        continue
-                    endif
+                    if ("${have_code}" == "") continue
 
                     pushd ${mi_sub_sub_dir} > /dev/null
                     if (${status}) then
@@ -1604,7 +1586,7 @@ foreach sub_lib_dir (*)
                         goto end_of_script
                     endif 
 
-                    if ((! ${skip_depend}) && (! ${skip_depend_lib_sub}) && (-e Makefile-2)) then
+                    if ((! ${skip_depend}) && (! ${skip_depend_lib_sub}) && (-x build) && (-r Makefile)) then
                         #
                         # We need this in case we are doing NO_LIBS also. In this case, the
                         # values of the libraries will be wrong on the second time through the
@@ -1796,7 +1778,7 @@ foreach sub_lib_dir (*)
             # 
             set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
 
-            if (("${have_code}" == "1") && (-e Makefile-2)) then
+            if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
                 ${IVI_MAKE} regress_clean  
                 if (${status}) then
                     echo "Making regress clean failed in ${cwd}." | tee -a ${error_file}
@@ -1847,7 +1829,7 @@ foreach sub_lib_dir (*)
             # 
             set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
 
-            if (("${have_code}" == "1") && (-e Makefile-2)) then
+            if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
                 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 echo Regression testing in $cwd. Load dir is ${LD_OBJ_DIR}.
                 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -1929,8 +1911,12 @@ foreach mi_dir ($prog_dirs)
         continue
     endif 
 
-    if (! -e "${mi_dir}/Makefile-2") then
-        echo "Make_ivi: ${mi_dir}/Makefile-2 not found."
+    if (! -e "${mi_dir}/Makefile") then
+        echo "Make_ivi: ${mi_dir}/Makefile not found."
+        echo "Make_ivi: Skipping ${mi_dir}"
+        continue
+    else if (! -e "${mi_dir}/build") then
+        echo "Make_ivi: ${mi_dir}/build not found."
         echo "Make_ivi: Skipping ${mi_dir}"
         continue
     endif 
@@ -1960,7 +1946,7 @@ foreach mi_dir ($prog_dirs)
     echo -------------------------------------------------------
     echo 
 
-    if ((! $skip_depend) && (-e Makefile-2)) then
+    if ((! $skip_depend) && (-x build) && (-r Makefile)) then
         #
         # We need this in case we are doing NO_LIBS also. In this case, the
         # values of the libraries will be wrong on the second time through the
@@ -2675,7 +2661,7 @@ if ($collect_files) then
         foreach build_file (${prog_build_files}) 
             if (-e "${build_file}") then
                 echo ${dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
-            else if ("${build_file}" != "Makefile-include") then
+            else 
                 echo "Make_ivi: Warning: Missing file ${dir}/${build_file}."
             endif 
         end 
@@ -2701,7 +2687,7 @@ if ($collect_files) then
                         goto end_of_script
                     endif 
 
-                    if (-e Makefile-2) then
+                    if ((-x build) && (-r Makefile)) then
                         # It is not clear if we want to proceed if there are only header files. Here
                         # we include header files via the flag '-h'.
                         # 
@@ -2918,11 +2904,6 @@ if ($do_archive) then
 endif
 
 ###############################################################################
-
-# If we delete we_got_here, we can delete the next two lines also. 
-# we_got_here: 
-# set src_dist_file_dir = $IVI_SRC_PATH
-# set src_dist_files = ${src_dist_file_dir}src_dist_files
 
 if ($do_export) then
     echo -------------------------------------------------------
