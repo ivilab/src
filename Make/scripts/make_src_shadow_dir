@@ -44,27 +44,27 @@ endif
 
 ###############################################################################
 
-${VERBOSE_ECHO} "--------------------------------------------------------------------"
-${VERBOSE_ECHO} "In make_src_shadow_dir."
-${VERBOSE_ECHO} "    shadow_dir: ${shadow_dir}" 
-${VERBOSE_ECHO} "    sub_sub_dir: ${sub_sub_dir}" 
-${VERBOSE_ECHO} "    link_name: ${link_name}" 
-${VERBOSE_ECHO} "    working_dir: ${working_dir}" 
-${VERBOSE_ECHO} " "
+${VERBOSE_ECHO_2} "--------------------------------------------------------------------"
+${VERBOSE_ECHO_2} "In make_src_shadow_dir."
+${VERBOSE_ECHO_2} "    shadow_dir: ${shadow_dir}" 
+${VERBOSE_ECHO_2} "    sub_sub_dir: ${sub_sub_dir}" 
+${VERBOSE_ECHO_2} "    link_name: ${link_name}" 
+${VERBOSE_ECHO_2} "    working_dir: ${working_dir}" 
+${VERBOSE_ECHO_2} " "
 
 ###############################################################################
 
 if ("${link_name}" == ".") then 
     if (-e "${working_dir}${sub_sub_dir}shadow_dir_made") then
-        ${VERBOSE_ECHO} "    Quick exit from make_src_shadow_dir based on: ${working_dir}${sub_sub_dir}shadow_dir_made"
-        ${VERBOSE_ECHO} "--------------------------------------------------------------------"
+        ${VERBOSE_ECHO_2} "    Quick exit from make_src_shadow_dir based on: ${working_dir}${sub_sub_dir}shadow_dir_made"
+        ${VERBOSE_ECHO_2} "--------------------------------------------------------------------"
 
         exit
     endif 
 else 
     if (-e "${working_dir}${link_name}/shadow_dir_made") then
-        ${VERBOSE_ECHO} "    Quick exit from make_src_shadow_dir based on: ${working_dir}${link_name}/shadow_dir_made"
-        ${VERBOSE_ECHO} "--------------------------------------------------------------------"
+        ${VERBOSE_ECHO_2} "    Quick exit from make_src_shadow_dir based on: ${working_dir}${link_name}/shadow_dir_made"
+        ${VERBOSE_ECHO_2} "--------------------------------------------------------------------"
 
         exit
     endif 
@@ -100,7 +100,7 @@ if ("$shadow_dir" == "") then
         endif
     endif
 
-    ${VERBOSE_ECHO} "--------------------------------------------------------------------"
+    ${VERBOSE_ECHO_2} "--------------------------------------------------------------------"
 
     exit 
 endif 
@@ -127,7 +127,7 @@ set is_in_src_tree = `echo $cur_dir | grep "$IVI_SRC_PATH"`
 #     exit 1
 # endif 
 
-${VERBOSE_ECHO} "    is_in_src_tree : ${is_in_src_tree}"
+${VERBOSE_ECHO_2} "    Script make_src_shadow_dir is_in_src_tree : ${is_in_src_tree}"
 
 if ("${is_in_src_tree}" == "") then
     if ("${link_name}" == ".") then 
@@ -140,10 +140,10 @@ if ("${is_in_src_tree}" == "") then
                 if (${status}) exit 1
             endif
 
-            ${VERBOSE_ECHO} "    Possble dead code candidate being executed."
-            ${VERBOSE_ECHO} "        touch ${sub_sub_dir}/shadow_dir_made"
+            ${VERBOSE_ECHO_2} "    Script make_src_shadow_dir: Possble dead code candidate being executed."
+            ${VERBOSE_ECHO_2} "    Touching ${sub_sub_dir}/shadow_dir_made"
 
-            touch ${sub_sub_dir}/shadow_dir_made
+            ${IVI_TOUCH} ${sub_sub_dir}/shadow_dir_made
         endif
     else 
 #       This could be a problem, but leaving it for now and patching makefiles. 
@@ -152,7 +152,7 @@ if ("${is_in_src_tree}" == "") then
         exit 1
     endif
 
-    ${VERBOSE_ECHO} "--------------------------------------------------------------------"
+    ${VERBOSE_ECHO_2} "--------------------------------------------------------------------"
 
     exit 
 endif 
@@ -242,5 +242,5 @@ ${VERBOSE_ECHO} "    /bin/ln -s -f ${link_target_path} ${real_link_name}"
 
 ${IVI_TOUCH} ${dir_to_make}/shadow_dir_made
 
-${VERBOSE_ECHO} "--------------------------------------------------------------------"
+${VERBOSE_ECHO_2} "--------------------------------------------------------------------"
 

@@ -346,7 +346,6 @@ else
     endif 
 endif 
 
-
 # Calling clean_cache is too harsh as it removes all cache files, forcing all
 # code to be rebuilt through the Makefile-libs-needed dependency, even if the
 # rebuilt cache is the same as the previous one. We can force rebuilding caches
@@ -358,6 +357,9 @@ endif
 source Make/init_scripts
 # ${IVI_TOUCH} ${USER_TEMP_PATH}cache_rebuild_depend
 source Make/init_compile
+
+# We now have IVI_MAKE_JOB_CLIENT which we use for "make" as additional job
+# options will be set in build-2. 
 
 set time_stamp = `date +%y-%m-%d-%H-%M`
 
@@ -832,8 +834,8 @@ echo "Make_ivi: Now in directory"`pwd`
 echo " " 
 
 if (! ${skip_depend}) then
-    ${IVI_MAKE} depend_very_clean 
-    ${IVI_MAKE} depend 
+    ${IVI_MAKE_JOB_CLIENT} depend_very_clean 
+    ${IVI_MAKE_JOB_CLIENT} depend 
 
     if (${status}) then
         echo "Make depend failed in ${cwd}" | tee -a ${error_file}
@@ -854,9 +856,9 @@ if (! ${skip_doc}) then
     echo "Make_ivi: Now in directory"`pwd`
     echo " " 
 
-    ${IVI_MAKE} make_bin 
+    ${IVI_MAKE_JOB_CLIENT} make_bin 
     if (${status}) then
-        echo "Command failed in `pwd`: ${IVI_MAKE} make_bin" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} make_bin" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
@@ -875,9 +877,9 @@ endif
 
 echo ""
 
-${IVI_MAKE} make_bin 
+${IVI_MAKE_JOB_CLIENT} make_bin 
 if (${status}) then
-    echo "Command failed in `pwd`: ${IVI_MAKE} make_bin" | tee -a ${error_file}
+    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} make_bin" | tee -a ${error_file}
     set exit_status = 1
     goto end_of_script
 endif 
@@ -1064,14 +1066,14 @@ if (! ${skip_code}) then
 
         pushd "${ivi_code_dir}" > /dev/null
             if (! $skip_depend) then
-                ${IVI_MAKE} depend_very_clean 
+                ${IVI_MAKE_JOB_CLIENT} depend_very_clean 
                 if (${status}) then
                     echo "Make depend_very_clean failed in ${cwd}" | tee -a ${error_file}
                     set exit_status = 1
                     if (! ${keep_going}) goto end_of_script
                 endif
 
-                ${IVI_MAKE} depend 
+                ${IVI_MAKE_JOB_CLIENT} depend 
                 if (${status}) then
                     echo "Make depend failed in ${cwd}" | tee -a ${error_file}
                     set exit_status = 1
@@ -1085,10 +1087,10 @@ if (! ${skip_code}) then
                 setenv PRODUCTION ${production}
 
                 if (${do_clean}) then
-                    ${IVI_MAKE} clean 
+                    ${IVI_MAKE_JOB_CLIENT} clean 
                 endif 
 
-                ${IVI_MAKE} |& tee -a  ${compile_res} 
+                ${IVI_MAKE_JOB_CLIENT} |& tee -a  ${compile_res} 
 
                 if (${status}) then
                     echo " " | tee -a ${error_file}
@@ -1106,7 +1108,7 @@ endif
 if (! ${skip_ctags}) then
     foreach ivi_code_dir (${ivi_code_dirs})
         pushd "${ivi_code_dir}" > /dev/null
-            ${IVI_MAKE} tags 
+            ${IVI_MAKE_JOB_CLIENT} tags 
 
             if (${status}) then
                 echo "Make tags failed in ${cwd}." | tee -a ${error_file}
@@ -1219,8 +1221,8 @@ foreach sub_lib_dir (*)
 
     if ((! $skip_depend) && (! $skip_depend_lib) && (-x build) && (-r Makefile)) then
         setenv PRODUCTION 1
-        ${IVI_MAKE} depend_clean 
-        ${IVI_MAKE} depend 
+        ${IVI_MAKE_JOB_CLIENT} depend_clean 
+        ${IVI_MAKE_JOB_CLIENT} depend 
 
         if (${status}) then
             echo "Make depend failed in ${cwd}" | tee -a ${error_file}
@@ -1235,10 +1237,10 @@ foreach sub_lib_dir (*)
         setenv PRODUCTION 0
 
         if (${do_clean}) then
-            ${IVI_MAKE} clean 
+            ${IVI_MAKE_JOB_CLIENT} clean 
         endif 
 
-        ${IVI_MAKE} |& tee -a  ${compile_res} 
+        ${IVI_MAKE_JOB_CLIENT} |& tee -a  ${compile_res} 
 
         if (${status}) then
             echo " " | tee -a ${error_file}
@@ -1252,10 +1254,10 @@ foreach sub_lib_dir (*)
         setenv PRODUCTION 1
 
         if (${do_clean}) then
-            ${IVI_MAKE} clean 
+            ${IVI_MAKE_JOB_CLIENT} clean 
         endif 
 
-        ${IVI_MAKE}  
+        ${IVI_MAKE_JOB_CLIENT}  
 
         if (${status}) then
             echo " " | tee -a ${error_file}
@@ -1281,10 +1283,10 @@ foreach sub_lib_dir (*)
             setenv PRODUCTION 1
 
             if (${do_clean}) then
-                ${IVI_MAKE} clean 
+                ${IVI_MAKE_JOB_CLIENT} clean 
             endif 
 
-            ${IVI_MAKE} 
+            ${IVI_MAKE_JOB_CLIENT} 
 
             if (${status}) then
                 echo " " | tee -a ${error_file}
@@ -1304,10 +1306,10 @@ foreach sub_lib_dir (*)
             setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
-                ${IVI_MAKE} clean 
+                ${IVI_MAKE_JOB_CLIENT} clean 
             endif 
 
-            ${IVI_MAKE} |& tee -a ${compile_cxx_res} 
+            ${IVI_MAKE_JOB_CLIENT} |& tee -a ${compile_cxx_res} 
 
             if (${status}) then
                 echo " " | tee -a ${error_file}
@@ -1330,7 +1332,7 @@ foreach sub_lib_dir (*)
     endif
 
     if (($do_doc) && ("${is_cpp_dir}" == "") && (! -e "SKIP_C2MAN"))  then
-        ${IVI_MAKE} doc 
+        ${IVI_MAKE_JOB_CLIENT} doc 
 
         if (${status}) then
             echo "Make doc failed in ${cwd}." | tee -a ${error_file}
@@ -1342,7 +1344,7 @@ foreach sub_lib_dir (*)
     endif
 
     if ($do_ctags) then
-        ${IVI_MAKE} tags 
+        ${IVI_MAKE_JOB_CLIENT} tags 
 
         if (${status}) then
             echo "Make tags failed in ${cwd}." | tee -a ${error_file}
@@ -1426,9 +1428,9 @@ foreach sub_lib_dir (*)
                     # loop.
                     #
                     setenv PRODUCTION 1
-                    ${IVI_MAKE} depend_clean 
-                    ${IVI_MAKE} build 
-                    ${IVI_MAKE} depend 
+                    ${IVI_MAKE_JOB_CLIENT} depend_clean 
+                    ${IVI_MAKE_JOB_CLIENT} build 
+                    ${IVI_MAKE_JOB_CLIENT} depend 
 
                     if (${status}) then
                         echo "Make depend failed in ${cwd}." | tee -a ${error_file}
@@ -1441,10 +1443,10 @@ foreach sub_lib_dir (*)
                     setenv PRODUCTION 0
 
                     if (${do_clean}) then
-                        ${IVI_MAKE} clean 
+                        ${IVI_MAKE_JOB_CLIENT} clean 
                     endif 
 
-                    ${IVI_MAKE} 
+                    ${IVI_MAKE_JOB_CLIENT} 
 
                     if (${status}) then
                         echo " " | tee -a ${error_file}
@@ -1458,10 +1460,10 @@ foreach sub_lib_dir (*)
                     setenv PRODUCTION 1
 
                     if (${do_clean}) then
-                        ${IVI_MAKE} clean 
+                        ${IVI_MAKE_JOB_CLIENT} clean 
                     endif 
 
-                    ${IVI_MAKE} 
+                    ${IVI_MAKE_JOB_CLIENT} 
 
                     if (${status}) then
                         echo " " | tee -a ${error_file}
@@ -1487,10 +1489,10 @@ foreach sub_lib_dir (*)
                         setenv PRODUCTION 1
 
                         if (${do_clean}) then
-                            ${IVI_MAKE} clean 
+                            ${IVI_MAKE_JOB_CLIENT} clean 
                         endif 
 
-                        ${IVI_MAKE} 
+                        ${IVI_MAKE_JOB_CLIENT} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
@@ -1509,10 +1511,10 @@ foreach sub_lib_dir (*)
                         setenv IVI_PREFER_CXX 1
 
                         if (${do_clean}) then
-                            ${IVI_MAKE} clean 
+                            ${IVI_MAKE_JOB_CLIENT} clean 
                         endif 
 
-                        ${IVI_MAKE} 
+                        ${IVI_MAKE_JOB_CLIENT} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
@@ -1536,7 +1538,7 @@ foreach sub_lib_dir (*)
 
 
                 if ($do_ctags) then
-                    ${IVI_MAKE} tags 
+                    ${IVI_MAKE_JOB_CLIENT} tags 
 
                     if (${status}) then
                         echo "Make tags failed in ${cwd}." | tee -a ${error_file}
@@ -1594,9 +1596,9 @@ foreach sub_lib_dir (*)
                         #
                         setenv PRODUCTION 1
                         
-                        ${IVI_MAKE} depend_clean 
-                        ${IVI_MAKE} build 
-                        ${IVI_MAKE} depend 
+                        ${IVI_MAKE_JOB_CLIENT} depend_clean 
+                        ${IVI_MAKE_JOB_CLIENT} build 
+                        ${IVI_MAKE_JOB_CLIENT} depend 
 
                         if (${status}) then
                             echo "Make depend failed in ${cwd}." | tee -a ${error_file}
@@ -1609,10 +1611,10 @@ foreach sub_lib_dir (*)
                         setenv PRODUCTION 0
 
                         if (${do_clean}) then
-                            ${IVI_MAKE} clean 
+                            ${IVI_MAKE_JOB_CLIENT} clean 
                         endif 
 
-                        ${IVI_MAKE} 
+                        ${IVI_MAKE_JOB_CLIENT} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
@@ -1626,10 +1628,10 @@ foreach sub_lib_dir (*)
                         setenv PRODUCTION 1
 
                         if (${do_clean}) then
-                            ${IVI_MAKE} clean 
+                            ${IVI_MAKE_JOB_CLIENT} clean 
                         endif 
 
-                        ${IVI_MAKE} 
+                        ${IVI_MAKE_JOB_CLIENT} 
 
                         if (${status}) then
                             echo " " | tee -a ${error_file}
@@ -1655,10 +1657,10 @@ foreach sub_lib_dir (*)
                             setenv PRODUCTION 1
 
                             if (${do_clean}) then
-                                ${IVI_MAKE} clean 
+                                ${IVI_MAKE_JOB_CLIENT} clean 
                             endif 
 
-                            ${IVI_MAKE} 
+                            ${IVI_MAKE_JOB_CLIENT} 
 
                             if (${status}) then
                                 echo " " | tee -a ${error_file}
@@ -1677,10 +1679,10 @@ foreach sub_lib_dir (*)
                             setenv IVI_PREFER_CXX 1
 
                             if (${do_clean}) then
-                                ${IVI_MAKE} clean 
+                                ${IVI_MAKE_JOB_CLIENT} clean 
                             endif 
 
-                            ${IVI_MAKE} 
+                            ${IVI_MAKE_JOB_CLIENT} 
 
                             if (${status}) then
                                 echo " " | tee -a ${error_file}
@@ -1697,7 +1699,7 @@ foreach sub_lib_dir (*)
                     endif
 
                     if ($do_ctags) then
-                        ${IVI_MAKE} tags 
+                        ${IVI_MAKE_JOB_CLIENT} tags 
 
                         if (${status}) then
                             echo "Make tags failed in ${cwd}." > /dev/stderr | tee -a ${error_file}
@@ -1779,7 +1781,7 @@ foreach sub_lib_dir (*)
             set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
 
             if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
-                ${IVI_MAKE} regress_clean  
+                ${IVI_MAKE_JOB_CLIENT} regress_clean  
                 if (${status}) then
                     echo "Making regress clean failed in ${cwd}." | tee -a ${error_file}
                     set exit_status = 1
@@ -1834,14 +1836,14 @@ foreach sub_lib_dir (*)
                 echo Regression testing in $cwd. Load dir is ${LD_OBJ_DIR}.
                 echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-                ${IVI_MAKE} regress >& regress.res
+                ${IVI_MAKE_JOB_CLIENT} regress >& regress.res
                 if (${status}) then
                     echo " "  > regress.log
                     echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"  >> regress.log
                     echo " "  >> regress.log
                     echo "Regression testing failed in ${cwd}. "  >> regress.log
                     echo "To reproduce this try:"  >> regress.log
-                    echo "    cd ${cwd}; ${IVI_MAKE} regress"  >> regress.log
+                    echo "    cd ${cwd}; ${IVI_MAKE_JOB_CLIENT} regress"  >> regress.log
                     echo " "  >> regress.log
                     cat regress.res >> regress.log
 
@@ -1954,9 +1956,9 @@ foreach mi_dir ($prog_dirs)
         #
         setenv PRODUCTION 1
         
-        ${IVI_MAKE} depend_clean 
-        ${IVI_MAKE} build 
-        ${IVI_MAKE} depend 
+        ${IVI_MAKE_JOB_CLIENT} depend_clean 
+        ${IVI_MAKE_JOB_CLIENT} build 
+        ${IVI_MAKE_JOB_CLIENT} depend 
 
         if (${status}) then
             echo "Make depend failed in ${cwd}." | tee -a ${error_file}
@@ -1969,10 +1971,10 @@ foreach mi_dir ($prog_dirs)
         setenv PRODUCTION 0
 
         if (${do_clean}) then
-            ${IVI_MAKE} clean 
+            ${IVI_MAKE_JOB_CLIENT} clean 
         endif 
 
-        ${IVI_MAKE} 
+        ${IVI_MAKE_JOB_CLIENT} 
 
         if (${status}) then
             echo " " | tee -a ${error_file}
@@ -1986,10 +1988,10 @@ foreach mi_dir ($prog_dirs)
         setenv PRODUCTION 1
 
         if (${do_clean}) then
-            ${IVI_MAKE} clean 
+            ${IVI_MAKE_JOB_CLIENT} clean 
         endif 
 
-        ${IVI_MAKE} 
+        ${IVI_MAKE_JOB_CLIENT} 
 
         if (${status}) then
             echo " " | tee -a ${error_file}
@@ -2030,10 +2032,10 @@ foreach mi_dir ($prog_dirs)
                 setenv PRODUCTION 1
 
                 if (${do_clean}) then
-                    ${IVI_MAKE} clean 
+                    ${IVI_MAKE_JOB_CLIENT} clean 
                 endif 
 
-                ${IVI_MAKE} 
+                ${IVI_MAKE_JOB_CLIENT} 
 
                 if (${status}) then
                     echo " " | tee -a ${error_file}
@@ -2053,10 +2055,10 @@ foreach mi_dir ($prog_dirs)
             setenv IVI_PREFER_CXX 1
 
             if (${do_clean}) then
-                ${IVI_MAKE} clean 
+                ${IVI_MAKE_JOB_CLIENT} clean 
             endif 
 
-            ${IVI_MAKE} 
+            ${IVI_MAKE_JOB_CLIENT} 
 
             if (${status}) then
                 echo " " | tee -a ${error_file}
@@ -2073,7 +2075,7 @@ foreach mi_dir ($prog_dirs)
     endif
 
     if ($do_ctags) then
-        ${IVI_MAKE} tags 
+        ${IVI_MAKE_JOB_CLIENT} tags 
 
         if (${status}) then
             echo "Make tags in $mi_dir failed." | tee -a ${error_file}
@@ -2251,7 +2253,7 @@ if ($do_doc) then
             goto end_of_script
         endif 
 
-        ${IVI_MAKE} doc 
+        ${IVI_MAKE_JOB_CLIENT} doc 
 
         if (${status}) then
             echo "Make doc failed in ${cwd}." | tee -a ${error_file}
@@ -2284,15 +2286,15 @@ if ($do_lib) then
 
     setenv PRODUCTION 1
 
-    ${IVI_MAKE} 
+    ${IVI_MAKE_JOB_CLIENT} 
     if (${status}) then
-        echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT}" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
     if ($do_doc) then
-        ${IVI_MAKE} doc 
+        ${IVI_MAKE_JOB_CLIENT} doc 
 
         if (${status}) then
             echo "Make doc failed in ${cwd}." | tee -a ${error_file}
@@ -2467,15 +2469,15 @@ if ($do_lib_cpp) then
 
     setenv PRODUCTION 1
 
-    ${IVI_MAKE} 
+    ${IVI_MAKE_JOB_CLIENT} 
     if (${status}) then
-        echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
+        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT}" | tee -a ${error_file}
         set exit_status = 1
         goto end_of_script
     endif 
 
     if ($do_doc) then
-        ${IVI_MAKE} doc 
+        ${IVI_MAKE_JOB_CLIENT} doc 
 
         if (${status}) then
             echo "Make doc failed in ${cwd}." | tee -a ${error_file}
@@ -3060,16 +3062,16 @@ if ($do_export) then
             echo "Make_ivi: Building Include_lines/sub_libs_needed for ${prog_dir} in ${cwd}" 
             echo "" 
 
-            ${IVI_MAKE} depend_clean  
+            ${IVI_MAKE_JOB_CLIENT} depend_clean  
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend_clean" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
 
-            ${IVI_MAKE} Include_lines/sub_libs_needed 
+            ${IVI_MAKE_JOB_CLIENT} Include_lines/sub_libs_needed 
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE} Include_lines/sub_libs_needed" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} Include_lines/sub_libs_needed" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3109,9 +3111,9 @@ if ($do_export) then
             echo "Make_ivi: Doing a make depend."
             echo
 
-            ${IVI_MAKE} depend  
+            ${IVI_MAKE_JOB_CLIENT} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3241,30 +3243,30 @@ if ($do_export) then
             # makefiles.
             #
             if (! ${skip_export_depend}) then 
-                ${IVI_MAKE} depend_clean 
+                ${IVI_MAKE_JOB_CLIENT} depend_clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend_clean" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
             endif 
 
             if (! ${skip_export_make}) then 
-                ${IVI_MAKE} 
+                ${IVI_MAKE_JOB_CLIENT} 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT}" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
 
                 # Ignore status on cleaning. 
-                ${IVI_MAKE} clean 
+                ${IVI_MAKE_JOB_CLIENT} clean 
                 /bin/rm -rf ${MACHINE}
                 /bin/rm -rf make_doc 
 
-                ${IVI_MAKE} depend 
+                ${IVI_MAKE_JOB_CLIENT} depend 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3284,29 +3286,29 @@ if ($do_export) then
                 endif 
 
                 if (! ${skip_export_depend}) then 
-                    ${IVI_MAKE} depend_clean 
+                    ${IVI_MAKE_JOB_CLIENT} depend_clean 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend_clean" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
                 endif 
 
                 if (! ${skip_export_make}) then 
-                    ${IVI_MAKE} 
+                    ${IVI_MAKE_JOB_CLIENT} 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT}" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
 
                     # Ignore status on cleaning. 
-                    ${IVI_MAKE} clean 
+                    ${IVI_MAKE_JOB_CLIENT} clean 
                     /bin/rm -rf ${MACHINE}
 
-                    ${IVI_MAKE} depend 
+                    ${IVI_MAKE_JOB_CLIENT} depend 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
@@ -3369,26 +3371,26 @@ if ($do_export) then
         # Because of the cleaning for export, we need to rebuild the makefiles.
         #
         if (! ${skip_export_depend}) then 
-            ${IVI_MAKE} depend_clean  
+            ${IVI_MAKE_JOB_CLIENT} depend_clean  
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend_clean" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
         endif 
 
         if (! ${skip_export_make}) then 
-            ${IVI_MAKE}   
+            ${IVI_MAKE_JOB_CLIENT}   
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE}" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT}" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
         endif 
 
-        ${IVI_MAKE} clean 
+        ${IVI_MAKE_JOB_CLIENT} clean 
         if (${status}) then
-            echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
+            echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} clean" | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
@@ -3423,9 +3425,9 @@ if ($do_export) then
         # One more make of "depend" to update lagards.
         #
         if (! ${skip_export_depend}) then 
-            ${IVI_MAKE} depend  
+            ${IVI_MAKE_JOB_CLIENT} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3438,9 +3440,9 @@ if ($do_export) then
             echo "Make_ivi: Doing a make depend."
             echo
 
-            ${IVI_MAKE} depend  
+            ${IVI_MAKE_JOB_CLIENT} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3549,9 +3551,9 @@ if ($do_export) then
             echo "Make_ivi: Doing a make depend."
             echo
 
-            ${IVI_MAKE} depend  
+            ${IVI_MAKE_JOB_CLIENT} depend  
             if (${status}) then
-                echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                 set exit_status = 1
                 goto end_of_script
             endif 
@@ -3725,16 +3727,16 @@ if ($do_export) then
                 endif 
 
                 # We have moved stuff about. So ...
-                ${IVI_MAKE} depend_clean 
+                ${IVI_MAKE_JOB_CLIENT} depend_clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE} depend_clean" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend_clean" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
 
-                ${IVI_MAKE} clean 
+                ${IVI_MAKE_JOB_CLIENT} clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE} clean " | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} clean " | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3743,16 +3745,16 @@ if ($do_export) then
                     echo "Make_ivi: Building documentation due to option export_doc in `pwd`."
                     echo " "
 
-                    ${IVI_MAKE} doc 
+                    ${IVI_MAKE_JOB_CLIENT} doc 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${IVI_MAKE} doc" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} doc" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
 
-                    ${IVI_MAKE} clean 
+                    ${IVI_MAKE_JOB_CLIENT} clean 
                     if (${status}) then
-                        echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
+                        echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} clean" | tee -a ${error_file}
                         set exit_status = 1
                         goto end_of_script
                     endif 
@@ -3771,9 +3773,9 @@ if ($do_export) then
                             goto end_of_script
                         endif 
 
-                            ${IVI_MAKE} clean 
+                            ${IVI_MAKE_JOB_CLIENT} clean 
                             if (${status}) then
-                                echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
+                                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} clean" | tee -a ${error_file}
                                 set exit_status = 1
                                 goto end_of_script
                             endif 
@@ -3785,9 +3787,9 @@ if ($do_export) then
                             goto end_of_script
                         endif 
 
-                        ${IVI_MAKE} clean 
+                        ${IVI_MAKE_JOB_CLIENT} clean 
                         if (${status}) then
-                            echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
+                            echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} clean" | tee -a ${error_file}
                             set exit_status = 1
                             goto end_of_script
                         endif 
@@ -3803,9 +3805,9 @@ if ($do_export) then
                 echo "Make_ivi: Doing a make clean in `pwd`."
                 echo " "
 
-                ${IVI_MAKE} clean 
+                ${IVI_MAKE_JOB_CLIENT} clean 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE} clean" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} clean" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3824,9 +3826,9 @@ if ($do_export) then
                     goto end_of_script 
                 endif 
 
-                ${IVI_MAKE} depend 
+                ${IVI_MAKE_JOB_CLIENT} depend 
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
@@ -3834,9 +3836,9 @@ if ($do_export) then
                 # Do it again, even though it is probably not needed since the
                 # rewrite of build_2. 
                 #
-                ${IVI_MAKE} depend
+                ${IVI_MAKE_JOB_CLIENT} depend
                 if (${status}) then
-                    echo "Command failed in `pwd`: ${IVI_MAKE} depend" | tee -a ${error_file}
+                    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} depend" | tee -a ${error_file}
                     set exit_status = 1
                     goto end_of_script
                 endif 
