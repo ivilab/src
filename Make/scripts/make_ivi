@@ -1111,6 +1111,7 @@ pushd lib > /dev/null
         echo 
         echo -------------------------------------------------------
         echo Make_ivi: Considering compiling lib/$sub_lib_dir
+        echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
         echo 
 
         if (${skip_sub_dirs}) then
@@ -1344,8 +1345,6 @@ pushd lib > /dev/null
                 echo 
                 echo -------------------------------------------------------
                 echo Make_ivi: Considering sub-sub dir lib/${sub_lib_dir}/${sub_lib_test_dir}
-                echo 
-
                 echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
                 echo 
 
@@ -1515,13 +1514,34 @@ pushd lib > /dev/null
                         endif
                     endif
 
-                    # Next level down (directories within `test` (for example)).
+                    # Next level down (directories within `test` (interactive, for example)).
                     
                     if (! ${skip_test_sub_dirs}) then
                         foreach test_sub_dir (${test_sub_dirs})
                             if ( ! -d "${test_sub_dir}") then
                                 continue
                             endif
+
+                            echo 
+                            echo -------------------------------------------------------
+                            echo Make_ivi: Considering test sub dir lib/${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}
+                            echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
+                            echo 
+
+                            if ((! ${FORCE_MAKE_IVI}) && (-e "${test_sub_dir}/SKIP_MAKE_IVI")) then
+                                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}/SKIP_MAKE_IVI exists."
+                                continue
+                            endif 
+
+                            if ((! ${FORCE_MAKE_IVI}) && (-e "${test_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
+                                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+                                continue
+                            endif 
+
+                            if ((! ${FORCE_MAKE_IVI}) && (-e "${test_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+                                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+                                continue
+                            endif 
 
                             pushd ${test_sub_dir} > /dev/null
                                 if ((! ${skip_depend}) && (! ${skip_depend_lib_sub}) && (-x build) && (-r Makefile)) then
