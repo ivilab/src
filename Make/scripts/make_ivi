@@ -823,38 +823,41 @@ else
 endif 
 
 pushd Make/util > /dev/null
-if (${status}) then
-    echo "Command failed in `pwd`: pushd Make/util > /dev/null" | tee -a ${error_file}
-    set exit_status = 1
-    goto end_of_script
-endif 
-
-echo " " 
-echo "Make_ivi: Now in directory"`pwd`
-echo " " 
-
-if (! ${skip_depend}) then
-    ${IVI_MAKE_JOB_CLIENT} depend_very_clean 
-    ${IVI_MAKE_JOB_CLIENT} depend 
-
-    if (${status}) then
-        echo "Make depend failed in ${cwd}" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif
-endif
-
-if (! ${skip_doc}) then 
-    pushd c2man-2.40-kobus > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd c2man-2.40-kobus > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
     echo " " 
     echo "Make_ivi: Now in directory"`pwd`
     echo " " 
+
+    if (! ${skip_depend}) then
+        ${IVI_MAKE_JOB_CLIENT} depend_very_clean 
+        ${IVI_MAKE_JOB_CLIENT} depend 
+
+        if (${status}) then
+            echo "Make depend failed in ${cwd}" | tee -a ${error_file}
+            set exit_status = 1
+            goto end_of_script
+        endif
+    endif
+
+    if (! ${skip_doc}) then 
+        pushd c2man-2.40-kobus > /dev/null
+            echo " " 
+            echo "Make_ivi: Now in directory"`pwd`
+            echo " " 
+
+            ${IVI_MAKE_JOB_CLIENT} make_bin 
+            if (${status}) then
+                echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} make_bin" | tee -a ${error_file}
+                set exit_status = 1
+                goto end_of_script
+            endif 
+        popd > /dev/null
+
+        echo " " 
+        echo "Make_ivi: Now in directory"`pwd`
+        echo " " 
+    endif 
+
+    echo ""
 
     ${IVI_MAKE_JOB_CLIENT} make_bin 
     if (${status}) then
@@ -862,33 +865,7 @@ if (! ${skip_doc}) then
         set exit_status = 1
         goto end_of_script
     endif 
-
-    popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
-    echo " " 
-    echo "Make_ivi: Now in directory"`pwd`
-    echo " " 
-endif 
-
-echo ""
-
-${IVI_MAKE_JOB_CLIENT} make_bin 
-if (${status}) then
-    echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} make_bin" | tee -a ${error_file}
-    set exit_status = 1
-    goto end_of_script
-endif 
 popd > /dev/null
-if (${status}) then
-    echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-    set exit_status = 1
-    goto end_of_script
-endif 
 
 echo " " 
 echo "Make_ivi: Done with tools. Now back in directory"`pwd`
@@ -1124,536 +1101,312 @@ endif
 #
 # Do all the lib dirs, then all the lib sub dirs and sub sub dirs. 
 pushd lib > /dev/null
-if (${status}) then
-    echo "Command failed in `pwd`: pushd lib > /dev/null" | tee -a ${error_file}
-    set exit_status = 1
-    goto end_of_script
-endif 
+    echo ---------------------------------------------------------------
+    echo Make_ivi: Compiling IVI sub-libraries.
+    echo ---------------------------------------------------------------
 
-echo ---------------------------------------------------------------
-echo Make_ivi: Compiling IVI sub-libraries.
-echo ---------------------------------------------------------------
-
-foreach sub_lib_dir (*)
-    if (! -d "${sub_lib_dir}") continue
-
-    echo 
-    echo -------------------------------------------------------
-    echo Make_ivi: Considering compiling lib/$sub_lib_dir
-    echo 
-
-    if (${skip_sub_dirs}) then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because we are skipping sub lib dirs."
-        continue
-    endif
-
-    set is_cpp_dir = `echo ${sub_lib_dir} | grep '_cpp$'`
-
-    if (${skip_cpp_dirs}) then
-        if ("${is_cpp_dir}" != "")  then
-            echo "Make_ivi: Skipping ${sub_lib_dir} because we are skipping cpp dirs."
-            continue
-        endif
-    endif
-
-    if (! -e "${sub_lib_dir}/Makefile") then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because no Makefile."
-        continue
-    endif
-
-    if (! -e "${sub_lib_dir}/build") then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because no 'build'."
-        continue
-    endif
-
-    # Obsolete or not ready dirs are handled next.
-
-    if (("${sub_lib_dir}" == "rpc") || ("${sub_lib_dir}" == "cpp_m")) then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because it is either obsolete or not ready."
-        continue
-    endif 
-
-    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI")) then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI exists."
-        continue
-    endif 
-
-    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI.${OS}")) then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${OS} exists."
-        continue
-    endif 
-
-    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
-        continue
-    endif 
-
-    pushd ${sub_lib_dir} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${sub_lib_dir} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-        # It is not clear if we want to proceed if there are only header files. Here
-        # we include header files via the flag '-h'.
-        # 
-        set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
-    popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
-    if ("${have_code}" == "") then
-        echo "Make_ivi: Skipping ${sub_lib_dir} because it has no source files."
-        continue
-    endif 
-
-    # End exclusions. 
-    
-    pushd ${sub_lib_dir} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${sub_lib_dir} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
-    if ((! $skip_depend) && (! $skip_depend_lib) && (-x build) && (-r Makefile)) then
-        setenv PRODUCTION 1
-        ${IVI_MAKE_JOB_CLIENT} depend_clean 
-        ${IVI_MAKE_JOB_CLIENT} depend 
-
-        if (${status}) then
-            echo "Make depend failed in ${cwd}" | tee -a ${error_file}
-            set exit_status = 1
-            if (! ${keep_going}) goto end_of_script
-        endif
-    else
-        echo "Script make_ivi skipping make depend in `pwd` due to options."
-    endif
-
-    if (! ${skip_code}) then
-        setenv PRODUCTION 0
-
-        if (${do_clean}) then
-            ${IVI_MAKE_JOB_CLIENT} clean 
-        endif 
-
-        ${IVI_MAKE_JOB_CLIENT} |& tee -a  ${compile_res} 
-
-        if (${status}) then
-            echo " " | tee -a ${error_file}
-            echo "Make failed in ${cwd}." | tee -a ${error_file}
-            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-            echo " " | tee -a ${error_file}
-            set exit_status = 1
-            if (! ${keep_going}) goto end_of_script
-        endif
-
-        setenv PRODUCTION 1
-
-        if (${do_clean}) then
-            ${IVI_MAKE_JOB_CLIENT} clean 
-        endif 
-
-        ${IVI_MAKE_JOB_CLIENT}  
-
-        if (${status}) then
-            echo " " | tee -a ${error_file}
-            echo "Make failed in ${cwd}." | tee -a ${error_file}
-            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-            echo " " | tee -a ${error_file}
-            set exit_status = 1
-            if (! ${keep_going}) goto end_of_script
-        endif
-
-        if ((! "${skip_no_libs}") && ( ! -e "SKIP_NO_LIBS")) then
-            setenv NO_LIBS 1
-            
-            if (("${test_no_boost}") && ( ! -e "SKIP_NO_BOOST")) then
-                 setenv NO_BOOST 1
-            else 
-                 setenv NO_BOOST 0
-            endif 
-
-            # We only do NO_LIBS with production code. Checking development code
-            # as well would be overkill. 
-            #
-            setenv PRODUCTION 1
-
-            if (${do_clean}) then
-                ${IVI_MAKE_JOB_CLIENT} clean 
-            endif 
-
-            ${IVI_MAKE_JOB_CLIENT} 
-
-            if (${status}) then
-                echo " " | tee -a ${error_file}
-                echo "Make failed in ${cwd}." | tee -a ${error_file}
-                echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                echo " " | tee -a ${error_file}
-                set exit_status = 1
-                if (! ${keep_going}) goto end_of_script
-            endif
-
-            # Reset. 
-            setenv NO_LIBS 0
-            setenv NO_BOOST 0
-        endif
-
-        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
-            setenv IVI_PREFER_CXX 1
-
-            if (${do_clean}) then
-                ${IVI_MAKE_JOB_CLIENT} clean 
-            endif 
-
-            ${IVI_MAKE_JOB_CLIENT} |& tee -a ${compile_cxx_res} 
-
-            if (${status}) then
-                echo " " | tee -a ${error_file}
-                echo "Make failed in ${cwd}." | tee -a ${error_file}
-                echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                echo " " | tee -a ${error_file}
-                set exit_status = 1
-                if (! ${keep_going}) goto end_of_script
-            endif
-
-            # Reset.
-            setenv IVI_PREFER_CXX 0
-            unsetenv IVI_CC
-        endif
-
-        # This seems to do nothing?
-        set sub_lib_dir = "${sub_lib_dir}"
-    else
-        echo "Make_ivi: Skipping make in `pwd` due to options."
-    endif
-
-    if (($do_doc) && ("${is_cpp_dir}" == "") && (! -e "SKIP_C2MAN"))  then
-        ${IVI_MAKE_JOB_CLIENT} doc 
-
-        if (${status}) then
-            echo "Make doc failed in ${cwd}." | tee -a ${error_file}
-            set exit_status = 1
-            if (! ${keep_going}) goto end_of_script
-        endif
-    else
-        echo "Make_ivi: Skipping doc in `pwd` due to options."
-    endif
-
-    if ($do_ctags) then
-        ${IVI_MAKE_JOB_CLIENT} tags 
-
-        if (${status}) then
-            echo "Make tags failed in ${cwd}." | tee -a ${error_file}
-            set exit_status = 1
-            if (! ${keep_going}) goto end_of_script
-        else if ($collect_files) then
-            # Tags is buildable. We currently save resources by not archiving.
-            #
-            ### echo lib/${sub_lib_dir}/tags >> ${src_dist_file_dir}/src_dist_files
-        endif
-    else
-        echo "Make_ivi: Skipping ctags in `pwd` due to options."
-    endif
-
-    if ($collect_files) then
-        echo "Make_ivi: Collecting files in `pwd` due to options."
-
-        foreach file (*.[chC] *.[chit]pp *.cxx)
-            echo lib/${sub_lib_dir}/${file} >> ${src_dist_file_dir}/src_dist_files
-        end
-
-        foreach build_file (${lib_build_files}) 
-            if (-e "${build_file}") then
-                echo lib/${sub_lib_dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
-            else
-                echo "Make_ivi: Warning: Missing file lib/${sub_lib_dir}/${build_file}."
-            endif 
-        end 
-    endif
-
-    set sub_sub_dir_list = "" 
-
-    if (! ${skip_test_dirs}) then
-        set sub_sub_dir_list = "${sub_sub_dir_list} test"
-    endif 
-
-    foreach sub_sub_dir (${sub_sub_dir_list})
-        if ( ! -d "${sub_sub_dir}") then
-            continue
-        endif
+    foreach sub_lib_dir (*)
+        if (! -d "${sub_lib_dir}") continue
 
         echo 
         echo -------------------------------------------------------
-        echo Make_ivi: Considering sub-sub dir lib/${sub_lib_dir}/${sub_sub_dir}
+        echo Make_ivi: Considering compiling lib/$sub_lib_dir
         echo 
 
-        echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
-        echo 
+        if (${skip_sub_dirs}) then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because we are skipping sub lib dirs."
+            continue
+        endif
 
-        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
-            echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
+        set is_cpp_dir = `echo ${sub_lib_dir} | grep '_cpp$'`
+
+        if (${skip_cpp_dirs}) then
+            if ("${is_cpp_dir}" != "")  then
+                echo "Make_ivi: Skipping ${sub_lib_dir} because we are skipping cpp dirs."
+                continue
+            endif
+        endif
+
+        if (! -e "${sub_lib_dir}/Makefile") then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because no Makefile."
+            continue
+        endif
+
+        if (! -e "${sub_lib_dir}/build") then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because no 'build'."
+            continue
+        endif
+
+        # Obsolete or not ready dirs are handled next.
+
+        if (("${sub_lib_dir}" == "rpc") || ("${sub_lib_dir}" == "cpp_m")) then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because it is either obsolete or not ready."
             continue
         endif 
 
-        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
-            echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
+        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI")) then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI exists."
             continue
         endif 
 
-        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
-            echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI.${OS}")) then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${OS} exists."
             continue
         endif 
 
-        pushd ${sub_sub_dir} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${sub_sub_dir} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
+        if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because ${sub_lib_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+            continue
         endif 
+
+        pushd ${sub_lib_dir} > /dev/null
             # It is not clear if we want to proceed if there are only header files. Here
             # we include header files via the flag '-h'.
             # 
             set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
+        popd > /dev/null
 
-            if (("${have_code}" == "1")  && (-x build) && (-r Makefile)) then
-                if ((! $skip_depend) && (! $skip_depend_lib_sub) && (-x build) && (-r Makefile) ) then
-                    #
-                    # We need this in case we are doing NO_LIBS also. In this case, the
-                    # values of the libraries will be wrong on the second time through the
-                    # loop.
-                    #
-                    setenv PRODUCTION 1
-                    ${IVI_MAKE_JOB_CLIENT} depend_clean 
-                    ${IVI_MAKE_JOB_CLIENT} build 
-                    ${IVI_MAKE_JOB_CLIENT} depend 
+        if ("${have_code}" == "") then
+            echo "Make_ivi: Skipping ${sub_lib_dir} because it has no source files."
+            continue
+        endif 
 
-                    if (${status}) then
-                        echo "Make depend failed in ${cwd}." | tee -a ${error_file}
-                        set exit_status = 1
-                        if (! ${keep_going}) goto end_of_script
-                    endif
+        # End exclusions. 
+        
+        pushd ${sub_lib_dir} > /dev/null
+            if ((! $skip_depend) && (! $skip_depend_lib) && (-x build) && (-r Makefile)) then
+                setenv PRODUCTION 1
+                ${IVI_MAKE_JOB_CLIENT} depend_clean 
+                ${IVI_MAKE_JOB_CLIENT} depend 
+
+                if (${status}) then
+                    echo "Make depend failed in ${cwd}" | tee -a ${error_file}
+                    set exit_status = 1
+                    if (! ${keep_going}) goto end_of_script
                 endif
-
-                if (! ${skip_code}) then
-                    setenv PRODUCTION 0
-
-                    if (${do_clean}) then
-                        ${IVI_MAKE_JOB_CLIENT} clean 
-                    endif 
-
-                    ${IVI_MAKE_JOB_CLIENT} 
-
-                    if (${status}) then
-                        echo " " | tee -a ${error_file}
-                        echo "Make failed in ${cwd}." | tee -a ${error_file}
-                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                        echo " " | tee -a ${error_file}
-                        set exit_status = 1
-                        if (! ${keep_going}) goto end_of_script
-                    endif
-
-                    setenv PRODUCTION 1
-
-                    if (${do_clean}) then
-                        ${IVI_MAKE_JOB_CLIENT} clean 
-                    endif 
-
-                    ${IVI_MAKE_JOB_CLIENT} 
-
-                    if (${status}) then
-                        echo " " | tee -a ${error_file}
-                        echo "Make failed in ${cwd}." | tee -a ${error_file}
-                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                        echo " " | tee -a ${error_file}
-                        set exit_status = 1
-                        if (! ${keep_going}) goto end_of_script
-                    endif
-
-                    if ((! "${skip_prog_no_libs}") && ( ! -e "SKIP_NO_LIBS") && ( ! -e "../SKIP_NO_LIBS")) then
-                        setenv NO_LIBS 1
-
-                        if (("${test_prog_no_boost}") && ( ! -e "SKIP_NO_BOOST")) then
-                             setenv NO_BOOST 1
-                        else 
-                             setenv NO_BOOST 0
-                        endif 
-
-                        # We only do NO_LIBS with production code. Checking
-                        # development code also would be overkill. 
-                        #
-                        setenv PRODUCTION 1
-
-                        if (${do_clean}) then
-                            ${IVI_MAKE_JOB_CLIENT} clean 
-                        endif 
-
-                        ${IVI_MAKE_JOB_CLIENT} 
-
-                        if (${status}) then
-                            echo " " | tee -a ${error_file}
-                            echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                            echo " " | tee -a ${error_file}
-                            set exit_status = 1
-                            if (! ${keep_going}) goto end_of_script
-                        endif
-
-                        setenv NO_LIBS 0
-                        setenv NO_BOOST 0
-                    endif 
-
-                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX")) then
-                        setenv IVI_PREFER_CXX 1
-
-                        if (${do_clean}) then
-                            ${IVI_MAKE_JOB_CLIENT} clean 
-                        endif 
-
-                        ${IVI_MAKE_JOB_CLIENT} 
-
-                        if (${status}) then
-                            echo " " | tee -a ${error_file}
-                            echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                            echo " " | tee -a ${error_file}
-                            set exit_status = 1
-                            if (! ${keep_going}) goto end_of_script
-                        endif
-
-                        setenv IVI_PREFER_CXX 0
-                        unsetenv IVI_CC
-                    endif
-                endif
-
-                if (${export_test_code}) then
-                    set tar_list_file = src_dist_files
-                else
-                    set tar_list_file = src_dist_extra_files
-                endif 
-
-
-                if ($do_ctags) then
-                    ${IVI_MAKE_JOB_CLIENT} tags 
-
-                    if (${status}) then
-                        echo "Make tags failed in ${cwd}." | tee -a ${error_file}
-                        set exit_status = 1
-                        if (! ${keep_going}) goto end_of_script
-                    else if ($collect_files) then
-                        # Tags is buildable. We currently save resources by not archiving.
-                        #
-                        ### echo lib/${sub_lib_dir}/${sub_sub_dir}/tags >> ${src_dist_file_dir}/${tar_list_file}
-                    endif
-                endif 
-
-                if (($do_archive) || (($do_export) && ($export_lib_test_dirs))) then
-                    foreach file (*.[chC] *.[chit]pp *.cxx)
-                        echo lib/${sub_lib_dir}/${sub_sub_dir}/${file} >> ${src_dist_file_dir}/${tar_list_file}
-                    end
-
-                    foreach build_file (${prog_build_files}) 
-                        if (-e "${build_file}") then
-                            echo lib/${sub_lib_dir}/${sub_sub_dir}/${build_file} >> ${src_dist_file_dir}/${tar_list_file}
-                        else 
-                            echo "Make_ivi: Warning: Missing file lib/${sub_lib_dir}/${sub_sub_dir}/${build_file}."
-                        endif 
-                    end 
-                endif
+            else
+                echo "Script make_ivi skipping make depend in `pwd` due to options."
             endif
 
-            # Next level down (directories within `test` (for example).
-            
-            if (! ${skip_test_sub_dirs}) then
-                foreach mi_sub_sub_dir (${test_sub_dirs})
-                    if ( ! -d "${mi_sub_sub_dir}") then
-                        continue
+            if (! ${skip_code}) then
+                setenv PRODUCTION 0
+
+                if (${do_clean}) then
+                    ${IVI_MAKE_JOB_CLIENT} clean 
+                endif 
+
+                ${IVI_MAKE_JOB_CLIENT} |& tee -a  ${compile_res} 
+
+                if (${status}) then
+                    echo " " | tee -a ${error_file}
+                    echo "Make failed in ${cwd}." | tee -a ${error_file}
+                    echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                    echo " " | tee -a ${error_file}
+                    set exit_status = 1
+                    if (! ${keep_going}) goto end_of_script
+                endif
+
+                setenv PRODUCTION 1
+
+                if (${do_clean}) then
+                    ${IVI_MAKE_JOB_CLIENT} clean 
+                endif 
+
+                ${IVI_MAKE_JOB_CLIENT}  
+
+                if (${status}) then
+                    echo " " | tee -a ${error_file}
+                    echo "Make failed in ${cwd}." | tee -a ${error_file}
+                    echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                    echo " " | tee -a ${error_file}
+                    set exit_status = 1
+                    if (! ${keep_going}) goto end_of_script
+                endif
+
+                if ((! "${skip_no_libs}") && ( ! -e "SKIP_NO_LIBS")) then
+                    setenv NO_LIBS 1
+                    
+                    if (("${test_no_boost}") && ( ! -e "SKIP_NO_BOOST")) then
+                         setenv NO_BOOST 1
+                    else 
+                         setenv NO_BOOST 0
+                    endif 
+
+                    # We only do NO_LIBS with production code. Checking development code
+                    # as well would be overkill. 
+                    #
+                    setenv PRODUCTION 1
+
+                    if (${do_clean}) then
+                        ${IVI_MAKE_JOB_CLIENT} clean 
+                    endif 
+
+                    ${IVI_MAKE_JOB_CLIENT} 
+
+                    if (${status}) then
+                        echo " " | tee -a ${error_file}
+                        echo "Make failed in ${cwd}." | tee -a ${error_file}
+                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                        echo " " | tee -a ${error_file}
+                        set exit_status = 1
+                        if (! ${keep_going}) goto end_of_script
                     endif
 
+                    # Reset. 
+                    setenv NO_LIBS 0
+                    setenv NO_BOOST 0
+                endif
+
+                if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX")) then
+                    setenv IVI_PREFER_CXX 1
+
+                    if (${do_clean}) then
+                        ${IVI_MAKE_JOB_CLIENT} clean 
+                    endif 
+
+                    ${IVI_MAKE_JOB_CLIENT} |& tee -a ${compile_cxx_res} 
+
+                    if (${status}) then
+                        echo " " | tee -a ${error_file}
+                        echo "Make failed in ${cwd}." | tee -a ${error_file}
+                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                        echo " " | tee -a ${error_file}
+                        set exit_status = 1
+                        if (! ${keep_going}) goto end_of_script
+                    endif
+
+                    # Reset.
+                    setenv IVI_PREFER_CXX 0
+                    unsetenv IVI_CC
+                endif
+
+                # This seems to do nothing?
+                set sub_lib_dir = "${sub_lib_dir}"
+            else
+                echo "Make_ivi: Skipping make in `pwd` due to options."
+            endif
+
+            if (($do_doc) && ("${is_cpp_dir}" == "") && (! -e "SKIP_C2MAN"))  then
+                ${IVI_MAKE_JOB_CLIENT} doc 
+
+                if (${status}) then
+                    echo "Make doc failed in ${cwd}." | tee -a ${error_file}
+                    set exit_status = 1
+                    if (! ${keep_going}) goto end_of_script
+                endif
+            else
+                echo "Make_ivi: Skipping doc in `pwd` due to options."
+            endif
+
+            if ($do_ctags) then
+                ${IVI_MAKE_JOB_CLIENT} tags 
+
+                if (${status}) then
+                    echo "Make tags failed in ${cwd}." | tee -a ${error_file}
+                    set exit_status = 1
+                    if (! ${keep_going}) goto end_of_script
+                else if ($collect_files) then
+                    # Tags is buildable. We currently save resources by not archiving.
+                    #
+                    ### echo lib/${sub_lib_dir}/tags >> ${src_dist_file_dir}/src_dist_files
+                endif
+            else
+                echo "Make_ivi: Skipping ctags in `pwd` due to options."
+            endif
+
+            if ($collect_files) then
+                echo "Make_ivi: Collecting files in `pwd` due to options."
+
+                foreach file (*.[chC] *.[chit]pp *.cxx)
+                    echo lib/${sub_lib_dir}/${file} >> ${src_dist_file_dir}/src_dist_files
+                end
+
+                foreach build_file (${lib_build_files}) 
+                    if (-e "${build_file}") then
+                        echo lib/${sub_lib_dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
+                    else
+                        echo "Make_ivi: Warning: Missing file lib/${sub_lib_dir}/${build_file}."
+                    endif 
+                end 
+            endif
+
+            set sub_lib_test_dirs = "" 
+
+            if (! ${skip_test_dirs}) then
+                set sub_lib_test_dirs = "${sub_lib_test_dirs} test"
+            endif 
+
+            foreach sub_lib_test_dir (${sub_lib_test_dirs})
+                if ( ! -d "${sub_lib_test_dir}") then
+                    continue
+                endif
+
+                echo 
+                echo -------------------------------------------------------
+                echo Make_ivi: Considering sub-sub dir lib/${sub_lib_dir}/${sub_lib_test_dir}
+                echo 
+
+                echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
+                echo 
+
+                if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI")) then
+                    echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI exists."
+                    continue
+                endif 
+
+                if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI.${OS}")) then
+                    echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI.${OS} exists."
+                    continue
+                endif 
+
+                if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+                    echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+                    continue
+                endif 
+
+                pushd ${sub_lib_test_dir} > /dev/null
                     # It is not clear if we want to proceed if there are only header files. Here
                     # we include header files via the flag '-h'.
                     # 
                     set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
 
-                    if ("${have_code}" == "") continue
+                    if (("${have_code}" == "1")  && (-x build) && (-r Makefile)) then
+                        if ((! $skip_depend) && (! $skip_depend_lib_sub) && (-x build) && (-r Makefile) ) then
+                            #
+                            # We need this in case we are doing NO_LIBS also. In this case, the
+                            # values of the libraries will be wrong on the second time through the
+                            # loop.
+                            #
+                            setenv PRODUCTION 1
+                            ${IVI_MAKE_JOB_CLIENT} depend_clean 
+                            ${IVI_MAKE_JOB_CLIENT} build 
+                            ${IVI_MAKE_JOB_CLIENT} depend 
 
-                    pushd ${mi_sub_sub_dir} > /dev/null
-                    if (${status}) then
-                        echo "Command failed in `pwd`: pushd ${mi_sub_sub_dir} > /dev/null" | tee -a ${error_file}
-                        set exit_status = 1
-                        goto end_of_script
-                    endif 
-
-                    if ((! ${skip_depend}) && (! ${skip_depend_lib_sub}) && (-x build) && (-r Makefile)) then
-                        #
-                        # We need this in case we are doing NO_LIBS also. In this case, the
-                        # values of the libraries will be wrong on the second time through the
-                        # loop.
-                        #
-                        setenv PRODUCTION 1
-                        
-                        ${IVI_MAKE_JOB_CLIENT} depend_clean 
-                        ${IVI_MAKE_JOB_CLIENT} build 
-                        ${IVI_MAKE_JOB_CLIENT} depend 
-
-                        if (${status}) then
-                            echo "Make depend failed in ${cwd}." | tee -a ${error_file}
-                            set exit_status = 1
-                            if (! ${keep_going}) goto end_of_script
-                        endif
-                    endif
-
-                    if (! ${skip_code}) then
-                        setenv PRODUCTION 0
-
-                        if (${do_clean}) then
-                            ${IVI_MAKE_JOB_CLIENT} clean 
-                        endif 
-
-                        ${IVI_MAKE_JOB_CLIENT} 
-
-                        if (${status}) then
-                            echo " " | tee -a ${error_file}
-                            echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                            echo " " | tee -a ${error_file}
-                            set exit_status = 1
-                            if (! ${keep_going}) goto end_of_script
+                            if (${status}) then
+                                echo "Make depend failed in ${cwd}." | tee -a ${error_file}
+                                set exit_status = 1
+                                if (! ${keep_going}) goto end_of_script
+                            endif
                         endif
 
-                        setenv PRODUCTION 1
+                        if (! ${skip_code}) then
+                            setenv PRODUCTION 0
 
-                        if (${do_clean}) then
-                            ${IVI_MAKE_JOB_CLIENT} clean 
-                        endif 
-
-                        ${IVI_MAKE_JOB_CLIENT} 
-
-                        if (${status}) then
-                            echo " " | tee -a ${error_file}
-                            echo "Make failed in ${cwd}." | tee -a ${error_file}
-                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                            echo " " | tee -a ${error_file}
-                            set exit_status = 1
-                            if (! ${keep_going}) goto end_of_script
-                        endif
-
-                        if ((! "${skip_prog_no_libs}") && ( ! -e "SKIP_NO_LIBS") && ( ! -e "../SKIP_NO_LIBS") && ( ! -e "../../SKIP_NO_LIBS")) then
-                            setenv NO_LIBS 1
-
-                            if (("${test_prog_no_boost}") && ( ! -e "SKIP_NO_BOOST")) then
-                                 setenv NO_BOOST 1
-                            else 
-                                 setenv NO_BOOST 0
+                            if (${do_clean}) then
+                                ${IVI_MAKE_JOB_CLIENT} clean 
                             endif 
 
-                            # We only do NO_LIBS with production code. Checking
-                            # development code also would be overkill. 
-                            #
+                            ${IVI_MAKE_JOB_CLIENT} 
+
+                            if (${status}) then
+                                echo " " | tee -a ${error_file}
+                                echo "Make failed in ${cwd}." | tee -a ${error_file}
+                                echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                                echo " " | tee -a ${error_file}
+                                set exit_status = 1
+                                if (! ${keep_going}) goto end_of_script
+                            endif
+
                             setenv PRODUCTION 1
 
                             if (${do_clean}) then
@@ -1671,217 +1424,361 @@ foreach sub_lib_dir (*)
                                 if (! ${keep_going}) goto end_of_script
                             endif
 
-                            setenv NO_LIBS 0
-                            setenv NO_BOOST 0
+                            if ((! "${skip_prog_no_libs}") && ( ! -e "SKIP_NO_LIBS") && ( ! -e "../SKIP_NO_LIBS")) then
+                                setenv NO_LIBS 1
+
+                                if (("${test_prog_no_boost}") && ( ! -e "SKIP_NO_BOOST")) then
+                                     setenv NO_BOOST 1
+                                else 
+                                     setenv NO_BOOST 0
+                                endif 
+
+                                # We only do NO_LIBS with production code. Checking
+                                # development code also would be overkill. 
+                                #
+                                setenv PRODUCTION 1
+
+                                if (${do_clean}) then
+                                    ${IVI_MAKE_JOB_CLIENT} clean 
+                                endif 
+
+                                ${IVI_MAKE_JOB_CLIENT} 
+
+                                if (${status}) then
+                                    echo " " | tee -a ${error_file}
+                                    echo "Make failed in ${cwd}." | tee -a ${error_file}
+                                    echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                                    echo " " | tee -a ${error_file}
+                                    set exit_status = 1
+                                    if (! ${keep_going}) goto end_of_script
+                                endif
+
+                                setenv NO_LIBS 0
+                                setenv NO_BOOST 0
+                            endif 
+
+                            if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX")) then
+                                setenv IVI_PREFER_CXX 1
+
+                                if (${do_clean}) then
+                                    ${IVI_MAKE_JOB_CLIENT} clean 
+                                endif 
+
+                                ${IVI_MAKE_JOB_CLIENT} 
+
+                                if (${status}) then
+                                    echo " " | tee -a ${error_file}
+                                    echo "Make failed in ${cwd}." | tee -a ${error_file}
+                                    echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                                    echo " " | tee -a ${error_file}
+                                    set exit_status = 1
+                                    if (! ${keep_going}) goto end_of_script
+                                endif
+
+                                setenv IVI_PREFER_CXX 0
+                                unsetenv IVI_CC
+                            endif
+                        endif
+
+                        if (${export_test_code}) then
+                            set tar_list_file = src_dist_files
+                        else
+                            set tar_list_file = src_dist_extra_files
                         endif 
 
-                        if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX")) then
-                            setenv IVI_PREFER_CXX 1
-
-                            if (${do_clean}) then
-                                ${IVI_MAKE_JOB_CLIENT} clean 
-                            endif 
-
-                            ${IVI_MAKE_JOB_CLIENT} 
+                        if ($do_ctags) then
+                            ${IVI_MAKE_JOB_CLIENT} tags 
 
                             if (${status}) then
-                                echo " " | tee -a ${error_file}
-                                echo "Make failed in ${cwd}." | tee -a ${error_file}
-                                echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
-                                echo " " | tee -a ${error_file}
+                                echo "Make tags failed in ${cwd}." | tee -a ${error_file}
                                 set exit_status = 1
                                 if (! ${keep_going}) goto end_of_script
+                            else if ($collect_files) then
+                                # Tags is buildable. We currently save resources by not archiving.
+                                #
+                                ### echo lib/${sub_lib_dir}/${sub_lib_test_dir}/tags >> ${src_dist_file_dir}/${tar_list_file}
+                            endif
+                        endif 
+
+                        if (($do_archive) || (($do_export) && ($export_lib_test_dirs))) then
+                            foreach file (*.[chC] *.[chit]pp *.cxx)
+                                echo lib/${sub_lib_dir}/${sub_lib_test_dir}/${file} >> ${src_dist_file_dir}/${tar_list_file}
+                            end
+
+                            foreach build_file (${prog_build_files}) 
+                                if (-e "${build_file}") then
+                                    echo lib/${sub_lib_dir}/${sub_lib_test_dir}/${build_file} >> ${src_dist_file_dir}/${tar_list_file}
+                                else 
+                                    echo "Make_ivi: Warning: Missing file lib/${sub_lib_dir}/${sub_lib_test_dir}/${build_file}."
+                                endif 
+                            end 
+                        endif
+                    endif
+
+                    # Next level down (directories within `test` (for example)).
+                    
+                    if (! ${skip_test_sub_dirs}) then
+                        foreach test_sub_dir (${test_sub_dirs})
+                            if ( ! -d "${test_sub_dir}") then
+                                continue
                             endif
 
-                            setenv IVI_PREFER_CXX 0
-                            unsetenv IVI_CC
-                        endif
-                    endif
+                            pushd ${test_sub_dir} > /dev/null
+                                if ((! ${skip_depend}) && (! ${skip_depend_lib_sub}) && (-x build) && (-r Makefile)) then
+                                    #
+                                    # We need this in case we are doing NO_LIBS also. In this case, the
+                                    # values of the libraries will be wrong on the second time through the
+                                    # loop.
+                                    #
+                                    setenv PRODUCTION 1
+                                    
+                                    ${IVI_MAKE_JOB_CLIENT} depend_clean 
+                                    ${IVI_MAKE_JOB_CLIENT} build 
+                                    ${IVI_MAKE_JOB_CLIENT} depend 
 
-                    if ($do_ctags) then
-                        ${IVI_MAKE_JOB_CLIENT} tags 
+                                    if (${status}) then
+                                        echo "Make depend failed in ${cwd}." | tee -a ${error_file}
+                                        set exit_status = 1
+                                        if (! ${keep_going}) goto end_of_script
+                                    endif
+                                endif
 
-                        if (${status}) then
-                            echo "Make tags failed in ${cwd}." > /dev/stderr | tee -a ${error_file}
-                            set exit_status = 1
-                            if (! ${keep_going}) goto end_of_script
-                        else if ($do_archive) then
-                            # Tags is buildable. We currently save resources by not archiving.
-                            #
-                            ### echo lib/${sub_lib_dir}/${sub_sub_dir}/${mi_sub_sub_dir}/tags >> ${src_dist_file_dir}/src_dist_extra_files
-                        endif
-                    endif
+                                if ((! ${skip_code}) && (-x build) && (-r Makefile)) then
+                                    setenv PRODUCTION 0
 
-                    if ($do_archive) then
-                        foreach file (*.[chC] *.[chit]pp *.cxx)
-                            echo lib/${sub_lib_dir}/${sub_sub_dir}/${mi_sub_sub_dir}/${file} >> ${src_dist_file_dir}/src_dist_extra_files
+                                    if (${do_clean}) then
+                                        ${IVI_MAKE_JOB_CLIENT} clean 
+                                    endif 
+
+                                    ${IVI_MAKE_JOB_CLIENT} 
+
+                                    if (${status}) then
+                                        echo " " | tee -a ${error_file}
+                                        echo "Make failed in ${cwd}." | tee -a ${error_file}
+                                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                                        echo " " | tee -a ${error_file}
+                                        set exit_status = 1
+                                        if (! ${keep_going}) goto end_of_script
+                                    endif
+
+                                    setenv PRODUCTION 1
+
+                                    if (${do_clean}) then
+                                        ${IVI_MAKE_JOB_CLIENT} clean 
+                                    endif 
+
+                                    ${IVI_MAKE_JOB_CLIENT} 
+
+                                    if (${status}) then
+                                        echo " " | tee -a ${error_file}
+                                        echo "Make failed in ${cwd}." | tee -a ${error_file}
+                                        echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                                        echo " " | tee -a ${error_file}
+                                        set exit_status = 1
+                                        if (! ${keep_going}) goto end_of_script
+                                    endif
+
+                                    if ((! "${skip_prog_no_libs}") && ( ! -e "SKIP_NO_LIBS") && ( ! -e "../SKIP_NO_LIBS") && ( ! -e "../../SKIP_NO_LIBS")) then
+                                        setenv NO_LIBS 1
+
+                                        if (("${test_prog_no_boost}") && ( ! -e "SKIP_NO_BOOST")) then
+                                             setenv NO_BOOST 1
+                                        else 
+                                             setenv NO_BOOST 0
+                                        endif 
+
+                                        # We only do NO_LIBS with production code. Checking
+                                        # development code also would be overkill. 
+                                        #
+                                        setenv PRODUCTION 1
+
+                                        if (${do_clean}) then
+                                            ${IVI_MAKE_JOB_CLIENT} clean 
+                                        endif 
+
+                                        ${IVI_MAKE_JOB_CLIENT} 
+
+                                        if (${status}) then
+                                            echo " " | tee -a ${error_file}
+                                            echo "Make failed in ${cwd}." | tee -a ${error_file}
+                                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                                            echo " " | tee -a ${error_file}
+                                            set exit_status = 1
+                                            if (! ${keep_going}) goto end_of_script
+                                        endif
+
+                                        setenv NO_LIBS 0
+                                        setenv NO_BOOST 0
+                                    endif 
+
+                                    if ((! "${skip_cxx}") && ( ! -e "SKIP_CXX") && ( ! -e "../SKIP_CXX") && ( ! -e "../../SKIP_CXX")) then
+                                        setenv IVI_PREFER_CXX 1
+
+                                        if (${do_clean}) then
+                                            ${IVI_MAKE_JOB_CLIENT} clean 
+                                        endif 
+
+                                        ${IVI_MAKE_JOB_CLIENT} 
+
+                                        if (${status}) then
+                                            echo " " | tee -a ${error_file}
+                                            echo "Make failed in ${cwd}." | tee -a ${error_file}
+                                            echo "    [ PRODUCTION=${PRODUCTION}; IVI_PREFER_CXX=${IVI_PREFER_CXX}; NO_LIBS=${NO_LIBS}; NO_BOOST=${NO_BOOST} ]" | tee -a ${error_file}
+                                            echo " " | tee -a ${error_file}
+                                            set exit_status = 1
+                                            if (! ${keep_going}) goto end_of_script
+                                        endif
+
+                                        setenv IVI_PREFER_CXX 0
+                                        unsetenv IVI_CC
+                                    endif
+                                endif
+
+                                if (($do_ctags) && (-x build) && (-r Makefile)) then
+                                    ${IVI_MAKE_JOB_CLIENT} tags 
+
+                                    if (${status}) then
+                                        echo "Make tags failed in ${cwd}." > /dev/stderr | tee -a ${error_file}
+                                        set exit_status = 1
+                                        if (! ${keep_going}) goto end_of_script
+                                    else if ($do_archive) then
+                                        # Tags is buildable. We currently save resources by not archiving.
+                                        #
+                                        ### echo lib/${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}/tags >> ${src_dist_file_dir}/src_dist_extra_files
+                                    endif
+                                endif
+
+                                if ($do_archive) then
+                                    foreach file (*.[chC] *.[chit]pp *.cxx)
+                                        echo lib/${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}/${file} >> ${src_dist_file_dir}/src_dist_extra_files
+                                    end
+
+                                    foreach build_file (${prog_build_files}) 
+                                        if (-e "${build_file}") then
+                                            echo lib/${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
+                                        else 
+                                            echo "Warning: Missing file lib/${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}/${build_file}."
+                                        endif 
+                                    end 
+                                endif 
+
+                                # Back up to "test"
+                            popd  > /dev/null
                         end
+                    endif 
+                    # Leave test dir, back up to current sub library
+                popd  > /dev/null
+             
+               # Done with test dir "test". In case there are others in future
+               # (currently we loop over only one element).
+            end
 
-                        foreach build_file (${prog_build_files}) 
-                            if (-e "${build_file}") then
-                                echo lib/${sub_lib_dir}/${sub_sub_dir}/${mi_sub_sub_dir}/${build_file} >> ${src_dist_file_dir}/src_dist_files
-                            else 
-                                echo "Warning: Missing file lib/${sub_lib_dir}/${sub_sub_dir}/${mi_sub_sub_dir}/${build_file}."
+            if ($do_clean_regress) then
+                foreach sub_lib_test_dir (${sub_lib_test_dirs})
+                    if ( ! -d "${sub_lib_test_dir}") then
+                        continue
+                    endif
+
+                    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI")) then
+                        echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI exists."
+                        continue
+                    endif 
+
+                    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI.${OS}")) then
+                        echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI.${OS} exists."
+                        continue
+                    endif 
+
+                    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+                        echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+                        continue
+                    endif 
+
+                    pushd ${sub_lib_test_dir} > /dev/null
+                        # It is not clear if we want to proceed if there are only
+                        # header files. Here we include header files via the flag
+                        # '-h'.
+                        # 
+                        set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
+
+                        if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
+                            ${IVI_MAKE_JOB_CLIENT} regress_clean  
+                            if (${status}) then
+                                echo "Making regress clean failed in ${cwd}." | tee -a ${error_file}
+                                set exit_status = 1
+                                goto end_of_script
                             endif 
-                        end 
-                    endif 
-
-                    # Back up to "test"
+                        endif 
                     popd  > /dev/null
-                    if (${status}) then
-                        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                        set exit_status = 1
-                        goto end_of_script
-                    endif 
                 end
-            endif 
+            endif
 
-        # Back up to current library sub-dir
-        popd  > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
+            if (! ${skip_regress}) then
+                foreach sub_lib_test_dir (${sub_lib_test_dirs})
+                    if ( ! -d "${sub_lib_test_dir}") then
+                        continue
+                    endif
 
-        # Done with sub library. Loop to next.
+                    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI")) then
+                        echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI exists."
+                        continue
+                    endif 
+
+                    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI.${OS}")) then
+                        echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI.${OS} exists."
+                        continue
+                    endif 
+
+                    if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+                        echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_lib_test_dir} because ${sub_lib_dir}/${sub_lib_test_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+                        continue
+                    endif 
+
+                    pushd ${sub_lib_test_dir} > /dev/null
+                        # It is not clear if we want to proceed if there are only header files. Here
+                        # we include header files via the flag '-h'.
+                        # 
+                        set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
+
+                        if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
+                            echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                            echo Regression testing in $cwd. Load dir is ${LD_OBJ_DIR}.
+                            echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                            ${IVI_MAKE_JOB_CLIENT} regress >& regress.res
+                            if (${status}) then
+                                echo " "  > regress.log
+                                echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"  >> regress.log
+                                echo " "  >> regress.log
+                                echo "Regression testing failed in ${cwd}. "  >> regress.log
+                                echo "To reproduce this try:"  >> regress.log
+                                echo "    cd ${cwd}; ${IVI_MAKE_JOB_CLIENT} regress"  >> regress.log
+                                echo " "  >> regress.log
+                                cat regress.res >> regress.log
+
+                                set regress_failed = 1
+                                cat regress.log >> ${IVI_SRC_PATH}${regress_failure_log}
+
+                                cat regress.log
+                                /bin/rm regress.log 
+                            else 
+                                cat regress.res 
+                            endif 
+
+                            /bin/rm regress.res
+                        endif 
+                    popd > /dev/null
+                end
+            endif
+
+            # Leave current sub lib (back to lib/).
+        popd > /dev/null
+
+        # Loop to next sub lib. 
     end
-
-    if ($do_clean_regress) then
-        foreach sub_sub_dir (test)
-            if ( ! -d "${sub_sub_dir}") then
-                continue
-            endif
-
-            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
-                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
-                continue
-            endif 
-
-            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
-                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
-                continue
-            endif 
-
-            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
-                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
-                continue
-            endif 
-
-            pushd ${sub_sub_dir} > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: pushd ${sub_sub_dir} > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
-
-            # It is not clear if we want to proceed if there are only header files. Here
-            # we include header files via the flag '-h'.
-            # 
-            set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
-
-            if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
-                ${IVI_MAKE_JOB_CLIENT} regress_clean  
-                if (${status}) then
-                    echo "Making regress clean failed in ${cwd}." | tee -a ${error_file}
-                    set exit_status = 1
-                    goto end_of_script
-                endif 
-            endif 
-
-            popd  > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
-        end
-    endif
-
-    if (! ${skip_regress}) then
-        foreach sub_sub_dir (test)
-            if ( ! -d "${sub_sub_dir}") then
-                continue
-            endif
-
-            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI")) then
-                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI exists."
-                continue
-            endif 
-
-            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${OS}")) then
-                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${OS} exists."
-                continue
-            endif 
-
-            if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
-                echo "Make_ivi: Skipping ${sub_lib_dir}/${sub_sub_dir} because ${sub_lib_dir}/${sub_sub_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
-                continue
-            endif 
-
-            pushd ${sub_sub_dir} > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: pushd ${sub_sub_dir} > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
-
-            # It is not clear if we want to proceed if there are only header files. Here
-            # we include header files via the flag '-h'.
-            # 
-            set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s -h`
-
-            if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
-                echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                echo Regression testing in $cwd. Load dir is ${LD_OBJ_DIR}.
-                echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-                ${IVI_MAKE_JOB_CLIENT} regress >& regress.res
-                if (${status}) then
-                    echo " "  > regress.log
-                    echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"  >> regress.log
-                    echo " "  >> regress.log
-                    echo "Regression testing failed in ${cwd}. "  >> regress.log
-                    echo "To reproduce this try:"  >> regress.log
-                    echo "    cd ${cwd}; ${IVI_MAKE_JOB_CLIENT} regress"  >> regress.log
-                    echo " "  >> regress.log
-                    cat regress.res >> regress.log
-
-                    set regress_failed = 1
-                    cat regress.log >> ${IVI_SRC_PATH}${regress_failure_log}
-
-                    cat regress.log
-                    /bin/rm regress.log 
-                else 
-                    cat regress.res 
-                endif 
-
-                /bin/rm regress.res
-            endif 
-
-            popd > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
-        end
-    endif
-
-    popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-end
-
+   
+    # Leave lib/
 popd > /dev/null
-if (${status}) then
-    echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-    set exit_status = 1
-    goto end_of_script
-endif 
 
 ###############################################################################
 
@@ -1889,60 +1786,55 @@ echo -------------------------------------------------------
 echo Make_ivi: Compiling programs
 echo -------------------------------------------------------
 
-foreach mi_dir ($prog_dirs)
-    if (! -d "${mi_dir}") then
-        if ("${mi_dir}" != "src_dist_files") then 
-            echo "Make_ivi: Warning ${mi_dir} does not seem to be a subdir of ${cwd}" 
+foreach prog_dir ($prog_dirs)
+    if (! -d "${prog_dir}") then
+        if ("${prog_dir}" != "src_dist_files") then 
+            echo "Make_ivi: Warning ${prog_dir} does not seem to be a subdir of ${cwd}" 
         endif 
 
         continue
     endif 
 
-    if ((! ${FORCE_MAKE_IVI}) && (-e "${mi_dir}/SKIP_MAKE_IVI")) then
-        echo "Make_ivi: Skipping ${mi_dir} because ${sub_lib_dir}/${mi_dir}/SKIP_MAKE_IVI exists."
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${prog_dir}/SKIP_MAKE_IVI")) then
+        echo "Make_ivi: Skipping ${prog_dir} because ${sub_lib_dir}/${prog_dir}/SKIP_MAKE_IVI exists."
         continue
     endif 
 
-    if ((! ${FORCE_MAKE_IVI}) && (-e "${mi_dir}/SKIP_MAKE_IVI.${OS}")) then
-        echo "Make_ivi: Skipping ${mi_dir} because ${sub_lib_dir}/${mi_dir}/SKIP_MAKE_IVI.${OS} exists."
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${prog_dir}/SKIP_MAKE_IVI.${OS}")) then
+        echo "Make_ivi: Skipping ${prog_dir} because ${sub_lib_dir}/${prog_dir}/SKIP_MAKE_IVI.${OS} exists."
         continue
     endif 
 
-    if ((! ${FORCE_MAKE_IVI}) && (-e "${mi_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
-        echo "Make_ivi: Skipping ${mi_dir} because ${sub_lib_dir}/${mi_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
+    if ((! ${FORCE_MAKE_IVI}) && (-e "${prog_dir}/SKIP_MAKE_IVI.${SHORT_HOST}")) then
+        echo "Make_ivi: Skipping ${prog_dir} because ${sub_lib_dir}/${prog_dir}/SKIP_MAKE_IVI.${SHORT_HOST} exists."
         continue
     endif 
 
-    if (! -e "${mi_dir}/Makefile") then
-        echo "Make_ivi: ${mi_dir}/Makefile not found."
-        echo "Make_ivi: Skipping ${mi_dir}"
+    if (! -e "${prog_dir}/Makefile") then
+        echo "Make_ivi: ${prog_dir}/Makefile not found."
+        echo "Make_ivi: Skipping ${prog_dir}"
         continue
-    else if (! -e "${mi_dir}/build") then
-        echo "Make_ivi: ${mi_dir}/build not found."
-        echo "Make_ivi: Skipping ${mi_dir}"
+    else if (! -e "${prog_dir}/build") then
+        echo "Make_ivi: ${prog_dir}/build not found."
+        echo "Make_ivi: Skipping ${prog_dir}"
         continue
     endif 
 
-    set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s ${mi_dir}`
+    set have_code = `${MAKE_SCRIPT_PATH}stream_file_names -t -s ${prog_dir}`
 
     if ("${have_code}" == "") then
-        echo "Make_ivi: ${mi_dir} does not have source files."
+        echo "Make_ivi: ${prog_dir} does not have source files."
         echo "Make_ivi: Skipping it."
         continue
     endif 
 
     echo 
     echo -------------------------------------------------------
-    echo Make_ivi: Compiling in $mi_dir 
+    echo Make_ivi: Compiling in $prog_dir 
 
-    set collected_prog_dirs = "${collected_prog_dirs} ${mi_dir}"
+    set collected_prog_dirs = "${collected_prog_dirs} ${prog_dir}"
 
-    pushd $mi_dir > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd $mi_dir > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
+    pushd $prog_dir > /dev/null
 
     echo "Make_ivi: Now in directory `pwd`"
     echo -------------------------------------------------------
@@ -2011,7 +1903,7 @@ foreach mi_dir ($prog_dirs)
             set found = 0
 
             foreach no_libs_dir (${no_libs_prog_dirs}) 
-                if ("${no_libs_dir}" == "${mi_dir}") then 
+                if ("${no_libs_dir}" == "${prog_dir}") then 
                     set found = 1
                     break
                 endif
@@ -2078,14 +1970,14 @@ foreach mi_dir ($prog_dirs)
         ${IVI_MAKE_JOB_CLIENT} tags 
 
         if (${status}) then
-            echo "Make tags in $mi_dir failed." | tee -a ${error_file}
+            echo "Make tags in $prog_dir failed." | tee -a ${error_file}
             echo " " | tee -a ${error_file}
             set exit_status = 1
             if (! ${keep_going}) goto end_of_script
         else if ($collect_files) then
             # Tags is buildable. We currently save resources by not archiving.
             #
-            ### echo ${mi_dir}/tags >> ${src_dist_file_dir}/src_dist_files
+            ### echo ${prog_dir}/tags >> ${src_dist_file_dir}/src_dist_files
         endif
     endif
 
@@ -2095,15 +1987,15 @@ foreach mi_dir ($prog_dirs)
 
         foreach aux_item (${aux_items_to_collect})
             if (-e "${aux_item}") then
-                echo ${mi_dir}/${aux_item} >> ${src_dist_file_dir}/src_dist_files
+                echo ${prog_dir}/${aux_item} >> ${src_dist_file_dir}/src_dist_files
             endif
         end
     endif 
 
-    if (-e "${mi_dir}.help") then
+    if (-e "${prog_dir}.help") then
         if ($do_doc) then
              ${IVI_MKDIR}  ${WORK_DIR}/doc/man/cat1
-             help_to_man ${mi_dir}.help > ${WORK_DIR}/doc/man/cat1/${mi_dir}.1
+             help_to_man ${prog_dir}.help > ${WORK_DIR}/doc/man/cat1/${prog_dir}.1
 
              if (${status}) then
                 echo "Help_to_man failed in ${cwd}." | tee -a ${error_file}
@@ -2113,12 +2005,12 @@ foreach mi_dir ($prog_dirs)
         endif
 
         if ($collect_files) then
-            echo ${mi_dir}/${mi_dir}.help >> ${src_dist_file_dir}/src_dist_files
+            echo ${prog_dir}/${prog_dir}.help >> ${src_dist_file_dir}/src_dist_files
         endif
-    else if (-e "${mi_dir}.w") then
+    else if (-e "${prog_dir}.w") then
         if ($do_doc) then
             ${IVI_MKDIR}  ${WORK_DIR}/doc/man/cat1
-            writeup_to_man ${mi_dir}.w > ${WORK_DIR}/doc/man/cat1/${mi_dir}.1
+            writeup_to_man ${prog_dir}.w > ${WORK_DIR}/doc/man/cat1/${prog_dir}.1
 
             if (${status}) then
                 echo "Writeup_to_man failed in ${cwd}." | tee -a ${error_file}
@@ -2128,7 +2020,7 @@ foreach mi_dir ($prog_dirs)
         endif
 
         if ($collect_files) then
-            echo ${mi_dir}/${mi_dir}.w >> ${src_dist_file_dir}/src_dist_files
+            echo ${prog_dir}/${prog_dir}.w >> ${src_dist_file_dir}/src_dist_files
         endif
     else
         # It is not clear if we want to proceed if there are only header files. Here
@@ -2153,7 +2045,7 @@ foreach mi_dir ($prog_dirs)
                     endif 
 
                     if ($collect_files) then
-                        echo ${mi_dir}/${base_name}.w >> ${src_dist_file_dir}/src_dist_files
+                        echo ${prog_dir}/${base_name}.w >> ${src_dist_file_dir}/src_dist_files
                     endif
                 endif
             end
@@ -2161,11 +2053,6 @@ foreach mi_dir ($prog_dirs)
     endif
 
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 end
 
 ###############################################################################
@@ -2247,11 +2134,6 @@ if ($do_doc) then
 
     foreach doc_dir (${doc_dirs}) 
         pushd "${doc_dir}" > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${doc_dir} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         ${IVI_MAKE_JOB_CLIENT} doc 
 
@@ -2262,11 +2144,6 @@ if ($do_doc) then
         endif
 
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     end
 endif
 
@@ -2278,11 +2155,6 @@ if ($do_lib) then
     echo ------------------------------------------------------------
 
     pushd IVI > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd IVI > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     setenv PRODUCTION 1
 
@@ -2308,38 +2180,16 @@ if ($do_lib) then
     set include_paths = "${include_path}"
 
     pushd ${include_path} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${include_path} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     set real_include_path = `pwd`
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     set include_path_2 = "${WORK_DIR}include"
 
     if (-d ${include_path_2}) then
         pushd ${include_path_2} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${include_path_2} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
-
-        set real_include_path_2 = `pwd`
-
+            set real_include_path_2 = `pwd`
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         if ("${real_include_path}" != "${real_include_path_2}") then
             set include_paths = "${include_path} ${include_path_2}"
@@ -2371,11 +2221,6 @@ if ($do_lib) then
         end
 
         pushd ${include_path} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${include_path} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         # ln -s -f ${include_path}/ivi/* .
         ln -s -f ivi/* .
@@ -2386,11 +2231,6 @@ if ($do_lib) then
         endif 
 
         popd > /dev/null 
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     end
     
     ${IVI_MKDIR} ${HOME}/load/${MACHINE}
@@ -2398,39 +2238,17 @@ if ($do_lib) then
     set load_paths = "${load_path}"
 
     pushd ${load_path} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${load_path} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     set real_load_path = `pwd`
 
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     if (-d "${WORK_DIR}load") then
         set load_path_2 = "${WORK_DIR}load/${MACHINE}"
 
         pushd ${load_path_2} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`:  pushd ${load_path_2} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
-
-        set real_load_path_2 = `pwd`
-
+            set real_load_path_2 = `pwd`
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         if ("${real_load_path}" != "${real_load_path_2}") then
             set load_paths = "${load_path} ${load_path_2}"
@@ -2446,11 +2264,6 @@ if ($do_lib) then
     end
 
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 endif 
 
 ###############################################################################
@@ -2461,11 +2274,6 @@ if ($do_lib_cpp) then
     echo --------------------------------------------------------------
 
     pushd IVI_cpp > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd IVI_cpp > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     setenv PRODUCTION 1
 
@@ -2491,38 +2299,15 @@ if ($do_lib_cpp) then
     set include_paths = "${include_path}"
 
     pushd ${include_path} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${include_path} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
-    set real_include_path = `pwd`
+        set real_include_path = `pwd`
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     set include_path_2 = "${WORK_DIR}include"
 
     if (-d ${include_path_2}) then
         pushd ${include_path_2} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${include_path_2} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
-
-        set real_include_path_2 = `pwd`
-
+            set real_include_path_2 = `pwd`
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         if ("${real_include_path}" != "${real_include_path_2}") then
             set include_paths = "${include_path} ${include_path_2}"
@@ -2554,11 +2339,6 @@ if ($do_lib_cpp) then
         end
 
         pushd ${include_path} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${include_path} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         # ln -s -f ${include_path}/ivi/* .
         ln -s -f ivi/* .
@@ -2569,11 +2349,6 @@ if ($do_lib_cpp) then
         endif 
 
         popd > /dev/null 
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     end
     
     ${IVI_MKDIR} ${HOME}/load/${MACHINE}
@@ -2581,39 +2356,15 @@ if ($do_lib_cpp) then
     set load_paths = "${load_path}"
 
     pushd ${load_path} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${load_path} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
-    set real_load_path = `pwd`
-
+        set real_load_path = `pwd`
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     if (-d "${WORK_DIR}load") then
         set load_path_2 = "${WORK_DIR}load/${MACHINE}"
 
         pushd ${load_path_2} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`:  pushd ${load_path_2} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
-
-        set real_load_path_2 = `pwd`
-
+            set real_load_path_2 = `pwd`
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         if ("${real_load_path}" != "${real_load_path_2}") then
             set load_paths = "${load_path} ${load_path_2}"
@@ -2629,11 +2380,6 @@ if ($do_lib_cpp) then
     end
 
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 endif 
 
 ###############################################################################
@@ -2650,11 +2396,6 @@ if ($collect_files) then
         endif 
 
         pushd $dir > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd $dir > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         foreach file (*.[chC] *.[chit]pp *.[chit]xx)
             echo ${dir}/${file} >> ${src_dist_file_dir}/src_dist_files
@@ -2670,11 +2411,6 @@ if ($collect_files) then
 
         if (-d lib) then
             pushd lib > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: pushd lib > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
 
             set sub_dirs = `/bin/ls -1`
 
@@ -2683,11 +2419,6 @@ if ($collect_files) then
                     echo "Make_ivi: Ignoring link ${dir}/lib/${sub_dir}"
                 else if (-d ${sub_dir}) then
                     pushd ${sub_dir} > /dev/null
-                    if (${status}) then
-                        echo "Command failed in `pwd`: pushd ${sub_dir} > /dev/null" | tee -a ${error_file}
-                        set exit_status = 1
-                        goto end_of_script
-                    endif 
 
                     if ((-x build) && (-r Makefile)) then
                         # It is not clear if we want to proceed if there are only header files. Here
@@ -2711,28 +2442,13 @@ if ($collect_files) then
                     endif 
 
                     popd > /dev/null
-                    if (${status}) then
-                        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                        set exit_status = 1
-                        goto end_of_script
-                    endif 
                 endif
             end
 
             popd > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
         endif 
 
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     end
 endif
 
@@ -2780,11 +2496,6 @@ if ($do_archive) then
         endif 
 
         pushd $archive_dir > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd $archive_dir > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         /bin/rm -rf src.${time_stamp}
         if (${status}) then
@@ -2801,11 +2512,6 @@ if ($do_archive) then
         endif 
 
         pushd src.${time_stamp} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd src.${time_stamp} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         tar xf ${TMPDIR}/${USER}/src/src.${time_stamp}.tar
         if (${status}) then
@@ -2822,11 +2528,6 @@ if ($do_archive) then
         endif 
 
         popd  > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         /bin/rm -f latest
         if (${status}) then
@@ -2843,11 +2544,6 @@ if ($do_archive) then
         endif 
 
         pushd latest > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd latest > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
         
         foreach dir (${collected_prog_dirs})
             if (! -d "${dir}") then
@@ -2857,11 +2553,6 @@ if ($do_archive) then
         end 
 
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         foreach dir ($collected_prog_dirs)
             echo "Make_ivi: processing collected program dir: $dir" 
@@ -2897,11 +2588,6 @@ if ($do_archive) then
         end
 
         popd > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     end
 endif
 
@@ -2928,11 +2614,6 @@ if ($do_export) then
     endif 
 
     pushd ${export_parent_dir} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${export_parent_dir} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     /bin/rm -f latest
     if (${status}) then
@@ -2949,11 +2630,6 @@ if ($do_export) then
     endif 
 
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     set export_temp_dir = "${TMPDIR}/${USER}/export"
     if (-e "${export_temp_dir}") then 
@@ -3002,18 +2678,7 @@ if ($do_export) then
     # /bin/rm -f ${TMPDIR}/${USER}/src/src.${time_stamp}.tar
 
     pushd ${TMPDIR}/${USER}/ > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${TMPDIR}/${USER}/ > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
     pushd src > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd src > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     tar xf src.${time_stamp}.tar  
     if (${status}) then
@@ -3040,8 +2705,8 @@ if ($do_export) then
     foreach prog_dir (${prog_dirs})
         set found = 0
     
-        foreach test_dir (${export_prog_dirs})
-            if ("${test_dir}" == "${prog_dir}") then
+        foreach export_prog_dir (${export_prog_dirs})
+            if ("${export_prog_dir}" == "${prog_dir}") then
                 set found = 1
                 break
             endif 
@@ -3052,11 +2717,6 @@ if ($do_export) then
            /bin/rm -R -f ${prog_dir}
         else 
             pushd ${prog_dir} > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: pushd ${prog_dir} > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
 
             echo " "
             echo "Make_ivi: Building Include_lines/sub_libs_needed for ${prog_dir} in ${cwd}" 
@@ -3077,11 +2737,6 @@ if ($do_export) then
             endif 
 
             popd > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
         endif 
     end
 
@@ -3096,11 +2751,6 @@ if ($do_export) then
         set export_prog_dir = `echo ${export_prog_dir} | sed 's#/$##'`
 
         pushd ${export_prog_dir} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${export_prog_dir} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         echo "Make_ivi: Now in `pwd`"
 
@@ -3128,19 +2778,9 @@ if ($do_export) then
         set sub_libs_needed = `cat Include_lines/sub_libs_needed`
         set all_sub_libs_needed = "${all_sub_libs_needed} ${sub_libs_needed}"
         popd  > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     end 
 
     pushd lib > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd lib > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     if (${export_lib_test_dirs}) then
         foreach lib_dir (*)
@@ -3183,11 +2823,6 @@ if ($do_export) then
     end 
 
     popd  > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
     
     echo "Make_ivi: We should be in ${TMPDIR}/kobus/src. Check against `pwd`"
     echo "Make_ivi: The files here are:"
@@ -3224,20 +2859,10 @@ if ($do_export) then
     endif 
 
     pushd lib > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd lib > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     foreach lib_dir (*)
         if (-d "${lib_dir}") then
             pushd ${lib_dir} > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: pushd ${lib_dir} > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
 
             # Because of the cleaning for export, we need to rebuild the
             # makefiles.
@@ -3279,11 +2904,6 @@ if ($do_export) then
             #
             if (-e test/Makefile) then
                 pushd test > /dev/null
-                if (${status}) then
-                    echo "Command failed in `pwd`: pushd test > /dev/null" | tee -a ${error_file}
-                    set exit_status = 1
-                    goto end_of_script
-                endif 
 
                 if (! ${skip_export_depend}) then 
                     ${IVI_MAKE_JOB_CLIENT} depend_clean 
@@ -3315,28 +2935,13 @@ if ($do_export) then
                 endif 
 
                 popd  > /dev/null
-                if (${status}) then
-                    echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                    set exit_status = 1
-                    goto end_of_script
-                endif 
             endif 
 
             popd  > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
         endif 
     end
 
     popd  > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     /bin/rm lib/fake_out_glob
     if (${status}) then
@@ -3360,11 +2965,6 @@ if ($do_export) then
     foreach export_prog_dir (${export_prog_dirs})
         set export_prog_dir = `echo ${export_prog_dir} | sed 's#/$##'`
         pushd ${export_prog_dir} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${export_prog_dir} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         echo "Make_ivi: Now in `pwd`"
 
@@ -3458,11 +3058,6 @@ if ($do_export) then
         set all_sub_libs_needed = "${all_sub_libs_needed} ${sub_libs_needed}"
 
         popd  > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     end 
 
     #
@@ -3470,11 +3065,6 @@ if ($do_export) then
     # the result of clean_src, followed by a rebuild of the makefiles. 
     #
     pushd lib > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd lib > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     foreach lib_dir (*)
         if (-d "${lib_dir}") then
@@ -3494,11 +3084,6 @@ if ($do_export) then
         endif 
     end 
     popd  > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     echo =======================================================================
     echo =======================================================================
@@ -3538,11 +3123,6 @@ if ($do_export) then
         echo "src/${export_prog_name}" >> ${TMPDIR}/${USER}/src/${export_prog_name}_files
 
         pushd ${export_prog_name} > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: pushd ${export_prog_name} > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         if (! -e Include_lines/sub_libs_needed) then
             echo
@@ -3574,11 +3154,6 @@ if ($do_export) then
         end 
 
         popd  > /dev/null
-        if (${status}) then
-            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
 
         touch include_after/fake_out_glob
 
@@ -3628,11 +3203,6 @@ if ($do_export) then
     end 
 
     popd  > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     foreach export_prog_name (${export_prog_names})
         # TODO CHECK The -H option is for mac. What about linux?
@@ -3648,18 +3218,8 @@ if ($do_export) then
     end
 
     popd  > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     pushd ${export_temp_dir} > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${export_temp_dir} > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     if (${export_standalone}) then 
         foreach export_prog_name (${export_prog_names})
@@ -3679,12 +3239,6 @@ if ($do_export) then
             set version_str = "" 
 
             pushd ${export_prog_name} > /dev/null
-            if (${status}) then
-                echo "Command failed in `pwd`: pushd ${export_prog_name} > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
-
                 echo ------------------------------------------------------
                 echo "Make_ivi: Now in `pwd`."
                 echo " "
@@ -3760,32 +3314,14 @@ if ($do_export) then
                     endif 
 
                     pushd Make/util > /dev/null
-                    if (${status}) then
-                        echo "Command failed in `pwd`: pushd Make/util > /dev/null" | tee -a ${error_file}
-                        set exit_status = 1
-                        goto end_of_script
-                    endif 
-
                         pushd c2man-2.40-kobus > /dev/null
-                        if (${status}) then
-                            echo "Command failed in `pwd`: pushd c2man-2.40-kobus > /dev/nul" | tee -a ${error_file}
-                            set exit_status = 1
-                            goto end_of_script
-                        endif 
-
                             ${IVI_MAKE_JOB_CLIENT} clean 
                             if (${status}) then
                                 echo "Command failed in `pwd`: ${IVI_MAKE_JOB_CLIENT} clean" | tee -a ${error_file}
                                 set exit_status = 1
                                 goto end_of_script
                             endif 
-
                         popd > /dev/null
-                        if (${status}) then
-                            echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                            set exit_status = 1
-                            goto end_of_script
-                        endif 
 
                         ${IVI_MAKE_JOB_CLIENT} clean 
                         if (${status}) then
@@ -3793,13 +3329,7 @@ if ($do_export) then
                             set exit_status = 1
                             goto end_of_script
                         endif 
-
                     popd > /dev/null
-                    if (${status}) then
-                        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                        set exit_status = 1
-                        goto end_of_script
-                    endif 
                 endif 
 
                 echo "Make_ivi: Doing a make clean in `pwd`."
@@ -3859,11 +3389,6 @@ if ($do_export) then
                     set version_str = "-${major}.${minor}.${patch}${dev_stage}"
                 endif
             popd > /dev/null 
-            if (${status}) then
-                echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-                set exit_status = 1
-                goto end_of_script
-            endif 
 
             if ("${revision}" != "") then
                 set version_str = "${version_str}-r${revision}"
@@ -3933,11 +3458,6 @@ if ($do_export) then
     # unset echo 
 
     popd  > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 endif
 
 ###############################################################################
@@ -3948,11 +3468,6 @@ if ($do_backup) then
     echo -------------------------------------------------------
 
     pushd ${TMPDIR}/${USER}/src/ > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: pushd ${TMPDIR}/${USER}/src/ > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     tar xf src.${time_stamp}.tar
     if (${status}) then
@@ -3969,11 +3484,6 @@ if ($do_backup) then
     endif 
 
     pushd ..  > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`:  pushd ..  > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 
     tar cf src.${time_stamp}.tar src
     if (${status}) then
@@ -3984,11 +3494,6 @@ if ($do_backup) then
 
     if (-l ${HOME}/backup) then
         pushd ${HOME}/backup > /dev/null
-        if (${status}) then
-            echo "Unable to treat link ${HOME}/backup as a directory." | tee -a ${error_file}
-            set exit_status = 1
-            goto end_of_script
-        endif 
     else 
         ${IVI_MKDIR} ${HOME}/backup
         if (${status}) then
@@ -4020,18 +3525,7 @@ if ($do_backup) then
     endif 
 
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
-
     popd > /dev/null
-    if (${status}) then
-        echo "Command failed in `pwd`: popd > /dev/null" | tee -a ${error_file}
-        set exit_status = 1
-        goto end_of_script
-    endif 
 endif
 
 
