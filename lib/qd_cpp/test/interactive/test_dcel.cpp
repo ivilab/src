@@ -4,15 +4,15 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: test_dcel.cpp 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: test_dcel.cpp 25818 2020-09-21 17:32:46Z kobus $
  */
 
-#include <l/l_sys_std.h>
-#include <l/l_sys_rand.h>
-#include <l/l_init.h>
-#include <qd_cpp/ratpoint.h>
-#include <qd_cpp/dcel.h>
-#include <qd_cpp/svg_dcel.h>
+#include "l/l_sys_std.h"
+#include "l/l_sys_rand.h"
+#include "l/l_init.h"
+#include "qd_cpp/ratpoint.h"
+#include "qd_cpp/dcel.h"
+#include "qd_cpp/svg_dcel.h"
 
 #include <fstream>
 
@@ -116,7 +116,10 @@ int test6()
     IVI(ERE(is_valid(d5)));
     
     std::ofstream f("test6.svg");
-    IVI(NRE(f));
+    // Kobus: 2020/09/21
+    // Apparntly, std::ofstream is no longer comparable to NULL. Skip check for
+    // now, but FIXME! 
+    // IVI(NRE(f));
     f << ivi::qd::draw_dcel_as_svg(d5) << '\n';
     return ivi_c::NO_ERROR;
 }
@@ -144,7 +147,10 @@ int test7()
     }
 
     std::ofstream f("test7.svg");
-    IVI(NRE(f));
+    // Kobus: 2020/09/21
+    // Apparntly, std::ofstream is no longer comparable to NULL. Skip check for
+    // now, but FIXME! 
+    // IVI(NRE(f));
     f << ivi::qd::draw_dcel_as_svg(d) << '\n';
     return ivi_c::NO_ERROR;
 }
