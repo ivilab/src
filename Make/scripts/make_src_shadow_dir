@@ -134,9 +134,9 @@ if ("${is_in_src_tree}" == "") then
         if ("${sub_sub_dir}" != "") then 
             ${IVI_MKDIR} ${sub_sub_dir} >& /dev/null
             if (${status}) then
-               set top_dir =  `echo ${sub_sub_dir} | sed 's#/.*/##'`
-               ${IVI_RM} ${top_dir}
-               ${IVI_MKDIR} ${sub_sub_dir}
+                set top_dir =  `echo ${sub_sub_dir} | sed 's#/.*/##'`
+                ${IVI_RM} ${top_dir}
+                ${IVI_MKDIR} ${sub_sub_dir}
                 if (${status}) exit 1
             endif
 
