@@ -945,7 +945,8 @@ $(IVI_SRC_PATH)IVI_cpp/$(MAKE_DOC_DIR)doxygen_up_to_date : $(LIB_COMPONENT_SRC_D
 
 # If the user does a make doc in a c++ library directory, then that get
 # translated into "make doxygen" by the build scripts, which leads us to this
-# target.
+# target, which magically builds doxygen in IVI_CPP. This should be improved if
+# possible. FIXME
 #
 doxygen_$(LIB_COMPONENT_PREFIX) : 
 	@$(ECHO_UNLESS_QUIET) "Building doxygen in $(IVI_SRC_PATH)IVI_cpp."
