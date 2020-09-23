@@ -1361,7 +1361,7 @@ while (${try_count} <= 4)
                     if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_4.res"
                     ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
                     if (${status}) then
-                        ${P_STDERR} "Fourth build of 'Makefile' failed in ${cwd}. Cleaning up makefiles." 
+                        ${P_STDERR} "Fourth build of 'Makefile' failed in ${cwd}. Trying again after leaning up makefiles." 
                         set makefiles_are_ok = 0
                         goto next_try
                     endif 
@@ -1802,7 +1802,7 @@ while (${try_count} <= 4)
     next_try:
 
     ${P_STDERR} " "
-    ${P_STDERR} "There is an issues with at least one makefile or build script."
+    ${P_STDERR} "There is an issues with at least one makefile or build script in ${cwd}."
 
     if ($?SKIP_DEPEND_RETRY) then
         ${P_STDERR} "Skipping retry of building makefiles, as SKIP_DEPEND_RETRY is set."

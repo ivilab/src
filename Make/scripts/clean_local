@@ -15,43 +15,34 @@ if ("${cwd}" == "${make_dir_cwd}") then
 endif 
 
 if (-e Include_lines) then
-    ${VERBOSE_ECHO_2} "Script clean_local is deleting Include_lines" 
+    ${VERBOSE_ECHO_2} "Script clean_local is removing Include_lines" 
 
-    # I cannot remember why we do not just use RM. 
+    # I cannot remember why we do not just use RM, since this also takes out the
+    # directory.
     #
-   find Include_lines -delete
+    # find Include_lines -delete
+    ${IVI_RM} Include_lines
 endif 
 
-# Kobus: 2017/08/03 --- it is not *that* dangerous. Let's see how it goes. 
+# We expect this file to be sourced by a script that knows what kind of
+# directory we are in (e.g., either build-2 or clean_global which itself is
+# sourced by build-2. But, just in case this is not so, which is the case if
+# test this script by sourcing it from the command line, we follow the same
+# heuristic as build-2. We cannot just check if it has been set, as this breaks
+# unit testing.
 #
-# This is convenient for cleaning up after debugging, but is quite dangerous. 
+set is_archive_dir = `echo $cwd | ${IVI_EGREP} -c '\/IVI$|\/IVI_cpp$'`
 
-# if ($?CLEAN_EXTRA_MAKEFILES) then
-    # set delete_list = `/bin/ls -1 | grep 'Makefile.' | grep -v 'Makefile-2$' | grep -v 'Makefile-include$'`
+if (${is_archive_dir}) then
+    set delete_list = `/bin/ls -1 | grep 'Makefile.' | grep -v 'Makefile-2$'  `
+else
     set delete_list = `/bin/ls -1 | grep 'Makefile.' `
+endif 
 
-    if ("${delete_list}" != "") then
-        ${VERBOSE_ECHO_2} "Clean local is removing: ${delete_list} in ${cwd}."
-        ${IVI_RM} ${delete_list}
-    endif 
-# else 
-#     ${IVI_RM} Makefile-dirs
-# 
-#     set file_count = `/bin/ls -1 | grep -c Makefile-depend`
-# 
-#     if (${file_count} > 0) then
-#         ${IVI_RM} Makefile-depend*
-#     endif 
-# 
-#     ${IVI_RM} Makefile-test-depend
-#     ${IVI_RM} Makefile-libs-needed
-# 
-#     set file_count = `/bin/ls -1 | grep -c Makefile-library`
-# 
-#     if (${file_count} > 0) then
-#         ${IVI_RM} Makefile-library*
-#     endif 
-# endif 
+if ("${delete_list}" != "") then
+    ${VERBOSE_ECHO_2} "Clean local is removing: ${delete_list} in ${cwd}."
+    ${IVI_RM} ${delete_list}
+endif 
 
 set file_count = `/bin/ls -1 | grep -c _incl.h`
 

@@ -4,7 +4,7 @@
 # variables that are using in build-2, such as 'count'.
 #
 
-${VERBOSE_ECHO_2} "Entering script clean_global"
+${VERBOSE_ECHO_2} "Entering script clean_global in ${cwd}."
 
 source ${MAKE_SCRIPT_PATH}clean_local
 
