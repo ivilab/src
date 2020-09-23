@@ -723,6 +723,8 @@ foreach no_libs_prog_dir (${no_libs_prog_dirs})
 end 
 
 echo " "
+echo "    FORCE_MAKE_IVI: $FORCE_MAKE_IVI"
+echo " "
 
 if (${do_export}) then
     if (! ${skip_svn}) then 
@@ -1111,7 +1113,6 @@ pushd lib > /dev/null
         echo 
         echo -------------------------------------------------------
         echo Make_ivi: Considering compiling lib/$sub_lib_dir
-        echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
         echo 
 
         if (${skip_sub_dirs}) then
@@ -1345,7 +1346,6 @@ pushd lib > /dev/null
                 echo 
                 echo -------------------------------------------------------
                 echo Make_ivi: Considering sub-sub dir lib/${sub_lib_dir}/${sub_lib_test_dir}
-                echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
                 echo 
 
                 if ((! ${FORCE_MAKE_IVI}) && (-e "${sub_lib_test_dir}/SKIP_MAKE_IVI")) then
@@ -1525,7 +1525,6 @@ pushd lib > /dev/null
                             echo 
                             echo -------------------------------------------------------
                             echo Make_ivi: Considering test sub dir lib/${sub_lib_dir}/${sub_lib_test_dir}/${test_sub_dir}
-                            echo FORCE_MAKE_IVI: $FORCE_MAKE_IVI
                             echo 
 
                             if ((! ${FORCE_MAKE_IVI}) && (-e "${test_sub_dir}/SKIP_MAKE_IVI")) then
