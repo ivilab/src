@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25804 2020-09-19 22:05:01Z kobus $
+# $Id: Makefile-program 25828 2020-09-23 23:11:08Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -1030,6 +1030,9 @@ $(MAKE_DOC_DIR)doc_dir_made :
 
 $(PROGRAM_CAT_PATH) :
 	$(IVI_MKDIR) $(PROGRAM_CAT_PATH)
+
+# Do not merge with the next line due to '$<'
+$(PROGRAM_CAT_PATH)%.1 : $(PROGRAM_CAT_PATH)
 
 # The needed targets are in the CAT_FROM_* variables defined in
 # Makefile-depend, as is their dependencies on a choice of .shell, .w, or ,help.
