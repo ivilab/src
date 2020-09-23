@@ -309,7 +309,6 @@ if ($?IVI_VERBOSE_2) then
     ${VERBOSE_ECHO_2} =================  variable values in build-2 =========================
     ${VERBOSE_ECHO_2} "" 
 
-    ${VERBOSE_ECHO_2} "SHORT_HOST:              ${SHORT_HOST}"
     ${VERBOSE_ECHO_2} "MACHINE:                ${MACHINE}"
     ${VERBOSE_ECHO_2} "OS:                     ${OS}"
     ${VERBOSE_ECHO_2} "OS2:                    ${OS2}"
@@ -318,38 +317,40 @@ if ($?IVI_VERBOSE_2) then
         ${VERBOSE_ECHO_2} "UBUNTU_RELEASE:         ${UBUNTU_RELEASE}"
     endif 
 
+    ${VERBOSE_ECHO_2} "SHORT_HOST:             ${SHORT_HOST}"
     ${VERBOSE_ECHO_2} " "
-    ${VERBOSE_ECHO_2} "SHELL_FOR_MAKE:         ${SHELL_FOR_MAKE}"
     ${VERBOSE_ECHO_2} "CWD:                    ${CWD}"
     ${VERBOSE_ECHO_2} "IVI_SRC_PATH:           ${IVI_SRC_PATH}"
     ${VERBOSE_ECHO_2} "IVI_LIB_PATH:           ${IVI_LIB_PATH}"
     ${VERBOSE_ECHO_2} "MAKE_PATH:              ${MAKE_PATH}"
     ${VERBOSE_ECHO_2} "MAKE_SCRIPT_PATH:       ${MAKE_SCRIPT_PATH}"
+    ${VERBOSE_ECHO_2} " "
     ${VERBOSE_ECHO_2} "MAKE_FLAVOR:            ${MAKE_FLAVOR}"
+    ${VERBOSE_ECHO_2} "SHELL_FOR_MAKE:         ${SHELL_FOR_MAKE}"
+    ${VERBOSE_ECHO_2} "Job client make:        ${IVI_MAKE_JOB_CLIENT}" 
+    ${VERBOSE_ECHO_2} "Serial make command:    ${IVI_MAKE_SERIAL}" 
+    ${VERBOSE_ECHO_2} "Parallel make command:  ${IVI_MAKE_SERIAL}" 
+    ${VERBOSE_ECHO_2} "Default make is parallel: ${is_parallel}" 
+    ${VERBOSE_ECHO_2} "Default make command:   ${IVI_MAKE}" 
     ${VERBOSE_ECHO_2} "IVI_DIFF_TEST:          ${IVI_DIFF_TEST}"
     ${VERBOSE_ECHO_2} "IVI_STAT_FLAVOR:        ${IVI_STAT_FLAVOR}"
     ${VERBOSE_ECHO_2} "VIM_FOR_MAKE:           ${VIM_FOR_MAKE}"
     ${VERBOSE_ECHO_2} "VIM_SUFFIX:             ${VIM_SUFFIX}"
+    ${VERBOSE_ECHO_2} "" 
+    ${VERBOSE_ECHO_2} "IVI_CC:                 ${IVI_CC}"
+    ${VERBOSE_ECHO_2} "IVI_CXX:                ${IVI_CXX}"
     ${VERBOSE_ECHO_2} "PRODUCTION:             ${PRODUCTION}"
-    ${VERBOSE_ECHO_2} "OBJ_DIR:                ${OBJ_DIR}"
-    ${VERBOSE_ECHO_2} "CXX_OBJ_DIR:            ${CXX_OBJ_DIR}"
-    ${VERBOSE_ECHO_2} "LD_OBJ_DIR:             ${LD_OBJ_DIR}"
-    ${VERBOSE_ECHO_2} "REAL_OBJ_DIR:           ${REAL_OBJ_DIR}"
-    ${VERBOSE_ECHO_2} "LOAD_DIRS:              ${LOAD_DIRS}"
-    ${VERBOSE_ECHO_2} "" 
-    ${VERBOSE_ECHO_2} "IVI_DOC_PATH:           ${IVI_DOC_PATH}"
-    ${VERBOSE_ECHO_2} "MAN3_MAN_PATH:          ${MAN3_MAN_PATH}"
-    ${VERBOSE_ECHO_2} "HTML_MAN_PATH:          ${HTML_MAN_PATH}"
-    ${VERBOSE_ECHO_2} "CAT3_MAN_PATH:          ${CAT3_MAN_PATH}"
-    ${VERBOSE_ECHO_2} "PROGRAM_MAN_PATH:       ${PROGRAM_MAN_PATH}"
-    ${VERBOSE_ECHO_2} "PROGRAM_CAT_PATH:       ${PROGRAM_CAT_PATH}"
-    ${VERBOSE_ECHO_2} "" 
     ${VERBOSE_ECHO_2} "IVI_WARN_LEVEL:         ${IVI_WARN_LEVEL}"
     ${VERBOSE_ECHO_2} "IVI_CC_WARN_LEVEL:      ${IVI_CC_WARN_LEVEL}"
     ${VERBOSE_ECHO_2} "CC_IVI_WARNINGS:        ${CC_IVI_WARNINGS}"
     ${VERBOSE_ECHO_2} "CXX_IVI_WARNINGS:       ${CXX_IVI_WARNINGS}"
     ${VERBOSE_ECHO_2} "IVI_CXX_MESSAGE_FILTER: ${IVI_CXX_MESSAGE_FILTER}"
-    ${VERBOSE_ECHO_2} "ECHO_IF_VERBOSE;        ${ECHO_IF_VERBOSE}" 
+    ${VERBOSE_ECHO_2} "" 
+    ${VERBOSE_ECHO_2} "OBJ_DIR:                ${OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "CXX_OBJ_DIR:            ${CXX_OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "LD_OBJ_DIR:             ${LD_OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "REAL_OBJ_DIR:           ${REAL_OBJ_DIR}"
+    ${VERBOSE_ECHO_2} "LOAD_DIRS:              ${LOAD_DIRS}"
     ${VERBOSE_ECHO_2} "" 
     ${VERBOSE_ECHO_2} "ALL_BASE_INCLUDES:      ${ALL_BASE_INCLUDES}"
     ${VERBOSE_ECHO_2} "LIB_BASE_INCLUDES:      ${LIB_BASE_INCLUDES}"
@@ -357,11 +358,12 @@ if ($?IVI_VERBOSE_2) then
     ${VERBOSE_ECHO_2} "LOAD_DIRS:              ${LOAD_DIRS}"
     ${VERBOSE_ECHO_2} "IVI_ACTUAL_BOOST:       ${IVI_ACTUAL_BOOST}"
     ${VERBOSE_ECHO_2} "" 
-    ${VERBOSE_ECHO_2} "Job client make:        ${IVI_MAKE_JOB_CLIENT}" 
-    ${VERBOSE_ECHO_2} "Serial make command:    ${IVI_MAKE_SERIAL}" 
-    ${VERBOSE_ECHO_2} "Parallel make command:  ${IVI_MAKE_SERIAL}" 
-    ${VERBOSE_ECHO_2} "Default make is parallel: ${is_parallel}" 
-    ${VERBOSE_ECHO_2} "Default make command:   ${IVI_MAKE}" 
+    ${VERBOSE_ECHO_2} "IVI_DOC_PATH:           ${IVI_DOC_PATH}"
+    ${VERBOSE_ECHO_2} "MAN3_MAN_PATH:          ${MAN3_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "HTML_MAN_PATH:          ${HTML_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "CAT3_MAN_PATH:          ${CAT3_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "PROGRAM_MAN_PATH:       ${PROGRAM_MAN_PATH}"
+    ${VERBOSE_ECHO_2} "PROGRAM_CAT_PATH:       ${PROGRAM_CAT_PATH}"
     ${VERBOSE_ECHO_2} "" 
     ${VERBOSE_ECHO_2} ==================================================================================
     ${VERBOSE_ECHO_2} "" 
@@ -1486,14 +1488,20 @@ while (${try_count} <= 4)
                         endif 
                          
                         if ($?DRY_RUN) then
-                            echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg})"
+                            echo "DRY: (setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin)"
                         else
+                            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_c2man_bin_${try_count}.res"
+
                             # We only want to make the documentation tools using the default C
                             # compiler and production mode. The setting of IVI_CC to empty asks
                             # init_compile to choose the compiler. 
                             #
-                            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_c2man_bin_${try_count}.res"
-                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}) 
+                            (   setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
+                                source ${MAKE_PATH}init_compile; \
+                                if ("${IVI_CC}" != "${save_ivi_cc}") ${WARN_ECHO} "Switching compiler from ${save_ivi_cc} to ${IVI_CC} for doc utilities"; \
+                                ${IVI_MAKE_SERIAL} bin \
+                                |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file} \
+                            ) 
                             set make_status = ${status}
 
                             if (${make_status}) then 
@@ -1507,14 +1515,19 @@ while (${try_count} <= 4)
                         ${VERBOSE_ECHO} "Script build-2 is building utilities in ${cwd}." 
 
                         if ($?DRY_RUN) then
-                            echo "DRY: (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} )"
+                            echo "DRY: (setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin)"
                         else
+                            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_util_bin_${try_count}.res"
+
                             # We only want to make the documentation tools using the default C
                             # compiler and production mode. The setting of IVI_CC to empty asks
                             # init_compile to choose the compiler. 
                             #
-                            if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_util_bin_${try_count}.res"
-                            (setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file} ) 
+                            (   setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
+                                source ${MAKE_PATH}init_compile; \
+                                if ("${IVI_CC}" != "${save_ivi_cc}") ${WARN_ECHO} "Switching compiler from ${save_ivi_cc} to ${IVI_CC} for doc utilities"; \
+                                ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file} \
+                            ) 
                             set make_status = ${status}
 
                             if (${make_status}) then 

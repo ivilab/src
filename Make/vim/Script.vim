@@ -12,7 +12,7 @@
 :g/fake_out_glob/d
 :
 :" Change * ==> *.1
-:%s/$/.1/ge
+:%s/\([A-Za-z0-9]\)$/\1.1/ge
 :
 :" Shift. "
 :%s/^/        /e

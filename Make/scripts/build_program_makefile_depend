@@ -113,14 +113,18 @@ if (${status}) exit ${status}
 
 ${IVI_CP} Include_lines/script_files  Makefile-script-targets
 if (${status}) exit ${status}
+# ${IVI_CP} Makefile-script-targets Makefile-script-targets-1
 ${IVI_RM} .Makefile-script-targets.swp
 ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} Makefile-script-targets >& /dev/null
 if (${status}) exit ${status}
+# ${IVI_CP} Makefile-script-targets Makefile-script-targets-2
 ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Script.${VIM_SUFFIX} Makefile-script-targets >& /dev/null
 if (${status}) exit ${status}
+# ${IVI_CP} Makefile-script-targets Makefile-script-targets-3
 ${IVI_ECHO} " " >> Makefile-script-targets
 ${IVI_CAT} Include_lines/script_files | ${IVI_SED} 's/\(.*\)/$(MAKE_DOC_DIR)\1.1 : $(MAKE_DOC_DIR)\1\.shell.1#+$(IVI_CP) $< $@#/' | tr '#+' '\n\t' >> Makefile-script-targets
 if (${status}) exit ${status}
+# ${IVI_CP} Makefile-script-targets Makefile-script-targets-4
 
 ${IVI_CAT} /dev/null > Makefile-depend-headers 
 if (${status}) exit ${status}
