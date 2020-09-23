@@ -35,9 +35,12 @@
 # set echo
 
 # This next part is shared by all files in Make whose names begin with "build",
-# AND scripts ivi_add_makefiles, create_library, and create_program. Updates
-# should be propogated. 
+# AND scripts ivi_add_makefiles, create_library, create_program, and
+# update_ivi_core. Updates should be propogated. 
 
+# We want to use a pure "cd".
+unalias cd
+    
 if ($?FORCE_IVI_SRC_DIR) then 
     if (-e "${FORCE_IVI_SRC_DIR}/Make/init_compile") then 
         setenv IVI_SRC_PATH "${FORCE_IVI_SRC_DIR}"
@@ -57,28 +60,20 @@ else
     # directory that has one of the directories in IVI_DIRS as a subdir, which
     # itself has Make as a sub-dir and Make/init_compile as a file in that. 
 
-    # We want to use pure "cd", and so if cd has been aliase'd we want to save that
-    # fact and unalias cd. 
-    #
-    set cd_alias = `alias cd`
-    if ("${cd_alias}" != "") then
-       unalias cd
-    endif 
-
     # We want to block going above the user's home directory because it might cause
     # a mount request that we don't want. If we are not below their home, then it is
     # fine to ga to the root. 
     #
     pushd ${HOME} >& /dev/null
-    set home_pwd = `pwd`
+        set home_path = "${cwd}"
     popd >& /dev/null
 
     set found = 0
     set ivi_top = ""
 
-    pushd `pwd` > /dev/null
+    pushd "${cwd}" > /dev/null
 
-    while (("`pwd`" != "/") && ("`pwd`" != "${home_pwd}")) 
+    while (("${cwd}" != "/") && ("${cwd}" != "${home_path}")) 
         foreach ivi_dir (${IVI_DIRS}) 
             if ("${ivi_dir}" == ".") then
                 set ivi_dir = ""
@@ -100,11 +95,6 @@ else
 
     popd > /dev/null
 
-    # Restore cd alias.
-    if ("${cd_alias}" != "") then
-       alias cd "$cd_alias"
-    endif 
-
     if (${found}) then
         if ("${ivi_dir}" == "") then
             set ivi_dir = "./"
@@ -112,12 +102,18 @@ else
 
         setenv IVI_SRC_PATH "${ivi_top}${ivi_dir}"
     else 
+        setenv THIS_PROGRAM "$0" 
+
         # We cannot use P_STDERR here because we might not have defined it yet.
         bash -c 'echo " " >&2'
         bash -c 'echo "This directory is not below a directory with IVI installed." >&2'
         bash -c 'echo "Valid directories for IVI in this context: ${IVI_DIRS}." >&2'
         bash -c 'echo "To experiment with a temporary fix, try setting FORCE_IVI_SRC_DIR." >&2'
-        bash -c 'echo "For a more permanent fix, edit $0 or contact Kobus." >&2'
+        bash -c 'echo "For a more permanent fix, edit this program: " >&2'
+        bash -c 'echo "    ${THIS_PROGRAM} " >&2'
+        bash -c 'echo "or contact Kobus." >&2'
+        bash -c 'echo " " >&2'
+
         exit 1
     endif 
 endif 

@@ -4,18 +4,18 @@
  * @brief Support for points and line segments with rational coordinates
  */
 /*
- * $Id: ratpoint.h 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: ratpoint.h 25824 2020-09-23 15:55:09Z kobus $
  */
 
 #ifndef QD_CPP_RATPOINT_INCLUDED_IVILAB_UARIZONAVISION
 #define QD_CPP_RATPOINT_INCLUDED_IVILAB_UARIZONAVISION 1
 
-#include <l/l_sys_lib.h>
-#include <l/l_sys_io.h>
-#include <l/l_sys_debug.h>
-#include <l_cpp/l_exception.h>
-#include <l_cpp/l_util.h>
-#include <qd_cpp/pixpoint.h>
+#include "l/l_sys_lib.h"
+#include "l/l_sys_io.h"
+#include "l/l_sys_debug.h"
+#include "l_cpp/l_exception.h"
+#include "l_cpp/l_util.h"
+#include "qd_cpp/pixpoint.h"
 
 #include <iosfwd>
 

@@ -4,16 +4,16 @@
  * @author Andrew Predoehl
  */
 /*
- * $Id: dcel.h 25499 2020-06-14 13:26:04Z kobus $
+ * $Id: dcel.h 25824 2020-09-23 15:55:09Z kobus $
  */
 
 #ifndef QD_CPP_DCEL_H_INCLUDED_IVILAB
 #define QD_CPP_DCEL_H_INCLUDED_IVILAB 1
 
-#include <l/l_sys_std.h>
-#include <l_cpp/l_exception.h>
-#include <qd_cpp/ratpoint.h>
-#include <qd_cpp/pixpath.h>
+#include "l/l_sys_std.h"
+#include "l_cpp/l_exception.h"
+#include "qd_cpp/ratpoint.h"
+#include "qd_cpp/pixpath.h"
 
 #include <vector>
 #include <set>
