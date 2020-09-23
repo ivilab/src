@@ -24,13 +24,17 @@ if (-e Include_lines) then
     ${IVI_RM} Include_lines
 endif 
 
+# We now delete Makefile-2 for library and program dirs, as it is automatically
+# built in those two cases. But currently, for the archive directories,
+# Makefile-2 is hand build and we should not delete it. 
+#
 # We expect this file to be sourced by a script that knows what kind of
 # directory we are in (e.g., either build-2 or clean_global which itself is
 # sourced by build-2. But, just in case this is not so, which is the case if
 # test this script by sourcing it from the command line, we follow the same
 # heuristic as build-2. We cannot just check if it has been set, as this breaks
 # unit testing.
-#
+
 set is_archive_dir = `echo $cwd | ${IVI_EGREP} -c '\/IVI$|\/IVI_cpp$'`
 
 if (${is_archive_dir}) then

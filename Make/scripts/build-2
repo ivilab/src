@@ -526,36 +526,6 @@ while ($count <=  ${num_args})
         setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"
         set arg = "bin"
     else if ("${arg}" == "ivi_code") then
-        # We do IVI and IVI_cpp first, which is completely optional, as this
-        # manages the parallel build of the basic code more efficiently than
-        # make_ivi, which would also build it, but checks the build of
-        # additional code (.e.g., test code). 
-        #
-
-        # No DRY_RUN as this is temporary development.
-
-#         pushd ${IVI_SRC_PATH}IVI > /dev/null
-#             make depend_very_clean
-#             if ($status) exit 1 
-#             make depend
-#             if ($status) exit 1 
-#             make clean 
-#             if ($status) exit 1 
-#             make 
-#             if ($status) exit 1 
-#         popd > /dev/null
-# 
-#         pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
-#             make depend_very_clean
-#             if ($status) exit 1 
-#             make depend
-#             if ($status) exit 1 
-#             make clean 
-#             if ($status) exit 1 
-#             make 
-#             if ($status) exit 1 
-#         popd > /dev/null
-        
         set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi ivi ivi_cpp skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
@@ -566,28 +536,6 @@ while ($count <=  ${num_args})
 
         continue
     else if ("${arg}" == "ivi_doc") then
-        # No DRY_RUN as this is temporary development.
-
-#         pushd ${MAKE_SCRIPT_PATH} > /dev/null
-#             make doc 
-#             if ($status) exit 1 
-#         popd > /dev/null
-# 
-#         # We need to get IVI and IVI_cpp to make C/C++ documentation because
-#         # that is currently the only place where we build the index. The script
-#         # make_ivi does not know about any more directories for documentation,
-#         # so we do not need to use it. 
-#         #
-#         pushd ${IVI_SRC_PATH}IVI > /dev/null
-#             make doc 
-#             if ($status) exit 1 
-#         popd > /dev/null
-# 
-#         pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
-#             make doc 
-#             if ($status) exit 1 
-#         popd > /dev/null
-
         set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi doc skip_code skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
@@ -598,17 +546,6 @@ while ($count <=  ${num_args})
 
         continue
     else if ("${arg}" == "ivi_tags") then
-#         # We do IVI and IVI_cpp first, which is completely optional, for speed.
-#         pushd ${IVI_SRC_PATH}IVI > /dev/null
-#             make tags 
-#             if ($status) exit 1 
-#         popd > /dev/null
-# 
-#         pushd ${IVI_SRC_PATH}IVI_cpp > /dev/null
-#             make tags 
-#             if ($status) exit 1 
-#         popd > /dev/null
-
         set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi tags ivi ivi_cpp skip_code skip_doc skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
