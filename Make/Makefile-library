@@ -12,14 +12,21 @@
 #     for variable expansion needs to be specified, and that is complicated and
 #     also depends on the flavor of make. 
 
-# The following make flavor dependent defines, already set by the time we are in
-# this file, are expanded versions of the patterns noted. 
+# The following make flavor dependent defines, which are already set by the time
+# we are in this file, are expanded versions of the patterns noted (for
+# convenient reference). 
+#
+#      LIB_COMPONENT_C_FILES     (not used and not defined (commented out))
+#         $(LIB_COMPONENT_REAL_SRC_DIR)*.c
+#
+#     LIB_COMPONENT_CXX_FILES    (not used and not defined (commented out)) 
+#        $(LIB_COMPONENT_REAL_SRC_DIR)*.C $(LIB_COMPONENT_REAL_SRC_DIR)*.cpp $(LIB_COMPONENT_REAL_SRC_DIR)*.cxx
 #
 #     LIB_COMPONENT_SOURCE_FILES  (used?) 
-#         $(LIB_COMPONENT_REAL_SRC_DIR)*.[cC] $(LIB_COMPONENT_REAL_SRC_DIR)*.cpp $(LIB_COMPONENT_REAL_SRC_DIR)*.cxx $(LIB_COMPONENT_REAL_SRC_DIR)*.cc
+#         $(LIB_COMPONENT_REAL_SRC_DIR)*.[cC] $(LIB_COMPONENT_REAL_SRC_DIR)*.cpp $(LIB_COMPONENT_REAL_SRC_DIR)*.cxx
 #
 #     LIB_COMPONENT_HEADER_FILES  (used?) 
-#         $(LIB_COMPONENT_REAL_SRC_DIR)*.h $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]pp   $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]xx
+#         $(LIB_COMPONENT_REAL_SRC_DIR)*.h $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]pp $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]xx
 #
 #     LIB_COMPONENT_FILES (currently used) 
 #         $(LIB_COMPONENT_REAL_SRC_DIR)*.[chC] $(LIB_COMPONENT_REAL_SRC_DIR)*.[chit]pp $(LIB_COMPONENT_REAL_SRC_DIR)*.[chit]xx
@@ -760,7 +767,7 @@ shared_$(LIB_COMPONENT_PREFIX) : \
 # 
 # tags_$(LIB_COMPONENT_PREFIX) : $(LIB_COMPONENT_FILES)
 # 
-$(LIB_COMPONENT_SRC_DIR)tags : $(LIB_COMPONENT_FILES)
+$(LIB_COMPONENT_SRC_DIR)tags : $(LIB_COMPONENT_SRC_DIR)Include_lines/all_tag_files $(LIB_COMPONENT_FILES)
 	$(MAKE_SCRIPT_PATH)do_ctags '$(LIB_COMPONENT_REAL_SRC_DIR)'
 
 # Convenience dummy target used by the script build-2. Using the target directly
@@ -770,9 +777,71 @@ $(LIB_COMPONENT_SRC_DIR)tags : $(LIB_COMPONENT_FILES)
 #
 # This will BREAK things if we want to do it the old way again for any reason. 
 #
+.PHONY : tags
 tags : $(LIB_COMPONENT_SRC_DIR)tags
 
+.PHONY : ctags
 ctags: tags 
+
+
+# The dummy_empty_file is a cheesy hack so that we can safely cat all files in the directory.
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists : 
+	$(IVI_MKDIR) $@
+	$(IVI_TOUCH) $@/dummy_empty_file
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/all_tag_files : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists $(LIB_COMPONENT_TAG_FILES) 
+	$(IVI_CAT) $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/* | $(IVI_SORT) -u > $@
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.c : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.c : $(LIB_COMPONENT_SRC_DIR)%.c 
+	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
+        $(LIB_COMPONENT_NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cxx : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cxx : $(LIB_COMPONENT_SRC_DIR)%.cxx 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
+        $(LIB_COMPONENT_NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cpp : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cpp : $(LIB_COMPONENT_SRC_DIR)%.cpp 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
+        $(LIB_COMPONENT_NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cc : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cc : $(LIB_COMPONENT_SRC_DIR)%.cc 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
+        $(LIB_COMPONENT_NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.C : Include_lines/tag_file_lists
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.C : $(LIB_COMPONENT_SRC_DIR)%.C 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
+        $(LIB_COMPONENT_NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
 
 # ################################################################################
 #                           Man pages

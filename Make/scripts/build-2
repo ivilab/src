@@ -565,6 +565,16 @@ while ($count <=  ${num_args})
         endif
         
         continue
+    else if ("${arg}" == "ivi_all") then
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
+
+        continue
     else if ("${arg}" == "ivi_depend") then
         set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
         if ($?DRY_RUN) then

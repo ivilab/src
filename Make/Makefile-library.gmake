@@ -1,7 +1,6 @@
 
 #
-# Things that seem too difficult to handle the same in all flavors
-# of make:
+# Things that seem too difficult to handle the same way in all flavors of make:
 #     wildcard expansion
 
 #
@@ -11,6 +10,8 @@
 
 # REAL_SRC_DIR vs DIR needs to be consistent with Makefile-library. 
 
+# LIB_COMPONENT_C_FILES := $(wildcard $(LIB_COMPONENT_REAL_SRC_DIR)*.c)
+# LIB_COMPONENT_CXX_FILES := $(wildcard $(LIB_COMPONENT_REAL_SRC_DIR)*.C $(LIB_COMPONENT_REAL_SRC_DIR)*.cpp $(LIB_COMPONENT_REAL_SRC_DIR)*.cxx)
 LIB_COMPONENT_SOURCE_FILES := $(wildcard $(LIB_COMPONENT_REAL_SRC_DIR)*.[cC] $(LIB_COMPONENT_REAL_SRC_DIR)*.cpp $(LIB_COMPONENT_REAL_SRC_DIR)*.cxx)
 LIB_COMPONENT_HEADER_FILES := $(wildcard $(LIB_COMPONENT_REAL_SRC_DIR)*.h $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]pp $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]xx)
 LIB_COMPONENT_FILES := $(wildcard $(LIB_COMPONENT_REAL_SRC_DIR)*.[chC] $(LIB_COMPONENT_REAL_SRC_DIR)*.[chit]pp $(LIB_COMPONENT_REAL_SRC_DIR)*.[chit]xx)

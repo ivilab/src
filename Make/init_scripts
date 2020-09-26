@@ -198,12 +198,12 @@ endif
 
 
 # Essential. Egrep is used in stream file names. 
-set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip makedepend date tee egrep"
+set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip makedepend date tee egrep tr"
 
 # Desired (used often enough that a warning makes sense). If these are not
 # found, the path is set to the program name for better error messages. The
 # colon begins the optional ones. 
-set needed_progs = "${needed_progs} : awk stat tail head doxygen ctags"
+set needed_progs = "${needed_progs} : awk stat tail head doxygen ctags sort"
 
 # Others that we want to test if they exist, but we do not expect them to always
 # be available.  If these are not found, the path is set to the empty string so

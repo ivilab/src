@@ -91,14 +91,14 @@ ${IVI_ECHO} " " >> Makefile-program-targets
 
 ${IVI_RM} Makefile-version-obj-targets
 
-${IVI_CP} Include_lines/help_files  Makefile-help-targets
+${IVI_CP} Include_lines/help_files Makefile-help-targets
 if (${status}) exit ${status}
 ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} Makefile-help-targets >& /dev/null
 if (${status}) exit ${status}
 ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Help.${VIM_SUFFIX} Makefile-help-targets >& /dev/null
 if (${status}) exit ${status}
 ${IVI_ECHO} " " >> Makefile-help-targets
-${IVI_CAT} Include_lines/help_files | ${IVI_SED} 's/\(.*\)\.help/$(MAKE_DOC_DIR)\1.1 : $(MAKE_DOC_DIR)\1\.help.1#+$(IVI_CP) $< $@#/' | tr '#+' '\n\t'  >> Makefile-help-targets
+${IVI_CAT} Include_lines/help_files | ${IVI_SED} 's/\(.*\)\.help/$(MAKE_DOC_DIR)\1.1 : $(MAKE_DOC_DIR)\1\.help.1#+$(IVI_CP) $< $@#/' | ${IVI_TR} '#+' '\n\t'  >> Makefile-help-targets
 if (${status}) exit ${status}
 
 ${IVI_CP} Include_lines/writeup_files  Makefile-writeup-targets
@@ -108,7 +108,7 @@ if (${status}) exit ${status}
 ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Writeup.${VIM_SUFFIX} Makefile-writeup-targets >& /dev/null
 if (${status}) exit ${status}
 ${IVI_ECHO} " " >> Makefile-writeup-targets
-${IVI_CAT} Include_lines/writeup_files | ${IVI_SED} 's/\(.*\)\.w/$(MAKE_DOC_DIR)\1.1 : $(MAKE_DOC_DIR)\1\.w.1#+$(IVI_CP) $< $@#/' | tr '#+' '\n\t' >> Makefile-writeup-targets
+${IVI_CAT} Include_lines/writeup_files | ${IVI_SED} 's/\(.*\)\.w/$(MAKE_DOC_DIR)\1.1 : $(MAKE_DOC_DIR)\1\.w.1#+$(IVI_CP) $< $@#/' | ${IVI_TR} '#+' '\n\t' >> Makefile-writeup-targets
 if (${status}) exit ${status}
 
 ${IVI_CP} Include_lines/script_files  Makefile-script-targets
@@ -122,9 +122,17 @@ ${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Script.${VIM_SUFFIX} Makefile-script-targets 
 if (${status}) exit ${status}
 # ${IVI_CP} Makefile-script-targets Makefile-script-targets-3
 ${IVI_ECHO} " " >> Makefile-script-targets
-${IVI_CAT} Include_lines/script_files | ${IVI_SED} 's/\(.*\)/$(MAKE_DOC_DIR)\1.1 : $(MAKE_DOC_DIR)\1\.shell.1#+$(IVI_CP) $< $@#/' | tr '#+' '\n\t' >> Makefile-script-targets
+${IVI_CAT} Include_lines/script_files | ${IVI_SED} 's/\(.*\)/$(MAKE_DOC_DIR)\1.1 : $(MAKE_DOC_DIR)\1\.shell.1#+$(IVI_CP) $< $@#/' | ${IVI_TR} '#+' '\n\t' >> Makefile-script-targets
 if (${status}) exit ${status}
 # ${IVI_CP} Makefile-script-targets Makefile-script-targets-4
+
+${IVI_ECHO} " " > Makefile-tag-targets
+${IVI_ECHO} " " >> Makefile-tag-targets
+${IVI_ECHO} "TAG_FILES = \" >> Makefile-tag-targets
+${MAKE_SCRIPT_PATH}stream_file_names "" -s | ${IVI_SED} 's/^ *\(.*\) *$/    Include_lines\/tag_file_lists\/\1 \\/' >> Makefile-tag-targets 
+if (${status}) exit ${status}
+${IVI_ECHO} " " >> Makefile-tag-targets
+${IVI_ECHO} " " >> Makefile-tag-targets
 
 ${IVI_CAT} /dev/null > Makefile-depend-headers 
 if (${status}) exit ${status}
@@ -139,7 +147,7 @@ ${IVI_ECHO} "# Machine generated file to set make targets" >> Makefile-depend
 ${IVI_ECHO} "#" >> Makefile-depend
 ${IVI_ECHO} " " >> Makefile-depend
 
-${IVI_CAT} Makefile-program-targets Makefile-bin-targets Makefile-help-targets Makefile-writeup-targets Makefile-script-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
+${IVI_CAT} Makefile-program-targets Makefile-bin-targets Makefile-help-targets Makefile-writeup-targets Makefile-script-targets Makefile-tag-targets Makefile-depend-headers Makefile-depend-src >> Makefile-depend 
 if (${status}) exit ${status}
 
 ${IVI_RM} Makefile-bin-targets

@@ -145,6 +145,26 @@ ${IVI_ECHO} ' ' >> ${lib_component_path}Makefile-depend
 ${IVI_ECHO} ' ' >> ${lib_component_path}Makefile-depend
 #${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-9
 #
+#
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${MAKE_SCRIPT_PATH}stream_file_names "${lib_component_path}" -s > ${lib_component_path}Makefile-depend-tags
+if (${status}) exit ${status}
+#${IVI_CP} ${lib_component_path}Makefile-depend-tags ${lib_component_path}Makefile-depend-tags-SAVE
+
+${IVI_RM} ${lib_component_path}.Makefile-depend-tags.swp
+${VIM_FOR_MAKE} < ${MAKE_EDIT_PATH}Dirs.${VIM_SUFFIX} ${lib_component_path}Makefile-depend-tags >& /dev/null
+if (${status}) exit ${status}
+#${IVI_CP} ${lib_component_path}Makefile-depend-tags ${lib_component_path}Makefile-depend-tags-SAVE-2
+
+${IVI_ECHO} "${lib_component_str}_TAG_FILES = \" >> ${lib_component_path}Makefile-depend
+${IVI_SED} 's/^ *\(.*)\)\([^ ]*\).*$/    \1Include_lines\/tag_file_lists\/\2 \\/' ${lib_component_path}Makefile-depend-tags >>  ${lib_component_path}Makefile-depend
+${IVI_RM} ${lib_component_path}Makefile-depend-tags
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+# ${IVI_CP} ${lib_component_path}Makefile-depend ${lib_component_path}Makefile-depend-SAVE-8
+#
+#
 ${MAKE_SCRIPT_PATH}copy_if_different  ${lib_component_path}Makefile-library ${lib_component_path}Include_lines/Makefile-library.state
 if (${status}) exit ${status}
 

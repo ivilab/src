@@ -20,10 +20,12 @@ IVI_BUILD_TOOLS = \
     $(MAKE_SCRIPT_PATH)build_file_list_2 \
     $(MAKE_SCRIPT_PATH)build_include_lines \
     $(MAKE_SCRIPT_PATH)build_include_lines_2 \
+    $(MAKE_SCRIPT_PATH)build_library_makefile_depend \
     $(MAKE_SCRIPT_PATH)build_makefile_dirs \
     $(MAKE_SCRIPT_PATH)build_makefile_dirs_2 \
     $(MAKE_SCRIPT_PATH)build_makefile_libs_needed \
     $(MAKE_SCRIPT_PATH)build_makefile_libs_needed_2 \
+    $(MAKE_SCRIPT_PATH)build_program_makefile_depend \
     $(MAKE_SCRIPT_PATH)build_sub_libs_needed \
     $(MAKE_SCRIPT_PATH)build_sub_libs_needed_2 \
     $(MAKE_SCRIPT_PATH)get_local_include_dirs \

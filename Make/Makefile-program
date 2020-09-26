@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25829 2020-09-24 17:20:51Z kobus $
+# $Id: Makefile-program 25833 2020-09-26 22:52:37Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -398,7 +398,9 @@ include Makefile-dirs
 LIB_ARCHIVES = $(IVI_LIB_ARCHIVE) 
 LIB_LINK_STRINGS = $(IVI_LIB_LINK_STR)
 
-# This may be needed here, before including Makefile-depend, rather than below. 
+# This may be needed here, before including Makefile-depend, rather than below,
+# although it is not clear why, and perhaps limited to v11 running Ubuntu 14.
+
 $(PROGRAM_CAT_PATH) :
 	$(IVI_MKDIR) $(PROGRAM_CAT_PATH)
 
@@ -1002,10 +1004,70 @@ $(PROG_LIB_ARCHIVE) : Include_lines/sub_libs_needed Include_lines/file_list $(LD
 ################################################################################
 #                       Tags
 # 
+.PHONY : ctags
 ctags: tags 
 
-tags: Include_lines/sub_libs_needed $(PROGRAM_FILES)
+tags: Include_lines/all_tag_files Include_lines/sub_libs_needed $(PROGRAM_FILES)
 	$(MAKE_SCRIPT_PATH)do_ctags
+
+# The dummy_empty_file is a cheesy hack so that we can safely cat all files in the directory.
+Include_lines/tag_file_lists : 
+	$(IVI_MKDIR) $@
+	$(IVI_TOUCH) $@/dummy_empty_file
+
+Include_lines/all_tag_files : Include_lines/tag_file_lists $(TAG_FILES) 
+	$(IVI_CAT) Include_lines/tag_file_lists/* | $(IVI_SORT) -u > $@
+
+Include_lines/tag_file_lists/%.c : Include_lines/tag_file_lists
+
+Include_lines/tag_file_lists/%.c : %.c 
+	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+Include_lines/tag_file_lists/%.cxx : Include_lines/tag_file_lists
+
+Include_lines/tag_file_lists/%.cxx : %.cxx 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+Include_lines/tag_file_lists/%.cpp : Include_lines/tag_file_lists
+
+Include_lines/tag_file_lists/%.cpp : %.cpp 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+Include_lines/tag_file_lists/%.cc : Include_lines/tag_file_lists
+
+Include_lines/tag_file_lists/%.cc : %.cc 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+Include_lines/tag_file_lists/%.C : Include_lines/tag_file_lists
+
+Include_lines/tag_file_lists/%.C : %.C 
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
 
 ################################################################################
 #                       Man pages
@@ -1030,7 +1092,11 @@ $(MAKE_DOC_DIR)doc_dir_made :
 	$(IVI_MKDIR) $(MAKE_DOC_DIR)
 	$(IVI_TOUCH) $@
 
-# This needs to be before including Makefile-depend. Copying it here.
+# It seems that the following commented out rules need to be before including
+# Makefile-depend (on v11 running Ubuntu 14 anyway), but it is not so clear why,
+# as Makefile-depend just establishes the dependency of the target
+# $(MAKE_DOC_DIR)%.1 .
+#
 # $(PROGRAM_CAT_PATH) :
 # 	$(IVI_MKDIR) $(PROGRAM_CAT_PATH)
 
