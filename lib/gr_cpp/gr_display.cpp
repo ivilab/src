@@ -1,4 +1,4 @@
-/* $Id: gr_display.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: gr_display.cpp 25832 2020-09-26 22:02:38Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -54,7 +54,10 @@ public:
         using namespace boost;
 
         wnd_.set_display_callback(bind(&Self::display, this));
-        wnd_.set_keyboard_callback(bind(&Self::key, this, _1, _2, _3));
+        wnd_.set_keyboard_callback(bind(&Self::key, this, 
+                    boost::placeholders::_1, 
+                    boost::placeholders::_2, 
+                    boost::placeholders::_3));
 
         glDisable(GL_LIGHTING);
 

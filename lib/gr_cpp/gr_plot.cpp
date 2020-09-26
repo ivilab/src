@@ -17,7 +17,7 @@
 |
 * =========================================================================== */
 
-/* $Id: gr_plot.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: gr_plot.cpp 25832 2020-09-26 22:02:38Z kobus $ */
 
 #ifdef IVI_HAVE_GLUT
 #include "gr_cpp/gr_plot.h"
@@ -51,7 +51,9 @@ Glut_plot_window::Glut_plot_window(size_t width, size_t height, const std::strin
     wnd_(new Glut_window(width, height, title))
 {
     wnd_->set_reshape_callback(
-        boost::bind(&Glut_plot_window::reshape, this, _1, _2));
+        boost::bind(&Glut_plot_window::reshape, this, 
+            boost::placeholders::_1, 
+            boost::placeholders::_2));
     wnd_->set_display_callback(boost::bind(&Glut_plot_window::render, this));
     //wnd_->set_keyboard_callback(boost::bind(&Glut_plot_window::keys, this));
 
