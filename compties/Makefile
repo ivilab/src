@@ -1,17 +1,18 @@
 #
-# This Makefile is almost invariably deals with only one target so we don't have
-# to worry about ensuring that it builds serially. Note that we control the
-# number of make threads in the build script based on the number of cpu's. 
+# This Makefile is almost invariably deals with only one target so we don't
+# worry about ensuring that it builds serially. Note that we control the number
+# of make threads in the build script based on the number of cpu's. 
 #
 # The strategy here to execute the script "build" which sets up a sub-shell with
 # the appropriate environment, and then do a make with Makefile-2. We list
-# possible targets here, but for most versions of make, a line below should
-# be able to catch all cases. 
+# possible targets here, but for most versions of make, the catch all line below
+# should be able to deal with all cases. 
 #
 # None of the explicilty mentioned targets that get sent to the build
 # script are meant to be actual files or directories. To protect against a name
 # clash, we declare the targets handled here as .PHONY.
-#
+
+# The exception to the above is "tags". This is fudged by differenty means. 
 
 .PHONY : all
 .PHONY : dir_made
@@ -21,17 +22,22 @@
 .PHONY : depend_clean
 .PHONY : obj_clean
 .PHONY : clean
+.PHONY : cache_clean
 .PHONY : code
+.PHONY : file_list
+.PHONY : include_lines
+.PHONY : sub_libs_needed
 .PHONY : depend
 .PHONY : depend_again
 .PHONY : doc
-.PHONY : tags
 .PHONY : doc_dir_made
 .PHONY : lint
+.PHONY : locks_clean
 .PHONY : proto
 .PHONY : bin
-.PHONY : work
-.PHONY : misc
+.PHONY : make_bin
+.PHONY : misc_bin
+.PHONY : tags
 .PHONY : test
 .PHONY : test_clean
 .PHONY : test_very_clean
@@ -53,9 +59,16 @@
 # Some targets, such as confess are implemented in build-2. 
 #
 # Each target in the following lists needs to be declared .PHONY above. So, if
-# you add one, you need to add a .PHONY line above. 
+# you add one, you need to add a .PHONY line above. We break them into groups
+# merely for readability.
 #
-all dir_made init_clean confess depend_very_clean depend_clean obj_clean clean code depend depend_again doc tags doc_dir_made lint proto bin work misc :
+all code doc tags doc_dir_made lint proto bin make_bin misc_bin :
+	$(ECHO_MAKE_CMD)./build $@
+
+dir_made file_list include_lines sub_libs_needed depend depend_again :
+	$(ECHO_MAKE_CMD)./build $@
+
+init_clean confess depend_very_clean depend_clean obj_clean clean cache_clean locks_clean :
 	$(ECHO_MAKE_CMD)./build $@
 
 test test_clean test_very_clean check_clean regress regress_clean test_svn :

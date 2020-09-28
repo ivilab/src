@@ -21,8 +21,8 @@
 #include <ostream>
 #include <string>
 
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include <ergo_cpp/mh.h>
+#include <ergo_cpp/record.h>
 
 #include "dbn_cpp/base_line_models.h"
 #include "dbn_cpp/cross_validate_util.h"

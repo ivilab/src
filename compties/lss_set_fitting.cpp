@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_set_fitting.cpp 25797 2020-09-19 21:14:43Z kobus $ */
+/* $Id: lss_set_fitting.cpp 25834 2020-09-28 17:23:27Z kobus $ */
 
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/linear_state_space.h"
@@ -31,10 +31,6 @@
 #include <vector>
 #include <boost/random.hpp>
 #include <boost/thread.hpp>
-
-#ifndef IVI_HAVE_ERGO
-#error "You need libergo to use this program"
-#endif
 
 using namespace ivi;
 using namespace ivi::ties;

@@ -22,12 +22,8 @@
 
 #include <cstdlib>
 
-#ifdef IVI_HAVE_ERGO
-#include <ergo/mh.h>
-#include <ergo/record.h>
-#else
-#error "You need libergo to use this program"
-#endif
+#include <ergo_cpp/mh.h>
+#include <ergo_cpp/record.h>
 
 #include "dbn_cpp/cross_validate_util.h"
 #include "dbn_cpp/experiment.h"

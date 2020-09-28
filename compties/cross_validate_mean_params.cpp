@@ -20,10 +20,6 @@
 
 /* $Id: cross_validate_evaluate.cpp 20194 2015-12-19 21:51:31Z predoehl $ */
 
-#ifndef IVI_HAVE_ERGO
-#error "You need libergo to use this program"
-#endif
-
 #include <l_cpp/l_filesystem.h>
 
 #include "dbn_cpp/data.h"

@@ -18,15 +18,15 @@
 |
 * =========================================================================== */
 
-/* $Id: lss_mh.cpp 25797 2020-09-19 21:14:43Z kobus $ */
+/* $Id: lss_mh.cpp 25834 2020-09-28 17:23:27Z kobus $ */
 
 #include <prob_cpp/prob_distribution.h>
 #include <prob_cpp/prob_sample.h>
 #include <l_cpp/l_exception.h>
 #include <gp_cpp/gp_mean.h>
 
-#include <ergo/mh.h>
-#include <ergo/record.h>
+#include <ergo_cpp/mh.h>
+#include <ergo_cpp/record.h>
 
 #include <iostream>
 

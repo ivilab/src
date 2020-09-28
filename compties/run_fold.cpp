@@ -18,11 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: run_fold.cpp 25797 2020-09-19 21:14:43Z kobus $ */
-
-#ifndef IVI_HAVE_ERGO
-#error "You need libergo to use this program"
-#endif
+/* $Id: run_fold.cpp 25834 2020-09-28 17:23:27Z kobus $ */
 
 #include <l_cpp/l_filesystem.h>
 #include <l/l_sys_time.h>

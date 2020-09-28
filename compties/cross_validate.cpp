@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 
-/* $Id: cross_validate.cpp 25797 2020-09-19 21:14:43Z kobus $ */
+/* $Id: cross_validate.cpp 25834 2020-09-28 17:23:27Z kobus $ */
 
 #include <cstdlib>
 #include "dbn_cpp/cross_validate_util.h"
@@ -26,12 +26,8 @@
 #include "dbn_cpp/options.h"
 #include "dbn_cpp/time_util.h"
 
-#ifdef IVI_HAVE_ERGO
-#include <ergo/mh.h>
-#include <ergo/record.h>
-#else
-#error "You need libergo to use this program"
-#endif
+#include <ergo_cpp/mh.h>
+#include <ergo_cpp/record.h>
 
 #include "dbn_cpp/data.h"
 #include "dbn_cpp/real_data_parser.h"
