@@ -12,7 +12,8 @@
 # script are meant to be actual files or directories. To protect against a name
 # clash, we declare the targets handled here as .PHONY.
 
-# The exception to the above is "tags". This is fudged by differenty means. 
+# The exception to the above is "tags". This is fudged by making tags depend on
+# ${cwd}/tags in the Makefiles. 
 
 .PHONY : all
 .PHONY : dir_made
