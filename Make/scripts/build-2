@@ -304,6 +304,10 @@ endif
 
 ################################################################################
 
+setenv CURRENT_PATH "${cwd}/"
+
+################################################################################
+
 if ($?IVI_VERBOSE_2) then
     ${VERBOSE_ECHO_2} "" 
     ${VERBOSE_ECHO_2} =================  variable values in build-2 =========================
@@ -319,7 +323,7 @@ if ($?IVI_VERBOSE_2) then
 
     ${VERBOSE_ECHO_2} "SHORT_HOST:             ${SHORT_HOST}"
     ${VERBOSE_ECHO_2} " "
-    ${VERBOSE_ECHO_2} "CWD:                    ${CWD}"
+    ${VERBOSE_ECHO_2} "CURRENT_PATH:           ${CURRENT_PATH}"
     ${VERBOSE_ECHO_2} "IVI_SRC_PATH:           ${IVI_SRC_PATH}"
     ${VERBOSE_ECHO_2} "IVI_LIB_PATH:           ${IVI_LIB_PATH}"
     ${VERBOSE_ECHO_2} "MAKE_PATH:              ${MAKE_PATH}"
@@ -525,6 +529,16 @@ while ($count <=  ${num_args})
         set need_depend = 1
         setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"
         set arg = "bin"
+    else if ("${arg}" == "ivi") then
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi ivi ivi_cpp skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        if ($?DRY_RUN) then
+            echo "DRY: ${make_cmd}"
+        else
+            ${make_cmd}
+            if (${status}) exit 1
+        endif
+
+        continue
     else if ("${arg}" == "ivi_code") then
         set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi ivi ivi_cpp skip_doc skip_tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
         if ($?DRY_RUN) then
@@ -564,16 +578,6 @@ while ($count <=  ${num_args})
             if (${status}) exit 1
         endif
         
-        continue
-    else if ("${arg}" == "ivi_all") then
-        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
-        if ($?DRY_RUN) then
-            echo "DRY: ${make_cmd}"
-        else
-            ${make_cmd}
-            if (${status}) exit 1
-        endif
-
         continue
     else if ("${arg}" == "ivi_depend") then
         set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi skip_doc skip_tags skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
@@ -686,7 +690,6 @@ while ($count <=  ${num_args})
                 set arg = "shared"
             endif
         endif 
-
     else if ("${arg}" == "doc") then
         set need_depend = 1
         set have_cpp = `${MAKE_SCRIPT_PATH}stream_file_names -doxygen -t`
@@ -1693,7 +1696,11 @@ while (${try_count} <= 4)
             if ($?DRY_RUN) then
                 echo "DRY: ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}"
             else
-                if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_${arg}_${try_count}.res"
+                if ($?LOG_MAKE) then 
+                    set arg_without_path = `echo ${arg} | ${IVI_SED} 's#^.*/##'`
+                    ${VERBOSE_ECHO_2} "Script build-2 using ${arg_without_path} for log path string for ${arg}."
+                    set make_log_file = "${MAKE_LOG_PATH}make_${arg_without_path}_${try_count}.res"
+                endif 
                 ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}
                 set make_status = ${status}
 
@@ -1705,13 +1712,19 @@ while (${try_count} <= 4)
 
         if (${make_status}) then
             if (-e "${make_result_temp_file}") then
-                set build_issue = `${IVI_GREP} -c 'No rule to make target' < "${make_result_temp_file}"`
+                set bad_arg  = `${IVI_GREP} -c "No rule to make target .${arg}.\." < "${make_result_temp_file}"`
 
-                if (${build_issue}) then
-                    ${P_STDERR} "This appears to be a makefile issue."
-                    set makefiles_are_ok = 0
-                else 
+                if (${bad_arg}) then
                     set exit_status = 1
+                else 
+                    set build_issue = `${IVI_GREP} -c 'No rule to make target' < "${make_result_temp_file}"`
+
+                    if (${build_issue}) then
+                        ${P_STDERR} "This appears to be a makefile issue."
+                        set makefiles_are_ok = 0
+                    else 
+                        set exit_status = 1
+                    endif 
                 endif 
             else 
                 set exit_status = 1

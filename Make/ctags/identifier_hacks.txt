@@ -1,0 +1,5 @@
+__DARWIN_ALIAS_STARTING
+__DARWIN_ALIAS
+__swift_unavailable
+__deprecated_msg
+__printflike

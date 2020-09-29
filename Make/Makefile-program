@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25833 2020-09-26 22:52:37Z kobus $
+# $Id: Makefile-program 25836 2020-09-29 00:11:10Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -81,7 +81,7 @@ include $(MAKE_PATH)Makefile-program.$(MAKE_FLAVOR)
 # expand patterns.
 #
 #     SOURCE_FILES    (used?)     [  *.[cC] *.cpp *.cxx *.cc  ]
-#     HEADER_FILES    (used?)     [ *.[h] *.[hit]pp *.[hit]xx ]
+#     HEADER_FILES                [ *.[h] *.[hit]pp *.[hit]xx ]
 #     PROGRAM_FILES               [ *.[chC] *[chit].pp *[chit].xx *.cc ]
 #     INCLUDE_LINE_FILES (used?)  [ Include_lines/*.[chC] Include_lines/*.[chit]pp Include_lines/*.[chit]xx ]
 #     NEW_INCLUDE_LINE_FILES      [ Include_lines/new/*.[chC] Include_lines/new/*.[chit]pp Include_lines/new/*.[chit]xx ]
@@ -195,7 +195,7 @@ Include_lines/file_list :
 # make the hidden ones depend on the non-hidden ones as we do not know how to
 # build any of them.
 #
-Include_lines/file_list.new: $(IVI_BUILD_TOOLS)
+Include_lines/file_list.new: $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program
 
 # Rule to build Include_lines/file_list.new. Note that there is no need to
 # depend on the directory Include_lines because if that does not exist, the
@@ -304,7 +304,7 @@ Include_lines/new/% : % $(MAKE_SCRIPT_PATH)update_include_line_file
 # make the hidden ones depend on the non-hidden ones as we do not know how to
 # build any of them.  
 #
-Include_lines/include_lines.new : $(IVI_BUILD_TOOLS)
+Include_lines/include_lines.new : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program
 
 # The processes for building the individual include line files will have removed
 # Include_lines/include_lines if we need to continue updating. This will trigger
@@ -342,7 +342,7 @@ include_lines.new: \
 # --------------------------------
 # Target sub_libs_needed
 #
-Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS)
+Include_lines/sub_libs_needed : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program
 
 # There are additional dependencies for sub_libs_needed in Makefile-dirs. 
 # The script build_include_lines updates Include_lines/sub_libs_needed only if
@@ -377,7 +377,7 @@ sub_libs_needed: Include_lines/sub_libs_needed
 # In case Makefile-dirs does not exist. 
 
 # Tools for the target. 
-Makefile-dirs: $(IVI_BUILD_TOOLS)
+Makefile-dirs: $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program
 
 # The script build_include_lines updates Include_lines/Makefile-dirs only if
 # needed. Because the target is not guaranteed to be updated, but has the
@@ -504,7 +504,7 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX)
 
 # Dependencies on the tools needed to build it. 
 #
-Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(MAKE_PATH)init_compile $(IVI_BUILD_TOOLS)
+Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(MAKE_PATH)init_compile $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program
 
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
@@ -1004,24 +1004,61 @@ $(PROG_LIB_ARCHIVE) : Include_lines/sub_libs_needed Include_lines/file_list $(LD
 ################################################################################
 #                       Tags
 # 
-.PHONY : ctags
-ctags: tags 
 
-tags: Include_lines/all_tag_files Include_lines/sub_libs_needed $(PROGRAM_FILES)
-	$(MAKE_SCRIPT_PATH)do_ctags
+# This is because tags needs to be PHONY in Makefile. We could also switch the
+# target tags to $(CURRENT_PATH)tags in build-2, but that would break doing it
+# in lib dirs. 
+#
+tags : $(CURRENT_PATH)tags
+
+# $(CURRENT_PATH)tags : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program Include_lines Include_lines/sub_libs_needed Include_lines/cpp_compile_options Include_lines/header_tag_files $(PROGRAM_FILES)
+$(CURRENT_PATH)tags : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program Include_lines Include_lines/sub_libs_needed Include_lines/header_tag_files $(PROGRAM_FILES)
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)do_ctags
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+
+Include_lines : 
+	$(IVI_MKDIR) $@
+
+# Include_lines/cpp_compile_options : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program 
+# 	$(IVI_ECHO) \
+#         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+#         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+#         $(NEED_HAVE) \
+#         $(WITH_LIBS_HAVE) \
+#     > $@
+
+Include_lines/header_tag_files : Include_lines/tag_file_lists Include_lines/tag_file_lists/include_headers.cpp $(TAG_FILES)
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(ECHO_MAKE_CMD)$(IVI_CAT) Include_lines/tag_file_lists/* | $(IVI_SORT) -u > $@
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+
+Include_lines/tag_file_lists/include_headers.cpp : Include_lines/include_headers.cpp
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
+Include_lines/include_headers.cpp : ${HEADER_FILES}
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)stream_file_names -h | $(IVI_SED) 's/\(.*\)/#include "\1"/' > $@
 
 # The dummy_empty_file is a cheesy hack so that we can safely cat all files in the directory.
 Include_lines/tag_file_lists : 
-	$(IVI_MKDIR) $@
-	$(IVI_TOUCH) $@/dummy_empty_file
-
-Include_lines/all_tag_files : Include_lines/tag_file_lists $(TAG_FILES) 
-	$(IVI_CAT) Include_lines/tag_file_lists/* | $(IVI_SORT) -u > $@
+	$(ECHO_MAKE_CMD)$(IVI_MKDIR) $@
+	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@/dummy_empty_file
 
 Include_lines/tag_file_lists/%.c : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.c : %.c 
 	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
+        $(CC_FLAGS) $(CC_SHARED_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -1032,6 +1069,7 @@ Include_lines/tag_file_lists/%.cxx : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.cxx : %.cxx 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -1042,6 +1080,7 @@ Include_lines/tag_file_lists/%.cpp : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.cpp : %.cpp 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -1052,6 +1091,7 @@ Include_lines/tag_file_lists/%.cc : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.cc : %.cc 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -1062,6 +1102,7 @@ Include_lines/tag_file_lists/%.C : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.C : %.C 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \

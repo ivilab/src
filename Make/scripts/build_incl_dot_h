@@ -59,9 +59,7 @@ set incl_file = "${dir}_incl.h"
 # 
 #     ${IVI_TOUCH} "${incl_file}"
 # else 
-    if ($?IVI_VERBOSE) then
-        echo "${VERBOSE_INDENT}Script build_incl_dot_h is rebulding ${incl_file} and Include_lines/Makefile-incl-dot-h"
-    endif
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_incl_dot_h is rebulding ${incl_file} and Include_lines/Makefile-incl-dot-h"
 
     echo "" > ${incl_file}
     echo "#ifdef MAKE_DEPEND" >> ${incl_file}
@@ -79,17 +77,15 @@ set incl_file = "${dir}_incl.h"
     # ${MAKE_SCRIPT_PATH}stream_file_names -h -skip_incl | sed 's#.*/\([^/]*/[^/]*\.h\)#\1#' > .tmp.$$.incl.h 
     ${MAKE_SCRIPT_PATH}stream_file_names -h -skip_incl > .tmp.$$.incl.h 
 
-    # We could also exclude *_gen.h as before, but this is not necessary, and not
-    # worth the trouble, especially since it skipping it has a small chance of
+    # We could also exclude *_gen.h as before, but this is not necessary, and
+    # not worth the trouble, especially since skipping it has a small chance of
     # causing problems. 
     #
     set incl_skip_names_1 = `grep -l PRIVATE_HEADER_FILE *.h`
     set incl_skip_names_2 = `grep -l 'header file.*private' *.h`
 
     foreach skip_name (${incl_skip_names_1} ${incl_skip_names_2})
-        if ($?IVI_VERBOSE) then
-            echo "${VERBOSE_INDENT}Skipping adding ${skip_name} to ${incl_file} due to private header string."
-        endif
+        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Skipping adding ${skip_name} to ${incl_file} due to private header string."
 
         grep -v "${skip_name}"  .tmp.$$.incl.h  > .tmp.$$_2.incl.h
         ${IVI_MV}  .tmp.$$_2.incl.h  .tmp.$$.incl.h

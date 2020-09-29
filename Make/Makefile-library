@@ -25,7 +25,7 @@
 #     LIB_COMPONENT_SOURCE_FILES  (used?) 
 #         $(LIB_COMPONENT_REAL_SRC_DIR)*.[cC] $(LIB_COMPONENT_REAL_SRC_DIR)*.cpp $(LIB_COMPONENT_REAL_SRC_DIR)*.cxx
 #
-#     LIB_COMPONENT_HEADER_FILES  (used?) 
+#     LIB_COMPONENT_HEADER_FILES 
 #         $(LIB_COMPONENT_REAL_SRC_DIR)*.h $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]pp $(LIB_COMPONENT_REAL_SRC_DIR)*.[hit]xx
 #
 #     LIB_COMPONENT_FILES (currently used) 
@@ -765,37 +765,45 @@ shared_$(LIB_COMPONENT_PREFIX) : \
 ################################################################################
 #                       Tags
 # 
-# tags_$(LIB_COMPONENT_PREFIX) : $(LIB_COMPONENT_FILES)
-# 
-$(LIB_COMPONENT_SRC_DIR)tags : $(LIB_COMPONENT_SRC_DIR)Include_lines/all_tag_files $(LIB_COMPONENT_FILES)
-	$(MAKE_SCRIPT_PATH)do_ctags '$(LIB_COMPONENT_REAL_SRC_DIR)'
 
-# Convenience dummy target used by the script build-2. Using the target directly
-# would require extra logic for the leading directory, especially in the case
-# where we always use full paths for library components, even if we are building
-# in that directory. The dummy target tags should not be used as a dependency.
-#
-# This will BREAK things if we want to do it the old way again for any reason. 
-#
-.PHONY : tags
 tags : $(LIB_COMPONENT_SRC_DIR)tags
 
-.PHONY : ctags
-ctags: tags 
+$(LIB_COMPONENT_SRC_DIR)tags : $(IVI_BUILD_TOOLS) $(LIB_COMPONENT_SRC_DIR)Makefile-library $(LIB_COMPONENT_SRC_DIR)Include_lines/sub_libs_needed $(LIB_COMPONENT_SRC_DIR)Include_lines/header_tag_files $(LIB_COMPONENT_FILES)
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(MAKE_SCRIPT_PATH)do_ctags '$(LIB_COMPONENT_REAL_SRC_DIR)'
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
 
+$(LIB_COMPONENT_SRC_DIR)Include_lines/header_tag_files : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/include_headers.cpp $(LIB_COMPONENT_TAG_FILES) 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+	@$(ECHO_IF_VERBOSE) "    Make is building $@ because of $?" 
+	$(IVI_CAT) $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/* | $(IVI_SORT) -u > $@
+	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
+	@$(ECHO_IF_VERBOSE) "====================================================================================="
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/include_headers.cpp : ${LIB_COMPONENT_HEADER_FILES}
+	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)stream_file_names -h $(LIB_COMPONENT_SRC_DIR) | $(IVI_SED) 's/\(.*\)/#include "\1"/' > $@
+
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/include_headers.cpp : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_headers.cpp
+	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
+        $(LIB_COMPONENT_NEED_HAVE) \
+        $(WITH_LIBS_HAVE) \
+        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(NULL_TO_MAKE_BLANK_LINE)
 
 # The dummy_empty_file is a cheesy hack so that we can safely cat all files in the directory.
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists : 
 	$(IVI_MKDIR) $@
 	$(IVI_TOUCH) $@/dummy_empty_file
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/all_tag_files : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists $(LIB_COMPONENT_TAG_FILES) 
-	$(IVI_CAT) $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/* | $(IVI_SORT) -u > $@
-
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.c : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.c : $(LIB_COMPONENT_SRC_DIR)%.c 
 	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
+        $(CC_SHARED_FLAGS) $(LIB_COMPONENT_CC_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_CC_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -806,6 +814,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cxx : $(LIB_COMPONENT_SRC
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cxx : $(LIB_COMPONENT_SRC_DIR)%.cxx 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -816,6 +825,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cpp : $(LIB_COMPONENT_SRC
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cpp : $(LIB_COMPONENT_SRC_DIR)%.cpp 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -826,6 +836,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cc : $(LIB_COMPONENT_SRC_
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cc : $(LIB_COMPONENT_SRC_DIR)%.cc 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
@@ -836,6 +847,7 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.C : Include_lines/tag_fil
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.C : $(LIB_COMPONENT_SRC_DIR)%.C 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
+        $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
