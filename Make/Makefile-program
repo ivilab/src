@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25840 2020-09-30 20:50:24Z kobus $
+# $Id: Makefile-program 25844 2020-09-30 22:48:41Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -1042,8 +1042,7 @@ Include_lines/tag_file_lists/include_headers.cpp : Include_lines/include_headers
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -1061,8 +1060,7 @@ Include_lines/tag_file_lists/%.c : %.c
 	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
         $(CC_FLAGS) $(CC_SHARED_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -1072,8 +1070,7 @@ Include_lines/tag_file_lists/%.cxx : %.cxx
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -1083,8 +1080,7 @@ Include_lines/tag_file_lists/%.cpp : %.cpp
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -1094,8 +1090,7 @@ Include_lines/tag_file_lists/%.cc : %.cc
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
@@ -1105,8 +1100,7 @@ Include_lines/tag_file_lists/%.C : %.C
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 

@@ -159,6 +159,9 @@ if (${status}) exit ${status}
 
 ${IVI_ECHO} "${lib_component_str}_TAG_FILES = \" >> ${lib_component_path}Makefile-depend
 ${IVI_SED} 's/^ *\(.*)\)\([^ ]*\).*$/    \1Include_lines\/tag_file_lists\/\2 \\/' ${lib_component_path}Makefile-depend-tags >>  ${lib_component_path}Makefile-depend
+
+${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
+${IVI_SED} 's/^ *\(.*)\)\([^ ]*\).*$/\1Include_lines\/tag_file_lists\/\2 : \1Include_lines\/tag_file_lists \1\2/' ${lib_component_path}Makefile-depend-tags >>  ${lib_component_path}Makefile-depend
 ${IVI_RM} ${lib_component_path}Makefile-depend-tags
 ${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend
 ${IVI_ECHO} " " >> ${lib_component_path}Makefile-depend

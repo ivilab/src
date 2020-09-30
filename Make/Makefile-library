@@ -799,58 +799,63 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists :
 	$(IVI_MKDIR) $@
 	$(IVI_TOUCH) $@/dummy_empty_file
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.c : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.c : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.c : $(LIB_COMPONENT_SRC_DIR)%.c 
 	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
         $(CC_SHARED_FLAGS) $(LIB_COMPONENT_CC_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_CC_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
-        $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(LIB_COMPONENT_NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cxx : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cxx : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cxx : $(LIB_COMPONENT_SRC_DIR)%.cxx 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
-        $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(LIB_COMPONENT_NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cpp : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cpp : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cpp : $(LIB_COMPONENT_SRC_DIR)%.cpp 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
-        $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(LIB_COMPONENT_NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cc : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cc : $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.cc : $(LIB_COMPONENT_SRC_DIR)%.cc 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
         $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
-        | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
+        $(WITH_LIBS_HAVE) | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.C : Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.C : Include_lines/tag_file_lists
 
 $(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/%.C : $(LIB_COMPONENT_SRC_DIR)%.C 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \
-        $(LIB_COMPONENT_NEED_HAVE) \
-        $(WITH_LIBS_HAVE) \
+        $(LIB_COMPONENT_NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
