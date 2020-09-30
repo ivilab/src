@@ -530,10 +530,11 @@ while ($count <=  ${num_args})
         setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"
         set arg = "bin"
     else if ("${arg}" == "ivi") then
-        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi ivi ivi_cpp skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
+        set make_cmd = "${MAKE_SCRIPT_PATH}make_ivi IVI IVI_cpp code doc tags skip_depend skip_regress skip_no_libs skip_prog_no_libs skip_prog_dirs"
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
         else
+            ${VERBOSE_ECHO} "Script build-2 executing: ${make_cmd}"
             ${make_cmd}
             if (${status}) exit 1
         endif
@@ -544,6 +545,7 @@ while ($count <=  ${num_args})
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
         else
+            ${VERBOSE_ECHO} "Script build-2 executing: ${make_cmd}"
             ${make_cmd}
             if (${status}) exit 1
         endif 
@@ -554,6 +556,7 @@ while ($count <=  ${num_args})
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
         else
+            ${VERBOSE_ECHO} "Script build-2 executing: ${make_cmd}"
             ${make_cmd}
             if (${status}) exit 1
         endif
@@ -564,6 +567,7 @@ while ($count <=  ${num_args})
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
         else
+            ${VERBOSE_ECHO} "Script build-2 executing: ${make_cmd}"
             ${make_cmd}
             if (${status}) exit 1
         endif
@@ -574,6 +578,7 @@ while ($count <=  ${num_args})
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
         else
+            ${VERBOSE_ECHO} "Script build-2 executing: ${make_cmd}"
             ${make_cmd}
             if (${status}) exit 1
         endif
@@ -584,6 +589,7 @@ while ($count <=  ${num_args})
         if ($?DRY_RUN) then
             echo "DRY: ${make_cmd}"
         else
+            ${VERBOSE_ECHO} "Script build-2 executing: ${make_cmd}"
             ${make_cmd}
             if (${status}) exit 1
         endif
@@ -939,6 +945,32 @@ if ($?LOG_MAKE) then
 else 
     set make_log_file = '/dev/null'
 endif 
+
+# The next (long) block of code can lead to removing of build files if the build
+# fails. This can take out other running builds. So we lock being in this file.
+# This solution is far more conservative than needed. What we need to be sure of
+# is that if we do either "clean_local" or "clean_global", that we check that
+# there are no other build processes running, and wait if there are any. We
+# would need to check if any of them are dead or too old. This might look like
+# an implementation of a shared lock with R/W options.  This is not so hard to
+# implement, but will take a bit of time, so leaving it for later. TODO 
+
+# Until we upgrade the locking solution as above, we should be careful not to
+# call this script recursively. If we do, it will exit due to deadlock risk.
+# This means that we cannot do "cd xxx; make" in a makefile, as this will call
+# this script via the makefile Makefile. But we can do things like this hack in
+# Makefile-library (the specification of a makefile other than Makefile dodges
+# going through this script:
+#     $(IVI_CD) $(IVI_SRC_PATH)IVI_cpp; ${IVI_MAKE_JOB_CLIENT} -f Makefile-2 doxygen
+#
+
+set lock_label = "build-2"
+setenv EXIT_ON_DEADLOCK
+source ${MAKE_SCRIPT_PATH}check_for_deadlock
+if (${status}) exit 1
+
+${MAKE_SCRIPT_PATH}ivi_lock_create 2000 "${lock_label}"
+if (${status}) exit 1
 
 set exit_status = 0
 set try_count = 1
@@ -1442,9 +1474,16 @@ while (${try_count} <= 4)
                         else
                             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_c2man_bin_${try_count}.res"
 
-                            # We only want to make the documentation tools using the default C
-                            # compiler and production mode. The setting of IVI_CC to empty asks
-                            # init_compile to choose the compiler. 
+                            # We only want to make the documentation tools
+                            # using the default C compiler and production mode.
+                            # The setting of IVI_CC to empty asks init_compile
+                            # to choose the compiler. 
+                            # 
+                            # Unlike most makes, we do not (can not) use
+                            # Makefile-2 as c2man is a special case where the
+                            # Makefile is manually constructed. We might change
+                            # it at some point to be more consistent with other
+                            # program dirs. 
                             #
                             (   setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
                                 source ${MAKE_PATH}init_compile; \
@@ -1465,7 +1504,7 @@ while (${try_count} <= 4)
                         ${VERBOSE_ECHO} "Script build-2 is building utilities in ${cwd}." 
 
                         if ($?DRY_RUN) then
-                            echo "DRY: (setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin)"
+                            echo "DRY: (setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} -f Makefile-2 bin)"
                         else
                             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_util_bin_${try_count}.res"
 
@@ -1476,7 +1515,7 @@ while (${try_count} <= 4)
                             (   setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
                                 source ${MAKE_PATH}init_compile; \
                                 if ("${IVI_CC}" != "${save_ivi_cc}") ${WARN_ECHO} "Switching compiler from ${save_ivi_cc} to ${IVI_CC} for doc utilities"; \
-                                ${IVI_MAKE_SERIAL} bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file} \
+                                ${IVI_MAKE_SERIAL} -f Makefile-2 bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file} \
                             ) 
                             set make_status = ${status}
 
@@ -1580,6 +1619,8 @@ while (${try_count} <= 4)
             if (${test_arg}) then
     #           # All this stuff from before should not be necessary. Kill it
     #           eventually. Claim made 12/13/2019.
+    #
+    #           If we keep it, must remove the direct exits! 
     #
     #             if (! -e "Makefile-test-depend") then
     #                 set make_tmp_dir = "${TMPDIR}/${USER}/Makefile-test-depend/make"
@@ -1715,6 +1756,7 @@ while (${try_count} <= 4)
                 set bad_arg  = `${IVI_GREP} -c "No rule to make target .${arg}.\." < "${make_result_temp_file}"`
 
                 if (${bad_arg}) then
+                    ${P_STDERR} "Possibly the target (${arg}) is mispelled."
                     set exit_status = 1
                 else 
                     set build_issue = `${IVI_GREP} -c 'No rule to make target' < "${make_result_temp_file}"`
@@ -1834,6 +1876,8 @@ if ( ! $?IVI_QUIET ) then
     echo " "
 
 endif 
+
+${MAKE_SCRIPT_PATH}ivi_lock_remove build-2 
 
 exit ${exit_status}
 

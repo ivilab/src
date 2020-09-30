@@ -98,14 +98,14 @@
 #          then the script will continue if possible, and exit with 1 if any
 #          errors were encountered along the way.  
 #
-# |     ivi 
+# |     IVI 
 #          This builds code and tags (depending on those options) in lib/IVI.
 #          Different than the option "lib" we are not focussed on building an
 #          exportable version. We do this building relatively early on, which
 #          also allows library Makefiles and code to be built faster due to more
 #          parallelism, provided that we do not clean. 
 #
-# |     ivi_cpp
+# |     IVI_CPP
 #          This builds code and tags (depending on those options) in
 #          lib/IVI_cpp. Different than the option "lib_cpp", we are not focussed
 #          on building an exportable version. We do this building relatively
@@ -166,6 +166,12 @@
 #           constructed. This is mostly useful for debugging. Normally, one
 #           would want this test if the code was really being exported.  
 # 
+# |      code
+#          This requests building code (compiling). The default is to do so, so
+#          this option is not necessary, but it is available for future changes,
+#          and including it in calls to make_ivi in scripts can make the
+#          intention more clear. 
+#  
 # |      skip_code
 #           This disables compiling code where not needed. We still compile
 #           tools, and code might be compiled as a consequence of other
@@ -473,8 +479,9 @@ foreach option ($*)
     else if (("${option}" == "ctags") || ("${option}" == "tags")) then
         set do_ctags = 1
         set do_something = 1
-    else if ("${option}" == "compile") then
+    else if (("${option}" == "compile") || ("${option}" == "code")) then
         set do_something = 1
+        set skip_code = 0 
     else if ("${option}" == "doc") then
         set do_doc = 1
         set do_something = 1
@@ -503,10 +510,10 @@ foreach option ($*)
         set export_src_tree = 1
     else if ("${option}" == "skip_export_src_tree") then
         set export_standalone = 0
-    else if ("${option}" == "ivi") then
+    else if ("${option}" == "IVI") then
         set do_ivi = 1
         set do_something = 1
-    else if ("${option}" == "ivi_cpp") then
+    else if ("${option}" == "IVI_CPP") then
         set do_ivi_cpp = 1
         set do_something = 1
     else if ("${option}" == "lib") then
@@ -644,7 +651,7 @@ else
         set export_prog_dirs = "${export_prog_dirs} tools/ncuts_modified"
     endif 
 
-    set prog_dirs = "${export_prog_dirs} examples/templates/* examples/ivi projects/words_and_pictures/it projects/words_and_pictures/it/util examples/segment tools/kjb_tools tools/kjb_util tools/kjb_math projects/color/var_illum projects/SLIC/slide_match projects/SLIC/slide_match_v02" 
+    set prog_dirs = "${export_prog_dirs} examples/templates/* examples/IVI projects/words_and_pictures/it projects/words_and_pictures/it/util examples/segment tools/kjb_tools tools/kjb_util tools/kjb_math projects/color/var_illum projects/SLIC/slide_match projects/SLIC/slide_match_v02" 
 
     if ("${OS}" == "linux_386") then
         #
@@ -1059,7 +1066,7 @@ if (! ${skip_code}) then
                     if (! ${keep_going}) goto end_of_script
                 endif
             else
-                echo "Script make_ivi skipping make depend in `pwd` due to options."
+                echo "Make_ivi: skipping make depend in `pwd` due to option 'skip_depend'."
             endif
 
             foreach production (0 1)
@@ -1182,12 +1189,12 @@ pushd lib > /dev/null
                 ${IVI_MAKE_JOB_CLIENT} depend 
 
                 if (${status}) then
-                    echo "Make depend failed in ${cwd}" | tee -a ${error_file}
+                    echo "Make_ivi: Make depend failed in ${cwd}" | tee -a ${error_file}
                     set exit_status = 1
                     if (! ${keep_going}) goto end_of_script
                 endif
             else
-                echo "Script make_ivi skipping make depend in `pwd` due to options."
+                echo "Make_ivi: Skipping make depend in `pwd` due to options."
             endif
 
             if (! ${skip_code}) then
@@ -1285,7 +1292,7 @@ pushd lib > /dev/null
                 # This seems to do nothing?
                 set sub_lib_dir = "${sub_lib_dir}"
             else
-                echo "Make_ivi: Skipping make in `pwd` due to options."
+                echo "Make_ivi: Skipping make in `pwd` due to option skip_code."
             endif
 
             if (($do_doc) && ("${is_cpp_dir}" == "") && (! -e "SKIP_C2MAN"))  then
@@ -1297,7 +1304,7 @@ pushd lib > /dev/null
                     if (! ${keep_going}) goto end_of_script
                 endif
             else
-                echo "Make_ivi: Skipping doc in `pwd` due to options."
+                echo "Make_ivi: Skipping doc in `pwd` due to options (do_doc==${do_doc})."
             endif
 
             if ($do_ctags) then
@@ -1313,7 +1320,7 @@ pushd lib > /dev/null
                     ### echo lib/${sub_lib_dir}/tags >> ${src_dist_file_dir}/src_dist_files
                 endif
             else
-                echo "Make_ivi: Skipping ctags in `pwd` due to options."
+                echo "Make_ivi: Skipping ctags in `pwd` due to option do_ctags==${do_ctags}."
             endif
 
             if ($collect_files) then
@@ -1477,6 +1484,8 @@ pushd lib > /dev/null
                                 setenv IVI_PREFER_CXX 0
                                 unsetenv IVI_CC
                             endif
+                        else
+                            echo "Make_ivi: Skipping make in `pwd` due to option skip_code."
                         endif
 
                         if (${export_test_code}) then
@@ -1497,6 +1506,8 @@ pushd lib > /dev/null
                                 #
                                 ### echo lib/${sub_lib_dir}/${sub_lib_test_dir}/tags >> ${src_dist_file_dir}/${tar_list_file}
                             endif
+                        else
+                            echo "Make_ivi: Skipping ctags in `pwd` due to option do_ctags==${do_ctags}."
                         endif 
 
                         if (($do_archive) || (($do_export) && ($export_lib_test_dirs))) then
@@ -2170,8 +2181,12 @@ endif
 
 if ($do_lib) then
     echo ------------------------------------------------------------
-    echo Make_ivi: Building the exported version of the ivi C library
+    echo Make_ivi: Building the exported version of the IVI C library
     echo ------------------------------------------------------------
+
+    ${P_STDERR} 
+    ${P_STDERR} "This is probably broken and has not been run recently."
+    ${P_STDERR}
 
     pushd IVI > /dev/null
 
@@ -2218,10 +2233,10 @@ if ($do_lib) then
     set sub_libs_needed = `cat Include_lines/sub_libs_needed`
 
     foreach include_path (${include_paths})
-        set backup_dir = ${include_path}/ivi/backups/$time_stamp
+        set backup_dir = ${include_path}/IVI/backups/$time_stamp
         ${IVI_MKDIR} ${backup_dir}
 
-        rsync -au --backup --backup-dir=$backup_dir ivi.h ${include_path}/ivi
+        rsync -au --backup --backup-dir=$backup_dir IVI.h ${include_path}/IVI
 
         foreach dir (${sub_libs_needed})
             if (! -d "${IVI_LIB_PATH}${dir}") then 
@@ -2234,17 +2249,17 @@ if ($do_lib) then
             echo Make_ivi: Updating includes for ${IVI_LIB_PATH}$dir in ${include_path}
             echo -----------------------------------------------------------------
 
-            ${IVI_MKDIR}  ${include_path}/ivi/${dir}
-            set backup_dir = ${include_path}/ivi/backups/${time_stamp}/${dir}
-            rsync -au --backup --backup-dir=${backup_dir} ${IVI_LIB_PATH}${dir}/*.h ${include_path}/ivi/${dir}
+            ${IVI_MKDIR}  ${include_path}/IVI/${dir}
+            set backup_dir = ${include_path}/IVI/backups/${time_stamp}/${dir}
+            rsync -au --backup --backup-dir=${backup_dir} ${IVI_LIB_PATH}${dir}/*.h ${include_path}/IVI/${dir}
         end
 
         pushd ${include_path} > /dev/null
 
-        # ln -s -f ${include_path}/ivi/* .
-        ln -s -f ivi/* .
+        # ln -s -f ${include_path}/IVI/* .
+        ln -s -f IVI/* .
         if (${status}) then
-            echo "Command failed in `pwd`: ln -s -f ivi/* ." | tee -a ${error_file}
+            echo "Command failed in `pwd`: ln -s -f IVI/* ." | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 
@@ -2292,6 +2307,15 @@ if ($do_lib_cpp) then
     echo Make_ivi: Building the exported version of the IVI C++ library
     echo --------------------------------------------------------------
 
+    ${P_STDERR} 
+    ${P_STDERR} "This is probably broken and has not been run recently."
+    ${P_STDERR}
+
+    # Why, for example, do we use IVI.h? Are we building a combined C/C++
+    # library, which we do anyway. It may be confusing (or wrong) to use IVI in
+    # place of IVI_copp below. 
+
+    
     pushd IVI_cpp > /dev/null
 
     setenv PRODUCTION 1
@@ -2336,10 +2360,10 @@ if ($do_lib_cpp) then
     set sub_libs_needed = `cat Include_lines/sub_libs_needed`
 
     foreach include_path (${include_paths})
-        set backup_dir = ${include_path}/ivi/backups/$time_stamp
+        set backup_dir = ${include_path}/IVI/backups/$time_stamp
         ${IVI_MKDIR} ${backup_dir}
 
-        rsync -au --backup --backup-dir=$backup_dir ivi.h ${include_path}/ivi
+        rsync -au --backup --backup-dir=$backup_dir IVI.h ${include_path}/IVI
 
         foreach dir (${sub_libs_needed})
             if (! -d "${IVI_LIB_PATH}${dir}") then 
@@ -2352,17 +2376,17 @@ if ($do_lib_cpp) then
             echo Make_ivi: Updating includes for ${IVI_LIB_PATH}$dir in ${include_path}
             echo -----------------------------------------------------------------
 
-            ${IVI_MKDIR}  ${include_path}/ivi/${dir}
-            set backup_dir = ${include_path}/ivi/backups/${time_stamp}/${dir}
-            rsync -au --backup --backup-dir=${backup_dir} ${IVI_LIB_PATH}${dir}/*.h ${include_path}/ivi/${dir}
+            ${IVI_MKDIR}  ${include_path}/IVI/${dir}
+            set backup_dir = ${include_path}/IVI/backups/${time_stamp}/${dir}
+            rsync -au --backup --backup-dir=${backup_dir} ${IVI_LIB_PATH}${dir}/*.h ${include_path}/IVI/${dir}
         end
 
         pushd ${include_path} > /dev/null
 
-        # ln -s -f ${include_path}/ivi/* .
-        ln -s -f ivi/* .
+        # ln -s -f ${include_path}/IVI/* .
+        ln -s -f IVI/* .
         if (${status}) then
-            echo "Command failed in `pwd`: ln -s -f ivi/* ." | tee -a ${error_file}
+            echo "Command failed in `pwd`: ln -s -f IVI/* ." | tee -a ${error_file}
             set exit_status = 1
             goto end_of_script
         endif 

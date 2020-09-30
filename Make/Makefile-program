@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25836 2020-09-29 00:11:10Z kobus $
+# $Id: Makefile-program 25840 2020-09-30 20:50:24Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -838,11 +838,12 @@ $(LD_OBJ_DIR)libIVI.a : $(LD_OBJ_DIR)ld_dir_made Include_lines/sub_libs_needed I
 # archive.
 #
 $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
-	@$(ECHO_UNLESS_QUIET) Building program specific IVI archive. Echo suppressed.
-	@$(IVI_RM)  $@
+	@$(ECHO_UNLESS_QUIET) "Building program specific IVI archive. Echo suppressed."
+	@$(IVI_RM) $@
 	@$(IVI_AR) $@ $(SUB_LIB_OBS) /dev/null 
-	@$(IVI_RANLIB)  $@
-	@$(ECHO_UNLESS_QUIET) Building of program specific IVI archive done. 
+	@$(ECHO_IF_VERBOSE) "Archiving done, doing ranlib next."
+	$(ECHO_MAKE_CMD)$(IVI_RANLIB) $@
+	@$(ECHO_UNLESS_QUIET) "Building of program specific IVI archive done."
 # 
 # We used to link libIVI.a, but it should not be needed any longer?
 #

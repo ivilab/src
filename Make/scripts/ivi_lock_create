@@ -122,6 +122,7 @@ set exit_status = 0
 
 set noclobber
 
+# We use the setting of lock_label to create a lockfile name. 
 source ${MAKE_SCRIPT_PATH}set_lockfile_name
 if (${status}) exit ${status} 
 

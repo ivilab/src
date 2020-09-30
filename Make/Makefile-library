@@ -1031,7 +1031,7 @@ $(IVI_SRC_PATH)IVI_cpp/$(MAKE_DOC_DIR)doxygen_up_to_date : $(LIB_COMPONENT_SRC_D
 #
 doxygen_$(LIB_COMPONENT_PREFIX) : 
 	@$(ECHO_UNLESS_QUIET) "Building doxygen in $(IVI_SRC_PATH)IVI_cpp."
-	cd $(IVI_SRC_PATH)IVI_cpp; make doxygen
+	cd $(IVI_SRC_PATH)IVI_cpp; ${IVI_MAKE_JOB_CLIENT} -f Makefile-2 doxygen
 
 misc_doc_$(LIB_COMPONENT_PREFIX) : doc_$(LIB_COMPONENT_PREFIX) doxygen_$(LIB_COMPONENT_PREFIX) 
 	rsync -rl -u $(IVI_DOC_PATH)doxygen/ $(MISC_DOC_PATH)doxygen 

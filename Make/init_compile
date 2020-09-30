@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25804 2020-09-19 22:05:01Z kobus $
+# $Id: init_compile 25840 2020-09-30 20:50:24Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -1053,13 +1053,13 @@ ivi_setenv IVI_MAKE_NOP         "${IVI_MAKE_NO_OP}"
 #
 # Both known versions of make respect the "@" echo suppress, but only gmake does
 # this after variable substitution and so robustly controlling this may not be
-# vaiable. But for gmake at least we can supress more output from make with
+# viable. But for gmake at least we can supress more output from make with
 #   setenv ECHO_MAKE_CMD "@"
 # as $(ECHO_MAKE_CMD) is in front of some commands deemed not to be too
 # interesting.
 
-ivi_setenv ECHO_IF_VERBOSE  "${MAKE_SCRIPT_PATH}echo_if_verbose" 
-ivi_setenv ECHO_UNLESS_QUIET  "${MAKE_SCRIPT_PATH}echo_unless_quiet" 
+ivi_setenv ECHO_IF_VERBOSE   "${MAKE_SCRIPT_PATH}echo_if_verbose" 
+ivi_setenv ECHO_UNLESS_QUIET "${MAKE_SCRIPT_PATH}echo_unless_quiet" 
 
 # ---------------------------------------------------------------------
 
