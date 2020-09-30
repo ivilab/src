@@ -19,12 +19,20 @@
 #ifndef MCMCDA_LIKELIHOOD_H_INCLUDED
 #define MCMCDA_LIKELIHOOD_H_INCLUDED
 
-#include <mcmcda_cpp/mcmcda_association.h>
-#include <mcmcda_cpp/mcmcda_track.h>
-#include <gp_cpp/gp_multi_output.h>
-#include <gp_cpp/gp_mean.h>
-#include <gp_cpp/gp_covariance.h>
-#include <m_cpp/m_vector.h>
+#include "mcmcda_cpp/mcmcda_association.h"
+#include "mcmcda_cpp/mcmcda_track.h"
+
+/* KB - 2020/09/30: We are missing these files (if it ever existed). We do not
+ * really need it, because, as far as I can tell we never include this current
+ * file (mcmcda_likelihood.h). Presumably things got refactored?
+*/
+#ifdef INCLUDE_NON_EXISTING
+#    include "gp_cpp/gp_multi_output.h"
+#    include "gp_cpp/gp_mean.h"
+#    include "gp_cpp/gp_covariance.h"
+#endif 
+
+#include "m_cpp/m_vector.h"
 #include <cmath>
 #include <boost/function.hpp>
 

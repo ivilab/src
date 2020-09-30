@@ -78,13 +78,9 @@ test test_clean test_very_clean check_clean regress regress_clean test_svn :
 static dynamic shared :
 	$(ECHO_MAKE_CMD)./build $@
 
-ivi : ivi_all 
-
-ivi_all : ivi_doc ivi_code ivi_tags ivi_regress
-
 ivi_test : ivi_regress
 
-ivi_doc ivi_code ivi_tags ivi_regress :
+ivi ivi_all ivi_doc ivi_code ivi_tags ivi_regress :
 	$(ECHO_MAKE_CMD)./build $@
 
 # We cannot have the real dependency for Makefile because we do not know where

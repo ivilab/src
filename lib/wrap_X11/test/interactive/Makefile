@@ -1,17 +1,19 @@
 #
-# This Makefile is almost invariably deals with only one target so we don't have
-# to worry about ensuring that it builds serially. Note that we control the
-# number of make threads in the build script based on the number of cpu's. 
+# This Makefile is almost invariably deals with only one target so we don't
+# worry about ensuring that it builds serially. Note that we control the number
+# of make threads in the build script based on the number of cpu's. 
 #
 # The strategy here to execute the script "build" which sets up a sub-shell with
 # the appropriate environment, and then do a make with Makefile-2. We list
-# possible targets here, but for most versions of make, a line below should
-# be able to catch all cases. 
+# possible targets here, but for most versions of make, the catch all line below
+# should be able to deal with all cases. 
 #
 # None of the explicilty mentioned targets that get sent to the build
 # script are meant to be actual files or directories. To protect against a name
 # clash, we declare the targets handled here as .PHONY.
-#
+
+# The exception to the above is "tags". This is fudged by making tags depend on
+# ${cwd}/tags in the Makefiles. 
 
 .PHONY : all
 .PHONY : dir_made
@@ -29,7 +31,6 @@
 .PHONY : depend
 .PHONY : depend_again
 .PHONY : doc
-.PHONY : tags
 .PHONY : doc_dir_made
 .PHONY : lint
 .PHONY : locks_clean
@@ -37,6 +38,7 @@
 .PHONY : bin
 .PHONY : make_bin
 .PHONY : misc_bin
+.PHONY : tags
 .PHONY : test
 .PHONY : test_clean
 .PHONY : test_very_clean
@@ -76,13 +78,9 @@ test test_clean test_very_clean check_clean regress regress_clean test_svn :
 static dynamic shared :
 	$(ECHO_MAKE_CMD)./build $@
 
-ivi : ivi_all 
-
-ivi_all : ivi_doc ivi_code ivi_tags ivi_regress
-
 ivi_test : ivi_regress
 
-ivi_doc ivi_code ivi_tags ivi_regress :
+ivi ivi_all ivi_doc ivi_code ivi_tags ivi_regress :
 	$(ECHO_MAKE_CMD)./build $@
 
 # We cannot have the real dependency for Makefile because we do not know where
