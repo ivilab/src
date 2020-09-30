@@ -132,6 +132,9 @@ ${IVI_ECHO} "TAG_FILES = \" >> Makefile-tag-targets
 ${MAKE_SCRIPT_PATH}stream_file_names "" -s | ${IVI_SED} 's/^ *\(.*\) *$/    Include_lines\/tag_file_lists\/\1 \\/' >> Makefile-tag-targets 
 if (${status}) exit ${status}
 ${IVI_ECHO} " " >> Makefile-tag-targets
+${MAKE_SCRIPT_PATH}stream_file_names "" -s | ${IVI_SED} 's/^ *\(.*\) *$/Include_lines\/tag_file_lists\/\1 : Include_lines\/tag_file_lists \1 /' >> Makefile-tag-targets 
+if (${status}) exit ${status}
+${IVI_ECHO} " " >> Makefile-tag-targets
 ${IVI_ECHO} " " >> Makefile-tag-targets
 
 ${IVI_CAT} /dev/null > Makefile-depend-headers 

@@ -782,10 +782,10 @@ $(LIB_COMPONENT_SRC_DIR)Include_lines/header_tag_files : $(LIB_COMPONENT_SRC_DIR
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/include_headers.cpp : ${LIB_COMPONENT_HEADER_FILES}
+$(LIB_COMPONENT_SRC_DIR)Include_lines/include_headers.cpp : $(LIB_COMPONENT_HEADER_FILES)
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)stream_file_names -h $(LIB_COMPONENT_SRC_DIR) | $(IVI_SED) 's/\(.*\)/#include "\1"/' > $@
 
-$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/include_headers.cpp : $(LIB_COMPONENT_SRC_DIR)Include_lines/include_headers.cpp
+$(LIB_COMPONENT_SRC_DIR)Include_lines/tag_file_lists/include_headers.cpp : $(LIB_COMPONENT_SRC_DIR)Include_lines $(LIB_COMPONENT_SRC_DIR)Include_lines/include_headers.cpp
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_SHARED_FLAGS) $(LIB_COMPONENT_CXX_FLAGS) $(LIB_COMPONENT_EXTRA_COMPILE_FLAGS) $(LIB_COMPONENT_EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(LIB_COMPONENT_EXTRA_LIB_INCLUDES) $(HACK_AFTER_INCLUDES) $(AFTER_INCLUDES) \

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25844 2020-09-30 22:48:41Z kobus $
+# $Id: Makefile-program 25845 2020-09-30 23:27:06Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -1038,7 +1038,7 @@ Include_lines/header_tag_files : Include_lines/tag_file_lists Include_lines/tag_
 	@$(ECHO_IF_VERBOSE) "    Make is done building $@ " 
 	@$(ECHO_IF_VERBOSE) "====================================================================================="
 
-Include_lines/tag_file_lists/include_headers.cpp : Include_lines/include_headers.cpp
+Include_lines/tag_file_lists/include_headers.cpp : Include_lines/tag_file_lists Include_lines/include_headers.cpp
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
@@ -1046,7 +1046,7 @@ Include_lines/tag_file_lists/include_headers.cpp : Include_lines/include_headers
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-Include_lines/include_headers.cpp : ${HEADER_FILES}
+Include_lines/include_headers.cpp : $(HEADER_FILES)
 	$(ECHO_MAKE_CMD)$(MAKE_SCRIPT_PATH)stream_file_names -h | $(IVI_SED) 's/\(.*\)/#include "\1"/' > $@
 
 # The dummy_empty_file is a cheesy hack so that we can safely cat all files in the directory.
@@ -1054,7 +1054,9 @@ Include_lines/tag_file_lists :
 	$(ECHO_MAKE_CMD)$(IVI_MKDIR) $@
 	$(ECHO_MAKE_CMD)$(IVI_TOUCH) $@/dummy_empty_file
 
-Include_lines/tag_file_lists/%.c : Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# Include_lines/tag_file_lists/%.c : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.c : %.c 
 	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
@@ -1064,7 +1066,9 @@ Include_lines/tag_file_lists/%.c : %.c
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-Include_lines/tag_file_lists/%.cxx : Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# Include_lines/tag_file_lists/%.cxx : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.cxx : %.cxx 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
@@ -1074,7 +1078,9 @@ Include_lines/tag_file_lists/%.cxx : %.cxx
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-Include_lines/tag_file_lists/%.cpp : Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# Include_lines/tag_file_lists/%.cpp : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.cpp : %.cpp 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
@@ -1084,7 +1090,9 @@ Include_lines/tag_file_lists/%.cpp : %.cpp
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-Include_lines/tag_file_lists/%.cc : Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# Include_lines/tag_file_lists/%.cc : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.cc : %.cc 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
@@ -1094,7 +1102,9 @@ Include_lines/tag_file_lists/%.cc : %.cc
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
 
-Include_lines/tag_file_lists/%.C : Include_lines/tag_file_lists
+# This does not work as I expect on all systems under heavy parallelization. We
+# now set this up in Makefile-depend. 
+# Include_lines/tag_file_lists/%.C : Include_lines/tag_file_lists
 
 Include_lines/tag_file_lists/%.C : %.C 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
