@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25845 2020-09-30 23:27:06Z kobus $
+# $Id: Makefile-program 25850 2020-10-03 22:20:43Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -13,6 +13,9 @@ include $(MAKE_PATH)Makefile-defs
 # Best to keep the order so such that anything that has dependencies comes
 # before its dependences.
 #
+# Some of the entries are header only, and will always be null, but it seems
+# best to carry them around anyway for easy consistency checking.
+#
 LIBS = \
        $(NEED_LIB_XXX) \
        $(NEED_LIB_FLTK) \
@@ -25,6 +28,7 @@ LIBS = \
        $(NEED_LIB_XSD) \
        $(NEED_LIB_XERCESC) \
        $(NEED_LIB_PYTHON) \
+       $(NEED_LIB_PYBIND11) \
        $(NEED_LIB_WN) \
        $(NEED_LIB_KDTREEXX) \
        $(NEED_LIB_ANN) \
@@ -606,6 +610,7 @@ $(PCH_DIR)%.h.gch : %.h
 
 $(OBJ_DIR)%.o : %.c 
 	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CC) --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CC) $< -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
@@ -620,6 +625,7 @@ $(OBJ_DIR)%.o : %.c
 
 $(CXX_OBJ_DIR)%.o : %.C
 	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -635,6 +641,7 @@ $(CXX_OBJ_DIR)%.o : %.C
 
 $(CXX_OBJ_DIR)%.o : %.cpp
 	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -650,6 +657,7 @@ $(CXX_OBJ_DIR)%.o : %.cpp
 
 $(CXX_OBJ_DIR)%.o : %.cxx
 	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -664,6 +672,7 @@ $(CXX_OBJ_DIR)%.o : %.cxx
 
 $(CXX_OBJ_DIR)%.o : %.cc
 	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -687,6 +696,8 @@ $(CXX_OBJ_DIR)%.o : %.cc
 # easiest. 
 #
 $(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
+	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	$(IVI_CC)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_CC) version.c -c -o $@ \
         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
@@ -710,6 +721,7 @@ $(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Include_lines/Makefi
 $(OBJ_DIR)$(SHARED_DIR)%.o : $(OBJ_DIR)%.o
 
 $(OBJ_DIR)$(SHARED_DIR)%.o : %.c 
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CC) $< -c -o $@ \
         $(CC_FLAGS) $(CC_SHARED_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
@@ -723,6 +735,7 @@ $(OBJ_DIR)$(SHARED_DIR)%.o : %.c
 $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(CXX_OBJ_DIR)%.o 
 
 $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cpp 
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -738,6 +751,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cpp
 # $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(CXX_OBJ_DIR)%.o 
 
 $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cxx
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -754,6 +768,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cxx
 # $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(CXX_OBJ_DIR)%.o
 
 $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.C
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -769,6 +784,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.C
 # $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : $(CXX_OBJ_DIR)%.o
 
 $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cc
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
@@ -793,6 +809,7 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cc
 # arranged in Makefile-program via the vim script Local_obs.vim.  
 
 $(LD_OBJ_DIR)LOCAL.a : $(OBS)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	$(ECHO_UNLESS_QUIET) Building archive of local object files. 
 	$(IVI_RM)  $@
 	$(IVI_AR) $@ $(OBS) /dev/null 
@@ -838,6 +855,7 @@ $(LD_OBJ_DIR)libIVI.a : $(LD_OBJ_DIR)ld_dir_made Include_lines/sub_libs_needed I
 # archive.
 #
 $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(ECHO_UNLESS_QUIET) "Building program specific IVI archive. Echo suppressed."
 	@$(IVI_RM) $@
 	@$(IVI_AR) $@ $(SUB_LIB_OBS) /dev/null 
@@ -871,6 +889,7 @@ $(LD_OBJ_DIR)libIVI.a : $(SUB_LIB_OBS)
 
 $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_ARCHIVE) $(LD_OBJ_DIR)%.o 
 	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_LD)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_LD) $@.o $(VERSION_OBS) $(OBS_ARCHIVE) \
             $(HACK_BEFORE_LOAD_FLAGS) $(LOAD_FLAGS) -L$(LD_OBJ_DIR) $(LIB_LINK_STRINGS) \

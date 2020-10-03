@@ -1772,8 +1772,8 @@ pushd lib > /dev/null
 
                         if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
                             echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                            echo Regression testing in $cwd. Load dir is ${LD_OBJ_DIR}.
-                            echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                            echo Make_ivi: Regression testing in $cwd. 
+                            echo Make_ivi: Load dir is ${LD_OBJ_DIR}.
 
                             ${IVI_MAKE_JOB_CLIENT} regress >& regress.res
                             if (${status}) then
@@ -1796,7 +1796,10 @@ pushd lib > /dev/null
                             endif 
 
                             /bin/rm regress.res
+
+                            echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         endif 
+
                     popd > /dev/null
                 end
             endif
@@ -2124,9 +2127,9 @@ endif
 if (! ${skip_regress}) then
     echo ""
     echo ""
-    echo =======================================================
+    echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     echo ""
-    echo Make_ivi: Reporting regression test results. 
+    echo "Make_ivi: Reporting regression test results. "
     echo ""
 
     if ( ! -z ${regress_failure_log}) then
@@ -2142,13 +2145,21 @@ if (! ${skip_regress}) then
         echo "----------" | tee -a ${error_file}
         echo "" | tee -a ${error_file}
         set exit_status = 1
-        if (! ${keep_going}) goto end_of_script
+
+        echo "Make_ivi: Setting exit status to 1 due to failed regression tests"
+
+        if (! ${keep_going}) then
+            echo "Make_ivi: Exiting now as keep_going is FALSE."
+            goto end_of_script
+        endif 
     else 
         echo " "
         echo "Make_ivi: No failed tests."
         echo " "
-        echo =======================================================
     endif 
+
+    echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 endif
 
 ###############################################################################
@@ -2290,9 +2301,9 @@ if ($do_lib) then
     endif
 
     foreach load_path ($load_paths)
-        echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        echo --------------------------------------------------------------
         echo Make_ivi: Updating libIVI.a in ${load_path}
-        echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        echo --------------------------------------------------------------
 
         ${MAKE_SCRIPT_PATH}update_bin ${LD_OBJ_DIR}libIVI.a  ${load_path}/libIVI.a
     end
@@ -2415,9 +2426,9 @@ if ($do_lib_cpp) then
     endif
 
     foreach load_path ($load_paths)
-        echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        echo --------------------------------------------------------------
         echo Make_ivi: Updating libIVI.a in ${load_path}
-        echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        echo --------------------------------------------------------------
 
         ${MAKE_SCRIPT_PATH}update_bin ${LD_OBJ_DIR}libIVI_cpp.a  ${load_path}/libIVI_cpp.a
     end
@@ -3576,18 +3587,18 @@ end_of_script:
 
 set end_time = `${IVI_ECHO_TIME}`
 
-echo "=============================================================================="
 echo ""
+echo "MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-"
 echo ""
 
 if (${exit_status}) then
+    echo "Make_ivi: Error summary from ${error_file}: "
+    echo " "
+    ${IVI_CAT} "${error_file}"
+    echo " "
     echo "Make_ivi: Script make_ivi failed." 
     echo "    Start time: ${start_time}"
     echo "    End time:   ${end_time}"
-    echo " "
-    echo "Error summary: "
-    echo " "
-    cat ${error_file}
     echo " "
 else 
     echo "Make_ivi: Script make_ivi finished successfully." 
@@ -3600,10 +3611,11 @@ else
         echo ""
     endif 
 
-    ${IVI_RM} ${error_file}
+    ${IVI_RM} "${error_file}"
 endif 
 
-echo "=============================================================================="
+echo ""
+echo "MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-"
 echo " "
 
 exit ${exit_status}

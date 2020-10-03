@@ -159,5 +159,6 @@ ${IVI_RM} Makefile-program-targets-depend
 ${IVI_RM} Makefile-help-targets
 ${IVI_RM} Makefile-writeup-targets
 ${IVI_RM} Makefile-script-targets
+${IVI_RM} Makefile-tag-targets
 ${IVI_RM} Makefile-depend-headers
 ${IVI_RM} Makefile-depend-src

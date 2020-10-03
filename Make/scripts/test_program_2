@@ -659,7 +659,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             # Is RC the only output file we want to check that does not need
             # this processing? 
             if ("${test_output_file}" != "RC") then
-                ${VERBOSE_ECHO} "Filtering ${test_output_file}"
+                ${VERBOSE_ECHO} "Filtering ${test_output_file} in ${cwd}"
 
                 # Generally we should not be here if we already have these
                 # files, but there are enough corner cases that we mitigate
@@ -668,15 +668,18 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                 # write to temporary locations (TMP suffix), and overwrite only
                 # if they are differnt.
                 #
-                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v '^<<TEST>>' | grep -v 'ignore line for regression testing' > ${test_output_file}.FILTERED_FOR_DIFF.TMP
+                grep < ${test_output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' | grep -v '^<<TEST>>' | grep -v 'ignore line for regression testing' | ${IVI_SED} '/^db..*: .* on source line /d' > ${test_output_file}.FILTERED_FOR_DIFF.TMP
 
                 if (-e "${test_output_file}.FILTERED_FOR_DIFF") then 
-                    diff  "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
+                    ${IVI_DIFF_TEST} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
                     if (${status}) then 
+
                         if (-e "${run_dir}/output_checked") then 
                             echo "New ${test_output_file}.FILTERED_FOR_DIFF will be different, but output_checked exists."
                             echo "Removing output_checked to invalidate test. Intervention might be required."
                             ${IVI_RM} "${run_dir}/output_checked"
+                        else 
+                            echo "Updating ${test_output_file}.FILTERED_FOR_DIFF as it is different from before."
                         endif 
                         
                         ${IVI_RM} "${test_output_file}.FILTERED_FOR_DIFF"
@@ -718,22 +721,25 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         # compared, and currently the only one that we do not filter is RC. 
         foreach output_file (${run_dir_files}) 
             if ("${output_file}" != "RC") then 
-                ${VERBOSE_ECHO} "Filtering ${output_file}"
-                grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' |  grep -v '^<<TEST>>' | grep -v 'ignore line for regression testing' > ${output_file}.FILTERED_FOR_DIFF
+                ${VERBOSE_ECHO} "Filtering ${output_file} in ${cwd}"
+                grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' |  grep -v '^<<TEST>>' | grep -v 'ignore line for regression testing' | ${IVI_SED} '/^db..*: .* on source line /d' > ${output_file}.FILTERED_FOR_DIFF
                 set output_file = "${output_file}.FILTERED_FOR_DIFF"
             endif 
 
             set test_output_file = "${test_run_dir}/${output_file}"
             
             if (-e ${test_output_file}) then
-                # echo ${IVI_DIFF_TEST} ${output_file} ${test_output_file} 
                 ${IVI_DIFF_TEST} ${output_file} ${test_output_file} > /dev/null
 
                 if ($status) then 
                     echo " "
                     echo "${program} failed regression testing with input ${input_dir}."
                     echo "There is a difference with respect to ${output_file} "
-                    echo "Check with: "
+                    echo " "
+                    echo "Reproduce with: "
+                    echo "    ${IVI_DIFF_TEST} ${output_file} ${test_output_file}"
+                    echo " "
+                    echo "Or check with: "
                     echo "    vimdiff  `pwd`/${output_file} ${test_output_file}"
                     echo " "
                     echo "If the current result is correct, then the test output will need to be rebuilt."

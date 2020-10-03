@@ -86,9 +86,7 @@ endif
 # endif 
 
 if (-e Include_lines/header_tag_files) then
-    set echo 
     ${IVI_CTAGS} -a -L Include_lines/header_tag_files --c++-kinds=+p --fields=+iaS --extra=+q -I ${MAKE_PATH}/ctags/identifier_hacks.txt -o tags_h
-    unset echo 
     if (${status}) then
         echo "ctags failed making tag file 'all_tags' in script do_ctags."
         echo "Possibly ctags on this machine is an old flavor that we don't care about."

@@ -1,12 +1,12 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25840 2020-09-30 20:50:24Z kobus $
+# $Id: init_compile 25850 2020-10-03 22:20:43Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
 #     optional library has a section in this file. The order matters (and needs
-#     some cleanup). A relatively safe place to add new ones is just before or
-# #     after the template example (scan for "XXX"). 
+#     some cleanup). A relatively safe place to add new ones is just before 
+#     the template example (scan for "XXX"). 
 # 
 # To add an entry, two things are needed. 
 #     Copy the XXX code block to an earlier location and edit it. The location
@@ -2468,6 +2468,7 @@ endif
 
 ################################################################################
 
+# Status of what? BUG TODO find missing test line!! 
 if (${status}) then
     set clang_compiler_includes = "${USR_INCLUDE}" 
 else 
@@ -9644,113 +9645,80 @@ if ($?IVI_VERBOSE) then
     endif
 endif
 
-# -----------------------------------------------------------------------------
-# -----   UA Cartwheel    (OBSOLETE) 
+# ----------------------- Pybind11 header-only library---------------------
+
+set ivi_have_pybind11 = ""
+set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_PYBIND11"
+set lib_pybind11 = ""
+ivi_setenv OPTIONS_PYBIND11 ""
+ivi_setenv CC_FLAGS_PYBIND11 ""
+ 
+# Set up a signature for the library and corresponding include string (after
+# the colon) that can be grep'd as an indication that the library is used.
 #
-### set ivi_have_ua_cartwheel = ""
-### set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_UA_CARTWHEEL"
-### set lib_ua_cartwheel = ""
-### ivi_setenv OPTIONS_UA_CARTWHEEL ""
-### ivi_setenv CC_FLAGS_UA_CARTWHEEL "${CC_FLAGS_ODE}"
-###  
-### # Set up a signature for the library and corresponding include string (after
-### # the colon) that can be grep'd in source code.  If grep says the pattern is
-### # present in the source code, that means the program uses the UA_CARTWHEEL library.
-### #
-### # Multiple signatures should be used if more that one include indicates that
-### # this library may be needed, or the name of the include file changes with
-### # various systems. See OPENGL for an example. 
-### #
-### set optional_libs = "${optional_libs} UA_CARTWHEEL:Core/.*\.h"
-### set optional_libs = "${optional_libs} UA_CARTWHEEL:Control/.*\.h"
-### set optional_libs = "${optional_libs} UA_CARTWHEEL:MathLib/.*\.h"
-### 
-### set ua_cartwheel_inc_dir = ""
-### set ua_cartwheel_load_dir = ""
-### 
-### if ((! ${NO_LIBS}) && ("${LIB_OPENGL}" != "") && ("${LIB_GSL}" != "") && ("${LIB_GLUT}" != "") && ("${LIB_GLEW}" != "")  && ("${LIB_ODE}" != "")) then
-###     foreach load_dir (${load_dirs}) 
-###         set have_lib = `/bin/ls -1 ${load_dir} | grep ^libcartwheel\\. | ${filter_non_devel}`
-### 
-###         if ("${have_lib}" != "") then
-###             set ua_cartwheel_load_dir = "${load_dir}"
-###             break
-###         endif
-###     end
-### 
-###     if ("${ua_cartwheel_load_dir}" != "") then
-###         foreach inc_dir (${inc_dirs}) 
-###             if (-e ${inc_dir}/Core/Cartwheel3D.h) then
-###                 set ua_cartwheel_inc_dir = "${inc_dir}" 
-###                 break
-###             endif
-###         end
-### 
-###         #
-###         # If we want to check sub-directories of dirs in inc_dirs, we do them
-###         # after we have tried all of them (i.e., breadth-first search).
-###         #
-###         if ("${ua_cartwheel_inc_dir}" == "") then
-###             foreach inc_dir (${inc_dirs}) 
-###                 if (-e ${inc_dir}/cartwheel/Core/CartWheel3D.h) then 
-###                     # This can take two forms. We don't yet have a firm
-###                     # convention. If it is natural for the user to include
-###                     # cartwheel/ua_cartwheel.h, then we use the first form. This seems best for
-###                     # overall consistency. If the user expects to be able to include
-###                     # ua_cartwheel.h without the leading ua_cartwheel/, the second form is needed.
-###                     # Note that some of our legacy dirs are using the second
-###                     # form, but perhaps this is a mistake. 
-###                     # 
-###                     # set ua_cartwheel_inc_dir = "${inc_dir}" 
-###                     set ua_cartwheel_inc_dir = "${inc_dir}/cartwheel" 
-###                     break
-###                 endif
-###             end
-###         endif
-###     endif
-### 
-###     if ("${ua_cartwheel_inc_dir}" != "") then
-###         set ivi_have_ua_cartwheel = "-DIVI_HAVE_UA_CARTWHEEL"
-###         set lib_ua_cartwheel = "-lcartwheel ${LIB_OPENGL} ${LIB_GSL} ${LIB_GLUT} ${LIB_GLEW} ${LIB_ODE}"
-###         # or, if UA_CARTWHEEL depends on YYY then instead of the above,
-###         # do something like set lib_ua_cartwheel = "-lcartwheel ${LIB_YYY}"
-###         # so that you link every library that your cartwheel-dependent code requires.
-### 
-###         set needed_inc_dirs = "${needed_inc_dirs} ${ua_cartwheel_inc_dir}"
-###         set needed_load_dirs = "${needed_load_dirs} ${ua_cartwheel_load_dir}"
-###         set needed_for_libs = "${needed_for_libs} UA_CARTWHEEL"
-### 
-###         set ivi_have = "${ivi_have} ${ivi_have_ua_cartwheel}"
-###     endif
-### endif
-### 
-### ivi_setenv IVI_HAVE_UA_CARTWHEEL "${ivi_have_ua_cartwheel}"
-### ivi_setenv LIB_UA_CARTWHEEL "${lib_ua_cartwheel}"
-### 
-### if ($?IVI_VERBOSE) then
-###     echo ""
-###     if (${NO_LIBS}) then
-###         echo "Script init_compile skipped LIB_UA_CARTWHEEL due to NO_LIBS"
-###     else if ("${LIB_OPENGL}" == "") then
-###         echo "Script init_compile skipped LIB_UA_CARTWHEEL due to missing dependency LIB_OPENGL."
-###     else if ("${LIB_GLUT}" == "") then
-###         echo "Script init_compile skipped LIB_UA_CARTWHEEL due to missing dependency LIB_GLUT."
-###     else if ("${LIB_GSL}" == "") then
-###         echo "Script init_compile skipped LIB_UA_CARTWHEEL due to missing dependency LIB_GSL."
-###     else if ("${LIB_GLEW}" == "") then
-###         echo "Script init_compile skipped LIB_UA_CARTWHEEL due to missing dependency LIB_GLEW."
-###     else if ("${LIB_ODE}" == "") then
-###         echo "Script init_compile skipped LIB_UA_CARTWHEEL due to missing dependency LIB_ODE."
-###     else if ("${IVI_HAVE_UA_CARTWHEEL}" != "") then
-###         echo "Script init_compile found UA_CARTWHEEL"
-###         echo "    UA_CARTWHEEL  |  LIB_UA_CARTWHEEL: ${LIB_UA_CARTWHEEL}"
-###         echo "    UA_CARTWHEEL  |  include: ${ua_cartwheel_inc_dir}"
-###         echo "    UA_CARTWHEEL  |  load   : ${ua_cartwheel_load_dir}"
-###     else
-###         echo "Script init_compile did NOT find UA_CARTWHEEL"
-###     endif
-### endif
-# -----------------------------------------------------------------------------
+# Multiple signatures should be used if more that one include indicates that
+# this library may be needed, or the name of the include file changes with
+# various systems. See OPENGL for an example. 
+#
+set optional_libs = "${optional_libs} PYBIND11:pybind11/.*\.h"
+
+set pybind11_inc_dir = ""
+set pybind11_load_dir = ""
+
+if ((! ${NO_LIBS}) && ("${IVI_HAVE_PYTHON}" != "")) then
+    foreach inc_dir (${inc_dirs}) 
+        if (-e ${inc_dir}/pybind11/pybind11.h) then
+            set pybind11_inc_dir = "${inc_dir}" 
+            break
+        endif
+    end
+
+    if ("${pybind11_inc_dir}" != "") then
+        set ivi_have_pybind11 = "-DIVI_HAVE_PYBIND11"
+        set lib_pybind11 = ""
+
+        # We depend on python. 
+        set pybind11_inc_dir = "${pybind11_inc_dir}:${python_inc_dir}"
+        set lib_pybind11 = "${lib_python}" 
+        set pybind11_load_dir = "${python_load_dir}"
+       
+        set needed_inc_dirs = "${needed_inc_dirs} ${pybind11_inc_dir}"
+
+        # We don't need a load dir, but must have one to have list lengths match
+        # so we use the special one DUMMY. 
+        #
+        set needed_load_dirs = "${needed_load_dirs} ${pybind11_load_dir}" 
+        set needed_for_libs = "${needed_for_libs} PYBIND11"
+
+        set ivi_have = "${ivi_have} ${ivi_have_pybind11}"
+
+        
+     
+    endif
+endif
+
+ivi_setenv IVI_HAVE_PYBIND11 "${ivi_have_pybind11}"
+ivi_setenv LIB_PYBIND11 "${lib_pybind11}"
+
+# Empty string because we never set it because this library is header only. 
+ivi_setenv LIB_PYBIND11 "${lib_pybind11}"
+
+if ($?IVI_VERBOSE) then
+    echo ""
+    if (${NO_LIBS}) then
+        echo "Script init_compile skipped LIB_PYBIND11 due to NO_LIBS"
+    else if ("${IVI_HAVE_PYTHON}" == "") then
+        echo "Script init_compile skipped LIB_PYBIND11 due to missing dependency (python)"
+    else if ("${IVI_HAVE_PYBIND11}" != "") then
+        echo "Script init_compile found PYBIND11 headers"
+        echo "    PYBIND11  |  LIB_PYBIND11: ${LIB_PYBIND11}"
+        echo "    PYBIND11  |  include: ${pybind11_inc_dir}"
+        echo "    PYBIND11  |  load   : ${pybind11_load_dir}"
+    else
+        echo "Script init_compile did NOT find PYBIND11 headers"
+    endif
+endif
+
 # -----------------------------------------------------------------------------
 # XXX  -- A template for adding entries to this file. 
 # -----------------------------------------------------------------------------
@@ -9761,6 +9729,12 @@ endif
 # New libraries should be added after any possible dependencies. Thus lower
 # level libraries such as X11 occur sooner, and libraries that are not used by
 # other libraries occur later. 
+#
+# This template is for object code libraries (not header only libraries). If you
+# hack it for a header only library then you need to add the string "DUMMY" to
+# the library list. See the script code for pybind11 header file only library.
+# (The boost header only script code is more complex because we support multiple
+# versions of boost simulaneously). 
 #
 # Don't forget to update Makefile-defs, Makefile-program, IVI/Makefile-2, and
 # IVI_cpp/Makefile-2 (see comment block at the begining of this file). 
