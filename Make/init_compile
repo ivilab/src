@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25850 2020-10-03 22:20:43Z kobus $
+# $Id: init_compile 25852 2020-10-05 15:36:30Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -9677,17 +9677,18 @@ if ((! ${NO_LIBS}) && ("${IVI_HAVE_PYTHON}" != "")) then
         set ivi_have_pybind11 = "-DIVI_HAVE_PYBIND11"
         set lib_pybind11 = ""
 
-        # We depend on python. 
-        set pybind11_inc_dir = "${pybind11_inc_dir}:${python_inc_dir}"
-        set lib_pybind11 = "${lib_python}" 
-        set pybind11_load_dir = "${python_load_dir}"
+#         # We depend on python headers. But do not link! 
+         set pybind11_inc_dir = "${pybind11_inc_dir}:${python_inc_dir}"
+#         set lib_pybind11 = "${lib_python}" 
+#         set pybind11_load_dir = "${python_load_dir}"
        
         set needed_inc_dirs = "${needed_inc_dirs} ${pybind11_inc_dir}"
 
         # We don't need a load dir, but must have one to have list lengths match
         # so we use the special one DUMMY. 
         #
-        set needed_load_dirs = "${needed_load_dirs} ${pybind11_load_dir}" 
+        set needed_load_dirs = "${needed_load_dirs} DUMMY" 
+        # set needed_load_dirs = "${needed_load_dirs} ${pybind11_load_dir}" 
         set needed_for_libs = "${needed_for_libs} PYBIND11"
 
         set ivi_have = "${ivi_have} ${ivi_have_pybind11}"
@@ -9707,8 +9708,8 @@ if ($?IVI_VERBOSE) then
     echo ""
     if (${NO_LIBS}) then
         echo "Script init_compile skipped LIB_PYBIND11 due to NO_LIBS"
-    else if ("${IVI_HAVE_PYTHON}" == "") then
-        echo "Script init_compile skipped LIB_PYBIND11 due to missing dependency (python)"
+#     else if ("${IVI_HAVE_PYTHON}" == "") then
+#         echo "Script init_compile skipped LIB_PYBIND11 due to missing dependency (python)"
     else if ("${IVI_HAVE_PYBIND11}" != "") then
         echo "Script init_compile found PYBIND11 headers"
         echo "    PYBIND11  |  LIB_PYBIND11: ${LIB_PYBIND11}"
