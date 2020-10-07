@@ -137,9 +137,11 @@ endif
 set need_haves = ""
 set found_haves = ""
 
-set need_options = ""
 set need_include = ""
 set need_cc_flags = ""
+set need_ld_flags = ""
+set need_cc_shared_flags = ""
+set need_ld_shared_flags = ""
 
 set ivi_haves = `sed -n '/IVI_HAVE/p' Include_lines/include_lines`
 
@@ -234,8 +236,8 @@ endif
 # built through the symbols NEED_LIB_XXX. Further, for compiling in this
 # directory, we need to ensure that the include directory is provided if it is
 # not standard, and any other special considerations. This is specified using
-# the symbols XXX_EXTRA_LIB_INCLUDES, XXX_EXTRA_LIB_OPTIONS, and
-# XXX_EXTRA_LIB_CC_FLAGS, XXX_EXTRA_LIB_CC_FLAGS, and XXX_EXTRA_LIB_CC_FLAGS.
+# the symbols XXX_EXTERNAL_INCLUDES, XXX_EXTERNAL_CC_FLAGS,
+# XXX_EXTERNAL_LD_FLAGS, XXX_EXTERNAL_CC_SHARED_FLAGS, and XXX_LD_SHARED_FLAGS.
 #
 
 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_makefile_libs_needed_2 part four."
@@ -289,16 +291,22 @@ foreach optional_lib_group (${OPTIONAL_LIBS})
             echo "NEED_LIB_${lib} = "'$'"(LIB_${lib})" >> ${output_file_name}
 
             set include = INCLUDE_${lib}
-            set options = OPTIONS_${lib} 
             set cc_flags = CC_FLAGS_${lib}
+            set ld_flags = LD_FLAGS_${lib}
+            set cc_shared_flags = CC_SHARED_FLAGS_${lib}
+            set ld_shared_flags = LD_SHARED_FLAGS_${lib}
 
             set include_env_str =  '$'"(${include})"
-            set options_env_str =  '$'"(${options})"
             set cc_flags_env_str = '$'"(${cc_flags})"
+            set ld_flags_env_str = '$'"(${ld_flags})"
+            set cc_shared_flags_env_str = '$'"(${cc_shared_flags})"
+            set ld_shared_flags_env_str = '$'"(${ld_shared_flags})"
 
             set need_include = "${need_include} ${include_env_str}"
-            set need_options = "${need_options} ${options_env_str}" 
             set need_cc_flags = "${need_cc_flags} ${cc_flags_env_str}"
+            set need_ld_flags = "${need_ld_flags} ${ld_flags_env_str}"
+            set need_cc_shared_flags = "${need_cc_shared_flags} ${cc_shared_flags_env_str}"
+            set need_ld_shared_flags = "${need_ld_shared_flags} ${ld_shared_flags_env_str}"
         endif 
     end
 end
@@ -310,9 +318,11 @@ if ( ! ${first_item}) then
     echo  "# corresponding to #includes found in this directory." >> ${output_file_name}
     echo  "#" >> ${output_file_name}
 
-    echo "${lib_prefix}EXTRA_LIB_INCLUDES = ${need_include}" >> ${output_file_name}
-    echo "${lib_prefix}EXTRA_LIB_OPTIONS = ${need_options}" >> ${output_file_name}
-    echo "${lib_prefix}EXTRA_LIB_CC_FLAGS = ${need_cc_flags}" >> ${output_file_name}
+    echo "${lib_prefix}EXTERNAL_INCLUDES = ${need_include}" >> ${output_file_name}
+    echo "${lib_prefix}EXTERNAL_CC_FLAGS = ${need_cc_flags}" >> ${output_file_name}
+    echo "${lib_prefix}EXTERNAL_LD_FLAGS = ${need_ld_flags}" >> ${output_file_name}
+    echo "${lib_prefix}EXTERNAL_CC_SHARED_FLAGS = ${need_cc_shared_flags}" >> ${output_file_name}
+    echo "${lib_prefix}EXTERNAL_LD_SHARED_FLAGS = ${need_ld_shared_flags}" >> ${output_file_name}
 endif 
 
 # #############################################################################

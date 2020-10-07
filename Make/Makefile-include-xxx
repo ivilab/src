@@ -18,7 +18,6 @@ XXX_LIB_CC_FLAGS = $(CC_FLAGS)
 XXX_LIB_CC_WARNING_FLAGS = $(CC_IVI_WARNINGS)
 XXX_LIB_CXX_FLAGS = $(CXX_FLAGS)
 XXX_LIB_CXX_WARNING_FLAGS = $(CXX_IVI_WARNINGS)
-XXX_LIB_EXTRA_COMPILE_FLAGS =
 
 ################################################################################
 

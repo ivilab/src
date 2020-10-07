@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25850 2020-10-03 22:20:43Z kobus $
+# $Id: Makefile-program 25853 2020-10-07 14:28:36Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -96,6 +96,8 @@ include $(MAKE_PATH)Makefile-program.$(MAKE_FLAVOR)
 #     simply a null result. We only need to rely on make pattern expansion for
 #     rules. Pattern use could probably be purged from commands using scripts
 #     instead.
+
+################################################################################
 
 ################################################################################
 #         Synchronizing Makefile and build with src/Make 
@@ -517,6 +519,12 @@ Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Inc
 
 include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX)
 
+# These are flags tied to external libraries and should work equally well for C
+# and C++. We use only CC_FLAGS for simplicity , but putting a line with "CC" in
+# a C++ compile line is bound to confuse. So we create this convenience symbol. 
+EXTERNAL_CXX_FLAGS = $(EXTERNAL_CC_FLAGS)
+EXTERNAL_CXX_SHARED_FLAGS = $(EXTERNAL_CC_SHARED_FLAGS)
+
 ################################################################################
 #
 #
@@ -565,10 +573,10 @@ $(LD_OBJ_DIR)ld_dir_made :
 $(PCH_DIR)%.h.gch : %.h 
 	$(IVI_MKDIR) $(PCH_DIR)
 	( $(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] ) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
@@ -599,10 +607,10 @@ $(PCH_DIR)%.h.gch : %.h
 # 	@$(IVI_ECHO)
 # 	@$(IVI_CC) --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 # 	( $(IVI_CC) $< -c -o $@ \
-#         $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
+#         $(CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(HACK_CC_FLAGS) \
 #         $(PROGRAM_CC_WARNING_FLAGS) \
 #         $(PROGRAMMER_FLAGS) \
-#         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+#         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
 #         $(NEED_HAVE) \
 #         $(WITH_LIBS_HAVE); $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET) ) \
 #         $(NULL_TO_MAKE_BLANK_LINE)
@@ -613,29 +621,13 @@ $(OBJ_DIR)%.o : %.c
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CC) --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CC) $< -c -o $@ \
-        $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
+        $(CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE); \
         set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
-        $(NULL_TO_MAKE_BLANK_LINE)
-
-
-$(CXX_OBJ_DIR)%.o : %.C
-	@$(IVI_ECHO)
-	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
-	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
-	( $(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
-        $(PROGRAM_CXX_WARNING_FLAGS) \
-        $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
-        $(NEED_HAVE) \
-        $(WITH_LIBS_HAVE); \
-        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
-        |& $(IVI_CXX_MESSAGE_FILTER) \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 
@@ -644,10 +636,10 @@ $(CXX_OBJ_DIR)%.o : %.cpp
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE); \
         set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
@@ -660,10 +652,10 @@ $(CXX_OBJ_DIR)%.o : %.cxx
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE); \
         set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
@@ -675,14 +667,30 @@ $(CXX_OBJ_DIR)%.o : %.cc
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	( $(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE); \
         set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
         $(NULL_TO_MAKE_BLANK_LINE)
+
+$(CXX_OBJ_DIR)%.o : %.C
+	@$(IVI_ECHO)
+	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
+	@$(IVI_CXX)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
+	( $(IVI_CXX) $< -c -o $@ \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
+        $(PROGRAM_CXX_WARNING_FLAGS) \
+        $(PROGRAMMER_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(NEED_HAVE) \
+        $(WITH_LIBS_HAVE); \
+        set compile_status = $${status}; $(IVI_ECHO) $(COMPILE_STATUS_STR)  [ for $@  ] $(SUPPRESS_IF_QUIET); exit $${compile_status} ) \
+        |& $(IVI_CXX_MESSAGE_FILTER) \
+        $(NULL_TO_MAKE_BLANK_LINE)
+
 
 # I am not sure if this is still used. Test it commented out.
 #
@@ -700,14 +708,14 @@ $(OBJ_DIR)version.o : $(PROGRAM_FILES) $(OBJ_DIR)c_dir_made Include_lines/Makefi
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	$(IVI_CC)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_CC) version.c -c -o $@ \
-        $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
+        $(CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(HACK_CC_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         -DLIBS_USED='"$(LIBS)"' \
-        -DCC_FLAGS_USED='"$(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS)"' \
+        -DCC_FLAGS_USED='"$(CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(HACK_CC_FLAGS)"' \
         $(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################
@@ -724,10 +732,10 @@ $(OBJ_DIR)$(SHARED_DIR)%.o : %.c
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CC) $< -c -o $@ \
-        $(CC_FLAGS) $(CC_SHARED_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
+        $(CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(HACK_CC_FLAGS) $(CC_SHARED_FLAGS) $(EXTERNAL_CC_SHARED_FLAGS) \
         $(PROGRAM_CC_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -738,10 +746,10 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cpp
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(HACK_CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTERNAL_CXX_SHARED_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE)\
         |& $(IVI_CXX_MESSAGE_FILTER) \
@@ -754,10 +762,10 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cxx
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(HACK_CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTERNAL_CXX_SHARED_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
@@ -771,10 +779,10 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.C
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(HACK_CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTERNAL_CXX_SHARED_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
@@ -787,10 +795,10 @@ $(CXX_OBJ_DIR)$(SHARED_DIR)%.o : %.cc
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_MKDIR) $(CXX_OBJ_DIR)$(SHARED_DIR)
 	$(IVI_CXX) $< -c -o $@ \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
+        $(CXX_FLAGS) $(HACK_CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTERNAL_CXX_SHARED_FLAGS) \
         $(PROGRAM_CXX_WARNING_FLAGS) \
         $(PROGRAMMER_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) \
         $(WITH_LIBS_HAVE) \
         |& $(IVI_CXX_MESSAGE_FILTER) \
@@ -892,7 +900,7 @@ $(LD_OBJ_DIR)% : $(LD_OBJ_DIR)ld_dir_made $(LIB_ARCHIVES) $(VERSION_OBS) $(OBS_A
 	@$(ECHO_IF_VERBOSE) "Building $@ because of $?" 
 	@$(IVI_LD)  --version |& $(IVI_HEAD) -1  $(SUPPRESS_IF_QUIET)
 	$(IVI_LD) $@.o $(VERSION_OBS) $(OBS_ARCHIVE) \
-            $(HACK_BEFORE_LOAD_FLAGS) $(LOAD_FLAGS) -L$(LD_OBJ_DIR) $(LIB_LINK_STRINGS) \
+            $(HACK_BEFORE_LOAD_FLAGS) $(LOAD_FLAGS) $(EXTERNAL_LD_FLAGS) $(SUB_LIB_EXTERNAL_LD_FLAGS) -L$(LD_OBJ_DIR) $(LIB_LINK_STRINGS) \
             $(LOAD_DIRS) \
             $(LIBS) $(STD_LIBS) $(HACK_AFTER_LOAD_FLAGS) \
             -o $@ \
@@ -1001,7 +1009,7 @@ shared: Makefile-depend $(PROG_LIB_SO)
 $(PROG_LIB_SO) : Include_lines/sub_libs_needed Include_lines/file_list $(LD_OBJ_DIR)ld_dir_made $(PROG_LIB_SHARED_OBS) $(SUB_LIB_SHARED_OBS)
 	$(IVI_RM) $@
 	@$(ECHO_UNLESS_QUIET) Building a shared library from lots of library files with the following command with files omitted. 
-	@$(ECHO_UNLESS_QUIET) $(IVI_LD) $(LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ 
+	@$(ECHO_UNLESS_QUIET) $(IVI_LD) $(LD_SHARED_FLAGS) $(EXTERNAL_LD_SHARED_FLAGS) $(SUB_LIB_EXTERNAL_LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ 
 	@$(IVI_LD) $(LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ \
         $(PROG_LIB_SHARED_OBS) $(SUB_LIB_SHARED_OBS)
 	$(MAKE_SCRIPT_PATH)finish_executable $@ $(PROG_LIB_SO_NAME)
@@ -1044,8 +1052,8 @@ Include_lines :
 
 # Include_lines/cpp_compile_options : $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program 
 # 	$(IVI_ECHO) \
-#         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
-#         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+#         $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(HACK_CXX_FLAGS) \
+#         $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
 #         $(NEED_HAVE) \
 #         $(WITH_LIBS_HAVE) \
 #     > $@
@@ -1059,8 +1067,8 @@ Include_lines/header_tag_files : Include_lines/tag_file_lists Include_lines/tag_
 
 Include_lines/tag_file_lists/include_headers.cpp : Include_lines/tag_file_lists Include_lines/include_headers.cpp
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -1079,8 +1087,8 @@ Include_lines/tag_file_lists :
 
 Include_lines/tag_file_lists/%.c : %.c 
 	$(ECHO_MAKE_CMD)$(IVI_CC) $< -M \
-        $(CC_FLAGS) $(CC_SHARED_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(HACK_CC_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -1091,8 +1099,8 @@ Include_lines/tag_file_lists/%.c : %.c
 
 Include_lines/tag_file_lists/%.cxx : %.cxx 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -1103,8 +1111,8 @@ Include_lines/tag_file_lists/%.cxx : %.cxx
 
 Include_lines/tag_file_lists/%.cpp : %.cpp 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -1115,8 +1123,8 @@ Include_lines/tag_file_lists/%.cpp : %.cpp
 
 Include_lines/tag_file_lists/%.cc : %.cc 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -1127,8 +1135,8 @@ Include_lines/tag_file_lists/%.cc : %.cc
 
 Include_lines/tag_file_lists/%.C : %.C 
 	$(ECHO_MAKE_CMD)$(IVI_CXX) $< -M \
-        $(CXX_FLAGS) $(CXX_SHARED_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CXX_FLAGS) \
-        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTRA_LIB_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
+        $(CXX_FLAGS) $(EXTERNAL_CXX_FLAGS) $(HACK_CXX_FLAGS) \
+        $(HACK_BEFORE_INCLUDES) $(BEFORE_INCLUDES) $(BASE_INCLUDES) $(DEFAULT_OPT_INCLUDES) $(EXTERNAL_INCLUDES) $(AFTER_INCLUDES) $(HACK_AFTER_INCLUDES) \
         $(NEED_HAVE) $(WITH_LIBS_HAVE) \
         | $(IVI_SED) '/:/d' | $(IVI_SED) 's/^ *//' | $(IVI_SED) 's/ \\//' | $(IVI_TR) ' ' '\n'| $(IVI_SORT) -u > $@ \
         $(NULL_TO_MAKE_BLANK_LINE)
@@ -1239,7 +1247,7 @@ misc_doc_program : $(MAKE_DOC_DIR)doc_program.made
 # We have not used this in quite some time. It is most certainly broken. 
 #
 proto: 
-	protoize -c "-DPROTOIZE $(CC_FLAGS) $(EXTRA_LIB_CC_FLAGS) $(EXTRA_LIB_OPTIONS) $(HACK_CC_FLAGS) $(MD_DEFINES) $(IVI_HAVE) $(DEFAULT_OPT_INCLUDES) $(BASE_INCLUDES) $(EXTRA_LIB_INCLUDES) $(GENERIC_AFT_INCLUDES)" *.c
+	protoize -c "-DPROTOIZE $(CC_FLAGS) $(EXTERNAL_CC_FLAGS) $(HACK_CC_FLAGS) $(MD_DEFINES) $(IVI_HAVE) $(DEFAULT_OPT_INCLUDES) $(BASE_INCLUDES) $(EXTERNAL_INCLUDES) $(GENERIC_AFT_INCLUDES)" *.c
 	$(MAKE_SCRIPT_PATH)fix_protoize *.c
 
 ################################################################################

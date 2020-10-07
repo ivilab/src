@@ -22,6 +22,13 @@ else
     set force_str = ""
 endif 
 
+# Allow this script (and build_sub_libs_needed) to be called standalone for
+# testing. The value of SERIAL_RECURSION_LEVEL should be the same as what it is
+# set by default in build-2. 
+#
+if (! $?RECURSION_LEVEL) setenv RECURSION_LEVEL 1
+if (! $?SERIAL_RECURSION_LEVEL) setenv SERIAL_RECURSION_LEVEL 3
+
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}Entering build_sub_libs_needed_2 with recurse level ${RECURSION_LEVEL}${force_str} in ${cwd}."
 
 set current_sub_lib = `echo ${cwd} | sed 's#.*/lib/\([^/]*\)$#\1#'`
@@ -244,13 +251,14 @@ foreach recurse_dir_str (${recurse_dir_strs})
     # No path elements. Same as original in $*. 
     set recurse_dir = `echo ${recurse_dir_str} | sed 's#.*/##'`
 
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}------- build_sub_libs_needed_2 pushing into recurse dir ${recurse_dir_str}."
     pushd ${recurse_dir_str} > /dev/null
-        if (-e ${recurse_dir_str}/Include_lines/sub_libs_needed) then
-            set inherited_sub_libs = `${IVI_CAT} ${recurse_dir_str}/Include_lines/sub_libs_needed`
+        if (-e Include_lines/sub_libs_needed) then
+            set inherited_sub_libs = `${IVI_CAT} Include_lines/sub_libs_needed`
         else 
             set inherited_sub_libs = ""
             # Seems like an error.
-            ${P_STDERR} "Error: build_sub_libs_needed_2 expected ${recurse_dir_str}/Include_lines/sub_libs_needed to exist by now."
+            ${P_STDERR} "Error: build_sub_libs_needed_2 expected ${cwd}/Include_lines/sub_libs_needed to exist by now."
             set exit_status = 1
             goto end_of_script
         endif 

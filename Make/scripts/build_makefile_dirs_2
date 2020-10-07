@@ -362,10 +362,9 @@ if (! ${is_sub_lib_dir}) then
         #     Even if we use the local sub libs for the archive, we still use the
         #     big list of OBS for SHARED. 
         #
-        set use_local_sub_libs = 1
-        set use_sub_lib_list = 1
+        set use_uc_dirs = 1
 
-        if (${use_local_sub_libs}) then 
+        if (${use_uc_dirs}) then 
             @ count = 1
 
             while ($count <= $lib_count) 
@@ -398,16 +397,17 @@ if (! ${is_sub_lib_dir}) then
 
             echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
             echo  " " >> ${output_file_name}
-        else if (${use_sub_lib_list}) then 
+
+
             @ count = 1
 
             while ($count <= $lib_count) 
                 if ($count == 1) then
-                    echo 'SUB_LIB_OBS = \' >> ${output_file_name}
+                    echo 'SUB_LIB_EXTERNAL_LD_FLAGS = \' >> ${output_file_name}
                 endif 
 
                 set uc_dir = $uc_dirs[$count]
-                echo "               "'$'"(${uc_dir}_LIB_OBS) \" >> ${output_file_name}
+                echo "               "'$'"(${uc_dir}_LIB_EXTERNAL_LD_FLAGS) \" >> ${output_file_name}
                  
                 @ count ++
             end 
@@ -420,11 +420,11 @@ if (! ${is_sub_lib_dir}) then
 
             while ($count <= $lib_count) 
                 if ($count == 1) then
-                    echo 'SUB_LIB_SHARED_OBS = \' >> ${output_file_name}
+                    echo 'SUB_LIB_EXTERNAL_LD_SHARED_FLAGS = \' >> ${output_file_name}
                 endif 
 
                 set uc_dir = $uc_dirs[$count]
-                echo "               "'$'"(${uc_dir}_LIB_SHARED_OBS) \" >> ${output_file_name}
+                echo "               "'$'"(${uc_dir}_LIB_EXTERNAL_LD_SHARED_FLAGS) \" >> ${output_file_name}
                  
                 @ count ++
             end 
@@ -432,6 +432,9 @@ if (! ${is_sub_lib_dir}) then
             echo  "               "'$(NULL_TO_END_LIST)' >> ${output_file_name}
             echo  " " >> ${output_file_name}
         else 
+            # With the code as it is, this does not get executed! I am not sure
+            # of the intention. 
+            
             @ count = 1
 
             while ($count <= $lib_count) 

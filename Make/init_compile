@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25852 2020-10-05 15:36:30Z kobus $
+# $Id: init_compile 25853 2020-10-07 14:28:36Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -3686,8 +3686,11 @@ set lib_x11 = ""
 ## Now set automatically at the end, and only if needed.
 # ivi_setenv INCLUDE_X11 ""
 
-ivi_setenv OPTIONS_X11 ""
 ivi_setenv CC_FLAGS_X11 ""
+ivi_setenv LD_FLAGS_X11 ""
+ivi_setenv CC_SHARED_FLAGS_X11 ""
+ivi_setenv LD_SHARED_FLAGS_X11 ""
+
 set optional_libs = "${optional_libs} X11:Xlib\.h"
 
 # FIXME
@@ -4089,7 +4092,6 @@ ivi_setenv IVI_LIBRARY_PATH `echo ${ALL_LIBS} | sed 's/  */:/g'`
 set ivi_have_pthread = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_PTHREAD"
 set lib_pthread =  ""
-ivi_setenv OPTIONS_PTHREAD ""
 ivi_setenv CC_FLAGS_PTHREAD "${CC_THREAD_FLAGS}"
 set optional_libs = "${optional_libs} PTHREAD:pthread\.h"
 
@@ -4240,8 +4242,11 @@ endif
 set ivi_have_xinerama = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_XINERAMA"
 set lib_xinerama = ""
-ivi_setenv OPTIONS_XINERAMA ""
+
 ivi_setenv CC_FLAGS_XINERAMA ""
+ivi_setenv LD_FLAGS_XINERAMA ""
+ivi_setenv CC_SHARED_FLAGS_XINERAMA ""
+ivi_setenv LD_SHARED_FLAGS_XINERAMA ""
  
 set optional_libs = "${optional_libs} XINERAMA:Xinerama\.h"
 
@@ -4318,8 +4323,11 @@ endif
 set ivi_have_xft = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_XFT"
 set lib_xft = ""
-ivi_setenv OPTIONS_XFT ""
+
 ivi_setenv CC_FLAGS_XFT ""
+ivi_setenv LD_FLAGS_XFT ""
+ivi_setenv CC_SHARED_FLAGS_XFT ""
+ivi_setenv LD_SHARED_FLAGS_XFT ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -4407,8 +4415,11 @@ endif
 set ivi_have_fontconfig = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_FONTCONFIG"
 set lib_fontconfig = ""
-ivi_setenv OPTIONS_FONTCONFIG ""
+
 ivi_setenv CC_FLAGS_FONTCONFIG ""
+ivi_setenv LD_FLAGS_FONTCONFIG ""
+ivi_setenv CC_SHARED_FLAGS_FONTCONFIG ""
+ivi_setenv LD_SHARED_FLAGS_FONTCONFIG ""
  
 set optional_libs = "${optional_libs} FONTCONFIG:fontconfig\.h"
 
@@ -4489,8 +4500,10 @@ endif
 # blocks. 
 #
 
-ivi_setenv OPTIONS_OSMESA ""
 ivi_setenv CC_FLAGS_OSMESA ""
+ivi_setenv LD_FLAGS_OSMESA ""
+ivi_setenv CC_SHARED_FLAGS_OSMESA ""
+ivi_setenv LD_SHARED_FLAGS_OSMESA ""
        
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_OSMESA"
 set optional_libs = "${optional_libs} OSMESA:GL/osmesa\.h"
@@ -4589,8 +4602,11 @@ endif
 set ivi_have_cuda = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_CUDA"
 set lib_cuda = ""
-ivi_setenv OPTIONS_CUDA ""
+
 ivi_setenv CC_FLAGS_CUDA ""
+ivi_setenv LD_FLAGS_CUDA ""
+ivi_setenv CC_SHARED_FLAGS_CUDA ""
+ivi_setenv LD_SHARED_FLAGS_CUDA ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -4683,8 +4699,11 @@ endif
 set ivi_have_cudart = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_CUDART"
 set lib_cudart = ""
-ivi_setenv OPTIONS_CUDART ""
+
 ivi_setenv CC_FLAGS_CUDART ""
+ivi_setenv LD_FLAGS_CUDART ""
+ivi_setenv CC_SHARED_FLAGS_CUDART ""
+ivi_setenv LD_SHARED_FLAGS_CUDART ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -4777,8 +4796,11 @@ endif
 set ivi_have_cudpp = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_CUDPP"
 set lib_cudpp = ""
-ivi_setenv OPTIONS_CUDPP ""
+
 ivi_setenv CC_FLAGS_CUDPP ""
+ivi_setenv LD_FLAGS_CUDPP ""
+ivi_setenv CC_SHARED_FLAGS_CUDPP ""
+ivi_setenv LD_SHARED_FLAGS_CUDPP ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -4859,8 +4881,11 @@ endif
 set ivi_have_cudcvt = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_CUDCVT"
 set lib_cudcvt = ""
-ivi_setenv OPTIONS_CUDCVT ""
+
 ivi_setenv CC_FLAGS_CUDCVT ""
+ivi_setenv LD_FLAGS_CUDCVT ""
+ivi_setenv CC_SHARED_FLAGS_CUDCVT ""
+ivi_setenv LD_SHARED_FLAGS_CUDCVT ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -4944,8 +4969,11 @@ endif
 set ivi_have_opengl = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_OPENGL"
 set lib_opengl = ""
-ivi_setenv OPTIONS_OPENGL ""
+
 ivi_setenv CC_FLAGS_OPENGL ""
+ivi_setenv LD_FLAGS_OPENGL ""
+ivi_setenv CC_SHARED_FLAGS_OPENGL ""
+ivi_setenv LD_SHARED_FLAGS_OPENGL ""
 #
 # Having additional library signatures is OK.
 #
@@ -5069,8 +5097,11 @@ endif
 set ivi_have_glut = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_GLUT"
 set lib_glut = ""
-ivi_setenv OPTIONS_GLUT ""
+
 ivi_setenv CC_FLAGS_GLUT ""
+ivi_setenv LD_FLAGS_GLUT ""
+ivi_setenv CC_SHARED_FLAGS_GLUT ""
+ivi_setenv LD_SHARED_FLAGS_GLUT ""
 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -5174,8 +5205,11 @@ endif
 set ivi_have_glew = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_GLEW"
 set lib_glew = ""
-ivi_setenv OPTIONS_GLEW ""
+
 ivi_setenv CC_FLAGS_GLEW ""
+ivi_setenv LD_FLAGS_GLEW ""
+ivi_setenv CC_SHARED_FLAGS_GLEW ""
+ivi_setenv LD_SHARED_FLAGS_GLEW ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -5255,8 +5289,11 @@ set curses_flavors = "ncursesw ncurses curses"
 set ivi_have_curses = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_CURSES"
 set lib_curses = ""
-ivi_setenv OPTIONS_CURSES ""
+
 ivi_setenv CC_FLAGS_CURSES ""
+ivi_setenv LD_FLAGS_CURSES ""
+ivi_setenv CC_SHARED_FLAGS_CURSES ""
+ivi_setenv LD_SHARED_FLAGS_CURSES ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -5359,8 +5396,11 @@ endif
 set ivi_have_openssl = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_OPENSSL"
 set lib_openssl = ""
-ivi_setenv OPTIONS_OPENSSL ""
+
 ivi_setenv CC_FLAGS_OPENSSL ""
+ivi_setenv LD_FLAGS_OPENSSL ""
+ivi_setenv CC_SHARED_FLAGS_OPENSSL ""
+ivi_setenv LD_SHARED_FLAGS_OPENSSL ""
  
 set optional_libs = "${optional_libs} OPENSSL:openssl/.*\.h"
 
@@ -5436,10 +5476,14 @@ endif
 set ivi_have_lapack = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_LAPACK"
 set lib_lapack = ""
-ivi_setenv OPTIONS_LAPACK ""
+
 
 # Might get updated below. 
-ivi_setenv CC_FLAGS_LAPACK ""
+
+ivi_setenv CC_FLAGS_LAPACK "-DAAA"
+ivi_setenv LD_FLAGS_LAPACK "-DBBB"
+ivi_setenv CC_SHARED_FLAGS_LAPACK "-DCCC"
+ivi_setenv LD_SHARED_FLAGS_LAPACK "-DDDD"
 
 set optional_libs = "${optional_libs} LAPACK:lapack\.h"
 set optional_libs = "${optional_libs} LAPACK:mkl_lapack\.h"
@@ -5716,8 +5760,10 @@ set lib_f2c =  ""
 ## Now set automatically at the end, and only if needed.
 ### ivi_setenv INCLUDE_F2C ""
 
-ivi_setenv OPTIONS_F2C ""
 ivi_setenv CC_FLAGS_F2C ""
+ivi_setenv LD_FLAGS_F2C ""
+ivi_setenv CC_SHARED_FLAGS_F2C ""
+ivi_setenv LD_SHARED_FLAGS_F2C ""
 set optional_libs = "${optional_libs} F2C:f2c\.h"
 set optional_libs = "${optional_libs} F2C:g2c\.h"
 
@@ -5792,8 +5838,11 @@ endif
 set ivi_have_slatec = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_SLATEC"
 set lib_slatec = ""
-ivi_setenv OPTIONS_SLATEC ""
+
 ivi_setenv CC_FLAGS_SLATEC ""
+ivi_setenv LD_FLAGS_SLATEC ""
+ivi_setenv CC_SHARED_FLAGS_SLATEC ""
+ivi_setenv LD_SHARED_FLAGS_SLATEC ""
 set optional_libs = "${optional_libs} SLATEC:slatec\.h"
 
 set slatec_str = ""
@@ -5915,8 +5964,11 @@ ivi_setenv IVI_HAVE_NR "${ivi_have_nr}"
 set ivi_have_tiff = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_TIFF"
 set lib_tiff = ""
-ivi_setenv OPTIONS_TIFF ""
+
 ivi_setenv CC_FLAGS_TIFF ""
+ivi_setenv LD_FLAGS_TIFF ""
+ivi_setenv CC_SHARED_FLAGS_TIFF ""
+ivi_setenv LD_SHARED_FLAGS_TIFF ""
 set optional_libs = "${optional_libs} TIFF:tiffio\.h"
 
 set tiff_inc_dir = ""
@@ -5998,8 +6050,11 @@ endif
 set ivi_have_jpeg = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_JPEG"
 set lib_jpeg = ""
-ivi_setenv OPTIONS_JPEG ""
+
 ivi_setenv CC_FLAGS_JPEG ""
+ivi_setenv LD_FLAGS_JPEG ""
+ivi_setenv CC_SHARED_FLAGS_JPEG ""
+ivi_setenv LD_SHARED_FLAGS_JPEG ""
 set optional_libs = "${optional_libs} JPEG:jpeglib\.h"
 
 set jpeg_inc_dir = ""
@@ -6087,8 +6142,11 @@ endif
 set ivi_have_png = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_PNG"
 set lib_png = "" 
-ivi_setenv OPTIONS_PNG ""
+
 ivi_setenv CC_FLAGS_PNG ""
+ivi_setenv LD_FLAGS_PNG ""
+ivi_setenv CC_SHARED_FLAGS_PNG ""
+ivi_setenv LD_SHARED_FLAGS_PNG ""
 set optional_libs = "${optional_libs} PNG:png/png\.h"
 
 set png_inc_dir = ""
@@ -6168,8 +6226,11 @@ endif
 set ivi_have_fltk = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_FLTK"
 set lib_fltk = ""
-ivi_setenv OPTIONS_FLTK ""
+
 ivi_setenv CC_FLAGS_FLTK ""
+ivi_setenv LD_FLAGS_FLTK ""
+ivi_setenv CC_SHARED_FLAGS_FLTK ""
+ivi_setenv LD_SHARED_FLAGS_FLTK ""
  
 # Note the weird use of capitilization in LIBFLTK! 
 set optional_libs = "${optional_libs} FLTK:Fl\.H"
@@ -6270,8 +6331,11 @@ endif
 set ivi_have_wn = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_WN"
 set lib_wn = "" 
-ivi_setenv OPTIONS_WN ""
+
 ivi_setenv CC_FLAGS_WN ""
+ivi_setenv LD_FLAGS_WN ""
+ivi_setenv CC_SHARED_FLAGS_WN ""
+ivi_setenv LD_SHARED_FLAGS_WN ""
 set optional_libs = "${optional_libs} WN:wn\.h"
 
 set wn_inc_dir = ""
@@ -6362,8 +6426,11 @@ endif
 set ivi_have_fftw = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_FFTW"
 set lib_fftw =  ""
-ivi_setenv OPTIONS_FFTW ""
+
 ivi_setenv CC_FLAGS_FFTW ""
+ivi_setenv LD_FLAGS_FFTW ""
+ivi_setenv CC_SHARED_FLAGS_FFTW ""
+ivi_setenv LD_SHARED_FLAGS_FFTW ""
 set optional_libs = "${optional_libs} FFTW:fftw3\.h"
 
 set fftw_inc_dir = ""
@@ -6422,8 +6489,11 @@ endif
 set ivi_have_gandalf = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_GANDALF"
 set lib_gandalf =  ""
-ivi_setenv OPTIONS_GANDALF ""
+
 ivi_setenv CC_FLAGS_GANDALF ""
+ivi_setenv LD_FLAGS_GANDALF ""
+ivi_setenv CC_SHARED_FLAGS_GANDALF ""
+ivi_setenv LD_SHARED_FLAGS_GANDALF ""
 
 # set optional_libs = "${optional_libs} GANDALF:gandalf/vision.h"
 # set optional_libs = "${optional_libs} GANDALF:gandalf/image.h"
@@ -6531,8 +6601,11 @@ endif
 set ivi_have_gsl = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_GSL"
 set lib_gsl =  ""
-ivi_setenv OPTIONS_GSL ""
+
 ivi_setenv CC_FLAGS_GSL ""
+ivi_setenv LD_FLAGS_GSL ""
+ivi_setenv CC_SHARED_FLAGS_GSL ""
+ivi_setenv LD_SHARED_FLAGS_GSL ""
 #
 # Multiple possibilities for this one
 set optional_libs = "${optional_libs} GSL:gsl/gsl_.*\.h"
@@ -6694,8 +6767,11 @@ endif
 set ivi_have_libsvm = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_LIBSVM"
 set lib_libsvm =  ""
-ivi_setenv OPTIONS_LIBSVM ""
+
 ivi_setenv CC_FLAGS_LIBSVM ""
+ivi_setenv LD_FLAGS_LIBSVM ""
+ivi_setenv CC_SHARED_FLAGS_LIBSVM ""
+ivi_setenv LD_SHARED_FLAGS_LIBSVM ""
 #
 # Multiple possibilities for this one
 set optional_libs = "${optional_libs} LIBSVM:libsvm\.h"
@@ -6764,8 +6840,11 @@ endif
 set ivi_have_dgl = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_DGL"
 set lib_dgl =  ""
-ivi_setenv OPTIONS_DGL ""
+
 ivi_setenv CC_FLAGS_DGL ""
+ivi_setenv LD_FLAGS_DGL ""
+ivi_setenv CC_SHARED_FLAGS_DGL ""
+ivi_setenv LD_SHARED_FLAGS_DGL ""
 set optional_libs = "${optional_libs} DGL:dgl\.h"
 
 set dgl_inc_dir = ""
@@ -6836,8 +6915,11 @@ endif
 set ivi_have_vrj = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_VRJ"
 set lib_vrj =  ""
-ivi_setenv OPTIONS_VRJ ""
+
 ivi_setenv CC_FLAGS_VRJ ""
+ivi_setenv LD_FLAGS_VRJ ""
+ivi_setenv CC_SHARED_FLAGS_VRJ ""
+ivi_setenv LD_SHARED_FLAGS_VRJ ""
 set optional_libs = "${optional_libs} VRJ:vrj/.*\.h"
 
 set vrj_inc_dir = ""
@@ -6912,14 +6994,17 @@ endif
 set ivi_have_levmar = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_LEVMAR"
 set lib_levmar = ""
-ivi_setenv OPTIONS_LEVMAR ""
 #
 # Levmar includes have // comments.
 #
 if (${ivi_cc_is_gcc}) then
     ivi_setenv CC_FLAGS_LEVMAR "-std=gnu99"
 else 
+
     ivi_setenv CC_FLAGS_LEVMAR ""
+    ivi_setenv LD_FLAGS_LEVMAR ""
+    ivi_setenv CC_SHARED_FLAGS_LEVMAR ""
+    ivi_setenv LD_SHARED_FLAGS_LEVMAR ""
 endif
 
 set optional_libs = "${optional_libs} LEVMAR:lm\.h"
@@ -6996,8 +7081,11 @@ endif
 set ivi_have_ann = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_ANN"
 set lib_ann = ""
-ivi_setenv OPTIONS_ANN ""
+
 ivi_setenv CC_FLAGS_ANN ""
+ivi_setenv LD_FLAGS_ANN ""
+ivi_setenv CC_SHARED_FLAGS_ANN ""
+ivi_setenv LD_SHARED_FLAGS_ANN ""
 set optional_libs = "${optional_libs} ANN:ANN\.h"
 
 set ann_inc_dir = ""
@@ -7075,8 +7163,11 @@ endif
 set ivi_have_xercesc = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_XERCESC"
 set lib_xercesc = ""
-ivi_setenv OPTIONS_XERCESC ""
+
 ivi_setenv CC_FLAGS_XERCESC ""
+ivi_setenv LD_FLAGS_XERCESC ""
+ivi_setenv CC_SHARED_FLAGS_XERCESC ""
+ivi_setenv LD_SHARED_FLAGS_XERCESC ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -7143,8 +7234,11 @@ endif
 set ivi_have_tbb = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_TBB"
 set lib_tbb = ""
-ivi_setenv OPTIONS_TBB ""
+
 ivi_setenv CC_FLAGS_TBB ""
+ivi_setenv LD_FLAGS_TBB ""
+ivi_setenv CC_SHARED_FLAGS_TBB ""
+ivi_setenv LD_SHARED_FLAGS_TBB ""
 #
 # Multiple possibilities for this one
 set optional_libs = "${optional_libs} TBB:tbb/.*\.h"
@@ -7225,8 +7319,11 @@ endif
 set ivi_have_boost = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_BOOST"
 set lib_boost = ""
-ivi_setenv OPTIONS_BOOST ""
+
 ivi_setenv CC_FLAGS_BOOST ""
+ivi_setenv LD_FLAGS_BOOST ""
+ivi_setenv CC_SHARED_FLAGS_BOOST ""
+ivi_setenv LD_SHARED_FLAGS_BOOST ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -7338,8 +7435,11 @@ endif
 set ivi_have_bst_serial = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_BST_SERIAL"
 set lib_bst_serial = ""
-ivi_setenv OPTIONS_BST_SERIAL ""
+
 ivi_setenv CC_FLAGS_BST_SERIAL ""
+ivi_setenv LD_FLAGS_BST_SERIAL ""
+ivi_setenv CC_SHARED_FLAGS_BST_SERIAL ""
+ivi_setenv LD_SHARED_FLAGS_BST_SERIAL ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -7494,8 +7594,11 @@ endif
 set ivi_have_bst_poptions = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_BST_POPTIONS"
 set lib_bst_poptions = ""
-ivi_setenv OPTIONS_BST_POPTIONS ""
+
 ivi_setenv CC_FLAGS_BST_POPTIONS ""
+ivi_setenv LD_FLAGS_BST_POPTIONS ""
+ivi_setenv CC_SHARED_FLAGS_BST_POPTIONS ""
+ivi_setenv LD_SHARED_FLAGS_BST_POPTIONS ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -7650,8 +7753,11 @@ endif
 set ivi_have_bst_thread = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_BST_THREAD"
 set lib_bst_thread = ""
-ivi_setenv OPTIONS_BST_THREAD ""
+
 ivi_setenv CC_FLAGS_BST_THREAD ""
+ivi_setenv LD_FLAGS_BST_THREAD ""
+ivi_setenv CC_SHARED_FLAGS_BST_THREAD ""
+ivi_setenv LD_SHARED_FLAGS_BST_THREAD ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -7811,8 +7917,11 @@ endif
 set ivi_have_bst_system = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_BST_SYSTEM"
 set lib_bst_system = ""
-ivi_setenv OPTIONS_BST_SYSTEM ""
+
 ivi_setenv CC_FLAGS_BST_SYSTEM ""
+ivi_setenv LD_FLAGS_BST_SYSTEM ""
+ivi_setenv CC_SHARED_FLAGS_BST_SYSTEM ""
+ivi_setenv LD_SHARED_FLAGS_BST_SYSTEM ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -7965,8 +8074,11 @@ endif
 set ivi_have_bst_filesystem = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_BST_FILESYSTEM"
 set lib_bst_filesystem = ""
-ivi_setenv OPTIONS_BST_FILESYSTEM ""
+
 ivi_setenv CC_FLAGS_BST_FILESYSTEM ""
+ivi_setenv LD_FLAGS_BST_FILESYSTEM ""
+ivi_setenv CC_SHARED_FLAGS_BST_FILESYSTEM ""
+ivi_setenv LD_SHARED_FLAGS_BST_FILESYSTEM ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -8141,14 +8253,17 @@ endif
 set ivi_have_opencv = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_OPENCV"
 set lib_opencv =  ""
-ivi_setenv OPTIONS_OPENCV ""
 
 # OpenCV includes have // comments.
 #
 #if (${ivi_cc_is_gcc}) then
 #    ivi_setenv CC_FLAGS_OPENCV "-std=gnu99"
 #else 
+
 #    ivi_setenv CC_FLAGS_OPENCV ""
+#    ivi_setenv LD_FLAGS_OPENCV ""
+#    ivi_setenv CC_SHARED_FLAGS_OPENCV ""
+#    ivi_setenv LD_SHARED_FLAGS_OPENCV ""
 #endif
 
 # Likely out of date, and not necessarily (ever) used. 
@@ -8260,7 +8375,6 @@ endif
 set ivi_have_dlib = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_DLIB"
 set lib_dlib =  ""
-ivi_setenv OPTIONS_DLIB ""
 
 set dlib_inc_dir = ""
 set dlib_load_dir = ""
@@ -8342,7 +8456,6 @@ endif
 set ivi_have_openface = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_OPENFACE"
 set lib_openface =  ""
-ivi_setenv OPTIONS_OPENFACE ""
 
 set openface_inc_dir = ""
 set openface_load_dir = ""
@@ -8439,8 +8552,11 @@ endif
 set ivi_have_ode = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_ODE"
 set lib_ode = ""
-ivi_setenv OPTIONS_ODE ""
+
 ivi_setenv CC_FLAGS_ODE ""
+ivi_setenv LD_FLAGS_ODE ""
+ivi_setenv CC_SHARED_FLAGS_ODE ""
+ivi_setenv LD_SHARED_FLAGS_ODE ""
 
 which ode-config >& /dev/null
 
@@ -8448,7 +8564,11 @@ if (! ${status}) then
     # UNTESTED
     ivi_setenv CC_FLAGS_ODE `ode-config --cflags`
 else
+
     ivi_setenv CC_FLAGS_ODE ""
+    ivi_setenv LD_FLAGS_ODE ""
+    ivi_setenv CC_SHARED_FLAGS_ODE ""
+    ivi_setenv LD_SHARED_FLAGS_ODE ""
 endif 
 
 # Set up a signature for the library and corresponding include string (after
@@ -8535,8 +8655,11 @@ endif
 set ivi_have_vlfeat = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_VLFEAT" 
 set lib_vlfeat = ""
-ivi_setenv OPTIONS_VLFEAT ""
+
 ivi_setenv CC_FLAGS_VLFEAT ""
+ivi_setenv LD_FLAGS_VLFEAT ""
+ivi_setenv CC_SHARED_FLAGS_VLFEAT ""
+ivi_setenv LD_SHARED_FLAGS_VLFEAT ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -8610,8 +8733,11 @@ endif
 set ivi_have_kdtreexx = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_KDTREEXX"
 set lib_kdtreexx = ""
-ivi_setenv OPTIONS_KDTREEXX  ""
+
 ivi_setenv CC_FLAGS_KDTREEXX ""
+ivi_setenv LD_FLAGS_KDTREEXX ""
+ivi_setenv CC_SHARED_FLAGS_KDTREEXX ""
+ivi_setenv LD_SHARED_FLAGS_KDTREEXX ""
 # 
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -8682,8 +8808,11 @@ endif
 set ivi_have_vtk = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_VTK"
 set lib_vtk = ""
-ivi_setenv OPTIONS_VTK ""
+
 ivi_setenv CC_FLAGS_VTK ""
+ivi_setenv LD_FLAGS_VTK ""
+ivi_setenv CC_SHARED_FLAGS_VTK ""
+ivi_setenv LD_SHARED_FLAGS_VTK ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -8785,8 +8914,11 @@ endif
 set ivi_have_xerces = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_XERCES"
 set lib_xerces = ""
-ivi_setenv OPTIONS_XERCES ""
+
 ivi_setenv CC_FLAGS_XERCES ""
+ivi_setenv LD_FLAGS_XERCES ""
+ivi_setenv CC_SHARED_FLAGS_XERCES ""
+ivi_setenv LD_SHARED_FLAGS_XERCES ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -8874,8 +9006,11 @@ endif
 set ivi_have_xsd = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_XSD"
 set lib_xsd = ""
-ivi_setenv OPTIONS_XSD ""
+
 ivi_setenv CC_FLAGS_XSD ""
+ivi_setenv LD_FLAGS_XSD ""
+ivi_setenv CC_SHARED_FLAGS_XSD ""
+ivi_setenv LD_SHARED_FLAGS_XSD ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -8939,8 +9074,11 @@ endif
 set ivi_have_ffmpeg = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_FFMPEG"
 set lib_ffmpeg = ""
-ivi_setenv OPTIONS_FFMPEG ""
+
 ivi_setenv CC_FLAGS_FFMPEG ""
+ivi_setenv LD_FLAGS_FFMPEG ""
+ivi_setenv CC_SHARED_FLAGS_FFMPEG ""
+ivi_setenv LD_SHARED_FLAGS_FFMPEG ""
  
 set optional_libs = "${optional_libs} FFMPEG:libavcodec/.*\.h"
 set optional_libs = "${optional_libs} FFMPEG:libavformat/.*\.h"
@@ -9010,8 +9148,11 @@ endif
 set ivi_have_casadi = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_CASADI"
 set lib_casadi = ""
-ivi_setenv OPTIONS_CASADI ""
+
 ivi_setenv CC_FLAGS_CASADI ""
+ivi_setenv LD_FLAGS_CASADI ""
+ivi_setenv CC_SHARED_FLAGS_CASADI ""
+ivi_setenv LD_SHARED_FLAGS_CASADI ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -9108,8 +9249,11 @@ endif
 set ivi_have_opencl = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_OPENCL"
 set lib_opencl = ""
-ivi_setenv OPTIONS_OPENCL ""
+
 ivi_setenv CC_FLAGS_OPENCL ""
+ivi_setenv LD_FLAGS_OPENCL ""
+ivi_setenv CC_SHARED_FLAGS_OPENCL ""
+ivi_setenv LD_SHARED_FLAGS_OPENCL ""
 #
 # Having additional library signatures is OK.
 #
@@ -9204,8 +9348,11 @@ endif
 # set ivi_have_ergo = ""
 # set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_ERGO"
 # set lib_ergo = ""
-# ivi_setenv OPTIONS_ERGO ""
+
 # ivi_setenv CC_FLAGS_ERGO ""
+# ivi_setenv LD_FLAGS_ERGO ""
+# ivi_setenv CC_SHARED_FLAGS_ERGO ""
+# ivi_setenv LD_SHARED_FLAGS_ERGO ""
 # 
 # # 
 # # Set up a signature for the library and corresponding include string (after
@@ -9265,8 +9412,11 @@ endif
 set ivi_have_sundials_cvode = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_SUNDIALS_CVODE"
 set lib_sundials_cvode = ""
-ivi_setenv OPTIONS_SUNDIALS_CVODE ""
+
 ivi_setenv CC_FLAGS_SUNDIALS_CVODE ""
+ivi_setenv LD_FLAGS_SUNDIALS_CVODE ""
+ivi_setenv CC_SHARED_FLAGS_SUNDIALS_CVODE ""
+ivi_setenv LD_SHARED_FLAGS_SUNDIALS_CVODE ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -9367,8 +9517,11 @@ endif
 set ivi_have_sundials_pvec = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_SUNDIALS_PVEC"
 set lib_sundials_pvec = ""
-ivi_setenv OPTIONS_SUNDIALS_PVEC ""
+
 ivi_setenv CC_FLAGS_SUNDIALS_PVEC ""
+ivi_setenv LD_FLAGS_SUNDIALS_PVEC ""
+ivi_setenv CC_SHARED_FLAGS_SUNDIALS_PVEC ""
+ivi_setenv LD_SHARED_FLAGS_SUNDIALS_PVEC ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -9465,8 +9618,11 @@ endif
 set ivi_have_sundials_svec = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_SUNDIALS_SVEC"
 set lib_sundials_svec = ""
-ivi_setenv OPTIONS_SUNDIALS_SVEC ""
+
 ivi_setenv CC_FLAGS_SUNDIALS_SVEC ""
+ivi_setenv LD_FLAGS_SUNDIALS_SVEC ""
+ivi_setenv CC_SHARED_FLAGS_SUNDIALS_SVEC ""
+ivi_setenv LD_SHARED_FLAGS_SUNDIALS_SVEC ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -9563,8 +9719,11 @@ endif
 set ivi_have_python = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_PYTHON"
 set lib_python = ""
-ivi_setenv OPTIONS_PYTHON ""
+
 ivi_setenv CC_FLAGS_PYTHON ""
+ivi_setenv LD_FLAGS_PYTHON ""
+ivi_setenv CC_SHARED_FLAGS_PYTHON ""
+ivi_setenv LD_SHARED_FLAGS_PYTHON ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -9579,53 +9738,91 @@ set optional_libs = "${optional_libs} PYTHON:Python\.h"
 set python_inc_dir = ""
 set python_load_dir = ""
 
-set python_versions = "2.7 2.6 2.5"
-
 if (! ${NO_LIBS}) then
-    foreach version (${python_versions}) 
-        foreach load_dir (${load_dirs}) 
-            set have_lib = `/bin/ls -1 ${load_dir} | grep ^libpython${version}\\. | ${filter_non_devel}`
+    set python_config = ""
 
-            if ("${have_lib}" != "") then
-                set python_load_dir = "${load_dir}"
-                break
-            endif
-        end
+    which python3-config >& /dev/null
+    if (! ${status}) then
+        set python_config = "python3-config"
+    else 
+        which python-config >& /dev/null
+        if (! ${status}) then
+            set python_config = "python-config"
+        endif 
+    endif 
 
-        if ("${python_load_dir}" != "") then
-            foreach inc_dir (${inc_dirs}) 
-                if (-e ${inc_dir}/Python.h) then
-                    set python_inc_dir = "${inc_dir}" 
+    if ("${python_config}" != "") then
+        echo python_config: $python_config
+
+        set python_inc_dir = `${python_config} --includes | ${IVI_SED} 's/-I//g' | ${IVI_SED} 's/ /:/'`
+        echo python_inc_dir: $python_inc_dir
+
+
+        set python_load_dir = `${python_config} --ldflags | ${IVI_SED} 's/ *-[^L].*//g' | ${IVI_SED} 's/-L//g'  | ${IVI_SED} 's/ /:/'` 
+        echo python_load_dir: $python_load_dir
+
+        set lib_python =  `${python_config} --libs`
+        echo lib_python: $lib_python
+
+        # We do not necessarily agree with all of these, but trying it out.
+        # Typically we are building a shared object that wants to use python,
+        # but we do not have a lot of use cases to drive this choice. 
+        #
+        ivi_setenv CC_SHARED_FLAGS_PYTHON `${python_config} --cflags | ${IVI_SED} 's/ *-I[^ ]*//g'` 
+        echo CC_SHARED_FLAGS_PYTHON: $CC_SHARED_FLAGS_PYTHON
+
+        ivi_setenv LD_SHARED_FLAGS_PYTHON `${python_config} --ldflags | ${IVI_SED} 's/-L[^ ]*//g' | ${IVI_SED} 's/-l[^ ]*//g' | ${IVI_SED} 's/-framework [^ ]*//g'` 
+        echo LD_SHARED_FLAGS_PYTHON: $LD_SHARED_FLAGS_PYTHON
+    else
+        set python_versions = "3.6m 3.6 2.7 2.6 2.5"
+
+        foreach version (${python_versions}) 
+            foreach load_dir (${load_dirs}) 
+                set have_lib = `/bin/ls -1 ${load_dir} | grep ^libpython${version}\\. | ${filter_non_devel}`
+
+                if ("${have_lib}" != "") then
+                    set python_load_dir = "${load_dir}"
                     break
                 endif
             end
 
-            if ("${python_inc_dir}" == "") then
+            if ("${python_load_dir}" != "") then
                 foreach inc_dir (${inc_dirs}) 
-                    if (-e ${inc_dir}/python${version}/Python.h) then 
-                        set python_inc_dir = "${inc_dir}/python${version}" 
+                    if (-e ${inc_dir}/Python.h) then
+                        set python_inc_dir = "${inc_dir}" 
                         break
                     endif
                 end
+
+                if ("${python_inc_dir}" == "") then
+                    foreach inc_dir (${inc_dirs}) 
+                        if (-e ${inc_dir}/python${version}/Python.h) then 
+                            set python_inc_dir = "${inc_dir}/python${version}" 
+                            break
+                        endif
+                    end
+                endif
             endif
-        endif
 
-        if ("${python_inc_dir}" != "") then
-            set ivi_have_python = "-DIVI_HAVE_PYTHON"
-            set lib_python = -lpython${version}
-            # or, if PYTHON depends on YYY then instead of the above,
-            # do something like set lib_python = "-lpython ${LIB_YYY}"
-            # so that you link every library that your python-dependent code requires.
+            if ("${python_inc_dir}" != "") then 
+                set lib_python = -lpython${version}
+                # or, if PYTHON depends on YYY then instead of the above,
+                # do something like set lib_python = "-lpython ${LIB_YYY}"
+                # so that you link every library that your python-dependent code requires.
+                break
+            endif 
+        end
+    endif
 
-            set needed_inc_dirs = "${needed_inc_dirs} ${python_inc_dir}"
-            set needed_load_dirs = "${needed_load_dirs} ${python_load_dir}"
-            set needed_for_libs = "${needed_for_libs} PYTHON"
+    if ("${python_inc_dir}" != "") then
+        set ivi_have_python = "-DIVI_HAVE_PYTHON"
 
-            set ivi_have = "${ivi_have} ${ivi_have_python}"
+        set needed_inc_dirs = "${needed_inc_dirs} ${python_inc_dir}"
+        set needed_load_dirs = "${needed_load_dirs} ${python_load_dir}"
+        set needed_for_libs = "${needed_for_libs} PYTHON"
 
-            break
-        endif
-    end
+        set ivi_have = "${ivi_have} ${ivi_have_python}"
+    endif
 endif
 
 ivi_setenv IVI_HAVE_PYTHON "${ivi_have_python}"
@@ -9640,6 +9837,8 @@ if ($?IVI_VERBOSE) then
         echo "    PYTHON  |  LIB_PYTHON: ${LIB_PYTHON}"
         echo "    PYTHON  |  include: ${python_inc_dir}"
         echo "    PYTHON  |  load   : ${python_load_dir}"
+        echo "    PYTHON  |  CC_SHARED_FLAGS_PYTHON: ${CC_SHARED_FLAGS_PYTHON}"
+        echo "    PYTHON  |  LD_SHARED_FLAGS_PYTHON: ${LD_SHARED_FLAGS_PYTHON}"
     else
         echo "Script init_compile did NOT find PYTHON"
     endif
@@ -9650,8 +9849,11 @@ endif
 set ivi_have_pybind11 = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_PYBIND11"
 set lib_pybind11 = ""
-ivi_setenv OPTIONS_PYBIND11 ""
+
 ivi_setenv CC_FLAGS_PYBIND11 ""
+ivi_setenv LD_FLAGS_PYBIND11 ""
+ivi_setenv CC_SHARED_FLAGS_PYBIND11 ""
+ivi_setenv LD_SHARED_FLAGS_PYBIND11 ""
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -9692,9 +9894,6 @@ if ((! ${NO_LIBS}) && ("${IVI_HAVE_PYTHON}" != "")) then
         set needed_for_libs = "${needed_for_libs} PYBIND11"
 
         set ivi_have = "${ivi_have} ${ivi_have_pybind11}"
-
-        
-     
     endif
 endif
 
@@ -9748,8 +9947,11 @@ if (0) then
 set ivi_have_xxx = ""
 set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_XXX"
 set lib_xxx = ""
-ivi_setenv OPTIONS_XXX ""
+
 ivi_setenv CC_FLAGS_XXX ""
+ivi_setenv LD_FLAGS_XXX ""
+ivi_setenv CC_SHARED_FLAGS_XXX ""
+ivi_setenv LD_SHARED_FLAGS_XXX ""
  
 set xxx_inc_dir = ""
 set xxx_load_dir = ""
@@ -9886,8 +10088,11 @@ endif
 # set ivi_have_ivi = ""
 # set all_ivi_have = "${all_ivi_have} -DIVI_HAVE_IVI"
 # set lib_ivi = ""
-# ivi_setenv OPTIONS_IVI ""
+
 # ivi_setenv CC_FLAGS_IVI ""
+# ivi_setenv LD_FLAGS_IVI ""
+# ivi_setenv CC_SHARED_FLAGS_IVI ""
+# ivi_setenv LD_SHARED_FLAGS_IVI ""
 # # 
 # # Set up a signature for the library and corresponding include string (after
 # # the colon) that can be grep'd as an indication that the library is used.

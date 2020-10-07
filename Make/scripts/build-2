@@ -149,6 +149,9 @@ endif
 # building in the background? 
 #
 if (! $?SERIAL_RECURSION_LEVEL) then
+    # If we change this default, then change it in build_sub_libs_needed_2 also.
+    # (For debugging --- no real consequences of not being in synch except
+    # confusion.). 
     setenv SERIAL_RECURSION_LEVEL 3
 endif 
 
