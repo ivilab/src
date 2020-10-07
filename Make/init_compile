@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25853 2020-10-07 14:28:36Z kobus $
+# $Id: init_compile 25854 2020-10-07 14:37:01Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -9752,27 +9752,16 @@ if (! ${NO_LIBS}) then
     endif 
 
     if ("${python_config}" != "") then
-        echo python_config: $python_config
-
         set python_inc_dir = `${python_config} --includes | ${IVI_SED} 's/-I//g' | ${IVI_SED} 's/ /:/'`
-        echo python_inc_dir: $python_inc_dir
-
-
         set python_load_dir = `${python_config} --ldflags | ${IVI_SED} 's/ *-[^L].*//g' | ${IVI_SED} 's/-L//g'  | ${IVI_SED} 's/ /:/'` 
-        echo python_load_dir: $python_load_dir
-
         set lib_python =  `${python_config} --libs`
-        echo lib_python: $lib_python
 
         # We do not necessarily agree with all of these, but trying it out.
         # Typically we are building a shared object that wants to use python,
         # but we do not have a lot of use cases to drive this choice. 
-        #
+        
         ivi_setenv CC_SHARED_FLAGS_PYTHON `${python_config} --cflags | ${IVI_SED} 's/ *-I[^ ]*//g'` 
-        echo CC_SHARED_FLAGS_PYTHON: $CC_SHARED_FLAGS_PYTHON
-
         ivi_setenv LD_SHARED_FLAGS_PYTHON `${python_config} --ldflags | ${IVI_SED} 's/-L[^ ]*//g' | ${IVI_SED} 's/-l[^ ]*//g' | ${IVI_SED} 's/-framework [^ ]*//g'` 
-        echo LD_SHARED_FLAGS_PYTHON: $LD_SHARED_FLAGS_PYTHON
     else
         set python_versions = "3.6m 3.6 2.7 2.6 2.5"
 
@@ -9834,6 +9823,7 @@ if ($?IVI_VERBOSE) then
         echo "Script init_compile skipped LIB_PYTHON due to NO_LIBS"
     else if ("${IVI_HAVE_PYTHON}" != "") then
         echo "Script init_compile found PYTHON"
+        echo "    PYTHON  |  python-config: ${python_config}"
         echo "    PYTHON  |  LIB_PYTHON: ${LIB_PYTHON}"
         echo "    PYTHON  |  include: ${python_inc_dir}"
         echo "    PYTHON  |  load   : ${python_load_dir}"
