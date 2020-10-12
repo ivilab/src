@@ -134,8 +134,6 @@ if (${copy_to_top}) then
         echo "This can be disabled by 'unsetenv FORCE_COPY_EXECUTABLE'"
     endif
 
-    ${IVI_PERMIT_EXECUTION} "${top_level_name}" 
-
     if (-l "${top_level_name}") then
         ${WARN_ECHO} "Removing ${top_level_name} as we are copying executables."
         ${IVI_RM} "${top_level_name}"
@@ -147,6 +145,8 @@ if (${copy_to_top}) then
         ${P_STDERR} "Full failed command: ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}copy_if_different ${EXEC_LINK}/${top_level_name} ${top_level_name}"
         exit 1
      endif 
+
+    ${IVI_PERMIT_EXECUTION} "${top_level_name}" 
 else if (${link_to_top}) then 
     if (! $?IVI_QUIET) then 
         echo "Linking ${EXEC_LINK}/${exec_name} to ${top_level_name} in ${cwd}."
