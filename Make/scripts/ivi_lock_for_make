@@ -9,16 +9,19 @@
 #     ivi_lock_for_make {max_time} {target} {command} [command arguments]
 #
 # Description:
-#     Locking serializes execution, but once a second process, having been
-#     assigned the same task as a first, gets the lock, it will redo the build a
-#     second time. This is wasteful and confusing. 
+#     This script executes a command under a lock, but also prevents a second
+#     process from doing the same thing once it gets the lock. To explain
+#     further, basic locking serializes execution, but once a second process,
+#     having been assigned the same task as a first, gets the lock, it will redo
+#     the build a second time. This is wasteful and confusing. 
 #
 #     If there is only one instant of make running, and if all dependencies are
 #     exposed to make, and the makefiles are correct, then neither locking, nor
 #     ensuring only single execution of the task should be needed. However, the
-#     ivi build system has hidden targets, and sometimes we run multiple
-#     instances of make either on purpose or by accident. Especially for hidden
-#     targets, we want to consider using this script. 
+#     ivi build system has hidden targets which are built as the consequence of
+#     make driven commands but this is not exposed to make. We also sometimes we
+#     run multiple instances of make either on purpose or by accident.
+#     Especially for hidden targets, we want to consider using this script. 
 #
 #     The second argument is only used for early exit. If it will never exist,
 #     then it has no effect, but in this case, using ivi_lock might make more

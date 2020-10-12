@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25854 2020-10-07 14:37:01Z kobus $
+# $Id: init_compile 25857 2020-10-12 19:36:45Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -9724,6 +9724,7 @@ ivi_setenv CC_FLAGS_PYTHON ""
 ivi_setenv LD_FLAGS_PYTHON ""
 ivi_setenv CC_SHARED_FLAGS_PYTHON ""
 ivi_setenv LD_SHARED_FLAGS_PYTHON ""
+ivi_setenv PYTHON_SO_SUFFIX ".so"
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd in source code.  If grep says the pattern is
@@ -9762,6 +9763,8 @@ if (! ${NO_LIBS}) then
         
         ivi_setenv CC_SHARED_FLAGS_PYTHON `${python_config} --cflags | ${IVI_SED} 's/ *-I[^ ]*//g'` 
         ivi_setenv LD_SHARED_FLAGS_PYTHON `${python_config} --ldflags | ${IVI_SED} 's/-L[^ ]*//g' | ${IVI_SED} 's/-l[^ ]*//g' | ${IVI_SED} 's/-framework [^ ]*//g'` 
+
+        ivi_setenv PYTHON_SO_SUFFIX `${python_config} --extension-suffix`
     else
         set python_versions = "3.6m 3.6 2.7 2.6 2.5"
 
@@ -9843,7 +9846,12 @@ set lib_pybind11 = ""
 ivi_setenv CC_FLAGS_PYBIND11 ""
 ivi_setenv LD_FLAGS_PYBIND11 ""
 ivi_setenv CC_SHARED_FLAGS_PYBIND11 ""
-ivi_setenv LD_SHARED_FLAGS_PYBIND11 ""
+
+if ("${OS}" == "mac_osx") then
+    ivi_setenv LD_SHARED_FLAGS_PYBIND11 "-undefined dynamic_lookup"
+else 
+    ivi_setenv LD_SHARED_FLAGS_PYBIND11 ""
+endif 
  
 # Set up a signature for the library and corresponding include string (after
 # the colon) that can be grep'd as an indication that the library is used.
@@ -9904,6 +9912,8 @@ if ($?IVI_VERBOSE) then
         echo "    PYBIND11  |  LIB_PYBIND11: ${LIB_PYBIND11}"
         echo "    PYBIND11  |  include: ${pybind11_inc_dir}"
         echo "    PYBIND11  |  load   : ${pybind11_load_dir}"
+        echo "    PYBIND11  |  CC_SHARED_FLAGS_PYBIND11: ${CC_SHARED_FLAGS_PYBIND11}"
+        echo "    PYBIND11  |  LD_SHARED_FLAGS_PYBIND11: ${LD_SHARED_FLAGS_PYBIND11}"
     else
         echo "Script init_compile did NOT find PYBIND11 headers"
     endif
@@ -10457,7 +10467,6 @@ set before_includes = ""
 foreach before_inc_dir (${before_inc_dirs})
     set before_includes = "${before_includes} ${INCLUDE_FLAG}${before_inc_dir}"
 end
-
 
 # FIXME
 #

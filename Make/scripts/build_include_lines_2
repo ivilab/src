@@ -92,7 +92,7 @@ ${IVI_MKDIR} Include_lines
 pushd Include_lines > /dev/null
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 is updating Include_lines/include_lines.new in directory $cwd. " 
 
-    ${MAKE_SCRIPT_PATH}stream_file_names -s -h -l |  sort -u >  include_lines.new
+    ${MAKE_SCRIPT_PATH}stream_file_names -s -h -l |  sort -u > include_lines.new
     if (${status}) then 
         set exit_status = 1 
         goto cleanup
@@ -149,9 +149,26 @@ endif
 
 set update_sub_list = 0
 
-if ((! ${update_sub_list_new}) && (! -e Include_lines/sub_lib_list.new)) then
-    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 must update ${cwd}/Include_lines/sub_lib_list.new because it does not exist." 
-    set update_sub_list_new = 1
+if (! ${update_sub_list_new}) then 
+    if (! -e Include_lines/sub_lib_list.new) then
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 must update ${cwd}/Include_lines/sub_lib_list.new because it does not exist." 
+        set update_sub_list_new = 1
+    else 
+        # Consistency checking. This should not happen very often, so we emit a
+        # warning if sub_lib_list.new is still younger than include_lines, and
+        # force its rebuilding. 
+        #
+        set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_lib_list.new Include_lines/include_lines`
+        if (${status}) then
+            set exit_status = 1
+            goto cleanup
+        endif 
+        
+        if (${too_old}) then
+            ${WARN_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 updating ${cwd}/Include_lines/sub_lib_list.new because it is older than ${cwd}/Include_lines/include_lines."
+            set update_sub_list_new = 1
+        endif 
+    endif 
 endif 
 
 if (${update_sub_list_new}) then
@@ -246,6 +263,17 @@ else if (! -e Include_lines/sub_libs_needed) then
 else if ($?FORCE_BUILD_SUB_LIBS) then 
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 planning to update ${cwd}/Include_lines/sub_lib_needed as we are FORCING doing so." 
     set update_sub_libs_needed = 1
+else 
+    set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/sub_lib_list`
+    if (${status}) then
+        set exit_status = 1
+        goto cleanup
+    endif 
+    
+    if (${too_old}) then
+        ${WARN_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 updating ${cwd}/Include_lines/sub_libs_needed becsuse it is still older than ${cwd}/sub_lib_list."
+        set update_sub_libs_needed = 1
+    endif 
 endif 
 
 if (! -e Makefile-dirs) then 
@@ -271,25 +299,30 @@ if (${update_sub_libs_needed}) then
     
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 finished updating Include_lines/sub_libs_needed in directory ${cwd}. " 
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script build_include_lines_2 now needs to run build_makefile_dirs in ${cwd}."
-else 
-    # It seems sub_libs_needed does not need updating, but the timestamp could
-    # be too old if the process building it previously died. We used to simply
-    # touch it, but this causes extra linking. The exact details that inspired
-    # this touch are now murky, but we can at least check that it is newer than
-    # include_lines. 
-
-    set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/include_lines`
-    if (${status}) then
-        set exit_status = 1
-        goto cleanup
-    endif 
-    
-    if (${too_old}) then
-        ${WARN_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 noting that sub_libs_needed is still older than include_lines."
-        ${WARN_ECHO} "${VERBOSE_INDENT}Touching it in the hope that the process building it previously died, but it is OK."
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Touching ${cwd}/Include_lines/sub_libs_needed." 
-        ${IVI_TOUCH} "Include_lines/sub_libs_needed"
-    endif 
+# else 
+#     # It seems sub_libs_needed does not need updating, but the timestamp could
+#     # be too old if the process building it previously died OR include lines got
+#     # updated by sub_libs_needed dod not need to be updated --- DOES THIS
+#     # HAPPEN? IS IT A BUG?
+#     #
+#     # We used to simply touch it, but this causes extra linking. The exact
+#     # details that inspired this touch are now murky, but we can at least check
+#     # that it is newer than include_lines. 
+# 
+#     set too_old = `${MAKE_SCRIPT_PATH}test_older_than Include_lines/sub_libs_needed Include_lines/include_lines`
+#     if (${status}) then
+#         set exit_status = 1
+#         goto cleanup
+#     endif 
+#     
+#     if (${too_old}) then
+#         ${WARN_ECHO} "${VERBOSE_INDENT}Script build_include_lines_2 noting that ${cwd}/sub_libs_needed is still older than ${cwd}/include_lines."
+#         set exit_status = 1 
+#         goto cleanup
+# #         exit 1
+# #         ${WARN_ECHO} "${VERBOSE_INDENT}Touching ${cwd}/Include_lines/sub_libs_needed in the hope that the process building it previously died, but it is OK."
+# #         ${IVI_TOUCH} "Include_lines/sub_libs_needed"
+#     endif 
 endif 
 
 if (${update_makefile_dirs}) then

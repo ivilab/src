@@ -1,5 +1,49 @@
 #!/bin/tcsh -f 
 
+##############################################################################
+#
+# Identification:
+#     A script to permit execution and link executables and libraries to the
+#     current directory
+#
+# Usage:
+#     finish_executable {exec_path} {top_level_name} 
+#
+# Description:
+#     This script ensures exectubles are permitted for execution, and links them
+#     to the current directory under the control of user setaable environment
+#     variables. It is used by the build system, and likely has no other use. We
+#     overload it so that it does both program executables and libraries.
+#     Libraries are also permitted executable as a side effect, which we could
+#     disable, but one can imagine shared libraries needed this on some systems
+#     (I have not checked this). 
+#
+#     We do this linking process because we want to maintain multiple instances
+#     of objects (e.g., dev and prodcution). It is possible to manage this in a
+#     cleaner way by changing your path when changing the build parameter, which
+#     is what Kobus does via scripts. However, folks newer to the system may
+#     wonder where the exectuble that was just built lives, as the path to it is
+#     a bit obscure. Hence our default is to make the links. 
+#
+#     The following environment variables are consulted in order when the are
+#     set to 1. Setting them anything other than 0 will typically have the same
+#     effect, but setting to zero will be interpreted as not being set.
+#     |    KJB_ENVIRONMENT
+#     |    DONT_LINK_EXECUTABLE 
+#     |    FORCE_LINK_EXECUTABLE
+#     |    FORCE_COPY_EXECUTABLE
+#     The first variable identifies use of Kobus's login scripts, which acts
+#     like setting the second variable, DONT_LINK_EXECUTABLE. The second asks
+#     for no linking in cases where doing so is the default. The third asks for
+#     linking over-riding other indications, and the fourth asks for a copy
+#     instead.  The fourth variable is mostly used for shared objects, and is
+#     the default for "make py_mod" 
+#
+# Author:
+#     Kobus Barnard 
+#
+##############################################################################
+
 ${VERBOSE_ECHO} "Entering script finish_executable in directory ${cwd} with args: $*"
 
 if ($# != 2) then
@@ -8,7 +52,8 @@ if ($# != 2) then
 endif 
 
 set exec_path = "$1"
-set exec_name = "$2"
+set exec_name = `echo ${exec_path} | ${IVI_SED} 's#^.*/##'`
+set top_level_name = "$2"
 
 ${IVI_PERMIT_EXECUTION} "${exec_path}" 
 if (${status}) then
@@ -17,8 +62,8 @@ if (${status}) then
 endif
 
 set link_to_top = 1
+set copy_to_top = 0
 
-#
 # The following could be made fancier by consulting the currently inactive
 # script:
 #     check_executable_path
@@ -49,9 +94,6 @@ else
     ${VERBOSE_ECHO_2} "DONT_LINK_EXECUTABLE is not set in script finish_executable."
 endif 
 
-# Currently, FORCE_LINK_EXECUTABLE is only used in this script. It is not clear
-# if this should override DONT_LINK_EXECUTABLE or the other way arround. 
-#
 if ($?FORCE_LINK_EXECUTABLE) then
     ${VERBOSE_ECHO_2} "FORCE_LINK_EXECUTABLE is set to ->${FORCE_LINK_EXECUTABLE}<- in script finish_executable."
 
@@ -65,6 +107,19 @@ else
     ${VERBOSE_ECHO_2} "FORCE_LINK_EXECUTABLE is not set in script finish_executable."
 endif 
 
+if ($?FORCE_COPY_EXECUTABLE) then
+    ${VERBOSE_ECHO_2} "FORCE_COPY_EXECUTABLE is set to ->${FORCE_COPY_EXECUTABLE}<- in script finish_executable."
+
+    # FORCE_COPY_EXECUTABLE is a flag, either it is set or not. But if we
+    # forget that, and set it to 0, then we probably are trying to unset it.
+    #
+    if ("${FORCE_COPY_EXECUTABLE}" != 0) then 
+        set copy_to_top = 1
+    endif 
+else
+    ${VERBOSE_ECHO_2} "FORCE_COPY_EXECUTABLE is not set in script finish_executable."
+endif 
+
 pushd ${LD_OBJ_TOP_DIR} > /dev/null
     ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}make_link ${LD_OBJ_SUB_DIR} ${EXEC_LINK_NAME}
     if (${status}) then
@@ -73,60 +128,63 @@ pushd ${LD_OBJ_TOP_DIR} > /dev/null
      endif 
 popd > /dev/null
 
-if (-e "${exec_name}") then
-    if (! -l "${exec_name}") then
-        ${WARN_ECHO} "Executable ${exec_name} exists and is not a link."
-        ${WARN_ECHO} "Forcing removal of ${exec_name} to reduce confusion due to apparantly being up to date."
-    else if (! ${link_to_top}) then
-        ${WARN_ECHO} "Removing link ${exec_name} as we are not linking executables."
+if (${copy_to_top}) then 
+    if (! $?IVI_QUIET) then 
+        echo "Copying ${EXEC_LINK}/${exec_name} to ${top_level_name} in ${cwd}."
+        echo "This can be disabled by 'unsetenv FORCE_COPY_EXECUTABLE'"
+    endif
+
+    ${IVI_PERMIT_EXECUTION} "${top_level_name}" 
+
+    if (-l "${top_level_name}") then
+        ${WARN_ECHO} "Removing ${top_level_name} as we are copying executables."
+        ${IVI_RM} "${top_level_name}"
     endif 
 
-    ${IVI_RM} "${exec_name}"
-endif 
-
-if (${link_to_top}) then
+    ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}copy_if_different ${EXEC_LINK}/${exec_name} ${top_level_name}
+    if (${status}) then
+        ${P_STDERR} "Copy command failed in script finish_executable."
+        ${P_STDERR} "Full failed command: ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}copy_if_different ${EXEC_LINK}/${top_level_name} ${top_level_name}"
+        exit 1
+     endif 
+else if (${link_to_top}) then 
     if (! $?IVI_QUIET) then 
-        echo "Linking executable ${EXEC_LINK}/${exec_name} to ./${exec_name}."
+        echo "Linking ${EXEC_LINK}/${exec_name} to ${top_level_name} in ${cwd}."
         echo "This can be disabled by 'unsetenv FORCE_LINK_EXECUTABLE; setenv DONT_LINK_EXECUTABLE 1'"
     endif
 
-
-    ${IVI_LN} "${EXEC_LINK}/${exec_name}" .
+    ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}make_link ${EXEC_LINK}/${exec_name} ${top_level_name}
     if (${status}) then
         ${P_STDERR} "Link command failed in script finish_executable."
-        ${P_STDERR} "Full failed command: ${IVI_LN} ${EXEC_LINK}/${exec_name} . "
+        ${P_STDERR} "Full failed command: ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}make_link ${EXEC_LINK}/${exec_name} ${top_level_name}"
         exit 1
      endif 
+else if (-l "${top_level_name}") then
+    ${WARN_ECHO} "Removing ${top_level_name} as we are not linking or copying executables."
+    ${IVI_RM} "${top_level_name}"
+else if (-e "${top_level_name}") then
+    ${WARN_ECHO} "${top_level_name} might be stale as we are not linking or copying executables."
+endif 
 
-    set is_dylib = `echo ${exec_name} | grep -c '\.dylib$'`
-    set is_so = `echo ${exec_name} | grep -c '\.so$'`
-    set is_archive = `echo ${exec_name} | grep -c '\.a$'`
-    
-    if ((${is_dylib}) || (${is_so}) || (${is_archive})) then
-        set base_name = `echo ${exec_name} | sed 's/\.[^\.][^\.]*$//'`
+# This links the library base name to the library we build last. It is not clear
+# whether we need the following, or even if we should have it. 
 
+set is_dylib = `echo ${top_level_name} | grep -c '\.dylib$'`
+set is_so = `echo ${top_level_name} | grep -c '\.so$'`
+set is_archive = `echo ${top_level_name} | grep -c '\.a$'`
+
+if ((${is_dylib}) || (${is_so}) || (${is_archive})) then
+    # set base_name = `echo ${top_level_name} | sed 's/\.[^\.][^\.]*$//'`
+    set base_name = `echo ${top_level_name} | sed 's/^\([^\.]*\).*$/\1/'`
+
+    if ((${copy_to_top}) || (${link_to_top})) then 
         if (! $?IVI_QUIET) then 
-            echo "Linking library ${exec_name} to ${base_name}."
+            echo "Linking library ${top_level_name} to ${base_name}."
         endif 
-        
-        if (-e "${base_name}") then
-            if (! -l "${base_name}") then
-                ${WARN_ECHO} "Executable ${base_name} exists and is not a link."
-                ${WARN_ECHO} "Forcing removal of ${base_name} to reduce confusion due to apparantly being up to date."
-            endif 
-
-            ${IVI_RM} "${base_name}"
-            if (${status}) then
-                ${P_STDERR} "Command failed in script finish_executable: ${IVI_RM} ${base_name}"
-                exit 1
-             endif 
-        endif 
-
-        ${IVI_LN} "${exec_name}" "${base_name}"
-        if (${status}) then
-            ${P_STDERR} "Link command failed in script finish_executable: ${IVI_LN} ${exec_name} ${base_name}"
-            exit 1
-         endif 
+        ${MAKE_SCRIPT_PATH}ivi_lock 60 ${MAKE_SCRIPT_PATH}make_link "${top_level_name}" "${base_name}"
+    else if (-l "${base_name}") then 
+        ${WARN_ECHO} "Removing ${base_name} as we are not linking or copying executables."
+        ${IVI_RM} "${base_name}"
     endif 
 endif 
 

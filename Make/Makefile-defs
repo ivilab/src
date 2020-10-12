@@ -68,7 +68,7 @@ WITH_LIBS_HAVE = \
                  $(WITH_LIBS_HAVE_XSD) \
                  $(WITH_LIBS_HAVE_XERCES) \
                  $(WITH_LIBS_HAVE_PYTHON) \
-                 $(WITH_LIBS_HAVE_PBIND11) \
+                 $(WITH_LIBS_HAVE_PYBIND11) \
                  $(WITH_LIBS_HAVE_WN) \
                  $(WITH_LIBS_HAVE_KDTREEXX) \
                  $(WITH_LIBS_HAVE_ANN) \

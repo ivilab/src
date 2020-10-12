@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25853 2020-10-07 14:28:36Z kobus $
+# $Id: Makefile-program 25857 2020-10-12 19:36:45Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -1002,23 +1002,36 @@ PROG_LIB_SO_NAME = $(PROG_LIB_NAME).$(DYNAMIC_SUFFIX)
 PROG_LIB_SO = $(LD_OBJ_DIR)$(PROG_LIB_SO_NAME)
 
 ################################################################################
+#                       Python module for calling C/C++ code from python
+
+# This is much like making a shared library, but we want to get a copy (not a
+# link), and we want the python sanctioned name. 
+
+pb11 : Makefile-depend $(PROG_LIB_SO) 
+	$(MAKE_SCRIPT_PATH)finish_executable $(PROG_LIB_SO) $(PYBIND11_MODULE)$(PYTHON_SO_SUFFIX)
+
+################################################################################
 #                       Shared library
-#
-shared: Makefile-depend $(PROG_LIB_SO)
+
+shared: Makefile-depend $(PROG_LIB_SO) 
+	@$(ECHO_IF_VERBOSE) "Calling finish_executable unconditionally, as make does not know when it is needed," 
+	@$(MAKE_SCRIPT_PATH)finish_executable $(PROG_LIB_SO) $(PROG_LIB_SO_NAME)
 
 $(PROG_LIB_SO) : Include_lines/sub_libs_needed Include_lines/file_list $(LD_OBJ_DIR)ld_dir_made $(PROG_LIB_SHARED_OBS) $(SUB_LIB_SHARED_OBS)
 	$(IVI_RM) $@
 	@$(ECHO_UNLESS_QUIET) Building a shared library from lots of library files with the following command with files omitted. 
 	@$(ECHO_UNLESS_QUIET) $(IVI_LD) $(LD_SHARED_FLAGS) $(EXTERNAL_LD_SHARED_FLAGS) $(SUB_LIB_EXTERNAL_LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ 
-	@$(IVI_LD) $(LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ \
+	$(IVI_LD) $(LD_SHARED_FLAGS) $(EXTERNAL_LD_SHARED_FLAGS) $(SUB_LIB_EXTERNAL_LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ \
         $(PROG_LIB_SHARED_OBS) $(SUB_LIB_SHARED_OBS)
-	$(MAKE_SCRIPT_PATH)finish_executable $@ $(PROG_LIB_SO_NAME)
 	$(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################
 #                       Static library
-#
+
 static: Makefile-depend $(PROG_LIB_ARCHIVE)
+	@$(ECHO_IF_VERBOSE) "Calling finish_executable unconditionally, as make does not know when it is needed," 
+	@$(MAKE_SCRIPT_PATH)finish_executable $(PROG_LIB_SO) $(PROG_LIB_SO_NAME)
+	@$(MAKE_SCRIPT_PATH)finish_executable $(PROG_LIB_ARCHIVE) $(PROG_LIB_ARCHIVE_NAME)
 
 $(PROG_LIB_ARCHIVE) : Include_lines/sub_libs_needed Include_lines/file_list $(LD_OBJ_DIR)ld_dir_made $(PROG_LIB_OBS) $(SUB_LIB_OBS)
 	$(IVI_RM) $@
@@ -1026,7 +1039,6 @@ $(PROG_LIB_ARCHIVE) : Include_lines/sub_libs_needed Include_lines/file_list $(LD
 	@$(ECHO_UNLESS_QUIET) $(IVI_AR) $@ 
 	@$(IVI_AR) $@ $(PROG_LIB_OBS) $(SUB_LIB_OBS) 
 	@$(IVI_RANLIB)  $@
-	$(MAKE_SCRIPT_PATH)finish_executable $@ $(PROG_LIB_ARCHIVE_NAME)
 	$(NULL_TO_MAKE_BLANK_LINE)
 
 ################################################################################

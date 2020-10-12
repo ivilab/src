@@ -699,6 +699,31 @@ while ($count <=  ${num_args})
                 set arg = "shared"
             endif
         endif 
+    else if ("${arg}" == "pb11") then
+        set count_pbind11_modules = 0
+        set source_files = `${MAKE_SCRIPT_PATH}stream_file_names -s -h`
+
+        foreach source_file (${source_files})
+            set have_pbind11_module = `${IVI_GREP} -c '^ *PYBIND11_MODULE([A-Za-z][A-Za-z0-9_].*)' ${source_file}`
+
+            if (${have_pbind11_module}) then
+                @ count_pbind11_modules += ${have_pbind11_module}
+                set pybind11_source_file = "${source_file}"
+            endif 
+        end 
+            
+        # echo count_pbind11_modules: $count_pbind11_modules
+
+        if (${count_pbind11_modules} != 1) then 
+            ${P_STDERR} "Target pb11 assumes exactly one C/C++ file with exactly one PYBIND11_MODULE() directive."
+            ${P_STDERR} "Script build-2 found ${count_pbind11_modules} such lines in ${cwd}."
+            exit 1
+        endif 
+        
+        setenv PYBIND11_MODULE `${IVI_GREP} '^ *PYBIND11_MODULE(.*)' ${pybind11_source_file} | ${IVI_SED} 's/^ *PYBIND11_MODULE(\([A-Za-z][A-Za-z0-9_]*\).*/\1/'`
+        setenv FORCE_COPY_EXECUTABLE 1       
+
+        ${VERBOSE_ECHO} "Script build-2 using PYBIND11_MODULE: ${PYBIND11_MODULE}"
     else if ("${arg}" == "doc") then
         set need_depend = 1
         set have_cpp = `${MAKE_SCRIPT_PATH}stream_file_names -doxygen -t`
@@ -1331,7 +1356,14 @@ while (${try_count} <= 4)
         if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_1.res"
         ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
         if (${status}) then
-            ${P_STDERR} "Initial build of 'Makefile' failed in ${cwd}, but that is OK, it might just mean that we are missing some makefiles."
+            ${P_STDERR} "Initial build of 'Makefile' failed in ${cwd}."
+            if ($?SKIP_DEPEND_RETRY) then
+                ${P_STDERR} "Skipping trying again because SKIP_DEPEND_RETRY is set." 
+                set exit_status = 1
+                break
+            else 
+                ${P_STDERR} "Trying some more times as it likely means that we are missing some rebuildable makefiles."
+            endif 
 
             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_2.res"
             ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
@@ -1811,7 +1843,7 @@ while (${try_count} <= 4)
 
     if ($?SKIP_DEPEND_RETRY) then
         ${P_STDERR} "Skipping retry of building makefiles, as SKIP_DEPEND_RETRY is set."
-        ${P_STDERR} "Perhaps a 'make depend_clean' is needed, and/or cache cleaning."
+        ${P_STDERR} "Perhaps a 'make depend_very_clean' and/or cache cleaning is needed."
         ${P_STDERR} " "
         set exit_status = 1
         break
