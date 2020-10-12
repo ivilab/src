@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25857 2020-10-12 19:36:45Z kobus $
+# $Id: Makefile-program 25859 2020-10-12 22:18:36Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -1002,11 +1002,16 @@ PROG_LIB_SO_NAME = $(PROG_LIB_NAME).$(DYNAMIC_SUFFIX)
 PROG_LIB_SO = $(LD_OBJ_DIR)$(PROG_LIB_SO_NAME)
 
 ################################################################################
-#                       Python module for calling C/C++ code from python
+#        Python modules for calling C/C++ code from python in two ways
 
-# This is much like making a shared library, but we want to get a copy (not a
+# These are much like making a shared library, but we want to get a copy (not a
 # link), and we want the python sanctioned name. 
 
+.PHONY : pylib
+pylib : Makefile-depend $(PROG_LIB_SO) 
+	$(MAKE_SCRIPT_PATH)finish_executable $(PROG_LIB_SO) $(PROG_LIB_NAME)$(PYTHON_SO_SUFFIX)
+
+.PHONY : pb11
 pb11 : Makefile-depend $(PROG_LIB_SO) 
 	$(MAKE_SCRIPT_PATH)finish_executable $(PROG_LIB_SO) $(PYBIND11_MODULE)$(PYTHON_SO_SUFFIX)
 
@@ -1021,7 +1026,7 @@ $(PROG_LIB_SO) : Include_lines/sub_libs_needed Include_lines/file_list $(LD_OBJ_
 	$(IVI_RM) $@
 	@$(ECHO_UNLESS_QUIET) Building a shared library from lots of library files with the following command with files omitted. 
 	@$(ECHO_UNLESS_QUIET) $(IVI_LD) $(LD_SHARED_FLAGS) $(EXTERNAL_LD_SHARED_FLAGS) $(SUB_LIB_EXTERNAL_LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ 
-	$(IVI_LD) $(LD_SHARED_FLAGS) $(EXTERNAL_LD_SHARED_FLAGS) $(SUB_LIB_EXTERNAL_LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ \
+	@$(IVI_LD) $(LD_SHARED_FLAGS) $(EXTERNAL_LD_SHARED_FLAGS) $(SUB_LIB_EXTERNAL_LD_SHARED_FLAGS) $(LOAD_DIRS) $(LIBS) $(STD_LIBS) $(LD_OUTPUT_FLAG) $@ \
         $(PROG_LIB_SHARED_OBS) $(SUB_LIB_SHARED_OBS)
 	$(NULL_TO_MAKE_BLANK_LINE)
 

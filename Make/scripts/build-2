@@ -699,6 +699,8 @@ while ($count <=  ${num_args})
                 set arg = "shared"
             endif
         endif 
+    else if (("${arg}" == "py_lib") || ("${arg}" == "pylib"))  then
+        setenv FORCE_COPY_EXECUTABLE 1       
     else if ("${arg}" == "pb11") then
         set count_pbind11_modules = 0
         set source_files = `${MAKE_SCRIPT_PATH}stream_file_names -s -h`
