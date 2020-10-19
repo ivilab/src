@@ -479,9 +479,21 @@ set need_depend = 0
 
 while ($count <=  ${num_args}) 
     set arg = $argv[${count}]
+    set test_without_input = 0
+
+    @ count ++
 
     foreach test_target_type (${test_target_prefixes} ${test_target_suffixes})
         set part_one = `echo $arg | sed "s/\.${test_target_type}${dollar}//"`
+
+        if ("${test_target_type}" == "${part_one}") then
+            if (! -d "test_input") then
+                ${ECHO_UNLESS_QUIET} "Build of target ${arg} exiting early in ${cwd} as there is no test_input directory."
+                set test_without_input = 1
+                break
+            endif 
+        endif 
+
         if ("${part_one}" != "${arg}") then
             ${VERBOSE_ECHO} "Changing arg '${arg}' to '${test_target_type}.${part_one}'"
             set arg = "${test_target_type}.${part_one}"
@@ -489,18 +501,28 @@ while ($count <=  ${num_args})
         endif
     end
 
+    if (${test_without_input}) continue
+
     foreach test_target_type (${test_target_prefixes} ${test_target_suffixes})
         set next_arg = `echo $arg | sed "s/${test_target_type}\.//"`
         if ("${next_arg}" != "${arg}") then
             ${VERBOSE_ECHO} "Breaking arg '${arg}' into '${test_target_type}' and '${next_arg}'"
             set arg = "${test_target_type}"
-            break
         else 
             set next_arg = ""
         endif 
+
+        if ("${test_target_type}" == "${arg}") then
+            if (! -d "test_input") then
+                ${ECHO_UNLESS_QUIET} "Build of target ${arg} exiting early in ${cwd} as there is no test_input directory."
+                set test_without_input = 1
+            endif 
+
+            break
+        endif 
     end
 
-    @ count ++
+    if (${test_without_input}) continue
 
     # If multiple make targets are being processed, then we need to make sure
     # that ones that forced settings do not affect the others. 
@@ -778,6 +800,12 @@ while ($count <=  ${num_args})
                     set arg = "${arg} test_runs/${prog}/${test_instance}/regress/${LD_OBJ_DIR}regression_test_passed"
                 end
             endif
+
+            if ("${arg}" == "") then
+                ${P_STDERR} "No regress instances found for ${prog}"
+                ${P_STDERR} " "
+                exit 1
+            endif 
         endif 
     else if ("${arg}" == "test_svn")  then
         # No need_depend because the test Makefiles are separated. But they do
@@ -805,9 +833,6 @@ while ($count <=  ${num_args})
                 exit 1
             endif 
         endif 
-    else if ( ("${arg}" == "regress")  || ("${arg}" == "regress_clean") )  then
-        # Probably need_depend_bootstrap would suffice. 
-        set need_depend = 1
     else if (("${arg}" == "test_clean") || ("${arg}" == "test_very_clean") || ("${arg}" == "test_invalid")  || ("${arg}" == "regress_clean"))  then
         set need_depend_bootstrap = 1
         
@@ -1032,9 +1057,9 @@ while (${try_count} <= 4)
                 ${MAKE_SCRIPT_PATH}build_library_makefile_2 
 
                 if (${status}) then
-                    set exit_status = 1
-                    ${P_STDERR} "Building Makefile-2 in ${cwd} failed."
                     # If this fails, it is not likely that retry will help. 
+                    ${P_STDERR} "Building Makefile-2 in ${cwd} failed."
+                    set exit_status = 1
                     break
                 else 
                     ${VERBOSE_ECHO_2} "Script build-2 successfully rebuilt ${cwd}/Makefile-2."
@@ -1084,9 +1109,9 @@ while (${try_count} <= 4)
                 ${MAKE_SCRIPT_PATH}build_makefile_include 
 
                 if (${status}) then
-                    set exit_status = 1
-                    ${P_STDERR} "Building Makefile-include in ${cwd} failed."
                     # If this fails, it is not likely that retry will help. 
+                    ${P_STDERR} "Building Makefile-include in ${cwd} failed."
+                    set exit_status = 1
                     break
                 else 
                     ${VERBOSE_ECHO_2} "Script build-2 successfully rebuilt ${cwd}/Makefile-include."
@@ -1359,18 +1384,26 @@ while (${try_count} <= 4)
         ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
         if (${status}) then
             ${P_STDERR} "Initial build of 'Makefile' failed in ${cwd}."
-            if ($?SKIP_DEPEND_RETRY) then
-                ${P_STDERR} "Skipping trying again because SKIP_DEPEND_RETRY is set." 
-                set exit_status = 1
-                break
-            else 
+#             if ($?SKIP_DEPEND_RETRY) then
+#                 ${P_STDERR} "Skipping trying again because SKIP_DEPEND_RETRY is set." 
+#                 set exit_status = 1
+#                 break
+#             else 
                 ${P_STDERR} "Trying some more times as it likely means that we are missing some rebuildable makefiles."
-            endif 
+#             endif 
 
             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_2.res"
             ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
             if (${status}) then
                 ${P_STDERR} "Second build of 'Makefile' failed in ${cwd}, but often it needs to be done three times. " 
+
+                if ($?SKIP_DEPEND_RETRY) then
+                    ${P_STDERR} "Skipping trying again because SKIP_DEPEND_RETRY is set." 
+                    set exit_status = 1
+                    break
+                else 
+                    ${P_STDERR} "Trying again as it sometimes needs to be done three times. " 
+                endif 
 
                 if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_Makefile_${try_count}_3.res"
                 ${ivi_depend_make} -f Makefile-2 Makefile |& ${IVI_TEE} ${make_log_file}
@@ -1501,13 +1534,11 @@ while (${try_count} <= 4)
             pushd ${MAKE_PATH} > /dev/null
                 pushd util > /dev/null
                     pushd c2man-2.40-kobus > /dev/null
-                        if ($?IVI_VERBOSE) then
-                            echo " "
-                            echo "Script build-2 is building utilities in ${cwd}." 
-                        endif 
+                        ${VERBOSE_ECHO} " "
+                        ${VERBOSE_ECHO} "Script build-2 is building c2man in ${cwd}." 
                          
                         if ($?DRY_RUN) then
-                            echo "DRY: (setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin)"
+                            echo "DRY: (setenv CURRENT_PATH ${cwd}/; setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} bin)"
                         else
                             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_c2man_bin_${try_count}.res"
 
@@ -1522,7 +1553,7 @@ while (${try_count} <= 4)
                             # it at some point to be more consistent with other
                             # program dirs. 
                             #
-                            (   setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
+                            (   setenv CURRENT_PATH "${cwd}/"; setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
                                 source ${MAKE_PATH}init_compile; \
                                 if ("${IVI_CC}" != "${save_ivi_cc}") ${WARN_ECHO} "Switching compiler from ${save_ivi_cc} to ${IVI_CC} for doc utilities"; \
                                 ${IVI_MAKE_SERIAL} bin \
@@ -1541,7 +1572,7 @@ while (${try_count} <= 4)
                         ${VERBOSE_ECHO} "Script build-2 is building utilities in ${cwd}." 
 
                         if ($?DRY_RUN) then
-                            echo "DRY: (setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} -f Makefile-2 bin)"
+                            echo "DRY: (setenv CURRENT_PATH ${cwd}/; setenv IVI_CC ''; setenv PRODUCTION 1; setenv BUILD_BIN_PATH ${MAKE_BIN_PATH}; source ${MAKE_PATH}init_compile; ${IVI_MAKE_SERIAL} -f Makefile-2 bin)"
                         else
                             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_util_bin_${try_count}.res"
 
@@ -1549,7 +1580,7 @@ while (${try_count} <= 4)
                             # compiler and production mode. The setting of IVI_CC to empty asks
                             # init_compile to choose the compiler. 
                             #
-                            (   setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
+                            (   setenv CURRENT_PATH "${cwd}/"; setenv IVI_CC ""; setenv PRODUCTION 1; setenv BUILD_BIN_PATH "${MAKE_BIN_PATH}"; \
                                 source ${MAKE_PATH}init_compile; \
                                 if ("${IVI_CC}" != "${save_ivi_cc}") ${WARN_ECHO} "Switching compiler from ${save_ivi_cc} to ${IVI_CC} for doc utilities"; \
                                 ${IVI_MAKE_SERIAL} -f Makefile-2 bin |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file} \
@@ -1696,12 +1727,16 @@ while (${try_count} <= 4)
                     ${IVI_MAKE} -q ${prog} -f Makefile-2 |& ${suppress_jobserver_msg}
                     if (! ${status}) then
                         if ( ! $?IVI_QUIET ) then
-                            echo "Script build-2 reports target [ ${prog} ] is up to date."
+                            echo "Script build-2 reports prerequisite ${prog} for target ${arg} is up to date."
                         endif 
                     else 
                         if ($?DRY_RUN) then
                             echo "DRY: ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg}"
                         else
+                            if ( ! $?IVI_QUIET ) then
+                                echo "Script build-2 building prerequisite ${prog} for target ${arg}."
+                            endif 
+
                             if ($?LOG_MAKE) set make_log_file = "${MAKE_LOG_PATH}make_prog_${try_count}.res"
                             ${IVI_MAKE} -f Makefile-2 ${prog} |& ${suppress_jobserver_msg} |& ${IVI_TEE} ${make_result_temp_file} |& ${IVI_TEE} ${make_log_file}
                             set make_status = ${status}

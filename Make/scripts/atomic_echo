@@ -81,7 +81,7 @@ if ("${existing_id}" != "${id}") then
     exit 1
 endif 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Handler for ${id} SUCCESSFULLY set lock file ${lock_file} contents to: `cat ${lock_file}`"
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Handler for ${id} SUCCESSFULLY set lock file ${lock_file} contents to: `cat ${lock_file}`"
 
 ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Leaving atomic_echo $*"
 

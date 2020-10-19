@@ -930,7 +930,7 @@ COMPILE_INFO = \
 # possibly buggy system header files takes a lot of trickery. There is probably
 # too much trickery, but redoing it differently (using doxygen?) would be a lot
 # of work.
-#
+
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.c.made : $(LIB_COMPONENT_SRC_DIR)Makefile-library $(MAKE_BIN_PATH)c2man $(MAKE_BIN_PATH)include_def $(MAKE_BIN_PATH)c2man_in
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
@@ -980,7 +980,7 @@ $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.c.made : $(LIB_COMPONENT_SRC_DIR)%.c
 # Header file documentation. We coerce c2man to documenting header files
 # properly through a variety of tricks. There is probably too much trickery, but
 # redoing it differently (using doxygen?) would be a lot of work.
-#
+
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)*.h.made : $(MAKE_BIN_PATH)c2man $(MAKE_BIN_PATH)include_def  $(MAKE_BIN_PATH)c2man_in	$(MAKE_SCRIPT_PATH)fix_header_man_pages $(MAKE_SCRIPT_PATH)fix_header_html_pages
 
 $(LIB_COMPONENT_SRC_DIR)$(MAKE_DOC_DIR)%.h.made : $(LIB_COMPONENT_SRC_DIR)%.h  

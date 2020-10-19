@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25857 2020-10-12 19:36:45Z kobus $
+# $Id: init_compile 25863 2020-10-19 15:10:34Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -17,7 +17,8 @@
 #     help if you are having trouble.  One example is that the library you are
 #     adding depends on another one. In this case, the dependency should already
 #     have been processed so that you can check on its existence. See, for
-#     example, LIB_LEVMAR which depends on LIB_LAPACK.
+#     example, LIB_LEVMAR which depends on LIB_LAPACK. Another non-standard case
+#     is for header only libraries. See, for example, LIB_PB
 # 
 #     Do a similar thing in Make/Makefile-defs, copying all strings that have
 #     XXX in them, and changing XXX to a string corresponding to the variable
@@ -193,9 +194,9 @@ else if (-d "/bin_gcc_preferred") then
     setenv PATH "/bin_gcc_preferred:${PATH}" 
 endif 
 
-${VERBOSE_ECHO} 
-${VERBOSE_ECHO} PATH for build is: ${PATH}
-${VERBOSE_ECHO} 
+${VERBOSE_ECHO_2} 
+${VERBOSE_ECHO_2} PATH for build is: ${PATH}
+${VERBOSE_ECHO_2} 
 
 ################################################################################
 
@@ -402,14 +403,14 @@ if ($do_cache ) then
                 # Providing some output (below) and an alternative for
                 # experimentation.
                 #
-                ${VERBOSE_ECHO} "Using alternative method for loading ALL_LIBS from cache."
+                ${VERBOSE_ECHO_2} "Using alternative method for loading ALL_LIBS from cache."
 
                 $IVI_CAT $cache_fname | grep ALL_LIBS > "${USER_TEMP_PATH}ivi_env.setenv_all_libs"
                 source "${USER_TEMP_PATH}ivi_env.setenv_all_libs"
 
                 if ($?ALL_LIBS) then 
-                    ${VERBOSE_ECHO} "Loading of ALL_LIBS from cache succeeded."
-                    ${VERBOSE_ECHO} "ALL_LIBS: ${ALL_LIBS}"
+                    ${VERBOSE_ECHO_2} "Loading of ALL_LIBS from cache succeeded."
+                    ${VERBOSE_ECHO_2} "ALL_LIBS: ${ALL_LIBS}"
                 else 
                     setenv ALL_LIBS ""
                     ${VERBOSE_ECHO} "Loading of ALL_LIBS from cache failed. Setting ALL_LIBS to empty string."
@@ -452,7 +453,7 @@ if ($do_cache ) then
             # environment variables by unsetting any variables we set above
             unsetenv ALL_LIBS
         else 
-            ${VERBOSE_ECHO} "Using already up to date cache file: ${cache_fname}."
+            ${VERBOSE_ECHO_2} "Using already up to date cache file: ${cache_fname}."
 
             source ${cache_fname}
             # We could be caching the fact that this fails. 
@@ -488,10 +489,10 @@ if ($do_cache ) then
                 endif
             endif
 
-            if ($?DO_CACHE_LOCK) then
-                ${VERBOSE_ECHO} "Removing the cache lock" 
-                ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
-            endif
+#             if ($?DO_CACHE_LOCK) then
+#                 ${VERBOSE_ECHO_2} "Removing the cache lock" 
+#                 ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
+#             endif
 
             ${VERBOSE_ECHO} "Early exit (status ${exit_status}) from init_compile due to cache being OK."
             goto very_end_of_script
@@ -9877,10 +9878,8 @@ if ((! ${NO_LIBS}) && ("${IVI_HAVE_PYTHON}" != "")) then
         set ivi_have_pybind11 = "-DIVI_HAVE_PYBIND11"
         set lib_pybind11 = ""
 
-#         # We depend on python headers. But do not link! 
-         set pybind11_inc_dir = "${pybind11_inc_dir}:${python_inc_dir}"
-#         set lib_pybind11 = "${lib_python}" 
-#         set pybind11_load_dir = "${python_load_dir}"
+        # We depend on python headers. But do not link! 
+        set pybind11_inc_dir = "${pybind11_inc_dir}:${python_inc_dir}"
        
         set needed_inc_dirs = "${needed_inc_dirs} ${pybind11_inc_dir}"
 
@@ -9905,8 +9904,8 @@ if ($?IVI_VERBOSE) then
     echo ""
     if (${NO_LIBS}) then
         echo "Script init_compile skipped LIB_PYBIND11 due to NO_LIBS"
-#     else if ("${IVI_HAVE_PYTHON}" == "") then
-#         echo "Script init_compile skipped LIB_PYBIND11 due to missing dependency (python)"
+    else if ("${IVI_HAVE_PYTHON}" == "") then
+        echo "Script init_compile skipped LIB_PYBIND11 due to missing dependency (python)"
     else if ("${IVI_HAVE_PYBIND11}" != "") then
         echo "Script init_compile found PYBIND11 headers"
         echo "    PYBIND11  |  LIB_PYBIND11: ${LIB_PYBIND11}"
@@ -9933,8 +9932,9 @@ endif
 # This template is for object code libraries (not header only libraries). If you
 # hack it for a header only library then you need to add the string "DUMMY" to
 # the library list. See the script code for pybind11 header file only library.
-# (The boost header only script code is more complex because we support multiple
-# versions of boost simulaneously). 
+# (You probably want to avoid studying the boost header only library script code
+# as it is more complex because we support multiple versions of boost
+# simulaneously). 
 #
 # Don't forget to update Makefile-defs, Makefile-program, IVI/Makefile-2, and
 # IVI_cpp/Makefile-2 (see comment block at the begining of this file). 
@@ -9960,7 +9960,7 @@ set xxx_load_dir = ""
 # be "" which has no effect. Most modules do not even do this because we just
 # started doing it this way. If you are confident this library does not, and
 # will not, ever have dependencies, then you could skip this. However, perhaps
-# this library depends on OPENCV and LAPACK. Then:
+# this library depends on OPENCV and LAPACK. Then we would use:
 #
 set dependencies = "OPENCV LAPACK"  
 set missing_dependencies = ""
@@ -10788,7 +10788,7 @@ endif
 very_end_of_script:
 
 if ($?DO_CACHE_LOCK) then
-    ${VERBOSE_ECHO} "Removing the cache lock" 
+    ${VERBOSE_ECHO_2} "Removing the cache lock" 
     ${MAKE_SCRIPT_PATH}ivi_lock_remove init_compile
 endif
 
@@ -10797,9 +10797,9 @@ unalias ivi_setenv
 if ($?IVI_VERBOSE) then
     set end_time = `date +%H:%M:%S`
     ${VERBOSE_ECHO} "Script init_compile finishing with status ${exit_status}"
-    ${VERBOSE_ECHO} "    Start time: ${start_time}"
-    ${VERBOSE_ECHO} "    End time:   ${end_time}"
-    ${VERBOSE_ECHO} " "
+    ${VERBOSE_ECHO_2} "    Start time: ${start_time}"
+    ${VERBOSE_ECHO_2} "    End time:   ${end_time}"
+    ${VERBOSE_ECHO_2} " "
 endif 
 
 exit ${exit_status}

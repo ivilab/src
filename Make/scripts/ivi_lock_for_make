@@ -40,7 +40,7 @@ if ($?IVI_SET_ECHO) then
     set echo
 endif 
 
-${VERBOSE_ECHO} ""
+${VERBOSE_ECHO_2} ""
 ${VERBOSE_ECHO} "${VERBOSE_INDENT}In ivi_lock_for_make with args: $*"
 
 if ($# < 3) then
@@ -117,7 +117,7 @@ if (${status}) then
 endif 
 
 set requesting_pid = `ps -p $$ -o ppid=`
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_label} for ${requesting_pid} working on target ${target} in ${cwd}."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make setting lock ${lock_label} for ${requesting_pid} working on target ${target} in ${cwd}."
 
 # This bit of shared code sets "safe_to_lock" and requires "lock_label".
 source ${MAKE_SCRIPT_PATH}check_for_deadlock
@@ -139,7 +139,7 @@ if (${safe_to_lock}) then
         goto cleanup
     endif 
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock ${lock_label} for target ${target} in ${cwd}"
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make got lock ${lock_label} for target ${target} in ${cwd}"
 
     if (-e "${target}") then 
         # I ran into a problem that the time stamp file could not be created
@@ -163,8 +163,8 @@ endif
 if ($already_built) then
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting ${target} ($cwd) was built while we waited for the lock (early exit)."
 else 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} ($cwd) still needs to be built."
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: ${full_cmd} in $cwd."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make reporting that ${target} ($cwd) still needs to be built."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make executing: ${full_cmd} in $cwd."
 
     if ($?IVI_VERBOSE) then
         set start_time = `${IVI_ECHO_TIME}`
@@ -176,9 +176,9 @@ else
     if ($?IVI_VERBOSE_2) then
         set end_time = `${IVI_ECHO_TIME}`
         set program_name = "$argv[3]"
-        echo "VB2: ${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} with time ${1} in $cwd with status ${exit_status}"
-        echo "VB2: ${VERBOSE_INDENT}Ivi_lock_for_make start time for ${program_name}: ${start_time}"
-        echo "VB2: ${VERBOSE_INDENT}Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make finished executing ${program_name} with time ${1} in $cwd with status ${exit_status}"
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Ivi_lock_for_make start time for ${program_name}: ${start_time}"
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Ivi_lock_for_make   end time for ${program_name}: ${end_time}"
     endif 
 endif 
 
@@ -190,17 +190,16 @@ else
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_for_make not removing lock because none was set due to deadlock risk."
 endif 
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Done with call to ivi_lock_for_make with args: $*"
-${VERBOSE_ECHO} ""
-
 cleanup: 
     ${IVI_RM} "${time_stamp_file}"
+    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_for_make done in ${cwd} with status ${exit_status} and args: $*"
+    ${VERBOSE_ECHO_2} ""
     exit ${exit_status}
 
 # We should not be here unless onintr
 
 ivi_lock_for_make_bail:
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_for make got an interrupt."
+    ${P_STDERR} "Process $$ doing ivi_lock_for make got an interrupt."
 
     # If we are not locking or even if we are, then the lock_file variable might not
     # be set when we got interrupted.

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile-program 25859 2020-10-12 22:18:36Z kobus $
+# $Id: Makefile-program 25863 2020-10-19 15:10:34Z kobus $
 #
 
 include $(MAKE_PATH)Makefile-defs
@@ -500,16 +500,13 @@ include Makefile-depend
 ################################################################################
 #
 # Build and include Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX).
-#
 
 # This is needed for Makefile-depend. 
 Include_lines/Makefile-libs-needed/Makefile-libs-needed-state$(VAR_CACHE_SUFFIX) : 
 	$(IVI_MKDIR) Include_lines
 	$(IVI_TOUCH_1990) $@
 
-
 # Dependencies on the tools needed to build it. 
-#
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : $(MAKE_PATH)init_compile $(IVI_BUILD_TOOLS) $(MAKE_PATH)Makefile-program
 
 Include_lines/Makefile-libs-needed/Makefile-libs-needed$(VAR_CACHE_SUFFIX) : Include_lines/include_lines

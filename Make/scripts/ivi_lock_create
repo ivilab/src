@@ -128,7 +128,7 @@ if (${status}) exit ${status}
 
 onintr ivi_lock_create_bail
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create using lock file ${lock_file} for ${requesting_pid} in ${cwd}"
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_create using lock file ${lock_file} for ${requesting_pid} in ${cwd}"
 
 if (($?PREFER_LOCKFILE_PROGS) && ("${IVI_LOCKFILE_CREATE_PATH}" != "") && ("${IVI_LOCKFILE_REMOVE_PATH}" != "")) then
     echo "UNTESTED: Process $$ running lock_create ${lock_label} in `pwd` using lockfile-progs"
@@ -147,7 +147,7 @@ else
     # often (e.g., mac) we do not have a good solution. The following is better
     # than nothing.
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process ${requesting_pid} handler running lock_create ${lock_label} in ${cwd} using IVI locking system."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process ${requesting_pid} handler running lock_create ${lock_label} in ${cwd} using IVI locking system."
 
     set start_time = `${IVI_ECHO_TIME}`
 
@@ -175,7 +175,7 @@ else
         # I do not know how likely this is to fail, or even to return success
         # without doing the right thing, but it seems to work on the mac. 
 
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${id} sleeping for ${sleep_time} seconds"
+        ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${id} sleeping for ${sleep_time} seconds"
         sleep ${sleep_time}
         @ time_waited += ${w}
 
@@ -186,19 +186,19 @@ else
         endif
 
         if (! -e "${lock_file}") then
-            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} noting that lockfile ${lock_file} does not exist."
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} noting that lockfile ${lock_file} does not exist."
             ${MAKE_SCRIPT_PATH}atomic_echo ${lock_file} "${id}" 
             set atomic_echo_status =  ${status}
 
             if (${atomic_echo_status}) then
-                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} failed to get lock. Geting back in the queue."
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} failed to get lock. Geting back in the queue."
                 continue
             else 
-                ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process ${requesting_pid} lock handler has set lock file ${lock_file} (contents `cat ${lock_file}`)."
+                ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process ${requesting_pid} lock handler has set lock file ${lock_file} (contents `cat ${lock_file}`)."
                 set got_it = 1
             endif
         else 
-            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} noting that lockfile ${lock_file} exits."
+            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} noting that lockfile ${lock_file} exits."
 
             set count = 0
 
@@ -213,7 +213,7 @@ else
                 @ block_cycle = ${count} % 20
 
                 if (${block_cycle} == 9) then
-                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} CHECKING up on lock file process on iteration ${count}." 
+                    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} checking up on lock file process on iteration ${count}." 
 
                     #  I have not found a safe way to ignore error output. 
                     set lock_id = `cat ${lock_file}`
@@ -286,7 +286,7 @@ else
 
                         if ($?LIMIT_LOCK_CREATE_RECURSION) then
                             ${WARN_ECHO} "Lock handler for ${requesting_pid} blocked a second recursive call into ivi_lock_create."
-                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Lock handler for ${requesting_pid} forcing remove of ${lock_file} instead of recursing again."
+                            ${WARN_ECHO} "Lock handler for ${requesting_pid} forcing remove of ${lock_file} instead of recursing again."
                             set really_remove_lock_file = 1
                         else
                             setenv LIMIT_LOCK_CREATE_RECURSION
@@ -331,9 +331,9 @@ else
                         if (${really_remove_lock_file}) then
                             ${IVI_RM} "${lock_file}"
                             ${IVI_RM} "${lock_file}.flock"
-                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create has removed lock file ${lock_file} as process ${lock_proc} does not exist."
+                            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_create has removed lock file ${lock_file} as process ${lock_proc} does not exist."
                         else
-                            ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script ivi_lock_create not removing lock file ${lock_file} as it seems that someone else did it."
+                            ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Script ivi_lock_create not removing lock file ${lock_file} as it seems that someone else did it."
                         endif 
 
                         if (${need_to_remove_rm_lock}) then
@@ -387,7 +387,7 @@ else
         if (${got_it}) break
     end
 
-    ${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ set lock with label ${lock_label} for process ${requesting_pid} in ${cwd}."
+    ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ set lock with label ${lock_label} for process ${requesting_pid} in ${cwd}."
     set end_time = `${IVI_ECHO_TIME}`
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ handling ${requesting_pid} lock_create start time: ${start_time}."
     ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ handling ${requesting_pid} lock_create   end time: ${end_time}."
@@ -401,7 +401,7 @@ exit ${exit_status}
 
 ivi_lock_create_bail:
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ doing ivi_lock_create got an interrupt."
+${P_STDERR} "Process $$ doing ivi_lock_create got an interrupt."
 
 # If we are not locking or even if we are, then the lock_file variable might not
 # be set when we got interrupted.

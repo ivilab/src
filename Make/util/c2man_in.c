@@ -43,6 +43,7 @@ int main(int argc, char** argv)
     int   doing_formatted = NOT_SET; 
     Bool  in_comment = FALSE;
     Bool  in_block = FALSE;
+    Bool  no_comment_substance = TRUE;
     int   first_pound_found = FALSE; /* Ignore copyright header. */
     int   has_index_field = FALSE; 
     FILE* index_fp      = NULL;
@@ -241,6 +242,7 @@ int main(int argc, char** argv)
              * ending one.  
             */ 
             in_comment = FALSE;
+            no_comment_substance = TRUE;
 
             /* If there is code after the the ending string, then we have an
              * issue. Check for this happening.  
@@ -259,7 +261,25 @@ int main(int argc, char** argv)
         }
         else if (in_comment) 
         {
-            ; /* EMPTY */   
+            if (    (no_comment_substance) 
+                 && (HEAD_CMP_EQ(line_pos + 2, "========================================"))
+               )
+            {
+                in_comment = FALSE;
+                in_block = TRUE; 
+                first_block_line = TRUE; 
+                doing_formatted = FALSE;
+                have_documenter = FALSE;
+                have_author = FALSE;
+                has_index_field = FALSE; 
+
+                /* We do not want extra stuff, like separator lines.  */ 
+                put_line("/*");
+            }
+            else if (strlen(line_pos) > 1)
+            {
+                no_comment_substance = FALSE;
+            }
         }
         else if (in_block) 
         {

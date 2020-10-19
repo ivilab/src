@@ -308,9 +308,16 @@ setenv PRODUCTION 1
 setenv NO_LIBS 0
 setenv NO_BOOST 0
 
+setenv SKIP_BROKEN_TESTS 1
+setenv SKIP_FAILING_TESTS 1
+setenv SKIP_SLOW_TESTS 1
+setenv SKIP_VALGRIND   1
+
 if (! $?FORCE_MAKE_IVI ) then
     setenv FORCE_MAKE_IVI 0
 endif 
+
+##############################################################################
 
 cd
 if (${status}) then

@@ -169,14 +169,14 @@ set exit_status = 0
 
 onintr ivi_lock_bail
 
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
+${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Process $$ running ${cmd_str} in `pwd` using IVI locking system."
 
 set requesting_pid = `ps -p $$ -o ppid=`
 
 if (${safe_to_lock}) then
     ${MAKE_SCRIPT_PATH}ivi_lock_create ${max_time_to_wait} ${lock_label} ${requesting_pid}
     if ($status) then 
-        ${VERBOSE_ECHO} "${VERBOSE_INDENT}Call to ivi_lock_create from ivi_lock failed."
+        ${P_STDERR} "Call to ivi_lock_create from ivi_lock failed."
         set exit_status = 1
     endif 
 else 
@@ -184,10 +184,10 @@ else
 endif  
 
 if (! ${exit_status}) then
-    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ executing ${full_cmd}"
+    ${VERBOSE_ECHO_2}  "${VERBOSE_INDENT}Process $$ executing ${full_cmd}"
     ${full_cmd} 
     set exit_status = $status 
-    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Executing ${full_cmd} had exit status ${exit_status}."
+    ${VERBOSE_ECHO_2}  "${VERBOSE_INDENT}Executing ${full_cmd} had exit status ${exit_status}."
 endif 
 
 if (${safe_to_lock}) then
@@ -197,10 +197,10 @@ else
 endif  
 
 if (! ${exit_status}) then 
-    ${VERBOSE_ECHO}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in ${cwd}."
+    ${VERBOSE_ECHO_2}  "${VERBOSE_INDENT}Process $$ successfully ran ${cmd_str} in ${cwd}."
 endif 
     
-${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing up ivi_lock $* with status ${exit_status}."
+${VERBOSE_ECHO} "${VERBOSE_INDENT}Process $$ finishing ivi_lock $* with status ${exit_status}."
 
 cleanup: 
 

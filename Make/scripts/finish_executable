@@ -162,8 +162,12 @@ else if (${link_to_top}) then
 else if (-l "${top_level_name}") then
     ${WARN_ECHO} "Removing ${top_level_name} as we are not linking or copying executables."
     ${IVI_RM} "${top_level_name}"
+else if ($?FORCE_REMOVE_EXECUTABLE) then
+    ${WARN_ECHO} "Removing ${top_level_name} due to FORCE_REMOVE_EXECUTABLE being set."
+    ${IVI_RM} "${top_level_name}"
 else if (-e "${top_level_name}") then
-    ${WARN_ECHO} "${top_level_name} might be stale as we are not linking or copying executables."
+    ${WARN_ECHO} "Executable ${top_level_name} might be stale as we are not linking or copying executables."
+    ${WARN_ECHO} "Setting FORCE_REMOVE_EXECUTABLE forces removal."
 endif 
 
 # This links the library base name to the library we build last. It is not clear
