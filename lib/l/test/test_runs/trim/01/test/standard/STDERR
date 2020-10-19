@@ -1,5 +1,5 @@
-<<TEST>> Parent process in create_system_command_process() is 56137 (IL4RT).
-<<TEST>> Child process in create_system_command_process() is 56138 (IL4RT).
+<<TEST>> Parent process in create_system_command_process() is 29098 (IL4RT).
+<<TEST>> Child process in create_system_command_process() is 29124 (IL4RT).
 (no-ivi) dbi: res is 3 on source line 57 of trim.c
 
 (no-ivi) dbs: line_ptr is -> p <- on source line 60 of trim.c
@@ -289,6 +289,6 @@ gen_trim_end
 (no-ivi) dbi: strlen(line_ptr) is 6 on source line 80 of trim.c
 (no-ivi) dbi: line_trim_len is 6 on source line 81 of trim.c
 (no-ivi) dbi: trim_count is 0 on source line 82 of trim.c
-<<TEST>> Begin cleaning up system command process (56138) (IL4RT).
+<<TEST>> Begin cleaning up system command process (29124) (IL4RT).
 <<TEST>> Wait result is 0 (IL4RT).
 <<TEST>> Done waiting for system command  process to finish (IL4RT).

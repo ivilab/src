@@ -1,5 +1,5 @@
 
-/* $Id: test_match.c 25592 2020-06-29 19:12:01Z kobus $ */
+/* $Id: test_match.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 
 /* =========================================================================== *
@@ -256,11 +256,14 @@ int main(int argc, char *argv[])
         {
             if (dbl_hungarian_row_vp->elements[ i ] != hungarian_row_vp->elements[ i ])
             {
-                dbp("****************************");
-                p_stderr("dbl_hungarian() and hungarian() have different assignments (%d x %d).\n", m, n); 
-                p_stderr("ABS_OF(dbl_hungarian_cost - hungarian_cost) / tol:  %.15e\n",  
+                dbp("IL4RT: ****************************");
+                p_stderr("IL4RT: dbl_hungarian() and hungarian() have different assignments (%d x %d).\n", m, n); 
+                p_stderr("IL4RT: ABS_OF(dbl_hungarian_cost - hungarian_cost) / tol:  %.15e\n",  
                          ABS_OF(dbl_hungarian_cost - hungarian_cost) / tol); 
-                dbp("****************************");
+                p_stderr("IL4RT: Not sufficient cause for failure.\n"); 
+
+                dbp("IL4RT: ****************************");
+
 
                 /*
                  * Not sufficient cause for failure.
@@ -307,11 +310,14 @@ int main(int argc, char *argv[])
         {
             if (hungarian_row_vp->elements[ i ] != jv_lap_row_vp->elements[ i ])
             {
-                dbp("****************************");
-                p_stderr("jv_lap() and hungarian() have different assignments (%d x %d).\n", m, n); 
-                p_stderr("ABS_OF(jv_lap_cost - hungarian_cost) / tol:  %.15e\n",  
+                dbp("IL4RT: ****************************");
+                p_stderr("IL4RT: jv_lap() and hungarian() have different assignments (%d x %d).\n", m, n); 
+                p_stderr("IL4RT: ABS_OF(jv_lap_cost - hungarian_cost) / tol:  %.15e\n",  
                          ABS_OF(jv_lap_cost - hungarian_cost) / tol); 
-                dbp("****************************");
+                p_stderr("IL4RT: Not sufficient cause for failure.\n"); 
+
+                dbp("IL4RT: ****************************");
+
 
                 /*
                  * Not sufficient cause for failure.
@@ -353,11 +359,14 @@ int main(int argc, char *argv[])
         {
             if (hungarian_row_vp->elements[ i ] != int_hungarian_row_vp->elements[ i ])
             {
-                dbp("****************************");
-                p_stderr("int_hungarian() and hungarian() have different assignments (%d x %d).\n", m, n); 
-                p_stderr("ABS_OF(int_hungarian_cost - hungarian_cost) / tol:  %.15e\n",  
+                dbp("IL4RT: ****************************");
+                p_stderr("IL4RT: int_hungarian() and hungarian() have different assignments (%d x %d).\n", m, n); 
+                p_stderr("IL4RT: ABS_OF(int_hungarian_cost - hungarian_cost) / tol:  %.15e\n",  
                          ABS_OF(int_hungarian_cost - hungarian_cost) / tol); 
-                dbp("****************************");
+                p_stderr("IL4RT: Not sufficient cause for failure.\n"); 
+
+                dbp("IL4RT: ****************************");
+
 
                 /*
                  * Not sufficient cause for failure.
@@ -402,11 +411,13 @@ int main(int argc, char *argv[])
         {
             if (hungarian_row_vp->elements[ i ] != int_jv_lap_row_vp->elements[ i ])
             {
-                dbp("****************************");
-                p_stderr("int_jv_lap() and hungarian() have different assignments (%d x %d).\n", m, n); 
-                p_stderr("ABS_OF(int_jv_lap_cost - hungarian_cost) / tol:  %.15e\n",  
+                dbp("IL4RT: ****************************");
+                p_stderr("IL4RT: int_jv_lap() and hungarian() have different assignments (%d x %d).\n", m, n); 
+                p_stderr("IL4RT: ABS_OF(int_jv_lap_cost - hungarian_cost) / tol:  %.15e\n",  
                          ABS_OF(int_jv_lap_cost - hungarian_cost) / tol); 
-                dbp("****************************");
+                p_stderr("IL4RT: Not sufficient cause for failure.\n"); 
+
+                dbp("IL4RT: ****************************");
 
                 /*
                  * Not sufficient cause for failure.

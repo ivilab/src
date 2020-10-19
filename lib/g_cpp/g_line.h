@@ -12,8 +12,8 @@
  * please contact Kobus Barnard.
  */
 
-#ifndef EDGE_LINE_H
-#define EDGE_LINE_H
+#ifndef G_CPP_EDGE_LINE_H
+#define G_CPP_EDGE_LINE_H
 
 #include "m_cpp/m_vector.h" 
 #include "m_cpp/m_vector_d.h" 

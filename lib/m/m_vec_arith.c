@@ -1,5 +1,5 @@
 
-/* $Id: m_vec_arith.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: m_vec_arith.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -102,7 +102,7 @@ int multiply_vector_by_scalar
         if (IS_MISSING_DBL(scalar))
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return get_initialized_vector(target_vpp, length, DBL_MISSING);
         }
@@ -112,7 +112,7 @@ int multiply_vector_by_scalar
             if (IS_MISSING_DBL(*source_pos))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *target_pos = DBL_MISSING;
             }
@@ -187,7 +187,7 @@ int ow_multiply_vector_by_scalar(Vector* source_vp, double scalar)
         if (IS_MISSING_DBL(scalar))
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return ow_set_vector(source_vp, DBL_MISSING);
         }
@@ -197,7 +197,7 @@ int ow_multiply_vector_by_scalar(Vector* source_vp, double scalar)
             if (IS_MISSING_DBL(*source_pos))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *source_pos = DBL_MISSING;
             }
@@ -338,7 +338,7 @@ int divide_vector_by_scalar
         UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-        dbm("Missing value arithmetic.");
+        dbm("IL4RT: Missing value arithmetic.");
 #endif
         return get_initialized_vector(target_vpp, length, DBL_MISSING);
     }
@@ -441,7 +441,7 @@ int ow_divide_vector_by_scalar(Vector* source_vp, double scalar)
         UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-        dbm("Missing value arithmetic.");
+        dbm("IL4RT: Missing value arithmetic.");
 #endif
         return ow_set_vector(source_vp, DBL_MISSING);
     }
@@ -518,7 +518,7 @@ int add_scalar_to_vector
             UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return get_initialized_vector(target_vpp, length, DBL_MISSING);
         }
@@ -530,7 +530,7 @@ int add_scalar_to_vector
                 UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *target_pos = DBL_MISSING;
             }
@@ -611,7 +611,7 @@ int ow_add_scalar_to_vector(Vector* source_vp, double scalar)
             UNTESTED_CODE(); /* Since rework for missing. */
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return ow_set_vector(source_vp, DBL_MISSING);
         }
@@ -623,7 +623,7 @@ int ow_add_scalar_to_vector(Vector* source_vp, double scalar)
                 UNTESTED_CODE(); /* Since rework for missing. */
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *source_pos = DBL_MISSING;
             }
@@ -711,7 +711,7 @@ int subtract_scalar_from_vector
             UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return get_initialized_vector(target_vpp, length, DBL_MISSING);
         }
@@ -723,7 +723,7 @@ int subtract_scalar_from_vector
                 UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *target_pos = DBL_MISSING;
             }
@@ -796,7 +796,7 @@ int ow_subtract_scalar_from_vector(Vector* source_vp, double scalar)
             UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return ow_set_vector(source_vp, DBL_MISSING);
         }
@@ -808,7 +808,7 @@ int ow_subtract_scalar_from_vector(Vector* source_vp, double scalar)
                 UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *source_pos = DBL_MISSING;
             }
@@ -1017,7 +1017,7 @@ int subtract_vectors
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_elem_ptr = DBL_MISSING;
                 }
@@ -1123,7 +1123,7 @@ int multiply_vectors
                     UNTESTED_CODE();
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_elem_ptr = DBL_MISSING;
                 }
@@ -1254,7 +1254,7 @@ int divide_vectors
             {
                 UNTESTED_CODE();
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
                 dbe(*first_elem_ptr);
                 dbe(*second_elem_ptr); 
 #endif
@@ -1827,7 +1827,7 @@ int invert_vector(Vector** target_vpp, const Vector* source_vp)
         if ((respect_missing_values()) && (IS_MISSING_DBL(val)))
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             target_vp->elements[i] = DBL_MISSING;
         }
@@ -1994,7 +1994,7 @@ int ow_sqrt_vector(Vector* vp)
                 )
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-             dbm("Missing value arithmetic.");
+             dbm("IL4RT: Missing value arithmetic.");
 #endif
              vp->elements[ i ] = DBL_MISSING;
         }

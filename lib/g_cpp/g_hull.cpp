@@ -1,4 +1,4 @@
-/* $Id: g_hull.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g_hull.cpp 25866 2020-10-19 15:15:55Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -17,9 +17,9 @@
    |  Author: Jinyan Guan 
  * =========================================================================== */
 
-#include <g_cpp/g_hull.h>
-#include <h/h_qh.h>
-#include <h/h_intersect.h>
+#include "g_cpp/g_hull.h"
+#include "h/h_qh.h"
+#include "h/h_intersect.h"
 #include <iostream>
 
 namespace ivi

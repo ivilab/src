@@ -1,4 +1,4 @@
-/* $Id: test_solve.c 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: test_solve.c 25866 2020-10-19 15:15:55Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2014 by Kobus Barnard (author)
@@ -20,10 +20,10 @@
 /* vim: tabstop=4 shiftwidth=4 foldmethod=marker */
 
 
-#include <wrap_lapack/wrap_lapack.h>
-#include <m/m_incl.h>
-#include <n/n_cholesky.h>
-#include <n/n_invert.h>
+#include "wrap_lapack/wrap_lapack.h"
+#include "m/m_incl.h"
+#include "n/n_cholesky.h"
+#include "n/n_invert.h"
 
 #define NUM_TRIES   1000
 

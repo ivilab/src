@@ -1,5 +1,5 @@
 
-/* $Id: m_mat_arith.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: m_mat_arith.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -2081,7 +2081,7 @@ int add_scalar_to_matrix(Matrix** target_mpp, const Matrix* source_mp,
         if (IS_MISSING_DBL(scalar))
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return get_initialized_matrix(target_mpp, num_rows, num_cols,
                                           DBL_MISSING);
@@ -2205,7 +2205,7 @@ int subtract_scalar_from_matrix(Matrix** target_mpp, const Matrix* source_mp,
         int num_cols = source_mp->num_cols;
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-        dbm("Missing value arithmetic.");
+        dbm("IL4RT: Missing value arithmetic.");
 #endif
         return get_initialized_matrix(target_mpp, num_rows, num_cols,
                                       DBL_MISSING);
@@ -2277,7 +2277,7 @@ int multiply_matrix_by_scalar(Matrix** target_mpp, const Matrix* source_mp,
         if (IS_MISSING_DBL(scalar))
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return get_initialized_matrix(target_mpp, num_rows, num_cols,
                                           DBL_MISSING);
@@ -2439,7 +2439,7 @@ int divide_matrix_by_scalar(Matrix** target_mpp, const Matrix* source_mp,
         int num_cols = source_mp->num_cols;
 
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-        dbm("Missing value arithmetic.");
+        dbm("IL4RT: Missing value arithmetic.");
 #endif
         return get_initialized_matrix(target_mpp, num_rows, num_cols,
                                       DBL_MISSING);
@@ -2857,7 +2857,7 @@ int ow_add_scalar_to_matrix(Matrix* source_mp, double scalar)
         if (IS_MISSING_DBL(scalar))
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return ow_set_matrix(source_mp, DBL_MISSING);
         }
@@ -2958,7 +2958,7 @@ int ow_subtract_scalar_from_matrix(Matrix* source_mp, double scalar)
     if (respect_missing_values() && (IS_MISSING_DBL(scalar)))
     {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-        dbm("Missing value arithmetic.");
+        dbm("IL4RT: Missing value arithmetic.");
 #endif
         return ow_set_matrix(source_mp, DBL_MISSING);
     }
@@ -3018,7 +3018,7 @@ int ow_multiply_matrix_by_scalar(Matrix* source_mp, double scalar)
         if (IS_MISSING_DBL(scalar))
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             return ow_set_matrix(source_mp, DBL_MISSING);
         }
@@ -3100,7 +3100,7 @@ int ow_divide_matrix_by_scalar(Matrix* source_mp, double scalar)
     else if (respect_missing_values() && (IS_MISSING_DBL(scalar)))
     {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-        dbm("Missing value arithmetic.");
+        dbm("IL4RT: Missing value arithmetic.");
 #endif
         return ow_set_matrix(source_mp, DBL_MISSING);
     }
@@ -3473,7 +3473,7 @@ int add_row_vector_to_matrix(Matrix** target_mpp, const Matrix* source_mp,
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_row_pos_ptr = DBL_MISSING;
                 }
@@ -3598,7 +3598,7 @@ int subtract_row_vector_from_matrix(Matrix** target_mpp,
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_row_pos_ptr = DBL_MISSING;
                 }
@@ -3723,7 +3723,7 @@ int multiply_matrix_by_row_vector_ew(Matrix** target_mpp,
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_row_pos_ptr = DBL_MISSING;
                 }
@@ -3974,7 +3974,7 @@ int ow_add_row_vector_to_matrix(Matrix* source_mp, const Vector* vp)
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *source_row_pos_ptr = DBL_MISSING;
                 }
@@ -4076,7 +4076,7 @@ int ow_subtract_row_vector_from_matrix(Matrix* source_mp, const Vector* vp)
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *source_row_pos_ptr = DBL_MISSING;
                 }
@@ -4182,7 +4182,7 @@ int ow_multiply_matrix_by_row_vector_ew(Matrix* source_mp, const Vector* vp)
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *source_row_pos_ptr = DBL_MISSING;
                 }
@@ -4397,7 +4397,7 @@ int ow_add_vector_to_matrix_row(Matrix* mp, const Vector* vp, int row)
             if ((IS_MISSING_DBL(*row_pos)) || (IS_MISSING_DBL(*vp_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *row_pos = DBL_MISSING;
             }
@@ -4478,7 +4478,7 @@ int ow_add_vector_to_matrix_col(Matrix* mp, const Vector* vp, int col)
             if ((IS_MISSING_DBL(mp->elements[ i ][ col ])) || (IS_MISSING_DBL(*vp_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 mp->elements[ i ][ col ] = DBL_MISSING;
             }
@@ -4612,7 +4612,7 @@ int ow_subtract_vector_from_matrix_row(Matrix* mp, const Vector* vp, int row)
             if ((IS_MISSING_DBL(*row_pos)) || (IS_MISSING_DBL(*vp_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *row_pos = DBL_MISSING;
             }
@@ -4695,7 +4695,7 @@ int ow_multiply_matrix_row_by_vector(Matrix* mp, const Vector* vp, int row)
             if ((IS_MISSING_DBL(*row_pos)) || (IS_MISSING_DBL(*vp_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *row_pos = DBL_MISSING;
             }
@@ -4796,7 +4796,7 @@ int ow_divide_matrix_row_by_vector(Matrix* mp, const Vector* vp, int row)
            )
         {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-            dbm("Missing value arithmetic.");
+            dbm("IL4RT: Missing value arithmetic.");
 #endif
             *row_pos = DBL_MISSING;
         }
@@ -4903,7 +4903,7 @@ int ow_multiply_matrix_col_by_vector(Matrix* mp, const Vector* vp, int col)
             if ((IS_MISSING_DBL(mp->elements[ i ][ col ])) || (IS_MISSING_DBL(*vp_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 mp->elements[ i ][ col ] = DBL_MISSING;
             }
@@ -5247,7 +5247,7 @@ int add_col_vector_to_matrix(Matrix** target_mpp,
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_row_pos_ptr = DBL_MISSING;
                 }
@@ -5352,7 +5352,7 @@ int ow_add_col_vector_to_matrix(Matrix* source_mp, const Vector* vp)
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *source_row_pos_ptr = DBL_MISSING;
                 }
@@ -5467,7 +5467,7 @@ int subtract_col_vector_from_matrix(Matrix** target_mpp,
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_row_pos_ptr = DBL_MISSING;
                 }
@@ -5572,7 +5572,7 @@ int ow_subtract_col_vector_from_matrix(Matrix* source_mp, const Vector* vp)
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *source_row_pos_ptr = DBL_MISSING;
                 }
@@ -5687,7 +5687,7 @@ int multiply_matrix_by_col_vector_ew(Matrix** target_mpp,
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *target_row_pos_ptr = DBL_MISSING;
                 }
@@ -5792,7 +5792,7 @@ int ow_multiply_matrix_by_col_vector_ew(Matrix* source_mp, const Vector* vp)
                    )
                 {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                    dbm("Missing value arithmetic.");
+                    dbm("IL4RT: Missing value arithmetic.");
 #endif
                     *source_row_pos_ptr = DBL_MISSING;
                 }
@@ -6152,7 +6152,7 @@ int ow_add_matrix_row_times_scalar
                )
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *target_row_pos = DBL_MISSING;
             }
@@ -6237,7 +6237,7 @@ int ow_add_matrix_rows_ew(Matrix* mp, int row, const Matrix* mp2, int row2)
             if ((IS_MISSING_DBL(*row_pos)) || (IS_MISSING_DBL(*row2_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *row_pos = DBL_MISSING;
             }
@@ -6323,7 +6323,7 @@ int ow_multiply_matrix_rows_ew(Matrix* mp, int row, const Matrix* mp2, int row2)
             if ((IS_MISSING_DBL(*row_pos)) || (IS_MISSING_DBL(*row2_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *row_pos = DBL_MISSING;
             }
@@ -6829,7 +6829,7 @@ int ow_add_matrix_row_to_vector(Vector* vp, const Matrix* mp, int row)
             if ((IS_MISSING_DBL(*row_pos)) || (IS_MISSING_DBL(*vp_pos)))
             {
 #ifdef REPORT_MISSING_VALUE_ARITHMETIC
-                dbm("Missing value arithmetic.");
+                dbm("IL4RT: Missing value arithmetic.");
 #endif
                 *vp_pos = DBL_MISSING;
             }

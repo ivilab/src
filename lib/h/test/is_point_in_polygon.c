@@ -1,5 +1,5 @@
 
-/* $Id: is_point_in_polygon.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: is_point_in_polygon.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 
 #include "g/g_incl.h" 
@@ -54,9 +54,16 @@ int main(int argc, char *argv[])
 
     EPETB(set_heap_options("heap-checking", "f")); 
 
+
     if (is_interactive())
     {
-        EPETB(set_verbose_options("verbose", "1")); 
+        EPETB(set_verbose_options("verbose", "2")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
     }
 
 

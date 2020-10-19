@@ -1,6 +1,5 @@
 
-/* $Id: 2D_arr.c 25499 2020-06-14 13:26:04Z kobus $ */
-
+/* $Id: 2D_arr.c 25866 2020-10-19 15:15:55Z kobus $ */
  
 #include "l/l_incl.h" 
 
@@ -22,12 +21,9 @@
 #    define TEST_REAL  -78.3
 #endif 
 
-
 /* #define VERBOSE 1 */
 
-
 static void report_failure(const char*);
-
 
 /* -------------------------------------------------------------------------- */
 

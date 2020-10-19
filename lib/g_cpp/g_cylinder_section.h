@@ -1,4 +1,4 @@
-/* $Id: g_cylinder_section.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g_cylinder_section.h 25866 2020-10-19 15:15:55Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -60,12 +60,12 @@
  * @brief Cylinder_section: a section of a geometric cylinder
  */
 
-#ifndef IVI_CYLINDER_SECTION_H
-#define IVI_CYLINDER_SECTION_H
+#ifndef IVI_G_CPP_CYLINDER_SECTION_H
+#define IVI_G_CPP_CYLINDER_SECTION_H
 
-#include <g_cpp/g_cylinder.h>
-#include <l_cpp/l_readable.h>
-#include <l_cpp/l_writeable.h>
+#include "g_cpp/g_cylinder.h"
+#include "l_cpp/l_readable.h"
+#include "l_cpp/l_writeable.h"
 
 #define TWO_PI 6.28319
 

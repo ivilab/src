@@ -8,7 +8,7 @@ Checking on manually maintained 'output_checked' file.
 Touching existing /Volumes/home/kobus/src/lib/l/test/test_runs/trim/01/test/standard/output_checked
 Checking for output_checked for trim with input 01 succeeded
  
-Time span: 09:04:53 to 09:04:53
+Time span: 13:42:15 to 13:42:15
  
 Leaving script test_program_2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 

@@ -1,5 +1,5 @@
 
-/* $Id: expand_hull.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: expand_hull.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -34,20 +34,29 @@ int main(void)
             }
         }
 
-        db_mat(mp); 
+        if (is_interactive()) 
+        {
+            db_mat(mp); 
+        }
 
         NPETE(hp = find_convex_hull(mp, DEFAULT_HULL_OPTIONS)); 
 
-        dbm("Setting expand-hulls-exactly to TRUE"); 
+        dbm("IL4RT: Setting expand-hulls-exactly to TRUE"); 
         set_hull_options("expand-hulls-exactly","t"); 
         NPETE(new_hp = expand_hull(hp, .1, DEFAULT_HULL_OPTIONS));
-        db_mat(new_hp->vertex_mp); 
+        if (is_interactive()) 
+        {
+            db_mat(new_hp->vertex_mp); 
+        }
 
         free_hull(new_hp); 
-        dbm("Setting expand-hulls-exactly to FALSE"); 
+        dbm("IL4RT: Setting expand-hulls-exactly to FALSE"); 
         set_hull_options("expand-hulls-exactly","f"); 
         NPETE(new_hp = expand_hull(hp, .1, DEFAULT_HULL_OPTIONS));
-        db_mat(new_hp->vertex_mp);  
+        if (is_interactive()) 
+        {
+            db_mat(new_hp->vertex_mp);  
+        }
 
         free_hull(new_hp); 
         free_hull(hp);

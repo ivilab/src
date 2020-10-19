@@ -14,7 +14,11 @@ static int test_get_correlation_coefficient()
     EPETE(get_correlation_coefficient(a, b, &correlation))
 
     pso("The correlation is %f.\n", correlation);
-    ASSERT_IS_EQUAL_DBL(correlation, 0.99758440784538738)
+    ASSERT_IS_EQUAL_DBL(correlation, 0.99758440784538738);
+
+    free_vector(a);
+    free_vector(b);
+
     return NO_ERROR;
 }
 
@@ -34,6 +38,10 @@ static int test_get_mahalanobis_distance_sqrd()
     pso("The Mahalanobis distance squared is %f.\n", dist_sqrd);
     ASSERT_IS_EQUAL_DBL(dist_sqrd, 0.26930437635930227)
 
+    free_vector(x);
+    free_vector(mu);
+    free_vector(variance);
+
     return NO_ERROR;
 }
 
@@ -52,6 +60,10 @@ static int test_get_mahalanobis_distance()
 
     pso("The Mahalanobis distance is %f.\n", distance);
     ASSERT_IS_EQUAL_DBL(distance, 0.51894544641927653)
+
+    free_vector(x);
+    free_vector(mu);
+    free_vector(variance);
 
     return NO_ERROR;
 }
@@ -73,6 +85,10 @@ static int test_get_log_gaussian_density()
     pso("The logarithm of the gaussian pdf is %f.\n", log_gaussian_density);
     ASSERT_IS_EQUAL_DBL(log_gaussian_density, -1.5392897592431749)
 
+    free_vector(x);
+    free_vector(mu);
+    free_vector(variance);
+
     return NO_ERROR;
    
 }
@@ -93,6 +109,10 @@ static int test_get_gaussian_density()
     pso("The value of the gaussian pdf is %f.\n", gaussian_density);
     ASSERT_IS_NEARLY_EQUAL_DBL(gaussian_density, 0.21453341770691653, 10e-14)
 
+    free_vector(x);
+    free_vector(mu);
+    free_vector(variance);
+
     return NO_ERROR;
    
 }
@@ -111,6 +131,10 @@ static int test_get_mahalanobis_distance_sqrd_2()
     EPETE(read_vector(&variance, "vector_variance.txt"))
     EPETE(get_malhalanobis_distance_sqrd_2(x, mu, variance, max_norm_var,
                 &dist_sqrd))
+
+    free_vector(x);
+    free_vector(mu);
+    free_vector(variance);
 
     pso("The Mahalanobis distance squared (using version 2) is %f.\n", dist_sqrd);
     ASSERT_IS_NEARLY_EQUAL_DBL(dist_sqrd, 0.210570137142, 10e-12)

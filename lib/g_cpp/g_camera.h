@@ -1,4 +1,4 @@
-/* $Id: g_camera.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g_camera.h 25866 2020-10-19 15:15:55Z kobus $ */
 /* {{{=========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -18,14 +18,14 @@
  * =========================================================================== }}}*/
 
 // vim: tabstop=4 shiftwidth=4 foldmethod=marker
-#ifndef IVI_CPP_G_CAMERA_H
-#define IVI_CPP_G_CAMERA_H
+#ifndef IVI_G_CPP_CAMERA_H
+#define IVI_G_CPP_CAMERA_H
 
-#include <l_cpp/l_algorithm.h>
-#include <m_cpp/m_matrix.h>
-#include <m_cpp/m_matrix_d.h>
-#include <m_cpp/m_vector.h>
-#include <m_cpp/m_vector_d.h>
+#include "l_cpp/l_algorithm.h"
+#include "m_cpp/m_matrix.h"
+#include "m_cpp/m_matrix_d.h"
+#include "m_cpp/m_vector.h"
+#include "m_cpp/m_vector_d.h"
 #include <vector>
 #include <limits>
 

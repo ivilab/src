@@ -56,6 +56,8 @@
 .PHONY : ivi_regress
 .PHONY : ivi_test
 .PHONY : ivi_code
+.PHONY : pb11
+.PHONY : pylib
 
 # Some targets, such as confess are implemented in build-2. 
 #
@@ -81,6 +83,9 @@ static dynamic shared :
 ivi_test : ivi_regress
 
 ivi ivi_all ivi_doc ivi_code ivi_tags ivi_regress :
+	$(ECHO_MAKE_CMD)./build $@
+
+pb11 pylib :
 	$(ECHO_MAKE_CMD)./build $@
 
 # We cannot have the real dependency for Makefile because we do not know where

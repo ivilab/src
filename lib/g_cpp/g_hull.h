@@ -1,4 +1,4 @@
-/* $Id: g_hull.h 25499 2020-06-14 13:26:04Z kobus $                                                                       */
+/* $Id: g_hull.h 25866 2020-10-19 15:15:55Z kobus $                                                                       */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -20,12 +20,12 @@
 #ifndef IVI_G_CPP_WRAP_HULL_H
 #define IVI_G_CPP_WRAP_HULL_H
 
-#include <h/h_hull.h>
-#include <h/h_ave.h>
+#include "h/h_hull.h"
+#include "h/h_ave.h"
 
-#include <m_cpp/m_matrix.h>
-#include <m_cpp/m_vector.h>
-#include <g_cpp/g_util.h>
+#include "m_cpp/m_matrix.h"
+#include "m_cpp/m_vector.h"
+#include "g_cpp/g_util.h"
 
 #include <vector>
 #include <algorithm>

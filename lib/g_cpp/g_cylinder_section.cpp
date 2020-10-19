@@ -1,4 +1,4 @@
-/* $Id: g_cylinder_section.cpp 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g_cylinder_section.cpp 25866 2020-10-19 15:15:55Z kobus $ */
 /**
  * This work is licensed under a Creative Commons 
  * Attribution-Noncommercial-Share Alike 3.0 United States License.
@@ -60,7 +60,7 @@
  * @brief Cylinder_section: a section of a geometric cylinder
  */
 
-#include <g_cpp/g_cylinder_section.h>
+#include "g_cpp/g_cylinder_section.h"
 #include <sstream>
 
 using namespace ivi;

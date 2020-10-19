@@ -61,12 +61,11 @@
  */
 
 
-#ifndef IVI_TRANSFORMABLE_H
-#define IVI_TRANSFORMABLE_H
+#ifndef IVI_G_CPP_TRANSFORMABLE_H
+#define IVI_G_CPP_TRANSFORMABLE_H
 
-#include <m_cpp/m_matrix.h>
-
-#include <l_cpp/l_exception.h>
+#include "m_cpp/m_matrix.h"
+#include "l_cpp/l_exception.h"
 
 
 namespace ivi {

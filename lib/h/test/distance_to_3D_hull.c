@@ -1,5 +1,5 @@
 
-/* $Id: distance_to_3D_hull.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: distance_to_3D_hull.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -49,8 +49,23 @@ int main(int argc, char **argv)
 
     EPETE(set_hull_options("hir", "1000")); 
     EPETE(set_heap_options("heap-checking", "f")); 
-    EPETE(set_debug_options("debug-level", "2")); 
-    EPETE(set_qhull_options("qhull-error-file", "qhull-error-log")); 
+
+    if (is_interactive())
+    {
+        EPETB(set_verbose_options("verbose", "2")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
+
+        /* We will get error messages, but the wrapper code to qhull does things
+         * like perturbing the input and trying again. So for automatic testing, we
+         * do no want to hear about it. 
+        */
+        EPETB(set_qhull_options("qhull-error-file", "/dev/null")); 
+    }
 
 #ifdef SANITY_CHECKS
     EPETE(get_target_matrix(&point_mp, 8, 3));

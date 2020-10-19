@@ -18,8 +18,8 @@
 |
 * =========================================================================== */
 
-#ifndef IVI_ORTHOGONAL_CORNER_H
-#define IVI_ORTHOGONAL_CORNER_H
+#ifndef IVI_G_CPP_ORTHOGONAL_CORNER_H
+#define IVI_G_CPP_ORTHOGONAL_CORNER_H
 
 
 #include "m_cpp/m_matrix.h"

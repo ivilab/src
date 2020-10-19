@@ -17,16 +17,16 @@
  |  Author:  Emily Hartley
  * ===========================================================================*/
 
-#ifndef IVI_CIRCLE_H
-#define IVI_CIRCLE_H
+#ifndef IVI_G_CPP_CIRCLE_H
+#define IVI_G_CPP_CIRCLE_H
 
-#include <m_cpp/m_vector.h>
-#include <m_cpp/m_matrix.h>
-#include <m/m_incl.h>
-#include <i_cpp/i_image.h>
-#include <i/i_draw.h>
-#include <l_cpp/l_readable.h>
-#include <l_cpp/l_writeable.h>
+#include "m_cpp/m_vector.h"
+#include "m_cpp/m_matrix.h"
+#include "m/m_incl.h"
+#include "i_cpp/i_image.h"
+#include "i/i_draw.h"
+#include "l_cpp/l_readable.h"
+#include "l_cpp/l_writeable.h"
 
 namespace ivi {
 

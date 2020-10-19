@@ -1,4 +1,4 @@
-/* $Id: g_util.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g_util.h 25866 2020-10-19 15:15:55Z kobus $ */
 /* =========================================================================== *
    |
    |  Copyright (c) 1994-2010 by Kobus Barnard (author)
@@ -17,13 +17,13 @@
    |  Author:  Kyle Simek
  * =========================================================================== */
 
-#ifndef IVI_CPP_G_UTIL
-#define IVI_CPP_G_UTIL
+#ifndef IVI_G_CPP_UTIL
+#define IVI_G_CPP_UTIL
 
-#include <m_cpp/m_vector.h>
-#include <m_cpp/m_matrix.h>
-#include <m_cpp/m_vector_d.h>
-#include <m_cpp/m_matrix_d.h>
+#include "m_cpp/m_vector.h"
+#include "m_cpp/m_matrix.h"
+#include "m_cpp/m_vector_d.h"
+#include "m_cpp/m_matrix_d.h"
 
 namespace ivi {
 namespace geometry {

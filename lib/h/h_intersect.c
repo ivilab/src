@@ -1,5 +1,5 @@
 
-/* $Id: h_intersect.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: h_intersect.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -382,7 +382,7 @@ int intersect_positive_hulls
  * for a description of the option flags.
  *
  * The method of hull intersection is under user control via the option
- * hull-intersection-method. One method "a" is a discrete approximationl. A
+ * hull-intersection-method. One method "a" is a discrete approximation. A
  * faster, more accurate method is the dual space method "d". In the case of the
  * discrete approximation, the resolution of the descrete space is user settable
  * with the "hir" option, provided that the IVI library options are made

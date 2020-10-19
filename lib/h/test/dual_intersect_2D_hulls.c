@@ -1,5 +1,5 @@
 
-/* $Id: dual_intersect_2D_hulls.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: dual_intersect_2D_hulls.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -56,15 +56,25 @@ int main(int argc, char **argv)
 
     EPETE(set_random_options("seed", "0")); 
     EPETE(set_random_options("seed_2", "0")); 
-    EPETE(set_debug_options("debug-level", "2")); 
     EPETE(set_hull_options("hir", "300")); 
     EPETE(set_heap_options("heap-checking", "f")); 
-    EPETE(set_qhull_options("qhull-error-file", "qhull-error-log")); 
     EPETE(get_target_vector(&test_vp, 2)); 
 
     if (is_interactive())
     {
-        EPETE(set_verbose_options("verbose", "1")); 
+        EPETB(set_verbose_options("verbose", "3")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
+
+        /* We will get error messages, but the wrapper code to qhull does things
+         * like perturbing the input and trying again. So for automatic testing, we
+         * do no want to hear about it. 
+        */
+        EPETB(set_qhull_options("qhull-error-file", "/dev/null")); 
     }
 
     EPETE(set_random_options("seed", "505229549:116")); 

@@ -1,5 +1,5 @@
 
-/* $Id: point_inside_3D_hulls.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: point_inside_3D_hulls.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 
 #include "h/h_incl.h" 
@@ -45,14 +45,24 @@ int main(int argc, char **argv)
     } 
 
     EPETB(set_hull_options("hir", "100")); 
-    EPETB(set_qhull_options("qhull-error-file", "qhull-error-log")); 
     EPETB(set_hull_options("hull-intersection-method", "original")); 
     EPETB(set_heap_options("heap-checking", "f")); 
-    EPETB(set_debug_options("debug-level", "1")); 
 
     if (is_interactive())
     {
-        EPETB(set_verbose_options("verbose", "1")); 
+        EPETB(set_verbose_options("verbose", "2")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
+
+        /* We will get error messages, but the wrapper code to qhull does things
+         * like perturbing the input and trying again. So for automatic testing, we
+         * do no want to hear about it. 
+        */
+        EPETB(set_qhull_options("qhull-error-file", "/dev/null")); 
     }
 
     for (i=0; i<num_tries; i++)
@@ -74,10 +84,19 @@ int main(int argc, char **argv)
         }
 
 
-        verbose_pso(2, "Doing old intersection.\n"); 
-        EPE(old_intersection_result = intersect_hulls(hull_list_head, 
-                                                      DEFAULT_HULL_OPTIONS, 
-                                                      &dummy_hp));
+        /* The method for intersection is chosen as an option above. It was set
+         * to original, but I am not sure what the logic about that is.
+        */
+        verbose_pso(2, "Doing hull intersection.\n"); 
+        old_intersection_result = intersect_hulls(hull_list_head, 
+                                                  DEFAULT_HULL_OPTIONS, 
+                                                  &dummy_hp);
+
+        if (old_intersection_result == ERROR) 
+        {
+            p_stderr("IL4RT: Hull intersection routine reported error.\n"); 
+            status = EXIT_BUG;
+        }
 
         verbose_pso(2, "Finding point.\n"); 
         if (find_point_in_3D_hull_intersection(hull_list_head, 100,
@@ -86,7 +105,7 @@ int main(int argc, char **argv)
         {
             if (old_intersection_result == NO_SOLUTION) 
             {
-                p_stderr("Old intersection routine failed, but we found a point in the intersection!\n"); 
+                p_stderr("Hull intersection routine failed, but we found a point in the intersection!\n"); 
                 status = EXIT_BUG;
             }
             cur_elem = hull_list_head; 
@@ -105,7 +124,7 @@ int main(int argc, char **argv)
         {
             if (old_intersection_result == NO_ERROR) 
             {
-                p_stderr("Old intersection routine succeeded, but no intesection point was found!\n"); 
+                p_stderr("Hull intersection routine succeeded, but no intesection point was found!\n"); 
                 status = EXIT_BUG;
             }
         }

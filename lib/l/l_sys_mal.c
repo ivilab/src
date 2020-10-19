@@ -1,5 +1,5 @@
 
-/* $Id: l_sys_mal.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: l_sys_mal.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -18,7 +18,7 @@
 |
 * =========================================================================== */
 /*
- * $Id: l_sys_mal.c 25612 2020-07-06 22:17:23Z kobus $
+ * $Id: l_sys_mal.c 25866 2020-10-19 15:15:55Z kobus $
  */
 
 #include "l/l_gen.h"     /* Only safe as first include in a ".c" file. */
@@ -1831,7 +1831,7 @@ int print_allocated_memory(FILE* fp)
         /* If debug level is high enough, acknowledge that we don't have leaks. */
         if (ivi_debug_level > 2)
         {
-            fprintf(fp, "\nResidual memory allocation for process %ld (fork depth %d) is %ld (IL4RT).\n",
+            fprintf(fp, "Residual memory allocation for process %ld (fork depth %d) is %ld (IL4RT).\n",
                     (long)MY_PID, ivi_fork_depth, total_bytes);
         }
 #endif 
@@ -1846,7 +1846,7 @@ int print_allocated_memory(FILE* fp)
     // for regression testing (IL4RT) because we should not be leaking memory to
     // pass tests. 
     */
-    fprintf(fp, "\nResidual memory allocation for process %ld (fork depth %d): \n",
+    fprintf(fp, "Residual memory allocation for process %ld (fork depth %d): \n",
             (long)MY_PID, ivi_fork_depth);
 
     /*

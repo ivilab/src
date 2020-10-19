@@ -1,4 +1,4 @@
-/* $Id: g_cylinder.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g_cylinder.h 25866 2020-10-19 15:15:55Z kobus $ */
 /* ===========================================================================*
  |
  |  Copyright (c) 1994-2011 by Kobus Barnard (author)
@@ -22,9 +22,9 @@
 #ifndef IVI_G_CPP_CYLINDER_H
 #define IVI_G_CPP_CYLINDER_H
 
-#include <m_cpp/m_vector.h>
-#include <l_cpp/l_readable.h>
-#include <l_cpp/l_writeable.h>
+#include "m_cpp/m_vector.h"
+#include "l_cpp/l_readable.h"
+#include "l_cpp/l_writeable.h"
 
 namespace ivi
 {

@@ -1,5 +1,5 @@
 
-/* $Id: g_quaternion.h 25499 2020-06-14 13:26:04Z kobus $ */
+/* $Id: g_quaternion.h 25866 2020-10-19 15:15:55Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -18,8 +18,8 @@
 |
 * =========================================================================== */
 
-#ifndef IVI_QUATERNION_H
-#define IVI_QUATERNION_H
+#ifndef IVI_G_CPP_QUATERNION_H
+#define IVI_G_CPP_QUATERNION_H
 
 #include <iosfwd>
 

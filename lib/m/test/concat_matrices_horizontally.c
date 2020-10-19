@@ -33,6 +33,9 @@ int main(void)
 	Matrix *matrix_list[ NUM_MATRICES ];
     char file[ MAX_FILENAME_LEN ];
     /*
+     * Kobus: 2020/10/17 --- we cannot edit the source for each test. We need 
+     * automated testing.
+     *
      * file list stores all the input files in base_path
      * This needs to be edited for each test case
      */
@@ -109,6 +112,17 @@ int main(void)
 void set_file_path(char *matrix_file, const char *filename)
 {
   char base_path[] = "test_input/concat_matrices_horizontally/00/";
-  strcpy(matrix_file, base_path);
-  strcat(matrix_file, filename);
+  
+  /* Kobus: 20/10/17, we have to be able to run this in the same directory as
+   * the data. 
+  */
+  if (is_interactive()) 
+  {
+      strcpy(matrix_file, base_path);
+      strcat(matrix_file, filename);
+  }
+  else
+  {
+      strcpy(matrix_file, filename);
+  }
 }

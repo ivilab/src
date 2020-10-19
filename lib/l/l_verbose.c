@@ -1,5 +1,5 @@
 
-/* $Id: l_verbose.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: l_verbose.c 25866 2020-10-19 15:15:55Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -146,7 +146,7 @@ int set_verbose_options(const char* option, const char* value)
  * Sets the verbose level for the IVI library routines.
  *
  * This routine sets the verbose level for the IVI library routines. This
- * affects all calls to verbose_pso(3-IVI).
+ * affects all calls to verbose_pso.
  *
  * Index: I/O, verbose, debugging
  *
@@ -351,16 +351,64 @@ long warn_pso(const char* format_str, ...)
 
     if (sprintf_res == ERROR) return ERROR;
 
-    return warn_puts(buff);
+    return warn_fputs(stdout, buff);
 }
 
 /*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
 
 /*
  * =============================================================================
- *                                 warn_puts
+ *                                 warn_pse
  *
- * Printing to stdout with prefix "<< Warning >> "
+ * Printing to stderr with the prefix "<< Warning >> ".
+ *
+ * This routine writes a formatted string to stderr with "<< Warning >> "
+ * pre-pended to each line.  Otherwise it is similar to p_stderr.  Specifically,
+ * it is similar to ivi_fprintf with respect to extended formatting options and
+ * paging.
+ *
+ * Warnings can be suppressed by the user with "set warnings = off" or by the
+ * programmer by setting up the approprate call to the option infrastructure.
+ *
+ * Returns:
+ *    Returns the number of characters written.  ERROR is returned if there is
+ *    an error.
+ *
+ * Related:
+ *    warn_pso, warn_puts, pso, ivi_fprintf
+ *
+ * Index: I/O, warning messages, debugging
+ *
+ * -----------------------------------------------------------------------------
+*/
+
+/*PRINTFLIKE1*/
+long warn_pse(const char* format_str, ...)
+{
+    int     sprintf_res;
+    va_list ap;
+    char    buff[ 10000 ];
+
+    if ( ! fs_warning_enable) return NO_ERROR;
+
+    va_start(ap, format_str);
+
+    sprintf_res = ivi_vsprintf(buff, sizeof(buff), format_str, ap);
+
+    va_end(ap);
+
+    if (sprintf_res == ERROR) return ERROR;
+
+    return warn_fputs(stderr, buff);
+}
+
+/*  /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\   */
+
+/*
+ * =============================================================================
+ *                                 warn_fputs
+ *
+ * Printing to a file pointer with prefix "<< Warning >> "
  *
  * This routine writes a string to stdout with the prefix "<< Warning >> "
  * pre-pended to each line. therwise it is similar to ivi_puts.
@@ -380,7 +428,7 @@ long warn_pso(const char* format_str, ...)
  * -----------------------------------------------------------------------------
 */
 
-long warn_puts(const char* buff)
+long warn_fputs(FILE* fp, const char* buff)
 {
     static Bool begining_of_line   = TRUE;
     const char*      buff_pos;
@@ -400,47 +448,31 @@ long warn_puts(const char* buff)
     {
         if (begining_of_line)
         {
-            ERE(out_res = ivi_puts("<< Warning >> "));
+            ERE(out_res = ivi_fputs(fp, "<< Warning >> "));
             result += out_res;
             begining_of_line = FALSE;
         }
 
-#if 0 /* was ifdef HOW_IT_WAS */
-        while (*buff_pos == '\n')
-        {
-            begining_of_line = TRUE;
-            ERE(out_res = pso("\n"));
-            result += out_res;
-            buff_pos++;
-        }
-
-        ERE(get_res = BUFF_GEN_GET_TOKEN(&buff_pos, line_buff, "\n"));
-        if (get_res == NO_MORE_TOKENS) break;
-
-        ERE(out_res = ivi_puts(line_buff));
-        result += out_res;
-#else
         while (*buff_pos != '\n')
         {
             if (*buff_pos == '\0') break;
 
-            ivi_putc(*buff_pos);
+            ivi_fputc(fp, *buff_pos);
             result++;
             buff_pos++;
         }
 
         if (*buff_pos == '\0') break;
 
-        ivi_putc(*buff_pos);
+        ivi_fputc(fp, *buff_pos);
         buff_pos++;
         begining_of_line = TRUE;
         result++;
 
         if (*buff_pos == '\0') break;
-#endif
     }
 
-    ivi_flush();
+    ivi_fflush(fp);
 
     return result;
 }
