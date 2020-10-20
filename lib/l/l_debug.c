@@ -1,5 +1,5 @@
 
-/* $Id: l_debug.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: l_debug.c 25867 2020-10-20 15:57:20Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -514,7 +514,7 @@ void flag_untested_code(int line_num, const char* file_name)
     if (! ivi_suppress_test_messages) 
     {
         /* We do not use IVI IO because often enough, the relevant code is in IVI IO. */
-        fprintf(stderr, "<<TEST>> Executing untested code on line %d of file %s.\n", 
+        fprintf(stderr, "<<TEST>> Executing untested code on line %d of file %s (IL4RT).\n", 
                   line_num, file_name);    
     }
 }
@@ -530,7 +530,7 @@ void flag_suspect_code(int line_num, const char* file_name)
     if (! ivi_suppress_test_messages) 
     {
         /* We do not use IVI IO because often enough, the relevant code is in IVI IO. */
-        fprintf(stderr, "<<TEST>> Executing suspect code on line %d of file %s.\n", 
+        fprintf(stderr, "<<TEST>> Executing suspect code on line %d of file %s (IL4RT).\n", 
                   line_num, file_name);    
     }
 }

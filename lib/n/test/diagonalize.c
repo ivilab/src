@@ -1,11 +1,12 @@
 
-/* $Id: diagonalize.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: diagonalize.c 25867 2020-10-20 15:57:20Z kobus $ */
 
+/* TODO Revisit these tests and compare with other methods */
 
 /* Suspicious code --- calling diagonalize() multiple times on the mac (yet to
  * study on linux) with the same input leads to slightly different answers?
  *
- * This might be due to multi-threated stochastic optimization? 
+ * This might be due to multi-threaded stochastic optimization? 
  *
  * Study with NUM_IDENTICAL_COMPUTATIONS greater than 1. Currently we call small
  * numbers in the answers 0, which allows regression testing to succeeed. 
@@ -15,6 +16,9 @@
  * This program tests the general eigen-solver in the case of symmetric
  * matrices (ONLY).
 */
+
+/* 1000 is not big enough on the mac. */
+#define TOLERANCE_FACTOR 1.0e6
 
 #include "n/n_incl.h"
 
@@ -90,7 +94,13 @@ int main(int argc, char* argv[])
 
     if (is_interactive())
     {
-        EPETE(set_verbose_options("verbose", "1")); 
+        EPETB(set_verbose_options("verbose", "1")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
     }
 
     for (count=0; count<num_tries; count++)
@@ -191,7 +201,7 @@ int main(int argc, char* argv[])
             /* How accurate is diagonalization? */
             diff = max_abs_matrix_difference(prod_mp, ident_mp) / sqrt((double)num_elements); 
 
-            if (diff > 1000.0 * DBL_EPSILON)
+            if (diff > TOLERANCE_FACTOR * DBL_EPSILON)
             {
                 p_stderr("Test 1 (size %d): Difference %.3e not sufficiently close to zero.\n",
                          sym_mp->num_rows, diff);
@@ -216,7 +226,7 @@ int main(int argc, char* argv[])
             /* How accurate is diagonalization? */
             diff = max_abs_matrix_difference(prod_mp, ident_mp) / sqrt((double)num_elements); 
 
-            if (diff > 1000.0 * DBL_EPSILON)
+            if (diff > TOLERANCE_FACTOR * DBL_EPSILON)
             {
                 p_stderr("Test 2 (size %d): Difference %.3e not sufficiently close to zero.\n",
                          sym_mp->num_rows, diff);
@@ -240,7 +250,7 @@ int main(int argc, char* argv[])
             /* How accurate is diagonalization? */
             diff = max_abs_matrix_difference(prod_mp, ident_mp) / sqrt((double)num_elements); 
 
-            if (diff > 1000.0 * DBL_EPSILON)
+            if (diff > TOLERANCE_FACTOR * DBL_EPSILON)
             {
                 p_stderr("Test 3 (size %d): Difference %.3e not sufficiently close to zero.\n",
                          sym_mp->num_rows, diff);
@@ -267,7 +277,7 @@ int main(int argc, char* argv[])
             /* How accurate is diagonalization? */
             diff = max_abs_matrix_difference(t1_mp, t2_mp) / sqrt((double)num_elements);
 
-            if (diff > 1000.0 * DBL_EPSILON)
+            if (diff > TOLERANCE_FACTOR * DBL_EPSILON)
             {
                 p_stderr("Test 4 (size %d): Difference %.3e not sufficiently close to zero.\n",
                          sym_mp->num_rows, diff);

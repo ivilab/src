@@ -1,5 +1,5 @@
 
-/* $Id: wrap_lapack.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: wrap_lapack.c 25867 2020-10-20 15:57:20Z kobus $ */
 
 /* =========================================================================== *
 |                                                                              |
@@ -1289,7 +1289,6 @@ int lapack_qr_decompose
 
         if(R_mpp != NULL)
         {
-            UNTESTED_CODE(); /* Since redoing concat_matrices_vertically() to purge trickery. */
             copy_matrix_block(R_mpp, A_mp, 0, 0, min_m_n, N);
 
             if(M > N)
@@ -1304,7 +1303,6 @@ int lapack_qr_decompose
                 two_m[1] = temp_mp;
                 ERE(concat_matrices_vertically(R_mpp, 2, two_m));
 
-                free_matrix(temp_mp);
                 free_matrix(R_copy_mp);
             }
         }

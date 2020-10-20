@@ -1,5 +1,5 @@
 
-/* $Id: diagonalize_2.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: diagonalize_2.c 25867 2020-10-20 15:57:20Z kobus $ */
 
 
 /*
@@ -73,7 +73,13 @@ int main(int argc, char *argv[])
 
     if (is_interactive())
     {
-        EPETE(set_verbose_options("verbose", "1")); 
+        EPETB(set_verbose_options("verbose", "1")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
     }
 
     for (count=0; count<num_tries; count++)

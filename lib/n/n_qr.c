@@ -1,5 +1,5 @@
 
-/* $Id: n_qr.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: n_qr.c 25867 2020-10-20 15:57:20Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -89,7 +89,6 @@ int qr_decompose(const Matrix* mp, Matrix** Q_mpp, Matrix** R_mpp)
         get_target_matrix(R_mpp, 0, 0);
     }
    
-
     return lapack_qr_decompose(mp, Q_mpp, R_mpp);
 }
 
@@ -158,7 +157,6 @@ int rq_decompose(const Matrix* mp, Matrix** R_mpp, Matrix** Q_mpp)
     N = mp->num_cols;
     M = mp->num_rows;
 
-
     ERE(get_zero_matrix(&swap_M, M, M));
     ERE(get_zero_matrix(&swap_N, N, N));
 
@@ -182,7 +180,6 @@ int rq_decompose(const Matrix* mp, Matrix** R_mpp, Matrix** Q_mpp)
     ERE(get_matrix_transpose(R_mpp, *R_mpp));
     ERE(multiply_matrices(R_mpp, *R_mpp, swap_N));
     ERE(multiply_matrices(R_mpp, swap_M, *R_mpp));
-
 
     free_matrix(temp);
     free_matrix(swap_M);

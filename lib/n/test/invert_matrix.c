@@ -1,5 +1,5 @@
 
-/* $Id: invert_matrix.c 25587 2020-06-24 02:28:42Z kobus $ */
+/* $Id: invert_matrix.c 25867 2020-10-20 15:57:20Z kobus $ */
 
 /* Suspicious code --- calling XXX multiple times on the mac (yet to
  * study on linux) with the same input leads to slightly different answers?
@@ -85,8 +85,15 @@ int main(int argc, char* argv[ ])
 
     if (is_interactive())
     {
-        EPETE(set_verbose_options("verbose", "1")); 
+        EPETB(set_verbose_options("verbose", "1")); 
+        EPETB(set_debug_options("debug-level", "2")); 
     }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
+    }
+
 
     EPETE(ivi_l_set("debug", "2")); 
 

@@ -68,6 +68,16 @@ int main(int argc, char **argv)
 {
     ivi_init();
 
+    if (is_interactive())
+    {
+        EPETB(set_verbose_options("verbose", "1")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
+    }
 
     if (argc > 1)
     {
@@ -94,10 +104,7 @@ int main(int argc, char **argv)
         {
             for (num_cols=1; num_cols<max_dimension; num_cols++)
             {
-
-                /*
-                //   pso("%d %d %d\n", count, num_rows, num_cols);
-                */   
+                verbose_pso(2, "%d %d %d\n", count, num_rows, num_cols);
 
                 EPEAE(get_random_matrix(&M_mp, num_rows, num_cols));
 
@@ -166,7 +173,6 @@ int test_rq_decompose()
 
     test_recompose(M_mp, R_mp, Q_mp);
     test_orthonormal(Q_mp);
-
 
     M = R_mp->num_rows;
     N = R_mp->num_cols;
