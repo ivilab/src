@@ -3,17 +3,9 @@
 # set echo 
 
 # All variables that can affect the output of the test code should be listed
-# here. However, because there could be conflict with the setting we want for
-# this script, or could be lingering (e.g., we may have IVI_VERBOSE set for
-# debugging this script, or simply for habbit, we use shadow versions with the
-# prefix TEST. Thus, if you wish to run the actual tests with IVI_VERBOSE=1, you
-# need to set TEST_IVI_VERBOSE=1. 
-#
-# These vars will be unset if they are not to be overridden by "TEST_" version
-# values, followed by sourcing the contents of a manually constructed ENV file
-# in the input directory (if it exists---usually it does not), followed by
-# setting them to the values of the "TEST_" version if that is set. Having said
-# all that, these facilities are not used much. 
+# here. When we run the program being tested, we first unset these variables,
+# followed by checking for an ENV file in the corresponding test_inputs
+# directory, and sourcing it if it exists (usually there is none). 
 
 set env_vars_to_save = "IVI_VERBOSE IVI_OPTIONAL_ABORT"
 
@@ -106,7 +98,6 @@ endif
 
 set def_file = "${IVI_SRC_PATH}lib/l/l_def.h"
 
-
 if (! -e "${def_file}") then
     echo "Unable to find ${def_file}"
     echo "Optimistically using ${cannot_test_rc} for EXIT_CANNOT_TEST"
@@ -151,7 +142,7 @@ else if ("${test_type}" == "svn") then
     set test_result = "succeeded" 
 
     if (! ${test_quietly} ) then 
-        echo "Adding files that are ready for svn."
+        echo "Script test_program_2 is adding needed files to svn."
     endif 
 else if ("${test_type}" == "interactive") then
     set test_description = "Interactive testing"
@@ -168,13 +159,13 @@ else
     goto end_of_script
 endif 
 
-
 if ("${test_type}" == "interactive") then
-    ${IVI_MAKE} ${program}
+    ${IVI_MAKE_JOB_CLIENT} ${program}
 
     if ($status) then
         ${P_STDERR} "Unable to build ${program}"
-        exit 1
+        set test_rc = 1 
+        goto end_of_script
     endif 
 endif 
 
@@ -215,8 +206,8 @@ set prog_path = "NOT_SET"
 if (("${test_type}" != "check") && ("${test_type}" != "svn")) then
     if (! -x "${obj_dir}${program}") then
         ${P_STDERR} "Script test_program_2 unable to execute ${obj_dir}${program}"
-        ${P_STDERR} "It should have been built by now, either via make or build-2, or this script."
-        ${P_STDERR} "Presumably we have have a script or make bug."
+        ${P_STDERR} "It should have been built by now, either via make, build-2, or this script."
+        ${P_STDERR} "Presumably we have have a script or build bug."
         set test_rc = ${bug_rc}
         goto end_of_script
     endif 
@@ -228,13 +219,15 @@ set input_dir_rel_path = "test_input/${program}/${input_dir}"
 
 if (! -d "${input_dir_rel_path}") then
     ${P_STDERR} "Script test_program_2 unable to see directory ${input_dir_rel_path} in `pwd`"
-    exit 1
+    set test_rc = ${bug_rc}
+    goto end_of_script
 endif
 
 pushd ${input_dir_rel_path} > /dev/null
     if ($status) then 
         ${P_STDERR} "Script test_program_2 unable to push into directory ${input_dir_rel_path} in `pwd`"
-        exit 1
+        set test_rc = ${bug_rc}
+        goto end_of_script
     endif
 
     set input_dir_abs_path = `pwd`
@@ -253,12 +246,16 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
             set svn_command = "svn add --parents --depth=empty ${input_dir_rel_path}"
 
             if ($add_test_to_svn) then 
-                ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
-                set svn_cmd_status = ${status} 
+                if ($?DRY_RUN) then
+                    echo "DRY: in ${cwd}"
+                    echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}"
+                else
+                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
+                endif 
 
-                if (${svn_cmd_status}) then
+                if (${status}) then
                     set test_result = "FAILED (svn mkdir issue)." 
-                    set test_rc = 0
+                    set test_rc = 1
                     goto finish_up
                 endif 
             else if (! ${test_quietly} ) then 
@@ -276,7 +273,11 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
             set svn_add_files = ""
 
             foreach svn_input_file (${test_input_files}) 
-                if (-e "${svn_input_file}.FILTERED_FOR_DIFF") continue
+                # This should not be relavent. 
+                # if (-e "${svn_input_file}.FILTERED_FOR_DIFF") continue
+
+                ${VERBOSE_ECHO_2} "Script test_program_2 is checking if repo candidate ${cwd}/${svn_input_file} is already in SVN."
+              
                 svn info ${svn_input_file} >& /dev/null
 
                 if (${status}) then
@@ -288,12 +289,15 @@ if (("${test_type}" == "test") || ("${test_type}" == "check") || ("${test_type}"
                 set svn_command = "svn add ${svn_add_files}"
 
                 if (${add_test_to_svn}) then
-                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
-                    set svn_cmd_status = ${status} 
+                    if ($?DRY_RUN) then
+                        echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}"
+                    else
+                        ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
+                    endif 
 
-                    if (${svn_cmd_status}) then
+                    if (${status}) then
                         set test_result = "FAILED (svn add issue)." 
-                        set test_rc = 0
+                        set test_rc = 1
                         goto finish_up
                     endif 
                 else if (! ${test_quietly} ) then 
@@ -314,8 +318,10 @@ if ("${test_type}" == "interactive") then
         echo "${extra_args}" > ${input_dir_rel_path}/ARGS
     endif 
 
+    # TODO Check if this next bit (still?) makes sense! 
+    
     setenv IVI_SKIP_DEPEND
-    ${IVI_MAKE} make_bin_aux
+    ${IVI_MAKE_JOB_CLIENT} make_bin_aux
     # ${IVI_MAKE} ${program}
 endif 
 
@@ -330,45 +336,34 @@ if ("${test_type}" == "regress") then
     endif 
 
     set test_run_dir = `pwd`
-    set test_run_dir_files = `${IVI_LS} | grep -v '\.res$' | grep -v 'output_checked' | grep -v 'run_succeeded'  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' | grep -v 'FAILED'  `
+    set test_run_dir_files = `${IVI_LS} | grep -v '\.res$' | grep -v '.TMP$'  | grep -v 'output_checked' | grep -v 'run_succeeded'  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' | grep -v 'FAILED'  `
     popd > /dev/null
 endif 
 
 set input_files = `find ${input_dir_rel_path} -mindepth 1 -maxdepth 1 \! -name ENV`
 
 if ("${input_files}" != "") then
-    ${IVI_CP} ${input_files} "${run_dir}"
+    if ($?DRY_RUN) then
+        echo "DRY: ${IVI_CP} ${input_files} ${run_dir}"
+    else
+        ${VERBOSE_ECHO_2} "Copying ${input_files} TO ${run_dir}"
+        ${IVI_CP} ${input_files} "${run_dir}"
+    endif 
 endif 
 
 if ("${test_type}" == "test") then
-    ${IVI_CAT} /dev/null > ${run_dir}/ENV1
-    ${IVI_CAT} /dev/null > ${run_dir}/ENV2
+    ${IVI_CAT} /dev/null > ${run_dir}/ENV.TMP
 
     foreach env_var (${env_vars_to_save}) 
-        # We use shadow version of the variables to prevent conflicts, with
-        # the common use of IVI_VERBOSE for various purposes being one obvious
-        # example of why this is needed. If the user actually wants to run tests
-        # with an env var set to a specific value, they need to set the version
-        # with the prefix "TEST_" instead.
-        #
-        set shadow_env_var = "TEST_${env_var}" 
-        eval "set is_set = "'$?'"${shadow_env_var}"
-        if (${is_set}) then
-           eval "set env_var_val = "'$'"${shadow_env_var}"
-           echo "setenv ${env_var} ${env_var_val}" >> ${run_dir}/ENV2
-        else
-           echo "unsetenv ${env_var}" >> ${run_dir}/ENV1
-        endif 
+       echo "unsetenv ${env_var}" >> ${run_dir}/ENV.TMP
     end
 
     if (-e "${input_dir_rel_path}ENV") then
-        set input_env = "${input_dir_rel_path}ENV"
-    else 
-        set input_env = ""
+        ${IVI_CAT}  "${input_dir_rel_path}ENV" >> ${run_dir}/ENV.TMP
     endif 
 
-    ${IVI_CAT} ${run_dir}/ENV1 ${input_env} ${run_dir}/ENV2 > ${run_dir}/ENV
-    ${IVI_RM}  ${run_dir}/ENV1 ${run_dir}/ENV2 > ${run_dir}/ENV
+    ${MAKE_SCRIPT_PATH}copy_if_different ${run_dir}/ENV.TMP ${run_dir}/ENV
+    # ${IVI_RM} ${run_dir}/ENV.TMP
 else if ("${test_type}" == "regress") then
     ${IVI_CP} ${test_run_dir}/ENV ${run_dir}/ENV
 endif 
@@ -380,18 +375,30 @@ if (${status}) then
     ${P_STDERR} "Script test_program_2 unable to change to directory ${run_dir} from `pwd`"
     ${P_STDERR} "Since test_program is already writing to a file in it, something is wrong (permissions?). "
     ${P_STDERR} " "
-    set test_rc = 1
+    set test_rc = ${bug_rc}
     goto end_of_script
 endif 
 
+# I don't think this is currently used. 
 if (-e "SKIP_TEST") then
     exit 0
 endif 
 
-if (-e "STDIN") then
-    set stdin_file = "STDIN"
-else
-    set stdin_file = "/dev/null"
+if (-e "NEED_HAVE") then 
+    ${VERBOSE_ECHO} "Processing ${cwd}/NEED_HAVE"
+
+    set need_haves = `${IVI_CAT} NEED_HAVE`
+
+    set dollar = '$'
+    foreach need_have (${need_haves})
+        set need_have_val = `eval echo ${dollar}${need_have}`
+        if (${status}) set need_have_val = ""
+        if ("${need_have_val}" == "") then
+            echo "Skipping test because we need ${need_have} but it is empty."
+            set test_rc = 0
+            goto end_of_script
+        endif 
+    end
 endif 
 
 if (-e "ARGS") then
@@ -400,12 +407,11 @@ else
     set args = ""
 endif 
 
-# Valgrind on mac is not ready for prime time.
-# Valgrind by default runs the memcheck tool. 
-# Memcheck has limitations with respect to catching stack smashing errors. The
-# tool 'exp-sgcheck' can catch some of them, perhaps with some false positives
-# (we have not tries this yet). 
-#
+# Valgrind on mac is not ready for prime time.  Valgrind by default runs the
+# memcheck tool.  Memcheck has limitations with respect to catching stack
+# smashing errors. The tool 'exp-sgcheck' can catch some of them, perhaps with
+# some false positives (we have not tried this yet). 
+
 if (("${OS}" != "mac_osx") && (! $?SKIP_VALGRIND)) then 
     which valgrind >& /dev/null
 
@@ -439,24 +445,38 @@ if ("${test_type}" == "check") then
             # double touch for the cases where it did not exist (no big deal,
             # just slightly less aesthetic).
             #
-            ${VERBOSE_ECHO} "Touching existing `pwd`/output_checked"
-            ${touch_command}
-            if ${status} set test_rc = 1
+            ${VERBOSE_ECHO_2} "Touching existing `pwd`/output_checked"
+            if ($?DRY_RUN) then
+                echo "DRY: ${touch_command}"
+            else
+                ${touch_command}
+            endif 
+            if ${status} then
+                set test_rc = $bug_rc
+                goto end_of_script
+            endif 
         else if (${assume_output_is_ok}) then 
             if (! ${test_quietly} ) then 
                 echo "Touching `pwd`/output_checked"
                 echo "(due to ASSUME_OUTPUT_IS_OK)"
             endif 
-            ${touch_command}
-            if ${status} set test_rc = 1
+
+            if ($?DRY_RUN) then
+                echo "DRY: ${touch_command}"
+            else
+                ${touch_command}
+            endif 
+            if ${status} then
+                set test_rc = $bug_rc
+                goto end_of_script
+            endif 
         else 
             echo "Output files in:"
             echo "    `pwd`"
             echo "must be checked by a human (bypass with setenv ASSUME_OUTPUT_IS_OK)."
-#           echo " "
             echo "If the output is OK, then enter:"
             echo "    ${touch_command}"
-#           echo "Forcing failure until this is done." 
+            echo "Forcing failure until this is done." 
             echo " "
             set test_rc = 1
         endif 
@@ -510,18 +530,42 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             set tee_arg_2 = ""
         endif 
 
-        (source ENV; ${term_tee} ${input_dir_abs_path}/STDIN "${tee_arg_2}" | (${valgrind_cmd} ${prog_path} ${args}; echo $status > RC.tmp) | tee STDOUT ) |& tee STDERR
+        set test_program_2_pid = "$$"
         
-        set RC = `cat RC.tmp`
-        ${IVI_RM} RC.tmp
-        ${IVI_CP} ${input_dir_abs_path}/STDIN STDIN
-        echo " "
-    else
-        ${VERBOSE_ECHO} 
-        ${VERBOSE_ECHO} "PAREN ${prog_path} ${args} LESS ${stdin_file} GREATER STDOUT PAREN GREATER_AMP STDERR"
+        if ($?DRY_RUN) then
+            echo "DRY: cd ${cwd}; (source ENV; ${term_tee} ${input_dir_abs_path}/STDIN "${tee_arg_2}" | (${valgrind_cmd} ${prog_path} ${args}; echo $status > RC.${test_program_2_pid}) | tee STDOUT ) |& tee STDERR "
+            set RC = 0
+        else
+            ${VERBOSE_ECHO} "Executing: cd ${cwd}; (source ENV; ${term_tee} ${input_dir_abs_path}/STDIN "${tee_arg_2}" | (${valgrind_cmd} ${prog_path} ${args}; echo $status > RC.${test_program_2_pid}) | tee STDOUT ) |& tee STDERR "
+            (source ENV; ${term_tee} ${input_dir_abs_path}/STDIN "${tee_arg_2}" | (${valgrind_cmd} ${prog_path} ${args}; echo $status > RC.${test_program_2_pid}) | tee STDOUT ) |& tee STDERR
+            
+            set RC = `cat RC.${test_program_2_pid}`
+            ${VERBOSE_ECHO} "Test RC was $RC for ${prog_path} ${args} in ${cwd}"
 
-        (source ENV; ${timeout_cmd} ${valgrind_cmd} ${prog_path} ${args} < ${stdin_file} > STDOUT ) >& STDERR;
+            ${IVI_RM} RC.${test_program_2_pid}
+        endif 
+
+        if ($?DRY_RUN) then
+            echo "DRY: ${IVI_CP} ${input_dir_abs_path}/STDIN STDIN"
+        else
+            ${IVI_CP} ${input_dir_abs_path}/STDIN STDIN
+        endif 
+    else
+        if (-e "STDIN") then
+            set stdin_file = "STDIN"
+        else
+            set stdin_file = "/dev/null"
+        endif 
+
+        if ($?DRY_RUN) then
+            echo "DRY: cd ${cwd}; (source ENV; ${timeout_cmd} ${valgrind_cmd} ${prog_path} ${args} <  ${stdin_file} > STDOUT ) >& STDERR "
+        else
+            ${VERBOSE_ECHO} "Executing: cd ${cwd}; (source ENV; ${timeout_cmd} ${valgrind_cmd} ${prog_path} ${args} <  ${stdin_file} > STDOUT ) >& STDERR "
+            (source ENV; ${timeout_cmd} ${valgrind_cmd} ${prog_path} ${args} < ${stdin_file} > STDOUT ) >& STDERR;
+        endif 
+
         set RC = $status
+        ${VERBOSE_ECHO} "Test RC was $RC for ${prog_path} ${args} in ${cwd}"
     endif 
 
     # echo RC: $RC
@@ -566,25 +610,27 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         endif 
     endif 
 
-    echo "${RC}" > RC.TMP
+    if (! $?DRY_RUN) then
+        echo "${RC}" > RC.TMP
 
-    if (-e "RC") then 
-        ${IVI_DIFF_TEST} "RC.TMP" "RC"
-        if (${status}) then 
-            if (-e "output_checked") then 
-                echo "New RC will be different, but output_checked exists."
-                echo "Removing output_checked to invalidate test. Intervention might be required."
-                ${IVI_RM} "output_checked"
+        if (-e "RC") then 
+            ${IVI_DIFF_TEST} "RC.TMP" "RC"
+            if (${status}) then 
+                if (-e "output_checked") then 
+                    echo "New RC is different than previous, but output_checked exists."
+                    echo "Removing output_checked to invalidate test. Intervention might be required."
+                    ${IVI_RM} "output_checked"
+                endif 
+                
+                ${IVI_RM} "RC"
+                ${IVI_MV} "RC.TMP" "RC"
+            else 
+                ${IVI_RM} "RC.TMP"
             endif 
-            
-            ${IVI_RM} "RC"
-            ${IVI_MV} "RC.TMP" "RC"
         else 
-            ${IVI_RM} "RC.TMP"
+            ${IVI_MV} "RC.TMP" "RC"
         endif 
-    else 
-        ${IVI_MV} "RC.TMP" "RC"
-    endif 
+    endif
 
     if ( ! ${test_rc}) then 
         if ("${valgrind_cmd}" != "") then
@@ -620,20 +666,18 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
     if (${test_rc}) then
         # Do nothing
     else if (("${test_type}" == "test") || ("${test_type}" == "interactive")) then
-        # New, June 2019.
-        #
         if ("${test_type}" == "interactive") then
-            echo "Script 'test_program_2' executing untested code for interactive around line 612."
+            echo "Script 'test_program_2' executing untested code for interactive around line 640."
         endif 
 
         set run_dir_files = `${IVI_LS} | grep -v '^FAILED$' | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' |  grep -v '^ARGS$'  | grep -v '^ENV$'  |  grep -v '^output_checked$'  | grep -v '^run_succeeded$' | grep -v '^STDIN$'  `
 
-        ${VERBOSE_ECHO} "Test run_dir_files: ${run_dir_files}"
+        ${VERBOSE_ECHO_2} "Test run_dir_files: ${run_dir_files}"
         foreach test_output_file (${run_dir_files}) 
             # Is RC the only output file we want to check that does not need
             # this processing? 
-            if ("${test_output_file}" != "RC") then
-                ${VERBOSE_ECHO} "Filtering ${test_output_file} in ${cwd}"
+            if ((! $?DRY_RUN) && ("${test_output_file}" != "RC")) then
+                ${VERBOSE_ECHO_2} "Filtering ${test_output_file} in ${cwd}"
 
                 # Generally we should not be here if we already have these
                 # files, but there are enough corner cases that we mitigate
@@ -647,7 +691,6 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                 if (-e "${test_output_file}.FILTERED_FOR_DIFF") then 
                     ${IVI_DIFF_TEST} "${test_output_file}.FILTERED_FOR_DIFF.TMP" "${test_output_file}.FILTERED_FOR_DIFF"
                     if (${status}) then 
-
                         if (-e "${run_dir}/output_checked") then 
                             echo "New ${test_output_file}.FILTERED_FOR_DIFF will be different, but output_checked exists."
                             echo "Removing output_checked to invalidate test. Intervention might be required."
@@ -668,7 +711,11 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
         end 
 
         if (! -e "run_succeeded"}) then 
-            ${IVI_TOUCH} run_succeeded 
+            if ($?DRY_RUN) then
+                echo "DRY: ${IVI_TOUCH} run_succeeded "
+            else
+                ${IVI_TOUCH} run_succeeded 
+            endif 
         endif 
 
         # Cleanup 
@@ -689,7 +736,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
     else if ("${test_type}" == "regress") then
         set run_dir_files = `${IVI_LS} | grep -v '^FAILED$'  | grep -v '.FILTERED_FOR_DIFF$' | grep -v '.TMP$' | grep -v '\.res$'| grep -v 'regression_test_passed' | grep -v 'valgrind_log_file' | grep -v '^ARGS$'  | grep -v '^ENV$' | grep -v '^STDIN$' `
 
-        ${VERBOSE_ECHO} "Regress run_dir_files: $run_dir_files"
+        ${VERBOSE_ECHO_2} "Regress run_dir_files: $run_dir_files"
 
         # We assume we have stripped out all files that do not need to be
         # compared, and currently the only one that we do not need to filter
@@ -698,7 +745,7 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
 
         foreach output_file (${run_dir_files}) 
             if ("${output_file}" != "RC") then 
-                ${VERBOSE_ECHO} "Filtering ${output_file} in ${cwd}"
+                ${VERBOSE_ECHO_2} "Filtering ${output_file} in ${cwd}"
                 grep < ${output_file} -v 'ignore for test' | grep -v '/tmp/*[^/]*/[0-9][0-9]' | grep -v 'IL4RT' |  grep -v '^<<TEST>>' | grep -v 'ignore line for regression testing' | ${IVI_SED} '/^db..*: .* on source line /d' > ${output_file}.FILTERED_FOR_DIFF
                 set output_file = "${output_file}.FILTERED_FOR_DIFF"
             endif 
@@ -713,21 +760,21 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
                     echo "${program} failed regression testing with input ${input_dir}."
                     echo "There is a difference with respect to ${output_file} "
                     echo " "
-#                     echo "Reproduce with: "
-#                     echo "    ${IVI_DIFF_TEST} `pwd`/${output_file} ${test_output_file}"
+#                     echo "Found with: "
+#                     echo "    ${IVI_DIFF_TEST} ${cwd}/${output_file} ${test_output_file}"
 #                     echo " "
                     echo "Check with: "
-                    echo "    vimdiff  `pwd`/${output_file} ${test_output_file}"
+                    echo "    vimdiff  ${cwd}/${output_file} ${test_output_file}"
                     echo " "
-                    echo "If the current result is correct, then the test output will need to be rebuilt."
+                    echo "If the current result is correct, then rebuild with 'make test_clean'."
                     set test_result = "FAILED (diff)"
                     set test_rc = 1
                 endif
             else
                echo " "
-               echo "File `pwd`/${output_file} exists but ${test_output_file} does not."
+               echo "Run directory file ${cwd}/${output_file} exists but ${cwd}/${test_output_file} does not."
                echo "This is likely a cleanup issue."
-               set test_result = "FAILED (extra output file (${output_file}))"
+               set test_result = "FAILED (extra output file (${cwd}/${output_file}))"
                set test_rc = 1
             endif
         end
@@ -736,27 +783,41 @@ if (("${test_type}" == "test") || ("${test_type}" == "regress") || ("{test_type}
             set test_output_file = "${test_run_dir}/${output_file}"
             if ( ! -e ${output_file}) then
                echo " "
-               echo "File ${test_output_file} exists but `pwd`/${output_file} does not."
+               echo "Test directory file ${cwd}/${test_output_file} exists but ${cwd}/${output_file} does not."
                echo "This is likely a cleanup issue."
                set test_result = "FAILED (missing output file (${output_file}))"
                set test_rc = 1
             endif
         end
 
-        if ( ! ${test_rc}) then 
+        if ((! $?DRY_RUN) && ( ! ${test_rc})) then 
             ${IVI_TOUCH} regression_test_passed 
+            if ${status} then
+                set test_rc = $bug_rc
+                goto end_of_script
+            endif 
         endif 
     else
-        echo "Script 'test_program_2' reaching unexpected code line around line 749."
+        echo "Script 'test_program_2' reaching unexpected code around line 777."
     endif 
 endif 
+
+# We should still be in directory ${run_dir}.
 
 if (${test_rc}) then
     # Do nothing
 else if ("${test_type}" == "regress") then
     # Do nothing
 else if (-e "output_checked") then
-    ${IVI_RM} FAILED
+    if ($?DRY_RUN) then
+        echo "DRY: ${IVI_RM} FAILED"
+    else
+        ${IVI_RM} FAILED
+        if ${status} then
+            set test_rc = $bug_rc
+            goto end_of_script
+        endif 
+    endif 
     
     if (${src_is_under_svn}) then
         svn info . >& /dev/null
@@ -764,14 +825,18 @@ else if (-e "output_checked") then
         if (${status}) then
             set svn_command = "svn add --parents --depth=empty `pwd`"
 
-            # Should be the case if test_type is "svn". It could also be
-            # the case for "check", but not necessarily. 
+            # Varible add_test_to_svn should be true if test_type is "svn". It
+            # could also be the case for "check", but not necessarily. 
             #
             if (${add_test_to_svn}) then
-                ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
-                set svn_cmd_status = ${status} 
+                if ($?DRY_RUN) then
+                    echo "DRY: in ${cwd}"
+                    echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}"
+                else
+                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
+                endif 
 
-                if (${svn_cmd_status}) then
+                if (${status}) then
                     set test_result = "FAILED (svn mkdir issue)." 
                     set test_rc = 0
                     goto finish_up
@@ -788,12 +853,15 @@ else if (-e "output_checked") then
         # We do not put run_succeeded in the repo to force rerunning of the test
         # on a new platform. But, as long as the output is correct, then we
         # respect output_checked. 
-        set files = `${IVI_LS} | grep -v '.TMP$' | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp' | grep -v 'STDIN' `
+        set files = `${IVI_LS} | grep -v '.TMP$' | grep -v '\.res$' | grep -v run_succeeded  | grep -v 'valgrind_log_file' | grep -v 'test_time_stamp'`
 
         set not_in_svn = ""
         foreach file (${files}) 
             # If there is a filtered version, then skip non filtered version.
             if (-e "${file}.FILTERED_FOR_DIFF") continue
+
+            ${VERBOSE_ECHO_2} "Script test_program_2 is checking if repo candidate ${cwd}/${file} is already in SVN."
+
             svn info "${file}" >& /dev/null
             if (${status}) set not_in_svn = "${not_in_svn} ${file}"
         end 
@@ -802,10 +870,13 @@ else if (-e "output_checked") then
             set svn_command = "svn add ${not_in_svn}"
 
             if ($add_test_to_svn) then 
-                ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
-                set svn_cmd_status = ${status} 
+                if ($?DRY_RUN) then
+                    echo "DRY: ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}"
+                else
+                    ${MAKE_SCRIPT_PATH}ivi_lock 30 ${svn_command}
+                endif 
 
-                if (${svn_cmd_status}) then
+                if (${status}) then
                     set test_result = "FAILED (svn add issue)." 
                     set test_rc = 0
                     goto finish_up
@@ -864,6 +935,4 @@ if (! ${test_quietly}) then
 endif 
 
 exit ${test_rc}
-
-
 

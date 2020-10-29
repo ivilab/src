@@ -197,7 +197,7 @@ if ($?IVI_MAKE_DEBUG) then
 endif 
 
 if ($?FORCE_STOP) then
-    ${VERBOSE_ECHO} "Forcing stopping after an error due to env var FORCE_STOP being set"
+    ${VERBOSE_ECHO} "We ask make to stop if it encounters an error due to env var FORCE_STOP being set"
     set make_extra_opts = "${make_extra_opts} ${IVI_MAKE_OPTS_STOP}"
 endif 
 
@@ -225,6 +225,13 @@ if ($?FORCE_SERIAL) then
 else 
     setenv IVI_MAKE "${IVI_MAKE_PAR}"
 endif  
+
+set only_set_lockfile_directory = 1
+source ${MAKE_SCRIPT_PATH}set_lockfile_name 
+if (${status}) exit 1
+set clean_lock_count = `${IVI_LS} ${IVI_LOCKFILE_PATH} | ${IVI_GREP} -c build-2-clean-lock`
+if (${status}) exit 1
+${VERBOSE_ECHO} "There are ${clean_lock_count} clean build system locks held by other processes." 
 
 ################################################################################
 
@@ -1001,31 +1008,15 @@ else
     set make_log_file = '/dev/null'
 endif 
 
-# The next (long) block of code can lead to removing of build files if the build
-# fails. This can take out other running builds. So we lock being in this file.
-# This solution is far more conservative than needed. What we need to be sure of
-# is that if we do either "clean_local" or "clean_global", that we check that
-# there are no other build processes running, and wait if there are any. We
-# would need to check if any of them are dead or too old. This might look like
-# an implementation of a shared lock with R/W options.  This is not so hard to
-# implement, but will take a bit of time, so leaving it for later. TODO 
 
-# Until we upgrade the locking solution as above, we should be careful not to
-# call this script recursively. If we do, it will exit due to deadlock risk.
-# This means that we cannot do "cd xxx; make" in a makefile, as this will call
-# this script via the makefile Makefile. But we can do things like this hack in
-# Makefile-library (the specification of a makefile other than Makefile dodges
-# going through this script:
-#     $(IVI_CD) $(IVI_SRC_PATH)IVI_cpp; ${IVI_MAKE_JOB_CLIENT} -f Makefile-2 doxygen
-#
+# The next long block of code can lead to removing of build files if the build
+# fails. This can take out other running builds. So we
+# We implement something resembling a read only lock by creating a lockfile for
+# every build process. If we need to redo the build files, we will check for
+# these files. This is better than simply checking for build-2 processes because
+# we might be building on a shared file system. 
 
-set lock_label = "build-2"
-setenv EXIT_ON_DEADLOCK
-source ${MAKE_SCRIPT_PATH}check_for_deadlock
-if (${status}) exit 1
-
-${MAKE_SCRIPT_PATH}ivi_lock_create 2000 "${lock_label}"
-if (${status}) exit 1
+${IVI_TOUCH} ${IVI_LOCKFILE_PATH}build-2-clean-lock.$$
 
 set exit_status = 0
 set try_count = 1
@@ -1751,45 +1742,6 @@ while (${try_count} <= 4)
                 endif 
 
                 set makefile_to_use = "${MAKE_PATH}Makefile-test"
-
-    #           # All this stuff from before should not be necessary. Kill it
-    #           eventually. Claim made 12/13/2019.
-    #
-    #             # We may need to build Makefile-test-depend twice.
-    #             foreach target ( Makefile-test-depend  Makefile-test-depend)
-    #                 if ($?IVI_VERBOSE) then
-    #                     echo " "
-    #                     echo "Script build-2 is checking whether target ${target} is up to date."
-    #                 endif 
-    # 
-    #                 # Not all makes necessarily have '-q', but then, they might have '-n'
-    #                 # whose output we can grep. Currently, we only use gmake. The
-    #                 # consequence of this failing is simply to run make for real.
-    # 
-    #                 ${IVI_MAKE} -q ${target} -f ${makefile_to_use} |& ${suppress_jobserver_msg}
-    #                 if (! ${status}) then
-    #                     if ( ! $?IVI_QUIET ) then
-    #                         echo "Script build-2 reports target [ ${target} ] is up to date."
-    #                     endif 
-    #                 else 
-    #                     set make_command = "${IVI_MAKE} ${target} -f ${makefile_to_use}"
-    # 
-    #                     if ($?IVI_VERBOSE) then
-    #                         echo " "
-    #                         echo "Script build-2 is building target: ${target} in directory ${cwd}."
-    #                         echo "Make command is: ${make_command}"
-    #                         echo " "
-    #                     endif 
-    # 
-    #                     ${make_command} |& ${suppress_jobserver_msg}
-    # 
-    #                     if ($status) then
-    #                         ${P_STDERR} "Failed to make target(s) ${target} in ${cwd}"
-    #                         exit 1
-    #                     endif 
-    #                 endif 
-    #             end
-
             endif 
         endif 
 
@@ -1806,9 +1758,13 @@ while (${try_count} <= 4)
                 set sub_start_time = `${IVI_ECHO_TIME}`
             endif 
 
-            if ($?DRY_RUN) then
+            # If DRY_RUN_2 is set, then we want to enter the next level with
+            # with DRY_RUN set.
+            if (($?DRY_RUN) && (! $?DRY_RUN_2)) then
                 echo "DRY: ${IVI_MAKE} -f ${makefile_to_use} ${arg} |& ${suppress_jobserver_msg}"
             else
+                if ($?DRY_RUN_2) setenv DRY_RUN 1
+
                 if ($?LOG_MAKE) then 
                     set arg_without_path = `echo ${arg} | ${IVI_SED} 's#^.*/##'`
                     ${VERBOSE_ECHO_2} "Script build-2 using ${arg_without_path} for log path string for ${arg}."
@@ -1889,6 +1845,19 @@ while (${try_count} <= 4)
         set exit_status = 1
         break
     else 
+        set clean_lock_count = `${IVI_LS} ${IVI_LOCKFILE_PATH} | ${IVI_GREP} -c build-2-clean-lock`
+
+        if (${clean_lock_count}) then
+            ${P_STDERR} "Skipping retry of building makefiles, as there may be other builds running."
+            ${P_STDERR} "You could cleanup the locks with 'rm ${IVI_LOCKFILE_PATH}build-2-clean-lock.*'"  
+            ${P_STDERR} "You could kill the processes with 'pkill build-2'"
+            ${P_STDERR} "You could also consider a manual 'make depend_very_clean' and/or cache cleaning."
+            ${P_STDERR} " "
+            set exit_status = 1
+            break
+        endif 
+
+
         if (${try_count} == 1) then
             ${WARN_ECHO} "Trying to build a second time with rebuild of local makefiles."
             ${WARN_ECHO} "Disable with: setenv SKIP_DEPEND_RETRY"
@@ -1949,7 +1918,7 @@ if ( ! $?IVI_QUIET ) then
 
 endif 
 
-${MAKE_SCRIPT_PATH}ivi_lock_remove build-2 
+${IVI_RM} ${IVI_LOCKFILE_PATH}build-2-clean-lock.$$
 
 exit ${exit_status}
 

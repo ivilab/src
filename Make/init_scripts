@@ -197,7 +197,9 @@ endif
 # In the list below, essential and desired programs are separated by ":"
 
 
-# Essential. Egrep is used in stream file names. 
+# Essential. 
+#     Egrep is used in stream file names. 
+#
 set needed_progs = "test cat cp mv rm mkdir file grep ls ln touch chmod gzip makedepend date tee egrep tr"
 
 # Desired (used often enough that a warning makes sense). If these are not

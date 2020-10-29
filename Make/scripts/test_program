@@ -4,6 +4,8 @@
 
 set num_args = $#argv
 
+${VERBOSE_ECHO} "Entering test_program $* (in ${cwd})"
+
 if ("${num_args}" < 2) then
     ${P_STDERR} "Script test_program needs at least 2 arguments."
     exit 1
@@ -119,18 +121,14 @@ if ("${test_type}" == "test") then
     ${IVI_TOUCH} ${run_dir}/test_time_stamp
 endif 
 
-if ($?IVI_VERBOSE) then
-    if ($IVI_VERBOSE >= 2) then
-        echo "Script test_program calling test_program_2 with args: "
-        echo "    test_type:  ${test_type}"
-        echo "    program:    ${program}"
-        echo "    input_dir   ${input_dir}"
-        echo "    obj_dir:    ${obj_dir}"
-        echo "    code_dir:   ${code_dir}"
-        echo "    run_dir:    ${run_dir}"
-        echo "    extra_args: ${extra_args}"
-    endif 
-endif 
+${VERBOSE_ECHO_2} "Script test_program calling test_program_2 with args: "
+${VERBOSE_ECHO_2} "    test_type:  ${test_type}"
+${VERBOSE_ECHO_2} "    program:    ${program}"
+${VERBOSE_ECHO_2} "    input_dir   ${input_dir}"
+${VERBOSE_ECHO_2} "    obj_dir:    ${obj_dir}"
+${VERBOSE_ECHO_2} "    code_dir:   ${code_dir}"
+${VERBOSE_ECHO_2} "    run_dir:    ${run_dir}"
+${VERBOSE_ECHO_2} "    extra_args: ${extra_args}"
 
 if ("${test_type}" == "interactive") then
     ${MAKE_SCRIPT_PATH}/test_program_2 "${test_type}" "${program}" "${input_dir}" "${obj_dir}" "${code_dir}" "${run_dir}" "${extra_args}" 
@@ -147,6 +145,8 @@ if (${test_status}) then
 else 
     ${IVI_RM} "${run_dir}/FAILED"
 endif 
+
+${VERBOSE_ECHO} "Exit status is ${test_status} for test_program $* (in ${cwd})"
 
 exit ${test_status}
 

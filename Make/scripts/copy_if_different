@@ -31,14 +31,22 @@ if (-e "$2") then
         sleep ${sleep_time}
 
         ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script copy_if_different is executing ${IVI_CP} $1 $2."
-        ${IVI_CP} "$1" "$2"
+        if ($?DRY_RUN) then
+            echo "DRY: ${IVI_CP} $1 $2"
+        else
+            ${IVI_CP} "$1" "$2"
+        endif 
         if (${status}) exit 1 
     else 
         ${VERBOSE_ECHO_2} "${VERBOSE_INDENT}Skipping copying $1 to $2 because there is no difference."
     endif 
 else
     ${VERBOSE_ECHO} "${VERBOSE_INDENT}Script copy_if_different is copying $1 to $2 because $2 does not exist."
-    ${IVI_CP} "$1" "$2"
+    if ($?DRY_RUN) then
+        echo "DRY: ${IVI_CP} $1 $2"
+    else
+        ${IVI_CP} "$1" "$2"
+    endif 
     if (${status}) exit 1 
 endif 
 

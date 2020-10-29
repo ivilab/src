@@ -1779,27 +1779,27 @@ pushd lib > /dev/null
 
                         if (("${have_code}" == "1") && (-x build) && (-r Makefile)) then
                             echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                            echo Make_ivi: Regression testing in $cwd. 
-                            echo Make_ivi: Load dir is ${LD_OBJ_DIR}.
+                            echo "Make_ivi: Regression testing in $cwd." 
+                            echo "Make_ivi: Load dir is ${LD_OBJ_DIR}."
+                            echo "Make_ivi: Executing ${IVI_MAKE_JOB_CLIENT} regress (in ${cwd})"
 
-                            ${IVI_MAKE_JOB_CLIENT} regress >& regress.res
-                            if (${status}) then
-                                echo " "  > regress.log
-                                echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"  >> regress.log
-                                echo " "  >> regress.log
-                                echo "Regression testing failed in ${cwd}. "  >> regress.log
-                                echo "To reproduce this try:"  >> regress.log
-                                echo "    cd ${cwd}; ${IVI_MAKE_JOB_CLIENT} regress"  >> regress.log
-                                echo " "  >> regress.log
+                            ${IVI_MAKE_JOB_CLIENT} regress |& tee regress.res
+                            set regress_status = ${status}
+                            ${VERBOSE_ECHO} "Make_ivi make regress status was ${regress_status}"
+                            if (${regress_status}) then
+                                echo " " | tee regress.log
+                                echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"  | tee -a regress.log
+                                echo " "  | tee -a regress.log
+                                echo "Regression testing failed in ${cwd}. "  | tee -a regress.log
+                                echo "To reproduce this try:"  | tee -a regress.log
+                                echo "    cd ${cwd}; ${IVI_MAKE_JOB_CLIENT} regress"  | tee -a regress.log
+                                echo " "  | tee -a regress.log
+
                                 cat regress.res >> regress.log
-
                                 set regress_failed = 1
                                 cat regress.log >> ${IVI_SRC_PATH}${regress_failure_log}
 
-                                cat regress.log
                                 /bin/rm regress.log 
-                            else 
-                                cat regress.res 
                             endif 
 
                             /bin/rm regress.res

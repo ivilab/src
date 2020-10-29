@@ -72,16 +72,17 @@ Makefile-test-depend : $(MAKE_SCRIPT_PATH)build_test_depend Include_lines/test_i
 include Makefile-test-depend
 
 .PHONY : test
-test : $(TEST_TARGETS)
+test : Makefile-depend $(TEST_TARGETS)
 
 .PHONY : regress
-regress : $(REGRESS_TARGETS)
+regress : Makefile-depend $(REGRESS_TARGETS)
 
 .PHONY : test_svn
-test_svn : $(TEST_SVN_TARGETS)
+test_svn : Makefile-depend $(TEST_SVN_TARGETS)
 
 
-# Cleaning test is problematic due to svn. We will experiment with having svn do the removal. 
+# Cleaning test is problematic due to svn. We will experiment with having svn do
+# the removal. 
 #
 .PHONY : test_clean
 test_clean : regress_clean

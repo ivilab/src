@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# $Id: init_compile 25863 2020-10-19 15:10:34Z kobus $
+# $Id: init_compile 25871 2020-10-29 17:36:10Z kobus $
 # 
 # Optional libraries. 
 #     The main reason to edit this file is to add optional libraries.  Each
@@ -5481,10 +5481,10 @@ set lib_lapack = ""
 
 # Might get updated below. 
 
-ivi_setenv CC_FLAGS_LAPACK "-DAAA"
-ivi_setenv LD_FLAGS_LAPACK "-DBBB"
-ivi_setenv CC_SHARED_FLAGS_LAPACK "-DCCC"
-ivi_setenv LD_SHARED_FLAGS_LAPACK "-DDDD"
+ivi_setenv CC_FLAGS_LAPACK ""
+ivi_setenv LD_FLAGS_LAPACK ""
+ivi_setenv CC_SHARED_FLAGS_LAPACK ""
+ivi_setenv LD_SHARED_FLAGS_LAPACK ""
 
 set optional_libs = "${optional_libs} LAPACK:lapack\.h"
 set optional_libs = "${optional_libs} LAPACK:mkl_lapack\.h"
@@ -7001,7 +7001,6 @@ set lib_levmar = ""
 if (${ivi_cc_is_gcc}) then
     ivi_setenv CC_FLAGS_LEVMAR "-std=gnu99"
 else 
-
     ivi_setenv CC_FLAGS_LEVMAR ""
     ivi_setenv LD_FLAGS_LEVMAR ""
     ivi_setenv CC_SHARED_FLAGS_LEVMAR ""
