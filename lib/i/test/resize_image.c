@@ -34,6 +34,17 @@ int main (void)
 
     ivi_init();
 
+    if (is_interactive())
+    {
+        EPETB(set_verbose_options("verbose", "1")); 
+        EPETB(set_debug_options("debug-level", "2")); 
+    }
+    else 
+    {
+        EPETB(set_verbose_options("verbose", "0")); 
+        EPETB(set_debug_options("debug-level", "0")); 
+    }
+
     EGC(result = ivi_read_image(&image, "image_tr.jpg"));
     EGC(result = scale_image_size(&image_half, image, 0.5));
     EGC(result = scale_image_size(&image_double, image, 2.0));

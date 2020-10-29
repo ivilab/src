@@ -1,5 +1,5 @@
 
-/* $Id: i_float_io.c 25612 2020-07-06 22:17:23Z kobus $ */
+/* $Id: i_float_io.c 25873 2020-10-29 17:38:49Z kobus $ */
 
 /* =========================================================================== *
 |
@@ -1835,19 +1835,9 @@ static int ivi_read_image_3
 
         if (result == NOT_FOUND)
         {
-#ifdef TEST
-            /* char error_buff[ 1000 ]; */
-
             add_error("We will attempt to convert the JPEG to different format and read that instead.");
             ivi_print_error(); 
-            /*
-            ivi_get_error(error_buff, sizeof(error_buff)); 
-            TEST_PSO(("\n"));
-            TEST_PSO((error_buff)); 
-            TEST_PSO(("\n"));
-            TEST_PSO(("\n"));
-            */
-#endif
+
             /* verbose_pso(2, "Limited JPEG reader can't read the image.\n"); */
             /* verbose_pso(2, "Conversion will be attempted.\n"); */
             conversion_explanation_str = "Limited JPEG reader returned error reading the file";
@@ -2548,9 +2538,10 @@ static int read_image_from_jpeg(IVI_image** ipp, FILE* fp)
     if (setjmp(jerr.setjmp_buffer))
     {
 #ifdef TEST
-        insert_error("Completed %d steps.", num_steps_completed);
+        insert_error("Completed %d steps (IL4RT).", num_steps_completed);
 #endif
         insert_error("Limited JPEG reader failed to read %F.", fp);
+        BUFF_CAT(jpeg_error_buff, " (IL4RT).");
         add_error(jpeg_error_buff); 
         jpeg_destroy_decompress(&cinfo);
 
@@ -5534,6 +5525,7 @@ static int write_image_as_jpeg
 
         ivi_free(row);
         set_error("Limited JPEG writer failed to write %F.", fp);
+        BUFF_CAT(jpeg_error_buff, " (IL4RT).");
         add_error(jpeg_error_buff); 
         add_error("We will attempt to write a different format and convert to JPEG.");
 
